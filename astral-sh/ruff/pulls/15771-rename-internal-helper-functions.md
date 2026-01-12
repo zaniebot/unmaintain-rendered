@@ -13,14 +13,14 @@ head: dhruv/airflow-rename
 created_at: 2025-01-27T15:20:03Z
 updated_at: 2025-01-27T15:28:02Z
 url: https://github.com/astral-sh/ruff/pull/15771
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Rename internal helper functions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-27 15:20_
+_@dhruvmanila_
 
 Refer: https://github.com/astral-sh/ruff/pull/15713#discussion_r1930700717
 

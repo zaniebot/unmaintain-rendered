@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-03T07:15:00Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/763
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Validate invalid UTF-8?
 
 ---
 
-_Issue opened by @sector-f on 2016-12-03 07:15_
+_@sector-f_
 
 Having custom validators is very useful, but (as far as I can tell) it's impossible to validate things that aren't UTF-8.
 

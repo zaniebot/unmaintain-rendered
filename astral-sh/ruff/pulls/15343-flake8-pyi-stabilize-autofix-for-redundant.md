@@ -13,14 +13,14 @@ head: micha/pyi041-fix
 created_at: 2025-01-08T09:53:38Z
 updated_at: 2025-01-08T11:08:56Z
 url: https://github.com/astral-sh/ruff/pull/15343
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-pyi`] Stabilize autofix for `redundant-numeric-union` (`PYI041`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 09:53_
+_@MichaReiser_
 
 ## Summary
 

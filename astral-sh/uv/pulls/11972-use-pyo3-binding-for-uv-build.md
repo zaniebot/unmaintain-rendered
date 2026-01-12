@@ -12,14 +12,14 @@ head: pyo3-uv-build
 created_at: 2025-03-05T06:33:58Z
 updated_at: 2025-03-07T14:07:54Z
 url: https://github.com/astral-sh/uv/pull/11972
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Use `pyo3` binding for uv_build
 
 ---
 
-_Pull request opened by @j178 on 2025-03-05 06:33_
+_@j178_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/gate
 created_at: 2023-07-15T20:50:54Z
 updated_at: 2023-07-15T21:23:39Z
 url: https://github.com/astral-sh/ruff/pull/5789
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Gate `runtime-import-in-type-checking-block` (`TCH004`) behind enabled flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 20:50_
+_@charliermarsh_
 
 ## Summary
 

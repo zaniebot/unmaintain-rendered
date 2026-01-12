@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-04T06:27:15Z
 updated_at: 2023-07-04T18:21:07Z
 url: https://github.com/astral-sh/ruff/issues/5500
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PERF401 doesn't handle defaultdicts
 
 ---
 
-_Issue opened by @hynek on 2023-07-04 06:27_
+_@hynek_
 
 Given this code:
 

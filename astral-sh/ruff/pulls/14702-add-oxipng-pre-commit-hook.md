@@ -11,14 +11,14 @@ head: add-oxipng-pre-commit-hook
 created_at: 2024-12-01T19:46:48Z
 updated_at: 2024-12-08T17:05:21Z
 url: https://github.com/astral-sh/ruff/pull/14702
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Add oxipng pre commit hook
 
 ---
 
-_Pull request opened by @UnknownPlatypus on 2024-12-01 19:46_
+_@UnknownPlatypus_
 
 ## Summary
 Compress png assets using [oxipng](github.com/shssoichiro/oxipng) and add a pre-commit hook to make this process automatic.

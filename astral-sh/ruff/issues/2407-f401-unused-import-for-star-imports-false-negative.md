@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T18:39:10Z
 updated_at: 2024-03-02T12:26:37Z
 url: https://github.com/astral-sh/ruff/issues/2407
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F401 unused-import for star-imports: false negative?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 18:39_
+_@spaceone_
 
 `flake8` and `ruff` differ for `*` imports:
 ```

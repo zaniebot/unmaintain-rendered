@@ -15,14 +15,14 @@ head: dcreager/stop-being-lazy
 created_at: 2025-09-26T19:20:17Z
 updated_at: 2025-09-29T11:27:37Z
 url: https://github.com/astral-sh/ruff/pull/20596
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Apply type mappings to functions eagerly
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-26 19:20_
+_@dcreager_
 
 `TypeMapping` is no longer cow-shaped.
 

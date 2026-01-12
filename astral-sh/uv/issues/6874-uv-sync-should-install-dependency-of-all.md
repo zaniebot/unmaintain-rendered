@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T14:37:55Z
 updated_at: 2025-08-05T07:53:58Z
 url: https://github.com/astral-sh/uv/issues/6874
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv sync should install dependency of all workspace members? 
 
 ---
 
-_Issue opened by @jpambrun-vida on 2024-08-30 14:37_
+_@jpambrun-vida_
 
 Prior to 0.4.0 I had a [project]-less top level pyproject.toml in my workspace. I liked that `uv sync` would install the union of all workspace members dependencies as well as top level dev-dependencies. This gave me a great DX with code completion/types/tests etc in all modules.
 

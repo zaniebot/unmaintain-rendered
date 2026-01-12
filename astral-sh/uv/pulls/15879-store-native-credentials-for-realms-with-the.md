@@ -14,14 +14,14 @@ head: zb/native-realm-fix
 created_at: 2025-09-15T16:39:08Z
 updated_at: 2025-09-15T18:47:35Z
 url: https://github.com/astral-sh/uv/pull/15879
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Store native credentials for realms with the https scheme stripped
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-15 16:39_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15818
 

@@ -13,14 +13,14 @@ head: charlie/index
 created_at: 2023-08-01T03:41:53Z
 updated_at: 2023-08-01T05:35:21Z
 url: https://github.com/astral-sh/ruff/pull/6219
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid detecting continuations at non-start-of-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 03:41_
+_@charliermarsh_
 
 ## Summary
 

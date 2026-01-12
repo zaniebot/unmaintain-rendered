@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T14:45:55Z
 updated_at: 2025-01-11T13:53:14Z
 url: https://github.com/astral-sh/uv/issues/10471
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # `ModuleNotFoundError: No module named 'pkg_resources'` when adding google-cloud-storage
 
 ---
 
-_Issue opened by @marc-at-brightnight on 2025-01-10 14:45_
+_@marc-at-brightnight_
 
 We are trying to switch from poetry to uv. We are getting some import errors after migrating dependencies, specifically for google-cloud-storage.
 

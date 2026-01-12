@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T00:08:45Z
 updated_at: 2026-01-05T16:10:45Z
 url: https://github.com/astral-sh/uv/issues/6782
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Support copy or hardlink python interpreter when creating venv
 
 ---
 
-_Issue opened by @amartani on 2024-08-29 00:08_
+_@amartani_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

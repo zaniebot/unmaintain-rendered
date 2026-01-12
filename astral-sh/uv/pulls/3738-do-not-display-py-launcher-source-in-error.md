@@ -13,14 +13,14 @@ head: zb/py-launcher-unix
 created_at: 2024-05-22T15:10:20Z
 updated_at: 2024-05-22T15:22:16Z
 url: https://github.com/astral-sh/uv/pull/3738
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Do not display "py launcher" source in error messages on Unix
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 15:10_
+_@zanieb_
 
 _No description provided._
 

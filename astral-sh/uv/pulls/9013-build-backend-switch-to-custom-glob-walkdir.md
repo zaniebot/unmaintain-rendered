@@ -13,14 +13,14 @@ head: konsti/uv-build-backend-globset
 created_at: 2024-11-11T10:55:00Z
 updated_at: 2024-11-14T13:43:16Z
 url: https://github.com/astral-sh/uv/pull/9013
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Build backend: Switch to custom glob-walkdir implementation
 
 ---
 
-_Pull request opened by @konstin on 2024-11-11 10:55_
+_@konstin_
 
 When doing a directory traversal for source dist inclusion, we want to offer the user include and exclude options, and we want to avoid traversing irrelevant directories. The latter is important for performance, especially on network file systems, but also with large data directories, or (not-included) directories with other permissions. To support this, we introduce `GlobDirFilter`, which uses a DFA from regex_automata to determine whether any children of a directory can be included and skips the directory if not.
 

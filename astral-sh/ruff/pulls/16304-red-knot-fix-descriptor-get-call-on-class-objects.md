@@ -13,14 +13,14 @@ head: david/fix-descriptor-call-on-class-objects
 created_at: 2025-02-21T12:51:06Z
 updated_at: 2025-02-21T14:35:45Z
 url: https://github.com/astral-sh/ruff/pull/16304
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Fix descriptor `__get__` call on class objects
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-21 12:51_
+_@sharkdp_
 
 ## Summary
 

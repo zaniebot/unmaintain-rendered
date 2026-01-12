@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-18T18:03:51Z
 updated_at: 2023-03-19T18:37:29Z
 url: https://github.com/astral-sh/ruff/issues/3598
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Update C416 rule with dict comprehensions and make autofixable
 
 ---
 
-_Issue opened by @Skylion007 on 2023-03-18 18:03_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

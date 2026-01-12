@@ -14,14 +14,14 @@ head: micha/update-salsa-iteration-count
 created_at: 2025-10-24T11:11:18Z
 updated_at: 2025-10-24T16:30:55Z
 url: https://github.com/astral-sh/ruff/pull/21059
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Fix rare panic with highly cyclic `TypeVar` definitions
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-24 11:11_
+_@MichaReiser_
 
 Updates salsa to include a fix for https://github.com/salsa-rs/salsa/pull/1014
 

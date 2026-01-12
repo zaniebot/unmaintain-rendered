@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T16:53:00Z
 updated_at: 2025-02-25T15:37:11Z
 url: https://github.com/astral-sh/uv/issues/11747
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Strange behavior with uv 0.5.24 and OpenSSL 3.2.2 in AlmaLinux 9.5
 
 ---
 
-_Issue opened by @lskbr on 2025-02-24 16:53_
+_@lskbr_
 
 ### Summary
 

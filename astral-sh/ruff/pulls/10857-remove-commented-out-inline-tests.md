@@ -14,14 +14,14 @@ head: dhruv/remove-tests-todo
 created_at: 2024-04-10T04:22:18Z
 updated_at: 2024-04-10T04:41:29Z
 url: https://github.com/astral-sh/ruff/pull/10857
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Remove commented out inline tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 04:22_
+_@dhruvmanila_
 
 ## Summary
 

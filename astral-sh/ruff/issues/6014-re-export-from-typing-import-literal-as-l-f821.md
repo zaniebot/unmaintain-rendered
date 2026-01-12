@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-23T10:55:09Z
 updated_at: 2024-10-24T14:33:41Z
 url: https://github.com/astral-sh/ruff/issues/6014
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # re-export `from typing import Literal as L`: F821 Undefined name `bar`
 
 ---
 
-_Issue opened by @Jasha10 on 2023-07-23 10:55_
+_@Jasha10_
 
 Hello,
 

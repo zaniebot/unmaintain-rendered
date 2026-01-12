@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-16T16:43:39Z
 updated_at: 2025-09-29T11:07:06Z
 url: https://github.com/astral-sh/uv/issues/15896
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # request or response body error while running uv add
 
 ---
 
-_Issue opened by @ajrup on 2025-09-16 16:43_
+_@ajrup_
 
 ### Summary
 

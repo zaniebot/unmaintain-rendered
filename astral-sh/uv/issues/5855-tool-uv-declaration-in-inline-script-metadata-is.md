@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T13:07:20Z
 updated_at: 2024-08-10T03:11:11Z
 url: https://github.com/astral-sh/uv/issues/5855
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `[tool.uv]` declaration in inline script metadata is ignored
 
 ---
 
-_Issue opened by @zanieb on 2024-08-07 13:07_
+_@zanieb_
 
 e.g., we do not respect `offline` here
 

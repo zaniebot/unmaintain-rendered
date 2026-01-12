@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-02-07T19:44:05Z
 updated_at: 2025-02-07T19:51:42Z
 url: https://github.com/astral-sh/uv/pull/11327
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Correct environment variable expansion in rustdoc
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-07 19:44_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: main
 created_at: 2024-01-28T13:38:57Z
 updated_at: 2024-01-30T08:00:15Z
 url: https://github.com/astral-sh/ruff/pull/9662
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # SIM108: preserve quoting style in autofixes; don't flag `if`/`else` blocks where the `if`-statement spans multiple lines
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-28 13:38_
+_@AlexWaygood_
 
 Fixes #9660. Instead of using the expression generator, copy and paste the source-code expression exactly as it is.
 

@@ -13,14 +13,14 @@ head: sig_help_bug
 created_at: 2025-07-24T23:15:00Z
 updated_at: 2025-07-29T20:14:49Z
 url: https://github.com/astral-sh/ruff/pull/19542
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Fix bug #879 in signature help
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-24 23:15_
+_@UnboundVariable_
 
 This PR fixes bug [#879](https://github.com/astral-sh/ty/issues/879) where the signature help popup remains visible after typing the closing paren in a call expression.
 

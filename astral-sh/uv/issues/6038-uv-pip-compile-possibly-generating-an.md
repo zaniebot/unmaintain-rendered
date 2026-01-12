@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-12T16:24:33Z
 updated_at: 2024-08-13T15:45:50Z
 url: https://github.com/astral-sh/uv/issues/6038
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv pip compile` possibly generating an unsatisfiable requirements file
 
 ---
 
-_Issue opened by @thecityofguanyu on 2024-08-12 16:24_
+_@thecityofguanyu_
 
 ## Overview
 

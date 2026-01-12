@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-09T16:15:45Z
 updated_at: 2023-01-09T16:30:11Z
 url: https://github.com/astral-sh/ruff/issues/1746
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # error unknown variant `W503`
 
 ---
 
-_Issue opened by @12rambau on 2023-01-09 16:15_
+_@12rambau_
 
 I am moving from `flake8` to `ruff` and one of my ignore statements is not recognized by 0.0.215. 
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-12T14:11:55Z
 updated_at: 2026-01-12T14:11:55Z
 url: https://github.com/astral-sh/ty/issues/2467
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Generic class method "does not satisfy upper bound"
 
 ---
 
-_Issue opened by @Jeremiah-England on 2026-01-12 14:11_
+_@Jeremiah-England_
 
 ### Summary
 

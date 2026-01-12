@@ -12,14 +12,14 @@ head: renovate/wheel-0.x
 created_at: 2024-08-12T02:02:56Z
 updated_at: 2024-08-13T17:16:22Z
 url: https://github.com/astral-sh/ruff/pull/12829
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update dependency wheel to v0.44.0 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 02:02_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

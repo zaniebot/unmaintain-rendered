@@ -12,14 +12,14 @@ head: zanie/fix-no-version
 created_at: 2023-11-06T18:15:06Z
 updated_at: 2023-11-06T20:04:31Z
 url: https://github.com/astral-sh/uv/pull/342
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 #  Improve error message for dependencies with no versions available
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 18:15_
+_@zanieb_
 
 Partially addresses https://github.com/astral-sh/puffin/issues/310
 Addresses case at https://github.com/astral-sh/puffin/issues/309#issuecomment-1793541558

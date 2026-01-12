@@ -12,14 +12,14 @@ head: E731
 created_at: 2022-09-06T13:34:09Z
 updated_at: 2022-09-06T14:45:13Z
 url: https://github.com/astral-sh/ruff/pull/109
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement E731
 
 ---
 
-_Pull request opened by @harupy on 2022-09-06 13:34_
+_@harupy_
 
 Implement https://www.flake8rules.com/rules/E731.html.
 

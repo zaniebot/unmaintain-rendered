@@ -13,14 +13,14 @@ head: gopoto/16502
 created_at: 2025-03-21T05:29:25Z
 updated_at: 2025-06-20T06:44:20Z
 url: https://github.com/astral-sh/ruff/pull/16882
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [pep8-naming] Flag variables bound in match patterns (N806/N815/N816)
 
 ---
 
-_Pull request opened by @codex-maintainers on 2025-03-21 05:29_
+_@codex-maintainers_
 
 ## Summary
 

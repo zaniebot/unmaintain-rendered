@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-09T19:50:49Z
 updated_at: 2022-08-26T17:15:58Z
 url: https://github.com/clap-rs/clap/issues/950
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Lib Blitz Style Summary and Overhaul
 
 ---
 
-_Issue opened by @kbknapp on 2017-05-09 19:50_
+_@kbknapp_
 
 In an effort to get 3.x underway this will be the summary issue linking to all tracking issues. Many of the issues that will come out of this will be excellent "first time" issues that I'd be willing to mentor!
 

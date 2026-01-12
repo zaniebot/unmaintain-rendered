@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-07T20:44:26Z
 updated_at: 2025-08-27T12:32:30Z
 url: https://github.com/astral-sh/uv/issues/5893
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # uv swallows output from build backend even in verbose mode
 
 ---
 
-_Issue opened by @burgholzer on 2024-08-07 20:44_
+_@burgholzer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

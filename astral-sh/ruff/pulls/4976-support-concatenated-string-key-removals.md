@@ -13,14 +13,14 @@ head: charlie/kwargs
 created_at: 2023-06-09T04:16:48Z
 updated_at: 2023-06-09T05:00:46Z
 url: https://github.com/astral-sh/ruff/pull/4976
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Support concatenated string key removals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-09 04:16_
+_@charliermarsh_
 
 Closes #4975.
 

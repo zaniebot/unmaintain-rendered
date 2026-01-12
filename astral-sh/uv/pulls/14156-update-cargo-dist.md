@@ -13,14 +13,14 @@ head: gankra/bump-dist
 created_at: 2025-06-20T15:02:46Z
 updated_at: 2025-06-20T18:20:02Z
 url: https://github.com/astral-sh/uv/pull/14156
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Update cargo-dist
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-20 15:02_
+_@Gankra_
 
 Also took the time to migrate to the external config format to normalize our projects for team comfort (`ty` *has* to use this format for its workspace structure).
 

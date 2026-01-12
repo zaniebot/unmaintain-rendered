@@ -13,14 +13,14 @@ head: charlie/typing-inf
 created_at: 2024-02-13T01:44:12Z
 updated_at: 2024-02-13T01:57:20Z
 url: https://github.com/astral-sh/ruff/pull/9968
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove symbol from type-matching API
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-13 01:44_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/port-comprehension-tests
 created_at: 2025-01-23T12:21:10Z
 updated_at: 2025-01-23T12:49:31Z
 url: https://github.com/astral-sh/ruff/pull/15688
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Port comprehension tests to Markdown
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-23 12:21_
+_@sharkdp_
 
 ## Summary
 

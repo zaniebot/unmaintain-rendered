@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T19:42:43Z
 updated_at: 2025-12-10T20:33:41Z
 url: https://github.com/astral-sh/ty/issues/1845
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Pydantic perf regression related to normalizing `TypedDict`s
 
 ---
 
-_Issue opened by @oconnor663 on 2025-12-10 19:42_
+_@oconnor663_
 
 This was a known regression that came with https://github.com/astral-sh/ruff/pull/21784.
 

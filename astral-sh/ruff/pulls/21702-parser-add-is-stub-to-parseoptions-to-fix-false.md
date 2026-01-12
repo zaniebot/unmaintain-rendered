@@ -12,14 +12,14 @@ head: fix_stub_false_positive
 created_at: 2025-11-30T12:28:54Z
 updated_at: 2025-12-01T04:51:55Z
 url: https://github.com/astral-sh/ruff/pull/21702
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # parser: add `is_stub` to `ParseOptions` to fix false positive syntax error for stub files
 
 ---
 
-_Pull request opened by @11happy on 2025-11-30 12:28_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T23:01:52Z
 updated_at: 2025-09-19T18:40:24Z
 url: https://github.com/astral-sh/ruff/issues/20035
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff format` can double count formatted files
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 23:01_
+_@zanieb_
 
 ### Summary
 

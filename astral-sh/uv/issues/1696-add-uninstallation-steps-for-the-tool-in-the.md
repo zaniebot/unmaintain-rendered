@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T14:27:14Z
 updated_at: 2024-09-25T00:36:17Z
 url: https://github.com/astral-sh/uv/issues/1696
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Add uninstallation steps for the tool in the documentation
 
 ---
 
-_Issue opened by @fervand1 on 2024-02-19 14:27_
+_@fervand1_
 
 As an end user, it would be nice to also include uninstallation steps in the documentation or on pypi for windows specially if the tool is installed via the script `irm https://astral.sh/uv/install.ps1 | iex`. On pip it is relatively easy with pip uninstall.
 

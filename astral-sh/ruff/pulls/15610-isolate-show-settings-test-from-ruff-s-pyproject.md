@@ -13,14 +13,14 @@ head: micha/isolate-show-settings-test
 created_at: 2025-01-20T09:18:20Z
 updated_at: 2025-01-20T09:31:21Z
 url: https://github.com/astral-sh/ruff/pull/15610
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Isolate `show_settings` test from Ruff's `pyproject.toml
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-20 09:18_
+_@MichaReiser_
 
 ## Summary
 

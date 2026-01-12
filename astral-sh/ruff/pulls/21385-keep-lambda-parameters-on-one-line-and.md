@@ -14,14 +14,14 @@ head: brent/indent-lambda-params
 created_at: 2025-11-11T15:57:34Z
 updated_at: 2025-12-12T17:02:28Z
 url: https://github.com/astral-sh/ruff/pull/21385
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # Keep lambda parameters on one line and parenthesize the body if it expands
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-11 15:57_
+_@ntBre_
 
 ## Summary
 

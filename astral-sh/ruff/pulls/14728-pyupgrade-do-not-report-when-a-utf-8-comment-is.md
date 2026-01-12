@@ -14,14 +14,14 @@ head: UP009
 created_at: 2024-12-02T13:06:45Z
 updated_at: 2024-12-11T12:52:24Z
 url: https://github.com/astral-sh/ruff/pull/14728
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pyupgrade`] Do not report when a UTF-8 comment is followed by a non-UTF-8 one (`UP009`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-02 13:06_
+_@InSyncWithFoo_
 
 ## Summary
 

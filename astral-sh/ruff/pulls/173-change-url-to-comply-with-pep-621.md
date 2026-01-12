@@ -12,14 +12,14 @@ head: main
 created_at: 2022-09-12T21:28:42Z
 updated_at: 2022-09-12T22:38:20Z
 url: https://github.com/astral-sh/ruff/pull/173
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # change url to comply with pep 621
 
 ---
 
-_Pull request opened by @okken on 2022-09-12 21:28_
+_@okken_
 
 I was surprised when looking at the repository wasn't listed on PyPI:
 https://pypi.org/project/ruff/

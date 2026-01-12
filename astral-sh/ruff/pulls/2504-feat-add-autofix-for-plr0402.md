@@ -12,14 +12,14 @@ head: 2199-autofix-PLR0402
 created_at: 2023-02-02T23:45:30Z
 updated_at: 2023-02-06T14:07:38Z
 url: https://github.com/astral-sh/ruff/pull/2504
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # feat: add autofix for PLR0402
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-02 23:45_
+_@spaceone_
 
 Issue #2199
 

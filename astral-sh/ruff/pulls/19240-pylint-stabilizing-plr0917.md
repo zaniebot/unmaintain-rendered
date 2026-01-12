@@ -14,14 +14,14 @@ head: codeman/16867
 created_at: 2025-07-09T17:24:03Z
 updated_at: 2025-09-05T13:05:37Z
 url: https://github.com/astral-sh/ruff/pull/19240
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`pylint`] stabilizing PLR0917
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-09 17:24_
+_@CodeMan62_
 
 ## Summary
 closes #16867 

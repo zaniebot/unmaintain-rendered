@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-16T13:11:06Z
 updated_at: 2023-03-16T16:04:06Z
 url: https://github.com/astral-sh/ruff/issues/3558
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff breaking randomly on CI with pre-commit
 
 ---
 
-_Issue opened by @mounirmesselmeni on 2023-03-16 13:11_
+_@mounirmesselmeni_
 
 Running ruff in CI is recently is sometime failing with this error:
 

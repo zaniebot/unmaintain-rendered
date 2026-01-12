@@ -12,14 +12,14 @@ head: upgrade-mutable-argument-default-to-unsafe
 created_at: 2023-10-21T15:34:00Z
 updated_at: 2023-10-21T19:48:18Z
 url: https://github.com/astral-sh/ruff/pull/8108
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Upgrade mutable-argument-defaults to unsafe
 
 ---
 
-_Pull request opened by @cjolowicz on 2023-10-21 15:34_
+_@cjolowicz_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

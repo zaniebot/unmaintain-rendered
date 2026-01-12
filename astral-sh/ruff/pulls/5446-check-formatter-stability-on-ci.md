@@ -12,14 +12,14 @@ head: Check_formatter_stability_on_CI
 created_at: 2023-06-29T18:27:13Z
 updated_at: 2023-07-07T16:28:37Z
 url: https://github.com/astral-sh/ruff/pull/5446
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Check formatter stability on CI
 
 ---
 
-_Pull request opened by @konstin on 2023-06-29 18:27_
+_@konstin_
 
 Check formatter stability on CI using CPython. This should be merged into the ecosystem checks, but i think this is a good start.
 

@@ -13,14 +13,14 @@ head: greenstar1151/fix-docs-broken-link-lint-namespace
 created_at: 2024-03-01T10:27:13Z
 updated_at: 2024-03-01T11:35:29Z
 url: https://github.com/astral-sh/ruff/pull/10182
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix broken documentation links affected by namespace changes in lint rules
 
 ---
 
-_Pull request opened by @greenstar1151 on 2024-03-01 10:27_
+_@greenstar1151_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

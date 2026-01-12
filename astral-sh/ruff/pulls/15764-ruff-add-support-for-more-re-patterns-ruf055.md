@@ -14,14 +14,14 @@ head: garrett/14738/ruff055-more-patterns
 created_at: 2025-01-27T05:57:38Z
 updated_at: 2025-01-29T19:16:20Z
 url: https://github.com/astral-sh/ruff/pull/15764
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] Add support for more `re` patterns (`RUF055`)
 
 ---
 
-_Pull request opened by @Garrett-R on 2025-01-27 05:57_
+_@Garrett-R_
 
 ## Summary
 Implements some of #14738, by adding support for 6 new patterns:

@@ -13,14 +13,14 @@ head: detect_hardfloat
 created_at: 2024-09-26T19:35:14Z
 updated_at: 2024-10-29T23:33:21Z
 url: https://github.com/astral-sh/uv/pull/7725
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # uv python install: Detect hard-float support
 
 ---
 
-_Pull request opened by @kakkoyun on 2024-09-26 19:35_
+_@kakkoyun_
 
 Signed-off-by: Kemal Akkoyun <kakkoyun@gmail.com>
 

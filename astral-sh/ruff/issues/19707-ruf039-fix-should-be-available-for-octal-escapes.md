@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-02T22:24:26Z
 updated_at: 2025-08-05T13:27:38Z
 url: https://github.com/astral-sh/ruff/issues/19707
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF039 fix should be available for octal escapes and `u` string prefixes
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-02 22:24_
+_@dscorbett_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/typing
 created_at: 2023-06-06T02:31:34Z
 updated_at: 2023-06-06T02:59:16Z
 url: https://github.com/astral-sh/ruff/pull/4889
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Respect noqa directives on `ImportFrom` parents for type-checking rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 02:31_
+_@charliermarsh_
 
 ## Summary
 

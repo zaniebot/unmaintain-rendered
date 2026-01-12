@@ -13,14 +13,14 @@ head: zb/F401-init
 created_at: 2024-03-12T17:33:38Z
 updated_at: 2024-04-19T21:11:07Z
 url: https://github.com/astral-sh/ruff/pull/10365
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove `F401` fix for `__init__` imports by default and allow opt-in to unsafe fix
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 17:33_
+_@zanieb_
 
 Re-implementation of https://github.com/astral-sh/ruff/pull/5845 but instead of deprecating the option I toggle the default. Now users can _opt-in_ via the setting which will give them an unsafe fix to remove the import. Otherwise, we raise violations but do not offer a fix. The setting is a bit of a misnomer in either case, maybe we'll want to remove it still someday.
 

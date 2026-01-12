@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-04T12:57:51Z
 updated_at: 2022-04-04T14:52:52Z
 url: https://github.com/clap-rs/clap/issues/3608
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Argument with `last` option set, still requires specifying its index
 
 ---
 
-_Issue opened by @kamilogorek on 2022-04-04 12:57_
+_@kamilogorek_
 
 ### Please complete the following tasks
 

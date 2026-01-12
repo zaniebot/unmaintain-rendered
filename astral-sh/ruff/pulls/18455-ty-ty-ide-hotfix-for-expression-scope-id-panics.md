@@ -14,14 +14,14 @@ head: david/hotfix-playground-scoped_expression_id
 created_at: 2025-06-04T08:28:38Z
 updated_at: 2025-06-04T15:10:34Z
 url: https://github.com/astral-sh/ruff/pull/18455
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] ty_ide: Hotfix for `expression_scope_id` panics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-04 08:28_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: patch-ar-and-friends
 created_at: 2024-12-15T06:21:05Z
 updated_at: 2024-12-15T15:30:16Z
 url: https://github.com/astral-sh/uv/pull/9905
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Patch additional `sysconfig` values such as AR at install time
 
 ---
 
-_Pull request opened by @samypr100 on 2024-12-15 06:21_
+_@samypr100_
 
 ## Summary
 

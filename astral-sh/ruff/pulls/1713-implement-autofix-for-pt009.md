@@ -12,14 +12,14 @@ head: autofix-PT009
 created_at: 2023-01-07T11:05:06Z
 updated_at: 2023-01-07T17:28:25Z
 url: https://github.com/astral-sh/ruff/pull/1713
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement autofix for PT009
 
 ---
 
-_Pull request opened by @harupy on 2023-01-07 11:05_
+_@harupy_
 
 Implements autofix for PT009
 

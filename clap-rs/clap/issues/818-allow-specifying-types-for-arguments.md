@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-18T14:13:50Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/818
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow specifying types for arguments
 
 ---
 
-_Issue opened by @quodlibetor on 2017-01-18 14:13_
+_@quodlibetor_
 
 Feature discussion/request: add something like Python's [click library's "types"](http://click.pocoo.org/5/parameters/#parameter-types).
 

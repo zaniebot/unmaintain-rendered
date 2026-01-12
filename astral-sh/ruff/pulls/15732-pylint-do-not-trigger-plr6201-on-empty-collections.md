@@ -15,14 +15,14 @@ head: plr6201-empty
 created_at: 2025-01-24T20:41:10Z
 updated_at: 2025-01-25T03:46:15Z
 url: https://github.com/astral-sh/ruff/pull/15732
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pylint`] Do not trigger `PLR6201` on empty collections
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-01-24 20:41_
+_@JelleZijlstra_
 
 Fixes #15729.
 

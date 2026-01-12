@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-18T05:32:04Z
 updated_at: 2023-02-19T12:20:46Z
 url: https://github.com/astral-sh/ruff/issues/3003
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Running scripts/generate_mkdocs.py fails on main branch.
 
 ---
 
-_Issue opened by @manueljacob on 2023-02-18 05:32_
+_@manueljacob_
 
 On the main branch:
 

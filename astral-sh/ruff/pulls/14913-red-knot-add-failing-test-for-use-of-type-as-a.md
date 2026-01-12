@@ -13,14 +13,14 @@ head: alex/failing-type-t-test
 created_at: 2024-12-11T13:13:32Z
 updated_at: 2024-12-11T17:08:02Z
 url: https://github.com/astral-sh/ruff/pull/14913
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Add failing test for use of `type[]` as a base class
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 13:13_
+_@AlexWaygood_
 
 We support using `typing.Type[]` as a base class (and we have tests for it), but not yet `builtins.type[]`. At some point we should fix that, but I don't think it';s worth spending much time on now (and it might be easier once we've implemented generics?). This PR just adds a failing test with a TODO.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-25T09:07:41Z
 updated_at: 2023-10-18T01:15:27Z
 url: https://github.com/astral-sh/ruff/issues/7645
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add `exclude` option to `format` and `lint` sections
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:07_
+_@MichaReiser_
 
 Add the new `exclude` option to the `format` and `lint` section to exclude a set of files for a specific tool only. Respect the new option in the `check`, `fix`, and `format` commands.
 

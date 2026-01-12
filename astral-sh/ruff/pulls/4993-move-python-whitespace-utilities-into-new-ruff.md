@@ -12,14 +12,14 @@ head: charlie/whitespace
 created_at: 2023-06-10T00:47:58Z
 updated_at: 2023-06-10T01:21:11Z
 url: https://github.com/astral-sh/ruff/pull/4993
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move Python whitespace utilities into new `ruff_python_whitespace` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-10 00:47_
+_@charliermarsh_
 
 ## Summary
 

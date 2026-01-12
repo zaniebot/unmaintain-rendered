@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T05:51:57Z
 updated_at: 2025-09-17T07:10:55Z
 url: https://github.com/astral-sh/ruff/issues/20449
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Path to not forking lsp-types?
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-09-17 05:51_
+_@musicinmybrain_
 
 ### Question
 

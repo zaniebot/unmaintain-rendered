@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T14:22:58Z
 updated_at: 2024-11-22T22:06:44Z
 url: https://github.com/astral-sh/uv/issues/9356
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # `uv pip install --target` flags says to add `--system` 
 
 ---
 
-_Issue opened by @PatrickAlphaC on 2024-11-22 14:22_
+_@PatrickAlphaC_
 
 Running the following:
 

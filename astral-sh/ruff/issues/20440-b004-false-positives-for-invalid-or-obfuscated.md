@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-16T19:31:23Z
 updated_at: 2025-09-19T18:44:44Z
 url: https://github.com/astral-sh/ruff/issues/20440
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B004 false positives for invalid or obfuscated `hasattr` and `getattr` calls
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-16 19:31_
+_@dscorbett_
 
 ### Summary
 

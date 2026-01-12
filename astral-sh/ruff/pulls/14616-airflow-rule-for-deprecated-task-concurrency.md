@@ -14,14 +14,14 @@ head: deprecated-task-concurrency
 created_at: 2024-11-26T17:48:57Z
 updated_at: 2025-05-05T15:38:27Z
 url: https://github.com/astral-sh/ruff/pull/14616
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [airflow] rule for deprecated task_concurrency parameter (AIR303)
 
 ---
 
-_Pull request opened by @abhishekbhakat on 2024-11-26 17:48_
+_@abhishekbhakat_
 
 ## Summary
 Airflow 3.0 renames the `task_concurrency` parameter to `max_active_tis_per_dag` across all operators. The old parameter will no longer have any effect in 3.0. This rule detects usage of the deprecated parameter to help users migrate their DAGs to the new concurrency control pattern.

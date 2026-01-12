@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T00:37:56Z
 updated_at: 2025-04-07T17:41:44Z
 url: https://github.com/astral-sh/uv/issues/12326
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # uv cannot find latest version of package in private index
 
 ---
 
-_Issue opened by @mbUSC on 2025-03-20 00:37_
+_@mbUSC_
 
 ### Summary
 

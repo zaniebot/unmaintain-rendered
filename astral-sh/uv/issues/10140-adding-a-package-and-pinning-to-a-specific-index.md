@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T12:50:10Z
 updated_at: 2026-01-06T18:56:19Z
 url: https://github.com/astral-sh/uv/issues/10140
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Adding a package and pinning to a specific index by name only with `uv add`
 
 ---
 
-_Issue opened by @menzenski on 2024-12-24 12:50_
+_@menzenski_
 
 This issue is something of a followup to https://github.com/astral-sh/uv/issues/6582, which was a duplicate of https://github.com/astral-sh/uv/issues/171. That issue has comments https://github.com/astral-sh/uv/issues/171#issuecomment-2426757234 and https://github.com/astral-sh/uv/issues/171#issuecomment-2426403030 which seems to be the same thing I am interested in here (but I can't find anything in search that suggests those have been opened as independent issues yet).
 

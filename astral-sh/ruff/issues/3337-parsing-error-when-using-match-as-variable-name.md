@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-04T14:04:37Z
 updated_at: 2023-03-04T17:42:07Z
 url: https://github.com/astral-sh/ruff/issues/3337
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Parsing error when using `match` as variable name
 
 ---
 
-_Issue opened by @qarmin on 2023-03-04 14:04_
+_@qarmin_
 
 ```
 event = 12

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-29T08:37:27Z
 updated_at: 2025-10-29T18:15:24Z
 url: https://github.com/clap-rs/clap/issues/6164
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg: `action(ArgAction::Count)` conflicts with `help_header` and other oddities causing panics and alarming memory usage
 
 ---
 
-_Issue opened by @RachaelAva1024 on 2025-10-29 08:37_
+_@RachaelAva1024_
 
 ### Please complete the following tasks
 

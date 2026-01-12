@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T07:17:57Z
 updated_at: 2025-07-31T19:20:58Z
 url: https://github.com/astral-sh/ty/issues/614
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Workspace symbols
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-09 07:17_
+_@MichaReiser_
 
 Support the workspace symbol request. It is used to find a symbol by name. https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_symbol
 

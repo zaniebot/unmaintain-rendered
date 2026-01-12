@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-19T17:07:41Z
 updated_at: 2025-01-19T18:28:10Z
 url: https://github.com/astral-sh/ruff/issues/15583
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Incorrect Import Removal Causes Undefined Name Error in Ruff Auto-Fix
 
 ---
 
-_Issue opened by @brupelo on 2025-01-19 17:07_
+_@brupelo_
 
 Testing last origin/main at f1af2a386388f5edee99e26a24864a59566283d2
 

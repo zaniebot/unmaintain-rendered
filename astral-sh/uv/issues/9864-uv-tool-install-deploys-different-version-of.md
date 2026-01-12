@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T09:02:31Z
 updated_at: 2024-12-16T20:58:36Z
 url: https://github.com/astral-sh/uv/issues/9864
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # `uv tool install` deploys different version of package when installing an extra
 
 ---
 
-_Issue opened by @hoechenberger on 2024-12-13 09:02_
+_@hoechenberger_
 
 Installing `mne` via `uv tool install` installs a different version depending on whether I request `mne` or `mne[full]`.
 

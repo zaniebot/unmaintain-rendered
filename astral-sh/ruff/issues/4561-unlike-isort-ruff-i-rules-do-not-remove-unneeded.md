@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-21T18:07:36Z
 updated_at: 2023-05-21T18:33:29Z
 url: https://github.com/astral-sh/ruff/issues/4561
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Unlike isort, ruff `I` rules do not remove unneeded line break commas
 
 ---
 
-_Issue opened by @johnthagen on 2023-05-21 18:07_
+_@johnthagen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

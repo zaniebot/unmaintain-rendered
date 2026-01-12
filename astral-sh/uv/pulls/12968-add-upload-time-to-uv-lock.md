@@ -13,14 +13,14 @@ head: charlie/upload-time
 created_at: 2025-04-18T14:03:52Z
 updated_at: 2025-05-06T14:37:23Z
 url: https://github.com/astral-sh/uv/pull/12968
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Add upload time to `uv.lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-18 14:03_
+_@charliermarsh_
 
 ## Summary
 

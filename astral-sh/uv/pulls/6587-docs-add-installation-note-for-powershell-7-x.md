@@ -13,14 +13,14 @@ head: jonton-docs-windows-powershell
 created_at: 2024-08-24T16:44:59Z
 updated_at: 2024-09-17T17:04:33Z
 url: https://github.com/astral-sh/uv/pull/6587
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Docs: Add Installation note for PowerShell 7.X
 
 ---
 
-_Pull request opened by @jon-ton on 2024-08-24 16:44_
+_@jon-ton_
 
 ## Summary
 

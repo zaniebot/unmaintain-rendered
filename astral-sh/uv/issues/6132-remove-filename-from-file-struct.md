@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T01:05:48Z
 updated_at: 2024-08-16T13:22:09Z
 url: https://github.com/astral-sh/uv/issues/6132
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Remove `filename` from `File` struct
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-16 01:05_
+_@charliermarsh_
 
 There's a section in [PEP 691](https://peps.python.org/pep-0691/#why-include-the-filename-when-the-url-has-it-already) that says:
 

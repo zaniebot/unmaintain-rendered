@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-28T14:03:02Z
 updated_at: 2023-11-28T14:40:49Z
 url: https://github.com/astral-sh/ruff/issues/8868
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Exact reasons for fix unsafety should be given (docs or CLI)
 
 ---
 
-_Issue opened by @sh-at-cs on 2023-11-28 14:03_
+_@sh-at-cs_
 
 It would be cool if Ruff gave an explanation for *why* certain fixes are considered unsafe, either in the docs or (even better, but probably requiring much more work) in the CLI output.
 

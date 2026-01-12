@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T00:59:13Z
 updated_at: 2023-10-30T01:13:29Z
 url: https://github.com/astral-sh/ruff/issues/8332
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: different than black when wrapping parentheses for `with`
 
 ---
 
-_Issue opened by @njzjz on 2023-10-30 00:59_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

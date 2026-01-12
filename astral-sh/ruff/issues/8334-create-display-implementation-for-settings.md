@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T02:49:23Z
 updated_at: 2024-01-12T19:30:30Z
 url: https://github.com/astral-sh/ruff/issues/8334
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Create `Display` implementation for `Settings`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-10-30 02:49_
+_@MichaReiser_
 
 `ruff check . --show-settings` prints the settings using the `Debug` implementation. The result is that it prints our internal representation, which is hard to read (even impossible)
 

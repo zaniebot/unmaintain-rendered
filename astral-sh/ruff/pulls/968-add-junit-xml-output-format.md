@@ -12,14 +12,14 @@ head: junit
 created_at: 2022-11-30T04:39:12Z
 updated_at: 2022-11-30T05:48:37Z
 url: https://github.com/astral-sh/ruff/pull/968
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add JUnit xml output format
 
 ---
 
-_Pull request opened by @messense on 2022-11-30 04:39_
+_@messense_
 
 Closes #963 
 

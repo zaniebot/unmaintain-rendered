@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T22:05:03Z
 updated_at: 2025-07-23T12:18:20Z
 url: https://github.com/astral-sh/uv/issues/13958
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Is the astraluv/uv image on Docker official or an imposter?
 
 ---
 
-_Issue opened by @gnowland on 2025-06-10 22:05_
+_@gnowland_
 
 ### Question
 

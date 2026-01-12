@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-11T08:24:09Z
 updated_at: 2023-07-11T13:26:50Z
 url: https://github.com/astral-sh/ruff/issues/5678
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Nested bare except not found
 
 ---
 
-_Issue opened by @puittenbroek on 2023-07-11 08:24_
+_@puittenbroek_
 
 Tried to search for an existing issue regarding this but couldn't find any. Apologies if my search was insufficient.
 Busy introducing ruff for our repositories and ran into situation where it didn't find all issues that flake8 did raise.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T13:37:45Z
 updated_at: 2024-11-27T14:37:28Z
 url: https://github.com/astral-sh/ruff/issues/14452
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # setting output format hides output in ruff check
 
 ---
 
-_Issue opened by @kaddkaka on 2024-11-19 13:37_
+_@kaddkaka_
 
 When running a `ruff check --fix-only` there is no output about what errors were fixed. This surprised me, I thought it would still print the fixed error since the [documentation about `--fix-only`](https://docs.astral.sh/ruff/settings/#fix-only) says "Like [fix](https://docs.astral.sh/ruff/settings/#fix), but disables reporting on leftover violation. Implies [fix](https://docs.astral.sh/ruff/settings/#fix)."
 

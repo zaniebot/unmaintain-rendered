@@ -14,14 +14,14 @@ head: charlie/pip-list-outdated
 created_at: 2024-11-07T02:10:13Z
 updated_at: 2025-01-23T16:01:27Z
 url: https://github.com/astral-sh/uv/pull/8872
-synced_at: 2026-01-10T11:44:29Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add support for `pip list --outdated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-07 02:10_
+_@charliermarsh_
 
 ## Summary
 

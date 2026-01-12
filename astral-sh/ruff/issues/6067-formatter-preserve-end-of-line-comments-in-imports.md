@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T11:11:01Z
 updated_at: 2023-08-16T07:08:37Z
 url: https://github.com/astral-sh/ruff/issues/6067
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Preserve end-of-line comments in imports
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 11:11_
+_@konstin_
 
 We turn dangling end-of-line comments in the parentheses of import-from into own line comments instead of preserving them
 

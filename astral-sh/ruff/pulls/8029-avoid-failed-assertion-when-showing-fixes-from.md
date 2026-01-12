@@ -14,14 +14,14 @@ head: charlie/fix-map
 created_at: 2023-10-17T23:41:01Z
 updated_at: 2023-10-18T01:50:41Z
 url: https://github.com/astral-sh/ruff/pull/8029
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid failed assertion when showing fixes from stdin
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-17 23:41_
+_@charliermarsh_
 
 ## Summary
 

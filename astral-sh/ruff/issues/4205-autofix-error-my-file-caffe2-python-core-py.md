@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-03T13:31:10Z
 updated_at: 2023-05-04T14:40:11Z
 url: https://github.com/astral-sh/ruff/issues/4205
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] My File: caffe2/python/core.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-03 13:31_
+_@FishAlchemist_
 
 ruff version 0.0.264 (ruff --version)
 

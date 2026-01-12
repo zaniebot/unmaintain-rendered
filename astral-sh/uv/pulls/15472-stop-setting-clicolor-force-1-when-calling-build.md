@@ -13,14 +13,14 @@ head: zsol/jj-kwnswvnoxxpw
 created_at: 2025-08-23T16:08:47Z
 updated_at: 2025-08-27T17:32:40Z
 url: https://github.com/astral-sh/uv/pull/15472
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Stop setting `CLICOLOR_FORCE=1` when calling build backends
 
 ---
 
-_Pull request opened by @zsol on 2025-08-23 16:08_
+_@zsol_
 
 ## Summary
 

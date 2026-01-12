@@ -12,14 +12,14 @@ head: charlie/UP032
 created_at: 2023-10-04T18:32:42Z
 updated_at: 2023-10-04T19:32:37Z
 url: https://github.com/astral-sh/ruff/pull/7818
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Allow f-string modifications in line-shrinking cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-04 18:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T11:57:56Z
 updated_at: 2024-10-29T14:11:41Z
 url: https://github.com/astral-sh/uv/issues/8657
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Python cannot be found on unsupported architectures
 
 ---
 
-_Issue opened by @lengau on 2024-10-29 11:57_
+_@lengau_
 
 On unsupported architectures (e.g. riscv64), `uv` cannot find the local Python because the machine is not in a list of known items:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-04T15:00:44Z
 updated_at: 2022-12-04T15:20:41Z
 url: https://github.com/astral-sh/ruff/issues/1034
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Rename RUF004 to PLR1722
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-04 15:00_
+_@charliermarsh_
 
 This code exists in Pylint, but we should extend it to also include `quit`.
 

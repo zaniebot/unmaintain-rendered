@@ -13,14 +13,14 @@ head: add-no-pager-help-option
 created_at: 2024-07-12T13:00:09Z
 updated_at: 2024-07-13T08:47:58Z
 url: https://github.com/astral-sh/uv/pull/5007
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Add `--no-pager` option in `help` command
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-12 13:00_
+_@silvanocerza_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: ag/fmt/user-config
 created_at: 2023-11-27T15:36:24Z
 updated_at: 2023-12-18T13:07:51Z
 url: https://github.com/astral-sh/ruff/pull/8854
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # config: add new `docstring-code-format` knob
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-27 15:36_
+_@BurntSushi_
 
 This PR does the plumbing to make a new formatting option, `docstring-code-format`, available in the configuration for end users. It is disabled by default (opt-in). It is opt-in at least initially to reflect a conservative posture. The intent is to make it opt-out at some point in the future.
 

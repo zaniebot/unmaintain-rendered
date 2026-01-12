@@ -12,14 +12,14 @@ head: fix-typevar-identity
 created_at: 2025-06-11T20:06:21Z
 updated_at: 2025-08-15T16:30:04Z
 url: https://github.com/astral-sh/ruff/pull/18634
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Correctly compare generic function subtyping/assignability regardless of TypeVar identity
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-11 20:06_
+_@LaBatata101_
 
 
 

@@ -14,14 +14,14 @@ head: zb/docs-integration-guides
 created_at: 2024-07-16T17:34:05Z
 updated_at: 2024-07-18T03:47:33Z
 url: https://github.com/astral-sh/uv/pull/5117
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Move integration guide docs and edit Azure integration guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 17:34_
+_@zanieb_
 
 _No description provided._
 

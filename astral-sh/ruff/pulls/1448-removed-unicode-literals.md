@@ -12,14 +12,14 @@ head: unicodeliteral
 created_at: 2022-12-29T20:31:39Z
 updated_at: 2022-12-30T01:28:22Z
 url: https://github.com/astral-sh/ruff/pull/1448
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Removed unicode literals
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-29 20:31_
+_@colin99d_
 
 A part of #827.
 

@@ -13,14 +13,14 @@ head: konsti/build-backend-list
 created_at: 2024-12-01T22:42:29Z
 updated_at: 2024-12-02T15:57:05Z
 url: https://github.com/astral-sh/uv/pull/9558
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Build backend: Refactoring before list
 
 ---
 
-_Pull request opened by @konstin on 2024-12-01 22:42_
+_@konstin_
 
 For listing files, we first use a directory writer for source dists, which we will use for collecting the filenames instead of writing the archive in the future. I've split breaking `lib.rs` of uv-build-backend into modules into the next PR.
 

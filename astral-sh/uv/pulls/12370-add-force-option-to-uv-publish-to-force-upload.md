@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-21T16:49:52Z
 updated_at: 2025-05-13T07:24:45Z
 url: https://github.com/astral-sh/uv/pull/12370
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Add --force option to uv-publish to force upload
 
 ---
 
-_Pull request opened by @marc-planard on 2025-03-21 16:49_
+_@marc-planard_
 
 ## Summary
 

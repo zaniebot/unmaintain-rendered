@@ -12,14 +12,14 @@ head: charlie/limit
 created_at: 2022-11-23T00:21:22Z
 updated_at: 2022-11-23T00:21:32Z
 url: https://github.com/astral-sh/ruff/pull/882
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Apply a limit to the number of fix iterations
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-23 00:21_
+_@charliermarsh_
 
 _No description provided._
 

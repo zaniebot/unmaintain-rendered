@@ -13,14 +13,14 @@ head: david/silence-unresolved-reference-in-unreachable-code
 created_at: 2025-04-03T10:31:51Z
 updated_at: 2025-04-03T15:00:32Z
 url: https://github.com/astral-sh/ruff/pull/17169
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Avoid unresolved-reference in unreachable code
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-03 10:31_
+_@sharkdp_
 
 ## Summary
 

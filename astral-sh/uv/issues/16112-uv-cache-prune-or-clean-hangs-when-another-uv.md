@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T07:58:11Z
 updated_at: 2025-10-06T16:49:25Z
 url: https://github.com/astral-sh/uv/issues/16112
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # `uv cache` (prune or clean) hangs when another uv process is running
 
 ---
 
-_Issue opened by @olivierverdier on 2025-10-03 07:58_
+_@olivierverdier_
 
 ### Summary
 

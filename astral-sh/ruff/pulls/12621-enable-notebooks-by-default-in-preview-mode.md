@@ -14,14 +14,14 @@ head: enable-notebooks-by-default-in-preview
 created_at: 2024-08-02T08:04:10Z
 updated_at: 2024-08-02T13:46:13Z
 url: https://github.com/astral-sh/ruff/pull/12621
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Enable notebooks by default in preview mode
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 08:04_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T01:55:57Z
 updated_at: 2023-01-31T04:05:30Z
 url: https://github.com/astral-sh/ruff/issues/2372
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Improve settings documentation to include possible values for enum types
 
 ---
 
-_Issue opened by @messense on 2023-01-31 01:55_
+_@messense_
 
 For example https://beta.ruff.rs/docs/settings/#pydocstyle doesn't say what's the possible values for the type `Convention`.
 

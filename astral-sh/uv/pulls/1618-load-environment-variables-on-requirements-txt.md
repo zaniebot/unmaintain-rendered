@@ -11,14 +11,14 @@ head: requirements-txt-env-variables
 created_at: 2024-02-17T23:37:10Z
 updated_at: 2024-04-16T14:18:07Z
 url: https://github.com/astral-sh/uv/pull/1618
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Load environment variables on requirements-txt
 
 ---
 
-_Pull request opened by @inoa-jboliveira on 2024-02-17 23:37_
+_@inoa-jboliveira_
 
 
 

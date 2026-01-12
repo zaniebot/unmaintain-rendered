@@ -12,14 +12,14 @@ head: charlie/b025
 created_at: 2022-10-10T16:18:24Z
 updated_at: 2022-10-10T16:18:32Z
 url: https://github.com/astral-sh/ruff/pull/391
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement B025 from flake8-bugbear
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-10 16:18_
+_@charliermarsh_
 
 Part of #389.
 

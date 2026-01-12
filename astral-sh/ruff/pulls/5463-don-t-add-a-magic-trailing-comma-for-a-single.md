@@ -12,14 +12,14 @@ head: magic_trailing_comma_in_function_calls
 created_at: 2023-07-02T18:19:03Z
 updated_at: 2023-07-03T19:48:45Z
 url: https://github.com/astral-sh/ruff/pull/5463
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Don't add a magic trailing comma for a single entry
 
 ---
 
-_Pull request opened by @konstin on 2023-07-02 18:19_
+_@konstin_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-09T03:42:53Z
 updated_at: 2025-12-09T18:01:20Z
 url: https://github.com/astral-sh/ty/issues/1819
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Stubs make it impossible for the actual implementation to resolve private items in other modules
 
 ---
 
-_Issue opened by @hermeschen1116 on 2025-12-09 03:42_
+_@hermeschen1116_
 
 ### Summary
 

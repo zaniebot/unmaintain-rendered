@@ -13,14 +13,14 @@ head: fix-windows-build
 created_at: 2024-06-13T10:58:13Z
 updated_at: 2024-06-13T11:35:31Z
 url: https://github.com/astral-sh/ruff/pull/11855
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Use `starts_with('/')` instead of `is_absolute` to avoid platform specific API
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-13 10:58_
+_@MichaReiser_
 
 ## Summary
 

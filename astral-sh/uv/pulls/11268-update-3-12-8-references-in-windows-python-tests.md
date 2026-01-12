@@ -14,14 +14,14 @@ head: charlie/def
 created_at: 2025-02-06T00:14:40Z
 updated_at: 2025-02-06T00:59:21Z
 url: https://github.com/astral-sh/uv/pull/11268
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Update 3.12.8 references in Windows Python tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-06 00:14_
+_@charliermarsh_
 
 _No description provided._
 

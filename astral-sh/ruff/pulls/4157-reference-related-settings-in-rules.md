@@ -13,14 +13,14 @@ head: link-rules-settings
 created_at: 2023-04-30T10:11:45Z
 updated_at: 2023-05-10T14:55:11Z
 url: https://github.com/astral-sh/ruff/pull/4157
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Reference related settings in rules
 
 ---
 
-_Pull request opened by @calumy on 2023-04-30 10:11_
+_@calumy_
 
 This PR adds a note to rules documentation to point at related settings where applicable. Closes #4109
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T14:31:54Z
 updated_at: 2026-01-09T02:01:30Z
 url: https://github.com/astral-sh/ty/issues/872
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Detect if there is no binding to a symbol declared `Final`
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-22 14:31_
+_@sharkdp_
 
 This should be an error: the constant is declared `Final`, but there is no binding:
 

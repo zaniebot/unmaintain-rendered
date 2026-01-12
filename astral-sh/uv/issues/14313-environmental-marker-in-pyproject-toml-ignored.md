@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T11:23:22Z
 updated_at: 2025-06-30T02:12:35Z
 url: https://github.com/astral-sh/uv/issues/14313
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Environmental marker in pyproject.toml ignored for platform‐specific dependencies in uv 0.6.0
 
 ---
 
-_Issue opened by @19igari on 2025-06-27 11:23_
+_@19igari_
 
 ### Summary
 

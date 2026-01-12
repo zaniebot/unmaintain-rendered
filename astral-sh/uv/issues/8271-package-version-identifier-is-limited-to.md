@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T21:14:15Z
 updated_at: 2024-10-28T18:54:29Z
 url: https://github.com/astral-sh/uv/issues/8271
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # package version identifier is limited to 18446744073709551615
 
 ---
 
-_Issue opened by @dschneiderch on 2024-10-16 21:14_
+_@dschneiderch_
 
 It seems that UV doesn't support version identifiers great than 18446744073709551615.   I don't believe https://peps.python.org/pep-0440/ has this restriction and assume it is a function of using Int64 to parse the build number.
 

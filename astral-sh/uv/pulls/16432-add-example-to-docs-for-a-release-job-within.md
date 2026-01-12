@@ -11,14 +11,14 @@ head: docs-gitlab-ci-publish
 created_at: 2025-10-24T07:51:50Z
 updated_at: 2025-10-27T10:01:58Z
 url: https://github.com/astral-sh/uv/pull/16432
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Add example to docs for a release job within GitLab CI
 
 ---
 
-_Pull request opened by @jkrauth on 2025-10-24 07:51_
+_@jkrauth_
 
 ## Summary
 

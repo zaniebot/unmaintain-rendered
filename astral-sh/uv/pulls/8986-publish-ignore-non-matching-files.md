@@ -13,14 +13,14 @@ head: konsti/ignore-non-matching-publish
 created_at: 2024-11-10T11:09:17Z
 updated_at: 2024-11-13T11:58:30Z
 url: https://github.com/astral-sh/uv/pull/8986
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Publish: Ignore non-matching files
 
 ---
 
-_Pull request opened by @konstin on 2024-11-10 11:09_
+_@konstin_
 
 Fixes #8944
 

@@ -12,14 +12,14 @@ head: venv-free-threaded
 created_at: 2024-09-16T15:51:43Z
 updated_at: 2024-09-24T04:28:03Z
 url: https://github.com/astral-sh/uv/pull/7431
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Allow creating venv with free-threaded python builds
 
 ---
 
-_Pull request opened by @bschoenmaeckers on 2024-09-16 15:51_
+_@bschoenmaeckers_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

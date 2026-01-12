@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T14:21:57Z
 updated_at: 2024-01-24T00:16:26Z
 url: https://github.com/astral-sh/uv/issues/1060
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Avoid relying on `mtime` for Python interpreter caching
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 14:21_
+_@charliermarsh_
 
 At the very least, we should use `ctime`, which changes whenever `mtime` changes (and more).
 

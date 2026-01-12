@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T10:51:31Z
 updated_at: 2026-01-08T18:39:51Z
 url: https://github.com/astral-sh/ty/issues/1332
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Issues with kwarg splats inside dictionary literals
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-10 10:51_
+_@AlexWaygood_
 
 ### Summary
 

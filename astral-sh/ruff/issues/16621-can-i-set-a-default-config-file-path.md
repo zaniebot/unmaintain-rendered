@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T11:11:58Z
 updated_at: 2025-03-18T07:44:49Z
 url: https://github.com/astral-sh/ruff/issues/16621
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Can i set a default config file path?
 
 ---
 
-_Issue opened by @Ada-lave on 2025-03-11 11:11_
+_@Ada-lave_
 
 ### Question
 

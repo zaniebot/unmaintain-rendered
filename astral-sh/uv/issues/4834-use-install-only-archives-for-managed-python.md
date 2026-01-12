@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-05T15:36:49Z
 updated_at: 2024-07-07T02:43:56Z
 url: https://github.com/astral-sh/uv/issues/4834
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Use `install_only` archives for managed Python installations
 
 ---
 
-_Issue opened by @zanieb on 2024-07-05 15:36_
+_@zanieb_
 
 These have a significant size reduction and are automatically prioritized to the optimized version for each platform, see https://github.com/astral-sh/uv/pull/4775#discussion_r1666890324
 

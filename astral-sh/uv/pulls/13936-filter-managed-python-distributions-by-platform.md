@@ -12,14 +12,14 @@ head: zb/key-discover
 created_at: 2025-06-09T22:43:48Z
 updated_at: 2025-06-13T13:50:46Z
 url: https://github.com/astral-sh/uv/pull/13936
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Filter managed Python distributions by platform before querying when included in request
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-09 22:43_
+_@zanieb_
 
 In the case where we have platform information in a Python request, we should filter managed Python distributions by it prior to querying them.
 

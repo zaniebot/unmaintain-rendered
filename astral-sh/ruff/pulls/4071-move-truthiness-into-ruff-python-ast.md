@@ -12,14 +12,14 @@ head: extract-truthiness
 created_at: 2023-04-23T21:11:11Z
 updated_at: 2023-04-24T05:10:35Z
 url: https://github.com/astral-sh/ruff/pull/4071
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Move Truthiness into ruff_python_ast
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-23 21:11_
+_@JonathanPlasse_
 
 - Move `Truthiness` into `ruff_python_ast`
 - Move `flake8-pytest-style` `is_falsy_constant` into `Truthiness`

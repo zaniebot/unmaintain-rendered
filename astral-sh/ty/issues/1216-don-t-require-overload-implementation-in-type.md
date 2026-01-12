@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T07:12:41Z
 updated_at: 2025-12-15T08:56:36Z
 url: https://github.com/astral-sh/ty/issues/1216
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # don't require overload implementation in `TYPE_CHECKING` block / treat them the same as stub files
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 07:12_
+_@KotlinIsland_
 
 ### Summary
 

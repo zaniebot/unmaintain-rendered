@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-26T16:45:53Z
 updated_at: 2024-12-26T17:45:46Z
 url: https://github.com/astral-sh/ruff/pull/15150
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix typo in `LogicalLine` docstring
 
 ---
 
-_Pull request opened by @Viicos on 2024-12-26 16:45_
+_@Viicos_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

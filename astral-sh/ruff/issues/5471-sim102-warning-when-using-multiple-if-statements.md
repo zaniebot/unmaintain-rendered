@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T04:06:59Z
 updated_at: 2023-07-17T17:21:41Z
 url: https://github.com/astral-sh/ruff/issues/5471
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # SIM102 Warning when using multiple if-statements with walrus operator
 
 ---
 
-_Issue opened by @macintacos on 2023-07-03 04:06_
+_@macintacos_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

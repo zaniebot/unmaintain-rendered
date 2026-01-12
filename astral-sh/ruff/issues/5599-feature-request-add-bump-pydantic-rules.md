@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-07T18:13:11Z
 updated_at: 2023-07-09T20:01:44Z
 url: https://github.com/astral-sh/ruff/issues/5599
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Feature Request] Add bump-pydantic rules
 
 ---
 
-_Issue opened by @serjflint on 2023-07-07 18:13_
+_@serjflint_
 
 Hello! 
 I remember seeing some library-specific rules (like [NPY](https://beta.ruff.rs/docs/rules/#numpy-specific-rules-npy)). What do you think about adding rules for the recentely released [Pydantic V2](https://github.com/pydantic/pydantic/releases/tag/v2.0)? They even made their own rule-set BP. 

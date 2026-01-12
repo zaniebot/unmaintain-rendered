@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T23:26:33Z
 updated_at: 2025-04-15T12:39:43Z
 url: https://github.com/astral-sh/uv/issues/12473
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Duplicate workspace member priority
 
 ---
 
-_Issue opened by @b-phi on 2025-03-25 23:26_
+_@b-phi_
 
 ### Question
 

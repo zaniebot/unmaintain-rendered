@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-22T15:14:24Z
 updated_at: 2025-07-22T16:24:37Z
 url: https://github.com/astral-sh/ruff/issues/19490
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Feature Request] Add auto-import support for Ruff LSP
 
 ---
 
-_Issue opened by @seamuswn on 2025-07-22 15:14_
+_@seamuswn_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T10:02:31Z
 updated_at: 2025-06-18T14:16:01Z
 url: https://github.com/astral-sh/ty/issues/177
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `terminal` configuration section
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:02_
+_@MichaReiser_
 
 Support configuring the `output-format` (`concise` and `full`, where `full` is the default) and `color` (`auto` | `never` and `always`) in the configuration and on the cli
 

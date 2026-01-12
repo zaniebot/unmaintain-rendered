@@ -13,14 +13,14 @@ head: renovate/cloudflare-wrangler-action-3.x
 created_at: 2024-07-08T01:20:19Z
 updated_at: 2024-07-08T01:41:27Z
 url: https://github.com/astral-sh/ruff/pull/12235
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update cloudflare/wrangler-action action to v3.7.0
 
 ---
 
-_Pull request opened by @renovate on 2024-07-08 01:20_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

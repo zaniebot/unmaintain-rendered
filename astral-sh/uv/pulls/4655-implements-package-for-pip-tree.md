@@ -12,14 +12,14 @@ head: pip-tree-package
 created_at: 2024-06-29T23:33:34Z
 updated_at: 2024-07-01T21:13:00Z
 url: https://github.com/astral-sh/uv/pull/4655
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # implements `--package` for `pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-29 23:33_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

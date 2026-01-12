@@ -14,14 +14,14 @@ head: zb/github-integration
 created_at: 2024-08-14T15:00:42Z
 updated_at: 2024-08-14T15:50:39Z
 url: https://github.com/astral-sh/uv/pull/6086
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Add `python-version-file` to GitHub integration documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-14 15:00_
+_@zanieb_
 
 _No description provided._
 

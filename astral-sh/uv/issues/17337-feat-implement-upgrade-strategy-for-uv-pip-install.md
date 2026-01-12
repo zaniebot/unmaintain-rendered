@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T15:31:01Z
 updated_at: 2026-01-06T18:08:38Z
 url: https://github.com/astral-sh/uv/issues/17337
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # feat: implement `--upgrade-strategy` for uv pip install
 
 ---
 
-_Issue opened by @ismxilxrif on 2026-01-06 15:31_
+_@ismxilxrif_
 
 ### Summary
 

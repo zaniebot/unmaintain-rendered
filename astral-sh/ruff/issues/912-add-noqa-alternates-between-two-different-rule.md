@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-26T13:08:01Z
 updated_at: 2022-11-27T11:07:32Z
 url: https://github.com/astral-sh/ruff/issues/912
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `--add-noqa` alternates between two different rule codes
 
 ---
 
-_Issue opened by @hofrob on 2022-11-26 13:08_
+_@hofrob_
 
 I just discovered this tool and am very happy with it. While implementing it into our CI I discovered that the `--add-noqa` has buggy behavior when it discovers multiple failures on one line.
 

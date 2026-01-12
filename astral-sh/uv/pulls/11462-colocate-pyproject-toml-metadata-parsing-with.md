@@ -13,14 +13,14 @@ head: charlie/merge
 created_at: 2025-02-12T22:42:00Z
 updated_at: 2025-02-13T00:55:01Z
 url: https://github.com/astral-sh/uv/pull/11462
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Colocate `pyproject.toml` metadata parsing with other file kinds
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-12 22:42_
+_@charliermarsh_
 
 ## Summary
 

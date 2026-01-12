@@ -14,14 +14,14 @@ head: konsti/prefetch-packages-in-upgrade
 created_at: 2024-09-16T13:52:15Z
 updated_at: 2025-01-10T13:54:06Z
 url: https://github.com/astral-sh/uv/pull/7427
-synced_at: 2026-01-10T11:44:28Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Prefetch all packages in `uv lock --upgrade`
 
 ---
 
-_Pull request opened by @konstin on 2024-09-16 13:52_
+_@konstin_
 
 When we upgrade the lockfile, we know that we have to fetch all packages. We can speed this up by queueing all packages from the lockfile eagerly.
 

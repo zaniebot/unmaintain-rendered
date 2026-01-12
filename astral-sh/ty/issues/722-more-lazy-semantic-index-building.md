@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T20:35:31Z
 updated_at: 2025-06-30T19:55:49Z
 url: https://github.com/astral-sh/ty/issues/722
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # More lazy semantic index building
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-28 20:35_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/19019 shows that we spent a decent amount of time in semantic indexing. I wonder if it would help performance if we make the semantic index more lazy by building it scope by scope instead of all in a single pass. 
 

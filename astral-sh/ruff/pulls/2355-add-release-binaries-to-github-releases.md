@@ -12,14 +12,14 @@ head: rm/release-binary
 created_at: 2023-01-30T15:41:21Z
 updated_at: 2023-02-15T17:07:50Z
 url: https://github.com/astral-sh/ruff/pull/2355
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add release binaries to GitHub releases
 
 ---
 
-_Pull request opened by @rahul-theorem on 2023-01-30 15:41_
+_@rahul-theorem_
 
 Closes #2330
 

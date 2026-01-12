@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-19T15:14:10Z
 updated_at: 2024-11-20T00:38:48Z
 url: https://github.com/astral-sh/uv/issues/2541
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Support nightly PyTorch installs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-19 15:14_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/2008.
 

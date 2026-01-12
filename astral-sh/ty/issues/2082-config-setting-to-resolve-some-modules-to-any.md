@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T18:01:41Z
 updated_at: 2026-01-09T09:47:27Z
 url: https://github.com/astral-sh/ty/issues/2082
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # config setting to resolve some modules to Any
 
 ---
 
-_Issue opened by @carljm on 2025-12-18 18:01_
+_@carljm_
 
 Similar to https://pyrefly.org/en/docs/configuration/#replace-imports-with-any%20option
 

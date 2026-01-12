@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-28T02:00:16Z
 updated_at: 2024-10-28T12:27:08Z
 url: https://github.com/astral-sh/uv/issues/8629
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # how  find comma, when check code
 
 ---
 
-_Issue opened by @me-v2 on 2024-10-28 02:00_
+_@me-v2_
 
 sometime, use forget comma in code end.  this is error issues. how check it or support it .
 

@@ -14,14 +14,14 @@ head: jane/server/fix-untitled-notebook-closing
 created_at: 2024-06-19T18:49:38Z
 updated_at: 2024-06-21T19:33:22Z
 url: https://github.com/astral-sh/ruff/pull/11942
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Closing an untitled, unsaved notebook document no longer throws an error
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-19 18:49_
+_@snowsignal_
 
 ## Summary
 

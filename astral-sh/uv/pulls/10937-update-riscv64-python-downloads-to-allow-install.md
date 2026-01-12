@@ -13,14 +13,14 @@ head: zb/gc
 created_at: 2025-01-24T15:23:00Z
 updated_at: 2025-01-24T15:33:32Z
 url: https://github.com/astral-sh/uv/pull/10937
-synced_at: 2026-01-10T11:45:19Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Update `riscv64` Python downloads to allow install on `riscv64gc`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-24 15:23_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10883
 

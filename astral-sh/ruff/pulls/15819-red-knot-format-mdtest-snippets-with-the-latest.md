@@ -13,14 +13,14 @@ head: black
 created_at: 2025-01-29T22:59:49Z
 updated_at: 2025-01-29T23:05:44Z
 url: https://github.com/astral-sh/ruff/pull/15819
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Format mdtest snippets with the latest version of black
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-29 22:59_
+_@AlexWaygood_
 
 _No description provided._
 

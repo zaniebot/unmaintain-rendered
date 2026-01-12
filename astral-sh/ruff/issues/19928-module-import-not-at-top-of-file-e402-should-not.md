@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T14:09:32Z
 updated_at: 2025-08-15T15:48:42Z
 url: https://github.com/astral-sh/ruff/issues/19928
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # module-import-not-at-top-of-file (E402) should not warn about logging configuration
 
 ---
 
-_Issue opened by @JimDabell on 2025-08-15 14:09_
+_@JimDabell_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: alex/fix-property-tests
 created_at: 2025-10-08T20:44:58Z
 updated_at: 2025-10-08T21:28:58Z
 url: https://github.com/astral-sh/ruff/pull/20775
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Fix broken property tests for disjointness of intersections
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-08 20:44_
+_@AlexWaygood_
 
 ## Summary
 

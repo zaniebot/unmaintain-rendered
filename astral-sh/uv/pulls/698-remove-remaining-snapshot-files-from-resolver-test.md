@@ -13,14 +13,14 @@ head: charlie/snap
 created_at: 2023-12-19T05:36:37Z
 updated_at: 2023-12-19T05:41:51Z
 url: https://github.com/astral-sh/uv/pull/698
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Remove remaining snapshot files from resolver test
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-19 05:36_
+_@charliermarsh_
 
 _No description provided._
 

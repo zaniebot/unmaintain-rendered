@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T19:11:45Z
 updated_at: 2025-09-16T22:09:21Z
 url: https://github.com/astral-sh/uv/issues/13435
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Nondeterministic behavior of `uv pip`
 
 ---
 
-_Issue opened by @yjsongamz on 2025-05-13 19:11_
+_@yjsongamz_
 
 ### Summary
 

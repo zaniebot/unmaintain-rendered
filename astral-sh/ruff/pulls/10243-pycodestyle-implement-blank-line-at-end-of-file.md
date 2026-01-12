@@ -14,14 +14,14 @@ head: too_many_newlines
 created_at: 2024-03-06T05:35:27Z
 updated_at: 2024-04-30T18:06:46Z
 url: https://github.com/astral-sh/ruff/pull/10243
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Implement `blank-line-at-end-of-file` (`W391`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-06 05:35_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

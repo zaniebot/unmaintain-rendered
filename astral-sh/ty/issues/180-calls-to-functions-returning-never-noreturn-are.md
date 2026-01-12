@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-13T08:39:42Z
 updated_at: 2025-07-11T18:37:53Z
 url: https://github.com/astral-sh/ty/issues/180
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # calls to functions returning `Never`/`NoReturn` are terminal
 
 ---
 
-_Issue opened by @sharkdp on 2025-03-13 08:39_
+_@sharkdp_
 
 ### Summary
 

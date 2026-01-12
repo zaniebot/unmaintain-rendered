@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T14:28:57Z
 updated_at: 2024-08-08T17:55:09Z
 url: https://github.com/astral-sh/uv/issues/5913
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Adding a dependency twice is not a no-op
 
 ---
 
-_Issue opened by @zanieb on 2024-08-08 14:28_
+_@zanieb_
 
 e.g.
 

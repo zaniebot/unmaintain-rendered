@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T13:02:28Z
 updated_at: 2024-10-15T15:31:26Z
 url: https://github.com/astral-sh/ruff/issues/13760
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff-format` does not account for `tool.ruff.lint`?
 
 ---
 
-_Issue opened by @LecrisUT on 2024-10-15 13:02_
+_@LecrisUT_
 
 In our project we have set `tool.ruff.lint.ignore` to ignore `D210`. But when we tried to add ruff-format pre-commit, we encountered that the rule was still being applied ([example run](https://github.com/teemtee/tmt/pull/2844#issuecomment-2413366922)). This seems like a functionality bug, can someone investigate. Alternatively is there a rule planned to support the opposite approach, i.e. for one-line docstrings enforce having a single space separation between the `"""` markers?
 

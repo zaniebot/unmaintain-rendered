@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-16T16:09:03Z
 updated_at: 2023-02-17T23:44:15Z
 url: https://github.com/astral-sh/ruff/issues/2956
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PT009: `--fix` ignores custom assertion messages
 
 ---
 
-_Issue opened by @bastimeyer on 2023-02-16 16:09_
+_@bastimeyer_
 
 before
 ```py

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-16T21:25:16Z
 updated_at: 2025-01-16T16:07:27Z
 url: https://github.com/astral-sh/ruff/issues/14389
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Infinite loop] ICN001 conflicts with I002 and F401 if an unused unconventionally aliased import is required
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-16 21:25_
+_@dscorbett_
 
 [`unconventional-import-alias` (ICN001)](https://docs.astral.sh/ruff/rules/unconventional-import-alias/) conflicts with [`missing-required-import` (I002)](https://docs.astral.sh/ruff/rules/missing-required-import/) in Ruff 0.7.4 when [`unused-import` (F401)](https://docs.astral.sh/ruff/rules/unused-import/) is also enabled, if an import is required without a conventional alias but is unused. ICN001’s fix should be skipped for required imports, even if the required imports lack conventional aliases. It would still be helpful for ICN001 to report a violation without a fix.
 

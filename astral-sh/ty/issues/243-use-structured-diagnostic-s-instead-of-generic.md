@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T08:45:59Z
 updated_at: 2025-05-07T16:00:29Z
 url: https://github.com/astral-sh/ty/issues/243
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Use structured `Diagnostic`s instead of generic `anyhow::Result` in `run`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-08 08:45_
+_@MichaReiser_
 
 The `run` function returns a `anyhow::Result<ExitStatus>`. The downside of this is that the `Error` is unstructured and unspecific about what went wrong. This limits the way we can present the error to the user. 
 

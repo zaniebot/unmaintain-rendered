@@ -14,14 +14,14 @@ head: charlie/pub
 created_at: 2025-01-11T13:54:13Z
 updated_at: 2025-01-11T14:06:28Z
 url: https://github.com/astral-sh/uv/pull/10496
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Avoid prompting on terminals during publish tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 13:54_
+_@charliermarsh_
 
 ## Summary
 

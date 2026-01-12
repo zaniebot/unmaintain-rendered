@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T18:59:27Z
 updated_at: 2024-10-14T20:13:48Z
 url: https://github.com/astral-sh/uv/issues/8184
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # If `pip install visidata` works, shouldn't `uvx visidata`?
 
 ---
 
-_Issue opened by @reagle on 2024-10-14 18:59_
+_@reagle_
 
 Hi, I'm new to uv, and the first thing I tested what if I can [use the visidata cli](https://github.com/saulpw/visidata/issues/2560).
 

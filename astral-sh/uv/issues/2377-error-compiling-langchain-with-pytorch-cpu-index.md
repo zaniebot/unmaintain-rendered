@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T07:09:50Z
 updated_at: 2024-03-13T14:32:36Z
 url: https://github.com/astral-sh/uv/issues/2377
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Error compiling langchain with pytorch CPU index URL
 
 ---
 
-_Issue opened by @silb-saxobank on 2024-03-12 07:09_
+_@silb-saxobank_
 
 Compiling langchain with the pytorch CPU index URL gives an error:
 ```

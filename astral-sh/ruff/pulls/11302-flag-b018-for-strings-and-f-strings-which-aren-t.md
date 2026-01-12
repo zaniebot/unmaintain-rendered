@@ -13,14 +13,14 @@ head: dhruv/b018-string
 created_at: 2024-05-06T06:54:18Z
 updated_at: 2025-03-14T09:22:32Z
 url: https://github.com/astral-sh/ruff/pull/11302
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Flag `B018` for strings and f-strings which aren't docstrings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-06 06:54_
+_@dhruvmanila_
 
 ## Summary
 

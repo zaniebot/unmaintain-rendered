@@ -13,14 +13,14 @@ head: zb/doc-package-priority
 created_at: 2024-08-19T16:33:20Z
 updated_at: 2024-08-20T14:07:56Z
 url: https://github.com/astral-sh/uv/pull/6211
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Document the effect of ordering on package priority
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 16:33_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6209
 Closes https://github.com/astral-sh/uv/issues/5474

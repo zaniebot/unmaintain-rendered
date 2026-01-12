@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T11:17:56Z
 updated_at: 2024-07-15T17:09:02Z
 url: https://github.com/astral-sh/uv/issues/4687
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Markers of splits in universal bluejay resolution are wrong
 
 ---
 
-_Issue opened by @konstin on 2024-07-01 11:17_
+_@konstin_
 
 When resolving transformers, the marker expressions on the forks are non-sensical:
 

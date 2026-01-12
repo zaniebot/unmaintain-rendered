@@ -14,14 +14,14 @@ head: update-alpine-docker-tag
 created_at: 2025-02-02T00:10:15Z
 updated_at: 2025-02-08T15:41:16Z
 url: https://github.com/astral-sh/uv/pull/11157
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Bump alpine default tag to 3.21
 
 ---
 
-_Pull request opened by @samypr100 on 2025-02-02 00:10_
+_@samypr100_
 
 ## Summary
 

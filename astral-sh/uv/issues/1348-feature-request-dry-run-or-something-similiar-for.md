@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-15T21:17:06Z
 updated_at: 2024-02-15T22:18:35Z
 url: https://github.com/astral-sh/uv/issues/1348
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Feature request: `--dry-run` or something similiar for uv pip install 
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-15 21:17_
+_@notatallshaw_
 
 I would like to test uv's ability to correctly resolve requirements, and in general it it sometimes useful to know how a package installer will install some requirements without actually installing them. An alternative to this would be `uv pip download` which is something I used to use a lot before `--dry-run` existed in Pip.
 

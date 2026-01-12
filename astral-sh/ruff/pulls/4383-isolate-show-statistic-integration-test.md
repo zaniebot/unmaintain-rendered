@@ -12,14 +12,14 @@ head: isolate-show-statistic-integration-test
 created_at: 2023-05-11T21:26:59Z
 updated_at: 2023-05-11T22:09:38Z
 url: https://github.com/astral-sh/ruff/pull/4383
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Isolate show statistic integration test
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-11 21:26_
+_@JonathanPlasse_
 
 Just found out that this test failed with the global config I had on my old computer.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T13:24:43Z
 updated_at: 2025-08-05T13:36:36Z
 url: https://github.com/astral-sh/uv/issues/15081
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Module 'os' has no attribute 'memfd_create'
 
 ---
 
-_Issue opened by @p-gentili on 2025-08-05 13:24_
+_@p-gentili_
 
 ### Summary
 

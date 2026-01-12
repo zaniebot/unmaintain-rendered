@@ -12,14 +12,14 @@ head: fix-B009
 created_at: 2022-11-11T13:37:46Z
 updated_at: 2022-11-11T16:09:42Z
 url: https://github.com/astral-sh/ruff/pull/684
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for B009
 
 ---
 
-_Pull request opened by @harupy on 2022-11-11 13:37_
+_@harupy_
 
 ```
 cargo run -- --no-cache --fix --select B009 resources/test/fixtures/B009_B010.py

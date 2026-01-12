@@ -13,14 +13,14 @@ head: charlie/future
 created_at: 2024-03-03T00:20:25Z
 updated_at: 2024-03-06T19:53:58Z
 url: https://github.com/astral-sh/ruff/pull/10206
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Avoid false-positives for parens-on-raise with `future.exception()`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 00:20_
+_@charliermarsh_
 
 ## Summary
 

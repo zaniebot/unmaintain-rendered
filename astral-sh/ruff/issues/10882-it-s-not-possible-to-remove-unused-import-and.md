@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T15:19:51Z
 updated_at: 2024-04-12T14:04:31Z
 url: https://github.com/astral-sh/ruff/issues/10882
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # It's not possible to remove unused import AND sort them
 
 ---
 
-_Issue opened by @rruiter87 on 2024-04-11 15:19_
+_@rruiter87_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

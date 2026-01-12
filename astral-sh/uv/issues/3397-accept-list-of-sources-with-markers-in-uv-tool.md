@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-06T08:11:09Z
 updated_at: 2024-09-30T21:16:45Z
 url: https://github.com/astral-sh/uv/issues/3397
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Accept list of sources with markers in `uv.tool.sources`
 
 ---
 
-_Issue opened by @konstin on 2024-05-06 08:11_
+_@konstin_
 
 `tool.uv.sources` should accept a list of dicts instead of a single dict, too, to support splitting for different python versions (detailed design TBD):
 

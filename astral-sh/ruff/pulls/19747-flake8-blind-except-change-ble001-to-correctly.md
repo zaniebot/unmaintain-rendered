@@ -14,14 +14,14 @@ head: ble-tuple-exceptions
 created_at: 2025-08-04T18:14:39Z
 updated_at: 2025-08-05T05:58:14Z
 url: https://github.com/astral-sh/ruff/pull/19747
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`flake8-blind-except`] Change `BLE001` to correctly parse exception tuples
 
 ---
 
-_Pull request opened by @deliro on 2025-08-04 18:14_
+_@deliro_
 
 ## Summary
 

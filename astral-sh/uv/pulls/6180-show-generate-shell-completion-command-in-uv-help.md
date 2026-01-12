@@ -13,14 +13,14 @@ head: show-gen-shell-completion-in-long-help
 created_at: 2024-08-18T10:05:55Z
 updated_at: 2024-08-18T13:13:29Z
 url: https://github.com/astral-sh/uv/pull/6180
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Show generate-shell-completion command in `uv help`
 
 ---
 
-_Pull request opened by @Di-Is on 2024-08-18 10:05_
+_@Di-Is_
 
 Resolve #6151
 

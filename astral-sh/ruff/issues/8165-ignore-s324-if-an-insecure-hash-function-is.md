@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T13:26:28Z
 updated_at: 2023-10-24T23:56:24Z
 url: https://github.com/astral-sh/ruff/issues/8165
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ignore `S324` if an insecure hash function is called with `kwargs`
 
 ---
 
-_Issue opened by @harupy on 2023-10-24 13:26_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

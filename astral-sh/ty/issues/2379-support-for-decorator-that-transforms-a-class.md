@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-07T16:28:59Z
 updated_at: 2026-01-07T16:56:12Z
 url: https://github.com/astral-sh/ty/issues/2379
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support for decorator that transforms a class into an instance of a wrapper type
 
 ---
 
-_Issue opened by @mwaskom on 2026-01-07 16:28_
+_@mwaskom_
 
 ### Summary
 

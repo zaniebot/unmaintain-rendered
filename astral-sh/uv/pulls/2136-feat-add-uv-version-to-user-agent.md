@@ -12,14 +12,14 @@ head: version-in-user-agent
 created_at: 2024-03-03T02:55:12Z
 updated_at: 2024-03-04T21:12:39Z
 url: https://github.com/astral-sh/uv/pull/2136
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # feat: add uv version to user agent
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-03 02:55_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

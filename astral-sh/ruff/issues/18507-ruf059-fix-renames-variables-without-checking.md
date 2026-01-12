@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-06T17:40:31Z
 updated_at: 2025-06-11T05:58:06Z
 url: https://github.com/astral-sh/ruff/issues/18507
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF059 fix renames variables without checking existing variable names
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-06 17:40_
+_@dscorbett_
 
 ### Summary
 

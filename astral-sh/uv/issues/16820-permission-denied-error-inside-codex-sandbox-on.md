@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T00:05:24Z
 updated_at: 2025-11-23T23:29:04Z
 url: https://github.com/astral-sh/uv/issues/16820
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # "Permission denied" error inside Codex sandbox on Linux
 
 ---
 
-_Issue opened by @joliss on 2025-11-23 00:05_
+_@joliss_
 
 ### Summary
 

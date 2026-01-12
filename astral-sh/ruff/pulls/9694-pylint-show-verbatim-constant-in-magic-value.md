@@ -13,14 +13,14 @@ head: improve-PLR2004
 created_at: 2024-01-30T01:14:55Z
 updated_at: 2024-01-30T05:22:09Z
 url: https://github.com/astral-sh/ruff/pull/9694
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Show verbatim constant in `magic-value-comparison` (`PLR2004`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-30 01:14_
+_@diceroll123_
 
 ## Summary
 

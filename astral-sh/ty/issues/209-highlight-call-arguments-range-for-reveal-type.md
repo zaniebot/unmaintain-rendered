@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T08:56:01Z
 updated_at: 2025-07-23T15:24:13Z
 url: https://github.com/astral-sh/ty/issues/209
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Highlight call-arguments range for `reveal_type`, `static_assert`, …
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-03 08:56_
+_@sharkdp_
 
 ### Description
 

@@ -13,14 +13,14 @@ head: zb/enh-changelog
 created_at: 2024-09-20T19:10:44Z
 updated_at: 2024-09-20T19:58:58Z
 url: https://github.com/astral-sh/uv/pull/7601
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Put error message changes in the enhancements section
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 19:10_
+_@zanieb_
 
 Should probably change the schema for this config in rooster haha it's pretty weird as-is.
 

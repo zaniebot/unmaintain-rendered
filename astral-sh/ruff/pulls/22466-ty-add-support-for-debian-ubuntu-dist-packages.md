@@ -13,14 +13,14 @@ head: claude/fix-issue-1323-XMlQh
 created_at: 2026-01-08T23:23:46Z
 updated_at: 2026-01-09T12:44:45Z
 url: https://github.com/astral-sh/ruff/pull/22466
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Add support for Debian/Ubuntu `dist-packages` directories
 
 ---
 
-_Pull request opened by @carljm on 2026-01-08 23:23_
+_@carljm_
 
 This change adds support for discovering `dist-packages` directories alongside `site-packages` directories. On Debian/Ubuntu systems, system-installed Python packages are placed in `dist-packages` rather than `site-packages`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-23T20:51:44Z
 updated_at: 2025-05-02T08:20:39Z
 url: https://github.com/astral-sh/ruff/issues/16928
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] detect implicit instance attributes in a generic method
 
 ---
 
-_Issue opened by @carljm on 2025-03-23 20:51_
+_@carljm_
 
 ```py
 class C:

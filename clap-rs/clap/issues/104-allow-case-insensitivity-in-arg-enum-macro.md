@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-05T13:24:06Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/104
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow case insensitivity in arg_enum! macro
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-05 13:24_
+_@kbknapp_
 
 Currently if you use `arg_enum!` to create possible values into an enum, you must either allow non-camel-case enum variants (to suppress the warning), or force users to start their possible values with an upper case character. For example, if you had a `--mode` which accepted an `arg_enum!` of
 

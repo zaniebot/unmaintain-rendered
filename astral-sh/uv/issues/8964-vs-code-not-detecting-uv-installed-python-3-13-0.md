@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T07:49:27Z
 updated_at: 2024-11-09T16:11:04Z
 url: https://github.com/astral-sh/uv/issues/8964
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # VS Code not detecting uv installed python 3.13.0
 
 ---
 
-_Issue opened by @kb-cov on 2024-11-09 07:49_
+_@kb-cov_
 
 I have been using uv for months without issue on a MAC both in terminal and VS Code.  I uninstalled uv version 0.4.30 by following uninstall instructions and removing all uv related content from my .zshrc file.  I re-installed uv version 0.5.0 and have since updated to 0.5.1 therefore moving the uv and uvx binaries to the .local/bin directory and `export PATH="/Users/kevban/.local/bin:$PATH"` has been added to my .zshrc file.  I have confirmed that .local/bin is in my PATH.  Since doing this I have re-installed both python 3.13.0 and python 3.12.7 using uv however neither Python install shows up in the VSCode interpreter selection menu.  If I create a venv using uv with 3.13 then it works fine and the venv shows in interpreter list but the basic python interpreter itself is not.  I'm sure I'm doing something obviously wrong here but would be great if you could point me in the right direction.  Thanks.
 

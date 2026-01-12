@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-20T22:20:07Z
 updated_at: 2024-04-23T04:06:37Z
 url: https://github.com/astral-sh/ruff/issues/11059
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` should use `textDocument/publishDiagnostics` when pull diagnostics aren't supported
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-20 22:20_
+_@snowsignal_
 
 Right now, `ruff server` only uses pull diagnostics to send diagnostics to the client - they aren't pro-actively sent. This means that any LSP client that doesn't send a pull diagnostics request [will not have visible diagnostics](https://github.com/astral-sh/ruff/issues/11022). This includes Neovim, Helix, and potentially others at the time of this writing, though Neovim will support pull diagnostics in the upcoming `0.10.0` release.
 

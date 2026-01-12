@@ -13,14 +13,14 @@ head: konsti/build-backend-uv-init
 created_at: 2024-12-05T13:46:42Z
 updated_at: 2024-12-05T14:30:51Z
 url: https://github.com/astral-sh/uv/pull/9661
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Build backend: Add template to uv init
 
 ---
 
-_Pull request opened by @konstin on 2024-12-05 13:46_
+_@konstin_
 
 Add a preview option `uv init --build-backend uv --preview` that uses the uv build backend when generating the project. The uv build backend is in preview, so the option is also guarded by preview and hidden from the help message and docs.
 

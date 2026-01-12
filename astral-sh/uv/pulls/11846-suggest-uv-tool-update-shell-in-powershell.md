@@ -14,14 +14,14 @@ head: charlie/shell
 created_at: 2025-02-28T02:24:32Z
 updated_at: 2025-03-01T03:32:50Z
 url: https://github.com/astral-sh/uv/pull/11846
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Suggest `uv tool update-shell` in PowerShell
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-28 02:24_
+_@charliermarsh_
 
 ## Summary
 

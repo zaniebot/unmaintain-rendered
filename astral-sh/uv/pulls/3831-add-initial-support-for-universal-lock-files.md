@@ -12,14 +12,14 @@ head: ag/forking
 created_at: 2024-05-24T19:03:42Z
 updated_at: 2024-05-30T18:23:15Z
 url: https://github.com/astral-sh/uv/pull/3831
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # add initial support for universal lock files
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-24 19:03_
+_@BurntSushi_
 
 This PR implements "resolver forking" in a way that permits us to
 generate "universal" lock files. The concrete manifestation of this

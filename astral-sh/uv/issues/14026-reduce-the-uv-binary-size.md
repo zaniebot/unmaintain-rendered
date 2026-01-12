@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T14:03:37Z
 updated_at: 2025-12-08T12:06:03Z
 url: https://github.com/astral-sh/uv/issues/14026
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Reduce the uv binary size
 
 ---
 
-_Issue opened by @zanieb on 2025-06-13 14:03_
+_@zanieb_
 
 This is a tracking issue for discussion on ways to reduce the size of the uv binaries.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T11:49:09Z
 updated_at: 2024-11-21T13:20:57Z
 url: https://github.com/astral-sh/uv/issues/2408
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Termux on Android
 
 ---
 
-_Issue opened by @phanirithvij on 2024-03-13 11:49_
+_@phanirithvij_
 
 I tried installing on termux on Android but build failed.
 Can this platform Android be supported?

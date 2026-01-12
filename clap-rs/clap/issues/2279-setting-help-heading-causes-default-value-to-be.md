@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-12-29T00:36:59Z
 updated_at: 2021-01-20T18:04:38Z
 url: https://github.com/clap-rs/clap/issues/2279
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Setting help_heading causes default_value to be ignored for subsequent named arguments
 
 ---
 
-_Issue opened by @wizhi on 2020-12-29 00:36_
+_@wizhi_
 
 ### Make sure you completed the following tasks
 

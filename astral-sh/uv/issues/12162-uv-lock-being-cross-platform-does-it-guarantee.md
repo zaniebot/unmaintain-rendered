@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T02:03:40Z
 updated_at: 2025-03-14T15:04:11Z
 url: https://github.com/astral-sh/uv/issues/12162
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # uv.lock being cross-platform: does it guarantee the success of copying project on all different platforms?
 
 ---
 
-_Issue opened by @zhyeong on 2025-03-14 02:03_
+_@zhyeong_
 
 ### Question
 

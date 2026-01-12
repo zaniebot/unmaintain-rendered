@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T04:49:46Z
 updated_at: 2025-12-18T13:44:59Z
 url: https://github.com/astral-sh/ty/issues/848
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Differentiate between identically named (but distinct) types in diagnostics
 
 ---
 
-_Issue opened by @Andre-Medina on 2025-07-18 04:49_
+_@Andre-Medina_
 
 ## Context
 

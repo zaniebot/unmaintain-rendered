@@ -14,14 +14,14 @@ head: charlie/http
 created_at: 2024-09-29T01:46:33Z
 updated_at: 2024-09-29T16:05:17Z
 url: https://github.com/astral-sh/uv/pull/7773
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Use file stem when parsing cached wheel names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-29 01:46_
+_@charliermarsh_
 
 ## Summary
 

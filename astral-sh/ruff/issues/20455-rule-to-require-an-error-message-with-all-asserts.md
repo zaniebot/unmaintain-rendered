@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T17:52:23Z
 updated_at: 2025-09-18T06:58:31Z
 url: https://github.com/astral-sh/ruff/issues/20455
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule to require an error message with all asserts
 
 ---
 
-_Issue opened by @aiven-amartin on 2025-09-17 17:52_
+_@aiven-amartin_
 
 ### Summary
 

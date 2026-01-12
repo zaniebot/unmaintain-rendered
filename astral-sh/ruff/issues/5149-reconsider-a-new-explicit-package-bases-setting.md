@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-16T16:32:11Z
 updated_at: 2023-06-20T15:32:31Z
 url: https://github.com/astral-sh/ruff/issues/5149
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Reconsider a new explicit-package-bases setting
 
 ---
 
-_Issue opened by @siddharthab on 2023-06-16 16:32_
+_@siddharthab_
 
 This issue is mostly requesting for one of the options mentioned in https://github.com/astral-sh/ruff/issues/1817#issuecomment-1382643952.
 

@@ -14,14 +14,14 @@ head: ibraheem/prefer-non-covariant-declared-types
 created_at: 2025-12-19T04:24:35Z
 updated_at: 2025-12-19T23:02:28Z
 url: https://github.com/astral-sh/ruff/pull/22068
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Only prefer declared types in non-covariant positions
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-19 04:24_
+_@ibraheemdev_
 
 ## Summary
 

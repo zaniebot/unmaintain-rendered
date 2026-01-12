@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-21T01:31:17Z
 updated_at: 2025-07-28T14:53:05Z
 url: https://github.com/astral-sh/ruff/issues/18844
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # COM812 and COM819 do not support type parameter lists
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-21 01:31_
+_@dscorbett_
 
 ### Summary
 

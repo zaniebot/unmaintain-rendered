@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-03-24T13:50:35Z
 updated_at: 2022-03-24T14:32:12Z
 url: https://github.com/clap-rs/clap/issues/3573
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Parse the given command-line back to a string?
 
 ---
 
-_Issue opened by @picobyte on 2022-03-24 13:50_
+_@picobyte_
 
 For reproducibility it's common to keep track of command-line invocations in a file header (sequence alignments). Clap seems to miss a way to display the command-line, or at least the documentation is hard to find. Possibly also a search for 'command-line' or alias gives too much side noise.
 

@@ -12,14 +12,14 @@ head: zb/larger-runner
 created_at: 2024-01-11T19:18:18Z
 updated_at: 2024-01-12T09:17:03Z
 url: https://github.com/astral-sh/uv/pull/889
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Use a larger runner for tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-11 19:18_
+_@zanieb_
 
 Alternative to #875. Instead of partitioning tests across multiple runners via nextest, we use a larger GitHub Actions runner. Additionally, we explore using nextest to take advantage of the increased number of cores.
 

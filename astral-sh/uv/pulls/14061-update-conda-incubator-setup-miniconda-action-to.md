@@ -13,14 +13,14 @@ head: renovate/conda-incubator-setup-miniconda-3.x
 created_at: 2025-06-16T02:06:28Z
 updated_at: 2025-06-16T09:53:57Z
 url: https://github.com/astral-sh/uv/pull/14061
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Update conda-incubator/setup-miniconda action to v3.2.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 02:06_
+_@renovate_
 
 This PR contains the following updates:
 

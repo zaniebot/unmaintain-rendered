@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-18T21:07:35Z
 updated_at: 2025-08-19T00:54:06Z
 url: https://github.com/astral-sh/ty/issues/1046
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Tuple unpacking from a type alias results in wrong union type
 
 ---
 
-_Issue opened by @leddy231 on 2025-08-18 21:07_
+_@leddy231_
 
 ### Summary
 

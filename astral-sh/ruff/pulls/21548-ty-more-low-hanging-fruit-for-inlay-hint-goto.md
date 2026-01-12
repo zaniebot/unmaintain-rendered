@@ -14,14 +14,14 @@ head: alex/even-more-details
 created_at: 2025-11-20T20:40:44Z
 updated_at: 2025-11-20T23:16:00Z
 url: https://github.com/astral-sh/ruff/pull/21548
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] More low-hanging fruit for inlay hint goto-definition
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-20 20:40_
+_@AlexWaygood_
 
 ## Summary
 

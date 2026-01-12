@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-26T20:03:07Z
 updated_at: 2024-11-26T20:11:40Z
 url: https://github.com/astral-sh/uv/issues/9450
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `uv` does not use ~/.netrc credentials for `--index`
 
 ---
 
-_Issue opened by @stefanvanburen on 2024-11-26 20:03_
+_@stefanvanburen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

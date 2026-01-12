@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-03-14T16:13:17Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/901
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # max_term_width does not apply to subcommands
 
 ---
 
-_Issue opened by @mitsuhiko on 2017-03-14 16:13_
+_@mitsuhiko_
 
 Currently if one sets `max_term_width` it does not apply to subcommands it seems which means one has to duplicate this for every subcommand. Would be great if this could be set globally.
 

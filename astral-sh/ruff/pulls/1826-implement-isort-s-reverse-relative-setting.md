@@ -12,14 +12,14 @@ head: charlie/reverse-relative
 created_at: 2023-01-12T18:03:17Z
 updated_at: 2023-01-12T20:48:42Z
 url: https://github.com/astral-sh/ruff/pull/1826
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement isort's `reverse_relative` setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-12 18:03_
+_@charliermarsh_
 
 This PR implements `reverse-relative`, from isort, but renames it to `relative-imports-order` with the respected value `closest-to-furthest` and `furthest-to-closest`, and the latter being the default.
 

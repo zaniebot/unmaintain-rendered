@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T16:15:38Z
 updated_at: 2024-08-22T16:15:43Z
 url: https://github.com/astral-sh/uv/issues/6446
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Warn when `--no-build-package` is ignored because the target is an editable
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 16:15_
+_@zanieb_
 
 We can't disable builds for these, but we shouldn't do so silently.
 

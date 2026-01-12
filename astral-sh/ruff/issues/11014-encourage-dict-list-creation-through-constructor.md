@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T18:43:53Z
 updated_at: 2024-04-20T19:20:54Z
 url: https://github.com/astral-sh/ruff/issues/11014
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Encourage dict/list creation through constructor 
 
 ---
 
-_Issue opened by @twoertwein on 2024-04-18 18:43_
+_@twoertwein_
 
 ```
 a = {} # or a = dict()

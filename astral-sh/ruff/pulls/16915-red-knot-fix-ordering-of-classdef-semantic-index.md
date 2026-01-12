@@ -13,14 +13,14 @@ head: fix-class-registration
 created_at: 2025-03-22T14:33:10Z
 updated_at: 2025-03-24T02:14:50Z
 url: https://github.com/astral-sh/ruff/pull/16915
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] fix ordering of `ClassDef` semantic index building
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-22 14:33_
+_@mtshiba_
 
 ## Summary
 

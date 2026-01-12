@@ -13,14 +13,14 @@ head: renovate/docker-build-push-action-6.x
 created_at: 2025-05-26T02:12:21Z
 updated_at: 2025-05-26T12:37:59Z
 url: https://github.com/astral-sh/uv/pull/13653
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Update docker/build-push-action action to v6.17.0
 
 ---
 
-_Pull request opened by @renovate on 2025-05-26 02:12_
+_@renovate_
 
 This PR contains the following updates:
 

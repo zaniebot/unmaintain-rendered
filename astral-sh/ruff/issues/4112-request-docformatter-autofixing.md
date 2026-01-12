@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T06:30:25Z
 updated_at: 2023-06-02T02:12:21Z
 url: https://github.com/astral-sh/ruff/issues/4112
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: `docformatter` autofixing
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-26 06:30_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

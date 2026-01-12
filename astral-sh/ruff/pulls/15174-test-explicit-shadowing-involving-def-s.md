@@ -14,14 +14,14 @@ head: test-def
 created_at: 2024-12-29T00:11:57Z
 updated_at: 2024-12-29T00:48:43Z
 url: https://github.com/astral-sh/ruff/pull/15174
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Test explicit shadowing involving `def`s
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-12-29 00:11_
+_@hauntsaninja_
 
 _No description provided._
 

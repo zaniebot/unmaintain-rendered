@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T15:11:24Z
 updated_at: 2025-09-18T10:33:06Z
 url: https://github.com/astral-sh/uv/issues/11356
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `uv run jupyter contrib nbextension install --user` fails on a fresh install
 
 ---
 
-_Issue opened by @laowantong on 2025-02-09 15:11_
+_@laowantong_
 
 ### Summary
 

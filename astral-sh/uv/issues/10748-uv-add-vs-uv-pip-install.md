@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T02:32:46Z
 updated_at: 2025-01-19T04:14:21Z
 url: https://github.com/astral-sh/uv/issues/10748
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # "uv add" vs "uv pip install"
 
 ---
 
-_Issue opened by @AGitUser111 on 2025-01-19 02:32_
+_@AGitUser111_
 
 When trying to install fastapi-users with `uv add`, the module appears to be installed and intellisense will work while navigating through the module tree, but I cannot successfully import any of the classes. 
 

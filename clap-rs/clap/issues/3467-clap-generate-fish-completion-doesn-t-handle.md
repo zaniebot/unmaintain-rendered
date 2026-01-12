@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-14T19:11:30Z
 updated_at: 2022-02-14T21:13:58Z
 url: https://github.com/clap-rs/clap/issues/3467
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_generate: fish completion doesn't handle single quotes in possible values: Expected a string, but found an incomplete token
 
 ---
 
-_Issue opened by @gibfahn on 2022-02-14 19:11_
+_@gibfahn_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T20:07:37Z
 updated_at: 2024-07-25T13:45:53Z
 url: https://github.com/astral-sh/uv/issues/5420
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv run` has to resolve editable metadata on every invocation
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-24 20:07_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/4946#issuecomment-2248789268.
 

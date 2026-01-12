@@ -13,14 +13,14 @@ head: zb/fix-pyodide
 created_at: 2025-08-18T14:10:38Z
 updated_at: 2025-08-18T14:22:03Z
 url: https://github.com/astral-sh/uv/pull/15349
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Allow pre-releases in pyodide test job
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 14:10_
+_@zanieb_
 
 tbh I don't know why this regressed
 

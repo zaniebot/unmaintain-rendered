@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T21:13:34Z
 updated_at: 2025-04-04T02:54:01Z
 url: https://github.com/astral-sh/uv/issues/11989
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # "uv pip install" not installing packages from workspace/path sources
 
 ---
 
-_Issue opened by @djcopley on 2025-03-05 21:13_
+_@djcopley_
 
 ### Question
 

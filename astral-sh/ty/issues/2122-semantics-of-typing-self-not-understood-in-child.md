@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T21:41:31Z
 updated_at: 2026-01-08T00:56:11Z
 url: https://github.com/astral-sh/ty/issues/2122
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Semantics of `typing.Self` not understood in child classes
 
 ---
 
-_Issue opened by @bepri on 2025-12-19 21:41_
+_@bepri_
 
 ### Summary
 

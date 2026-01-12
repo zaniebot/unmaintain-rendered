@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-09T15:05:21Z
 updated_at: 2025-12-18T19:38:34Z
 url: https://github.com/astral-sh/uv/issues/16653
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Add install summary to `uv sync` JSON output
 
 ---
 
-_Issue opened by @zanieb on 2025-11-09 15:05_
+_@zanieb_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T12:35:46Z
 updated_at: 2024-08-26T00:02:27Z
 url: https://github.com/astral-sh/uv/issues/6082
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Can't find matching wheels with the `--find-links` flag
 
 ---
 
-_Issue opened by @santacodes on 2024-08-14 12:35_
+_@santacodes_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

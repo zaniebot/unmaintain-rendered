@@ -12,14 +12,14 @@ head: dhruv/fuzz-lock
 created_at: 2024-07-29T04:42:51Z
 updated_at: 2024-07-30T02:47:54Z
 url: https://github.com/astral-sh/ruff/pull/12561
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Commit the lockfile for `fuzz` crate
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-29 04:42_
+_@dhruvmanila_
 
 ## Summary
 

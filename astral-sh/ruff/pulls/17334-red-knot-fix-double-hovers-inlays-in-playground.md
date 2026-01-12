@@ -14,14 +14,14 @@ head: micha/fix-double-hovers
 created_at: 2025-04-10T12:37:29Z
 updated_at: 2025-04-10T12:40:42Z
 url: https://github.com/astral-sh/ruff/pull/17334
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Fix double hovers/inlays in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-10 12:37_
+_@MichaReiser_
 
 ## Summary
 

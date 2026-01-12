@@ -13,14 +13,14 @@ head: david/development-status
 created_at: 2025-12-16T12:55:27Z
 updated_at: 2025-12-16T13:08:19Z
 url: https://github.com/astral-sh/ty/pull/1924
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # pyproject.toml: Bump development status
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 12:55_
+_@sharkdp_
 
 Looks like this is not something that rooster would do for us.
 

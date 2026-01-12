@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-14T10:03:20Z
 updated_at: 2023-10-14T19:00:24Z
 url: https://github.com/astral-sh/ruff/issues/7958
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # cache-dir in configfiile should be relative to that configfile
 
 ---
 
-_Issue opened by @woutervh on 2023-10-14 10:03_
+_@woutervh_
 
 using ruff 0.0.292
 

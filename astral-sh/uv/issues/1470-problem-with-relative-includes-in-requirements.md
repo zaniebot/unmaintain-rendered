@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T10:10:22Z
 updated_at: 2024-02-16T14:55:42Z
 url: https://github.com/astral-sh/uv/issues/1470
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # problem with relative includes in requirements file
 
 ---
 
-_Issue opened by @detlefla on 2024-02-16 10:10_
+_@detlefla_
 
 Incompatibility: If pip-compile is invoked for a file requirements/dev.in and this file includes `-r common.in`, the included file will be searched in the same directory (requirements/) where the including file is located. `uv pip compile requirements/dev.in` obviously tries (and fails) to resolve the include from the caller's working directory.
 

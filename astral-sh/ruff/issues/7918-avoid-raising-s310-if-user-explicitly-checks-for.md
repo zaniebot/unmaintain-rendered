@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-11T13:59:20Z
 updated_at: 2025-08-24T05:37:38Z
 url: https://github.com/astral-sh/ruff/issues/7918
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Avoid raising S310 if user explicitly checks for URL scheme
 
 ---
 
-_Issue opened by @93578237 on 2023-10-11 13:59_
+_@93578237_
 
 * A minimal code snippet that reproduces the bug.
 

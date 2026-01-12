@@ -14,14 +14,14 @@ head: ibraheem/ast-node-gc-infra
 created_at: 2025-06-03T17:17:15Z
 updated_at: 2025-06-11T10:45:08Z
 url: https://github.com/astral-sh/ruff/pull/18445
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Add infrastructure for AST garbage collection
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-06-03 17:17_
+_@ibraheemdev_
 
 ## Summary
 

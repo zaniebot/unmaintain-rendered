@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T09:14:16Z
 updated_at: 2023-08-04T13:51:40Z
 url: https://github.com/astral-sh/ruff/issues/6334
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff should detect unreachable code but reports 'Missing explicit return', fixing it with `return None`
 
 ---
 
-_Issue opened by @bittner on 2023-08-04 09:14_
+_@bittner_
 
 In the code below Ruff should detect unreachable code, but it reports 'Missing explicit return'.
 

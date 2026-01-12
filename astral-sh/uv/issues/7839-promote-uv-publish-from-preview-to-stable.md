@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-01T13:26:30Z
 updated_at: 2025-02-13T22:17:52Z
 url: https://github.com/astral-sh/uv/issues/7839
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Promote `uv publish` from preview to stable
 
 ---
 
-_Issue opened by @konstin on 2024-10-01 13:26_
+_@konstin_
 
 `uv publish` is getting adopted and we fix all user reports. We should promote it from preview to stable. 
 

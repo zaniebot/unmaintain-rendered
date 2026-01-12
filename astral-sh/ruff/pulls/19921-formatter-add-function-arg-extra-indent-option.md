@@ -11,14 +11,14 @@ head: jsh9-function-arg-extra-indent
 created_at: 2025-08-14T22:42:00Z
 updated_at: 2025-08-15T06:47:35Z
 url: https://github.com/astral-sh/ruff/pull/19921
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [Formatter] Add `function-arg-extra-indent` option
 
 ---
 
-_Pull request opened by @jsh9 on 2025-08-14 22:42_
+_@jsh9_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

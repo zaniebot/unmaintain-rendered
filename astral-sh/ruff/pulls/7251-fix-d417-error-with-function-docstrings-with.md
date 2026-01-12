@@ -13,14 +13,14 @@ head: fix-d417-dashed-lines
 created_at: 2023-09-09T01:51:11Z
 updated_at: 2023-09-10T16:28:45Z
 url: https://github.com/astral-sh/ruff/pull/7251
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # fix D417 error with function docstrings with dashed lines
 
 ---
 
-_Pull request opened by @eronnen on 2023-09-09 01:51_
+_@eronnen_
 
 
 

@@ -14,14 +14,14 @@ head: capital-case-headers
 created_at: 2024-08-30T20:02:57Z
 updated_at: 2024-09-03T17:28:45Z
 url: https://github.com/astral-sh/uv/pull/6887
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Make headers title case for backward compatibility
 
 ---
 
-_Pull request opened by @leiserfg on 2024-08-30 20:02_
+_@leiserfg_
 
 ## Summary
 Http headers are supposed to be case-insensitive (RFC 2616), but there are some implementations that don't normalize them.

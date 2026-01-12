@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T23:27:13Z
 updated_at: 2023-11-19T00:21:55Z
 url: https://github.com/astral-sh/ruff/issues/8760
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # SIM910 only applies to dictionary literals
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-18 23:27_
+_@ThiefMaster_
 
 This doesn't trigger a violation even when using the example from the [docs](https://docs.astral.sh/ruff/rules/dict-get-with-none-default/#example).
 

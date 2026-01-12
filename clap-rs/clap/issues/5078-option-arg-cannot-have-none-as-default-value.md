@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-17T19:55:46Z
 updated_at: 2023-08-20T00:14:36Z
 url: https://github.com/clap-rs/clap/issues/5078
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `Option` arg cannot have `None` as default value
 
 ---
 
-_Issue opened by @justinlovinger on 2023-08-17 19:55_
+_@justinlovinger_
 
 ### Please complete the following tasks
 

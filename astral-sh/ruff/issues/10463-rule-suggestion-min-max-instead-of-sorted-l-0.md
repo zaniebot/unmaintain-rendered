@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T21:17:00Z
 updated_at: 2024-04-23T01:13:59Z
 url: https://github.com/astral-sh/ruff/issues/10463
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule Suggestion `min`/`max` instead of `sorted(l)[0]`
 
 ---
 
-_Issue opened by @Skylion007 on 2024-03-18 21:17_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

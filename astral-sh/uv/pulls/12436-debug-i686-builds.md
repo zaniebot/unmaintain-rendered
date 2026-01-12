@@ -12,14 +12,14 @@ head: zb/debug-i686
 created_at: 2025-03-24T15:57:19Z
 updated_at: 2025-03-24T21:33:41Z
 url: https://github.com/astral-sh/uv/pull/12436
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Debug i686 builds
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-24 15:57_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-28T18:29:13Z
 updated_at: 2022-10-29T12:49:17Z
 url: https://github.com/clap-rs/clap/issues/4429
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # option to reenable old colored style instead of underlines
 
 ---
 
-_Issue opened by @LuckyTurtleDev on 2022-10-28 18:29_
+_@LuckyTurtleDev_
 
 ### Please complete the following tasks
 

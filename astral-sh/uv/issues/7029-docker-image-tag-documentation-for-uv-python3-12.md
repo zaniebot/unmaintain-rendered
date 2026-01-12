@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T15:23:19Z
 updated_at: 2024-09-04T18:11:59Z
 url: https://github.com/astral-sh/uv/issues/7029
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Docker image tag documentation for `uv:python3.12-slim-bookworm` does not match published tag
 
 ---
 
-_Issue opened by @zanieb on 2024-09-04 15:23_
+_@zanieb_
 
 cc @samypr100 
 

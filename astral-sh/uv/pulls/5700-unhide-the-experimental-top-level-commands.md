@@ -13,14 +13,14 @@ head: zb/unhide-cmds
 created_at: 2024-08-01T18:20:20Z
 updated_at: 2024-08-01T19:06:09Z
 url: https://github.com/astral-sh/uv/pull/5700
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Unhide the experimental top-level commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 18:20_
+_@zanieb_
 
 _No description provided._
 

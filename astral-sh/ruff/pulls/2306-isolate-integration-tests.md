@@ -12,14 +12,14 @@ head: isolate-integration-test
 created_at: 2023-01-28T17:58:38Z
 updated_at: 2023-01-28T18:41:16Z
 url: https://github.com/astral-sh/ruff/pull/2306
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Isolate integration tests
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-01-28 17:58_
+_@JonathanPlasse_
 
 Closes #2304.
 

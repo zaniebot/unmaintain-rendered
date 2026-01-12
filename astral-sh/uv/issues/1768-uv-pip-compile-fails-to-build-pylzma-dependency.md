@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T17:19:42Z
 updated_at: 2024-02-20T20:37:07Z
 url: https://github.com/astral-sh/uv/issues/1768
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # uv pip compile fails to build pylzma dependency
 
 ---
 
-_Issue opened by @carno on 2024-02-20 17:19_
+_@carno_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

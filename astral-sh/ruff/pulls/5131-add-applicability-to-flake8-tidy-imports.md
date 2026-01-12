@@ -12,14 +12,14 @@ head: applicability_tidy_imports
 created_at: 2023-06-15T21:06:25Z
 updated_at: 2023-06-17T22:00:00Z
 url: https://github.com/astral-sh/ruff/pull/5131
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to flake8_tidy_imports
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 21:06_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

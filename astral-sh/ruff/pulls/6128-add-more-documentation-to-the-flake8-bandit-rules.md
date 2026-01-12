@@ -13,14 +13,14 @@ head: s-docs
 created_at: 2023-07-27T15:53:35Z
 updated_at: 2023-07-28T09:13:57Z
 url: https://github.com/astral-sh/ruff/pull/6128
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add more documentation to the `flake8-bandit` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-27 15:53_
+_@tjkuson_
 
 ## Summary
 

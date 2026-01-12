@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:12:04Z
 updated_at: 2024-08-05T17:37:36Z
 url: https://github.com/astral-sh/ruff/issues/11662
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] populate Symbol.kind
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:12_
+_@carljm_
 
 In order to do proper scoped name resolution, we need some symbol table analysis to assign kinds to symbols (local, freevar, cellvar, global, etc).
 

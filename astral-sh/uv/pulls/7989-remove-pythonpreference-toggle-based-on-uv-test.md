@@ -13,14 +13,14 @@ head: zb/preference-default
 created_at: 2024-10-07T19:30:30Z
 updated_at: 2024-10-07T21:13:20Z
 url: https://github.com/astral-sh/uv/pull/7989
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Remove `PythonPreference` toggle based on `UV_TEST_PYTHON_PATH`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 19:30_
+_@zanieb_
 
 Needed for https://github.com/astral-sh/uv/pull/7934
 

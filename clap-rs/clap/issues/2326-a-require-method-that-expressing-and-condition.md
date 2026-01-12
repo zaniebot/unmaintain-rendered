@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-02-04T09:49:59Z
 updated_at: 2021-02-28T13:50:51Z
 url: https://github.com/clap-rs/clap/issues/2326
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # A `require*` method that expressing `and(&&)` condition when requesting an argument
 
 ---
 
-_Issue opened by @zzz845zz on 2021-02-04 09:49_
+_@zzz845zz_
 
 ### Make sure you completed the following tasks
 - [x] Searched the [discussions](https://github.com/clap-rs/clap/discussions)

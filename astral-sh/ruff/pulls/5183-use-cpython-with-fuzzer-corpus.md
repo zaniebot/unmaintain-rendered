@@ -12,14 +12,14 @@ head: main
 created_at: 2023-06-19T15:24:54Z
 updated_at: 2023-06-20T20:51:08Z
 url: https://github.com/astral-sh/ruff/pull/5183
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use cpython with fuzzer corpus
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-19 15:24_
+_@addisoncrump_
 
 Following #5055, add cpython as a member of the fuzzer corpus unconditionally.
 

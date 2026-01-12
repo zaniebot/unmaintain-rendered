@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-22T10:00:18Z
 updated_at: 2024-12-23T13:56:54Z
 url: https://github.com/astral-sh/uv/issues/10091
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # build backend: optional dependencies don't make it to PKG-INFO
 
 ---
 
-_Issue opened by @cthoyt on 2024-12-22 10:00_
+_@cthoyt_
 
 I'm on uv 0.5.11 (c4d0caaee 2024-12-19).
 

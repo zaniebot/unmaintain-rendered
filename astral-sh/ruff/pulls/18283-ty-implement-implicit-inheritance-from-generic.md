@@ -13,14 +13,14 @@ head: alex/695-generic-base
 created_at: 2025-05-23T22:54:33Z
 updated_at: 2025-05-26T19:40:18Z
 url: https://github.com/astral-sh/ruff/pull/18283
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Implement implicit inheritance from `Generic[]` for PEP-695 generic classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-23 22:54_
+_@AlexWaygood_
 
 ## Summary
 

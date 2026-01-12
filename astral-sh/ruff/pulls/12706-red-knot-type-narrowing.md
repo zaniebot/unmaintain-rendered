@@ -13,14 +13,14 @@ head: cjm/narrow
 created_at: 2024-08-06T04:54:57Z
 updated_at: 2024-08-16T23:34:15Z
 url: https://github.com/astral-sh/ruff/pull/12706
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] type narrowing
 
 ---
 
-_Pull request opened by @carljm on 2024-08-06 04:54_
+_@carljm_
 
 Extend the `UseDefMap` to also track which constraints (provided by e.g. `if` tests) apply to each visible definition.
 

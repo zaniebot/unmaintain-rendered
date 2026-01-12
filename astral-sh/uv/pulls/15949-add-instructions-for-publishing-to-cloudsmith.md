@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2025-09-19T13:47:45Z
 updated_at: 2025-10-07T19:09:39Z
 url: https://github.com/astral-sh/uv/pull/15949
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Add instructions for publishing to Cloudsmith
 
 ---
 
-_Pull request opened by @ndouglas-cloudsmith on 2025-09-19 13:47_
+_@ndouglas-cloudsmith_
 
 ## Summary
 Add instructions for publishing to Cloudsmith into [documentation](https://docs.astral.sh/uv/guides/integration/alternative-indexes/).

@@ -13,14 +13,14 @@ head: charlie/possible-values
 created_at: 2023-09-14T01:15:30Z
 updated_at: 2023-09-14T18:45:53Z
 url: https://github.com/astral-sh/ruff/pull/7375
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Show rule codes in shell tab completion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 01:15_
+_@charliermarsh_
 
 ## Summary
 

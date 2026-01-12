@@ -12,14 +12,14 @@ head: beta_release
 created_at: 2025-12-16T17:41:54Z
 updated_at: 2025-12-16T19:11:08Z
 url: https://github.com/astral-sh/ty/pull/1949
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump version to 0.0.1 (beta release)
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-16 17:41_
+_@oconnor663_
 
 _No description provided._
 

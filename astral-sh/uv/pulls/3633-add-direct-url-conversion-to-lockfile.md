@@ -13,14 +13,14 @@ head: charlie/url-lock-source
 created_at: 2024-05-17T03:13:12Z
 updated_at: 2024-05-17T21:32:43Z
 url: https://github.com/astral-sh/uv/pull/3633
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Add direct URL conversion to lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-17 03:13_
+_@charliermarsh_
 
 ## Summary
 

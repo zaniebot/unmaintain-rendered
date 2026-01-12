@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-10T07:30:01Z
 updated_at: 2023-03-10T09:17:36Z
 url: https://github.com/astral-sh/ruff/issues/3432
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Cannot build ruff due erorr in ruff_cli
 
 ---
 
-_Issue opened by @qarmin on 2023-03-10 07:30_
+_@qarmin_
 
 Main branch  08ec11a3, compilation worked fine with 889c05c8
 Ubuntu 22.10, Rust 1.68.0

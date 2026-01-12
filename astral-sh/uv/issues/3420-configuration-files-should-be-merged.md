@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T14:12:39Z
 updated_at: 2024-05-08T18:49:44Z
 url: https://github.com/astral-sh/uv/issues/3420
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Configuration files should be merged hierarchically
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-07 14:12_
+_@charliermarsh_
 
 Following Cargo's strategy here: https://doc.rust-lang.org/cargo/reference/config.html.
 

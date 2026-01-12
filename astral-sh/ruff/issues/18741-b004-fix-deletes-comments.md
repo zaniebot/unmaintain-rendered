@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-18T01:54:36Z
 updated_at: 2025-06-19T10:46:55Z
 url: https://github.com/astral-sh/ruff/issues/18741
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # B004 fix deletes comments
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 01:54_
+_@MeGaGiGaGon_
 
 ### Summary
 

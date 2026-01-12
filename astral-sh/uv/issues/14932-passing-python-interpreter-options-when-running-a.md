@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T05:36:29Z
 updated_at: 2025-07-28T13:16:12Z
 url: https://github.com/astral-sh/uv/issues/14932
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Passing Python interpreter options when running a uv-managed Python script
 
 ---
 
-_Issue opened by @dclong on 2025-07-28 05:36_
+_@dclong_
 
 ### Question
 

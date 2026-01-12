@@ -12,14 +12,14 @@ head: charlie/result-option
 created_at: 2023-06-12T15:25:28Z
 updated_at: 2023-06-12T15:51:05Z
 url: https://github.com/astral-sh/ruff/pull/5025
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Allow `Options`-to-`Settings` conversion to use `TryFrom`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-12 15:25_
+_@charliermarsh_
 
 ## Summary
 

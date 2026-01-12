@@ -13,14 +13,14 @@ head: logging-critical-bypass-blind-except
 created_at: 2025-07-24T04:49:01Z
 updated_at: 2025-07-25T22:08:50Z
 url: https://github.com/astral-sh/ruff/pull/19520
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [`flake8-blind-except`] Change `BLE001` to permit `logging.critical(..., exc_info=True)`.
 
 ---
 
-_Pull request opened by @clockback on 2025-07-24 04:49_
+_@clockback_
 
 ## Summary
 

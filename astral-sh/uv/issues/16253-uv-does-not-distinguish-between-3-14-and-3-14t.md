@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T14:15:24Z
 updated_at: 2025-11-09T16:32:26Z
 url: https://github.com/astral-sh/uv/issues/16253
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # uv does not distinguish between 3.14 and 3.14t while creating virtual environment
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-10-11 14:15_
+_@DhavalGojiya_
 
 **Description:**
 After changing the Python version from 3.14t (Free threaded python) to 3.14 using uv python pin, uv sync does not remove the old virtual environment or create a new one with the updated Python version.

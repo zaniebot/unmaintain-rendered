@@ -13,14 +13,14 @@ head: charlie/async-
 created_at: 2024-10-30T17:19:45Z
 updated_at: 2024-11-01T14:26:32Z
 url: https://github.com/astral-sh/uv/pull/8703
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Run `cargo update`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 17:19_
+_@charliermarsh_
 
 Pull in https://github.com/prefix-dev/async_http_range_reader/pull/19, removes a version of `itertools`.
 

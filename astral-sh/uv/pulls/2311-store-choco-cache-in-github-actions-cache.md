@@ -13,14 +13,14 @@ head: zb/system-install-choco
 created_at: 2024-03-09T00:14:07Z
 updated_at: 2024-03-09T00:30:07Z
 url: https://github.com/astral-sh/uv/pull/2311
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Store choco cache in GitHub Actions cache
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-09 00:14_
+_@zanieb_
 
 This step is weirdly slow, perhaps it will go faster if we stash the download in GitHub.
 

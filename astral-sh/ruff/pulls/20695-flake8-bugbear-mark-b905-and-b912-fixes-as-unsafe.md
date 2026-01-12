@@ -13,14 +13,14 @@ head: B905-B912-unsafe
 created_at: 2025-10-04T01:04:02Z
 updated_at: 2025-10-07T20:55:56Z
 url: https://github.com/astral-sh/ruff/pull/20695
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`flake8-bugbear`] Mark `B905` and `B912` fixes as unsafe
 
 ---
 
-_Pull request opened by @terror on 2025-10-04 01:04_
+_@terror_
 
 Resolves https://github.com/astral-sh/ruff/issues/20694
 

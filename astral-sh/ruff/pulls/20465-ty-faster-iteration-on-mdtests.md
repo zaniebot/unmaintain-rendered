@@ -14,14 +14,14 @@ head: david/faster-mdtest-1
 created_at: 2025-09-18T10:44:36Z
 updated_at: 2025-09-18T10:56:37Z
 url: https://github.com/astral-sh/ruff/pull/20465
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Faster iteration on mdtests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-18 10:44_
+_@sharkdp_
 
 ## Summary
 

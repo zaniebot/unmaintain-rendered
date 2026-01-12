@@ -13,14 +13,14 @@ head: konsti/uv-build-frontend
 created_at: 2024-09-25T16:25:47Z
 updated_at: 2024-09-25T18:17:56Z
 url: https://github.com/astral-sh/uv/pull/7688
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Rename `uv-build` to `uv-build-frontend`
 
 ---
 
-_Pull request opened by @konstin on 2024-09-25 16:25_
+_@konstin_
 
 uv will soon support both a build frontend (`uv build`) and a build backend (`build-system = "uv"`). To avoid the name clash, I'm renaming the `uv-build` crate to `uv-build-frontend`. In a follow-up PR, I will add a `uv-build-backend` crate with the build backend implementation.
 

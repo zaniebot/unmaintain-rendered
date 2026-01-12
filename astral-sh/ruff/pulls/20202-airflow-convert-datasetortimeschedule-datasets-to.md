@@ -14,14 +14,14 @@ head: extend-AIR311-rule
 created_at: 2025-09-02T02:23:32Z
 updated_at: 2025-09-03T14:12:11Z
 url: https://github.com/astral-sh/ruff/pull/20202
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`airflow`] Convert `DatasetOrTimeSchedule(datasets=...)` to `AssetOrTimeSchedule(assets=...)` (`AIR311`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-09-02 02:23_
+_@Lee-W_
 
 
 <!--

@@ -13,14 +13,14 @@ head: dhruv/double-quote
 created_at: 2024-12-12T14:36:52Z
 updated_at: 2024-12-13T10:39:57Z
 url: https://github.com/astral-sh/ruff/pull/14938
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Use double quotes consistently for shell scripts
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-12 14:36_
+_@dhruvmanila_
 
 ## Summary
 

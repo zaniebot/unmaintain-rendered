@@ -12,14 +12,14 @@ head: fix-mastodon-py
 created_at: 2023-11-06T16:05:05Z
 updated_at: 2023-11-07T11:36:12Z
 url: https://github.com/astral-sh/uv/pull/336
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Fix mastodon-py dist-info handling
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 16:05_
+_@konstin_
 
 mastodon-py 1.5.1 uses a dot in its dist-info dir name, which we previously didn't handle, causing home-assistant to fail. The new implementation is based on https://github.com/pypa/packaging/blob/2f83540272e79e3fe1f5d42abae8df0c14ddf4c2/src/packaging/utils.py#L146-L172.
 

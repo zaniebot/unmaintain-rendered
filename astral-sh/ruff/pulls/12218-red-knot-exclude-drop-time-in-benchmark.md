@@ -13,14 +13,14 @@ head: red-knot-bench-exclude-drop
 created_at: 2024-07-06T15:19:32Z
 updated_at: 2024-07-06T15:36:17Z
 url: https://github.com/astral-sh/ruff/pull/12218
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Exclude drop time in benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-06 15:19_
+_@MichaReiser_
 
 ## Summary
 

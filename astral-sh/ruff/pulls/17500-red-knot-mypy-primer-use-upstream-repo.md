@@ -14,14 +14,14 @@ head: david/mypy_primer-use-upstream-repo
 created_at: 2025-04-20T17:35:10Z
 updated_at: 2025-04-22T10:14:27Z
 url: https://github.com/astral-sh/ruff/pull/17500
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] mypy_primer: Use upstream repo
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-20 17:35_
+_@sharkdp_
 
 ## Summary
 

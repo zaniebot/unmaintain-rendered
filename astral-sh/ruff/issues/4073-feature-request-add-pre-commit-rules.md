@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-24T01:30:11Z
 updated_at: 2025-03-02T12:35:21Z
 url: https://github.com/astral-sh/ruff/issues/4073
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Feature Request] Add pre-commit rules.
 
 ---
 
-_Issue opened by @veritas9872 on 2023-04-24 01:30_
+_@veritas9872_
 
 Thank you for the great work on `ruff`! I would like to ask if the official hooks in the `pre-commit` repository could be implemented in `ruff`. While these are not always related to Python, they are very commonly used and implementing them in `ruff` would benefit many projects. Some rules already overlap, such as finding `breakpoint()` code, but implementing the rest may be beneficial.
 

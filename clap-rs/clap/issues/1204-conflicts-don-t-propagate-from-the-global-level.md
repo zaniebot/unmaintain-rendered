@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-03-06T21:25:15Z
 updated_at: 2021-12-09T18:11:18Z
 url: https://github.com/clap-rs/clap/issues/1204
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Conflicts don't propagate from the global level to the subcommand
 
 ---
 
-_Issue opened by @larsrh on 2018-03-06 21:25_
+_@larsrh_
 
 As discussed on Gitter: https://gitter.im/kbknapp/clap-rs?at=5a9f003af3f6d24c68450335
 

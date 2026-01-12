@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-10T14:34:50Z
 updated_at: 2024-12-17T18:34:27Z
 url: https://github.com/astral-sh/ruff/issues/9457
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Implicit concatenated string formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2024-01-10 14:34_
+_@MichaReiser_
 
 This is a proposal for changing our implicit concatenated string formatting to solve https://github.com/astral-sh/ruff/issues/8272
 

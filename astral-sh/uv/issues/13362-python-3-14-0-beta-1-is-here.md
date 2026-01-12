@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T07:06:17Z
 updated_at: 2025-08-26T02:30:33Z
 url: https://github.com/astral-sh/uv/issues/13362
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Python 3.14.0 beta 1 is here!
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-09 07:06_
+_@dimaqq_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T23:06:37Z
 updated_at: 2025-11-21T15:33:36Z
 url: https://github.com/astral-sh/uv/issues/16798
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # uv tries to install package version that is incompatible with platform
 
 ---
 
-_Issue opened by @eigenvivek on 2025-11-20 23:06_
+_@eigenvivek_
 
 ### Summary
 

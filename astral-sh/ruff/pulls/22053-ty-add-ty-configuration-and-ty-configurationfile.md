@@ -14,14 +14,14 @@ head: micha/ty-server-configuration
 created_at: 2025-12-18T17:29:37Z
 updated_at: 2025-12-22T15:13:21Z
 url: https://github.com/astral-sh/ruff/pull/22053
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Add `ty.configuration` and `ty.configurationFile` options
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-18 17:29_
+_@MichaReiser_
 
 ## Summary
 

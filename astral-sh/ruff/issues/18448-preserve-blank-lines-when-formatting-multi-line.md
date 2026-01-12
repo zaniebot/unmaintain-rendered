@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T20:25:41Z
 updated_at: 2025-06-04T12:50:31Z
 url: https://github.com/astral-sh/ruff/issues/18448
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Preserve blank lines when formatting multi-line lists, function arguments, etc.
 
 ---
 
-_Issue opened by @mabeyj on 2025-06-03 20:25_
+_@mabeyj_
 
 Requesting the ability for `ruff format` to preserve blank lines within multi-line lists, dictionaries, sets, tuples, function arguments, and any other list-like syntax. Collapsing multiple blank lines into a single blank line would make sense here and would be consistent with blank lines being collapsed elsewhere.
 

@@ -13,14 +13,14 @@ head: remove-wee-alloc
 created_at: 2024-08-06T11:16:06Z
 updated_at: 2024-08-06T11:34:50Z
 url: https://github.com/astral-sh/ruff/pull/12713
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use standard allocator for wasm
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-06 11:16_
+_@MichaReiser_
 
 ## Summary
 

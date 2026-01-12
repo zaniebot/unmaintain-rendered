@@ -13,14 +13,14 @@ head: fix-21346
 created_at: 2025-11-09T20:25:55Z
 updated_at: 2025-11-10T17:51:41Z
 url: https://github.com/astral-sh/ruff/pull/21348
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [`refurb`] Detect empty f-strings (`FURB105`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-09 20:25_
+_@danparizher_
 
 ## Summary
 

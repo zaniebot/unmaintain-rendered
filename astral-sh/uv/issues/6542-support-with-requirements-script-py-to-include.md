@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T19:41:31Z
 updated_at: 2025-09-05T16:45:47Z
 url: https://github.com/astral-sh/uv/issues/6542
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Support `--with-requirements script.py` to include inline dependency metadata from another script
 
 ---
 
-_Issue opened by @zanieb on 2024-08-23 19:41_
+_@zanieb_
 
 I'm not sure we should support this, but to track the idea... 
 

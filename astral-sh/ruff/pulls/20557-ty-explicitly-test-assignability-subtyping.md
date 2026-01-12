@@ -14,14 +14,14 @@ head: alex/proto-union-tests
 created_at: 2025-09-24T16:59:29Z
 updated_at: 2025-09-25T09:21:30Z
 url: https://github.com/astral-sh/ruff/pull/20557
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Explicitly test assignability/subtyping between unions of nominal types and protocols with method members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-24 16:59_
+_@AlexWaygood_
 
 (Stacked on top of https://github.com/astral-sh/ruff/pull/20555; review that PR first!)
 

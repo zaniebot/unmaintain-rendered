@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-22T15:25:21Z
 updated_at: 2025-11-11T20:54:06Z
 url: https://github.com/astral-sh/ty/issues/1409
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # False positive when assigning to `Final` instance attribute in `__init__`
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-22 15:25_
+_@sharkdp_
 
 From the conformance suite (and 44 instances across the ecosystem once type-of-self lands):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T13:29:12Z
 updated_at: 2025-04-10T09:21:42Z
 url: https://github.com/astral-sh/ruff/issues/17205
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Add (optional) inlay type hints
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-04-04 13:29_
+_@MatthewMckee4_
 
 https://github.com/rust-lang/rust-analyzer/blob/6ca780700d4e806439786a5e2db74462b11c4ce1/crates/ide/src/inlay_hints/bind_pat.rs#L20-L58
 

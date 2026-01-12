@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T22:16:46Z
 updated_at: 2025-12-31T15:42:43Z
 url: https://github.com/astral-sh/ty/issues/1910
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty: ignore[unresolved-import] fails for multi-line import
 
 ---
 
-_Issue opened by @riklopfer on 2025-12-15 22:16_
+_@riklopfer_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dhruv/airflow-refactor
 created_at: 2025-01-24T07:06:59Z
 updated_at: 2025-01-24T10:47:36Z
 url: https://github.com/astral-sh/ruff/pull/15711
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Apply `AIR302`-context check only in `@task` function
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-24 07:06_
+_@dhruvmanila_
 
 This PR updates `AIR302` to only apply the context keys check in `@task` decorated function.
 

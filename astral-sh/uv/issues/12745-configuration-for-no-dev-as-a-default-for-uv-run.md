@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T14:31:40Z
 updated_at: 2025-07-29T12:20:34Z
 url: https://github.com/astral-sh/uv/issues/12745
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Configuration for --no.dev as a default for "uv run"
 
 ---
 
-_Issue opened by @bgschaid on 2025-04-08 14:31_
+_@bgschaid_
 
 ### Summary
 

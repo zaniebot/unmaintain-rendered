@@ -14,14 +14,14 @@ head: micha/ty-combine-dependencies
 created_at: 2025-12-25T07:36:46Z
 updated_at: 2025-12-25T09:06:07Z
 url: https://github.com/astral-sh/ruff/pull/22191
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Invert dependencies of `ty_combine` and `ty_python_semantic`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-25 07:36_
+_@MichaReiser_
 
 ## Summary
 

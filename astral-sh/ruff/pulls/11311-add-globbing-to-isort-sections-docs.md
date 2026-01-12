@@ -13,14 +13,14 @@ head: charlie/star
 created_at: 2024-05-06T17:47:19Z
 updated_at: 2024-05-06T18:16:24Z
 url: https://github.com/astral-sh/ruff/pull/11311
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add globbing to isort sections docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-06 17:47_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/11310.
 

@@ -13,14 +13,14 @@ head: charlie/pre-local
 created_at: 2024-03-26T16:03:47Z
 updated_at: 2024-03-27T22:17:10Z
 url: https://github.com/astral-sh/uv/pull/2671
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Allow prereleases, locals, and URLs in non-editable path requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-26 16:03_
+_@charliermarsh_
 
 ## Summary
 

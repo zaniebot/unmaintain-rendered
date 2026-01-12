@@ -13,14 +13,14 @@ head: dhruv/ruff-db
 created_at: 2024-06-14T13:34:00Z
 updated_at: 2024-06-14T13:48:16Z
 url: https://github.com/astral-sh/ruff/pull/11874
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Make `ruff_db` a required crate for `ruff_python_semantic`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-14 13:34_
+_@dhruvmanila_
 
 ## Summary
 

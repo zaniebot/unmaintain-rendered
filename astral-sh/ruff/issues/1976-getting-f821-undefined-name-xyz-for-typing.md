@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T22:59:45Z
 updated_at: 2023-02-07T02:31:55Z
 url: https://github.com/astral-sh/ruff/issues/1976
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Getting F821 Undefined name "xyz" for typing.Literal values when imported indirectly
 
 ---
 
-_Issue opened by @alisaifee on 2023-01-18 22:59_
+_@alisaifee_
 
 # Description
 

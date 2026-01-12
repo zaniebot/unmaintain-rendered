@@ -13,14 +13,14 @@ head: alex/synthetic-proto-attributes
 created_at: 2025-09-07T17:08:51Z
 updated_at: 2025-09-08T12:04:38Z
 url: https://github.com/astral-sh/ruff/pull/20286
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Fall back to `object` for attribute access on synthesized protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-07 17:08_
+_@AlexWaygood_
 
 ## Summary
 

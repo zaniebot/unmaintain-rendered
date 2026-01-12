@@ -13,14 +13,14 @@ head: cjm/bench-preparse-builtins
 created_at: 2024-07-18T21:31:22Z
 updated_at: 2024-07-19T06:07:44Z
 url: https://github.com/astral-sh/ruff/pull/12395
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] preparse builtins in without_parse benchmark
 
 ---
 
-_Pull request opened by @carljm on 2024-07-18 21:31_
+_@carljm_
 
 In preparation for adding builtins support in https://github.com/astral-sh/ruff/pull/12390, we should pre-parse builtins also in the `without_parse` benchmark, so the builtins-parsing time is not included.
 

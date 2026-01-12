@@ -13,14 +13,14 @@ head: alex-carl/final-classes
 created_at: 2024-12-19T18:38:58Z
 updated_at: 2024-12-19T21:04:10Z
 url: https://github.com/astral-sh/ruff/pull/15070
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Add support for `@final` classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-19 18:38_
+_@AlexWaygood_
 
 ## Summary
 

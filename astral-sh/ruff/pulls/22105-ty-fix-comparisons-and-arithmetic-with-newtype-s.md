@@ -15,14 +15,14 @@ head: newtype_float_ops
 created_at: 2025-12-20T03:48:26Z
 updated_at: 2026-01-06T17:32:23Z
 url: https://github.com/astral-sh/ruff/pull/22105
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] fix comparisons and arithmetic with `NewType`s of `float`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-20 03:48_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/ty/issues/2077.
 

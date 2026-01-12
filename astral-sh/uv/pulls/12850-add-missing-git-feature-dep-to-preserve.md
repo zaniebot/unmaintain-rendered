@@ -14,14 +14,14 @@ head: git-feat
 created_at: 2025-04-12T11:06:47Z
 updated_at: 2025-05-18T21:31:02Z
 url: https://github.com/astral-sh/uv/pull/12850
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Add missing git feature dep to preserve_executable_bit test
 
 ---
 
-_Pull request opened by @mgorny on 2025-04-12 11:06_
+_@mgorny_
 
 ## Summary
 

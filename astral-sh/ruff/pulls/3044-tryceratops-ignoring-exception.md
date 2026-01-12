@@ -11,14 +11,14 @@ head: IgnoringException
 created_at: 2023-02-19T23:30:22Z
 updated_at: 2023-02-20T19:09:41Z
 url: https://github.com/astral-sh/ruff/pull/3044
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`tryceratops`] Ignoring Exception
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-19 23:30_
+_@colin99d_
 
 ref: #2056 
 

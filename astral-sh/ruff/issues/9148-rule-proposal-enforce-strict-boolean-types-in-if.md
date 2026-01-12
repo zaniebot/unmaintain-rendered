@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-15T11:05:30Z
 updated_at: 2023-12-18T08:05:15Z
 url: https://github.com/astral-sh/ruff/issues/9148
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule proposal: enforce strict boolean types in if statements
 
 ---
 
-_Issue opened by @valentincalomme on 2023-12-15 11:05_
+_@valentincalomme_
 
 A code guideline I enforce in my projects is only to use boolean values or expressions resulting in a boolean in an if statement. So far, I have not found a linter that enforces this automatically, hence my proposal to add this rule to `ruff`.
 

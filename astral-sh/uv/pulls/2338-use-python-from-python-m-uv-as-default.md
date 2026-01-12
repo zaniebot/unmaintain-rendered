@@ -12,14 +12,14 @@ head: konsti/default-python
 created_at: 2024-03-10T13:37:55Z
 updated_at: 2024-05-07T13:11:52Z
 url: https://github.com/astral-sh/uv/pull/2338
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 #  Use python from `python -m uv` as default 
 
 ---
 
-_Pull request opened by @konstin on 2024-03-10 13:37_
+_@konstin_
 
 Python tools run with `python -m <tool>` will use this `python` as their default python, including pip, virtualenv and the built-in venv. Calling Python tools this way is common, the [pip docs](https://pip.pypa.io/en/stable/user_guide/) use `python -m pip` exclusively, the built-in venv can only be called this way and certain project layouts require `python -m pytest` over `pytest`. This python interpreter takes precedence over the currently active (v)env.
 

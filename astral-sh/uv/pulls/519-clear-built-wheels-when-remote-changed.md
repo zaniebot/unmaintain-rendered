@@ -12,14 +12,14 @@ head: clear-built-wheels-when-remote-changed
 created_at: 2023-11-30T11:36:27Z
 updated_at: 2023-12-01T19:56:48Z
 url: https://github.com/astral-sh/uv/pull/519
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Clear built wheels when remote changed
 
 ---
 
-_Pull request opened by @konstin on 2023-11-30 11:36_
+_@konstin_
 
 Remove built wheels alongside their metadata when their index source dist or url source dist changed. For git source dists, we currently don't clear the previous build but use a new directory (not sure what's right here - are there any generic cache GC approaches out there? I've seen that e.g. spotify keeps its cache at 10GB max, but i also haven't seen any reusable, well tested approaches for this). Path distributions are unchanged (#478).
 

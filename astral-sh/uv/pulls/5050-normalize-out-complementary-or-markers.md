@@ -13,14 +13,14 @@ head: charlie/inverse
 created_at: 2024-07-14T23:43:49Z
 updated_at: 2024-07-14T23:53:59Z
 url: https://github.com/astral-sh/uv/pull/5050
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Normalize out complementary == or != markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-14 23:43_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T03:04:32Z
 updated_at: 2024-03-08T03:24:04Z
 url: https://github.com/astral-sh/ruff/issues/10289
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # error: Chinese characters in .ipynb cause an error
 
 ---
 
-_Issue opened by @zhuxining on 2024-03-08 03:04_
+_@zhuxining_
 
 
 * A minimal code snippet that reproduces the bug.

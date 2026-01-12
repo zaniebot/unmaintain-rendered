@@ -12,14 +12,14 @@ head: document-shrinking-script
 created_at: 2023-07-21T08:24:46Z
 updated_at: 2023-07-21T09:32:27Z
 url: https://github.com/astral-sh/ruff/pull/5942
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Document shrinking script
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 08:24_
+_@konstin_
 
 **Summary** Document shrinking script: I thinks it's both in a good enough state and valuable enough to document it's usage.
 

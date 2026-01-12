@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-19T18:11:32Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/863
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Infer sub-commands/long-arguments if not fully typed/supplied but are fully unambiguous
 
 ---
 
-_Issue opened by @neandrake on 2017-02-19 18:11_
+_@neandrake_
 
 If a sub command or long argument is only partially entered, it would be an ergonomic benefit if clap could infer the right intended sub command or long argument as long as it's unambiguous.
 

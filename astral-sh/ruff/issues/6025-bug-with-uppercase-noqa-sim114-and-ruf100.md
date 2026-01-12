@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T08:29:37Z
 updated_at: 2023-07-25T12:43:16Z
 url: https://github.com/astral-sh/ruff/issues/6025
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Bug with uppercase `# noqa: SIM114` and RUF100
 
 ---
 
-_Issue opened by @sondrfos on 2023-07-24 08:29_
+_@sondrfos_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

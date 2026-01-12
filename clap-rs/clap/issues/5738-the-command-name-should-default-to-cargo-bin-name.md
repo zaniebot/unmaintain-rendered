@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-09-20T09:00:21Z
 updated_at: 2024-09-20T17:27:03Z
 url: https://github.com/clap-rs/clap/issues/5738
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # The command name should default to CARGO_BIN_NAME
 
 ---
 
-_Issue opened by @ia0 on 2024-09-20 09:00_
+_@ia0_
 
 ### Please complete the following tasks
 

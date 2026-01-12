@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T00:52:15Z
 updated_at: 2024-10-28T14:05:56Z
 url: https://github.com/astral-sh/uv/issues/8620
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Using a consistent set of dependencies across many tools with isolated virtual environments
 
 ---
 
-_Issue opened by @jarshwah on 2024-10-28 00:52_
+_@jarshwah_
 
 I'm curious how we can ensure that we use a consistent set of dependencies across multiple tools and a "development" environment.
 

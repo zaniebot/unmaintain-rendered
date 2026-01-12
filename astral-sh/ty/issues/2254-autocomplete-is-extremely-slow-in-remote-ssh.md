@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-29T07:48:06Z
 updated_at: 2026-01-06T15:20:19Z
 url: https://github.com/astral-sh/ty/issues/2254
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Autocomplete is extremely slow in Remote SSH
 
 ---
 
-_Issue opened by @SunSeaLucky on 2025-12-29 07:48_
+_@SunSeaLucky_
 
 ### Summary
 

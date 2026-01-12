@@ -14,14 +14,14 @@ head: micha/rule-table
 created_at: 2025-01-21T15:34:16Z
 updated_at: 2025-01-23T09:57:01Z
 url: https://github.com/astral-sh/ruff/pull/15645
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add `rules` table to configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-21 15:34_
+_@MichaReiser_
 
 ## Summary
 

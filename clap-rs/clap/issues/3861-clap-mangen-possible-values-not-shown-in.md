@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-22T12:45:07Z
 updated_at: 2022-08-24T13:31:33Z
 url: https://github.com/clap-rs/clap/issues/3861
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # [clap_mangen] possible values not shown in generated man page
 
 ---
 
-_Issue opened by @RubixDev on 2022-06-22 12:45_
+_@RubixDev_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: konsti/split-batch-prefetch
 created_at: 2025-01-07T09:40:41Z
 updated_at: 2025-01-07T13:58:47Z
 url: https://github.com/astral-sh/uv/pull/10349
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Refactor batch prefetch
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 09:40_
+_@konstin_
 
 Ref https://github.com/astral-sh/uv/issues/10344
 

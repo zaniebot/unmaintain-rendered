@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T01:44:10Z
 updated_at: 2023-02-20T17:38:43Z
 url: https://github.com/astral-sh/ruff/issues/3046
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `E731` autofix broken for class vars
 
 ---
 
-_Issue opened by @JoshKarpel on 2023-02-20 01:44_
+_@JoshKarpel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

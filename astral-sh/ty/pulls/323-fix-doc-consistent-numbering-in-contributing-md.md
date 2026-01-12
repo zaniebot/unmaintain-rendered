@@ -11,14 +11,14 @@ head: doc-fix
 created_at: 2025-05-12T02:26:36Z
 updated_at: 2025-05-12T11:41:38Z
 url: https://github.com/astral-sh/ty/pull/323
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # fix(doc): consistent numbering in CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @samypr100 on 2025-05-12 02:26_
+_@samypr100_
 
 ## Summary
 

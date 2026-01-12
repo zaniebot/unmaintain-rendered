@@ -14,14 +14,14 @@ head: detect-all-expr-only-cases
 created_at: 2025-12-16T10:56:12Z
 updated_at: 2025-12-18T17:27:57Z
 url: https://github.com/astral-sh/ruff/pull/22002
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Don't suggest keyword statements when only expressions are valid
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-16 10:56_
+_@RasmusNygren_
 
 There are cases where the python grammar enforces expressions after certain statements. In such cases we want to suppress irrelevant keywords from the auto-complete suggestions.
 

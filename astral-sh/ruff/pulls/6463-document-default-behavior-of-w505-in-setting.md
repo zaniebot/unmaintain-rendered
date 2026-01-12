@@ -13,14 +13,14 @@ head: docs/W505
 created_at: 2023-08-09T21:32:14Z
 updated_at: 2023-08-11T21:41:33Z
 url: https://github.com/astral-sh/ruff/pull/6463
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Document default behavior of `W505` in setting
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-09 21:32_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/ruff/discussions/6459
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-30T15:25:19Z
 updated_at: 2024-05-30T16:12:41Z
 url: https://github.com/astral-sh/ruff/issues/11620
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff should follow imported notebooks via %run magic
 
 ---
 
-_Issue opened by @djoshea on 2024-05-30 15:25_
+_@djoshea_
 
 I'm working on jupyter notebooks in VSCode, and I have been modularizing the long preambles by putting a bunch of imports into a `preamble.ipynb` notebook, and then running this in my `main.ipynb` notebook via
 

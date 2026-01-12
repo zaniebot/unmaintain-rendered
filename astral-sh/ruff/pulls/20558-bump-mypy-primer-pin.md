@@ -14,14 +14,14 @@ head: alex/bump-primer
 created_at: 2025-09-24T19:42:12Z
 updated_at: 2025-09-24T19:50:58Z
 url: https://github.com/astral-sh/ruff/pull/20558
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # Bump mypy_primer pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-24 19:42_
+_@AlexWaygood_
 
 Pulls in https://github.com/hauntsaninja/mypy_primer/commit/5050c1d7013f85762011fd49449ad21822fdd102 (and https://github.com/hauntsaninja/mypy_primer/commit/0ee3d6330addd5270a50759a6b6f13b2627a423b, but that one's more something for local use rather than something for our CI)
 

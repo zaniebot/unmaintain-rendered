@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-25T13:43:18Z
 updated_at: 2021-12-27T21:59:39Z
 url: https://github.com/clap-rs/clap/issues/3217
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Flags that take multiple value cannot be partially overridden
 
 ---
 
-_Issue opened by @ducaale on 2021-12-25 13:43_
+_@ducaale_
 
 ### Please complete the following tasks
 

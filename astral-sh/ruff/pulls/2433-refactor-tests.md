@@ -12,14 +12,14 @@ head: refactor-tests
 created_at: 2023-02-01T07:36:01Z
 updated_at: 2023-02-01T22:06:44Z
 url: https://github.com/astral-sh/ruff/pull/2433
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Refactor tests
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-01 07:36_
+_@not-my-profile_
 
 _No description provided._
 

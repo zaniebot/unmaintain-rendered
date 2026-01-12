@@ -14,14 +14,14 @@ head: brent/fix-multiple-class-assignment
 created_at: 2025-04-03T19:55:57Z
 updated_at: 2025-04-03T21:32:41Z
 url: https://github.com/astral-sh/ruff/pull/17184
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Fix multiple assignment for class keyword argument
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-03 19:55_
+_@ntBre_
 
 Summary
 --

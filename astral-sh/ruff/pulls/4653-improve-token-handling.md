@@ -13,14 +13,14 @@ head: release_environment
 created_at: 2023-05-25T09:45:04Z
 updated_at: 2023-05-26T07:52:25Z
 url: https://github.com/astral-sh/ruff/pull/4653
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Improve token handling
 
 ---
 
-_Pull request opened by @konstin on 2023-05-25 09:45_
+_@konstin_
 
 ## Summary
 

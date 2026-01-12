@@ -11,14 +11,14 @@ head: add-copyright
 created_at: 2025-06-22T21:07:28Z
 updated_at: 2025-06-23T19:53:23Z
 url: https://github.com/clap-rs/clap/pull/6043
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add copyright to mangen.
 
 ---
 
-_Pull request opened by @dcampbell24 on 2025-06-22 21:07_
+_@dcampbell24_
 
 This does the man page part: #6041 
 

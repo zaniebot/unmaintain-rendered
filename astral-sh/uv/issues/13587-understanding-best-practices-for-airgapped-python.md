@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T22:40:22Z
 updated_at: 2025-08-21T13:36:53Z
 url: https://github.com/astral-sh/uv/issues/13587
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Understanding best practices for Airgapped python packages with UV.
 
 ---
 
-_Issue opened by @ctagard on 2025-05-21 22:40_
+_@ctagard_
 
 ### Question
 

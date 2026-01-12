@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T15:26:33Z
 updated_at: 2025-06-09T05:22:16Z
 url: https://github.com/astral-sh/ruff/issues/10299
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FA102 errors eventhough requires-python in pyproject.toml is ">=3.12"
 
 ---
 
-_Issue opened by @SimonMarynissen on 2024-03-08 15:26_
+_@SimonMarynissen_
 
 I have the following (standard) directory layout:
 

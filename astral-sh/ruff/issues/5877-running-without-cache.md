@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-19T09:39:07Z
 updated_at: 2023-07-24T11:17:44Z
 url: https://github.com/astral-sh/ruff/issues/5877
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Running without cache
 
 ---
 
-_Issue opened by @larsrinn on 2023-07-19 09:39_
+_@larsrinn_
 
 We'd like to run ruff in our CI pipeline in a Docker container. The process running the CI doesn't have permissions to create new files in the container, which is why the check fails with
 

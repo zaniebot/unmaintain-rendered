@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-08-30T16:50:15Z
 updated_at: 2015-09-01T04:06:26Z
 url: https://github.com/clap-rs/clap/issues/205
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Change ArgGroup::add_all from accepting a Vec<&str> to &[&str]
 
 ---
 
-_Issue opened by @kbknapp on 2015-08-30 16:50_
+_@kbknapp_
 
 Using a `Vec<&str>` is a legacy issue that never got changed, so it's somewhat of a legacy bug. Changing to a `&[&str]` will be an extremely minor "breaking" change, and I believe I've only come across a single repo which it will affect. 
 

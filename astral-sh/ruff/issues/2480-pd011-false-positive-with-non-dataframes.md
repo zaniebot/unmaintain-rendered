@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-02T14:43:59Z
 updated_at: 2023-02-03T18:15:01Z
 url: https://github.com/astral-sh/ruff/issues/2480
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `PD011`: False positive with non-dataframes
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-02 14:43_
+_@ngnpope_
 
 ```python
 class A:

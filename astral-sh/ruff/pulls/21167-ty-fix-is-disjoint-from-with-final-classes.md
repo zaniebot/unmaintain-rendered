@@ -13,14 +13,14 @@ head: ibraheem/disjoint-final
 created_at: 2025-10-31T14:32:14Z
 updated_at: 2025-10-31T14:50:56Z
 url: https://github.com/astral-sh/ruff/pull/21167
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Fix `is_disjoint_from` with `@final` classes
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-31 14:32_
+_@ibraheemdev_
 
 ## Summary
 

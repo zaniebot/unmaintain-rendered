@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-07T02:23:00Z
 updated_at: 2025-08-07T11:53:26Z
 url: https://github.com/astral-sh/ruff/issues/19797
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add a rule for unused functions
 
 ---
 
-_Issue opened by @mat926 on 2025-08-07 02:23_
+_@mat926_
 
 ### Summary
 

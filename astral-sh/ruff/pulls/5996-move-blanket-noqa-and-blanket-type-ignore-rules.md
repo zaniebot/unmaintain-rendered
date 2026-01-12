@@ -13,14 +13,14 @@ head: charlie/comment
 created_at: 2023-07-23T00:59:57Z
 updated_at: 2023-07-23T01:42:56Z
 url: https://github.com/astral-sh/ruff/pull/5996
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Move blanket `noqa` and blanket `type: ignore` rules into token-based checker
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 00:59_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5981.
 

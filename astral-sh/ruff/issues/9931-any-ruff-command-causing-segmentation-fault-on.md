@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-11T14:46:02Z
 updated_at: 2024-02-11T15:15:04Z
 url: https://github.com/astral-sh/ruff/issues/9931
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Any ruff command causing segmentation fault on Centos 7 with python 3.7.7
 
 ---
 
-_Issue opened by @ShockwaveNN on 2024-02-11 14:46_
+_@ShockwaveNN_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

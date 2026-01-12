@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-02T20:59:53Z
 updated_at: 2025-04-10T20:56:48Z
 url: https://github.com/astral-sh/uv/issues/12638
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Complain more loudly about unknown Dependency Object Specifiers
 
 ---
 
-_Issue opened by @Gankra on 2025-04-02 20:59_
+_@Gankra_
 
 ### Summary
 

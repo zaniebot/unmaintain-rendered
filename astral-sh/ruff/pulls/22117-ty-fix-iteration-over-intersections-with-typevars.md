@@ -12,14 +12,14 @@ head: charlie/int-sec
 created_at: 2025-12-20T19:14:50Z
 updated_at: 2025-12-24T04:15:16Z
 url: https://github.com/astral-sh/ruff/pull/22117
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Fix iteration over intersections with TypeVars whose bounds contain non-iterable types
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-20 19:14_
+_@charliermarsh_
 
 ## Summary
 

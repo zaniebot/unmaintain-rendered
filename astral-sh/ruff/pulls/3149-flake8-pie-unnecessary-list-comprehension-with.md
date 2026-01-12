@@ -12,14 +12,14 @@ head: pie802
 created_at: 2023-02-22T23:43:45Z
 updated_at: 2023-02-23T02:15:23Z
 url: https://github.com/astral-sh/ruff/pull/3149
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [flake8-pie] Unnecessary list comprehension, with autofix (PIE802)
 
 ---
 
-_Pull request opened by @matthewlloyd on 2023-02-22 23:43_
+_@matthewlloyd_
 
 Closes https://github.com/charliermarsh/ruff/issues/3144
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T16:41:08Z
 updated_at: 2024-07-18T17:02:09Z
 url: https://github.com/astral-sh/uv/issues/5192
-synced_at: 2026-01-10T11:10:14Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Bogus resolution when index is prefilled from lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-07-18 16:41_
+_@konstin_
 
 * Take https://github.com/konstin/packse/blob/1f70cbe8ddd572eb93e0a3679ce96a85c5017c78/scenarios/fork/preferences-dependent-forking.toml
 * Run the packse server

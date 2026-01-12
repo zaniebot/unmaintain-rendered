@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-03-02T17:33:11Z
 updated_at: 2020-01-01T16:52:22Z
 url: https://github.com/clap-rs/clap/issues/1424
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # String ownership in `about` function
 
 ---
 
-_Issue opened by @juanibiapina on 2019-03-02 17:33_
+_@juanibiapina_
 
 I would like to understand what is the reason for functions like `about`: https://docs.rs/clap/2.32.0/clap/struct.App.html#method.about to take `&str`.
 

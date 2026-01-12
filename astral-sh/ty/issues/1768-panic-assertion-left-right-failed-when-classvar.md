@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T12:29:18Z
 updated_at: 2025-12-07T14:27:16Z
 url: https://github.com/astral-sh/ty/issues/1768
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: assertion `left == right` failed when ClassVar has a tuple of types
 
 ---
 
-_Issue opened by @correctmost on 2025-12-05 12:29_
+_@correctmost_
 
 ### Summary
 

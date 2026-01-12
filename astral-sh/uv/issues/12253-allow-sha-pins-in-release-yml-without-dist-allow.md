@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T23:28:48Z
 updated_at: 2025-03-19T12:36:42Z
 url: https://github.com/astral-sh/uv/issues/12253
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Allow SHA pins in `release.yml` without `dist.allow-dirty`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-17 23:28_
+_@zanieb_
 
 See 
 

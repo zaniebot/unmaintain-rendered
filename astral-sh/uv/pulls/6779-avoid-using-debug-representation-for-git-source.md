@@ -13,14 +13,14 @@ head: zb/fix-git-source-log
 created_at: 2024-08-28T21:52:47Z
 updated_at: 2024-08-28T22:02:25Z
 url: https://github.com/astral-sh/uv/pull/6779
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Avoid using debug representation for git source urls
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 21:52_
+_@zanieb_
 
 e.g.
 

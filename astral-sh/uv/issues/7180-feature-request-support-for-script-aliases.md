@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T20:53:25Z
 updated_at: 2024-09-07T23:38:24Z
 url: https://github.com/astral-sh/uv/issues/7180
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Feature request: support for script aliases
 
 ---
 
-_Issue opened by @matejpekar on 2024-09-07 20:53_
+_@matejpekar_
 
 Hi! Our team currently relies heavily on **PDM** and we'd like to migrate to **uv**. However, we're missing a crucial feature: the ability to define and run [script aliases](https://pdm-project.org/latest/usage/scripts) directly from the `pyproject.toml` file.
 

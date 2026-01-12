@@ -13,14 +13,14 @@ head: charlie/keyword
 created_at: 2023-02-27T23:07:57Z
 updated_at: 2023-02-27T23:11:15Z
 url: https://github.com/astral-sh/ruff/pull/3261
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Don't flag keyword-based logging format strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-27 23:07_
+_@charliermarsh_
 
 This is consistent with Pylint.
 

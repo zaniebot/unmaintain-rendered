@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-06-07T19:23:52Z
 updated_at: 2024-01-31T02:10:24Z
 url: https://github.com/clap-rs/clap/issues/138
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # use -V for version instead of -v
 
 ---
 
-_Issue opened by @kbknapp on 2015-06-07 19:23_
+_@kbknapp_
 
 In order to follow typical conventions where lowercase `-v` is for `verbose` and many programs use the capital `-V` for version (to include `rustc`). Currently, if one wants to use typical `-v` for verbose, that leaves _only_ the long for `version` with no option to "add" a short without manually implementing it (which isn't hard...but still).
 

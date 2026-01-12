@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-06T06:53:56Z
 updated_at: 2024-08-07T01:31:25Z
 url: https://github.com/clap-rs/clap/issues/5627
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg::to_string panics
 
 ---
 
-_Issue opened by @crowlKats on 2024-08-06 06:53_
+_@crowlKats_
 
 ### Please complete the following tasks
 

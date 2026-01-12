@@ -12,14 +12,14 @@ head: update-contributing-link
 created_at: 2025-05-31T08:14:01Z
 updated_at: 2025-06-02T08:16:20Z
 url: https://github.com/astral-sh/uv/pull/13751
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Update dockerfile path in contributing docs
 
 ---
 
-_Pull request opened by @eegli on 2025-05-31 08:14_
+_@eegli_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

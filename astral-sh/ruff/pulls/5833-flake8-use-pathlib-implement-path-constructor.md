@@ -13,14 +13,14 @@ head: rule-path-constructor-default-argument
 created_at: 2023-07-17T14:12:53Z
 updated_at: 2023-07-20T08:42:22Z
 url: https://github.com/astral-sh/ruff/pull/5833
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`flake8-use-pathlib`] Implement `path-constructor-default-argument` (`PTH201`)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-17 14:12_
+_@sbrugman_
 
 Reviving https://github.com/astral-sh/ruff/pull/2348 step by step
 

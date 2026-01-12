@@ -14,14 +14,14 @@ head: charlie/c
 created_at: 2025-03-05T14:15:25Z
 updated_at: 2025-03-05T14:25:33Z
 url: https://github.com/astral-sh/uv/pull/11976
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Respect markers on constraints when validating current environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-05 14:15_
+_@charliermarsh_
 
 ## Summary
 

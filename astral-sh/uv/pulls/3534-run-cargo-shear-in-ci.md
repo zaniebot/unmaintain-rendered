@@ -13,14 +13,14 @@ head: charlie/shear-ci
 created_at: 2024-05-13T01:35:41Z
 updated_at: 2024-05-13T01:44:59Z
 url: https://github.com/astral-sh/uv/pull/3534
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Run `cargo shear` in CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 01:35_
+_@charliermarsh_
 
 _No description provided._
 

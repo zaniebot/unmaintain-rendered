@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-23T02:06:40Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/458
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support mutating args once added
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-23 02:06_
+_@kbknapp_
 
 It'd be nice to be able to mutate aspects of certain args after they've been add to an `App` struct.
 

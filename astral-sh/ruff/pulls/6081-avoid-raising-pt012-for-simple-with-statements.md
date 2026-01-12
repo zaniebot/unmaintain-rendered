@@ -12,14 +12,14 @@ head: PT012-allow-simple-statement
 created_at: 2023-07-26T01:10:41Z
 updated_at: 2023-07-26T02:32:12Z
 url: https://github.com/astral-sh/ruff/pull/6081
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid raising PT012 for simple `with` statements
 
 ---
 
-_Pull request opened by @harupy on 2023-07-26 01:10_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

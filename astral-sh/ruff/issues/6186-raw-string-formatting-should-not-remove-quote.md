@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-31T08:42:16Z
 updated_at: 2023-07-31T08:57:35Z
 url: https://github.com/astral-sh/ruff/issues/6186
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Raw string formatting should not remove quote escape backslahes
 
 ---
 
-_Issue opened by @konstin on 2023-07-31 08:42_
+_@konstin_
 
 Currently, `print(r"\"" + "|" + r"\"''")` gets formatted as `print(r'"' + "|" + r"\"''")`, but raw strings keep the backslash so they not equivalent:
 

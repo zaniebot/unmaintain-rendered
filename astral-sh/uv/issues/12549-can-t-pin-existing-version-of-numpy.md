@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T03:19:18Z
 updated_at: 2025-03-30T15:31:59Z
 url: https://github.com/astral-sh/uv/issues/12549
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Can't pin existing version of numpy
 
 ---
 
-_Issue opened by @RyanBlace on 2025-03-30 03:19_
+_@RyanBlace_
 
 ### Summary
 

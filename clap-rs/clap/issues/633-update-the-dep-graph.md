@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-26T15:18:04Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/633
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update the dep graph
 
 ---
 
-_Issue opened by @kbknapp on 2016-08-26 15:18_
+_@kbknapp_
 
 Various changes have taken place over the course of recent PRs. Just needs an update.
 

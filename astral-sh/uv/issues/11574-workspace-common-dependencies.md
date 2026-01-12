@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T09:13:49Z
 updated_at: 2025-03-04T15:07:10Z
 url: https://github.com/astral-sh/uv/issues/11574
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Workspace common dependencies
 
 ---
 
-_Issue opened by @Shuricks2015 on 2025-02-17 09:13_
+_@Shuricks2015_
 
 ### Question
 

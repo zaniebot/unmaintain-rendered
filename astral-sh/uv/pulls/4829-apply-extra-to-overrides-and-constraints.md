@@ -12,14 +12,14 @@ head: konsti/join-markers-for-requirements
 created_at: 2024-07-05T09:34:22Z
 updated_at: 2024-08-01T07:23:38Z
 url: https://github.com/astral-sh/uv/pull/4829
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Apply extra to overrides and constraints
 
 ---
 
-_Pull request opened by @konstin on 2024-07-05 09:34_
+_@konstin_
 
 This is an attempt to solve https://github.com/astral-sh/uv/issues/ by applying the extra marker of the requirement to overrides and constraints.
 

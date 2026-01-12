@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T22:55:13Z
 updated_at: 2025-01-06T12:41:24Z
 url: https://github.com/astral-sh/ruff/issues/14444
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FBT001 preview behavior may lead to false positives
 
 ---
 
-_Issue opened by @dylwil3 on 2024-11-18 22:55_
+_@dylwil3_
 
 The rule [boolean-type-hint-positional-argument (FBT001)](https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/#boolean-type-hint-positional-argument-fbt001) was extended in #7501 , under preview, to also flag positional arguments that have a type hint with any union of types that includes `bool`.
 

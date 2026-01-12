@@ -13,14 +13,14 @@ head: charlie/meta
 created_at: 2024-11-06T02:38:09Z
 updated_at: 2024-11-06T21:33:12Z
 url: https://github.com/astral-sh/ruff/pull/14120
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add support for resolving metaclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-06 02:38_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/diagnostic-kind
 created_at: 2023-03-05T20:35:06Z
 updated_at: 2023-03-08T17:51:40Z
 url: https://github.com/astral-sh/ruff/pull/3352
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Decouple `Diagnostic` from "all violations" enumeration
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-05 20:35_
+_@charliermarsh_
 
 ## Summary
 

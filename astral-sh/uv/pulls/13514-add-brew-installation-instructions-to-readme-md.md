@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-05-18T15:43:43Z
 updated_at: 2025-05-19T08:36:52Z
 url: https://github.com/astral-sh/uv/pull/13514
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Add brew installation instructions to README.md
 
 ---
 
-_Pull request opened by @rec on 2025-05-18 15:43_
+_@rec_
 
 Brew is a popular MacOS package manager, and as I write this, `brew install uv` installs the most recent `uv` version 0.7.5.
 

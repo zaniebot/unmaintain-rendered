@@ -13,14 +13,14 @@ head: lazy-files
 created_at: 2024-07-22T13:12:46Z
 updated_at: 2024-07-23T08:56:46Z
 url: https://github.com/astral-sh/ruff/pull/12452
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Lazy package file discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-22 13:12_
+_@MichaReiser_
 
 ## Summary
 This PR changes the package file discovery from being done eagerly when loading the workspace to lazily when the files are first needed (e.g. because `workspace.check` is called). 

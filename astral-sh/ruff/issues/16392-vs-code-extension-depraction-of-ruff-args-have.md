@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T13:10:15Z
 updated_at: 2025-02-26T14:00:10Z
 url: https://github.com/astral-sh/ruff/issues/16392
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # VS Code extension: Depraction of `ruff.args` have disabled the capacity for custom `unfixable` rules
 
 ---
 
-_Issue opened by @KerberosMorphy on 2025-02-26 13:10_
+_@KerberosMorphy_
 
 ### Question
 

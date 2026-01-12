@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-14T18:06:03Z
 updated_at: 2024-01-05T04:39:45Z
 url: https://github.com/astral-sh/ruff/issues/9134
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # v0.1.8 introduced breaking formatting changes to my `# noqa` pragma comment
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-12-14 18:06_
+_@tylerlaprade_
 
 This formatting was stable in v0.1.7:
 ```

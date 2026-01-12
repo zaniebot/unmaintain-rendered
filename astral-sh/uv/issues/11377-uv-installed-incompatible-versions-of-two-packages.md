@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T07:00:04Z
 updated_at: 2025-02-10T17:37:05Z
 url: https://github.com/astral-sh/uv/issues/11377
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `uv` installed incompatible versions of two packages
 
 ---
 
-_Issue opened by @emilioMaddalena on 2025-02-10 07:00_
+_@emilioMaddalena_
 
 ### Summary
 

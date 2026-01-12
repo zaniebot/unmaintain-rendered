@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-10T20:38:52Z
 updated_at: 2023-12-23T23:43:37Z
 url: https://github.com/astral-sh/ruff/issues/4361
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement a "review mode" for autofix application
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-10 20:38_
+_@charliermarsh_
 
 This has been discussed in a few other issues (#2395, #3642), but I want to create a parent issue to track the scope and implementation.
 

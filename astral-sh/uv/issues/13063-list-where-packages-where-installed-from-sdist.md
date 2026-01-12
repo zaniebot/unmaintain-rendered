@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T08:44:46Z
 updated_at: 2025-04-25T12:31:35Z
 url: https://github.com/astral-sh/uv/issues/13063
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # List where packages where installed from (sdist/wheel)
 
 ---
 
-_Issue opened by @Rogdham on 2025-04-23 08:44_
+_@Rogdham_
 
 ### Question
 

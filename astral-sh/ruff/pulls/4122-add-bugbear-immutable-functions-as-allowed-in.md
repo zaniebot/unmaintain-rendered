@@ -12,14 +12,14 @@ head: main
 created_at: 2023-04-26T17:48:57Z
 updated_at: 2023-04-28T01:23:06Z
 url: https://github.com/astral-sh/ruff/pull/4122
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add bugbear immutable functions as allowed in dataclasses
 
 ---
 
-_Pull request opened by @mosauter on 2023-04-26 17:48_
+_@mosauter_
 
 Fixes #4091 
 

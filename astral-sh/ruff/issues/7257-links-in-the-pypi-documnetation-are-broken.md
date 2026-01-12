@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-10T11:45:02Z
 updated_at: 2024-08-26T07:12:36Z
 url: https://github.com/astral-sh/ruff/issues/7257
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Links in the PyPi documnetation are broken
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2023-09-10 11:45_
+_@Cjkjvfnby_
 
 On PyPI page  https://pypi.org/project/ruff/0.0.287/ in the table of contents, headers in the document do not have anchors, so references to them are broken.
 

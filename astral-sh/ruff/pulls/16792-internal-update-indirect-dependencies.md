@@ -13,14 +13,14 @@ head: micha/upgrade-indirect-dependencies
 created_at: 2025-03-17T08:11:40Z
 updated_at: 2025-03-17T08:33:51Z
 url: https://github.com/astral-sh/ruff/pull/16792
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [internal]: Update indirect dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 08:11_
+_@MichaReiser_
 
 
 ## Summary

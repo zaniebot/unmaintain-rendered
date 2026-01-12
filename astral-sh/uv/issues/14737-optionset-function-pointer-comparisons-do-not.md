@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T17:44:32Z
 updated_at: 2025-07-20T22:17:08Z
 url: https://github.com/astral-sh/uv/issues/14737
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # `OptionSet`: function pointer comparisons do not produce meaningful results since their addresses are not guaranteed to be unique
 
 ---
 
-_Issue opened by @konstin on 2025-07-18 17:44_
+_@konstin_
 
 On nightly, clippy notes that `OptionSet` is not sound, as we're doing equally comparisons with it:
 

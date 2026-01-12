@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T13:55:07Z
 updated_at: 2025-09-17T17:50:56Z
 url: https://github.com/astral-sh/ruff/issues/15716
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # B023 False positive when there is a list comprehension with the same variable name in a loop.
 
 ---
 
-_Issue opened by @vivodi on 2025-01-24 13:55_
+_@vivodi_
 
 ### Description
 

@@ -14,14 +14,14 @@ head: brent/more-diag-fixes
 created_at: 2025-08-07T13:18:26Z
 updated_at: 2025-08-08T15:31:21Z
 url: https://github.com/astral-sh/ruff/pull/19806
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Fix a few more diagnostic differences from Ruff
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-07 13:18_
+_@ntBre_
 
 ## Summary
 

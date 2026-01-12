@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T23:47:46Z
 updated_at: 2025-12-03T19:02:13Z
 url: https://github.com/astral-sh/ty/issues/1734
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Improve diagnostics for failed reverse resolution (file-to-module) and failed submodule resolution with namespace packages
 
 ---
 
-_Issue opened by @winterqt on 2025-12-02 23:47_
+_@winterqt_
 
 ### Summary
 

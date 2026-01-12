@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-09T19:24:38Z
 updated_at: 2024-12-09T22:30:26Z
 url: https://github.com/astral-sh/uv/issues/9746
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Avoid 403 warning hint for PyTorch
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-09 19:24_
+_@charliermarsh_
 
 We _know_ that PyTorch returns 403 for unavailable packages. I think it's worth special-casing the hint to avoid appearing for PyTorch specifically.
 

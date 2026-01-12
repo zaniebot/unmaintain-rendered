@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-02-10T18:31:46Z
 updated_at: 2022-02-11T19:10:53Z
 url: https://github.com/clap-rs/clap/issues/3440
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Make `UseLongFormatForHelpSubcommand` unconditionally on
 
 ---
 
-_Issue opened by @epage on 2022-02-10 18:31_
+_@epage_
 
 As a user, when I see `help` I think of `--help` and would expect it to be the same output.
 

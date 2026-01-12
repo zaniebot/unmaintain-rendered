@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T09:14:43Z
 updated_at: 2025-03-06T12:35:48Z
 url: https://github.com/astral-sh/uv/issues/11740
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Document recommended way to install private pypi packages in docker build
 
 ---
 
-_Issue opened by @RonNabuurs on 2025-02-24 09:14_
+_@RonNabuurs_
 
 ### Summary
 

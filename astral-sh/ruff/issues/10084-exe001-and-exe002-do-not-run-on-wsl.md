@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T19:36:15Z
 updated_at: 2026-01-11T09:21:10Z
 url: https://github.com/astral-sh/ruff/issues/10084
-synced_at: 2026-01-11T09:56:57Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # EXE001 and EXE002 do not run on WSL
 
 ---
 
-_Issue opened by @MusicalNinjaDad on 2024-02-22 19:36_
+_@MusicalNinjaDad_
 
 **Background:**
 I have just set up ruff for the first time, and loved it, so fast and so complete! I fixed all the errors, added the github action to my pipeline, pushed the commit and ... boom, pipeline fail due to EXE002 ;(

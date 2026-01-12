@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T13:45:46Z
 updated_at: 2025-03-23T13:29:23Z
 url: https://github.com/astral-sh/uv/issues/12187
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # uv_build Error when the folder name is capitalized
 
 ---
 
-_Issue opened by @NourEldin-Osama on 2025-03-15 13:45_
+_@NourEldin-Osama_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: micha/try-depot-cargo
 created_at: 2025-07-11T11:37:56Z
 updated_at: 2025-07-16T09:21:50Z
 url: https://github.com/astral-sh/ruff/pull/19278
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # Try depot-cargo
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-11 11:37_
+_@MichaReiser_
 
 _No description provided._
 

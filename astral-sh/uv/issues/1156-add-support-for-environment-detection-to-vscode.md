@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-28T16:23:59Z
 updated_at: 2025-12-02T10:04:17Z
 url: https://github.com/astral-sh/uv/issues/1156
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Add support for environment detection to VSCode
 
 ---
 
-_Issue opened by @zanieb on 2024-01-28 16:23_
+_@zanieb_
 
 This is probably not relevant for us yet, but I want to track contributing this.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T20:31:28Z
 updated_at: 2025-10-08T06:22:03Z
 url: https://github.com/astral-sh/uv/issues/16120
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Monorepo/Workspace Layout Adjustments
 
 ---
 
-_Issue opened by @ZachHandley on 2025-10-03 20:31_
+_@ZachHandley_
 
 ### Summary
 

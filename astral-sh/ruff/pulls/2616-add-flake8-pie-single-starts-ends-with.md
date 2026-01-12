@@ -13,14 +13,14 @@ head: flake8-pie-810
 created_at: 2023-02-07T01:32:03Z
 updated_at: 2023-02-07T02:27:57Z
 url: https://github.com/astral-sh/ruff/pull/2616
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add flake8-pie single_starts_ends_with
 
 ---
 
-_Pull request opened by @sbdchd on 2023-02-07 01:32_
+_@sbdchd_
 
 Check for things like:
 

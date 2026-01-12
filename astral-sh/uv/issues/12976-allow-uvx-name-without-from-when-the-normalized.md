@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T21:40:09Z
 updated_at: 2025-06-16T23:00:29Z
 url: https://github.com/astral-sh/uv/issues/12976
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Allow `uvx <name>` without `--from` when the normalized executable name matches
 
 ---
 
-_Issue opened by @zanieb on 2025-04-18 21:40_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/11603#discussion_r1960520808
             

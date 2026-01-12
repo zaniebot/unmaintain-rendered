@@ -13,14 +13,14 @@ head: konsti/publish4
 created_at: 2024-09-19T13:26:07Z
 updated_at: 2024-09-24T16:07:21Z
 url: https://github.com/astral-sh/uv/pull/7548
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Implement trusted publishing
 
 ---
 
-_Pull request opened by @konstin on 2024-09-19 13:26_
+_@konstin_
 
 Trusted publishing allows uploading to PyPI from GitHub actions without setting a (long-lived) secret token. Instead, you configure a GitHub Actions workflow as trusted publisher. With the `id-token: write` permission, GitHub Actions then allows us to obtain an OpenID Connect (OIDC) token, with which we can ask PyPI for a short lived upload token just for this session. The user experiences this as credentials-free upload. See https://docs.pypi.org/trusted-publishers/ for details and https://github.com/pypa/gh-action-pypi-publish for the reference implementation.
 

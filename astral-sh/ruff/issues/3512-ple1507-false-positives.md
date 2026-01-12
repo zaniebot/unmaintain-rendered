@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T14:27:54Z
 updated_at: 2023-03-14T17:46:36Z
 url: https://github.com/astral-sh/ruff/issues/3512
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE1507 false positives
 
 ---
 
-_Issue opened by @davidnemec on 2023-03-14 14:27_
+_@davidnemec_
 
 Hi :wave:
 with latest version that adds PLE1507 I'm getting errors with a following usage. But I would say they are false positives.

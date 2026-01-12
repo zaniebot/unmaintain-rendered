@@ -13,14 +13,14 @@ head: support-pager-env-in-help
 created_at: 2024-07-27T21:24:46Z
 updated_at: 2024-10-24T17:57:46Z
 url: https://github.com/astral-sh/uv/pull/5511
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Respect `PAGER` env var when paging in `uv help` command
 
 ---
 
-_Pull request opened by @krishnan-chandra on 2024-07-27 21:24_
+_@krishnan-chandra_
 
 ## Summary
 

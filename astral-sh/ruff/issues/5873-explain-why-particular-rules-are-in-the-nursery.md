@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-18T22:47:24Z
 updated_at: 2024-05-12T20:33:41Z
 url: https://github.com/astral-sh/ruff/issues/5873
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Explain why particular rules are in the nursery category
 
 ---
 
-_Issue opened by @tjkuson on 2023-07-18 22:47_
+_@tjkuson_
 
 Rules in the nursery category are now visible in the documentation (#5439). However, the documentation does not explain _why_ particular rules are experimental or unstable. This means users are unable to make an informed decision regarding if they want to enable a given nursery rule.
 

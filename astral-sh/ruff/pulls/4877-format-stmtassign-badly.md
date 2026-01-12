@@ -14,14 +14,14 @@ head: format-statement-assign-badly
 created_at: 2023-06-05T20:48:18Z
 updated_at: 2023-06-12T12:37:24Z
 url: https://github.com/astral-sh/ruff/pull/4877
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format StmtAssign, badly
 
 ---
 
-_Pull request opened by @konstin on 2023-06-05 20:48_
+_@konstin_
 
 This is a near-verbatim formatting of assignment statements so we can see the effect of formatting the right hand side. It lacks the wrapping rules for the left hand side and will put the entire left hand side on one line.
 

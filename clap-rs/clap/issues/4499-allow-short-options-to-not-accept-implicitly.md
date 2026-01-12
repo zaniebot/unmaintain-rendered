@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-11-21T20:44:47Z
 updated_at: 2023-02-14T22:44:30Z
 url: https://github.com/clap-rs/clap/issues/4499
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow short options to not accept implicitly attached values (`-sfoo`)
 
 ---
 
-_Issue opened by @zohnannor on 2022-11-21 20:44_
+_@zohnannor_
 
 ### Please complete the following tasks
 

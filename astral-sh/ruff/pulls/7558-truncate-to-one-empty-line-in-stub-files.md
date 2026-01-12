@@ -13,14 +13,14 @@ head: charlie/pyi
 created_at: 2023-09-21T00:00:39Z
 updated_at: 2023-09-21T20:24:43Z
 url: https://github.com/astral-sh/ruff/pull/7558
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Truncate to one empty line in stub files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 00:00_
+_@charliermarsh_
 
 ## Summary
 

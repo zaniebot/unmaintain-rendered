@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-17T18:39:01Z
 updated_at: 2024-08-16T14:52:46Z
 url: https://github.com/astral-sh/uv/issues/3644
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `pip compile --upgrade` behavior with yanked packages
 
 ---
 
-_Issue opened by @zanieb on 2024-05-17 18:39_
+_@zanieb_
 
 Prompted at https://github.com/astral-sh/uv/issues/3602#issuecomment-2115761269
 

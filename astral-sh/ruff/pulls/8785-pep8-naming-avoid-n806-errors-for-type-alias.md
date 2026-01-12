@@ -13,14 +13,14 @@ head: charlie/naming
 created_at: 2023-11-20T12:24:06Z
 updated_at: 2023-11-20T12:36:30Z
 url: https://github.com/astral-sh/ruff/pull/8785
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pep8-naming`] Avoid `N806` errors for type alias statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-20 12:24_
+_@charliermarsh_
 
 Allow, e.g.:
 

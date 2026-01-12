@@ -14,14 +14,14 @@ head: dhruv/start-location
 created_at: 2023-10-04T05:35:30Z
 updated_at: 2023-10-04T07:59:45Z
 url: https://github.com/astral-sh/ruff/pull/7802
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use correct start location for class/function clause header
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-04 05:35_
+_@dhruvmanila_
 
 ## Summary
 

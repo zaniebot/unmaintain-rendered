@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T15:42:02Z
 updated_at: 2024-07-25T14:22:37Z
 url: https://github.com/astral-sh/uv/issues/5415
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Add "lockfile" or "lock file" to style guide
 
 ---
 
-_Issue opened by @zanieb on 2024-07-24 15:42_
+_@zanieb_
 
 Which one do we prefer?
 

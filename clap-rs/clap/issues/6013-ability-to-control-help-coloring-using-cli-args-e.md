@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-23T22:19:04Z
 updated_at: 2025-05-30T23:30:05Z
 url: https://github.com/clap-rs/clap/issues/6013
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ability to control `--help` coloring using CLI args (e.g. `--color`) with derive syntax
 
 ---
 
-_Issue opened by @ivan-aksamentov on 2025-05-23 22:19_
+_@ivan-aksamentov_
 
 ### Please complete the following tasks
 

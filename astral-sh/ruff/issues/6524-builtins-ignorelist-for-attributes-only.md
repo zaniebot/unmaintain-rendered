@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-12T18:02:11Z
 updated_at: 2024-01-11T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/6524
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `builtins-ignorelist` for attributes only
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-08-12 18:02_
+_@benjamin-kirkbride_
 
 Looking at https://beta.ruff.rs/docs/rules/builtin-attribute-shadowing/#builtin-attribute-shadowing-a003: I agree with the point made here: https://stackoverflow.com/a/60423602/1342874
 

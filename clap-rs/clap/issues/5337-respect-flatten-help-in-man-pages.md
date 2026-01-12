@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-02T18:42:37Z
 updated_at: 2024-02-02T18:42:38Z
 url: https://github.com/clap-rs/clap/issues/5337
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Respect `flatten_help` in man pages
 
 ---
 
-_Issue opened by @epage on 2024-02-02 18:42_
+_@epage_
 
 #5206 added support for subcommands like `git stash` that summarize all of their subcommands.  Unlike git, we show short help on `git stash --help` for these subcommands and long help on `git stash pop --help`.
 

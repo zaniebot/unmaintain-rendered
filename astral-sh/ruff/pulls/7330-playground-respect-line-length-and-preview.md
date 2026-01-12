@@ -14,14 +14,14 @@ head: playground-respect-line-width
 created_at: 2023-09-13T09:45:23Z
 updated_at: 2023-09-13T12:20:49Z
 url: https://github.com/astral-sh/ruff/pull/7330
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # playground: Respect line-length and preview configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-13 09:45_
+_@MichaReiser_
 
 ## Summary
 

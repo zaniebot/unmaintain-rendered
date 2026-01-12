@@ -14,14 +14,14 @@ head: jane/cli/replace-show-sources-with-format
 created_at: 2024-01-29T19:21:34Z
 updated_at: 2024-02-01T20:17:20Z
 url: https://github.com/astral-sh/ruff/pull/9687
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Replace `--show-source` and `--no-show-source` with `--output_format=<full|concise>`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-01-29 19:21_
+_@snowsignal_
 
 Fixes #7350
 

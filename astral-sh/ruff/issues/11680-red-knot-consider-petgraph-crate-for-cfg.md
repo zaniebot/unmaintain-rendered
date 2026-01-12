@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T16:18:53Z
 updated_at: 2024-07-17T06:54:19Z
 url: https://github.com/astral-sh/ruff/issues/11680
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] consider petgraph crate for CFG
 
 ---
 
-_Issue opened by @carljm on 2024-06-01 16:18_
+_@carljm_
 
 Take a look at petgraph crate and see what graph-representation choices it makes that might make sense for our CFG.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T22:15:31Z
 updated_at: 2024-02-22T17:27:53Z
 url: https://github.com/astral-sh/ruff/issues/10067
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # T201: limit effectiveness in `__name__ = __main__` blocks
 
 ---
 
-_Issue opened by @woodruffw on 2024-02-20 22:15_
+_@woodruffw_
 
 Hi all! As always, thanks for `ruff`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T11:33:55Z
 updated_at: 2025-11-13T13:56:17Z
 url: https://github.com/astral-sh/uv/issues/16684
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # bootstrapping problem with keyring in pyproject.toml to access internal index
 
 ---
 
-_Issue opened by @woutervh on 2025-11-11 11:33_
+_@woutervh_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: update-windows-crate
 created_at: 2025-01-11T21:40:15Z
 updated_at: 2025-01-14T15:49:49Z
 url: https://github.com/astral-sh/uv/pull/10524
-synced_at: 2026-01-10T11:44:55Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # chore: update trampoline windows crate to 0.59.0
 
 ---
 
-_Pull request opened by @samypr100 on 2025-01-11 21:40_
+_@samypr100_
 
 ## Summary
 

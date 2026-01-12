@@ -13,14 +13,14 @@ head: charlie/str
 created_at: 2025-08-15T09:47:35Z
 updated_at: 2025-08-15T10:05:13Z
 url: https://github.com/astral-sh/uv/pull/15299
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Avoid `&String` in installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-15 09:47_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T11:20:51Z
 updated_at: 2024-03-06T18:10:47Z
 url: https://github.com/astral-sh/ruff/issues/10246
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Github action documentation refers to 'options' instead of 'args'
 
 ---
 
-_Issue opened by @elliot-100 on 2024-03-06 11:20_
+_@elliot-100_
 
 https://docs.astral.sh/ruff/integrations/#github-actions says:
 

@@ -13,14 +13,14 @@ head: konsti/broken-mac-ver
 created_at: 2025-02-10T19:00:48Z
 updated_at: 2025-02-10T21:49:18Z
 url: https://github.com/astral-sh/uv/pull/11396
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Catch broken `mac_ver()`
 
 ---
 
-_Pull request opened by @konstin on 2025-02-10 19:00_
+_@konstin_
 
 A user reported a homebrew Python that would raise an exception in the interpreter probing script because `platform.mac_ver()` returned `('', ('', '', ''), '')` on his installation due to https://github.com/Homebrew/homebrew-core/issues/206778
 

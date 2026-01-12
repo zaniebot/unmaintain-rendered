@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T07:33:06Z
 updated_at: 2025-01-15T23:51:09Z
 url: https://github.com/astral-sh/uv/issues/6572
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # support setting `SSL_CERT_FILE` in `pyproject.toml`
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-24 07:33_
+_@DetachHead_
 
 as far as i can tell, the cert file can only be configured with the environment variable, but because in my case the file is stored in git, it would be more convenient if it could also be configured in `pyproject.toml`
 

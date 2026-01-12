@@ -12,14 +12,14 @@ head: zb/ci-windows-xxl
 created_at: 2024-08-07T20:11:00Z
 updated_at: 2024-08-08T14:11:15Z
 url: https://github.com/astral-sh/uv/pull/5890
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Use a larger runner for Windows test jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 20:11_
+_@zanieb_
 
 From 16 to 32 cores.
 

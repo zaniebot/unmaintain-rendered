@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:41:40Z
 updated_at: 2025-08-22T11:06:24Z
 url: https://github.com/astral-sh/uv/issues/15446
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # 0.8.13 install vllm in cuda env, but install torch with cpu
 
 ---
 
-_Issue opened by @yang-ybb on 2025-08-22 06:41_
+_@yang-ybb_
 
 ### Summary
 

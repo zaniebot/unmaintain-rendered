@@ -13,14 +13,14 @@ head: charlie/allow-hash
 created_at: 2025-01-30T18:17:07Z
 updated_at: 2025-01-30T18:35:14Z
 url: https://github.com/astral-sh/uv/pull/11107
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Ignore non-hash fragments in HTML API responses
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 18:17_
+_@charliermarsh_
 
 ## Summary
 

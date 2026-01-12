@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T21:10:00Z
 updated_at: 2025-11-07T07:24:42Z
 url: https://github.com/astral-sh/uv/issues/7604
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Interference with local python releases
 
 ---
 
-_Issue opened by @krstp on 2024-09-20 21:10_
+_@krstp_
 
 First, thank you for a great tool which is `uv`. I am really enjoying it.
 

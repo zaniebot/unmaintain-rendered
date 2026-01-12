@@ -13,14 +13,14 @@ head: charlie/LOG001
 created_at: 2023-09-15T02:54:00Z
 updated_at: 2023-09-15T03:07:28Z
 url: https://github.com/astral-sh/ruff/pull/7397
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`flake8-logging`] Implement `LOG001`: `direct-logger-instantiation`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-15 02:54_
+_@charliermarsh_
 
 ## Summary
 

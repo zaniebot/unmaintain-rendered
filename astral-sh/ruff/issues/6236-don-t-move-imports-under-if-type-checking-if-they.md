@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T11:51:04Z
 updated_at: 2023-08-01T15:04:43Z
 url: https://github.com/astral-sh/ruff/issues/6236
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Don't move imports under `if TYPE_CHECKING` if they're added to `__all__`
 
 ---
 
-_Issue opened by @pawamoy on 2023-08-01 11:51_
+_@pawamoy_
 
 In my top-level `__init__.py` file, I define the `__all__` variable to mark some imported objects as "public" or "re-exported".
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-30T21:25:56Z
 updated_at: 2025-01-07T19:31:04Z
 url: https://github.com/astral-sh/uv/issues/9544
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Add pinning packages to private indexes with uv add --script
 
 ---
 
-_Issue opened by @JonZeolla on 2024-11-30 21:25_
+_@JonZeolla_
 
 It would be nice to add support for pinning packages to indexes, including private indexes, in `uv run --scripts`. Today I do something like:
 

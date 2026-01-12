@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T18:25:40Z
 updated_at: 2025-12-02T02:46:59Z
 url: https://github.com/astral-sh/ty/issues/1684
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Detect attempts to override prohibited `NamedTuple` attributes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 18:25_
+_@AlexWaygood_
 
 For example:
 

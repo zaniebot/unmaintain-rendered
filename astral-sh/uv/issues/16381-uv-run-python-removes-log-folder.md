@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T10:34:12Z
 updated_at: 2025-10-22T16:48:02Z
 url: https://github.com/astral-sh/uv/issues/16381
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # uv run --python=... removes log folder
 
 ---
 
-_Issue opened by @ssbarnea on 2025-10-21 10:34_
+_@ssbarnea_
 
 ### Summary
 

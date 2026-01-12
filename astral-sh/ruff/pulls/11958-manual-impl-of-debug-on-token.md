@@ -13,14 +13,14 @@ head: dhruv/token-debug
 created_at: 2024-06-21T05:29:39Z
 updated_at: 2024-06-22T04:34:12Z
 url: https://github.com/astral-sh/ruff/pull/11958
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Manual impl of `Debug` on `Token`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-21 05:29_
+_@dhruvmanila_
 
 ## Summary
 

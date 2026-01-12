@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T01:00:24Z
 updated_at: 2026-01-09T13:23:00Z
 url: https://github.com/astral-sh/uv/issues/17355
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Flag `--native-tls` still shows UnknownIssuer on windows.
 
 ---
 
-_Issue opened by @Tennyleaz on 2026-01-08 01:00_
+_@Tennyleaz_
 
 ### Summary
 

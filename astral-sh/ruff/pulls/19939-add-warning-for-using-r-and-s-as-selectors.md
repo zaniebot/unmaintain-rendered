@@ -13,14 +13,14 @@ head: deprecate-invalid-selectors
 created_at: 2025-08-16T15:40:20Z
 updated_at: 2025-09-16T07:57:51Z
 url: https://github.com/astral-sh/ruff/pull/19939
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # Add warning for using R and S as selectors
 
 ---
 
-_Pull request opened by @GDYendell on 2025-08-16 15:40_
+_@GDYendell_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

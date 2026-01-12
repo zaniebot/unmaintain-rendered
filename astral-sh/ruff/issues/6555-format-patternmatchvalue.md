@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-14T12:30:25Z
 updated_at: 2023-08-23T14:01:17Z
 url: https://github.com/astral-sh/ruff/issues/6555
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Format `PatternMatchValue`
 
 ---
 
-_Issue opened by @konstin on 2023-08-14 12:30_
+_@konstin_
 
 Implement formatting for `PatternMatchValue`, see https://github.com/astral-sh/ruff/issues/5834
 

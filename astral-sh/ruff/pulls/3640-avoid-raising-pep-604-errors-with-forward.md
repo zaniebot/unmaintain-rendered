@@ -12,14 +12,14 @@ head: charlie/string
 created_at: 2023-03-21T03:40:48Z
 updated_at: 2023-03-21T04:14:02Z
 url: https://github.com/astral-sh/ruff/pull/3640
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid raising PEP 604 errors with forward-referenced members
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-21 03:40_
+_@charliermarsh_
 
 Small follow-up to #3593.
 

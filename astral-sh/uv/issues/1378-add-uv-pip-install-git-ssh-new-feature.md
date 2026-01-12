@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-15T23:05:50Z
 updated_at: 2024-03-22T21:23:22Z
 url: https://github.com/astral-sh/uv/issues/1378
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add uv pip install git+ssh:// new feature
 
 ---
 
-_Issue opened by @gcamargo1 on 2024-02-15 23:05_
+_@gcamargo1_
 
 Hi,
 Is it possible to add the :

@@ -13,14 +13,14 @@ head: alex/protocol-knownfunctions
 created_at: 2025-04-17T13:07:01Z
 updated_at: 2025-04-17T13:49:54Z
 url: https://github.com/astral-sh/ruff/pull/17450
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add `KnownFunction` variants for `is_protocol`, `get_protocol_members` and `runtime_checkable`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-17 13:07_
+_@AlexWaygood_
 
 ## Summary
 

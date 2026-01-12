@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-26T12:53:16Z
 updated_at: 2022-11-26T15:31:24Z
 url: https://github.com/astral-sh/ruff/issues/910
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # B023 location is wrong when occurring inside format string 
 
 ---
 
-_Issue opened by @layday on 2022-11-26 12:53_
+_@layday_
 
 A late-bound loop variable used inside a format string is reported on the first line of the document.
 

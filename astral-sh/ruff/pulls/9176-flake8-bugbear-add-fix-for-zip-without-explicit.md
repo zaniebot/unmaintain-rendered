@@ -13,14 +13,14 @@ head: b905-autofix
 created_at: 2023-12-18T07:44:18Z
 updated_at: 2023-12-18T18:43:14Z
 url: https://github.com/astral-sh/ruff/pull/9176
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`flake8-bugbear`] Add fix for `zip-without-explicit-strict` (`B905`)
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-12-18 07:44_
+_@hauntsaninja_
 
 _No description provided._
 

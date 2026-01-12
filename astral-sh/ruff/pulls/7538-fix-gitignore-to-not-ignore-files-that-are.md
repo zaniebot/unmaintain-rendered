@@ -13,14 +13,14 @@ head: clear-git-cache
 created_at: 2023-09-20T10:13:56Z
 updated_at: 2023-09-21T19:33:10Z
 url: https://github.com/astral-sh/ruff/pull/7538
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix gitignore to not ignore files that are required
 
 ---
 
-_Pull request opened by @konstin on 2023-09-20 10:13_
+_@konstin_
 
 It is apparently possible to add files to the git index, even if they are part of the gitignore (see e.g. https://stackoverflow.com/questions/45400361/why-is-gitignore-not-ignoring-my-files, even though it's strange that the gitignore entries existed before the files were added, i wouldn't know how to get them added in that case). I ran
 ```

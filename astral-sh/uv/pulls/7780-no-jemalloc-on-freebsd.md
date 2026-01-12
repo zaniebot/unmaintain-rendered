@@ -14,14 +14,14 @@ head: konsti/no-tikv-on-freebsd
 created_at: 2024-09-29T13:28:44Z
 updated_at: 2024-09-29T15:49:09Z
 url: https://github.com/astral-sh/uv/pull/7780
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # No jemalloc on freebsd
 
 ---
 
-_Pull request opened by @konstin on 2024-09-29 13:28_
+_@konstin_
 
 See https://github.com/astral-sh/uv/issues/3370#issuecomment-2381285875
 

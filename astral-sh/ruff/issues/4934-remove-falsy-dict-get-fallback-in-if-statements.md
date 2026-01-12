@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-07T18:08:12Z
 updated_at: 2024-12-31T10:40:53Z
 url: https://github.com/astral-sh/ruff/issues/4934
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Remove falsy dict.get() fallback in `if` statements
 
 ---
 
-_Issue opened by @janosh on 2023-06-07 18:08_
+_@janosh_
 
 ```py
 # bad

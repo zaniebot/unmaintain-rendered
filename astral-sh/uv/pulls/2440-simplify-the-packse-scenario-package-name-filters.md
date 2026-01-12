@@ -14,14 +14,14 @@ head: zb/packse-names
 created_at: 2024-03-14T00:37:29Z
 updated_at: 2024-03-14T01:16:52Z
 url: https://github.com/astral-sh/uv/pull/2440
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Simplify the packse scenario package name filters
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-14 00:37_
+_@zanieb_
 
 I liked the bird names but we can't actually apply those in some situations (i.e. when the package is not supposed to exist) — this is simpler.
 

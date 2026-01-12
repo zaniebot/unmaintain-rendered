@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T13:57:59Z
 updated_at: 2026-01-11T12:41:26Z
 url: https://github.com/astral-sh/ruff/issues/21894
-synced_at: 2026-01-11T13:05:37Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Add ruff --stdin--zero/ruff -0 like xargs or ruff --paths-from-file
 
 ---
 
-_Issue opened by @rtaycher on 2025-12-10 13:57_
+_@rtaycher_
 
 I was just using ruff to add linting to our CI. Since the idea of comparing to baseline errors seems stuck for a while it would be nice if there was a nicer way to provide a bunch of input paths besides passing them as arguments. 
 

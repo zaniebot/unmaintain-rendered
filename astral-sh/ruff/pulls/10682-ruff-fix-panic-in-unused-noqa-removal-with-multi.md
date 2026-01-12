@@ -14,14 +14,14 @@ head: fix-ruf100-panic
 created_at: 2024-03-31T19:21:18Z
 updated_at: 2024-04-01T01:05:54Z
 url: https://github.com/astral-sh/ruff/pull/10682
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`ruff`] Fix panic in unused `# noqa` removal with multi-byte space (`RUF100`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-03-31 19:21_
+_@diceroll123_
 
 ## Summary
 

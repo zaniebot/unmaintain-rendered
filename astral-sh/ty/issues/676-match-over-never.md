@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T12:07:08Z
 updated_at: 2025-11-18T16:10:33Z
 url: https://github.com/astral-sh/ty/issues/676
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `match` over `Never`
 
 ---
 
-_Issue opened by @pfaion-soundhound on 2025-06-18 12:07_
+_@pfaion-soundhound_
 
 ### Summary
 

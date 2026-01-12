@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-14T03:18:26Z
 updated_at: 2023-01-14T08:21:18Z
 url: https://github.com/astral-sh/ruff/issues/1860
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `wasm-pack build` doesn't support the new crate structure
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-14 03:18_
+_@not-my-profile_
 
 The new structure introduced in #1816 is now unfortunately causing the "[Playground] Release" workflow to fail. This is because the `wasm-pack build --target web --out-dir playground/src/pkg` command defined in `playground.yaml` is attempting to also build `ruff_cli` (which no longer supports wasm).
 

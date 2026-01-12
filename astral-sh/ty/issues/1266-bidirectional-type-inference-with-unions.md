@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T23:08:40Z
 updated_at: 2025-10-16T19:17:39Z
 url: https://github.com/astral-sh/ty/issues/1266
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Bidirectional type inference with unions
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-09-26 23:08_
+_@ibraheemdev_
 
 This snippet currently type-checks:
 ```py

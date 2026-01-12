@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-01T16:35:51Z
 updated_at: 2023-05-10T21:11:00Z
 url: https://github.com/astral-sh/ruff/issues/76
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Consider using hypothesmith
 
 ---
 
-_Issue opened by @sobolevn on 2022-09-01 16:35_
+_@sobolevn_
 
 Consider using https://pypi.org/project/hypothesmith/
 It generates lots of python programms to run your tool on.

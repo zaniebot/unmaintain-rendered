@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-10-13T10:53:02Z
 updated_at: 2021-05-31T09:28:32Z
 url: https://github.com/clap-rs/clap/issues/2171
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # AllArgsOverrideSelf fails to take effect in certain patterns of arguments
 
 ---
 
-_Issue opened by @ssokolow on 2020-10-13 10:53_
+_@ssokolow_
 
 ### Make sure you completed the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T07:36:49Z
 updated_at: 2024-09-21T14:21:39Z
 url: https://github.com/astral-sh/uv/issues/6305
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # installing private repo in Dockerfile fails with uv, works with poetry
 
 ---
 
-_Issue opened by @captnswing on 2024-08-21 07:36_
+_@captnswing_
 
 Hello!
 and congratulations on the bombastic release of `uv 0.3.0`! I've been using `poetry` for a while now and I'm excited to

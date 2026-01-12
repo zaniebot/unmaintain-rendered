@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T09:21:15Z
 updated_at: 2024-03-13T12:59:41Z
 url: https://github.com/astral-sh/ruff/issues/10379
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `W292` missing detection
 
 ---
 
-_Issue opened by @hikaru-kajita on 2024-03-13 09:21_
+_@hikaru-kajita_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-03T01:18:07Z
 updated_at: 2024-01-03T03:04:53Z
 url: https://github.com/astral-sh/ruff/issues/9374
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Infinite loop in F632/E711
 
 ---
 
-_Issue opened by @addisoncrump on 2024-01-03 01:18_
+_@addisoncrump_
 
 I just tried this on master (6c0734680ede806cef849d2d8c7105e2ecd785ad).
 

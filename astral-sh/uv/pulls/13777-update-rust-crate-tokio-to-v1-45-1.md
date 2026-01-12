@@ -13,14 +13,14 @@ head: renovate/tokio-1.x-lockfile
 created_at: 2025-06-02T02:02:56Z
 updated_at: 2025-06-02T07:44:09Z
 url: https://github.com/astral-sh/uv/pull/13777
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update Rust crate tokio to v1.45.1
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 02:02_
+_@renovate_
 
 This PR contains the following updates:
 

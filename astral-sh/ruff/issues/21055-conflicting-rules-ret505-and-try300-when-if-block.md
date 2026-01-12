@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-24T05:26:17Z
 updated_at: 2025-10-24T05:28:11Z
 url: https://github.com/astral-sh/ruff/issues/21055
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Conflicting rules `RET505` and `TRY300` when if block is wrapped in try block
 
 ---
 
-_Issue opened by @IBuckton on 2025-10-24 05:26_
+_@IBuckton_
 
 ### Summary
 

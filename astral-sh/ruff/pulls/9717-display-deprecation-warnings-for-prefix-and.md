@@ -12,14 +12,14 @@ head: zb/deprecate-group
 created_at: 2024-01-30T19:52:46Z
 updated_at: 2024-01-31T16:59:45Z
 url: https://github.com/astral-sh/ruff/pull/9717
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Display deprecation warnings for prefix and linter selections with all rules deprecated
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-30 19:52_
+_@zanieb_
 
 If _all_ of the rules in a prefix or lint rule selector are deprecated then we warn. This means that if you select `PGH` we will throw a warning instead of silently deselecting the rules.
 

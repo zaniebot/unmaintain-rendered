@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-15T09:01:17Z
 updated_at: 2023-08-03T15:30:02Z
 url: https://github.com/astral-sh/ruff/issues/5773
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Propose type alias for recurring long type hints
 
 ---
 
-_Issue opened by @sbrugman on 2023-07-15 09:01_
+_@sbrugman_
 
 There is a pattern when using long type annotations multiple times that might make a useful linting rule. I've searched, but not found it (yet). (flake8-pyi #848, or flake-annotations might be candidates, but this might be just out of scope)
 

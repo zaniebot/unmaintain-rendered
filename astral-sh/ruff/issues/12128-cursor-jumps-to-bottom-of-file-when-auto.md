@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T01:59:52Z
 updated_at: 2024-07-04T03:54:08Z
 url: https://github.com/astral-sh/ruff/issues/12128
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Cursor jumps to bottom of file when auto-formatting on save
 
 ---
 
-_Issue opened by @DetachHead on 2024-07-01 01:59_
+_@DetachHead_
 
 this is a very strange bug that i can't seem to minify at all. 
 

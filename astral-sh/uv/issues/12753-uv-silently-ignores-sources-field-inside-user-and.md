@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T17:23:35Z
 updated_at: 2025-04-08T21:01:14Z
 url: https://github.com/astral-sh/uv/issues/12753
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # UV silently ignores sources field inside user and system-level configuration, instead of erroring
 
 ---
 
-_Issue opened by @orishamir on 2025-04-08 17:23_
+_@orishamir_
 
 ### Summary
 

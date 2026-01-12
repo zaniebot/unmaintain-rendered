@@ -13,14 +13,14 @@ head: dhruv/update-setup-img
 created_at: 2024-10-16T04:38:40Z
 updated_at: 2024-10-16T04:41:38Z
 url: https://github.com/astral-sh/ruff/pull/13767
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update setup image for PyCharm External Tool
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-16 04:38_
+_@dhruvmanila_
 
 ## Summary
 

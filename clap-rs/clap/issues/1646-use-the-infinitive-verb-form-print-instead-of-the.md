@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-01-29T12:04:43Z
 updated_at: 2020-02-01T19:44:11Z
 url: https://github.com/clap-rs/clap/issues/1646
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Use the infinitive verb form (‘print’) instead of the third singular (‘prints’) in help messages
 
 ---
 
-_Issue opened by @glts on 2020-01-29 12:04_
+_@glts_
 
 I would like to propose switching the verb form used in the examples, but especially in the default help messages, to using the infinitive or imperative form. For example, ‘prints’ would become ‘print’.
 

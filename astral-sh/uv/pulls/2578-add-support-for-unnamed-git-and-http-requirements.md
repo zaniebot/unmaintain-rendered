@@ -12,14 +12,14 @@ head: charlie/bare-vi
 created_at: 2024-03-20T22:57:09Z
 updated_at: 2024-03-21T13:44:55Z
 url: https://github.com/astral-sh/uv/pull/2578
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Add support for unnamed Git and HTTP requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 22:57_
+_@charliermarsh_
 
 ## Summary
 

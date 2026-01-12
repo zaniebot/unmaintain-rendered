@@ -12,14 +12,14 @@ head: charlie/ruff_python_ast
 created_at: 2023-03-06T22:18:05Z
 updated_at: 2023-03-07T15:18:42Z
 url: https://github.com/astral-sh/ruff/pull/3370
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Create a `rust_python_ast` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 22:18_
+_@charliermarsh_
 
 This PR productionizes @MichaReiser's suggestion in https://github.com/charliermarsh/ruff/issues/1820#issuecomment-1440204423, by creating a separate crate for the `ast` module (`rust_python_ast`). This will enable us to further split up the `ruff` crate, as we'll be able to create (e.g.) separate sub-linter crates that have access to these common AST utilities.
 

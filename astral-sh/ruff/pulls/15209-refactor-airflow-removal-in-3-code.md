@@ -13,14 +13,14 @@ head: dhruv/airflow-refactor
 created_at: 2024-12-31T05:16:04Z
 updated_at: 2024-12-31T05:28:35Z
 url: https://github.com/astral-sh/ruff/pull/15209
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Refactor Airflow removal in 3 code
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-31 05:16_
+_@dhruvmanila_
 
 This PR contains a couple of refactors for the Airflow removal in 3 code, nothing major just some minor nits.
 

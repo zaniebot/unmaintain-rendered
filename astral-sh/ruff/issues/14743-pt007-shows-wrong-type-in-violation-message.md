@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T20:56:51Z
 updated_at: 2024-12-04T14:02:46Z
 url: https://github.com/astral-sh/ruff/issues/14743
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PT007 shows wrong type in violation message
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-12-02 20:56_
+_@ThiefMaster_
 
 The violation message shows the same type twice, even though one of them should be `list`.
 

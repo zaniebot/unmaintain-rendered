@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T14:25:13Z
 updated_at: 2024-06-19T00:39:20Z
 url: https://github.com/astral-sh/uv/issues/1870
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Can we use uv for dependency management like poetry
 
 ---
 
-_Issue opened by @YeonwooSung on 2024-02-22 14:25_
+_@YeonwooSung_
 
 Just curious, is it possible to use uv for managing and updating the dependencies and dependencies of dependencies just like poetry so that we could replace the poetry with uv?
 

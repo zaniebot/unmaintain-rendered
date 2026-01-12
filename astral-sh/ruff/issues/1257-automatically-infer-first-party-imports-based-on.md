@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-16T03:18:07Z
 updated_at: 2022-12-17T02:19:12Z
 url: https://github.com/astral-sh/ruff/issues/1257
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Automatically infer first-party imports based on "current" module path
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-16 03:18_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: ww/ci-fixes
 created_at: 2025-08-01T18:47:53Z
 updated_at: 2025-08-01T19:09:31Z
 url: https://github.com/astral-sh/uv/pull/15016
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # chore(ci): pin some lingering actions by hash
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-01 18:47_
+_@woodruffw_
 
 This is the first of several burndown PRs for CI.
 

@@ -13,14 +13,14 @@ head: zb/authenticate-docs
 created_at: 2025-03-10T18:00:25Z
 updated_at: 2025-03-11T20:01:44Z
 url: https://github.com/astral-sh/uv/pull/12102
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Update the `index.authenticate` docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-10 18:00_
+_@zanieb_
 
 Follow-up to #11896 
 

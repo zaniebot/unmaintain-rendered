@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-08T20:52:24Z
 updated_at: 2025-07-09T06:19:52Z
 url: https://github.com/astral-sh/ty/issues/785
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Separate rules for missing-argument with `**`
 
 ---
 
-_Issue opened by @adamh-oai on 2025-07-08 20:52_
+_@adamh-oai_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: fix-remote-constraint-files
 created_at: 2025-10-13T19:53:53Z
 updated_at: 2025-11-23T20:01:24Z
 url: https://github.com/astral-sh/uv/pull/16287
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Fix: uv fails if requirements.txt files contain remote constraints
 
 ---
 
-_Pull request opened by @mlanett on 2025-10-13 19:53_
+_@mlanett_
 
 ## Summary
 

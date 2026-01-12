@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-07T17:14:44Z
 updated_at: 2025-09-09T07:43:24Z
 url: https://github.com/astral-sh/uv/issues/15713
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # "uv pip install" tries to download already installed package
 
 ---
 
-_Issue opened by @vbooka1 on 2025-09-07 17:14_
+_@vbooka1_
 
 ### Summary
 

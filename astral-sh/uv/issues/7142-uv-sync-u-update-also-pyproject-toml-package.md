@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T22:12:30Z
 updated_at: 2024-10-21T21:43:28Z
 url: https://github.com/astral-sh/uv/issues/7142
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # "uv sync -U" update also pyproject.toml package version
 
 ---
 
-_Issue opened by @muk-as on 2024-09-06 22:12_
+_@muk-as_
 
 in pyproject.toml was fastapi>=0.113
 uv sync -U will update fastapi to 0.114 in .venv, uv.lock

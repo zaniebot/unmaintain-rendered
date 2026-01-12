@@ -13,14 +13,14 @@ head: alex/stdlib-alias-narrowing
 created_at: 2025-11-11T19:56:03Z
 updated_at: 2025-11-11T21:09:27Z
 url: https://github.com/astral-sh/ruff/pull/21391
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Support `isinstance()` and `issubclass()` narrowing when the second argument is a `typing.py` stdlib alias
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-11 19:56_
+_@AlexWaygood_
 
 ## Summary
 

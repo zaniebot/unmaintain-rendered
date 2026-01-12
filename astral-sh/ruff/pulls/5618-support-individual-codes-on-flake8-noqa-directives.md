@@ -13,14 +13,14 @@ head: charlie/exemptions
 created_at: 2023-07-08T16:39:16Z
 updated_at: 2023-07-08T17:07:30Z
 url: https://github.com/astral-sh/ruff/pull/5618
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Support individual codes on `# flake8: noqa` directives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-08 16:39_
+_@charliermarsh_
 
 ## Summary
 

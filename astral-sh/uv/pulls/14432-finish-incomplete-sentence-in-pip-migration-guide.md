@@ -13,14 +13,14 @@ head: zb/pip-fixup
 created_at: 2025-07-03T01:01:05Z
 updated_at: 2025-07-03T01:02:18Z
 url: https://github.com/astral-sh/uv/pull/14432
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Finish incomplete sentence in pip migration guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-03 01:01_
+_@zanieb_
 
 Fixes https://github.com/astral-sh/uv/pull/12382#discussion_r2181237729
 

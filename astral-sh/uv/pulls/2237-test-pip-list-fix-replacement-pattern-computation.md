@@ -13,14 +13,14 @@ head: pip-list-len
 created_at: 2024-03-06T10:03:54Z
 updated_at: 2024-03-06T14:13:31Z
 url: https://github.com/astral-sh/uv/pull/2237
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # test: pip_list: Fix replacement pattern computation
 
 ---
 
-_Pull request opened by @mgorny on 2024-03-06 10:03_
+_@mgorny_
 
 ## Summary
 

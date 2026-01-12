@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T15:53:14Z
 updated_at: 2025-03-20T16:31:39Z
 url: https://github.com/astral-sh/uv/issues/12341
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # An error occurs when switching to the commit
 
 ---
 
-_Issue opened by @Wintreist on 2025-03-20 15:53_
+_@Wintreist_
 
 ### Summary
 

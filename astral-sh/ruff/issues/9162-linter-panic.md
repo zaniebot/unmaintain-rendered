@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-16T12:29:32Z
 updated_at: 2023-12-17T12:54:00Z
 url: https://github.com/astral-sh/ruff/issues/9162
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Linter panic]
 
 ---
 
-_Issue opened by @dycw on 2023-12-16 12:29_
+_@dycw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

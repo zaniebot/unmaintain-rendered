@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T03:44:31Z
 updated_at: 2023-09-02T08:23:10Z
 url: https://github.com/astral-sh/ruff/issues/6966
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add a `--check` flag to the formatter CLI
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-29 03:44_
+_@charliermarsh_
 
 Avoids writing the files to disk, and exits with a non-zero status code if any files would be changed.
 

@@ -14,14 +14,14 @@ head: format-expr-name
 created_at: 2023-06-02T07:30:38Z
 updated_at: 2023-06-03T14:06:15Z
 url: https://github.com/astral-sh/ruff/pull/4803
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format `ExprName`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-02 07:30_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

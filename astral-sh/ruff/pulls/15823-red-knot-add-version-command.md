@@ -13,14 +13,14 @@ head: red-knot-version
 created_at: 2025-01-30T02:49:42Z
 updated_at: 2025-02-02T19:16:11Z
 url: https://github.com/astral-sh/ruff/pull/15823
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Add version command
 
 ---
 
-_Pull request opened by @tjkuson on 2025-01-30 02:49_
+_@tjkuson_
 
 ## Summary
 

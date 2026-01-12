@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T23:19:24Z
 updated_at: 2024-09-09T01:17:13Z
 url: https://github.com/astral-sh/uv/issues/7203
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Custom task runner
 
 ---
 
-_Issue opened by @dbrtly on 2024-09-08 23:19_
+_@dbrtly_
 
 `npm run build`
 

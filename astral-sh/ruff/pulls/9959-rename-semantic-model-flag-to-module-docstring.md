@@ -13,14 +13,14 @@ head: dhruv/rename-model-flag
 created_at: 2024-02-12T19:05:55Z
 updated_at: 2024-02-12T19:18:41Z
 url: https://github.com/astral-sh/ruff/pull/9959
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Rename semantic model flag to `MODULE_DOCSTRING_BOUNDARY`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-12 19:05_
+_@dhruvmanila_
 
 ## Summary
 

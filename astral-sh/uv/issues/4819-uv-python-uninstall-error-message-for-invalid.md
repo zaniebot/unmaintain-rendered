@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T19:03:53Z
 updated_at: 2024-07-18T00:47:56Z
 url: https://github.com/astral-sh/uv/issues/4819
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv python uninstall` error message for invalid requests is confusing
 
 ---
 
-_Issue opened by @zanieb on 2024-07-04 19:03_
+_@zanieb_
 
 e.g.
 

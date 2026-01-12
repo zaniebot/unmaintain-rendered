@@ -12,14 +12,14 @@ head: star
 created_at: 2022-12-28T03:58:57Z
 updated_at: 2022-12-28T04:20:04Z
 url: https://github.com/astral-sh/ruff/pull/1420
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Check for keyword arguments before the last star argument
 
 ---
 
-_Pull request opened by @andersk on 2022-12-28 03:58_
+_@andersk_
 
 _No description provided._
 

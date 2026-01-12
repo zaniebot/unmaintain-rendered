@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-05T11:45:09Z
 updated_at: 2025-06-27T14:25:44Z
 url: https://github.com/astral-sh/ty/issues/207
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Attribute assignments in `@staticmethod`s should not influence instance attributes
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 11:45_
+_@sharkdp_
 
 The goal of this issue is to get rid of the `TODO` comments in [this test](https://github.com/astral-sh/ruff/blob/eb08345fd5434ed3db243233df6dd91757a6af3b/crates/red_knot_python_semantic/resources/mdtest/attributes.md#static-methods-do-not-influence-implicitly-defined-attributes). An attribute assignment in a `@staticmethod` should not influence the existence of implicit (instance) attributes:
 

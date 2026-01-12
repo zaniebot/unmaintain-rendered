@@ -13,14 +13,14 @@ head: zb/docs
 created_at: 2025-06-30T22:15:11Z
 updated_at: 2025-07-01T19:14:58Z
 url: https://github.com/astral-sh/ty/pull/729
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Copy basic template and styling for documentation from uv
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-30 22:15_
+_@zanieb_
 
 This copies the documentation scaffolding from uv, doing the minimum amount of work to make it viable.
 

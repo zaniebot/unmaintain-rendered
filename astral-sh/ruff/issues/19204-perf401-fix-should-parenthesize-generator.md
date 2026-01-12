@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-08T12:26:35Z
 updated_at: 2025-07-23T16:08:16Z
 url: https://github.com/astral-sh/ruff/issues/19204
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PERF401 fix should parenthesize generator expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-08 12:26_
+_@dscorbett_
 
 ### Summary
 

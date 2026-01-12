@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T11:33:21Z
 updated_at: 2025-11-14T09:18:53Z
 url: https://github.com/astral-sh/ty/issues/534
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type hierarchy
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 11:33_
+_@MichaReiser_
 
 Add support for the [type hierarchy](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_prepareTypeHierarchy) request (shows the type hierarchy of the symbol under the cursor)
 

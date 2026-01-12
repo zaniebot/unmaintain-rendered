@@ -15,14 +15,14 @@ head: ag/tricky-importer-tests
 created_at: 2025-09-18T13:11:45Z
 updated_at: 2025-09-19T11:54:09Z
 url: https://github.com/astral-sh/ruff/pull/20467
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Add some tricky test cases for the auto-import importer
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-18 13:11_
+_@BurntSushi_
 
 We don't attempt to fix these yet. I think there are bigger fish to fry.
 

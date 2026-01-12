@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T13:37:31Z
 updated_at: 2023-12-08T19:58:45Z
 url: https://github.com/astral-sh/uv/issues/271
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add a `--force-reinstall` to `pip-sync`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-01 13:37_
+_@charliermarsh_
 
 I had this at some point but removed it, I think we should re-add it.
 

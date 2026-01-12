@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T09:12:20Z
 updated_at: 2025-07-14T14:24:04Z
 url: https://github.com/astral-sh/uv/issues/14601
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Benchmark
 
 ---
 
-_Issue opened by @ondrej-profant-dtml on 2025-07-14 09:12_
+_@ondrej-profant-dtml_
 
 ### Summary
 

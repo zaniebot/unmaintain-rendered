@@ -14,14 +14,14 @@ head: dedup
 created_at: 2024-07-05T22:16:20Z
 updated_at: 2024-07-06T05:25:15Z
 url: https://github.com/astral-sh/uv/pull/4841
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Deduplicate when install or uninstall python
 
 ---
 
-_Pull request opened by @j178 on 2024-07-05 22:16_
+_@j178_
 
 When specifying the same argument multiple times, the same version will be downloaded multiple times:
 

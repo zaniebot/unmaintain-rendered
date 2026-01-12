@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T09:51:16Z
 updated_at: 2025-05-13T20:30:20Z
 url: https://github.com/astral-sh/ty/issues/11
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Setup rooster
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 09:51_
+_@MichaReiser_
 
 _No description provided._
 

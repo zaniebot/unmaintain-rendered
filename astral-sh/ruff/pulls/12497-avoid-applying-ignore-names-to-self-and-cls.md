@@ -13,14 +13,14 @@ head: charlie/n
 created_at: 2024-07-24T21:31:41Z
 updated_at: 2024-07-24T22:08:24Z
 url: https://github.com/astral-sh/ruff/pull/12497
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Avoid applying `ignore-names` to `self` and `cls` function names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 21:31_
+_@charliermarsh_
 
 ## Summary
 

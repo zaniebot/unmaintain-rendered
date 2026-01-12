@@ -15,14 +15,14 @@ head: gankra/hover-import
 created_at: 2025-08-08T19:48:46Z
 updated_at: 2025-08-08T20:46:30Z
 url: https://github.com/astral-sh/ruff/pull/19834
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] fix goto-definition on imports
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-08 19:48_
+_@Gankra_
 
 The stub mapper wasn't being passed into this codepath. It is now being used. A previously messed up test result I intentionally checked in was subsequently fixed.
 

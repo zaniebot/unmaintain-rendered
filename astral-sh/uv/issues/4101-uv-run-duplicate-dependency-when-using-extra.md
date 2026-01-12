@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T14:39:49Z
 updated_at: 2024-06-06T15:21:33Z
 url: https://github.com/astral-sh/uv/issues/4101
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # uv run: Duplicate dependency when using extra
 
 ---
 
-_Issue opened by @konstin on 2024-06-06 14:39_
+_@konstin_
 
 ```toml
 [project]

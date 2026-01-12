@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-04T05:13:50Z
 updated_at: 2025-08-19T13:27:32Z
 url: https://github.com/astral-sh/ruff/issues/12658
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Error in output in single line
 
 ---
 
-_Issue opened by @pwsandoval on 2024-08-04 05:13_
+_@pwsandoval_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

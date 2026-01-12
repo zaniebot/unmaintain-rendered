@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T18:24:57Z
 updated_at: 2024-12-25T15:34:32Z
 url: https://github.com/clap-rs/clap/issues/4599
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Unexpected behaviour of `default_value_t` when `From<&str>` impl isn't the inverse of `Display` impl
 
 ---
 
-_Issue opened by @cyqsimon on 2023-01-02 18:24_
+_@cyqsimon_
 
 ### Please complete the following tasks
 

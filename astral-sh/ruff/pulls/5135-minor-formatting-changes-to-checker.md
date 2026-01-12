@@ -13,14 +13,14 @@ head: charlie/space
 created_at: 2023-06-16T02:33:20Z
 updated_at: 2023-06-16T02:57:58Z
 url: https://github.com/astral-sh/ruff/pull/5135
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Minor formatting changes to `Checker`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 02:33_
+_@charliermarsh_
 
 _No description provided._
 

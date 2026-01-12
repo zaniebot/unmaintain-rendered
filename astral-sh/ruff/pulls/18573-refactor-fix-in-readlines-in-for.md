@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2025-06-08T23:30:06Z
 updated_at: 2025-06-09T00:10:14Z
 url: https://github.com/astral-sh/ruff/pull/18573
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Refactor fix in `readlines-in-for`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-08 23:30_
+_@charliermarsh_
 
 ## Summary
 

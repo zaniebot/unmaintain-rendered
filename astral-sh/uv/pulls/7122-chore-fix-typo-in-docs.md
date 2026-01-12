@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-06T11:31:28Z
 updated_at: 2024-09-06T12:59:11Z
 url: https://github.com/astral-sh/uv/pull/7122
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # chore: Fix typo in docs
 
 ---
 
-_Pull request opened by @kdheepak on 2024-09-06 11:31_
+_@kdheepak_
 
 Remove duplicate `the`.
 

@@ -13,14 +13,14 @@ head: badges
 created_at: 2025-05-17T11:48:31Z
 updated_at: 2025-05-17T16:41:01Z
 url: https://github.com/astral-sh/ty/pull/432
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add: README badges
 
 ---
 
-_Pull request opened by @esadek on 2025-05-17 11:48_
+_@esadek_
 
 Add badges to the README. Same badges as those used in the READMEs of uv and ruff.
 

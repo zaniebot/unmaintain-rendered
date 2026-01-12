@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-26T20:53:07Z
 updated_at: 2021-12-08T18:04:52Z
 url: https://github.com/clap-rs/clap/issues/2951
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Usage parsing and generation should match docopt
 
 ---
 
-_Issue opened by @epage on 2021-10-26 20:53_
+_@epage_
 
 ### Affected Version of clap
 

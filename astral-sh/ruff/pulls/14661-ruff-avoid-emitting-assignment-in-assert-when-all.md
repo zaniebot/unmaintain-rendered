@@ -13,14 +13,14 @@ head: alex/ruf018
 created_at: 2024-11-28T19:08:24Z
 updated_at: 2024-11-29T13:37:01Z
 url: https://github.com/astral-sh/ruff/pull/14661
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Avoid emitting `assignment-in-assert` when all references to the assigned variable are themselves inside `assert`s (`RUF018`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-28 19:08_
+_@AlexWaygood_
 
 ## Summary
 

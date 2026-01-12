@@ -13,14 +13,14 @@ head: starmap-docs
 created_at: 2023-10-07T10:03:32Z
 updated_at: 2024-03-21T07:22:02Z
 url: https://github.com/astral-sh/ruff/pull/7846
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Document `reimplemented-starmap` performance effects
 
 ---
 
-_Pull request opened by @tjkuson on 2023-10-07 10:03_
+_@tjkuson_
 
 ## Summary
 

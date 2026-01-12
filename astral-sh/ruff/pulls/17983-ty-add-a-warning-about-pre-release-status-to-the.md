@@ -14,14 +14,14 @@ head: brent/ty-cli-warning
 created_at: 2025-05-09T14:06:25Z
 updated_at: 2025-05-09T17:42:37Z
 url: https://github.com/astral-sh/ruff/pull/17983
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Add a warning about pre-release status to the CLI
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-09 14:06_
+_@ntBre_
 
 Summary
 --

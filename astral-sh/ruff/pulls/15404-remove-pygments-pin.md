@@ -13,14 +13,14 @@ head: remove-pygments-pin
 created_at: 2025-01-10T16:25:05Z
 updated_at: 2025-01-11T10:15:34Z
 url: https://github.com/astral-sh/ruff/pull/15404
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove pygments pin
 
 ---
 
-_Pull request opened by @calumy on 2025-01-10 16:25_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

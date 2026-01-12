@@ -14,14 +14,14 @@ head: micha/workspace-diagnostics-time-based-progress
 created_at: 2025-10-21T14:31:46Z
 updated_at: 2025-10-24T07:06:21Z
 url: https://github.com/astral-sh/ruff/pull/21019
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Timeout based workspace diagnostic progress reports
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-21 14:31_
+_@MichaReiser_
 
 ## Summary
 

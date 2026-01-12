@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T01:21:48Z
 updated_at: 2025-08-14T06:05:49Z
 url: https://github.com/astral-sh/uv/issues/15267
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Why does `uv pip` use the global pip instead of the venv one?
 
 ---
 
-_Issue opened by @sin3000x on 2025-08-14 01:21_
+_@sin3000x_
 
 ### Question
 

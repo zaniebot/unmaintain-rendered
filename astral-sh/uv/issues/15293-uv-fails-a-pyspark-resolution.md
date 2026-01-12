@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T23:11:44Z
 updated_at: 2025-08-15T18:18:37Z
 url: https://github.com/astral-sh/uv/issues/15293
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # UV fails a PySpark resolution
 
 ---
 
-_Issue opened by @tigerhawkvok on 2025-08-14 23:11_
+_@tigerhawkvok_
 
 ### Summary
 

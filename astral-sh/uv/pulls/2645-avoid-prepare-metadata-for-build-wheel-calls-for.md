@@ -14,14 +14,14 @@ head: charlie/dynamic
 created_at: 2024-03-25T03:57:01Z
 updated_at: 2024-03-26T00:01:49Z
 url: https://github.com/astral-sh/uv/pull/2645
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Avoid `prepare_metadata_for_build_wheel` calls for Hatch packages with dynamic dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-25 03:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: Ecosystem-per-repo-changes
 created_at: 2023-03-12T14:00:17Z
 updated_at: 2023-04-29T08:53:24Z
 url: https://github.com/astral-sh/ruff/pull/3461
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # List changes for all ecosystem repos
 
 ---
 
-_Pull request opened by @calumy on 2023-03-12 14:00_
+_@calumy_
 
 This PR adds the changes for each repository in the ecosystem CI check to the summary. This avoids having to expand each repo to see if (and how many) changes have been made.
 

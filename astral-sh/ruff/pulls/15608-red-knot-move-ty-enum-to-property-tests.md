@@ -14,14 +14,14 @@ head: david/move-ty-enum
 created_at: 2025-01-20T09:01:55Z
 updated_at: 2025-01-20T09:15:38Z
 url: https://github.com/astral-sh/ruff/pull/15608
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Move `Ty` enum to property tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-20 09:01_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T15:16:34Z
 updated_at: 2025-05-21T15:37:46Z
 url: https://github.com/astral-sh/uv/issues/13579
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Optional dependencies not installed on `uv run --extra`
 
 ---
 
-_Issue opened by @tomaszbk on 2025-05-21 15:16_
+_@tomaszbk_
 
 ### Summary
 

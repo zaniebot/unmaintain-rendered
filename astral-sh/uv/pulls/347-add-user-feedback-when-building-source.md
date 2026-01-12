@@ -12,14 +12,14 @@ head: charlie/progress
 created_at: 2023-11-06T22:41:09Z
 updated_at: 2023-11-07T14:17:32Z
 url: https://github.com/astral-sh/uv/pull/347
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Add user feedback when building source distributions in the resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 22:41_
+_@charliermarsh_
 
 It looks like Cargo, notice the bold green lines at the top (which appear during the resolution, to indicate Git fetches and source distribution builds):
 

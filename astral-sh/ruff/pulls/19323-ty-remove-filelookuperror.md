@@ -15,14 +15,14 @@ head: dhruv/remove-file-lookup-error
 created_at: 2025-07-14T08:45:15Z
 updated_at: 2025-07-14T13:35:51Z
 url: https://github.com/astral-sh/ruff/pull/19323
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Remove `FileLookupError`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-14 08:45_
+_@dhruvmanila_
 
 ## Summary
 

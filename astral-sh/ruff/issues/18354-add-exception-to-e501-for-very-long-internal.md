@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T15:49:22Z
 updated_at: 2025-06-02T14:02:17Z
 url: https://github.com/astral-sh/ruff/issues/18354
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add exception to E501 for very long internal Sphinx references
 
 ---
 
-_Issue opened by @user27182 on 2025-05-28 15:49_
+_@user27182_
 
 ### Summary
 

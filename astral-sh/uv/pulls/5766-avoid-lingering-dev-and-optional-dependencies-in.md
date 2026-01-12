@@ -14,14 +14,14 @@ head: charlie/root
 created_at: 2024-08-04T20:25:23Z
 updated_at: 2024-08-04T20:37:02Z
 url: https://github.com/astral-sh/uv/pull/5766
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:07:00Z
 ```
 
 # Avoid lingering dev and optional dependencies in `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-04 20:25_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T20:30:25Z
 updated_at: 2024-10-16T21:49:25Z
 url: https://github.com/astral-sh/ruff/issues/13783
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # non-pep585-annotation rule throws incorrectly for Type on Python <3.9
 
 ---
 
-_Issue opened by @Stealthii on 2024-10-16 20:30_
+_@Stealthii_
 
 Related: #10290, #2981, #12256
 

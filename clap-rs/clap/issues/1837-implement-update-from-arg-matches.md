@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-17T08:29:34Z
 updated_at: 2020-11-14T11:38:17Z
 url: https://github.com/clap-rs/clap/issues/1837
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Implement update_from_arg_matches()
 
 ---
 
-_Issue opened by @lu-zero on 2020-04-17 08:29_
+_@lu-zero_
 
 `clap_derive` has only methods to create a new structure from scratch.
 

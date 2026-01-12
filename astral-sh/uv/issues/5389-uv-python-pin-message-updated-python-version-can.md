@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T01:09:22Z
 updated_at: 2024-08-20T18:21:32Z
 url: https://github.com/astral-sh/uv/issues/5389
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv python pin` message "Updated `.python-version`" can be misleading
 
 ---
 
-_Issue opened by @zanieb on 2024-07-24 01:09_
+_@zanieb_
 
 As in this repository, if there's a `.python-versions` file:
 

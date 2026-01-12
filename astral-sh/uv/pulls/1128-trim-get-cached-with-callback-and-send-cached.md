@@ -14,14 +14,14 @@ head: konsti/smaller-llvm-functions
 created_at: 2024-01-26T16:56:13Z
 updated_at: 2024-01-29T08:31:28Z
 url: https://github.com/astral-sh/uv/pull/1128
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Trim `get_cached_with_callback` and `send_cached` down some more.
 
 ---
 
-_Pull request opened by @konstin on 2024-01-26 16:56_
+_@konstin_
 
 I noticed that `get_cached_with_callback` and `send_cached` are large both in terms of llvm lines and in terms of types (and large types can cause buffer overflows on windows). `get_cached_with_callback`  specifically is large because it's monomorphized for each callback. I've split both functions into smaller units and boxed the callback.
 

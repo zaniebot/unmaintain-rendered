@@ -13,14 +13,14 @@ head: ty-shell-completion
 created_at: 2025-05-06T05:27:15Z
 updated_at: 2025-05-07T01:27:38Z
 url: https://github.com/astral-sh/ruff/pull/17879
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Support `generate-shell-completion`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-06 05:27_
+_@InSyncWithFoo_
 
 ## Summary
 

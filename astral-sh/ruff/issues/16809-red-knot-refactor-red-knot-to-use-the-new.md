@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T15:07:19Z
 updated_at: 2025-04-22T16:08:04Z
 url: https://github.com/astral-sh/ruff/issues/16809
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Refactor Red Knot to use the new `Diagnostic` type. Delete "old" diagnostic code.
 
 ---
 
-_Issue opened by @BurntSushi on 2025-03-17 15:07_
+_@BurntSushi_
 
 With #16503, we added types defining a new `Diagnostic` data model. In #16711, we added a renderer based on that new data model. At present, Red Knot is still using the "old" diagnostic types. In this issue, we should move forward by using the new types in Red Knot.
 

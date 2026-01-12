@@ -12,14 +12,14 @@ head: charlie/fnv
 created_at: 2022-11-14T04:20:48Z
 updated_at: 2022-11-14T04:44:17Z
 url: https://github.com/astral-sh/ruff/pull/732
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use FNV hasher in more places
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-14 04:20_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T06:44:50Z
 updated_at: 2025-06-13T10:33:06Z
 url: https://github.com/astral-sh/uv/issues/13342
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # `uv python install` tries to install x86_64 binary on arm64 Windows
 
 ---
 
-_Issue opened by @saschanaz on 2025-05-08 06:44_
+_@saschanaz_
 
 ### Summary
 

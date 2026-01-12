@@ -12,14 +12,14 @@ head: charlie/extends
 created_at: 2022-12-15T01:12:52Z
 updated_at: 2022-12-15T01:22:41Z
 url: https://github.com/astral-sh/ruff/pull/1245
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Treat `extend-*` configuration options as "always extended"
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-15 01:12_
+_@charliermarsh_
 
 Now, every `--extend-ignore` and `--extend-select` pair is applied iteratively (rather than "overriding" the `--extend-ignore` and `--extend-select` of something else).
 

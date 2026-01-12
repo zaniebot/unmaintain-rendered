@@ -14,14 +14,14 @@ head: UP048
 created_at: 2025-01-21T01:29:01Z
 updated_at: 2025-03-11T15:53:54Z
 url: https://github.com/astral-sh/ruff/pull/15625
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyupgrade`] Functional enums (`UP048`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-21 01:29_
+_@InSyncWithFoo_
 
 ## Summary
 

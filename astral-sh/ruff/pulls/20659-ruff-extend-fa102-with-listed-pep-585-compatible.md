@@ -14,14 +14,14 @@ head: extend-fa102-collections
 created_at: 2025-10-01T02:41:00Z
 updated_at: 2025-10-03T16:20:49Z
 url: https://github.com/astral-sh/ruff/pull/20659
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`ruff`] Extend FA102 with listed PEP 585-compatible APIs
 
 ---
 
-_Pull request opened by @terror on 2025-10-01 02:41_
+_@terror_
 
 Resolves https://github.com/astral-sh/ruff/issues/20512
 

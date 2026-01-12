@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T16:11:02Z
 updated_at: 2024-12-16T13:05:21Z
 url: https://github.com/astral-sh/ruff/issues/13929
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Detect empty conditional statements
 
 ---
 
-_Issue opened by @gpauloski on 2024-10-25 16:11_
+_@gpauloski_
 
 ## Problem
 Code deletion rules in ruff can sometimes leave unnecessary conditional blocks. Consider this common conditional import logic.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-21T23:48:15Z
 updated_at: 2025-12-06T21:30:40Z
 url: https://github.com/astral-sh/ruff/issues/21025
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # The opposite of ICN003
 
 ---
 
-_Issue opened by @jsh9 on 2025-10-21 23:48_
+_@jsh9_
 
 ### Summary
 

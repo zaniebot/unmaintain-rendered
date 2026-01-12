@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T03:48:00Z
 updated_at: 2025-06-15T12:27:42Z
 url: https://github.com/astral-sh/uv/issues/6489
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Scripts that use "from future" can result in syntax error when used with uvx
 
 ---
 
-_Issue opened by @ggydush on 2024-08-23 03:48_
+_@ggydush_
 
 When using `uvx` with script files that have `from future` import and shebang with a space, I receive the following syntax error:
 ```console

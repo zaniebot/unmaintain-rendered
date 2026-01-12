@@ -12,14 +12,14 @@ head: zb/090-cl
 created_at: 2025-10-07T23:24:46Z
 updated_at: 2025-10-08T00:08:31Z
 url: https://github.com/astral-sh/uv/pull/16168
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Updates to the 0.9.0 changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 23:24_
+_@zanieb_
 
 _No description provided._
 

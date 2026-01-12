@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T12:52:49Z
 updated_at: 2022-12-15T13:18:11Z
 url: https://github.com/clap-rs/clap/issues/4557
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # default_value do not take effect  when flatten structs which have same struct field name C-bug
 
 ---
 
-_Issue opened by @yiv on 2022-12-15 12:52_
+_@yiv_
 
 ### Please complete the following tasks
 

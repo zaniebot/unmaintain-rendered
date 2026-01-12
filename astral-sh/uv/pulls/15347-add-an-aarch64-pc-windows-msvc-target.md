@@ -13,14 +13,14 @@ head: zb/arm-win
 created_at: 2025-08-18T13:29:22Z
 updated_at: 2025-08-18T17:57:29Z
 url: https://github.com/astral-sh/uv/pull/15347
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Add an `aarch64-pc-windows-msvc` target
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 13:29_
+_@zanieb_
 
 I needed this and was surprised it didn't exist!
 

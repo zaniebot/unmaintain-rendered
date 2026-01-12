@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T17:55:11Z
 updated_at: 2023-02-21T17:57:01Z
 url: https://github.com/astral-sh/ruff/issues/3088
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Unexpected jemalloc output messages
 
 ---
 
-_Issue opened by @pamelafox on 2023-02-21 17:55_
+_@pamelafox_
 
 I'm running:
 

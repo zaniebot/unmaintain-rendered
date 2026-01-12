@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T18:48:43Z
 updated_at: 2025-01-27T21:24:05Z
 url: https://github.com/astral-sh/uv/issues/10997
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # calling CLIs globally
 
 ---
 
-_Issue opened by @zachvalenta on 2025-01-27 18:48_
+_@zachvalenta_
 
 ### Question
 

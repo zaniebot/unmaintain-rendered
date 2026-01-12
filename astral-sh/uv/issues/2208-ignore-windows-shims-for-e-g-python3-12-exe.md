@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T17:41:56Z
 updated_at: 2024-03-06T13:01:47Z
 url: https://github.com/astral-sh/uv/issues/2208
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Ignore Windows shims for (e.g.) `python3.12.exe`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-05 17:41_
+_@charliermarsh_
 
 ```
 AppData\Local\Temp

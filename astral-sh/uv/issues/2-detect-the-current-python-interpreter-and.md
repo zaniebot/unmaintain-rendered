@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-05T15:24:12Z
 updated_at: 2023-10-05T19:09:24Z
 url: https://github.com/astral-sh/uv/issues/2
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Detect the current Python interpreter and environment
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-05 15:24_
+_@charliermarsh_
 
 _No description provided._
 

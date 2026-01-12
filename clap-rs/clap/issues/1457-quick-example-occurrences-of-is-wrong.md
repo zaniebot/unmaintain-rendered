@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-04-22T23:03:03Z
 updated_at: 2020-02-01T19:30:02Z
 url: https://github.com/clap-rs/clap/issues/1457
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Quick example occurrences_of is wrong
 
 ---
 
-_Issue opened by @galop1n on 2019-04-22 23:03_
+_@galop1n_
 
 
 ### Affected Version of clap

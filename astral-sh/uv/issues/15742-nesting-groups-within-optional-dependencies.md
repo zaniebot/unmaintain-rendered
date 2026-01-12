@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T20:38:50Z
 updated_at: 2025-09-09T19:55:17Z
 url: https://github.com/astral-sh/uv/issues/15742
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Nesting groups within optional-dependencies
 
 ---
 
-_Issue opened by @ghostiek on 2025-09-08 20:38_
+_@ghostiek_
 
 ### Question
 

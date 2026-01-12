@@ -13,14 +13,14 @@ head: zb/fix-output-install
 created_at: 2025-10-07T17:27:16Z
 updated_at: 2025-10-07T18:39:30Z
 url: https://github.com/astral-sh/uv/pull/16158
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Fix `uv python upgrade / install` output when there is a no-op for one request
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 17:27_
+_@zanieb_
 
 _No description provided._
 

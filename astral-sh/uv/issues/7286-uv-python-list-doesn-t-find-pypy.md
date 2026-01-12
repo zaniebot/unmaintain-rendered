@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-11T10:26:35Z
 updated_at: 2024-09-23T22:17:56Z
 url: https://github.com/astral-sh/uv/issues/7286
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uv python list doesn't find pypy
 
 ---
 
-_Issue opened by @hynek on 2024-09-11 10:26_
+_@hynek_
 
 I find `uv python list` an amazing tool to debug [Python Environment xkcd situations](https://xkcd.com/1987/), even tho I don't use *uv* for downloads. But find my PyPy installation (I could've sworn it used to but I might be wrong).
 

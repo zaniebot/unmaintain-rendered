@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-23T13:21:11Z
 updated_at: 2024-09-23T13:21:18Z
 url: https://github.com/astral-sh/ruff/issues/13482
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff analyze graph` omits implicit `__init__.py` imports
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-23 13:21_
+_@charliermarsh_
 
 If you import `foo/bar/baz.py`, barring unusual setups, you will also implicitly import `foo/bar/__init__.py`, `foo/__init__.py`, etc. Right now, these are omitted from the module graph. We may want to include them. (By default, Pants seems to include them if the `__init__.py` files contain content.)
 

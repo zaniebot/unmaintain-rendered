@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-12T11:11:21Z
 updated_at: 2025-02-14T20:24:12Z
 url: https://github.com/astral-sh/ruff/issues/14932
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Add the special logic for int/float/complex in annotations
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-12 11:11_
+_@AlexWaygood_
 
 Given this Python function:
 

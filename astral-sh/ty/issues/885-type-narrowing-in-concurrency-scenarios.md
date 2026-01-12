@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T17:44:33Z
 updated_at: 2025-07-25T20:03:10Z
 url: https://github.com/astral-sh/ty/issues/885
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type narrowing in concurrency scenarios
 
 ---
 
-_Issue opened by @pfaion on 2025-07-24 17:44_
+_@pfaion_
 
 ### Question
 

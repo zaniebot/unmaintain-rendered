@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-04-04T12:53:57Z
 updated_at: 2025-04-07T18:11:49Z
 url: https://github.com/astral-sh/uv/pull/12672
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Unset `SCRIPT_PATH` in relocatable activation script
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-04 12:53_
+_@charliermarsh_
 
 ## Summary
 

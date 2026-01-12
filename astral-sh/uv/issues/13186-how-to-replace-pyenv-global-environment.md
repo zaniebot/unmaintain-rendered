@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T19:59:31Z
 updated_at: 2025-05-04T12:43:42Z
 url: https://github.com/astral-sh/uv/issues/13186
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # How to replace pyenv global environment?
 
 ---
 
-_Issue opened by @etienne-monier on 2025-04-28 19:59_
+_@etienne-monier_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: dhruv/fstring-parser-4
 created_at: 2023-09-13T09:45:55Z
 updated_at: 2023-09-14T02:26:17Z
 url: https://github.com/astral-sh/ruff/pull/7331
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix curly brace escape handling in f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-13 09:45_
+_@dhruvmanila_
 
 ## Summary
 

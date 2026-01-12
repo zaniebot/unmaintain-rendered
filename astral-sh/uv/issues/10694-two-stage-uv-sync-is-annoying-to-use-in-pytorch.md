@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T20:33:28Z
 updated_at: 2025-08-18T21:15:36Z
 url: https://github.com/astral-sh/uv/issues/10694
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Two-stage `uv sync` is annoying to use in pytorch projects
 
 ---
 
-_Issue opened by @tmm1 on 2025-01-16 20:33_
+_@tmm1_
 
 the [docs on build isolation](https://github.com/astral-sh/uv/blob/45455b33c0a6dfb358345a79abd79ee593253887/docs/concepts/projects/config.md?plain=1#L214) explain how to setup a two-stage build/compile `uv sync` setup to deal with packages which depend on torch at build time.
 

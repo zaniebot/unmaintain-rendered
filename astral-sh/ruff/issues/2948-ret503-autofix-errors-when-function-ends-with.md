@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-16T05:10:31Z
 updated_at: 2023-02-17T05:28:31Z
 url: https://github.com/astral-sh/ruff/issues/2948
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET503 autofix errors when function ends with nested block
 
 ---
 
-_Issue opened by @gdub on 2023-02-16 05:10_
+_@gdub_
 
 ## Example 1
 

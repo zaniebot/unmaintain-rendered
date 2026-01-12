@@ -13,14 +13,14 @@ head: renovate/aws-actions-configure-aws-credentials-digest
 created_at: 2025-07-28T02:40:41Z
 updated_at: 2025-09-01T06:40:53Z
 url: https://github.com/astral-sh/uv/pull/14923
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Update aws-actions/configure-aws-credentials digest to c5a43c3
 
 ---
 
-_Pull request opened by @renovate on 2025-07-28 02:40_
+_@renovate_
 
 This PR contains the following updates:
 

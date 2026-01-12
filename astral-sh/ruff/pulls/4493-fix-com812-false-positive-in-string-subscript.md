@@ -12,14 +12,14 @@ head: fix-com812-false-positive
 created_at: 2023-05-18T14:00:15Z
 updated_at: 2023-10-17T11:07:23Z
 url: https://github.com/astral-sh/ruff/pull/4493
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix COM812 false positive in string subscript
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-18 14:00_
+_@JonathanPlasse_
 
 - Close #4480
 

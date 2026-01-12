@@ -14,14 +14,14 @@ head: david/fix-1607
 created_at: 2025-11-21T13:14:03Z
 updated_at: 2025-11-24T09:19:23Z
 url: https://github.com/astral-sh/ruff/pull/21556
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Fix #1607 (experiment)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-21 13:14_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: remove-line-length-from-format
 created_at: 2023-10-23T09:27:54Z
 updated_at: 2024-02-20T18:23:13Z
 url: https://github.com/astral-sh/ruff/pull/8131
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove `--line-length` option from `format` command
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-23 09:27_
+_@MichaReiser_
 
 ## Summary
 

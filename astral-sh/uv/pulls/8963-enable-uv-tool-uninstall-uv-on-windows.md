@@ -13,14 +13,14 @@ head: charlie/self-tool
 created_at: 2024-11-09T01:31:55Z
 updated_at: 2024-12-10T18:13:27Z
 url: https://github.com/astral-sh/uv/pull/8963
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Enable `uv tool uninstall uv` on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 01:31_
+_@charliermarsh_
 
 ## Summary
 

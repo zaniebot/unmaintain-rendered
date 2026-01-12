@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-19T01:11:48Z
 updated_at: 2023-02-19T08:00:54Z
 url: https://github.com/astral-sh/ruff/issues/3023
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Request: rewrite compound context managers (nested `with` blocks)
 
 ---
 
-_Issue opened by @thatlittleboy on 2023-02-19 01:11_
+_@thatlittleboy_
 
 Since python 3.10+, [parenthesized context managers](https://docs.python.org/3.10/whatsnew/3.10.html#parenthesized-context-managers) is supported as well. It would be nice to have a `ruff` rule to promote the use of this new syntax because of fewer levels of indentation.
 

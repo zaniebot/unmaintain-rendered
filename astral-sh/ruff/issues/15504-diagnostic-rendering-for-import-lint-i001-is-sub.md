@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-15T15:34:52Z
 updated_at: 2025-01-18T17:08:59Z
 url: https://github.com/astral-sh/ruff/issues/15504
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # diagnostic rendering for import lint `I001` is sub-optimal in some cases
 
 ---
 
-_Issue opened by @BurntSushi on 2025-01-15 15:34_
+_@BurntSushi_
 
 On current `main`, here's what one example of a `I001` diagnostic looks like:
 

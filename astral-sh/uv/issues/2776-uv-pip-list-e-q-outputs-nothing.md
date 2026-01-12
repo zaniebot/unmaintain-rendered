@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-02T14:06:07Z
 updated_at: 2024-04-19T14:45:28Z
 url: https://github.com/astral-sh/uv/issues/2776
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `uv pip list -e -q` outputs nothing.
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-04-02 14:06_
+_@charlesnicholson_
 
 This one is more entertaining than serious- we deploy Python artifacts as a set of wheels, a constraints file, and a bunch of shell/batch scripts that possibly create the venv and install the wheels etc before launching the corresponding entry point script in the venv.
 

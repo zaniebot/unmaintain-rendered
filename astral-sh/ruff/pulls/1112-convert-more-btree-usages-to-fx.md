@@ -12,14 +12,14 @@ head: charlie/fx
 created_at: 2022-12-06T21:34:54Z
 updated_at: 2022-12-07T17:21:13Z
 url: https://github.com/astral-sh/ruff/pull/1112
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Convert more BTree usages to Fx
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 21:34_
+_@charliermarsh_
 
 (I need to actually benchmark this.)
 

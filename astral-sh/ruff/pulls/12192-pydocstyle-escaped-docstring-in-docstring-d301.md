@@ -14,14 +14,14 @@ head: d301-docstring-in-docstring
 created_at: 2024-07-04T21:27:03Z
 updated_at: 2024-07-18T22:36:05Z
 url: https://github.com/astral-sh/ruff/pull/12192
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [pydocstyle] Escaped docstring in docstring (D301 )
 
 ---
 
-_Pull request opened by @ukyen8 on 2024-07-04 21:27_
+_@ukyen8_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

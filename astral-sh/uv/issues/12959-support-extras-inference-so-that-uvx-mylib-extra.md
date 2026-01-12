@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T03:28:38Z
 updated_at: 2025-04-18T21:27:08Z
 url: https://github.com/astral-sh/uv/issues/12959
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Support extras inference so that  `uvx mylib[extra] <args> `  “just works” without needing `--from`
 
 ---
 
-_Issue opened by @aaronsteers on 2025-04-18 03:28_
+_@aaronsteers_
 
 ### Summary
 

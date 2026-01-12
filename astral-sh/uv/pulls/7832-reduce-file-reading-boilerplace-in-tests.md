@@ -14,14 +14,14 @@ head: konsti/read-lock
 created_at: 2024-10-01T10:59:21Z
 updated_at: 2024-10-11T10:37:24Z
 url: https://github.com/astral-sh/uv/pull/7832
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Reduce file reading boilerplace in tests
 
 ---
 
-_Pull request opened by @konstin on 2024-10-01 10:59_
+_@konstin_
 
 Add a convenience function around reading files for snapshotting them from the temporary directory.
 

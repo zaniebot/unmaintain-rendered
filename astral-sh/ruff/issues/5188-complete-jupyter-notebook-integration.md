@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-19T18:30:44Z
 updated_at: 2024-02-06T12:13:07Z
 url: https://github.com/astral-sh/ruff/issues/5188
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Complete Jupyter notebook integration
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-06-19 18:30_
+_@dhruvmanila_
 
 Meta issue to keep track of the remaining tasks before shipping Jupyter notebook native integration:
 

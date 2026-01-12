@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T20:24:03Z
 updated_at: 2024-06-02T20:34:52Z
 url: https://github.com/astral-sh/uv/issues/3948
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv venv
 
 ---
 
-_Issue opened by @DRKolev-code on 2024-05-31 20:24_
+_@DRKolev-code_
 
 Hi. I am thinking of switching to uv from poetry. I never used virtualenv. What is the benefit of providing `uv venv` compared to `python -m venv .venv`?
 

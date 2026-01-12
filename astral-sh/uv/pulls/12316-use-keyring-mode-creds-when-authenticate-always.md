@@ -13,14 +13,14 @@ head: zb/keyring-always
 created_at: 2025-03-19T16:46:44Z
 updated_at: 2025-03-19T21:30:34Z
 url: https://github.com/astral-sh/uv/pull/12316
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Use `keyring --mode creds` when `authenticate = "always"`
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-19 16:46_
+_@zanieb_
 
 Previously, we required a username to perform a fetch from the keyring because the `keyring` CLI only supported fetching password for a given service and username. Unfortunately, this is different from the keyring Python API which supported fetching a username _and_ password for a given service. We can't (easily) use the Python API because we don't expect `keyring` to be installed in a specific environment during network requests. This means that we did not have parity with `pip`.
 

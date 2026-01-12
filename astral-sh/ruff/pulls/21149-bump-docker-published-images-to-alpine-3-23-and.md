@@ -12,14 +12,14 @@ head: docker-base-image-bump
 created_at: 2025-10-30T17:52:48Z
 updated_at: 2025-12-13T21:30:55Z
 url: https://github.com/astral-sh/ruff/pull/21149
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # Bump docker published images to alpine 3.23 and debian trixie
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-30 17:52_
+_@samypr100_
 
 ## Summary
 

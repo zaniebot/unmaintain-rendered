@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T09:33:53Z
 updated_at: 2025-01-06T14:32:53Z
 url: https://github.com/astral-sh/uv/issues/10323
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # UV install for existing python grows _sysconfigdata__linux_x86_64-linux-gnu.py
 
 ---
 
-_Issue opened by @lfn3 on 2025-01-06 09:33_
+_@lfn3_
 
 Running `uv python install 3.10` results in fields like "BYTESTR_DEPS" in _sysconfigdata__linux_x86_64 to grow with increasing numbers of `\`s.
 

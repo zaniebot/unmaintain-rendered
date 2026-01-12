@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-16T15:07:46Z
 updated_at: 2021-12-13T22:17:22Z
 url: https://github.com/clap-rs/clap/issues/3032
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Infer trait bounds for generic derives
 
 ---
 
-_Issue opened by @epage on 2021-11-16 15:07_
+_@epage_
 
 Building off of #2769 / #3023, we should allow inferring trait bounds.
 

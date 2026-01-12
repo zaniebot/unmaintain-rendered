@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T15:40:58Z
 updated_at: 2024-11-15T09:52:11Z
 url: https://github.com/astral-sh/uv/issues/8947
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Uv fails to activate environment in folder with apostrophe
 
 ---
 
-_Issue opened by @mak448a on 2024-11-08 15:40_
+_@mak448a_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

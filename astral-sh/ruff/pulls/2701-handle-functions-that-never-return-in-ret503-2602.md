@@ -12,14 +12,14 @@ head: roam-implicit-return
 created_at: 2023-02-10T01:31:20Z
 updated_at: 2023-02-10T16:31:23Z
 url: https://github.com/astral-sh/ruff/pull/2701
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Handle functions that never return in RET503 (#2602)
 
 ---
 
-_Pull request opened by @ppentchev on 2023-02-10 01:31_
+_@ppentchev_
 
 Hi,
 

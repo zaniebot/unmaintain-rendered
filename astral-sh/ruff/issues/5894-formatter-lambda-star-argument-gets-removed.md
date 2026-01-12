@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-07-19T19:18:49Z
 updated_at: 2023-08-02T19:31:23Z
 url: https://github.com/astral-sh/ruff/issues/5894
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: lambda star argument gets removed
 
 ---
 
-_Issue opened by @konstin on 2023-07-19 19:18_
+_@konstin_
 
 `lambda *a: ()` gets formatted as `lambda: ()` the varargs argument gets lost
 

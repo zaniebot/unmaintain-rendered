@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-11-12T18:22:43Z
 updated_at: 2018-08-02T03:29:56Z
 url: https://github.com/clap-rs/clap/issues/742
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # unexpected behavior when AllowLeadingHyphen is enabled
 
 ---
 
-_Issue opened by @BurntSushi on 2016-11-12 18:22_
+_@BurntSushi_
 
 I understand that there is a `AppSettings::AllowLeadingHyphen` and that it is application wide, but is there anyway to get a more targeted approach? For example, I have flag like this:
 

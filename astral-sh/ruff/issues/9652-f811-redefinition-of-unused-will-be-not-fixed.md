@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-26T15:56:37Z
 updated_at: 2024-01-26T16:19:07Z
 url: https://github.com/astral-sh/ruff/issues/9652
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # "F811 redefinition of unused" will be not fixed
 
 ---
 
-_Issue opened by @jedie on 2024-01-26 15:56_
+_@jedie_
 
 ruff 0.1.14
 

@@ -13,14 +13,14 @@ head: pre-commit_with_cargo
 created_at: 2023-06-16T12:39:45Z
 updated_at: 2023-06-18T11:24:18Z
 url: https://github.com/astral-sh/ruff/pull/5146
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Pre commit without cargo and other pre-PR improvements
 
 ---
 
-_Pull request opened by @konstin on 2023-06-16 12:39_
+_@konstin_
 
 This tackles three problems:
 * pre-commit was slow because it ran cargo commands

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T09:14:14Z
 updated_at: 2025-12-17T20:58:38Z
 url: https://github.com/astral-sh/ty/issues/693
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support for `executionEnvironments` in monorepos
 
 ---
 
-_Issue opened by @tim-x-y-z on 2025-06-24 09:14_
+_@tim-x-y-z_
 
 Hi team,
 

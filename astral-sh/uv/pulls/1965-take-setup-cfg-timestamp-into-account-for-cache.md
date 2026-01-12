@@ -11,14 +11,14 @@ head: fix/setup-cfg_timestamp
 created_at: 2024-02-25T12:32:40Z
 updated_at: 2024-02-25T12:35:02Z
 url: https://github.com/astral-sh/uv/pull/1965
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Take `setup.cfg` timestamp into account for cache invalidation
 
 ---
 
-_Pull request opened by @HorlogeSkynet on 2024-02-25 12:32_
+_@HorlogeSkynet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

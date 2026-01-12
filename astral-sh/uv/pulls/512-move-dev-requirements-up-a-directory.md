@@ -13,14 +13,14 @@ head: Move-requirements-up-a-directory-
 created_at: 2023-11-29T10:07:41Z
 updated_at: 2023-11-29T10:11:33Z
 url: https://github.com/astral-sh/uv/pull/512
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Move dev requirements up a directory
 
 ---
 
-_Pull request opened by @konstin on 2023-11-29 10:07_
+_@konstin_
 
 Remove a dev annoyance: This makes the development paths shorter, e.g. `scripts/benchmarks/requirements/all-kinds.in` to `scripts/requirements/all-kinds.in`. The requirements are also shared between different tasks and not only used for benchmarking.
 

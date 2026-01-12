@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T22:20:00Z
 updated_at: 2025-08-26T16:08:31Z
 url: https://github.com/astral-sh/uv/issues/15436
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # git dependencies fail if two or more conflict
 
 ---
 
-_Issue opened by @evbo on 2025-08-21 22:20_
+_@evbo_
 
 ### Summary
 

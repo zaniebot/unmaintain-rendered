@@ -12,14 +12,14 @@ head: add-s324
 created_at: 2023-01-05T14:37:02Z
 updated_at: 2023-01-05T16:46:21Z
 url: https://github.com/astral-sh/ruff/pull/1661
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # [`flake8-bandit`] Add Rule for `S324` (Insecure hash functions in `hashlib`)
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-05 14:37_
+_@saadmk11_
 
 ref: https://github.com/charliermarsh/ruff/issues/1646
 

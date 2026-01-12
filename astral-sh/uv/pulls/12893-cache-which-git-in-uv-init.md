@@ -13,14 +13,14 @@ head: konsti/cache-git-which
 created_at: 2025-04-15T09:28:07Z
 updated_at: 2025-04-15T09:40:09Z
 url: https://github.com/astral-sh/uv/pull/12893
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Cache `which git` in `uv init`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-15 09:28_
+_@konstin_
 
 Avoid running `which` multiple times, to be more coherent with the other git code. In preparation of improving the `uv init` git handling.
 

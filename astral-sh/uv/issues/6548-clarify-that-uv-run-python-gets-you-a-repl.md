@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T20:58:43Z
 updated_at: 2025-03-21T17:12:27Z
 url: https://github.com/astral-sh/uv/issues/6548
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Clarify that `uv run python` gets you a REPL
 
 ---
 
-_Issue opened by @zanieb on 2024-08-23 20:58_
+_@zanieb_
 
 We could also provide another way to do this, eventually? Maybe just `python` when we have a shim. Maybe a bare `uvx`.
 

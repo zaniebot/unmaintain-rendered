@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T08:00:39Z
 updated_at: 2025-01-15T09:47:58Z
 url: https://github.com/astral-sh/ruff/issues/14191
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Rules and rule selection
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-08 08:00_
+_@MichaReiser_
 
 * Add a `Rule` concept
 * Implement rule selection (settings)

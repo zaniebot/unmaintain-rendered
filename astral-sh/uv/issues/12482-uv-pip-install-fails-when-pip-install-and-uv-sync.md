@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T10:42:43Z
 updated_at: 2025-03-27T21:37:40Z
 url: https://github.com/astral-sh/uv/issues/12482
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # `uv pip install` fails when `pip install` and `uv sync` succeed
 
 ---
 
-_Issue opened by @ma-sadeghi on 2025-03-26 10:42_
+_@ma-sadeghi_
 
 ### Summary
 

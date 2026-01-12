@@ -14,14 +14,14 @@ head: alex/class-ctx-refactor
 created_at: 2025-09-04T15:42:27Z
 updated_at: 2025-09-04T17:25:50Z
 url: https://github.com/astral-sh/ruff/pull/20240
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Minor cleanups
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-04 15:42_
+_@AlexWaygood_
 
 ## Summary
 

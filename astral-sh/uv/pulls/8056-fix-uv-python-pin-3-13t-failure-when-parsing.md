@@ -13,14 +13,14 @@ head: zb/fix-t-check
 created_at: 2024-10-09T19:56:13Z
 updated_at: 2024-10-10T00:17:21Z
 url: https://github.com/astral-sh/uv/pull/8056
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Fix `uv python pin 3.13t` failure when parsing version for project requires check
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-09 19:56_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7964
 

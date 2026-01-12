@@ -13,14 +13,14 @@ head: whitespace-before-close-bracket
 created_at: 2024-12-15T13:36:52Z
 updated_at: 2024-12-15T18:22:40Z
 url: https://github.com/astral-sh/ruff/pull/14983
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Improve the documentation of E201/E202
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-12-15 13:36_
+_@DimitriPapadopoulos_
 
 ## Summary
 

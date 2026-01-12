@@ -12,14 +12,14 @@ head: brent/stabilize-log004
 created_at: 2025-06-10T01:51:48Z
 updated_at: 2025-06-12T13:04:39Z
 url: https://github.com/astral-sh/ruff/pull/18603
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`flake8-logging`] Stabilize `log-exception-outside-except-handler` (`LOG004`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 01:51_
+_@ntBre_
 
 Summary
 --

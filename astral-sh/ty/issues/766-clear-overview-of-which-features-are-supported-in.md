@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T17:47:26Z
 updated_at: 2025-12-15T13:14:39Z
 url: https://github.com/astral-sh/ty/issues/766
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Clear overview of which features are supported in ty
 
 ---
 
-_Issue opened by @vlashada on 2025-07-04 17:47_
+_@vlashada_
 
 ### Question
 

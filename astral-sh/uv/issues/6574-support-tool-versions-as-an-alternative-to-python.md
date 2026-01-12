@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-24T08:25:40Z
 updated_at: 2024-08-25T02:36:36Z
 url: https://github.com/astral-sh/uv/issues/6574
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Support `.tool-versions` as an alternative to `.python-versions`
 
 ---
 
-_Issue opened by @TommasoAmici on 2024-08-24 08:25_
+_@TommasoAmici_
 
 For projects with multiple languages/tools, it's possible to have the python version in a `.tool-versions` file which is very similar in spirit to `.python-versions`, but allows defining all versions in a centralized configuration file. It'd be nice if `uv` supported that.
 

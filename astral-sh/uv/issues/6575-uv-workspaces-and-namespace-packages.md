@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T11:26:15Z
 updated_at: 2025-11-20T00:46:08Z
 url: https://github.com/astral-sh/uv/issues/6575
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # uv workspaces and namespace packages
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-24 11:26_
+_@valentincalomme_
 
 > TLDR: I'm trying to build multiple packages under the same namespace using `uv` workspaces, but I'm having trouble. I would greatly appreciate it if the documentation included instructions on how to handle namespace packages.
 

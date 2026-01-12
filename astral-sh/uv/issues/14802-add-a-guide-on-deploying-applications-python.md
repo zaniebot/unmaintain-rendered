@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T01:24:59Z
 updated_at: 2025-07-22T01:32:58Z
 url: https://github.com/astral-sh/uv/issues/14802
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Add a guide on deploying applications Python projects
 
 ---
 
-_Issue opened by @ketozhang on 2025-07-22 01:24_
+_@ketozhang_
 
 ### Question
 

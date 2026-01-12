@@ -13,14 +13,14 @@ head: fix-callable-type-of-display
 created_at: 2025-04-06T16:54:13Z
 updated_at: 2025-04-06T17:13:39Z
 url: https://github.com/astral-sh/ruff/pull/17235
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Fix `CallableTypeOf` display signature
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-06 16:54_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

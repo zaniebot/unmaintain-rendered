@@ -13,14 +13,14 @@ head: cjm/union-attr
 created_at: 2024-07-31T21:08:53Z
 updated_at: 2024-08-01T02:45:26Z
 url: https://github.com/astral-sh/ruff/pull/12601
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] implement attribute of union
 
 ---
 
-_Pull request opened by @carljm on 2024-07-31 21:08_
+_@carljm_
 
 I hit this `todo!` trying to run type inference over some real modules. Since it's a one-liner to implement it, I just did that rather than changing to `Type::Unknown`.
 

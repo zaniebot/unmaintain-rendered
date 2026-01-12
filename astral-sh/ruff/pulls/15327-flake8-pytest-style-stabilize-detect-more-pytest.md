@@ -13,14 +13,14 @@ head: PT006
 created_at: 2025-01-07T19:39:26Z
 updated_at: 2025-01-08T08:35:28Z
 url: https://github.com/astral-sh/ruff/pull/15327
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-pytest-style`] Stabilize "Detect more `pytest.mark.parametrize` calls" (`PT006`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-07 19:39_
+_@InSyncWithFoo_
 
 ## Summary
 

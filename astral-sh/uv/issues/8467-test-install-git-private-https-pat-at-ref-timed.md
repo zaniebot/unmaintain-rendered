@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T16:09:05Z
 updated_at: 2024-10-22T16:09:11Z
 url: https://github.com/astral-sh/uv/issues/8467
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Test `install_git_private_https_pat_at_ref` timed out
 
 ---
 
-_Issue opened by @zanieb on 2024-10-22 16:09_
+_@zanieb_
 
 ```
  TERMINATING [> 90.000s] uv::it pip_install::install_git_private_https_pat_at_ref

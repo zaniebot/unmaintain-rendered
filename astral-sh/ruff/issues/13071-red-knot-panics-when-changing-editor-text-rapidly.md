@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-23T06:58:42Z
 updated_at: 2024-09-23T12:04:05Z
 url: https://github.com/astral-sh/ruff/issues/13071
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Red Knot panics when changing editor text rapidly
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-23 06:58_
+_@dhruvmanila_
 
 Discovered in https://github.com/astral-sh/ruff/pull/13042.
 

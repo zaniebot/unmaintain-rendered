@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T23:40:28Z
 updated_at: 2025-09-18T15:47:10Z
 url: https://github.com/astral-sh/uv/issues/15922
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # venv does not activate
 
 ---
 
-_Issue opened by @ajaxdude on 2025-09-17 23:40_
+_@ajaxdude_
 
 ### Question
 

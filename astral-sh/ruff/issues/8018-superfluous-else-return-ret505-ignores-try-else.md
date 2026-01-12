@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T15:29:08Z
 updated_at: 2025-06-14T20:04:08Z
 url: https://github.com/astral-sh/ruff/issues/8018
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `superfluous-else-return` (RET505) ignores try/else blocks
 
 ---
 
-_Issue opened by @korverdev on 2023-10-17 15:29_
+_@korverdev_
 
 This is probably harder to check for and much more uncommon, but RET505 could potentially apply to `try/else` blocks as well.
 

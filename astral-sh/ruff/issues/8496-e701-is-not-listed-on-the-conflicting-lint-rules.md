@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-05T14:56:26Z
 updated_at: 2023-11-06T00:42:36Z
 url: https://github.com/astral-sh/ruff/issues/8496
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E701 is not listed on the "Conflicting lint rules" page but it conflicts with `ruff format` when `--preview` flag is used
 
 ---
 
-_Issue opened by @simon-liebehenschel on 2023-11-05 14:56_
+_@simon-liebehenschel_
 
 ## The original code
 

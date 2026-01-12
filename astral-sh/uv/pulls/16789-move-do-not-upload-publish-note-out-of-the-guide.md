@@ -13,14 +13,14 @@ head: zb/publish-note
 created_at: 2025-11-20T14:56:35Z
 updated_at: 2025-11-20T20:10:43Z
 url: https://github.com/astral-sh/uv/pull/16789
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Move do not upload publish note out of the guide into concepts
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 14:56_
+_@zanieb_
 
 This feels a little out of place here and it seems nice to be able to link to it.
 

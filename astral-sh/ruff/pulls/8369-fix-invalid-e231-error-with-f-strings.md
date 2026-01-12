@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2023-10-30T23:27:33Z
 updated_at: 2023-10-31T11:59:17Z
 url: https://github.com/astral-sh/ruff/pull/8369
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix invalid E231 error with f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 23:27_
+_@charliermarsh_
 
 ## Summary
 

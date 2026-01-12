@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T17:55:31Z
 updated_at: 2025-02-07T21:36:11Z
 url: https://github.com/astral-sh/uv/issues/11324
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # uv run fails after installing packges with root and uv 0.5.29
 
 ---
 
-_Issue opened by @jamescooke on 2025-02-07 17:55_
+_@jamescooke_
 
 ### Summary
 

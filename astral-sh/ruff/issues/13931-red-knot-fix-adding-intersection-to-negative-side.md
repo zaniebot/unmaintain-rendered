@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-25T18:55:26Z
 updated_at: 2024-11-03T16:30:51Z
 url: https://github.com/astral-sh/ruff/issues/13931
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] fix adding intersection to negative side of an intersection
 
 ---
 
-_Issue opened by @carljm on 2024-10-25 18:55_
+_@carljm_
 
 Per de Morgan's law, `~(T & U)` is equivalent to `~T | ~U`.
 

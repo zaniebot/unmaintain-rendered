@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:42:17Z
 updated_at: 2025-09-15T13:11:36Z
 url: https://github.com/astral-sh/ruff/issues/20038
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Similar flag as `pylint --fail-under <score>`?
 
 ---
 
-_Issue opened by @soderluk on 2025-08-22 06:42_
+_@soderluk_
 
 ### Question
 

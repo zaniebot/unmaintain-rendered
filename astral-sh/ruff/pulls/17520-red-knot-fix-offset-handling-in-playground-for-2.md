@@ -14,14 +14,14 @@ head: micha/knot-playground-utf16
 created_at: 2025-04-21T11:45:43Z
 updated_at: 2025-04-27T10:46:21Z
 url: https://github.com/astral-sh/ruff/pull/17520
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Fix offset handling in playground for 2-code-point UTF16 characters
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-21 11:45_
+_@MichaReiser_
 
 ## Summary
 

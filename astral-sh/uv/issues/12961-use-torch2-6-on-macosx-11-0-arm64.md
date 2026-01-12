@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T05:55:36Z
 updated_at: 2025-04-21T01:38:31Z
 url: https://github.com/astral-sh/uv/issues/12961
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Use torch2.6 on macosx_11_0_arm64
 
 ---
 
-_Issue opened by @xnuohz on 2025-04-18 05:55_
+_@xnuohz_
 
 ### Question
 

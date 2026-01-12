@@ -14,14 +14,14 @@ head: cjm/visitor-simpler
 created_at: 2025-08-11T23:38:40Z
 updated_at: 2025-08-12T00:12:27Z
 url: https://github.com/astral-sh/ruff/pull/19873
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] simplify CycleDetector::visit signature
 
 ---
 
-_Pull request opened by @carljm on 2025-08-11 23:38_
+_@carljm_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T16:25:00Z
 updated_at: 2025-01-07T05:17:37Z
 url: https://github.com/astral-sh/ruff/issues/12279
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` QOL improvement: Make code action ordering more consistent
 
 ---
 
-_Issue opened by @ravibrock on 2024-07-10 16:25_
+_@ravibrock_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

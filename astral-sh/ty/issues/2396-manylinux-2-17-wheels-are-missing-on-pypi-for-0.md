@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T15:26:44Z
 updated_at: 2026-01-12T09:24:51Z
 url: https://github.com/astral-sh/ty/issues/2396
-synced_at: 2026-01-12T09:56:38Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # manylinux 2.17 wheels are missing on pypi for 0.10.0
 
 ---
 
-_Issue opened by @GhislainC on 2026-01-08 15:26_
+_@GhislainC_
 
 ### Question
 

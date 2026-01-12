@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T14:08:52Z
 updated_at: 2025-03-24T17:17:54Z
 url: https://github.com/astral-sh/uv/issues/10394
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Timestamp metadata not parsed from private package index. Unexpected behavior for `--exclude-newer` option
 
 ---
 
-_Issue opened by @alfredocarella on 2025-01-08 14:08_
+_@alfredocarella_
 
 The package upload timestamp appears to be missing when searching a private (Azure artifacts) package index.
 This prevents the option `--exclude-newer` from being used correctly.

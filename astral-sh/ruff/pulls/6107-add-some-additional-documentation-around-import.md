@@ -13,14 +13,14 @@ head: charlie/package-docs
 created_at: 2023-07-26T22:01:22Z
 updated_at: 2023-07-26T23:09:09Z
 url: https://github.com/astral-sh/ruff/pull/6107
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add some additional documentation around import categorization
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-26 22:01_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5529.
 

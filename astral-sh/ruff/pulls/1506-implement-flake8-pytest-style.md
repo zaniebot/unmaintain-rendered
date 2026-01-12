@@ -12,14 +12,14 @@ head: pytest-style
 created_at: 2022-12-31T09:02:53Z
 updated_at: 2023-01-20T02:01:33Z
 url: https://github.com/astral-sh/ruff/pull/1506
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement `flake8-pytest-style`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-12-31 09:02_
+_@edgarrmondragon_
 
 ## Notes for reviewers
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T12:59:36Z
 updated_at: 2025-04-04T15:49:27Z
 url: https://github.com/astral-sh/uv/issues/12649
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Bump MSRV to 1.84.0
 
 ---
 
-_Issue opened by @charliermarsh on 2025-04-03 12:59_
+_@charliermarsh_
 
 1.86.0 is out, so we can now bump to 1.84.0 per our policy.
 

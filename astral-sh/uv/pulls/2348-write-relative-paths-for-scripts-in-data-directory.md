@@ -13,14 +13,14 @@ head: charlie/rel
 created_at: 2024-03-10T22:52:12Z
 updated_at: 2024-03-10T23:02:03Z
 url: https://github.com/astral-sh/uv/pull/2348
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Write relative paths for scripts in data directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 22:52_
+_@charliermarsh_
 
 ## Summary
 

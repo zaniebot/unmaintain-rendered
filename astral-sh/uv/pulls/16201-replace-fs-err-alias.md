@@ -13,14 +13,14 @@ head: fs-to-fs-err-swap
 created_at: 2025-10-09T09:11:46Z
 updated_at: 2025-10-09T13:18:39Z
 url: https://github.com/astral-sh/uv/pull/16201
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Replace `fs_err` alias
 
 ---
 
-_Pull request opened by @MitchellBerend on 2025-10-09 09:11_
+_@MitchellBerend_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

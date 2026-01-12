@@ -14,14 +14,14 @@ head: dhruv/decorators
 created_at: 2024-04-07T15:48:53Z
 updated_at: 2024-04-09T14:28:42Z
 url: https://github.com/astral-sh/ruff/pull/10818
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for decorators
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 15:48_
+_@dhruvmanila_
 
 ## Summary
 

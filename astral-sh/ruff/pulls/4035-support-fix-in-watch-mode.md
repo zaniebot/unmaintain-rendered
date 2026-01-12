@@ -12,14 +12,14 @@ head: 1064_fix_in_watch
 created_at: 2023-04-20T01:01:27Z
 updated_at: 2023-06-15T21:15:55Z
 url: https://github.com/astral-sh/ruff/pull/4035
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Support --fix in watch mode
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-20 01:01_
+_@evanrittenhouse_
 
 Fixes #1064
 

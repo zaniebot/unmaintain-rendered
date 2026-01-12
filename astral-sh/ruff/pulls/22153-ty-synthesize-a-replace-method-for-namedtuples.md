@@ -13,14 +13,14 @@ head: charlie/syn
 created_at: 2025-12-23T00:40:44Z
 updated_at: 2025-12-23T21:33:57Z
 url: https://github.com/astral-sh/ruff/pull/22153
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Synthesize a `_replace` method for NamedTuples
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-23 00:40_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-02T09:26:24Z
 updated_at: 2025-10-02T14:36:12Z
 url: https://github.com/astral-sh/ruff/issues/20678
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [`ruff`] Confusing error message during TOML parsing
 
 ---
 
-_Issue opened by @chirizxc on 2025-10-02 09:26_
+_@chirizxc_
 
 ### Summary
 

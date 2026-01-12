@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T11:17:22Z
 updated_at: 2025-03-10T19:08:26Z
 url: https://github.com/astral-sh/uv/issues/11505
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Add `--only-workspace` to `uv tree`
 
 ---
 
-_Issue opened by @danielgafni on 2025-02-14 11:17_
+_@danielgafni_
 
 ### Summary
 

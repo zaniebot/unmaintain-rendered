@@ -12,14 +12,14 @@ head: ag/cache-client-simplification
 created_at: 2024-01-30T23:12:25Z
 updated_at: 2024-01-30T23:20:45Z
 url: https://github.com/astral-sh/uv/pull/1197
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # puffin-client: simplify use of http-cache-semantics
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-30 23:12_
+_@BurntSushi_
 
 The `http-cache-semantics` crate is polymorphic on the types of requests
 and responses it accepts. We had previously been explicitly converting

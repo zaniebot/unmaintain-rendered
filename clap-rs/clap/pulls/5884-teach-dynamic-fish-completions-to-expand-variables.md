@@ -11,14 +11,14 @@ head: fish-expand-variables
 created_at: 2025-01-19T09:44:29Z
 updated_at: 2025-05-31T13:51:06Z
 url: https://github.com/clap-rs/clap/pull/5884
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Teach dynamic fish completions to expand variables
 
 ---
 
-_Pull request opened by @krobelus on 2025-01-19 09:44_
+_@krobelus_
 
 In fish, the command line
 

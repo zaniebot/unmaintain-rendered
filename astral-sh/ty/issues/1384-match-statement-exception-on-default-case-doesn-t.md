@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-17T13:52:10Z
 updated_at: 2025-10-17T16:00:09Z
 url: https://github.com/astral-sh/ty/issues/1384
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Match statement + exception on default case doesn't narrow properly
 
 ---
 
-_Issue opened by @drewbrew on 2025-10-17 13:52_
+_@drewbrew_
 
 ### Summary
 

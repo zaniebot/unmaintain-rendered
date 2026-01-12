@@ -14,14 +14,14 @@ head: charlie/backoff
 created_at: 2024-03-13T16:55:29Z
 updated_at: 2024-03-13T17:16:27Z
 url: https://github.com/astral-sh/uv/pull/2419
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Add backoff for transient Windows failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 16:55_
+_@charliermarsh_
 
 ## Summary
 

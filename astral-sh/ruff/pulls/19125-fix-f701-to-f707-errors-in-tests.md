@@ -13,14 +13,14 @@ head: fix-F701-to-F707-errors-in-tests
 created_at: 2025-07-03T15:53:20Z
 updated_at: 2025-07-04T18:47:21Z
 url: https://github.com/astral-sh/ruff/pull/19125
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # Fix F701 to F707 errors in tests
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-03 15:53_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

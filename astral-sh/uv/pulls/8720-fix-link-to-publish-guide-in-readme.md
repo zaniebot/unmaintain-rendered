@@ -13,14 +13,14 @@ head: fix/publish-link-in-readme
 created_at: 2024-10-31T12:01:45Z
 updated_at: 2024-10-31T13:01:30Z
 url: https://github.com/astral-sh/uv/pull/8720
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Fix link to publish guide in README
 
 ---
 
-_Pull request opened by @andipabst on 2024-10-31 12:01_
+_@andipabst_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

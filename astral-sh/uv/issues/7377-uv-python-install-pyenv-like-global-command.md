@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T19:49:15Z
 updated_at: 2024-09-14T01:01:09Z
 url: https://github.com/astral-sh/uv/issues/7377
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv python install: pyenv-like "global" command?
 
 ---
 
-_Issue opened by @arwhyte on 2024-09-13 19:49_
+_@arwhyte_
 
 Migrating to `uv`. But I have a question that I've not been able resolve via the documentation.
 

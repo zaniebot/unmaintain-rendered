@@ -14,14 +14,14 @@ head: alex/typeddict-cache
 created_at: 2025-08-12T13:12:36Z
 updated_at: 2025-08-12T13:35:27Z
 url: https://github.com/astral-sh/ruff/pull/19879
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Remove Salsa interning for `TypedDictType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-12 13:12_
+_@AlexWaygood_
 
 ## Summary
 

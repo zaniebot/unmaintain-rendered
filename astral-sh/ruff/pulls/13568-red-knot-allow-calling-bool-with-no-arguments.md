@@ -13,14 +13,14 @@ head: alex/allow-0-arg-bool
 created_at: 2024-09-30T12:52:06Z
 updated_at: 2024-09-30T13:27:25Z
 url: https://github.com/astral-sh/ruff/pull/13568
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Allow calling `bool()` with no arguments
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-30 12:52_
+_@AlexWaygood_
 
 Fixes a small oversight in #13538
 

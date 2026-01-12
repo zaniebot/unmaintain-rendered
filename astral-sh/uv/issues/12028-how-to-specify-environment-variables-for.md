@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T23:53:31Z
 updated_at: 2025-04-24T23:04:09Z
 url: https://github.com/astral-sh/uv/issues/12028
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # How to specify environment variables for dependencies
 
 ---
 
-_Issue opened by @nhukc on 2025-03-06 23:53_
+_@nhukc_
 
 ### Question
 

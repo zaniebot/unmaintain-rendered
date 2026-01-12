@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T23:16:39Z
 updated_at: 2025-08-19T18:02:20Z
 url: https://github.com/astral-sh/ty/issues/184
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support `py.typed` with `partial`
 
 ---
 
-_Issue opened by @carljm on 2025-03-10 23:16_
+_@carljm_
 
 This is used to explicitly mark a package's annotations as partially complete, which may affect how we choose to surface import errors from such a package.
 

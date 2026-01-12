@@ -13,14 +13,14 @@ head: correct-hyperlink
 created_at: 2024-01-21T22:59:43Z
 updated_at: 2024-01-22T03:57:35Z
 url: https://github.com/astral-sh/ruff/pull/9602
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Corrected code block hyperlink
 
 ---
 
-_Pull request opened by @trag1c on 2024-01-21 22:59_
+_@trag1c_
 
 ## Summary
 

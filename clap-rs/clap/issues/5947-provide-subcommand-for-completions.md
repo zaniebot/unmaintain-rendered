@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-12T21:44:53Z
 updated_at: 2025-03-13T14:18:57Z
 url: https://github.com/clap-rs/clap/issues/5947
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Provide subcommand for completions
 
 ---
 
-_Issue opened by @titaniumtraveler on 2025-03-12 21:44_
+_@titaniumtraveler_
 
 ### Please complete the following tasks
 

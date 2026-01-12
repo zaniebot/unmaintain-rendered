@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T08:48:07Z
 updated_at: 2024-08-22T09:26:10Z
 url: https://github.com/astral-sh/ruff/issues/13048
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Disable warning for ISC001 if it is in unfixable
 
 ---
 
-_Issue opened by @KennethEnevoldsen on 2024-08-22 08:48_
+_@KennethEnevoldsen_
 
 When following the recommendation of 13031, you get the warning:
 

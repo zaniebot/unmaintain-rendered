@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-12T23:45:18Z
 updated_at: 2025-07-21T16:46:40Z
 url: https://github.com/astral-sh/ty/issues/339
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `[invalid-return-type]` should not be emitted on function definitions inside `if TYPE_CHECKING` blocks
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-12 23:45_
+_@AlexWaygood_
 
 ### Summary
 

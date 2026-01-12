@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T13:33:13Z
 updated_at: 2023-11-03T15:47:03Z
 url: https://github.com/astral-sh/uv/issues/214
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Improve error messages involving "root" package
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-27 13:33_
+_@charliermarsh_
 
 We create a synthetic dependency for the root package, and it shows up as `root 0a0.dev0` in all error messages.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T10:22:41Z
 updated_at: 2023-06-13T00:54:23Z
 url: https://github.com/astral-sh/ruff/issues/2848
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM114 and comments / line-length
 
 ---
 
-_Issue opened by @spaceone on 2023-02-13 10:22_
+_@spaceone_
 
 I am unsure about `SIM114` - it makes sense in most cases but here for example I dislike it:
 ```python

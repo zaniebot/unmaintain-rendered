@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T18:38:35Z
 updated_at: 2024-02-22T05:01:22Z
 url: https://github.com/astral-sh/uv/issues/1522
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # handle constraints on indirect dependencies
 
 ---
 
-_Issue opened by @raylu on 2024-02-16 18:38_
+_@raylu_
 
 if I have this requirements.in
 ```

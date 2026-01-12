@@ -13,14 +13,14 @@ head: konsti/global-client-builder
 created_at: 2025-08-27T12:04:07Z
 updated_at: 2025-09-03T08:35:49Z
 url: https://github.com/astral-sh/uv/pull/15548
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Use a global `BaseClientBuilder`
 
 ---
 
-_Pull request opened by @konstin on 2025-08-27 12:04_
+_@konstin_
 
 Alternative to #15105
 

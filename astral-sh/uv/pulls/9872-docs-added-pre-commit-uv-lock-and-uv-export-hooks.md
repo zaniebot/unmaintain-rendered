@@ -13,14 +13,14 @@ head: patch-4
 created_at: 2024-12-13T16:09:50Z
 updated_at: 2024-12-16T19:39:01Z
 url: https://github.com/astral-sh/uv/pull/9872
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # docs: added pre-commit uv-lock and uv-export hooks to docs
 
 ---
 
-_Pull request opened by @nonZero on 2024-12-13 16:09_
+_@nonZero_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

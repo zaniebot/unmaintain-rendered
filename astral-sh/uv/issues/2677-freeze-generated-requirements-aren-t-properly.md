@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T21:13:37Z
 updated_at: 2024-03-27T14:12:39Z
 url: https://github.com/astral-sh/uv/issues/2677
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Freeze generated requirements aren't properly formatted for git and local dependencies
 
 ---
 
-_Issue opened by @tonydavis629 on 2024-03-26 21:13_
+_@tonydavis629_
 
 I have a project with dependencies installed from github and from local disk.
 

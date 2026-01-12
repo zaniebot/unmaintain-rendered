@@ -14,14 +14,14 @@ head: alex/negativeintersection-eq-optimize
 created_at: 2026-01-05T13:47:07Z
 updated_at: 2026-01-05T13:59:43Z
 url: https://github.com/astral-sh/ruff/pull/22397
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Improve performance of `Eq` and `Hash` for `NegativeIntersectionElements`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-05 13:47_
+_@AlexWaygood_
 
 The final codspeed report on #22344 was less impressive than on some earlier commits on that PR. Curious if this improves perf at all or if the difference in the final report was just noise.
 

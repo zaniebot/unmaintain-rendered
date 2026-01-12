@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-10-07T08:32:38Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1061
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Potential regression on global args
 
 ---
 
-_Issue opened by @Freyskeyd on 2017-10-07 08:32_
+_@Freyskeyd_
 
 ### Rust Version
 

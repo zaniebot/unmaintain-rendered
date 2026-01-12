@@ -13,14 +13,14 @@ head: zb/0221
 created_at: 2024-07-03T04:17:45Z
 updated_at: 2024-07-03T04:27:01Z
 url: https://github.com/astral-sh/uv/pull/4757
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Bump version to 0.2.21
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 04:17_
+_@zanieb_
 
 _No description provided._
 

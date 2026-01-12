@@ -14,14 +14,14 @@ head: ups/resolver-hint-reduced-tree
 created_at: 2024-09-19T12:12:09Z
 updated_at: 2024-09-19T14:07:07Z
 url: https://github.com/astral-sh/uv/pull/7546
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Compute resolver hints using the final reduced derivation tree
 
 ---
 
-_Pull request opened by @lucab on 2024-09-19 12:12_
+_@lucab_
 
 This switches the no-solution formatter to use the final derivation tree (simplified and reduced) when generating hints.
 

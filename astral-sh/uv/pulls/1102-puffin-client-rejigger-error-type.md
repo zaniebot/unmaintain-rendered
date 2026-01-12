@@ -12,14 +12,14 @@ head: ag/client-smaller-error
 created_at: 2024-01-25T18:10:26Z
 updated_at: 2024-01-25T18:13:23Z
 url: https://github.com/astral-sh/uv/pull/1102
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # puffin-client: rejigger error type
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-25 18:10_
+_@BurntSushi_
 
 This PR changes the error type to be boxed internally so that it uses
 less size on the stack. This makes functions returning `Result<T,

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-25T15:44:47Z
 updated_at: 2024-11-29T14:24:28Z
 url: https://github.com/astral-sh/ruff/issues/465
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Import-sorting (a `ruff` approximation of `isort`)
 
 ---
 
-_Issue opened by @thejcannon on 2022-10-25 15:44_
+_@thejcannon_
 
 `isort` does have some wacky heuristics to determine first v third party, but ultimately I'd love to elide the import-sorting it does with `ruff` :zap: 
 

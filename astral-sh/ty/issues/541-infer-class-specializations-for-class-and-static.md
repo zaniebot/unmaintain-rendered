@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T19:04:05Z
 updated_at: 2025-11-13T06:48:45Z
 url: https://github.com/astral-sh/ty/issues/541
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Infer class specializations for class and static methods
 
 ---
 
-_Issue opened by @dcreager on 2025-05-29 19:04_
+_@dcreager_
 
 We can currently infer the specialization of a generic class from its constructor methods, if they include parameters that use the class's typevars:
 

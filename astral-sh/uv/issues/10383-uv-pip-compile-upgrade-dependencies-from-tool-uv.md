@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T08:25:14Z
 updated_at: 2025-01-16T18:10:01Z
 url: https://github.com/astral-sh/uv/issues/10383
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # uv pip-compile upgrade dependencies from tool.uv.sources even without the --upgrade flag
 
 ---
 
-_Issue opened by @Corentin-Bravo on 2025-01-08 08:25_
+_@Corentin-Bravo_
 
 - Version of uv : 0.5.15
 - OS: Ubuntu 22.04.4 LTS 

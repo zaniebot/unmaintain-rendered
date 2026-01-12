@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-02T22:25:27Z
 updated_at: 2023-03-09T19:12:34Z
 url: https://github.com/astral-sh/ruff/issues/1568
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive: `UP024` Replace aliased errors with `OSError`
 
 ---
 
-_Issue opened by @woodruffw on 2023-01-02 22:25_
+_@woodruffw_
 
 First of all, thanks for `ruff`! I've been trying it on a few of my projects, and it's been a pleasure to use.
 

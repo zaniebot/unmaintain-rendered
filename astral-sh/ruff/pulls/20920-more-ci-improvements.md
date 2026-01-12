@@ -13,14 +13,14 @@ head: alex/ci-improvements
 created_at: 2025-10-16T13:18:54Z
 updated_at: 2025-10-16T13:35:06Z
 url: https://github.com/astral-sh/ruff/pull/20920
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # More CI improvements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-16 13:18_
+_@AlexWaygood_
 
 ## Summary
 

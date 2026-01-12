@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-19T01:12:26Z
 updated_at: 2022-03-02T15:21:30Z
 url: https://github.com/clap-rs/clap/issues/3312
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Ability to show possible value help in --help
 
 ---
 
-_Issue opened by @kpreid on 2022-01-19 01:12_
+_@kpreid_
 
 ### Please complete the following tasks
 

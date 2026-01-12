@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T23:09:58Z
 updated_at: 2024-11-12T23:11:10Z
 url: https://github.com/astral-sh/ruff/issues/14301
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [PD010] - False positives with `polars`dataframes
 
 ---
 
-_Issue opened by @jlopezpena on 2024-11-12 23:09_
+_@jlopezpena_
 
 `ruff` version 0.7.3, `pandas` linting rules `PD` can trigger when dealing with objects from other libraries, like polars.
 

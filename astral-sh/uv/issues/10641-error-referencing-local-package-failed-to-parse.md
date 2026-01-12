@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T20:14:00Z
 updated_at: 2025-11-28T08:27:29Z
 url: https://github.com/astral-sh/uv/issues/10641
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Error referencing local package: Failed to parse metadata from built wheel, relative path without a working directory
 
 ---
 
-_Issue opened by @ejstembler on 2025-01-15 20:14_
+_@ejstembler_
 
 I have a local package which needs to be referenced.  For example, in pip it looks like this:
 

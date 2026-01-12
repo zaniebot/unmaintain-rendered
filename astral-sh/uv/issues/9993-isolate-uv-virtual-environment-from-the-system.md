@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-18T09:55:13Z
 updated_at: 2024-12-18T14:27:41Z
 url: https://github.com/astral-sh/uv/issues/9993
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Isolate uv virtual environment from the system python
 
 ---
 
-_Issue opened by @brunorigal on 2024-12-18 09:55_
+_@brunorigal_
 
 I created a virtual environment for my package using uv sync. The virtual environment is activated. And the library is missing the pytest package. Nevertheless, I can still access the pytest library installed in the system version of python. I would rather have a missing pytest error, because the uv run pytest command cannot access the virtual env and fail in a misleading way.
 

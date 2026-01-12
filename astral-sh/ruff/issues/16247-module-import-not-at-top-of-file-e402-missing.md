@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T09:13:49Z
 updated_at: 2025-02-21T13:24:52Z
 url: https://github.com/astral-sh/ruff/issues/16247
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # module-import-not-at-top-of-file (E402) - missing support for site.addsitedir()
 
 ---
 
-_Issue opened by @Sarcasm on 2025-02-19 09:13_
+_@Sarcasm_
 
 ### Description
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T13:17:54Z
 updated_at: 2024-07-11T04:05:02Z
 url: https://github.com/astral-sh/ruff/issues/10079
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Allow banning of certain builtins in "banned-api"
 
 ---
 
-_Issue opened by @jonathanslenders on 2024-02-22 13:17_
+_@jonathanslenders_
 
 I'd love to ban usage of certain builtins using the "banned-api" (TID251) rule.
 Something like this: 

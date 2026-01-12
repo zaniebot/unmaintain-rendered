@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-21T18:00:26Z
 updated_at: 2023-12-21T18:09:07Z
 url: https://github.com/zanieb/rooster/issues/11
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Avoid stripping newlines from the end of the `CHANGELOG` file on update
 
 ---
 
-_Issue opened by @zanieb on 2023-12-21 18:00_
+_@zanieb_
 
 _No description provided._
 

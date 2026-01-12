@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-27T18:52:23Z
 updated_at: 2024-09-19T18:57:15Z
 url: https://github.com/astral-sh/uv/issues/6713
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Suggestion for streamlined portable executable script
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-08-27 18:52_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

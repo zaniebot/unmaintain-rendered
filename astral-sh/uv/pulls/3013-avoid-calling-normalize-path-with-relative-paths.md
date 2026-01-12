@@ -13,14 +13,14 @@ head: charlie/abs
 created_at: 2024-04-12T14:25:11Z
 updated_at: 2024-04-12T18:48:04Z
 url: https://github.com/astral-sh/uv/pull/3013
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Avoid calling `normalize_path` with relative paths that extend beyond the current directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 14:25_
+_@charliermarsh_
 
 ## Summary
 

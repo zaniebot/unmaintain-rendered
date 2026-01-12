@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T14:39:06Z
 updated_at: 2025-02-19T20:24:05Z
 url: https://github.com/astral-sh/uv/issues/8460
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # `uv` sync in workspace during docker build doesn't install dependencies
 
 ---
 
-_Issue opened by @VVoruganti on 2024-10-22 14:39_
+_@VVoruganti_
 
 I have a project that is making use of the `uv` workspaces feature. It has the following structure
 

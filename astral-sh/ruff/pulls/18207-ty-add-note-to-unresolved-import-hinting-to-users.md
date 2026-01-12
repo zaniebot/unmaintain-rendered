@@ -13,14 +13,14 @@ head: emily/unresolved-import-python-env-note
 created_at: 2025-05-19T20:38:50Z
 updated_at: 2025-05-19T21:31:26Z
 url: https://github.com/astral-sh/ruff/pull/18207
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Add note to `unresolved-import` hinting to users to configure their Python environment
 
 ---
 
-_Pull request opened by @EmilyBZhang on 2025-05-19 20:38_
+_@EmilyBZhang_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T14:27:28Z
 updated_at: 2025-12-26T18:32:08Z
 url: https://github.com/astral-sh/ty/issues/1515
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Extra Unknown for attribute in method
 
 ---
 
-_Issue opened by @emillon on 2025-11-10 14:27_
+_@emillon_
 
 ### Summary
 

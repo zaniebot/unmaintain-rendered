@@ -14,14 +14,14 @@ assignees: []
 created_at: 2021-12-13T17:01:34Z
 updated_at: 2023-03-28T17:20:59Z
 url: https://github.com/clap-rs/clap/issues/3165
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Create a group from an `Args` struct
 
 ---
 
-_Issue opened by @epage on 2021-12-13 17:01_
+_@epage_
 
 Maintainer's notes
 - [x] #4210 

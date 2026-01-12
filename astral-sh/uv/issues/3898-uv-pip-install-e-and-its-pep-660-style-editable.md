@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T08:30:51Z
 updated_at: 2025-02-20T16:11:43Z
 url: https://github.com/astral-sh/uv/issues/3898
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv pip install -e` and its PEP-660-style editable installs break vscode import resolution (and probably static type checkers)
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-05-29 08:30_
+_@ThiefMaster_
 
 My context is that I have a main package and some related packages. Everything is installed in editable mode for development.
 

@@ -12,14 +12,14 @@ head: fix-19492
 created_at: 2025-09-27T21:11:09Z
 updated_at: 2025-11-21T15:56:27Z
 url: https://github.com/astral-sh/ruff/pull/20604
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`formatter`] Fix trailing newline insertion in `fmt: off` regions
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-27 21:11_
+_@danparizher_
 
 ## Summary
 

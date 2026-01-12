@@ -13,14 +13,14 @@ head: main
 created_at: 2024-03-10T00:40:57Z
 updated_at: 2024-03-10T01:06:36Z
 url: https://github.com/astral-sh/uv/pull/2319
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Address #2220 (slow download perf against PyPi mirror)
 
 ---
 
-_Pull request opened by @thundergolfer on 2024-03-10 00:40_
+_@thundergolfer_
 
 ## Summary
 

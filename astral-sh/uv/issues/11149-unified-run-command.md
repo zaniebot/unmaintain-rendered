@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T23:04:43Z
 updated_at: 2025-01-31T23:04:43Z
 url: https://github.com/astral-sh/uv/issues/11149
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Unified run command
 
 ---
 
-_Issue opened by @T-256 on 2025-01-31 23:04_
+_@T-256_
 
 ### Summary
 

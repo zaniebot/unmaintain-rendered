@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-02T03:12:51Z
 updated_at: 2022-11-26T21:56:24Z
 url: https://github.com/astral-sh/ruff/issues/546
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement flake8-debugger
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-02 03:12_
+_@charliermarsh_
 
 This is the 13th most popular plugin, and has a pretty small surface area.
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-22T22:20:19Z
 updated_at: 2024-06-23T01:15:56Z
 url: https://github.com/astral-sh/ruff/pull/11985
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update PEP reference in future_rewritable_type_annotation.rs
 
 ---
 
-_Pull request opened by @ericbn on 2024-06-22 22:20_
+_@ericbn_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

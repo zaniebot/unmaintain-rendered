@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-20T07:43:01Z
 updated_at: 2024-01-02T18:54:13Z
 url: https://github.com/astral-sh/ruff/issues/5907
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # incorrect ranges for constants in joined strings?
 
 ---
 
-_Issue opened by @davidszotten on 2023-07-20 07:43_
+_@davidszotten_
 
 input
 ```

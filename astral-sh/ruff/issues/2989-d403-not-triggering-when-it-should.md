@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-17T16:29:08Z
 updated_at: 2023-02-17T18:05:50Z
 url: https://github.com/astral-sh/ruff/issues/2989
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D403 not triggering when it should
 
 ---
 
-_Issue opened by @cazador481 on 2023-02-17 16:29_
+_@cazador481_
 
 I am seeing D4-3 not hitting a number of cases where flake8 is.
 To replicate `ruff test.py --select D403 -n --isolated`

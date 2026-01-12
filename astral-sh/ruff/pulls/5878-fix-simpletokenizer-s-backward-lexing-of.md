@@ -12,14 +12,14 @@ head: fix-simple-tokenizer-hash-in-string
 created_at: 2023-07-19T09:53:10Z
 updated_at: 2023-07-20T09:54:19Z
 url: https://github.com/astral-sh/ruff/pull/5878
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix `SimpleTokenizer`'s backward lexing of `# `
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-19 09:53_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

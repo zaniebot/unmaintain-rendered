@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-25T13:53:59Z
 updated_at: 2025-04-04T13:45:48Z
 url: https://github.com/astral-sh/ruff/issues/9641
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Request: Lint rule to enforce ordering of docstring sections
 
 ---
 
-_Issue opened by @stinodego on 2024-01-25 13:53_
+_@stinodego_
 
 Here I come again with docstring requests :sweat_smile: 
 

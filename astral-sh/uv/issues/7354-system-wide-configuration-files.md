@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-13T08:47:59Z
 updated_at: 2024-09-13T11:07:01Z
 url: https://github.com/astral-sh/uv/issues/7354
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # System-wide configuration files
 
 ---
 
-_Issue opened by @tmct on 2024-09-13 08:47_
+_@tmct_
 
 Hi,
 

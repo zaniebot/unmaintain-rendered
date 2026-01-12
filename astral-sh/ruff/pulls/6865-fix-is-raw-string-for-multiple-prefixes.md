@@ -12,14 +12,14 @@ head: fix-is-raw-string
 created_at: 2023-08-25T07:26:11Z
 updated_at: 2023-08-25T07:58:27Z
 url: https://github.com/astral-sh/ruff/pull/6865
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # fix is_raw_string for multiple prefixes
 
 ---
 
-_Pull request opened by @davidszotten on 2023-08-25 07:26_
+_@davidszotten_
 
 fix `is_raw_string` in the presence of other prefixes (like `rb"foo"`)
 

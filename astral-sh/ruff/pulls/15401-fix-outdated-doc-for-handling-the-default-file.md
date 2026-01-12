@@ -13,14 +13,14 @@ head: fix-outdated-pre-commit-doc
 created_at: 2025-01-10T14:19:37Z
 updated_at: 2025-01-10T14:49:23Z
 url: https://github.com/astral-sh/ruff/pull/15401
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Fix outdated doc for handling the default file types with the pre-commit hook
 
 ---
 
-_Pull request opened by @AntoineD on 2025-01-10 14:19_
+_@AntoineD_
 
 The `jupyter` file type is now included by default in `ruff-pre-commit` hooks, the changes come from from https://github.com/astral-sh/ruff-pre-commit/blob/main/README.md.
 

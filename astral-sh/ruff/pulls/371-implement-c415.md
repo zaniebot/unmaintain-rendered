@@ -12,14 +12,14 @@ head: C415
 created_at: 2022-10-09T04:30:17Z
 updated_at: 2022-10-09T14:13:06Z
 url: https://github.com/astral-sh/ruff/pull/371
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement C415
 
 ---
 
-_Pull request opened by @harupy on 2022-10-09 04:30_
+_@harupy_
 
 #305
 

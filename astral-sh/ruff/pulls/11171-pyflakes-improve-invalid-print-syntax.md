@@ -13,14 +13,14 @@ head: invalid-print
 created_at: 2024-04-27T04:17:04Z
 updated_at: 2024-04-27T14:31:27Z
 url: https://github.com/astral-sh/ruff/pull/11171
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [`pyflakes`] Improve `invalid-print-syntax` documentation
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2024-04-27 04:17_
+_@JelleZijlstra_
 
 This syntax wasn't "deprecated" in Python 3; it was removed.
 

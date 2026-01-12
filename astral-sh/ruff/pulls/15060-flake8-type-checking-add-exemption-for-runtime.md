@@ -12,14 +12,14 @@ head: runtime-evaluated-decorator-classes
 created_at: 2024-12-19T12:09:22Z
 updated_at: 2024-12-31T14:15:39Z
 url: https://github.com/astral-sh/ruff/pull/15060
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Add exemption for runtime evaluated decorator classes
 
 ---
 
-_Pull request opened by @viccie30 on 2024-12-19 12:09_
+_@viccie30_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

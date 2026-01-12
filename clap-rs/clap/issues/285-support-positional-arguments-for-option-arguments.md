@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-29T14:57:53Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/285
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Support positional arguments for Option arguments
 
 ---
 
-_Issue opened by @hgrecco on 2015-09-29 14:57_
+_@hgrecco_
 
 I am trying to support the following syntax:
 

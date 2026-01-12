@@ -14,14 +14,14 @@ head: fix-with-item-parenthesizing
 created_at: 2024-03-07T15:05:03Z
 updated_at: 2024-03-09T01:26:13Z
 url: https://github.com/astral-sh/ruff/pull/10274
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix unstable with-items formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-07 15:05_
+_@MichaReiser_
 
 ## Summary
 

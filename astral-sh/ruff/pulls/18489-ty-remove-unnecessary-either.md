@@ -14,14 +14,14 @@ head: cjm/remove-unnecessary-either
 created_at: 2025-06-06T01:24:11Z
 updated_at: 2025-06-07T02:19:33Z
 url: https://github.com/astral-sh/ruff/pull/18489
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] remove unnecessary Either
 
 ---
 
-_Pull request opened by @carljm on 2025-06-06 01:24_
+_@carljm_
 
 Just a quick review-comment follow-up.
 

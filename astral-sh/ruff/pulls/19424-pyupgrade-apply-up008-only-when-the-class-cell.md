@@ -14,14 +14,14 @@ head: fix/ruff-19357
 created_at: 2025-07-18T15:33:09Z
 updated_at: 2025-09-09T18:59:24Z
 url: https://github.com/astral-sh/ruff/pull/19424
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`pyupgrade`]  Apply `UP008` only when the `__class__` cell exists
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-07-18 15:33_
+_@IDrokin117_
 
 ## Summary
 

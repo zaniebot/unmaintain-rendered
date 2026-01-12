@@ -12,14 +12,14 @@ head: charlie/suggestion-message
 created_at: 2023-03-08T05:02:15Z
 updated_at: 2023-03-08T18:06:22Z
 url: https://github.com/astral-sh/ruff/pull/3397
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Rename `DiagnosticKind#commit` to `DiagnosticKind#suggestion`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-08 05:02_
+_@charliermarsh_
 
 A straightforward rename of a poorly-named field. The rename itself is in the first commit. The second commit is purely the regeneration of the fixtures.
 

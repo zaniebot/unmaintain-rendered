@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-03T17:01:07Z
 updated_at: 2025-03-04T17:00:33Z
 url: https://github.com/astral-sh/ruff/issues/16476
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Formatter panic]
 
 ---
 
-_Issue opened by @xodiumx on 2025-03-03 17:01_
+_@xodiumx_
 
 Hello, I am getting an error in the formatter
 ____

@@ -13,14 +13,14 @@ head: jtfm/remote-reqs-test
 created_at: 2025-04-17T12:42:42Z
 updated_at: 2025-04-17T14:25:40Z
 url: https://github.com/astral-sh/uv/pull/12941
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Add test for install from remote requirements.txt
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-17 12:42_
+_@jtfmumm_
 
 Closes #2593.
 

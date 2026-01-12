@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-06-01T14:23:52Z
 updated_at: 2021-06-03T19:36:30Z
 url: https://github.com/clap-rs/clap/issues/2514
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Optional positionals before required positionals
 
 ---
 
-_Issue opened by @ljrk0 on 2021-06-01 14:23_
+_@ljrk0_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/lex
 created_at: 2023-09-21T21:56:54Z
 updated_at: 2023-09-25T15:21:40Z
 url: https://github.com/astral-sh/ruff/pull/7584
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Implement our own small-integer optimization
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 21:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-10T00:06:38Z
 updated_at: 2024-08-11T00:04:49Z
 url: https://github.com/clap-rs/clap/issues/5650
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Completion status messages with rust native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 00:06_
+_@epage_
 
 Carapace has a way to report status back during completions, see
 - https://carapace.sh/

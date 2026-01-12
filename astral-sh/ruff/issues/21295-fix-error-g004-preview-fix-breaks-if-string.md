@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-06T14:48:54Z
 updated_at: 2025-11-10T22:26:51Z
 url: https://github.com/astral-sh/ruff/issues/21295
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Fix error] G004 preview fix breaks if string contains newline
 
 ---
 
-_Issue opened by @mkj-perfusiontech on 2025-11-06 14:48_
+_@mkj-perfusiontech_
 
 Minimal example:
 

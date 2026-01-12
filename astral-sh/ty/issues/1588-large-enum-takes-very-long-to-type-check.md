@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T07:41:48Z
 updated_at: 2026-01-09T13:43:55Z
 url: https://github.com/astral-sh/ty/issues/1588
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Large enum takes very long to type check.
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-19 07:41_
+_@MichaReiser_
 
 Type checking the following file takes minutes (730s and counting) on my machine
 

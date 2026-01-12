@@ -13,14 +13,14 @@ head: fa102
 created_at: 2023-05-29T08:45:26Z
 updated_at: 2023-05-29T23:01:54Z
 url: https://github.com/astral-sh/ruff/pull/4702
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`flake8-future-annotations`] Implement `FA102`
 
 ---
 
-_Pull request opened by @akx on 2023-05-29 08:45_
+_@akx_
 
 ## Summary
 

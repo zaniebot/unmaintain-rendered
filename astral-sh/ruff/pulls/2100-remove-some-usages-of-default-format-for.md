@@ -12,14 +12,14 @@ head: charlie/fmt
 created_at: 2023-01-23T04:07:27Z
 updated_at: 2023-01-23T04:15:44Z
 url: https://github.com/astral-sh/ruff/pull/2100
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove some usages of default format for expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-23 04:07_
+_@charliermarsh_
 
 _No description provided._
 

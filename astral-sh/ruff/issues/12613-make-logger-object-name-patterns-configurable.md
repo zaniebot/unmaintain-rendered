@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T15:35:26Z
 updated_at: 2025-09-16T19:30:29Z
 url: https://github.com/astral-sh/ruff/issues/12613
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Make logger object name patterns configurable
 
 ---
 
-_Issue opened by @lpulley on 2024-08-01 15:35_
+_@lpulley_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

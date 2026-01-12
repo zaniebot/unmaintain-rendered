@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T13:59:37Z
 updated_at: 2025-09-19T14:03:43Z
 url: https://github.com/astral-sh/ruff/issues/20483
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # I001 import sorting rule behaves differently in CI vs local with identical files and config
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2025-09-19 13:59_
+_@ReinforcedKnowledge_
 
 ### Question
 

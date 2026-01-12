@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T21:41:02Z
 updated_at: 2024-06-11T23:33:07Z
 url: https://github.com/astral-sh/ruff/issues/11832
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Suppress isort for single import line
 
 ---
 
-_Issue opened by @bloodgain on 2024-06-10 21:41_
+_@bloodgain_
 
 Is is possible to tell ruff to ignore a single line for isort plugin sorting?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-19T20:26:53Z
 updated_at: 2024-08-10T00:45:21Z
 url: https://github.com/clap-rs/clap/issues/4652
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Zsh shell completion doesn't work for flags/args that come after positional values
 
 ---
 
-_Issue opened by @gbrlsnchs on 2023-01-19 20:26_
+_@gbrlsnchs_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/4648
 

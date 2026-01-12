@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-17T16:41:00Z
 updated_at: 2023-07-20T02:14:23Z
 url: https://github.com/astral-sh/ruff/issues/5837
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Rule for “Subclass dataclass attribute overwritten by Base class init attribute”
 
 ---
 
-_Issue opened by @ssweber on 2023-07-17 16:41_
+_@ssweber_
 
 Is there a rule to catch the following:
 

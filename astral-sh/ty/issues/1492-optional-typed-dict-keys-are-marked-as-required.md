@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T07:36:45Z
 updated_at: 2025-11-06T13:51:20Z
 url: https://github.com/astral-sh/ty/issues/1492
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Optional Typed dict keys are marked as required.
 
 ---
 
-_Issue opened by @lypwig on 2025-11-06 07:36_
+_@lypwig_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-27T15:25:10Z
 updated_at: 2024-11-27T15:53:40Z
 url: https://github.com/astral-sh/uv/issues/9473
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Is there a way to specify that you don't care about pypy when creating a lockfile?
 
 ---
 
-_Issue opened by @wlach on 2024-11-27 15:25_
+_@wlach_
 
 Consider this pyproject.toml:
 

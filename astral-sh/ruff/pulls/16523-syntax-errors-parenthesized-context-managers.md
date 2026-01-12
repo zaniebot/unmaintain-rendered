@@ -14,14 +14,14 @@ head: brent/syn-parenthesized-context-managers
 created_at: 2025-03-05T17:48:47Z
 updated_at: 2025-03-17T12:54:56Z
 url: https://github.com/astral-sh/ruff/pull/16523
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Parenthesized context managers before Python 3.9
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-05 17:48_
+_@ntBre_
 
 Summary
 --

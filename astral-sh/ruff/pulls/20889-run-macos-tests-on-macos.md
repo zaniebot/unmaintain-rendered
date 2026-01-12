@@ -13,14 +13,14 @@ head: micha/macos-test
 created_at: 2025-10-15T12:23:57Z
 updated_at: 2025-10-15T12:46:13Z
 url: https://github.com/astral-sh/ruff/pull/20889
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Run macos tests on macos
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-15 12:23_
+_@MichaReiser_
 
 Because, that's sort of the point
 

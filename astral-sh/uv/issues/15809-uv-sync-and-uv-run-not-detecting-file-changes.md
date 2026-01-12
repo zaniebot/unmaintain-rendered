@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T12:45:46Z
 updated_at: 2025-09-12T15:12:55Z
 url: https://github.com/astral-sh/uv/issues/15809
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # `uv sync` and `uv run` not detecting file changes when using `scikit_build_core.build` backend
 
 ---
 
-_Issue opened by @alechouse97 on 2025-09-12 12:45_
+_@alechouse97_
 
 ### Summary
 

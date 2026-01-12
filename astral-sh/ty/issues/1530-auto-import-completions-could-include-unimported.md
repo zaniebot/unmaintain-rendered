@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-12T13:22:50Z
 updated_at: 2025-12-04T22:37:39Z
 url: https://github.com/astral-sh/ty/issues/1530
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import completions could include unimported modules in more places
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-12 13:22_
+_@AlexWaygood_
 
 In this situation, ty will offer to auto-import `my_module_that_could_be_imported` for me, which is awesome:
 

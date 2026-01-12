@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T21:42:12Z
 updated_at: 2025-02-10T22:19:34Z
 url: https://github.com/astral-sh/uv/issues/11408
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Breaking behavior change: uv 0.5.29 creates a `/tmp/uv-xcxx.lock` 
 
 ---
 
-_Issue opened by @zongsizhang on 2025-02-10 21:42_
+_@zongsizhang_
 
 ### Summary
 

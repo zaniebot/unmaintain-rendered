@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-02T00:51:33Z
 updated_at: 2021-11-02T01:04:55Z
 url: https://github.com/clap-rs/clap/issues/2982
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Examples in master branch don't build with 2.33.3
 
 ---
 
-_Issue opened by @jcos1 on 2021-11-02 00:51_
+_@jcos1_
 
 ### Please complete the following tasks
 

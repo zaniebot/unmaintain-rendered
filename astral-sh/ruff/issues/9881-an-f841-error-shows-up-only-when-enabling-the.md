@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-07T21:36:16Z
 updated_at: 2024-02-07T21:55:03Z
 url: https://github.com/astral-sh/ruff/issues/9881
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # An F841 error shows up only when enabling the preview mode
 
 ---
 
-_Issue opened by @suhaibmujahid on 2024-02-07 21:36_
+_@suhaibmujahid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

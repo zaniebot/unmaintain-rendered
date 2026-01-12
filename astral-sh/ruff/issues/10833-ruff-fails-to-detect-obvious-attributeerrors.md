@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T09:09:11Z
 updated_at: 2025-07-17T13:43:22Z
 url: https://github.com/astral-sh/ruff/issues/10833
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff fails to detect obvious AttributeErrors
 
 ---
 
-_Issue opened by @edreamleo on 2024-04-08 09:09_
+_@edreamleo_
 
 Consider the following file, say `test.py`:
 ```python

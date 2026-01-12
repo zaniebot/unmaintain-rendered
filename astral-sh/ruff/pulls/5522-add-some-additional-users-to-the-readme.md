@@ -13,14 +13,14 @@ head: charlie/users
 created_at: 2023-07-05T02:03:02Z
 updated_at: 2023-07-05T02:34:52Z
 url: https://github.com/astral-sh/ruff/pull/5522
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add some additional users to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 02:03_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/venv
 created_at: 2024-01-30T21:32:20Z
 updated_at: 2024-01-31T15:42:33Z
 url: https://github.com/astral-sh/uv/pull/1194
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Update Python discovery documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 21:32_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/1109.
 

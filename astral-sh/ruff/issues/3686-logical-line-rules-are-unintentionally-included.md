@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-23T17:08:34Z
 updated_at: 2023-03-24T03:42:58Z
 url: https://github.com/astral-sh/ruff/issues/3686
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Logical-line rules are unintentionally included in the docs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-23 17:08_
+_@charliermarsh_
 
 When we migrated from a feature flag to debug assertions, we started including rules like E203 in the docs, despite the fact that they're not yet enabled in production.
 

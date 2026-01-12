@@ -14,14 +14,14 @@ assignees: []
 created_at: 2025-07-07T13:13:18Z
 updated_at: 2025-07-07T20:01:56Z
 url: https://github.com/clap-rs/clap/issues/6062
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Using `ArgAction::Help` and `ArgAction::Version` disables `conflicts_with` and `exclusive`
 
 ---
 
-_Issue opened by @ntrypoint on 2025-07-07 13:13_
+_@ntrypoint_
 
 ### Please complete the following tasks
 

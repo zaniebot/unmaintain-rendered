@@ -12,14 +12,14 @@ head: feature/PYI051-autofix
 created_at: 2025-03-26T20:26:39Z
 updated_at: 2025-12-17T15:13:04Z
 url: https://github.com/astral-sh/ruff/pull/17003
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Add autofix for PYI051
 
 ---
 
-_Pull request opened by @kiran-4444 on 2025-03-26 20:26_
+_@kiran-4444_
 
 This commit closes https://github.com/astral-sh/ruff/issues/14185.
 ```python

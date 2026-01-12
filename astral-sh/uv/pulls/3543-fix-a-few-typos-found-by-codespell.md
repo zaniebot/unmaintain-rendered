@@ -12,14 +12,14 @@ head: codespell
 created_at: 2024-05-13T11:45:58Z
 updated_at: 2024-05-13T11:58:33Z
 url: https://github.com/astral-sh/uv/pull/3543
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Fix a few typos found by codespell
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-05-13 11:45_
+_@DimitriPapadopoulos_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

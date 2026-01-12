@@ -13,14 +13,14 @@ head: charlie/ext
 created_at: 2023-12-05T21:15:46Z
 updated_at: 2023-12-05T22:41:23Z
 url: https://github.com/astral-sh/uv/pull/574
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Remove `.whl` extension for cached, unzipped wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 21:15_
+_@charliermarsh_
 
 ## Summary
 

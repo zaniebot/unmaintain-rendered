@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T12:40:25Z
 updated_at: 2024-08-02T19:44:45Z
 url: https://github.com/astral-sh/uv/issues/5725
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Workspace wildcard member should only match directory
 
 ---
 
-_Issue opened by @jpambrun-vida on 2024-08-02 12:40_
+_@jpambrun-vida_
 
 I have a project with the form
 ```

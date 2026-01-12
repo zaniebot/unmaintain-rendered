@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-21T08:34:40Z
 updated_at: 2023-04-22T15:18:40Z
 url: https://github.com/astral-sh/ruff/issues/4056
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Check for no side-effects during import
 
 ---
 
-_Issue opened by @worldmind on 2023-04-21 08:34_
+_@worldmind_
 
 Initial issue: ruff removed imports which looks unused, but they are actually needed and to be honest I also tried to remove those imports and realized they are needed only after tests starts failing.
 That gave me idea, but I am not sure is it even possible to implement, if it's fully stupid question just close it.

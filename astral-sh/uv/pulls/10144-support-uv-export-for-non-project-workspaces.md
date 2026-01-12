@@ -13,14 +13,14 @@ head: charlie/export-non-project
 created_at: 2024-12-24T15:08:36Z
 updated_at: 2024-12-24T15:23:29Z
 url: https://github.com/astral-sh/uv/pull/10144
-synced_at: 2026-01-10T11:44:36Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Support `uv export` for non-project workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 15:08_
+_@charliermarsh_
 
 _No description provided._
 

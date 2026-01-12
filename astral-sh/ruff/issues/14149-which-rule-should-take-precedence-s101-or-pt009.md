@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T09:02:03Z
 updated_at: 2024-11-07T23:40:02Z
 url: https://github.com/astral-sh/ruff/issues/14149
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Which rule should take precedence, S101 or PT009?
 
 ---
 
-_Issue opened by @jayce-kim1123 on 2024-11-07 09:02_
+_@jayce-kim1123_
 
 Hi there
 I have a question about the priority of linting rules.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T05:39:23Z
 updated_at: 2025-11-09T14:24:26Z
 url: https://github.com/astral-sh/uv/issues/14306
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Include debug python builds in uv
 
 ---
 
-_Issue opened by @shakfu on 2025-06-27 05:39_
+_@shakfu_
 
 ### Summary
 

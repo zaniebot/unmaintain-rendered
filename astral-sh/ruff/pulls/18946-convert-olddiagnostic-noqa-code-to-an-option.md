@@ -14,14 +14,14 @@ head: brent/string-noqa-code
 created_at: 2025-06-25T21:19:40Z
 updated_at: 2025-06-27T15:36:57Z
 url: https://github.com/astral-sh/ruff/pull/18946
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # Convert `OldDiagnostic::noqa_code` to an `Option<String>`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-25 21:19_
+_@ntBre_
 
 ## Summary
 

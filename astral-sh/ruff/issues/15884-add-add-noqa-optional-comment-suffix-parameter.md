@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-02T19:56:02Z
 updated_at: 2025-02-02T19:59:19Z
 url: https://github.com/astral-sh/ruff/issues/15884
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add `--add-noqa` optional comment suffix parameter
 
 ---
 
-_Issue opened by @Skylion007 on 2025-02-02 19:56_
+_@Skylion007_
 
 ### Description
 

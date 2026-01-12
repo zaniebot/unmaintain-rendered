@@ -13,14 +13,14 @@ head: charlie/cli
 created_at: 2024-04-12T04:39:11Z
 updated_at: 2024-04-12T13:37:52Z
 url: https://github.com/astral-sh/uv/pull/3008
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Split Clap arguments into separate module
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 04:39_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-12T09:43:21Z
 updated_at: 2023-08-12T14:03:18Z
 url: https://github.com/clap-rs/clap/issues/5069
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [clap_complete] Not working on zsh
 
 ---
 
-_Issue opened by @liby on 2023-08-12 09:43_
+_@liby_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T12:50:16Z
 updated_at: 2024-09-09T12:01:21Z
 url: https://github.com/astral-sh/ruff/issues/13108
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `ruff rule` should include a property that indicates the fix is unsafe or not
 
 ---
 
-_Issue opened by @zender-vivodyne on 2024-08-26 12:50_
+_@zender-vivodyne_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

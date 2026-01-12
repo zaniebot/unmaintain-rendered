@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-01T09:59:57Z
 updated_at: 2024-07-29T14:57:00Z
 url: https://github.com/astral-sh/uv/issues/4685
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Install `azure-cli` with `uv` fails
 
 ---
 
-_Issue opened by @baggiponte on 2024-07-01 09:59_
+_@baggiponte_
 
 Referencing [this](https://github.com/astral-sh/uv/issues/2252#issuecomment-1985853109) comment #2252 but also #4600: some libraries require `wheel` to compile. How should we handle this when using `uv tool install`? (`rye` has the same issue.) Example:
 

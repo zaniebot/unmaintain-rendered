@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T07:42:07Z
 updated_at: 2025-07-23T08:02:57Z
 url: https://github.com/astral-sh/uv/issues/14838
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # create statically linked single binary python applications similar to bun & deno
 
 ---
 
-_Issue opened by @kskarthik on 2025-07-23 07:42_
+_@kskarthik_
 
 ### Summary
 

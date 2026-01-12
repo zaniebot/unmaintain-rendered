@@ -13,14 +13,14 @@ head: cjm/type-not-function-like
 created_at: 2025-12-27T18:51:31Z
 updated_at: 2025-12-28T19:24:48Z
 url: https://github.com/astral-sh/ruff/pull/22226
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] callable type of a type object is not function-like
 
 ---
 
-_Pull request opened by @carljm on 2025-12-27 18:51_
+_@carljm_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T13:32:11Z
 updated_at: 2025-09-12T17:57:59Z
 url: https://github.com/astral-sh/uv/issues/15810
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # `uv lock --dry-run` reports "No lockfile changes" to VCS-sourced packages
 
 ---
 
-_Issue opened by @tehunter on 2025-09-12 13:32_
+_@tehunter_
 
 ### Summary
 

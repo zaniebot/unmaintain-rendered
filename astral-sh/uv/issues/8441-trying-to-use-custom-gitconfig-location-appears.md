@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T09:40:24Z
 updated_at: 2024-10-25T08:15:45Z
 url: https://github.com/astral-sh/uv/issues/8441
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Trying to use custom gitconfig location, appears to get ignored
 
 ---
 
-_Issue opened by @EdgyMeshx on 2024-10-22 09:40_
+_@EdgyMeshx_
 
 This is a follow on from #8413, I have a custom `.gitconfig` in a child directory that is picked up if I am editing a repo inside that child directory (effectively allowing me to commit etc under a user other than my default self.)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-20T18:53:31Z
 updated_at: 2026-01-06T15:28:17Z
 url: https://github.com/astral-sh/ruff/issues/21004
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Enabling UP047 and UP049 simultaneously leads to fixes introducing breaking changes with `--target-version=py314`, `from __future__ import annotations`, or on a `.pyi` file 
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-20 18:53_
+_@AlexWaygood_
 
 ### Summary
 

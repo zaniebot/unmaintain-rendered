@@ -12,14 +12,14 @@ head: zanie/pubrub-5
 created_at: 2023-11-17T16:12:21Z
 updated_at: 2023-11-20T15:12:49Z
 url: https://github.com/astral-sh/uv/pull/444
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Bump pubgrub to get range display changes
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-17 16:12_
+_@zanieb_
 
 See https://github.com/zanieb/pubgrub/pull/5
 

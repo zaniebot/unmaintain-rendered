@@ -13,14 +13,14 @@ head: zb/ty-bench
 created_at: 2025-12-16T14:15:13Z
 updated_at: 2025-12-16T14:42:59Z
 url: https://github.com/astral-sh/ty/pull/1934
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add benchmarks to landing pages
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 14:15_
+_@zanieb_
 
 [Rendered README](https://github.com/astral-sh/ty/tree/zb/ty-bench?tab=readme-ov-file#ty)
 

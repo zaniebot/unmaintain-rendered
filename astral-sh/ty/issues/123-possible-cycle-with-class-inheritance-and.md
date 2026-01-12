@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-18T19:50:34Z
 updated_at: 2025-05-11T07:36:29Z
 url: https://github.com/astral-sh/ty/issues/123
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # possible cycle with class inheritance and visibility constraints in a stub file
 
 ---
 
-_Issue opened by @carljm on 2025-04-18 19:50_
+_@carljm_
 
 This code, in a stub file, results in a query cycle, with `ClassLiteralType::try_metaclass` as the cycle head:
 

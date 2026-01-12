@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T12:23:38Z
 updated_at: 2025-11-19T08:39:20Z
 url: https://github.com/astral-sh/ty/issues/354
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Do not exit with status code 1 for IO errors
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-13 12:23_
+_@sharkdp_
 
 We currently exit with code 1 in cases of IO errors:
 

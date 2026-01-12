@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T16:42:07Z
 updated_at: 2025-10-07T09:14:52Z
 url: https://github.com/astral-sh/uv/issues/12369
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # sometimes we want to force `uv publish` to upload anyway
 
 ---
 
-_Issue opened by @marc-planard on 2025-03-21 16:42_
+_@marc-planard_
 
 ### Summary
 

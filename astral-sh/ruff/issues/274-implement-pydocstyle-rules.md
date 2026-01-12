@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-28T21:31:42Z
 updated_at: 2025-12-13T00:50:36Z
 url: https://github.com/astral-sh/ruff/issues/274
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement pydocstyle rules
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-28 21:31_
+_@charliermarsh_
 
 It's possible that we could collect the docstrings on the Rust side, then call out to pydocstyle. Or we could just re-implement the logic ourselves in Rust. The goal would be to enable adopting ruff for users of `flake8-docstring`.
 

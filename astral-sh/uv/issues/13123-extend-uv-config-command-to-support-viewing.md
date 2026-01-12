@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T03:02:22Z
 updated_at: 2025-12-31T08:37:19Z
 url: https://github.com/astral-sh/uv/issues/13123
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Extend uv config Command to Support Viewing/Modifying/Resetting Configurations
 
 ---
 
-_Issue opened by @willow-yang on 2025-04-27 03:02_
+_@willow-yang_
 
 ### Summary
 

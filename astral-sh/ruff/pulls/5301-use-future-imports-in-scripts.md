@@ -12,14 +12,14 @@ head: charlie/doc-revamp
 created_at: 2023-06-22T15:28:21Z
 updated_at: 2023-06-22T16:03:45Z
 url: https://github.com/astral-sh/ruff/pull/5301
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use `__future__` imports in scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 15:28_
+_@charliermarsh_
 
 _No description provided._
 

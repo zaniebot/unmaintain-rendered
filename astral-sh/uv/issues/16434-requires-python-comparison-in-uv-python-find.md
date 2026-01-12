@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T09:02:14Z
 updated_at: 2025-12-17T11:55:44Z
 url: https://github.com/astral-sh/uv/issues/16434
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # `requires-python` comparison in `uv python find` rejects 3.13t
 
 ---
 
-_Issue opened by @lmmx on 2025-10-24 09:02_
+_@lmmx_
 
 ### Summary
 

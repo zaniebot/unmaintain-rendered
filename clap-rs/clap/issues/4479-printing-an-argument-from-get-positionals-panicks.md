@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-13T12:12:01Z
 updated_at: 2022-11-14T18:30:41Z
 url: https://github.com/clap-rs/clap/issues/4479
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Printing an argument from `get_positionals()` panicks with "Fatal internal error"
 
 ---
 
-_Issue opened by @mss1451 on 2022-11-13 12:12_
+_@mss1451_
 
 ### Please complete the following tasks
 

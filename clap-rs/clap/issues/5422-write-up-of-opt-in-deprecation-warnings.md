@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-25T11:06:13Z
 updated_at: 2024-03-25T13:34:13Z
 url: https://github.com/clap-rs/clap/issues/5422
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Write-up of opt-in deprecation warnings?
 
 ---
 
-_Issue opened by @svix-jplatte on 2024-03-25 11:06_
+_@svix-jplatte_
 
 Hi, I just went through https://github.com/clap-rs/clap/issues/3822 and other related GitHub / reddit threads to find a summary of the opt-in deprecation scheme that clap ended up with. Is my memory serving me wrong that such a write-up exists?
 

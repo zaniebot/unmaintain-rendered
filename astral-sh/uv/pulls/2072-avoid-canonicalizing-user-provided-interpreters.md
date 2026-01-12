@@ -13,14 +13,14 @@ head: charlie/pyenv
 created_at: 2024-02-29T02:17:56Z
 updated_at: 2024-02-29T02:32:54Z
 url: https://github.com/astral-sh/uv/pull/2072
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Avoid canonicalizing user-provided interpreters
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-29 02:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T08:22:00Z
 updated_at: 2025-05-12T08:23:12Z
 url: https://github.com/astral-sh/ruff/issues/17676
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff formats and checks `.venv` files when repository is not a Git repo
 
 ---
 
-_Issue opened by @AliHezarpisheh on 2025-04-28 08:22_
+_@AliHezarpisheh_
 
 ### Summary
 When using `ruff` in a project folder that has **no Git initialized** (no `.git` directory), running `ruff format` or `ruff check` causes it to process files inside the `.venv/` directory.  

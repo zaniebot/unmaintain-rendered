@@ -13,14 +13,14 @@ head: playground-comments
 created_at: 2023-08-27T02:17:20Z
 updated_at: 2023-08-28T12:31:07Z
 url: https://github.com/astral-sh/ruff/pull/6911
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add comments option to playground
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-27 02:17_
+_@cnpryer_
 
 Closes #6509
 

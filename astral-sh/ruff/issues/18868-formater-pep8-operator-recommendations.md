@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-22T21:50:49Z
 updated_at: 2025-07-07T08:01:56Z
 url: https://github.com/astral-sh/ruff/issues/18868
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # formater: PEP8 operator recommendations
 
 ---
 
-_Issue opened by @DerWeh on 2025-06-22 21:50_
+_@DerWeh_
 
 ### Question
 

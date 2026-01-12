@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-08T08:11:26Z
 updated_at: 2023-12-07T18:58:00Z
 url: https://github.com/astral-sh/ruff/issues/7851
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # RUF100 for noqa: E501 not at end of line
 
 ---
 
-_Issue opened by @LefterisJP on 2023-10-08 08:11_
+_@LefterisJP_
 
 With the new ruff release `ruff==0.0.292` all unneeded noqa: E501 comments are detected! Yay!
 

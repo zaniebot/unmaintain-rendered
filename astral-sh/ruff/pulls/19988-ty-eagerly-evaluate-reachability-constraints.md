@@ -14,14 +14,14 @@ head: david/no-self-usage-in-reachability-constraints
 created_at: 2025-08-19T12:59:11Z
 updated_at: 2025-08-28T11:43:17Z
 url: https://github.com/astral-sh/ruff/pull/19988
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Eagerly evaluate reachability constraints using 'self' to Ambiguous
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-19 12:59_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: pip-uninstall--dry-run
 created_at: 2024-12-01T22:41:10Z
 updated_at: 2024-12-02T04:23:04Z
 url: https://github.com/astral-sh/uv/pull/9557
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Add `--dry-run` to `uv pip uninstall`
 
 ---
 
-_Pull request opened by @moreati on 2024-12-01 22:41_
+_@moreati_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dhruv/abstractmethod
 created_at: 2025-04-23T18:57:00Z
 updated_at: 2025-04-23T22:24:54Z
 url: https://github.com/astral-sh/ruff/pull/17591
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Special case `@abstractmethod` for function type
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-23 18:57_
+_@dhruvmanila_
 
 ## Summary
 

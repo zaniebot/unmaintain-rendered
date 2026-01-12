@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-13T04:19:18Z
 updated_at: 2025-01-27T10:53:43Z
 url: https://github.com/astral-sh/ruff/issues/8642
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule `E203` conflicts with formatter
 
 ---
 
-_Issue opened by @ofek on 2023-11-13 04:19_
+_@ofek_
 
 Running the formatter on
 

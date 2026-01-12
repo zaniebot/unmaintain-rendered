@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T10:35:23Z
 updated_at: 2024-06-18T14:25:24Z
 url: https://github.com/astral-sh/ruff/issues/11922
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule D102 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-06-18 10:35_
+_@qarmin_
 
 ruff 0.4.9+14 (8499abfa7 2024-06-17) (latest changes from main branch)
 ```

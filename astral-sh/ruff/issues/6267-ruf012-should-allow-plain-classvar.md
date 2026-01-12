@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-02T08:03:19Z
 updated_at: 2023-08-02T12:58:46Z
 url: https://github.com/astral-sh/ruff/issues/6267
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # RUF012 should allow plain `ClassVar`
 
 ---
 
-_Issue opened by @bluetech on 2023-08-02 08:03_
+_@bluetech_
 
 Running ruff `0.0.282` using `ruff --isolated --select=RUF012` on the following file:
 

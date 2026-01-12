@@ -12,14 +12,14 @@ head: charlie/install-wheel-rs
 created_at: 2023-10-07T01:11:57Z
 updated_at: 2023-10-07T01:38:40Z
 url: https://github.com/astral-sh/uv/pull/33
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Copy over `install-wheel-rs` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 01:11_
+_@charliermarsh_
 
 This PR copies over the `install-wheel-rs` crate at commit `10730ea1a84c58af6b35fb74c89ed0578ab042b6` with no modifications.
 

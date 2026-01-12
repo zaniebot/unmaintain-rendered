@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T14:54:23Z
 updated_at: 2025-07-11T02:02:16Z
 url: https://github.com/astral-sh/uv/issues/13950
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Cache folder always in home
 
 ---
 
-_Issue opened by @thistlillo on 2025-06-10 14:54_
+_@thistlillo_
 
 ### Summary
 

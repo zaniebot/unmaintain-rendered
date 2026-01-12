@@ -12,14 +12,14 @@ head: list-fix
 created_at: 2025-04-17T21:33:47Z
 updated_at: 2025-07-18T11:54:23Z
 url: https://github.com/astral-sh/uv/pull/12953
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Fix `uv python list --only-downloads --all-arches`
 
 ---
 
-_Pull request opened by @j178 on 2025-04-17 21:33_
+_@j178_
 
 ## Summary
 

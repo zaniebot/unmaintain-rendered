@@ -14,14 +14,14 @@ head: alex/more-intersection-opt
 created_at: 2026-01-03T09:56:10Z
 updated_at: 2026-01-05T15:26:20Z
 url: https://github.com/astral-sh/ruff/pull/22353
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # alex/more intersection opt
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 09:56_
+_@AlexWaygood_
 
 ## Summary
 

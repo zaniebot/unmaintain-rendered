@@ -14,14 +14,14 @@ head: micha/memory-report-unknown-value
 created_at: 2025-07-21T14:26:06Z
 updated_at: 2025-07-21T14:29:47Z
 url: https://github.com/astral-sh/ruff/pull/19465
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Add warning for unknown `TY_MEMORY_REPORT` value
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-21 14:26_
+_@MichaReiser_
 
 ## Summary
 

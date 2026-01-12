@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T00:10:02Z
 updated_at: 2024-12-03T03:31:59Z
 url: https://github.com/astral-sh/ruff/issues/14648
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Narrowing on `s == "foo"` where `s` is of type `LiteralString`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-28 00:10_
+_@InSyncWithFoo_
 
 For any symbol `s` of type `LiteralString`, it should be safe to narrow it according to comparisons of the pattern `s == "..."`.
 

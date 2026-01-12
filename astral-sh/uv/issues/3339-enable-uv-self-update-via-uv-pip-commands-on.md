@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-02T18:16:32Z
 updated_at: 2024-05-02T18:25:52Z
 url: https://github.com/astral-sh/uv/issues/3339
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Enable uv self-update via uv pip commands on Windows
 
 ---
 
-_Issue opened by @FredStober on 2024-05-02 18:16_
+_@FredStober_
 
 On windows, uv should be able to update itself when uv is installed into a virtual environment.
 

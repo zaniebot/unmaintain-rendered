@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T23:19:27Z
 updated_at: 2023-03-01T03:26:03Z
 url: https://github.com/astral-sh/ruff/issues/3285
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET507 false positive only inside a function
 
 ---
 
-_Issue opened by @trag1c on 2023-02-28 23:19_
+_@trag1c_
 
 <table>
   <tr>

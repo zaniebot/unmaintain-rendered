@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T14:01:47Z
 updated_at: 2025-03-31T14:51:29Z
 url: https://github.com/astral-sh/uv/issues/12585
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Incorrect behavior of dependency group created by `uvx migrate-to-uv`
 
 ---
 
-_Issue opened by @dandavison on 2025-03-31 14:01_
+_@dandavison_
 
 ### Summary
 

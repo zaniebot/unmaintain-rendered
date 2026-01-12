@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T17:00:08Z
 updated_at: 2025-09-23T14:10:46Z
 url: https://github.com/astral-sh/ty/issues/1129
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # confusing diagnostics for positional-only parameter supplied as keyword argument
 
 ---
 
-_Issue opened by @carljm on 2025-09-04 17:00_
+_@carljm_
 
 If you try to pass a positional-only parameter as a keyword argument:
 

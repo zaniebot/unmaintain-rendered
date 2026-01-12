@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T02:07:10Z
 updated_at: 2025-12-20T16:34:29Z
 url: https://github.com/astral-sh/ty/issues/2128
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `Literal["abba"]` should be a subtype of `Sequence[Literal["a", "b"]]`
 
 ---
 
-_Issue opened by @carljm on 2025-12-20 02:07_
+_@carljm_
 
 A string literal containing only characters from a given set should be a subtype of `Sequence` of the union of those literal characters.
 

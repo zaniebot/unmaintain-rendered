@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T00:26:11Z
 updated_at: 2024-09-09T11:49:28Z
 url: https://github.com/astral-sh/uv/issues/6052
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Can't install wheel in working directory without specifying `./`
 
 ---
 
-_Issue opened by @ilkersigirci on 2024-08-13 00:26_
+_@ilkersigirci_
 
 - I want to use  `uv` inside docker to install wheel packages. Unfortunately it doesn't work and gives following error
 ```

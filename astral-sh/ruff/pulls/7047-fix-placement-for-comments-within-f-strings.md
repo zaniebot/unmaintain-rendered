@@ -13,14 +13,14 @@ head: charlie/format
 created_at: 2023-09-01T16:12:21Z
 updated_at: 2023-09-01T16:27:33Z
 url: https://github.com/astral-sh/ruff/pull/7047
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix placement for comments within f-strings concatenations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-01 16:12_
+_@charliermarsh_
 
 ## Summary
 

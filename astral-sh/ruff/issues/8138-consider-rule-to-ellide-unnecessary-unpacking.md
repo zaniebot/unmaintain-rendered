@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-23T11:15:08Z
 updated_at: 2023-10-23T11:15:46Z
 url: https://github.com/astral-sh/ruff/issues/8138
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider rule to ellide unnecessary unpacking
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-10-23 11:15_
+_@NeilGirdhar_
 
 This pattern happens a few times in major libraries:
 ```python

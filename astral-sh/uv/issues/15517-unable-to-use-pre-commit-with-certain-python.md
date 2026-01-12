@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T15:47:29Z
 updated_at: 2025-08-26T08:42:35Z
 url: https://github.com/astral-sh/uv/issues/15517
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # Unable to use pre-commit with certain python versions
 
 ---
 
-_Issue opened by @heydonovan on 2025-08-25 15:47_
+_@heydonovan_
 
 ### Summary
 

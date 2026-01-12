@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T11:29:41Z
 updated_at: 2025-08-05T12:58:49Z
 url: https://github.com/astral-sh/uv/issues/15080
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # uv does not create venv on windows
 
 ---
 
-_Issue opened by @heury on 2025-08-05 11:29_
+_@heury_
 
 ### Summary
 

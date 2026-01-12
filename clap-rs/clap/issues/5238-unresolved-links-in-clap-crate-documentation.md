@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-02T13:13:10Z
 updated_at: 2023-12-02T14:10:51Z
 url: https://github.com/clap-rs/clap/issues/5238
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Unresolved Links in clap Crate Documentation
 
 ---
 
-_Issue opened by @lpnh on 2023-12-02 13:13_
+_@lpnh_
 
 ## Summary
 

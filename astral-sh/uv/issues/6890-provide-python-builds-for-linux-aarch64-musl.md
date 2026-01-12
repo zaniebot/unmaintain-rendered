@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T23:30:48Z
 updated_at: 2025-12-21T21:47:32Z
 url: https://github.com/astral-sh/uv/issues/6890
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # provide Python builds for linux-aarch64-musl
 
 ---
 
-_Issue opened by @mikolysz on 2024-08-30 23:30_
+_@mikolysz_
 
 linux-aarch64-musl is the platform one gets when using an Alpine-based Docker image and developing on Apple Silicon, which is a pretty common setup at this point. This set up currently (as of uv 0.4.1) doesn't support installing Python via uv, with the following error:
 

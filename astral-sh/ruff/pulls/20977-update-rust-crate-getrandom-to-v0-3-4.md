@@ -13,14 +13,14 @@ head: renovate/getrandom-0.x-lockfile
 created_at: 2025-10-20T01:15:29Z
 updated_at: 2025-10-20T07:08:45Z
 url: https://github.com/astral-sh/ruff/pull/20977
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Update Rust crate getrandom to v0.3.4
 
 ---
 
-_Pull request opened by @renovate on 2025-10-20 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T17:55:24Z
 updated_at: 2025-11-20T14:18:21Z
 url: https://github.com/astral-sh/uv/issues/16779
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # `uv add` hangs forever for complex pyproject
 
 ---
 
-_Issue opened by @alex-shapiro on 2025-11-19 17:55_
+_@alex-shapiro_
 
 ### Summary
 

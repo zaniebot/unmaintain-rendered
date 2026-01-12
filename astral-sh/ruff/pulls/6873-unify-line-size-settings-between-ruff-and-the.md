@@ -14,14 +14,14 @@ head: merge-line-sizings
 created_at: 2023-08-25T13:27:04Z
 updated_at: 2023-08-28T06:45:09Z
 url: https://github.com/astral-sh/ruff/pull/6873
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Unify line size settings between ruff and the formatter
 
 ---
 
-_Pull request opened by @konstin on 2023-08-25 13:27_
+_@konstin_
 
 **Summary** Previuosly, there had been `LineLength` in ruff and `LineWidth` in the formatter. `LineLength` was a lenient usize wrapper, while `LineWidth` was a strict u16. With the formatter moving into the ruff cli, we need to unify the two types. This PR makes both crates share a new `LineLength` type based on the previous ruff formatter type. It currently lives in `ruff_python_trivia` but i'm happy to move it wherever. 
 

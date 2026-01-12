@@ -13,14 +13,14 @@ head: renovate/rustc-hash-2.x
 created_at: 2024-06-24T00:01:28Z
 updated_at: 2024-06-24T01:13:06Z
 url: https://github.com/astral-sh/uv/pull/4461
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Update Rust crate rustc-hash to v2
 
 ---
 
-_Pull request opened by @renovate on 2024-06-24 00:01_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

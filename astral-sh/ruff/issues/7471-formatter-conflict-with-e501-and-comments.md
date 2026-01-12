@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T19:44:39Z
 updated_at: 2023-10-02T18:27:08Z
 url: https://github.com/astral-sh/ruff/issues/7471
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter conflict with E501 and comments
 
 ---
 
-_Issue opened by @shughes-uk on 2023-09-17 19:44_
+_@shughes-uk_
 
 Ruff version 0.0.289
 

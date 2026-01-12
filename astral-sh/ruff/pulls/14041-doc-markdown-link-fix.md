@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-11-01T14:14:15Z
 updated_at: 2024-11-01T14:32:39Z
 url: https://github.com/astral-sh/ruff/pull/14041
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Doc: markdown link fix
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-01 14:14_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

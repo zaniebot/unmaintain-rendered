@@ -13,14 +13,14 @@ head: gankra/settings-py
 created_at: 2025-03-31T21:27:32Z
 updated_at: 2025-04-01T13:08:37Z
 url: https://github.com/astral-sh/uv/pull/12592
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # fix parsing of `python-platform` in settings tomls
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-31 21:27_
+_@Gankra_
 
 serde needs to be told where to put underscores. someone clearly noticed this when adding attributes for schemars, but they need to be present for serde too and then schemars gets them for free.
 

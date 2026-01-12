@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T21:40:24Z
 updated_at: 2025-11-18T16:10:42Z
 url: https://github.com/astral-sh/ty/issues/1567
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider unsafely assuming that subclasses don't add `__await__`, for better `isawaitable` narrowing
 
 ---
 
-_Issue opened by @alexmacnorthstar on 2025-11-14 21:40_
+_@alexmacnorthstar_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T05:01:23Z
 updated_at: 2025-03-13T19:50:32Z
 url: https://github.com/astral-sh/ruff/issues/16662
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Field `requires-python` is disregarded when config lives outside `pyproject.toml`
 
 ---
 
-_Issue opened by @ofek on 2025-03-12 05:01_
+_@ofek_
 
 ### Summary
 

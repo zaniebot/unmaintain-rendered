@@ -13,14 +13,14 @@ head: charlie/sys
 created_at: 2024-06-06T01:56:12Z
 updated_at: 2024-06-06T02:11:22Z
 url: https://github.com/astral-sh/uv/pull/4084
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Prefix sys fields with `sys_` consistently on Interpreter
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 01:56_
+_@charliermarsh_
 
 ## Summary
 

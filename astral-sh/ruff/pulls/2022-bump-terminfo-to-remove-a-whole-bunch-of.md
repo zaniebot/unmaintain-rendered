@@ -12,14 +12,14 @@ head: bump-terminfo
 created_at: 2023-01-20T11:02:06Z
 updated_at: 2023-01-20T14:09:02Z
 url: https://github.com/astral-sh/ruff/pull/2022
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Bump terminfo to remove a whole bunch of unnecessary dependencies
 
 ---
 
-_Pull request opened by @akx on 2023-01-20 11:02_
+_@akx_
 
 See https://github.com/meh/rust-terminfo/commit/6281c6b8f7abb8799e2099174d9f4e4a4215d259
 

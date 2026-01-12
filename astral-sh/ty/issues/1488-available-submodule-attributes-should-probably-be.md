@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:38:51Z
 updated_at: 2025-11-11T21:20:14Z
 url: https://github.com/astral-sh/ty/issues/1488
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `available_submodule_attributes` should probably be considered last instead of first
 
 ---
 
-_Issue opened by @Gankra on 2025-11-05 17:38_
+_@Gankra_
 
 See here for background on `available_submodule_attributes`:
 

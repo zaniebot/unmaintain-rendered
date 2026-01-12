@@ -13,14 +13,14 @@ head: renovate/owo-colors-4.x-lockfile
 created_at: 2025-06-30T01:48:02Z
 updated_at: 2025-06-30T02:18:01Z
 url: https://github.com/astral-sh/uv/pull/14357
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Update Rust crate owo-colors to v4.2.2
 
 ---
 
-_Pull request opened by @renovate on 2025-06-30 01:48_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: ag/suppress-windows-warnings
 created_at: 2025-04-07T12:10:48Z
 updated_at: 2025-04-07T12:24:09Z
 url: https://github.com/astral-sh/ruff/pull/17271
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # ruff_annotate_snippets: address unused code warnings
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-07 12:10_
+_@BurntSushi_
 
 Fixes #17230
 

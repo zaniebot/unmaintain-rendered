@@ -13,14 +13,14 @@ head: alex/move-instancetype
 created_at: 2025-04-21T16:09:25Z
 updated_at: 2025-04-22T11:34:47Z
 url: https://github.com/astral-sh/ruff/pull/17525
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Move `InstanceType` to its own submodule
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-21 16:09_
+_@AlexWaygood_
 
 ## Summary
 

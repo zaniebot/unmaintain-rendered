@@ -13,14 +13,14 @@ head: class-instance-bool
 created_at: 2024-10-19T21:46:47Z
 updated_at: 2024-11-14T05:44:10Z
 url: https://github.com/astral-sh/ruff/pull/13827
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Infer unary not operation for instances
 
 ---
 
-_Pull request opened by @Glyphack on 2024-10-19 21:46_
+_@Glyphack_
 
 My attempt at resolving not op for instances.
 

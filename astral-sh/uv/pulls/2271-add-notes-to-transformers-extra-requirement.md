@@ -13,14 +13,14 @@ head: konsti/transformers-extra
 created_at: 2024-03-07T11:46:16Z
 updated_at: 2024-03-07T11:51:37Z
 url: https://github.com/astral-sh/uv/pull/2271
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Add notes to transformers extra requirement
 
 ---
 
-_Pull request opened by @konstin on 2024-03-07 11:46_
+_@konstin_
 
 _No description provided._
 

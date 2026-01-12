@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-13T22:01:38Z
 updated_at: 2025-08-20T21:33:12Z
 url: https://github.com/astral-sh/ruff/issues/19904
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Support load_dotenv as an exception to E402
 
 ---
 
-_Issue opened by @waldyrious on 2025-08-13 22:01_
+_@waldyrious_
 
 ### Summary
 

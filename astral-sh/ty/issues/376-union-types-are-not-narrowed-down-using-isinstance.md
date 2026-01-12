@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-14T08:09:21Z
 updated_at: 2025-05-14T08:17:19Z
 url: https://github.com/astral-sh/ty/issues/376
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Union types are not narrowed down using isinstance
 
 ---
 
-_Issue opened by @Surasia on 2025-05-14 08:09_
+_@Surasia_
 
 ### Summary
 

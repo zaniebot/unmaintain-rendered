@@ -11,14 +11,14 @@ head: feat/add-warning-message-unsupported-python-version
 created_at: 2024-04-01T13:54:38Z
 updated_at: 2024-04-24T17:51:58Z
 url: https://github.com/astral-sh/uv/pull/2757
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # feat(python): display warning message when trying to use an unsupported Python version
 
 ---
 
-_Pull request opened by @stegayet on 2024-04-01 13:54_
+_@stegayet_
 
 ## Summary
 

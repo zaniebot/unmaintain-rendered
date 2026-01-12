@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-08T08:31:34Z
 updated_at: 2023-07-08T11:59:35Z
 url: https://github.com/astral-sh/ruff/issues/5606
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Memoize?
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-07-08 08:31_
+_@DimitriPapadopoulos_
 
 I cannot find `memoize` in dictionaries, shouldn't it have been `memorize?`
 https://github.com/astral-sh/ruff/blob/0b9af031fb8f51e7f9a72c31366bf5f87b90ca3c/crates/ruff_formatter/src/format_extensions.rs#L72

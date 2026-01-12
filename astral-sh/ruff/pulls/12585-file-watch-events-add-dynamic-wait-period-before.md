@@ -13,14 +13,14 @@ head: dynamic-next-tick
 created_at: 2024-07-30T17:09:13Z
 updated_at: 2024-07-30T18:14:33Z
 url: https://github.com/astral-sh/ruff/pull/12585
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # File watch events: Add dynamic wait period before writing new changes
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-30 17:09_
+_@MichaReiser_
 
 
 ## Summary

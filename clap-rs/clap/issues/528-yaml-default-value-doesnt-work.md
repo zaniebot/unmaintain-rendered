@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-11T12:48:23Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/528
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # YAML default_value doesn’t work
 
 ---
 
-_Issue opened by @calebmer on 2016-06-11 12:48_
+_@calebmer_
 
 First off, thanks for the amazing library! By far the best CLI helper tool I’ve seen across all the ecosystems I’ve worked in.
 

@@ -13,14 +13,14 @@ head: charlie/dirs
 created_at: 2024-01-28T05:03:46Z
 updated_at: 2024-01-28T05:07:58Z
 url: https://github.com/astral-sh/uv/pull/1154
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Avoid re-creating directories during unzip
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-28 05:03_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-04T13:00:48Z
 updated_at: 2023-12-06T17:08:00Z
 url: https://github.com/astral-sh/ruff/pull/8996
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add openSUSE Tumbleweed into install doc
 
 ---
 
-_Pull request opened by @mimi1vx on 2023-12-04 13:00_
+_@mimi1vx_
 
 _No description provided._
 

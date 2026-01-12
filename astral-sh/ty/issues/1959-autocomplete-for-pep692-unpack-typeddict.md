@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T20:36:15Z
 updated_at: 2026-01-06T13:12:15Z
 url: https://github.com/astral-sh/ty/issues/1959
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Autocomplete for PEP692 Unpack[TypedDict]
 
 ---
 
-_Issue opened by @mflova on 2025-12-16 20:36_
+_@mflova_
 
 PEP 692 allows typing **kwargs using TypedDict and Unpack:
 

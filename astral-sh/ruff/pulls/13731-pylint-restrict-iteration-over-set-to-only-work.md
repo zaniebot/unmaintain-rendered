@@ -14,14 +14,14 @@ head: improve-PLC0208
 created_at: 2024-10-13T18:50:56Z
 updated_at: 2024-10-21T11:23:02Z
 url: https://github.com/astral-sh/ruff/pull/13731
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`pylint`] - restrict `iteration-over-set` to only work on sets of literals (`PLC0208`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-10-13 18:50_
+_@diceroll123_
 
 ## Summary
 

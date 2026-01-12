@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T22:51:50Z
 updated_at: 2025-12-24T05:27:27Z
 url: https://github.com/astral-sh/ty/issues/2195
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # How to avoid doubled diagnostics ruff vs. ty?
 
 ---
 
-_Issue opened by @jamilraichouni on 2025-12-23 22:51_
+_@jamilraichouni_
 
 ### Question
 

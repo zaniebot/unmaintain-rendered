@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-15T18:34:46Z
 updated_at: 2025-12-04T14:39:08Z
 url: https://github.com/astral-sh/ruff/issues/17412
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [syntax-errors] Remaining syntax errors raised by the compiler
 
 ---
 
-_Issue opened by @ntBre on 2025-04-15 18:34_
+_@ntBre_
 
 ## Summary
 

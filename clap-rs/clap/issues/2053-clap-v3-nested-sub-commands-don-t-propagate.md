@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-06T15:53:32Z
 updated_at: 2020-12-14T02:20:34Z
 url: https://github.com/clap-rs/clap/issues/2053
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # [Clap v3] Nested sub-commands don't propagate `global` arguments
 
 ---
 
-_Issue opened by @ClementNerma on 2020-08-06 15:53_
+_@ClementNerma_
 
 ### Code
 

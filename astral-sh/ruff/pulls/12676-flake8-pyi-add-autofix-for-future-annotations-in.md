@@ -14,14 +14,14 @@ head: autofix-pyi044
 created_at: 2024-08-05T04:21:56Z
 updated_at: 2024-08-06T02:28:04Z
 url: https://github.com/astral-sh/ruff/pull/12676
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`flake8-pyi`] - add autofix for `future-annotations-in-stub` (`PYI044`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-05 04:21_
+_@diceroll123_
 
 ## Summary
 

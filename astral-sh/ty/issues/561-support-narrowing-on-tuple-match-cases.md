@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T12:24:08Z
 updated_at: 2025-12-22T02:22:23Z
 url: https://github.com/astral-sh/ty/issues/561
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support narrowing on tuple match cases
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-06-01 12:24_
+_@MatthewMckee4_
 
 From the typing spec: https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules, we currently do not support this.
 ```py

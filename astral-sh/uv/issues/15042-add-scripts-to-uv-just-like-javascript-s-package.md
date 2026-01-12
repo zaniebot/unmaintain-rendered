@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-03T15:16:31Z
 updated_at: 2025-08-04T13:40:49Z
 url: https://github.com/astral-sh/uv/issues/15042
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Add scripts to uv just like javascript's package managers
 
 ---
 
-_Issue opened by @AmodeusR on 2025-08-03 15:16_
+_@AmodeusR_
 
 ### Summary
 

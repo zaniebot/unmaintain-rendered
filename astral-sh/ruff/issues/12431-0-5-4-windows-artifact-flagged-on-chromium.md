@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-21T14:55:07Z
 updated_at: 2024-07-23T12:28:01Z
 url: https://github.com/astral-sh/ruff/issues/12431
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # 0.5.4 Windows artifact flagged on Chromium
 
 ---
 
-_Issue opened by @AlexBlandin on 2024-07-21 14:55_
+_@AlexBlandin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

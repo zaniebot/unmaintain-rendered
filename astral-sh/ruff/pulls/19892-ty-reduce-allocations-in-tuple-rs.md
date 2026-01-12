@@ -14,14 +14,14 @@ head: alex/homogeneous-tuple-option
 created_at: 2025-08-13T11:24:11Z
 updated_at: 2025-08-13T11:41:46Z
 url: https://github.com/astral-sh/ruff/pull/19892
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Reduce allocations in `tuple.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 11:24_
+_@AlexWaygood_
 
 ## Summary
 

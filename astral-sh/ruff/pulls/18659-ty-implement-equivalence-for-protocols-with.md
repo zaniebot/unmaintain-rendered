@@ -13,14 +13,14 @@ head: alex/method-members
 created_at: 2025-06-13T12:08:26Z
 updated_at: 2025-07-07T11:28:34Z
 url: https://github.com/astral-sh/ruff/pull/18659
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Implement equivalence for protocols with method members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-13 12:08_
+_@AlexWaygood_
 
 ## Summary
 

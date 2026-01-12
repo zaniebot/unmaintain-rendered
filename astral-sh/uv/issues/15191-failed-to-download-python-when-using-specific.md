@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-09T16:06:51Z
 updated_at: 2025-08-11T12:12:51Z
 url: https://github.com/astral-sh/uv/issues/15191
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # failed to download python when using specific mirror
 
 ---
 
-_Issue opened by @COVID-9102 on 2025-08-09 16:06_
+_@COVID-9102_
 
 ### Question
 

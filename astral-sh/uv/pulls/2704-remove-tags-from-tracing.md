@@ -13,14 +13,14 @@ head: charlie/tags
 created_at: 2024-03-28T02:09:50Z
 updated_at: 2024-03-28T02:18:55Z
 url: https://github.com/astral-sh/uv/pull/2704
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Remove `Tags` from `tracing`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-28 02:09_
+_@charliermarsh_
 
 Oops, these show in `tracing` now, and they're huge.
 

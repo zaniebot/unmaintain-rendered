@@ -13,14 +13,14 @@ head: docker-release-improvements
 created_at: 2024-09-20T01:25:09Z
 updated_at: 2024-09-20T21:55:25Z
 url: https://github.com/astral-sh/uv/pull/7568
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # ci(docker): improve release tagging order and display on ghcr.io
 
 ---
 
-_Pull request opened by @samypr100 on 2024-09-20 01:25_
+_@samypr100_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-08T14:35:04Z
 updated_at: 2023-05-09T01:54:03Z
 url: https://github.com/astral-sh/ruff/issues/4285
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # B027 false positive with abc.abstractclassmethod
 
 ---
 
-_Issue opened by @Skylion007 on 2023-05-08 14:35_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: dhruv/jupyter-code-frames
 created_at: 2023-06-27T19:43:24Z
 updated_at: 2023-06-28T03:43:02Z
 url: https://github.com/astral-sh/ruff/pull/5402
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Consider Jupyter index for code frames (`--show-source`)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-27 19:43_
+_@dhruvmanila_
 
 ## Summary
 

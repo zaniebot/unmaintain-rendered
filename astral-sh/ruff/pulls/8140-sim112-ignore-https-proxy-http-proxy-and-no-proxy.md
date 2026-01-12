@@ -13,14 +13,14 @@ head: proxy-sim112
 created_at: 2023-10-23T11:46:28Z
 updated_at: 2023-10-23T13:48:43Z
 url: https://github.com/astral-sh/ruff/pull/8140
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [`SIM112`] Ignore `https_proxy`, `http_proxy`, and `no_proxy`
 
 ---
 
-_Pull request opened by @harupy on 2023-10-23 11:46_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

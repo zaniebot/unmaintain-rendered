@@ -13,14 +13,14 @@ head: alex/symbol-into-result
 created_at: 2025-02-14T12:47:56Z
 updated_at: 2025-05-07T15:22:39Z
 url: https://github.com/astral-sh/ruff/pull/16160
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Improve handling of inherited class attributes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-14 12:47_
+_@AlexWaygood_
 
 ## Summary
 

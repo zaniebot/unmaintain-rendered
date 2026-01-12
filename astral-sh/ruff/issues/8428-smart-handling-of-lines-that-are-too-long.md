@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-02T01:18:28Z
 updated_at: 2023-11-05T19:28:53Z
 url: https://github.com/astral-sh/ruff/issues/8428
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Smart handling of lines that are too long
 
 ---
 
-_Issue opened by @pitosalas on 2023-11-02 01:18_
+_@pitosalas_
 
 In my code I have some lines which are too long. Perhaps it's a long f string for output or a long expression. It would be nice if ruff did some smart things to deal with the too long lines in a way that looks good. For example turning the string into several concatenated strings or something. Is that possible?
 

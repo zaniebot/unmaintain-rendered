@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T15:12:24Z
 updated_at: 2025-06-24T09:09:10Z
 url: https://github.com/astral-sh/ruff/issues/15403
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Overwrite ignore values from config from cli command
 
 ---
 
-_Issue opened by @benedikt-mue on 2025-01-10 15:12_
+_@benedikt-mue_
 
 Hope, I can address my question in here, if not feel free to delete.
 __

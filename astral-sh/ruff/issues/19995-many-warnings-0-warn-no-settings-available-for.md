@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T20:40:35Z
 updated_at: 2025-09-30T07:15:51Z
 url: https://github.com/astral-sh/ruff/issues/19995
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Many warnings: 0  WARN No settings available for untitled:/Interactive-1.interactive - falling back to default settings
 
 ---
 
-_Issue opened by @robert-elles on 2025-08-19 20:40_
+_@robert-elles_
 
 ### Summary
 

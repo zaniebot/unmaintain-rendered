@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T13:35:08Z
 updated_at: 2025-07-01T12:38:38Z
 url: https://github.com/astral-sh/ty/issues/711
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Runaway execution time for attribute assignments with cyclic reachability constraints
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-26 13:35_
+_@sharkdp_
 
 The following example causes the `ty` run time to grow exponentially with the number of `isinstance` checks. This is very similar to the problematic case in https://github.com/astral-sh/ruff/pull/18669, with the only difference that the attributes are actually defined, circumventing the patch in https://github.com/astral-sh/ruff/pull/18669.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T17:01:44Z
 updated_at: 2025-02-06T11:13:27Z
 url: https://github.com/astral-sh/uv/issues/11135
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # uv fails to install package (binary wheel) from internal index while pip succeeds
 
 ---
 
-_Issue opened by @kzorba on 2025-01-31 17:01_
+_@kzorba_
 
 ### Summary
 

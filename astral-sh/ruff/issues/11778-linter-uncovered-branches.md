@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T18:59:57Z
 updated_at: 2024-06-07T06:31:36Z
 url: https://github.com/astral-sh/ruff/issues/11778
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # linter: uncovered branches
 
 ---
 
-_Issue opened by @antonio-antuan on 2024-06-06 18:59_
+_@antonio-antuan_
 
 I'd like to have a linter that checks that all variants are covered by match expression. An example:
 ```

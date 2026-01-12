@@ -13,14 +13,14 @@ head: charlie/redundant-open-mode
 created_at: 2024-11-11T00:46:32Z
 updated_at: 2024-11-11T03:48:32Z
 url: https://github.com/astral-sh/ruff/pull/14255
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Detect permutations in redundant open modes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-11 00:46_
+_@charliermarsh_
 
 ## Summary
 

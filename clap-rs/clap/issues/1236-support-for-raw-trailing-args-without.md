@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-28T21:37:08Z
 updated_at: 2023-08-08T02:39:36Z
 url: https://github.com/clap-rs/clap/issues/1236
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for raw trailing args without `--`
 
 ---
 
-_Issue opened by @bjgill on 2018-03-28 21:37_
+_@bjgill_
 
 I've been trying to switch `cargo clippy` over to use clap (https://github.com/rust-lang-nursery/rust-clippy/pull/2557), and have discovered that it doesn't quite work.
 

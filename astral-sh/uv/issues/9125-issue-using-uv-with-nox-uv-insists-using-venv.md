@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T17:57:02Z
 updated_at: 2025-06-16T17:29:28Z
 url: https://github.com/astral-sh/uv/issues/9125
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Issue using uv with nox: uv insists using `.venv` instead of the nox-managed virtualenv
 
 ---
 
-_Issue opened by @sfermigier on 2024-11-14 17:57_
+_@sfermigier_
 
 I have trouble integrating uv with nox.
 

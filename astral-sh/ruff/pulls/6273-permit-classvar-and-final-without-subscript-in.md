@@ -13,14 +13,14 @@ head: ruf012-classvar-no-subscript
 created_at: 2023-08-02T12:41:10Z
 updated_at: 2023-08-02T13:15:45Z
 url: https://github.com/astral-sh/ruff/pull/6273
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Permit `ClassVar` and `Final` without subscript in RUF012
 
 ---
 
-_Pull request opened by @bluetech on 2023-08-02 12:41_
+_@bluetech_
 
 Fix #6267.
 

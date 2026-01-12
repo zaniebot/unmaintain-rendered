@@ -14,14 +14,14 @@ head: extend-AIR302
 created_at: 2025-02-04T07:19:44Z
 updated_at: 2025-02-04T08:58:00Z
 url: https://github.com/astral-sh/ruff/pull/15922
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [airflow] `BashOperator` has been moved to `airflow.providers.standard.operators.bash.BashOperator` (AIR302)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-04 07:19_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

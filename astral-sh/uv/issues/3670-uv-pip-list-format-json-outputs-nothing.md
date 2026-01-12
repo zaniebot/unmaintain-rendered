@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-20T15:48:22Z
 updated_at: 2024-05-20T21:09:49Z
 url: https://github.com/astral-sh/uv/issues/3670
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `uv pip list --format json` outputs _nothing_
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-20 15:48_
+_@thejcannon_
 
 It'd be nice if we could reliably parse the output as JSON, but right now if there's nothing installed matching the criteria I get _nothing_ (rather than an empty list). 😭 
 

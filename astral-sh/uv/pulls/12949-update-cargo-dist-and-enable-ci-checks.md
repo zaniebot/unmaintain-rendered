@@ -14,14 +14,14 @@ head: gankra/updist
 created_at: 2025-04-17T19:42:47Z
 updated_at: 2025-04-17T23:32:58Z
 url: https://github.com/astral-sh/uv/pull/12949
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # update cargo-dist and enable ci checks
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-17 19:42_
+_@Gankra_
 
 Fixes #12881 
 Potentially Fixes #12780

@@ -13,14 +13,14 @@ head: patch-6
 created_at: 2025-06-30T18:35:27Z
 updated_at: 2025-06-30T20:57:21Z
 url: https://github.com/astral-sh/ruff/pull/19051
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [`flake8-bugbear`] Make `B911` example error out-of-the-box
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-30 18:35_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T21:06:54Z
 updated_at: 2023-10-30T00:07:16Z
 url: https://github.com/astral-sh/ruff/issues/8263
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `# fmt: skip` strips trailing semicolon
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 21:06_
+_@charliermarsh_
 
 GIven `x = 1;  # fmt: skip`, we reformat as `x = 1  # fmt: skip`.
 

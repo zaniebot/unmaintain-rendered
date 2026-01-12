@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-12T22:56:12Z
 updated_at: 2025-02-17T07:46:30Z
 url: https://github.com/astral-sh/ruff/issues/9499
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `PLC2801` false positive when `__exit__` is not called
 
 ---
 
-_Issue opened by @DetachHead on 2024-01-12 22:56_
+_@DetachHead_
 
 i have a context manager that wraps another context manager, eg:
 ```py

@@ -13,14 +13,14 @@ head: konsti/format-publish-error
 created_at: 2025-01-27T19:37:15Z
 updated_at: 2025-01-27T20:03:26Z
 url: https://github.com/astral-sh/uv/pull/11001
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Properly format test publish error
 
 ---
 
-_Pull request opened by @konstin on 2025-01-27 19:37_
+_@konstin_
 
 See https://github.com/astral-sh/uv/actions/runs/12996651412/job/36245978255
 

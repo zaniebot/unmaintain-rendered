@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-26T03:49:18Z
 updated_at: 2024-11-26T12:47:04Z
 url: https://github.com/astral-sh/ruff/issues/14597
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Unnecessary parentheses when fix PLC2801
 
 ---
 
-_Issue opened by @bebound on 2024-11-26 03:49_
+_@bebound_
 
 `ruff check a.py --select PLC2801 --fix --preview --unsafe-fixes` changes the code from
 ```python

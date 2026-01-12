@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T16:54:05Z
 updated_at: 2026-01-09T17:09:58Z
 url: https://github.com/astral-sh/uv/issues/17383
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # Allow override of UV_VERSION in uv-installer.sh
 
 ---
 
-_Issue opened by @tsaavik on 2026-01-09 16:54_
+_@tsaavik_
 
 ### Summary
 

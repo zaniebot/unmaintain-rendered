@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T16:09:39Z
 updated_at: 2025-10-16T15:32:20Z
 url: https://github.com/astral-sh/uv/issues/10398
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Validation differences between `uv pip check` and `uv pip install --strict`
 
 ---
 
-_Issue opened by @hpelwintervold on 2025-01-08 16:09_
+_@hpelwintervold_
 
 **This is a question**
 

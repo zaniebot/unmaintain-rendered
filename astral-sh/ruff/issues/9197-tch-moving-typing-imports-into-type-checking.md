@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-19T10:15:29Z
 updated_at: 2023-12-20T16:03:04Z
 url: https://github.com/astral-sh/ruff/issues/9197
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended
 
 ---
 
-_Issue opened by @picnixz on 2023-12-19 10:15_
+_@picnixz_
 
 This is a follow-up of #9196 (actually #9196 happened when I was trying to figure out this issue). 
 

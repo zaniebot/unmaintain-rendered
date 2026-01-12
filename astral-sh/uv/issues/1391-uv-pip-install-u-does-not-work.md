@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T23:52:31Z
 updated_at: 2024-02-16T01:25:29Z
 url: https://github.com/astral-sh/uv/issues/1391
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # uv pip install -U does not work
 
 ---
 
-_Issue opened by @bothra90 on 2024-02-15 23:52_
+_@bothra90_
 
 `pip install` supports a `-U` / `--upgrade` flag to install the latest version of a package. This is missing from `uv pip install` right now.
 

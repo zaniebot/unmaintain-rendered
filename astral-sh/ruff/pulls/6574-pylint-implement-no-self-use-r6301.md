@@ -13,14 +13,14 @@ head: PLR6301
 created_at: 2023-08-14T22:10:19Z
 updated_at: 2023-08-25T20:45:40Z
 url: https://github.com/astral-sh/ruff/pull/6574
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # [`pylint`] Implement `no-self-use` (`R6301`)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-14 22:10_
+_@LaBatata101_
 
 ## Summary
 

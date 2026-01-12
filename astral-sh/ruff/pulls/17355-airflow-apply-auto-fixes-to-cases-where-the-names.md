@@ -14,14 +14,14 @@ head: apply-auto-import
 created_at: 2025-04-11T15:59:47Z
 updated_at: 2025-04-23T16:43:41Z
 url: https://github.com/astral-sh/ruff/pull/17355
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`airflow`] Apply auto fixes to cases where the names have changed in Airflow 3 (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-11 15:59_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T04:25:37Z
 updated_at: 2024-02-06T17:04:25Z
 url: https://github.com/astral-sh/ruff/issues/9855
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `TRIO100` does not detect async context managers
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-02-06 04:25_
+_@CoolCat467_
 
 Noticed this in my work on https://github.com/python-trio/trio/pull/2947, it appears that `TRIO100` does not detect async context managers.
 

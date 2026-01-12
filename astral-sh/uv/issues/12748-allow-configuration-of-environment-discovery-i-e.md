@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T16:47:21Z
 updated_at: 2025-04-08T18:12:51Z
 url: https://github.com/astral-sh/uv/issues/12748
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Allow configuration of environment discovery (i.e., only check cwd)
 
 ---
 
-_Issue opened by @ollie-bell on 2025-04-08 16:47_
+_@ollie-bell_
 
 ### Question
 

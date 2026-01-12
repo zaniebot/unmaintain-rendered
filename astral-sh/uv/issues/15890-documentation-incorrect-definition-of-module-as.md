@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T12:21:07Z
 updated_at: 2025-09-16T13:07:28Z
 url: https://github.com/astral-sh/uv/issues/15890
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Documentation: Incorrect definition of “module” as “directory with __init__.py” — should be “package”
 
 ---
 
-_Issue opened by @VioletsOleander on 2025-09-16 12:21_
+_@VioletsOleander_
 
 ### Question
 

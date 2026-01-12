@@ -12,14 +12,14 @@ head: PLE0206
 created_at: 2022-12-03T04:49:16Z
 updated_at: 2022-12-03T05:14:35Z
 url: https://github.com/astral-sh/ruff/pull/1005
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement PLE0206
 
 ---
 
-_Pull request opened by @harupy on 2022-12-03 04:49_
+_@harupy_
 
 #970 
 

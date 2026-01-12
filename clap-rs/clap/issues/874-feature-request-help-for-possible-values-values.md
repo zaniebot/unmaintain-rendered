@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-25T07:08:54Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/874
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Feature request: Help for `possible_values` values
 
 ---
 
-_Issue opened by @wfraser on 2017-02-25 07:08_
+_@wfraser_
 
 I'm converting some old code of mine with hand-rolled arg parsing code to use clap (because it's awesome, thank you!), but this is one thing I really miss. We have `Arg::possible_values` to show what valid values for an option are, but no built-in way of showing help text for them, other than just putting it in the option's help text.
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-02-14T22:35:08Z
 updated_at: 2023-02-14T22:38:29Z
 url: https://github.com/astral-sh/ruff/pull/2904
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # docs: fix `ruff generate-shell-completion`
 
 ---
 
-_Pull request opened by @simon04 on 2023-02-14 22:35_
+_@simon04_
 
 _No description provided._
 

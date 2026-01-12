@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T03:44:15Z
 updated_at: 2025-01-21T14:06:51Z
 url: https://github.com/astral-sh/uv/issues/10806
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Support for PEP-compliant `dev` extra for optional dev dependencies
 
 ---
 
-_Issue opened by @aaronsteers on 2025-01-21 03:44_
+_@aaronsteers_
 
 There seems to be a gap in [PEP 508](https://peps.python.org/pep-0508/) and [PEP 621](https://peps.python.org/pep-0621/) related to how dev dependencies should be declared.
 

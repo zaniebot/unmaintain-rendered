@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T16:29:37Z
 updated_at: 2025-08-08T22:36:34Z
 url: https://github.com/astral-sh/ruff/issues/19831
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST003 fix introduces syntax errors
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-08 16:29_
+_@dscorbett_
 
 ### Summary
 

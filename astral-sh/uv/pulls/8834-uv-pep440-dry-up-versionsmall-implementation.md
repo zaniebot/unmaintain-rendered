@@ -13,14 +13,14 @@ head: ag/small-version-tweaks
 created_at: 2024-11-05T17:56:54Z
 updated_at: 2024-11-05T18:26:21Z
 url: https://github.com/astral-sh/uv/pull/8834
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # uv-pep440: DRY up VersionSmall implementation
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-05 17:56_
+_@BurntSushi_
 
 This PR simplifies the VersionSmall implementation a bit by utilizing
 more constants. That is, if the bit-level format changes, *most* of

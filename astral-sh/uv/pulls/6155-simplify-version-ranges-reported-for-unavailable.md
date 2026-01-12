@@ -13,14 +13,14 @@ head: zb/simplify-unavailable
 created_at: 2024-08-16T16:57:38Z
 updated_at: 2024-08-19T13:32:42Z
 url: https://github.com/astral-sh/uv/pull/6155
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Simplify version ranges reported for unavailable packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 16:57_
+_@zanieb_
 
 Now that these incompatibilities are collected into a single range (https://github.com/astral-sh/uv/pull/6154), we can simplify the range using the known available versions to reduce verbosity.
 

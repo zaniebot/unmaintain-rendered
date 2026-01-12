@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T11:55:05Z
 updated_at: 2022-11-04T14:52:27Z
 url: https://github.com/astral-sh/ruff/issues/580
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 false positive when assigning to a dict
 
 ---
 
-_Issue opened by @jiwidi on 2022-11-04 11:55_
+_@jiwidi_
 
 Hi! Love what you are building with ruff. 
 

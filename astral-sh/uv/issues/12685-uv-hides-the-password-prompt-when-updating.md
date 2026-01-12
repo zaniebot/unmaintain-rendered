@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-05T10:43:45Z
 updated_at: 2026-01-09T05:17:10Z
 url: https://github.com/astral-sh/uv/issues/12685
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # uv hides the password prompt when updating protected git dependencies
 
 ---
 
-_Issue opened by @timinou on 2025-04-05 10:43_
+_@timinou_
 
 ### Summary
 

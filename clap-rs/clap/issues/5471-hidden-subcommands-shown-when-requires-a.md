@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-22T21:22:02Z
 updated_at: 2024-04-23T20:34:40Z
 url: https://github.com/clap-rs/clap/issues/5471
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Hidden subcommands shown when "requires a subcommand but one was not provided"
 
 ---
 
-_Issue opened by @devjgm on 2024-04-22 21:22_
+_@devjgm_
 
 ### Please complete the following tasks
 

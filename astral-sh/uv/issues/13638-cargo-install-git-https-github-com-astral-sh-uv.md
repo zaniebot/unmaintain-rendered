@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T15:59:02Z
 updated_at: 2025-05-25T11:11:08Z
 url: https://github.com/astral-sh/uv/issues/13638
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # `cargo install --git https://github.com/astral-sh/uv uv` is not working
 
 ---
 
-_Issue opened by @fromdot on 2025-05-24 15:59_
+_@fromdot_
 
 ### Summary
 

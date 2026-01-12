@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-19T10:58:51Z
 updated_at: 2023-01-19T15:23:23Z
 url: https://github.com/astral-sh/ruff/issues/1993
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM109—potential false positive
 
 ---
 
-_Issue opened by @patrick91 on 2023-01-19 10:58_
+_@patrick91_
 
 Hi there, I have this code this:
 

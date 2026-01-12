@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T08:14:11Z
 updated_at: 2025-06-26T23:46:06Z
 url: https://github.com/astral-sh/ruff/issues/12040
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Remove `output-format=text`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-26 08:14_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/12010 (shipped in Ruff 0.5) made using `output-format=text` a hard error. The next deprecation step is to remove the option entirely in 0.6 or 0.7
 

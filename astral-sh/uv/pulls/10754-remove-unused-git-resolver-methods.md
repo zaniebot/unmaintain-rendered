@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-01-19T16:52:06Z
 updated_at: 2025-01-19T17:02:54Z
 url: https://github.com/astral-sh/uv/pull/10754
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Remove unused Git resolver methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-19 16:52_
+_@charliermarsh_
 
 _No description provided._
 

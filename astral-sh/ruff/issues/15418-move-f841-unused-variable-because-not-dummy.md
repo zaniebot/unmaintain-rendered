@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-11T10:22:20Z
 updated_at: 2025-01-12T09:48:49Z
 url: https://github.com/astral-sh/ruff/issues/15418
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Move F841 unused variable because not dummy syntax on preview into a specific rule
 
 ---
 
-_Issue opened by @un-pogaz on 2025-01-11 10:22_
+_@un-pogaz_
 
 For this code:
 ```python

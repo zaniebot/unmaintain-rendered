@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-16T22:21:14Z
 updated_at: 2025-12-16T22:25:52Z
 url: https://github.com/astral-sh/ty/issues/1961
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty does not narrow types after NoReturn calls
 
 ---
 
-_Issue opened by @seangies on 2025-12-16 22:21_
+_@seangies_
 
 ### Summary
 

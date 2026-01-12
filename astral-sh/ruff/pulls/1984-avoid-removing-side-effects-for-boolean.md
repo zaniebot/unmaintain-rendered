@@ -12,14 +12,14 @@ head: charlie/SIM222
 created_at: 2023-01-18T23:59:03Z
 updated_at: 2023-01-19T00:08:15Z
 url: https://github.com/astral-sh/ruff/pull/1984
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid removing side effects for boolean simplifications
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 23:59_
+_@charliermarsh_
 
 Closes #1978.
 

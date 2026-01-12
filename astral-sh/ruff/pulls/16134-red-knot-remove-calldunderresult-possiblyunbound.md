@@ -12,14 +12,14 @@ head: micha/remove-dunder-call-possibly-unbound
 created_at: 2025-02-13T09:04:35Z
 updated_at: 2025-02-14T07:14:46Z
 url: https://github.com/astral-sh/ruff/pull/16134
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Remove `CallDunderResult::PossiblyUnbound` variant
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-13 09:04_
+_@MichaReiser_
 
 ## Summary
 

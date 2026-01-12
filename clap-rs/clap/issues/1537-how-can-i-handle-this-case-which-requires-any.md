@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-08-28T16:20:29Z
 updated_at: 2021-12-09T20:07:28Z
 url: https://github.com/clap-rs/clap/issues/1537
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # How can I handle this case which requires any group
 
 ---
 
-_Issue opened by @oblique on 2019-08-28 16:20_
+_@oblique_
 
 I have a special flag which when it is set I want always one of two groups to match. This special flag should never passed alone.
 

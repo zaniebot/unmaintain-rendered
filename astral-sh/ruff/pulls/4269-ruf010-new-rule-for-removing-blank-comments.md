@@ -11,14 +11,14 @@ head: RUF010-blank-comments
 created_at: 2023-05-07T14:41:46Z
 updated_at: 2023-07-21T03:35:28Z
 url: https://github.com/astral-sh/ruff/pull/4269
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # RUF010: New rule for removing blank comments
 
 ---
 
-_Pull request opened by @andreyfedoseev on 2023-05-07 14:41_
+_@andreyfedoseev_
 
 Feature proposal: https://github.com/charliermarsh/ruff/issues/4238
 

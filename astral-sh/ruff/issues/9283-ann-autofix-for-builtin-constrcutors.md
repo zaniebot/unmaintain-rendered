@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-26T18:00:22Z
 updated_at: 2023-12-26T22:04:11Z
 url: https://github.com/astral-sh/ruff/issues/9283
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ANN autofix for builtin constrcutors
 
 ---
 
-_Issue opened by @twoertwein on 2023-12-26 18:00_
+_@twoertwein_
 
 Could infer the return type for int()/str()/bytes()
 ```py

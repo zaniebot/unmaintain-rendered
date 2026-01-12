@@ -13,14 +13,14 @@ head: charlie/full-width
 created_at: 2023-07-10T02:27:39Z
 updated_at: 2023-07-10T03:00:21Z
 url: https://github.com/astral-sh/ruff/pull/5636
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Render full-width tables in rules reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 02:27_
+_@charliermarsh_
 
 _No description provided._
 

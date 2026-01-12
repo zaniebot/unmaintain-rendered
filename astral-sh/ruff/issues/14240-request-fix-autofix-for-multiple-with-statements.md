@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-10T06:35:03Z
 updated_at: 2024-11-11T10:18:43Z
 url: https://github.com/astral-sh/ruff/issues/14240
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: fix Autofix for multiple-with-statements/SIM117
 
 ---
 
-_Issue opened by @xvlady on 2024-11-10 06:35_
+_@xvlady_
 
 Now format ruff-code :
 ```

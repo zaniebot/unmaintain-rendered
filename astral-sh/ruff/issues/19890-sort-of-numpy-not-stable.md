@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-13T05:49:57Z
 updated_at: 2025-12-10T17:31:23Z
 url: https://github.com/astral-sh/ruff/issues/19890
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Sort of Numpy not stable
 
 ---
 
-_Issue opened by @ax3l on 2025-08-13 05:49_
+_@ax3l_
 
 ### Summary
 

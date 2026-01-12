@@ -13,14 +13,14 @@ head: zanie/ci-fix-pr-comment
 created_at: 2023-10-27T21:07:48Z
 updated_at: 2023-10-27T21:21:10Z
 url: https://github.com/astral-sh/ruff/pull/8289
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update ecosystem pull request comment to post when unrelated jobs fail
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-27 21:07_
+_@zanieb_
 
 While we run the `pr-comment` workflow on `completed` workflows (i.e. instead of `success`, it can have failed) we use the default artifact download behavior which requires `success` workflows (https://github.com/dawidd6/action-download-artifact) which means that, if any jobs failed, the ecosystem checks would not be reported.
 

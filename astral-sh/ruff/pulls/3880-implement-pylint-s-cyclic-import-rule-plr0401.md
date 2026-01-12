@@ -11,14 +11,14 @@ head: PLR0401
 created_at: 2023-04-05T00:26:07Z
 updated_at: 2023-10-20T18:04:07Z
 url: https://github.com/astral-sh/ruff/pull/3880
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Implement Pylint's `cyclic-import` rule (`PLR0401`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-04-05 00:26_
+_@chanman3388_
 
 Implement https://pylint.pycqa.org/en/v2.13.9/messages/refactor/cyclic-import.html
 Issue #970 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T12:18:52Z
 updated_at: 2025-07-31T19:15:24Z
 url: https://github.com/astral-sh/ty/issues/861
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Progress indicator when pulling workspace diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-21 12:18_
+_@MichaReiser_
 
 Checking large projects can take a significant amount of time and it isn't clear to users that ty is doing something in the background. For example, checking homeassistant-core takes 52s with a debug build. But there's no indicator for users to observe progress (other that there are simply no diagnostics)
 

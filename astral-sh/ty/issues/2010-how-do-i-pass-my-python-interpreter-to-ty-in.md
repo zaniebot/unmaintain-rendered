@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-17T13:50:04Z
 updated_at: 2025-12-18T07:26:54Z
 url: https://github.com/astral-sh/ty/issues/2010
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # How do I pass my Python interpreter to Ty in Neovim?
 
 ---
 
-_Issue opened by @IceS2 on 2025-12-17 13:50_
+_@IceS2_
 
 ### Question
 

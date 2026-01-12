@@ -13,14 +13,14 @@ head: david/typed-dict-attributes
 created_at: 2025-04-28T11:16:44Z
 updated_at: 2025-04-28T11:28:44Z
 url: https://github.com/astral-sh/ruff/pull/17677
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] TypedDict: No errors for introspection dunder attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-28 11:16_
+_@sharkdp_
 
 ## Summary
 

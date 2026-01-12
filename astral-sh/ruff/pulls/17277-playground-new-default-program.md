@@ -14,14 +14,14 @@ head: david/new-default-program
 created_at: 2025-04-07T14:24:23Z
 updated_at: 2025-04-07T20:18:30Z
 url: https://github.com/astral-sh/ruff/pull/17277
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [playground] New default program
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-07 14:24_
+_@sharkdp_
 
 ## Summary
 

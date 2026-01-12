@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-11T08:59:54Z
 updated_at: 2017-03-12T19:48:31Z
 url: https://github.com/clap-rs/clap/issues/895
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # ArgRequiredElseHelp has lower priority than missing required arguments
 
 ---
 
-_Issue opened by @iKevinY on 2017-03-11 08:59_
+_@iKevinY_
 
 As of v2.20, `ArgRequiredElseHelp` doesn't properly take precedence over missing required arguments (the same issue as described in #362). This was working as expected in v2.19.3.
 

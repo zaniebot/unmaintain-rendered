@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-12T14:15:04Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/897
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Custom Help Formatting Papercuts
 
 ---
 
-_Issue opened by @mitsuhiko on 2017-03-12 14:15_
+_@mitsuhiko_
 
 This is some ideas that would make the usability of custom help pages significantly better. Currently the problems mostly involve subcommands.
 

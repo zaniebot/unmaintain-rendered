@@ -12,14 +12,14 @@ head: u014-convert-named-tuple-functional-to-class
 created_at: 2022-11-19T17:12:53Z
 updated_at: 2022-11-20T15:26:15Z
 url: https://github.com/astral-sh/ruff/pull/819
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement U014: Convert NamedTuple function to class
 
 ---
 
-_Pull request opened by @martinlehoux on 2022-11-19 17:12_
+_@martinlehoux_
 
 - Mentions https://github.com/charliermarsh/ruff/issues/351
 

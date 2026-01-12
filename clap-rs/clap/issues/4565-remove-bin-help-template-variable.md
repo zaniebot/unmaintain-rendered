@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-12-20T13:07:48Z
 updated_at: 2022-12-22T16:33:24Z
 url: https://github.com/clap-rs/clap/issues/4565
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Remove `{bin}` help template variable
 
 ---
 
-_Issue opened by @epage on 2022-12-20 13:07_
+_@epage_
 
 When we added the `{name}` variable, we forgot to remove the broken `{bin}` variable in 4.0 and people are still accidentally using it for new use cases (#4561).
 

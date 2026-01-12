@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T00:35:58Z
 updated_at: 2024-06-06T13:09:57Z
 url: https://github.com/astral-sh/ruff/issues/11768
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RUF029 triggers a false positive on async inner function
 
 ---
 
-_Issue opened by @garyj on 2024-06-06 00:35_
+_@garyj_
 
 Hi Team,
 

@@ -13,14 +13,14 @@ head: zb/toolchain-ii
 created_at: 2024-06-07T00:08:38Z
 updated_at: 2024-06-07T18:59:15Z
 url: https://github.com/astral-sh/uv/pull/4120
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Rename `uv-interpreter` crate to `uv-toolchain`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 00:08_
+_@zanieb_
 
 In preparation for managed toolchains #2607, just renames the crate to something broader.
 

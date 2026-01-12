@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-24T19:55:05Z
 updated_at: 2024-01-24T20:25:01Z
 url: https://github.com/astral-sh/ruff/issues/9638
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # New rule: find unused placeholders for f-strings
 
 ---
 
-_Issue opened by @Sanchoyzer on 2024-01-24 19:55_
+_@Sanchoyzer_
 
 `ruff==0.1.14`
 ```

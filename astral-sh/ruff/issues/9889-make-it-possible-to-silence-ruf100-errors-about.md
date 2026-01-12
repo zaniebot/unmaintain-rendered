@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-08T05:24:46Z
 updated_at: 2024-02-10T23:58:18Z
 url: https://github.com/astral-sh/ruff/issues/9889
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Make it possible to silence RUF100 errors about `noqa` directives that were added to silence errors that happen only in preview mode.
 
 ---
 
-_Issue opened by @manueljacob on 2024-02-08 05:24_
+_@manueljacob_
 
 The following snippet shows no errors in non-preview mode and one F841 error in preview mode:
 

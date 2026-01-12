@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-16T19:57:42Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/693
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Repo's dedicated "website link" field is empty
 
 ---
 
-_Issue opened by @ssokolow on 2016-10-16 19:57_
+_@ssokolow_
 
 If you look at a repo like [this](https://github.com/ssokolow/quicktile/), you'll notice that there's a link to the website at the end of the description. (Set via its own separate field when editing the description)
 

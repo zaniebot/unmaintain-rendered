@@ -13,14 +13,14 @@ head: gankra/deprio-arm64-windows
 created_at: 2025-05-29T22:17:37Z
 updated_at: 2025-06-30T21:42:02Z
 url: https://github.com/astral-sh/uv/pull/13724
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # disfavor aarch64 windows in its own house
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-29 22:17_
+_@Gankra_
 
 and prefer emulated x64 windows in its stead.
 

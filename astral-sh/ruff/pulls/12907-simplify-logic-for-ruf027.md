@@ -13,14 +13,14 @@ head: alex/ruf027-2
 created_at: 2024-08-15T16:24:51Z
 updated_at: 2024-08-16T07:05:17Z
 url: https://github.com/astral-sh/ruff/pull/12907
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Simplify logic for `RUF027`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-15 16:24_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T22:38:01Z
 updated_at: 2025-01-30T17:48:36Z
 url: https://github.com/astral-sh/uv/issues/11043
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Some packages failing to download and build due to caching
 
 ---
 
-_Issue opened by @bboynton97 on 2025-01-28 22:38_
+_@bboynton97_
 
 ### Summary
 

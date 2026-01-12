@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-14T17:04:11Z
 updated_at: 2025-09-15T07:38:07Z
 url: https://github.com/astral-sh/ty/issues/1182
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # no [unresolved-attribute] in a subclass
 
 ---
 
-_Issue opened by @andythomas on 2025-09-14 17:04_
+_@andythomas_
 
 ### Summary
 

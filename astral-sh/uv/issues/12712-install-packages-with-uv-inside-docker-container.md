@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T10:31:36Z
 updated_at: 2025-10-09T13:29:36Z
 url: https://github.com/astral-sh/uv/issues/12712
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Install packages with uv inside docker container without environment
 
 ---
 
-_Issue opened by @brunolnetto on 2025-04-07 10:31_
+_@brunolnetto_
 
 I want to install the requirement packages on an image container with uv. Below, there is an example with airflow and pip. I know, there are multiple ways to do it, but I know none. Could you help me?
 

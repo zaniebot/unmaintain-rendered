@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-15T20:50:56Z
 updated_at: 2024-10-16T19:44:33Z
 url: https://github.com/astral-sh/uv/issues/8228
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # uvx prefers 3.13t when it's installed
 
 ---
 
-_Issue opened by @bluss on 2024-10-15 20:50_
+_@bluss_
 
 I see that `uvx` prefers 3.13t when it's installed (even if 3.13.0 is also installed).
 

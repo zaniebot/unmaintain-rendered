@@ -13,14 +13,14 @@ head: cjm/fix-benchmark-naming
 created_at: 2024-07-18T21:33:33Z
 updated_at: 2024-07-19T05:54:38Z
 url: https://github.com/astral-sh/ruff/pull/12396
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] unswap naming of benchmark groups
 
 ---
 
-_Pull request opened by @carljm on 2024-07-18 21:33_
+_@carljm_
 
 Unless there's some logic in `criterion_group!` that I really don't understand, it looks like these benchmark group names were swapped, so the group labeled `without_parse` was actually the `cold` benchmark, and vice versa. Not sure this practically matters, since the benchmark function names were correct.
 

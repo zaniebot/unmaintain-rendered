@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T14:15:45Z
 updated_at: 2025-05-16T14:55:50Z
 url: https://github.com/astral-sh/uv/issues/13494
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Referencing dependency groups from other packages in uv export
 
 ---
 
-_Issue opened by @mgryszko on 2025-05-16 14:15_
+_@mgryszko_
 
 ### Question
 

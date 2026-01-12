@@ -13,14 +13,14 @@ head: dependabot/cargo/anyhow-1.0.79
 created_at: 2024-01-08T08:50:25Z
 updated_at: 2024-01-08T09:09:11Z
 url: https://github.com/astral-sh/ruff/pull/9432
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump anyhow from 1.0.76 to 1.0.79
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-08 08:50_
+_@dependabot_
 
 Bumps [anyhow](https://github.com/dtolnay/anyhow) from 1.0.76 to 1.0.79.
 <details>

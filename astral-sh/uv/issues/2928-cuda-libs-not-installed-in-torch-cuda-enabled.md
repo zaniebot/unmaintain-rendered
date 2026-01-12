@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-09T08:05:19Z
 updated_at: 2024-05-14T07:10:05Z
 url: https://github.com/astral-sh/uv/issues/2928
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # CUDA libs not installed in Torch CUDA-enabled Docker
 
 ---
 
-_Issue opened by @avishniakov on 2024-04-09 08:05_
+_@avishniakov_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

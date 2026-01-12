@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-22T07:45:28Z
 updated_at: 2024-12-12T12:40:18Z
 url: https://github.com/astral-sh/ruff/issues/13875
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] mdtest output improvements
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-22 07:45_
+_@MichaReiser_
 
 Some ideas on how we could improve the mdtest output:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-11T07:44:23Z
 updated_at: 2023-08-16T07:09:48Z
 url: https://github.com/astral-sh/ruff/issues/5675
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: try-except-else comment switches body
 
 ---
 
-_Issue opened by @konstin on 2023-07-11 07:44_
+_@konstin_
 
 We format
 ```python

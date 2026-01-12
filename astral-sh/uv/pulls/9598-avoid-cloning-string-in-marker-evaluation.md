@@ -13,14 +13,14 @@ head: charlie/str
 created_at: 2024-12-03T05:56:31Z
 updated_at: 2024-12-03T14:28:05Z
 url: https://github.com/astral-sh/uv/pull/9598
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Avoid cloning `String` in marker evaluation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-03 05:56_
+_@charliermarsh_
 
 ## Summary
 

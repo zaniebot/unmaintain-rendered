@@ -13,14 +13,14 @@ head: brent/noqa-code-experiments
 created_at: 2025-06-17T20:44:43Z
 updated_at: 2025-07-24T13:33:35Z
 url: https://github.com/astral-sh/ruff/pull/18736
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Change `NoqaCode` to a single string with an offset
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-17 20:44_
+_@ntBre_
 
 ## Summary
 

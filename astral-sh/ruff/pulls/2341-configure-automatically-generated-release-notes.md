@@ -12,14 +12,14 @@ head: github-release-changelog
 created_at: 2023-01-30T04:31:29Z
 updated_at: 2023-01-30T12:29:37Z
 url: https://github.com/astral-sh/ruff/pull/2341
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Configure automatically generated release notes
 
 ---
 
-_Pull request opened by @messense on 2023-01-30 04:31_
+_@messense_
 
 Organize them based on labels.
 

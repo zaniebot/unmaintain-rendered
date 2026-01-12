@@ -13,14 +13,14 @@ head: cjm/class-vs-instance
 created_at: 2024-04-27T14:40:19Z
 updated_at: 2024-04-27T15:09:03Z
 url: https://github.com/astral-sh/ruff/pull/11175
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] fix class vs instance
 
 ---
 
-_Pull request opened by @carljm on 2024-04-27 14:40_
+_@carljm_
 
 ## Summary
 

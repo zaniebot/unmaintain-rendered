@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T16:21:23Z
 updated_at: 2025-06-18T08:48:22Z
 url: https://github.com/astral-sh/uv/issues/13922
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Warn if a directory specified in `--index` exists but is empty
 
 ---
 
-_Issue opened by @jtfmumm on 2025-06-09 16:21_
+_@jtfmumm_
 
 Currently, if a directory specified by `--index` for `uv add` is empty, uv will fall back to PyPI without warning the user. This is likely not what was intended so we should add a warning. 
 

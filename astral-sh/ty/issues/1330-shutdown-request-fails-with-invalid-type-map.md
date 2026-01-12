@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T02:28:07Z
 updated_at: 2025-10-15T15:08:24Z
 url: https://github.com/astral-sh/ty/issues/1330
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Shutdown request fails with "invalid type: map, expected unit" when params is empty object
 
 ---
 
-_Issue opened by @achyudh on 2025-10-10 02:28_
+_@achyudh_
 
 ### Summary
 

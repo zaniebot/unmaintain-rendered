@@ -14,14 +14,14 @@ head: jane/server/docs/nvim/tracing
 created_at: 2024-06-14T22:17:45Z
 updated_at: 2024-06-18T20:39:42Z
 url: https://github.com/astral-sh/ruff/pull/11884
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Add tracing setup guide to Neovim documentation
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-14 22:17_
+_@snowsignal_
 
 A follow-up to [this suggestion](https://github.com/astral-sh/ruff/pull/11747#discussion_r1634297757) on the tracing PR.
 

@@ -14,14 +14,14 @@ head: rk-unterminated-code-block
 created_at: 2024-12-14T00:21:54Z
 updated_at: 2024-12-14T15:50:51Z
 url: https://github.com/astral-sh/ruff/pull/14965
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Error out when an mdtest code block is unterminated
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-14 00:21_
+_@InSyncWithFoo_
 
 ## Summary
 

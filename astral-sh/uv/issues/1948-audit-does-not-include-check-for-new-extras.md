@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T05:05:13Z
 updated_at: 2024-02-24T19:06:59Z
 url: https://github.com/astral-sh/uv/issues/1948
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Audit does not include check for new extras
 
 ---
 
-_Issue opened by @zanieb on 2024-02-24 05:05_
+_@zanieb_
 
 Adding an extra does not update the package without `--upgrade`, e.g.
 

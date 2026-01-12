@@ -13,14 +13,14 @@ head: micha/upgrade-salsa
 created_at: 2024-12-17T15:39:00Z
 updated_at: 2024-12-17T16:04:49Z
 url: https://github.com/astral-sh/ruff/pull/15039
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Upgrade salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-17 15:39_
+_@MichaReiser_
 
 The only code change is that Salsa now requires the `Db` to implement `Clone` to create "lightweight" snapshots. 
 

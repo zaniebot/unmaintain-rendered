@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T10:21:34Z
 updated_at: 2025-07-02T18:11:18Z
 url: https://github.com/astral-sh/uv/issues/14416
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Where is `uv tool install az` installed, and why it cannot be uninstalled?
 
 ---
 
-_Issue opened by @stdedos on 2025-07-02 10:21_
+_@stdedos_
 
 ### Question
 

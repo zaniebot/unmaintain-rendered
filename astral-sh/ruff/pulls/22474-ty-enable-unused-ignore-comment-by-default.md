@@ -14,14 +14,14 @@ head: micha/enable-unused-type-ignore
 created_at: 2026-01-09T09:28:59Z
 updated_at: 2026-01-12T12:15:31Z
 url: https://github.com/astral-sh/ruff/pull/22474
-synced_at: 2026-01-12T12:59:59Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Enable `unused-ignore-comment` by default
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-09 09:28_
+_@MichaReiser_
 
 ## Summary
 

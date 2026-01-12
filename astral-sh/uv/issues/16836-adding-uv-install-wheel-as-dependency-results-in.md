@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-24T16:49:06Z
 updated_at: 2025-12-02T13:50:40Z
 url: https://github.com/astral-sh/uv/issues/16836
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Adding uv-install-wheel as dependency results in cargo build error on Windows
 
 ---
 
-_Issue opened by @pavelzw on 2025-11-24 16:49_
+_@pavelzw_
 
 ```toml
 # Cargo.toml

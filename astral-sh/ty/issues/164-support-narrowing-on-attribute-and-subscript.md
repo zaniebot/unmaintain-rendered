@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T11:18:52Z
 updated_at: 2025-06-17T09:07:48Z
 url: https://github.com/astral-sh/ty/issues/164
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support narrowing on attribute and subscript expressions
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-21 11:18_
+_@dhruvmanila_
 
 Currently, red-knot only supports narrowing on a name expression like `x` but not on attributes (`foo.x`) or subscripts (`foo[0]`).
 

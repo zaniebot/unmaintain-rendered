@@ -13,14 +13,14 @@ head: konsti/get-arch-and-os-from-python
 created_at: 2024-03-12T12:47:04Z
 updated_at: 2024-03-13T11:51:16Z
 url: https://github.com/astral-sh/uv/pull/2381
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Move architecture and operating system probing to Python
 
 ---
 
-_Pull request opened by @konstin on 2024-03-12 12:47_
+_@konstin_
 
 The architecture of uv does not necessarily match that of the python interpreter (#2326). In cross compiling/testing scenarios the operating system can also mismatch. To solve this, we move arch and os detection to python, vendoring the relevant pypa/packaging code, preventing mismatches between what the python interpreter was compiled for and what uv was compiled for. 
 

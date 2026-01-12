@@ -12,14 +12,14 @@ head: main
 created_at: 2022-09-01T12:49:51Z
 updated_at: 2022-09-01T13:15:07Z
 url: https://github.com/astral-sh/ruff/pull/71
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Check if toml file is parsed correctly
 
 ---
 
-_Pull request opened by @HallerPatrick on 2022-09-01 12:49_
+_@HallerPatrick_
 
 Fixes #70 
 

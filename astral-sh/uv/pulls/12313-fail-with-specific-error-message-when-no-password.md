@@ -13,14 +13,14 @@ head: jtfm/fail-on-username-no-password
 created_at: 2025-03-19T15:17:16Z
 updated_at: 2025-03-19T16:43:46Z
 url: https://github.com/astral-sh/uv/pull/12313
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Fail with specific error message when no password on auth always
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-19 15:17_
+_@jtfmumm_
 
 This addresses a small part of #12280, namely when you have `authenticate` set to `always`, it will output a distinct error message for the case where you have a username but are missing a password.
 

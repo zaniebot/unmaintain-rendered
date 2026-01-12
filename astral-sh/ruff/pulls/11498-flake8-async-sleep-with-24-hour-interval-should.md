@@ -14,14 +14,14 @@ head: evan-rule-async116
 created_at: 2024-05-22T20:49:51Z
 updated_at: 2024-05-23T20:34:12Z
 url: https://github.com/astral-sh/ruff/pull/11498
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [flake8-async] Sleep with >24 hour interval should usually sleep forever (ASYNC116)
 
 ---
 
-_Pull request opened by @ekohilas on 2024-05-22 20:49_
+_@ekohilas_
 
 ## Summary
 

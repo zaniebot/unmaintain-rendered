@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T15:00:44Z
 updated_at: 2024-08-21T17:04:19Z
 url: https://github.com/astral-sh/uv/issues/6334
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Handle Ctrl-C properly in `uvx`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-21 15:00_
+_@zanieb_
 
 As we do in `uv run`
 

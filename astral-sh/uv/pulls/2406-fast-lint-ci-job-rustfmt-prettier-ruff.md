@@ -13,14 +13,14 @@ head: konsti/format-yaml-files
 created_at: 2024-03-13T10:35:21Z
 updated_at: 2024-03-20T00:16:48Z
 url: https://github.com/astral-sh/uv/pull/2406
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:01Z
 ```
 
 # Fast lint CI job: Rustfmt, Prettier, Ruff
 
 ---
 
-_Pull request opened by @konstin on 2024-03-13 10:35_
+_@konstin_
 
 Add a single job for for fast lint tools. Rustfmt for rust, ruff for python formatting and linting, prettier avoids inconsistent formatter changes between pycharm and vscode.
 

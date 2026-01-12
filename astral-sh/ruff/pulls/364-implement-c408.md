@@ -12,14 +12,14 @@ head: C408
 created_at: 2022-10-08T16:53:03Z
 updated_at: 2022-10-08T21:17:34Z
 url: https://github.com/astral-sh/ruff/pull/364
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement C408
 
 ---
 
-_Pull request opened by @harupy on 2022-10-08 16:53_
+_@harupy_
 
 #305
 

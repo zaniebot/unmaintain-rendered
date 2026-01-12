@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-15T16:54:23Z
 updated_at: 2024-07-16T14:49:27Z
 url: https://github.com/astral-sh/ruff/issues/12339
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR1704 triggers for list comprehension variable
 
 ---
 
-_Issue opened by @richardebeling on 2024-07-15 16:54_
+_@richardebeling_
 
 This code snippet
 ```python3

@@ -14,14 +14,14 @@ head: david/fix-15941
 created_at: 2025-02-04T21:43:07Z
 updated_at: 2025-02-05T22:12:01Z
 url: https://github.com/astral-sh/ruff/pull/15950
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Merge Markdown code blocks inside a single section
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-04 21:43_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/remove-ann101-102
 created_at: 2024-11-16T19:06:15Z
 updated_at: 2024-11-19T09:00:43Z
 url: https://github.com/astral-sh/ruff/pull/14384
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff 0.8] [`flake8-annotations`] Remove deprecated rules ANN101 and ANN102
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-16 19:06_
+_@AlexWaygood_
 
 ## Summary
 

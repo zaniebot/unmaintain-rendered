@@ -12,14 +12,14 @@ head: remove-bookworm-alpine321
 created_at: 2025-10-30T18:04:43Z
 updated_at: 2025-12-24T13:37:24Z
 url: https://github.com/astral-sh/uv/pull/16520
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Remove bookworm and alpine 3.21 published images
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-30 18:04_
+_@samypr100_
 
 ## Summary
 

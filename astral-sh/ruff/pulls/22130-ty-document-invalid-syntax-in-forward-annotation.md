@@ -14,14 +14,14 @@ head: wld/add-lint-docs
 created_at: 2025-12-21T17:57:50Z
 updated_at: 2025-12-21T19:35:45Z
 url: https://github.com/astral-sh/ruff/pull/22130
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Document `invalid-syntax-in-forward-annotation` and `escape-character-in-forward-annotation`
 
 ---
 
-_Pull request opened by @WillDuke on 2025-12-21 17:57_
+_@WillDuke_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

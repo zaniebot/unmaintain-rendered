@@ -13,14 +13,14 @@ head: pathlib-docs
 created_at: 2023-07-16T23:36:59Z
 updated_at: 2023-07-21T01:25:45Z
 url: https://github.com/astral-sh/ruff/pull/5815
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add documentation for the pathlib rules
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-16 23:36_
+_@sbrugman_
 
 Reviving https://github.com/astral-sh/ruff/pull/2348 step by step
 

@@ -13,14 +13,14 @@ head: charlie/overrides
 created_at: 2025-03-06T01:05:07Z
 updated_at: 2025-03-06T02:43:51Z
 url: https://github.com/astral-sh/uv/pull/11994
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Allow overrides in `satisfies` check for `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-06 01:05_
+_@charliermarsh_
 
 ## Summary
 

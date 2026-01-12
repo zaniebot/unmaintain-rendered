@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T08:10:32Z
 updated_at: 2025-02-19T02:08:34Z
 url: https://github.com/astral-sh/uv/issues/11573
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # uv requires platform-specific wheels to be present, even on different platforms
 
 ---
 
-_Issue opened by @Audiopolis on 2025-02-17 08:10_
+_@Audiopolis_
 
 ### Summary
 

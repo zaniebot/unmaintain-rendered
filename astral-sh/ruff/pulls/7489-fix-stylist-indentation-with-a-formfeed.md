@@ -12,14 +12,14 @@ head: stylist-formfeed
 created_at: 2023-09-18T10:03:50Z
 updated_at: 2023-09-19T10:01:17Z
 url: https://github.com/astral-sh/ruff/pull/7489
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix stylist indentation with a formfeed
 
 ---
 
-_Pull request opened by @konstin on 2023-09-18 10:03_
+_@konstin_
 
 **Summary** In python, a formfeed is technically undefined behaviour (https://docs.python.org/3/reference/lexical_analysis.html#indentation):
 > A formfeed character may be present at the start of the line; it will be ignored for

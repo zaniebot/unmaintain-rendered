@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-09T21:03:08Z
 updated_at: 2025-01-11T13:55:45Z
 url: https://github.com/astral-sh/uv/issues/10445
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Automatic Inline Dependency Management with uv add and uv sync
 
 ---
 
-_Issue opened by @hmrc87 on 2025-01-09 21:03_
+_@hmrc87_
 
 I want to suggest a feature to allow UV to automatically manage packages as inline dependencies in a designated file (e.g., main.py).
 

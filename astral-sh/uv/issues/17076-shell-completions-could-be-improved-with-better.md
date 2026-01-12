@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T17:11:49Z
 updated_at: 2025-12-10T17:11:49Z
 url: https://github.com/astral-sh/uv/issues/17076
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Shell completions could be improved with better use of `clap` value hints
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-10 17:11_
+_@EliteTK_
 
 ### Summary
 

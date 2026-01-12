@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T19:50:53Z
 updated_at: 2024-04-22T19:54:04Z
 url: https://github.com/astral-sh/uv/issues/3197
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Installing uv through bash script stopped working
 
 ---
 
-_Issue opened by @rodolfolottin on 2024-04-22 19:50_
+_@rodolfolottin_
 
 Hi! I'm currently unable to install uv through the installation step that utilizes curl.
 

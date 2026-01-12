@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T21:55:40Z
 updated_at: 2025-11-27T06:59:40Z
 url: https://github.com/astral-sh/ruff/issues/21648
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PERF401 false negative
 
 ---
 
-_Issue opened by @victorsamun on 2025-11-26 21:55_
+_@victorsamun_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T03:33:41Z
 updated_at: 2024-11-15T21:31:56Z
 url: https://github.com/astral-sh/uv/issues/9140
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # [Question] How should one install dev dependencies declared in pyproject.toml [dependency-groups]
 
 ---
 
-_Issue opened by @TonyYanOnFire on 2024-11-15 03:33_
+_@TonyYanOnFire_
 
 Hi.
 

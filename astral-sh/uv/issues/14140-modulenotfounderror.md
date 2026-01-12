@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T22:19:10Z
 updated_at: 2025-06-18T22:41:15Z
 url: https://github.com/astral-sh/uv/issues/14140
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # ModuleNotFoundError
 
 ---
 
-_Issue opened by @LIghtJUNction on 2025-06-18 22:19_
+_@LIghtJUNction_
 
 ### Summary
 

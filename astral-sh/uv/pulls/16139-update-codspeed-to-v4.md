@@ -13,14 +13,14 @@ head: konsti/update-codspeed
 created_at: 2025-10-06T16:01:29Z
 updated_at: 2025-10-09T13:57:07Z
 url: https://github.com/astral-sh/uv/pull/16139
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # Update codspeed to v4
 
 ---
 
-_Pull request opened by @konstin on 2025-10-06 16:01_
+_@konstin_
 
 Simplifies the codspeed setup.
 

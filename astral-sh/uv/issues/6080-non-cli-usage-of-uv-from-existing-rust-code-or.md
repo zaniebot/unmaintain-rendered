@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T10:56:09Z
 updated_at: 2024-08-14T15:05:07Z
 url: https://github.com/astral-sh/uv/issues/6080
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Non-CLI usage of uv? (From existing Rust code, or possibly from Python)
 
 ---
 
-_Issue opened by @twardoch on 2024-08-14 10:56_
+_@twardoch_
 
 Is there a way to use "uv" not via CLI, but to build and use it "programmatically" (like a library)? 
 

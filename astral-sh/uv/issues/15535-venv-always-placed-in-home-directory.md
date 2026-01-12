@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-26T14:51:18Z
 updated_at: 2025-08-26T15:02:25Z
 url: https://github.com/astral-sh/uv/issues/15535
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # .venv always placed in home directory
 
 ---
 
-_Issue opened by @ohwhydev on 2025-08-26 14:51_
+_@ohwhydev_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T00:42:15Z
 updated_at: 2025-03-06T14:52:32Z
 url: https://github.com/astral-sh/ruff/issues/16527
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F821: False positive with Pydantic's `BaseModel.model_fields`
 
 ---
 
-_Issue opened by @yury-fedotov on 2025-03-06 00:42_
+_@yury-fedotov_
 
 ### Summary
 

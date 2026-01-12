@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T19:43:47Z
 updated_at: 2025-05-17T20:18:08Z
 url: https://github.com/clap-rs/clap/issues/6006
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # A .citation() option similar to that of .version()
 
 ---
 
-_Issue opened by @jianshu93 on 2025-05-17 19:43_
+_@jianshu93_
 
 ### Please complete the following tasks
 

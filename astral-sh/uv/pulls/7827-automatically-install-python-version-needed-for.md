@@ -11,14 +11,14 @@ head: tfsingh/install-err
 created_at: 2024-10-01T05:32:30Z
 updated_at: 2024-12-02T05:32:01Z
 url: https://github.com/astral-sh/uv/pull/7827
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Automatically install Python version needed for tool
 
 ---
 
-_Pull request opened by @tfsingh on 2024-10-01 05:32_
+_@tfsingh_
 
 This PR adds support for automatically installing the Python version required for a given tool, should it not already be installed.
 

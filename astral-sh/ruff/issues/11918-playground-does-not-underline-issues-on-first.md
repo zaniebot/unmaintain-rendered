@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T06:05:36Z
 updated_at: 2024-09-09T10:47:40Z
 url: https://github.com/astral-sh/ruff/issues/11918
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Playground does not underline issues on first open until first code change
 
 ---
 
-_Issue opened by @bersbersbers on 2024-06-18 06:05_
+_@bersbersbers_
 
 When I open or reload https://play.ruff.rs/93f469fb-9725-411c-83c0-2c0d04d0ab75, I do not see any issues being underlined. I start seeing them as soon as I add a newline, or space, or anything else. But I'd expect them to be shown right from the first page load.
 

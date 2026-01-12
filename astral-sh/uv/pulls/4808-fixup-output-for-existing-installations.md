@@ -13,14 +13,14 @@ head: zb/touchup-instal
 created_at: 2024-07-04T15:14:35Z
 updated_at: 2024-07-04T15:23:18Z
 url: https://github.com/astral-sh/uv/pull/4808
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Fixup output for existing installations
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-04 15:14_
+_@zanieb_
 
 The awkward language was introduced by https://github.com/astral-sh/uv/pull/4735
 

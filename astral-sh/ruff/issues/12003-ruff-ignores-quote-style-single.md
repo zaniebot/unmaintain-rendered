@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T04:06:14Z
 updated_at: 2024-06-26T01:22:03Z
 url: https://github.com/astral-sh/ruff/issues/12003
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff ignores "quote-style = 'single'"
 
 ---
 
-_Issue opened by @jackdesert on 2024-06-24 04:06_
+_@jackdesert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: delete-python-formatter-bin
 created_at: 2024-07-10T12:48:38Z
 updated_at: 2024-08-12T07:52:25Z
 url: https://github.com/astral-sh/ruff/pull/12276
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove the early days ruff_python_formatter CLI
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-10 12:48_
+_@MichaReiser_
 
 ## Summary
 This PR deletes the `ruff_python_formatter/src/main.rs` that we used for testing in the very early days. 

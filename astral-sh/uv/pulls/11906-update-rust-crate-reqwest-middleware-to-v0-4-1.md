@@ -13,14 +13,14 @@ head: renovate/reqwest-middleware-0.x-lockfile
 created_at: 2025-03-03T02:33:07Z
 updated_at: 2025-03-03T13:36:59Z
 url: https://github.com/astral-sh/uv/pull/11906
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:03Z
 ```
 
 # Update Rust crate reqwest-middleware to v0.4.1
 
 ---
 
-_Pull request opened by @renovate on 2025-03-03 02:33_
+_@renovate_
 
 This PR contains the following updates:
 

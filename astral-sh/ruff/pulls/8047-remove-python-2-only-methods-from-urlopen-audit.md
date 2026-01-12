@@ -13,14 +13,14 @@ head: charlie/S3
 created_at: 2023-10-18T14:24:20Z
 updated_at: 2023-10-18T14:58:17Z
 url: https://github.com/astral-sh/ruff/pull/8047
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove Python 2-only methods from URLOpen audit
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 14:24_
+_@charliermarsh_
 
 These were removed from Bandit on `main` as they don't exist in Python 3.
 

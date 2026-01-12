@@ -14,14 +14,14 @@ head: ty-extensions-docstrings
 created_at: 2025-10-22T22:37:56Z
 updated_at: 2025-11-12T23:13:19Z
 url: https://github.com/astral-sh/ruff/pull/21036
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Add docstrings for `ty_extensions` functions
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-10-22 22:37_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

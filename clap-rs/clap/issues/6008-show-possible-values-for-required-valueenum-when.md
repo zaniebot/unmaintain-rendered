@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-22T13:36:05Z
 updated_at: 2025-05-22T13:49:54Z
 url: https://github.com/clap-rs/clap/issues/6008
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # show possible values for required ValueEnum when omitting the argument
 
 ---
 
-_Issue opened by @m4rch3n1ng on 2025-05-22 13:36_
+_@m4rch3n1ng_
 
 ### Please complete the following tasks
 

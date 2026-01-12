@@ -14,14 +14,14 @@ head: raw-fix
 created_at: 2024-11-22T18:18:34Z
 updated_at: 2024-11-22T21:09:58Z
 url: https://github.com/astral-sh/ruff/pull/14536
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Auto-add `r` prefix when string has no backslashes for `unraw-re-pattern (RUF039)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-22 18:18_
+_@dylwil3_
 
 This PR adds a sometimes-available, safe autofix for [unraw-re-pattern (RUF039)](https://docs.astral.sh/ruff/rules/unraw-re-pattern/#unraw-re-pattern-ruf039), which prepends an `r` prefix. It is used only when the string in question has no backslahses (and also does not have a `u` prefix, since that causes a syntax error.)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-01T23:08:11Z
 updated_at: 2025-11-03T14:33:06Z
 url: https://github.com/astral-sh/ty/issues/1464
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # completion order should favor symbols in scope
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-11-01 23:08_
+_@MatthewMckee4_
 
 ### Summary
 

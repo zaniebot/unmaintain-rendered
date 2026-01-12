@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-17T19:09:07Z
 updated_at: 2025-08-21T17:12:10Z
 url: https://github.com/astral-sh/uv/issues/15331
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Failure to maintain version
 
 ---
 
-_Issue opened by @afrenkai on 2025-08-17 19:09_
+_@afrenkai_
 
 ### Summary
 

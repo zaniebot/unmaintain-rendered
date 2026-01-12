@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T10:53:03Z
 updated_at: 2024-12-24T15:09:18Z
 url: https://github.com/astral-sh/uv/issues/10139
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # uv run script won't install required python version?
 
 ---
 
-_Issue opened by @myarcana on 2024-12-24 10:53_
+_@myarcana_
 
 I've made a script with metadata
 

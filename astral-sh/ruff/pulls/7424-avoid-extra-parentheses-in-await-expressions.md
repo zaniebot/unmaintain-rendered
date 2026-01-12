@@ -13,14 +13,14 @@ head: charlie/await
 created_at: 2023-09-15T21:30:27Z
 updated_at: 2023-09-16T17:19:47Z
 url: https://github.com/astral-sh/ruff/pull/7424
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid extra parentheses in `await` expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-15 21:30_
+_@charliermarsh_
 
 ## Summary
 

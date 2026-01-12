@@ -14,14 +14,14 @@ head: update-AIR302-with-better-suggestion
 created_at: 2025-04-22T09:50:41Z
 updated_at: 2025-04-25T16:44:29Z
 url: https://github.com/astral-sh/ruff/pull/17542
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`airflow`] update existing `AIR302` rules with better suggestions
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-22 09:50_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

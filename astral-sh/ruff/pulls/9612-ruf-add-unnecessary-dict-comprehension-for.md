@@ -11,14 +11,14 @@ head: add-RUF023
 created_at: 2024-01-22T11:37:02Z
 updated_at: 2024-01-22T12:27:24Z
 url: https://github.com/astral-sh/ruff/pull/9612
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [RUF] - Add unnecessary dict comprehension for iterable rule (RUF023)
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-22 11:37_
+_@mikeleppane_
 
 ## Summary
 

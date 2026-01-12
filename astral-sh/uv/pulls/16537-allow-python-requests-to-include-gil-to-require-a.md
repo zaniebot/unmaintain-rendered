@@ -13,14 +13,14 @@ head: zb/gil-request
 created_at: 2025-10-31T15:03:18Z
 updated_at: 2025-11-03T19:35:54Z
 url: https://github.com/astral-sh/uv/pull/16537
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Allow Python requests to include `+gil` to require a GIL-enabled interpreter
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-31 15:03_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/pull/16142#issuecomment-3390586957
 

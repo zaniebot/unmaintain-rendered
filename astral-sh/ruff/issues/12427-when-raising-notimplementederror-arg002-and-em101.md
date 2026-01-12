@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-21T12:31:38Z
 updated_at: 2024-10-18T06:44:24Z
 url: https://github.com/astral-sh/ruff/issues/12427
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # When raising `NotImplementedError `, ARG002 and EM101 are incompatible.
 
 ---
 
-_Issue opened by @DaniBodor on 2024-07-21 12:31_
+_@DaniBodor_
 
 [ARG002](https://docs.astral.sh/ruff/rules/unused-method-argument/) is usually not raised in methods that immediately raise a `NotImplementedError`, but does if there is some other code in the method. However, [EM101](https://docs.astral.sh/ruff/rules/raw-string-in-exception/) enforces adding the error message into a separate variable, which is then seen as "code".
 

@@ -14,14 +14,14 @@ head: dcreager/bound-typevar
 created_at: 2025-08-07T01:00:54Z
 updated_at: 2025-08-11T19:30:00Z
 url: https://github.com/astral-sh/ruff/pull/19796
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Use separate Rust types for bound and unbound type variables
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-07 01:00_
+_@dcreager_
 
 This PR creates separate Rust types for bound and unbound type variables, as proposed in https://github.com/astral-sh/ty/issues/926.
 

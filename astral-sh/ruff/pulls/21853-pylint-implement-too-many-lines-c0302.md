@@ -13,14 +13,14 @@ head: feat/implement-max-file-length-rule
 created_at: 2025-12-08T21:13:23Z
 updated_at: 2025-12-08T22:52:10Z
 url: https://github.com/astral-sh/ruff/pull/21853
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [pylint] Implement too-many-lines (C0302)
 
 ---
 
-_Pull request opened by @tluolamo on 2025-12-08 21:13_
+_@tluolamo_
 
 ## Summary
 

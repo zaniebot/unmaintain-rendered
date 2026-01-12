@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-21T06:39:33Z
 updated_at: 2025-08-21T13:11:52Z
 url: https://github.com/astral-sh/ty/issues/1076
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `pandas` `infer_objects` type stub missing `copy` arg
 
 ---
 
-_Issue opened by @janosh on 2025-08-21 06:39_
+_@janosh_
 
 ### Summary
 

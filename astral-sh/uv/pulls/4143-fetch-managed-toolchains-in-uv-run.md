@@ -13,14 +13,14 @@ head: zb/toolchain-vi
 created_at: 2024-06-07T20:06:01Z
 updated_at: 2024-06-10T14:20:46Z
 url: https://github.com/astral-sh/uv/pull/4143
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Fetch managed toolchains in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 20:06_
+_@zanieb_
 
 e.g.
 ```

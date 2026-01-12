@@ -13,14 +13,14 @@ head: zb/contributing
 created_at: 2025-12-16T13:52:36Z
 updated_at: 2025-12-18T12:56:52Z
 url: https://github.com/astral-sh/uv/pull/17146
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Link to the contributing tab instead of the document
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 13:52_
+_@zanieb_
 
 I'm not sure if this is strictly better? but seemed worth a try
 

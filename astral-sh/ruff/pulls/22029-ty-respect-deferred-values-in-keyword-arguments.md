@@ -13,14 +13,14 @@ head: charlie/defer
 created_at: 2025-12-17T16:32:02Z
 updated_at: 2025-12-17T22:02:13Z
 url: https://github.com/astral-sh/ruff/pull/22029
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Respect deferred values in keyword arguments et al for `.pyi` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 16:32_
+_@charliermarsh_
 
 ## Summary
 

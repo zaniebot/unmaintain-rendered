@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T20:23:27Z
 updated_at: 2024-04-19T22:26:56Z
 url: https://github.com/astral-sh/ruff/issues/11047
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Isort sections no longer respected?
 
 ---
 
-_Issue opened by @Badg on 2024-04-19 20:23_
+_@Badg_
 
 I've noticed what I think has to be a bug/regression in ruff's implementation of isort grouping. Imports that were previously reported correct by ruff are now being reported as unsorted, in a way that conflicts with pyproject.toml. This is specific to import sections.
 

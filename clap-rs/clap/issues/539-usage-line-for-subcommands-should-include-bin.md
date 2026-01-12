@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-23T21:53:19Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/539
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Usage line for subcommands should include bin_name prefix
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-23 21:53_
+_@joshtriplett_
 
 When showing the usage for a subcommand, clap only shows the subcommand name, not the command name before it.  For instance, given a command `command`, and a subcommand `sub`, `command help sub` will show:
 

@@ -13,14 +13,14 @@ head: charlie/lsp
 created_at: 2026-01-09T20:49:52Z
 updated_at: 2026-01-10T00:27:58Z
 url: https://github.com/astral-sh/ruff/pull/22484
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Avoid emitting Liskov repeated violations from grandparent to child
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 20:49_
+_@charliermarsh_
 
 ## Summary
 

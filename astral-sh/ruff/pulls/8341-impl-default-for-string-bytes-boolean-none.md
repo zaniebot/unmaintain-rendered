@@ -13,14 +13,14 @@ head: dhruv/literal-default
 created_at: 2023-10-30T07:45:51Z
 updated_at: 2023-10-30T08:56:14Z
 url: https://github.com/astral-sh/ruff/pull/8341
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Impl `Default` for `(String|Bytes|Boolean|None|Ellipsis)Literal`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-30 07:45_
+_@dhruvmanila_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: ww/bump-dist
 created_at: 2025-11-06T18:03:13Z
 updated_at: 2025-11-11T18:48:15Z
 url: https://github.com/astral-sh/ruff/pull/21302
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # chore: bump dist, remove old commenting workflows
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-06 18:03_
+_@woodruffw_
 
 This removes the four `workflow_run`-based commenting workflows now that astral-sh-bot can track `workflow_run` events.
 

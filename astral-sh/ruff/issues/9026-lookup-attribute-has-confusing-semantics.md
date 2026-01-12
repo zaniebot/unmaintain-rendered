@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-06T16:53:48Z
 updated_at: 2023-12-06T16:59:30Z
 url: https://github.com/astral-sh/ruff/issues/9026
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `lookup_attribute` has confusing semantics
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-06 16:53_
+_@charliermarsh_
 
 Given `ctypes.WinError`, it returns `None`.
 

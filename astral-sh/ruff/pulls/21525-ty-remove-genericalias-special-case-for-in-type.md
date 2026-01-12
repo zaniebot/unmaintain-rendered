@@ -13,14 +13,14 @@ head: david/no-genericalias-special-case
 created_at: 2025-11-19T14:09:41Z
 updated_at: 2025-11-19T14:17:10Z
 url: https://github.com/astral-sh/ruff/pull/21525
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Remove `GenericAlias` special case for in_type_expression
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-19 14:09_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

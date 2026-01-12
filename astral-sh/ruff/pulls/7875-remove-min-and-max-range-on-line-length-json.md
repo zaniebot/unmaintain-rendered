@@ -13,14 +13,14 @@ head: charlie/line-length
 created_at: 2023-10-09T18:45:17Z
 updated_at: 2023-10-09T23:51:29Z
 url: https://github.com/astral-sh/ruff/pull/7875
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove min and max range on `line-length` JSON schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-09 18:45_
+_@charliermarsh_
 
 ## Summary
 

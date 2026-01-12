@@ -12,14 +12,14 @@ head: renovate/pyproject-toml-0.x
 created_at: 2024-04-01T12:28:13Z
 updated_at: 2024-04-07T03:02:33Z
 url: https://github.com/astral-sh/ruff/pull/10705
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # chore(deps): update rust crate pyproject-toml to 0.10.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 12:28_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T21:21:24Z
 updated_at: 2023-10-18T01:50:41Z
 url: https://github.com/astral-sh/ruff/issues/8027
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [Panic] check file from stdin
 
 ---
 
-_Issue opened by @JMarkin on 2023-10-17 21:21_
+_@JMarkin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

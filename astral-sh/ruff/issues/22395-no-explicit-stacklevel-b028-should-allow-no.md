@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T09:17:16Z
 updated_at: 2026-01-12T14:54:28Z
 url: https://github.com/astral-sh/ruff/issues/22395
-synced_at: 2026-01-12T15:03:26Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # no-explicit-stacklevel (B028) should allow no stacklevel when skip_file_prefixes is provided
 
 ---
 
-_Issue opened by @abrahammurciano on 2026-01-05 09:17_
+_@abrahammurciano_
 
 ### Summary
 

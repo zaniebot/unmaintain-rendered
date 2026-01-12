@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-24T21:24:33Z
 updated_at: 2025-12-06T01:17:50Z
 url: https://github.com/astral-sh/ty/issues/504
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Option for not stripping `Annotated` metadata.
 
 ---
 
-_Issue opened by @carrascomj on 2025-05-24 21:24_
+_@carrascomj_
 
 As a user, I would like to be able to see the [`Annotated` ](https://docs.python.org/3/library/typing.html#typing.Annotated)metadata on hover.
 

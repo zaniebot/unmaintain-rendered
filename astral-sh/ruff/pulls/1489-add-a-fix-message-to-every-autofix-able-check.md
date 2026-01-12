@@ -12,14 +12,14 @@ head: charlie/fix-message
 created_at: 2022-12-30T22:50:19Z
 updated_at: 2022-12-31T04:16:05Z
 url: https://github.com/astral-sh/ruff/pull/1489
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add a "fix message" to every autofix-able check
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 22:50_
+_@charliermarsh_
 
 This PR adds meaningful messages to the `Fix` API.
 

@@ -13,14 +13,14 @@ head: dhruv/parse-type-annotation
 created_at: 2024-06-03T09:12:19Z
 updated_at: 2024-06-03T13:26:44Z
 url: https://github.com/astral-sh/ruff/pull/11717
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use string expression for parsing type annotation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-03 09:12_
+_@dhruvmanila_
 
 ## Summary
 

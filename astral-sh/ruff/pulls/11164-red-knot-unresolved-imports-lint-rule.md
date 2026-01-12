@@ -13,14 +13,14 @@ head: red-knot-lint-unresolved-imports
 created_at: 2024-04-26T12:08:35Z
 updated_at: 2024-04-28T10:16:57Z
 url: https://github.com/astral-sh/ruff/pull/11164
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # [red-knot] Unresolved imports lint rule
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-26 12:08_
+_@MichaReiser_
 
 ## Summary
 

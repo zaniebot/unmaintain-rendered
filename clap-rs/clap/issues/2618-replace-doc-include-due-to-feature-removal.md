@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-24T21:35:58Z
 updated_at: 2021-08-18T09:08:56Z
 url: https://github.com/clap-rs/clap/issues/2618
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Replace `doc(include)` due to feature removal
 
 ---
 
-_Issue opened by @rami3l on 2021-07-24 21:35_
+_@rami3l_
 
 ### Please complete the following tasks
 

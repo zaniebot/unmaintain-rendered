@@ -13,14 +13,14 @@ head: charlie/bandit
 created_at: 2024-03-30T00:37:23Z
 updated_at: 2024-06-25T12:39:33Z
 url: https://github.com/astral-sh/ruff/pull/10667
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Modify diagnostic ranges for shell-related `bandit` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-30 00:37_
+_@charliermarsh_
 
 ## Summary
 

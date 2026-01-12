@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T03:14:23Z
 updated_at: 2025-05-13T20:31:18Z
 url: https://github.com/astral-sh/uv/issues/13167
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # `python-downloads` option affects `uv python list`
 
 ---
 
-_Issue opened by @heavywatal on 2025-04-28 03:14_
+_@heavywatal_
 
 ### Summary
 

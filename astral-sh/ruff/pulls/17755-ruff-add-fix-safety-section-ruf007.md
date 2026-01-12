@@ -13,14 +13,14 @@ head: fix-safety-section-zip-instead-of-pairwise
 created_at: 2025-05-01T06:02:43Z
 updated_at: 2025-05-14T15:07:12Z
 url: https://github.com/astral-sh/ruff/pull/17755
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`ruff`] add fix safety section (`RUF007`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-01 06:02_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `RUF007` (#15584 )
 

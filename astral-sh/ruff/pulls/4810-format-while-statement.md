@@ -14,14 +14,14 @@ head: format-while-statement
 created_at: 2023-06-02T12:46:02Z
 updated_at: 2023-06-05T08:43:11Z
 url: https://github.com/astral-sh/ruff/pull/4810
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format `while` Statement
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-02 12:46_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

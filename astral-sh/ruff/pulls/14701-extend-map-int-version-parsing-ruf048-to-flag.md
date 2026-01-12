@@ -12,14 +12,14 @@ head: RUF048-importlib-metadata-version
 created_at: 2024-12-01T15:36:17Z
 updated_at: 2024-12-03T13:59:29Z
 url: https://github.com/astral-sh/ruff/pull/14701
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Extend `map-int-version-parsing (RUF048)` to flag `tuple(map(int, importlib.metadata.version("<package>").split(".")))`
 
 ---
 
-_Pull request opened by @harupy on 2024-12-01 15:36_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

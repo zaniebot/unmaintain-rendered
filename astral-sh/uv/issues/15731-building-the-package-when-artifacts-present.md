@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T08:07:55Z
 updated_at: 2025-09-26T07:25:19Z
 url: https://github.com/astral-sh/uv/issues/15731
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Building the package when artifacts present
 
 ---
 
-_Issue opened by @GOGKI on 2025-09-08 08:07_
+_@GOGKI_
 
 # Description
 Currently, there is no way to install from GH releases, as pointing to the rev on the repository results in building the package from the commit at this tag, and pointing directly to the artifact cannot be resolved on private repositories as the necessary GitHub API headers are not used (`Accept: application/octet-stream`). 

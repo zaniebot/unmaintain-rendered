@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T23:43:34Z
 updated_at: 2025-12-16T06:15:57Z
 url: https://github.com/astral-sh/uv/issues/9559
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # uv rebuilds cached packages on Termux
 
 ---
 
-_Issue opened by @milisp on 2024-12-01 23:43_
+_@milisp_
 
 ```sh
 uv add pyzmq==25.1.1

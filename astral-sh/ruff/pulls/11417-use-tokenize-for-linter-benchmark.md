@@ -13,14 +13,14 @@ head: dhruv/bench-linter
 created_at: 2024-05-14T03:11:53Z
 updated_at: 2024-05-14T14:28:41Z
 url: https://github.com/astral-sh/ruff/pull/11417
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use `tokenize` for linter benchmark
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-14 03:11_
+_@dhruvmanila_
 
 ## Summary
 

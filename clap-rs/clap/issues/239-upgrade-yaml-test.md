@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-08T13:11:45Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/239
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Upgrade YAML test
 
 ---
 
-_Issue opened by @Vinatorul on 2015-09-08 13:11_
+_@Vinatorul_
 
 Now yaml test only check `yml` parsing, but not the the work in general.
 I think we need to add:

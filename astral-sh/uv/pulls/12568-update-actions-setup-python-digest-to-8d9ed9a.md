@@ -13,14 +13,14 @@ head: renovate/actions-setup-python-digest
 created_at: 2025-03-31T02:38:17Z
 updated_at: 2025-03-31T13:06:19Z
 url: https://github.com/astral-sh/uv/pull/12568
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Update actions/setup-python digest to 8d9ed9a
 
 ---
 
-_Pull request opened by @renovate on 2025-03-31 02:38_
+_@renovate_
 
 This PR contains the following updates:
 

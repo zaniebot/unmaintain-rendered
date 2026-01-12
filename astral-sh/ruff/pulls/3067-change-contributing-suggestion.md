@@ -12,14 +12,14 @@ head: charlie/contributing
 created_at: 2023-02-20T20:02:23Z
 updated_at: 2023-02-20T20:05:40Z
 url: https://github.com/astral-sh/ruff/pull/3067
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Change contributing suggestion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 20:02_
+_@charliermarsh_
 
 _No description provided._
 

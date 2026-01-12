@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T02:30:50Z
 updated_at: 2025-11-21T18:08:16Z
 url: https://github.com/astral-sh/uv/issues/14267
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Packages that `pip` can install but `uv pip` cannot install in a conda env
 
 ---
 
-_Issue opened by @edschofield on 2025-06-26 02:30_
+_@edschofield_
 
 [uv_install_logs.tar.gz](https://github.com/user-attachments/files/20915431/uv_install_logs.tar.gz)
 

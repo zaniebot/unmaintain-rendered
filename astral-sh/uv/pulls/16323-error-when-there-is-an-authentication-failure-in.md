@@ -14,14 +14,14 @@ head: konsti/error-on-authentication-error-in-check-url
 created_at: 2025-10-15T18:44:36Z
 updated_at: 2025-12-05T10:31:57Z
 url: https://github.com/astral-sh/uv/pull/16323
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Error when there is an authentication failure in check URL
 
 ---
 
-_Pull request opened by @konstin on 2025-10-15 18:44_
+_@konstin_
 
 Currently, when `--check-url` or the index URL from `--index` returns a 401 or 403, we continue with the update, not actually performing the check. Instead, we now error and hint at missing check URL credentials.
 

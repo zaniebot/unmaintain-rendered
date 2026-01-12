@@ -12,14 +12,14 @@ head: keep-on-error
 created_at: 2025-03-18T16:51:41Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/12292
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # uv build: add --keep-on-error
 
 ---
 
-_Pull request opened by @da-x on 2025-03-18 16:51_
+_@da-x_
 
 While debugging build failures, it is sometimes useful to look at the build directory for logs. Let's allow not deleting it.
 

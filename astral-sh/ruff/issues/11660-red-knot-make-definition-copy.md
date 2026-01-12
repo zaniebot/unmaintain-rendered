@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:06:57Z
 updated_at: 2024-07-17T06:55:32Z
 url: https://github.com/astral-sh/ruff/issues/11660
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] make Definition Copy
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:06_
+_@carljm_
 
 Definition is lightweight: basically it's just a wrapper around an AST node reference (except for import definitions, which we currently abstract a bit more from the AST.) And we already clone them pretty freely. But they aren't Copy, because the import variants include names, which might be heap-allocated strings if they are long.
 

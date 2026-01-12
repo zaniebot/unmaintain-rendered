@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T17:02:42Z
 updated_at: 2024-09-01T01:49:12Z
 url: https://github.com/astral-sh/ruff/issues/12993
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # UP036 should identify sys.version_info[0] or other parts
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-08-19 17:02_
+_@inoa-jboliveira_
 
 I found there was some leftover py2k code in a project that UP rules would not catch because it just matches sys.version_info as a tuple. If you just check for the 1st element, which is kinda common in the old days, it will not show an error.
 

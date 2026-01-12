@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T13:02:56Z
 updated_at: 2024-04-22T17:18:05Z
 url: https://github.com/astral-sh/uv/issues/3183
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `uv pip install --no-deps` fails due to conflicting requirements even though the `--no-deps` flag is given
 
 ---
 
-_Issue opened by @bluthej on 2024-04-22 13:02_
+_@bluthej_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

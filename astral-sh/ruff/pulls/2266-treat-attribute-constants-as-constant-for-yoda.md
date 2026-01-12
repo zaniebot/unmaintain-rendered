@@ -12,14 +12,14 @@ head: frenck-2023-0225
 created_at: 2023-01-27T17:07:47Z
 updated_at: 2023-01-27T18:00:06Z
 url: https://github.com/astral-sh/ruff/pull/2266
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Treat attribute constants as constant for yoda-conditions
 
 ---
 
-_Pull request opened by @frenck on 2023-01-27 17:07_
+_@frenck_
 
 Accessed attributes that are Python constants should be considered for yoda-conditions
 

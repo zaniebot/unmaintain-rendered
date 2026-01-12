@@ -13,14 +13,14 @@ head: dcreager/qualified-type-of
 created_at: 2024-12-06T19:03:16Z
 updated_at: 2024-12-06T22:14:52Z
 url: https://github.com/astral-sh/ruff/pull/14825
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Support `type[a.X]` with qualified class names
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-06 19:03_
+_@dcreager_
 
 This adds support for `type[a.X]`, where the `type` special form is applied to a qualified name that resolves to a class literal.  This works for both nested classes and classes imported from another module.
 

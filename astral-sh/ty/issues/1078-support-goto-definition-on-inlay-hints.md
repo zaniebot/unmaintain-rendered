@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T09:29:15Z
 updated_at: 2025-11-21T03:22:55Z
 url: https://github.com/astral-sh/ty/issues/1078
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support goto definition on inlay hints
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-08-21 09:29_
+_@MatthewMckee4_
 
 I can write this up more later.
 

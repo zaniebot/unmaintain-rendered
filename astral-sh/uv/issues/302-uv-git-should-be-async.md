@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T23:49:51Z
 updated_at: 2024-07-01T21:32:16Z
 url: https://github.com/astral-sh/uv/issues/302
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # `uv-git` should be async
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-02 23:49_
+_@charliermarsh_
 
 It's hard because the `git2` structs aren't `Send`....
 

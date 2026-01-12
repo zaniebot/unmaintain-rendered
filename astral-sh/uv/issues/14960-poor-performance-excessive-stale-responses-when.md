@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T20:51:04Z
 updated_at: 2025-08-01T16:49:54Z
 url: https://github.com/astral-sh/uv/issues/14960
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Poor performance / excessive stale responses when running `uv pip compile` in subprocess
 
 ---
 
-_Issue opened by @brendan-morin on 2025-07-29 20:51_
+_@brendan-morin_
 
 ### Summary
 

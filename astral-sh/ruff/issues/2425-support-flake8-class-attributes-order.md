@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-31T23:02:30Z
 updated_at: 2024-10-07T21:24:53Z
 url: https://github.com/astral-sh/ruff/issues/2425
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support `flake8-class-attributes-order`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-01-31 23:02_
+_@edgarrmondragon_
 
 Hello, 
 Is there a plan to support this flake8 extension?

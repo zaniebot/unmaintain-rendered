@@ -12,14 +12,14 @@ head: symlink
 created_at: 2022-09-29T03:21:03Z
 updated_at: 2022-11-20T01:59:36Z
 url: https://github.com/astral-sh/ruff/pull/280
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Don’t follow directory symlinks found while walking
 
 ---
 
-_Pull request opened by @andersk on 2022-09-29 03:21_
+_@andersk_
 
 A symlink to a directory probably points to a virtual environment or a dependency or some other directory that users don’t expect us to traverse, so ignore it unless it was passed directly on the command line.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-16T00:37:48Z
 updated_at: 2025-07-16T12:08:03Z
 url: https://github.com/astral-sh/uv/issues/14644
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Add git commit and `--tag` option to `uv version --bump`
 
 ---
 
-_Issue opened by @cthoyt on 2025-07-16 00:37_
+_@cthoyt_
 
 ### Summary
 

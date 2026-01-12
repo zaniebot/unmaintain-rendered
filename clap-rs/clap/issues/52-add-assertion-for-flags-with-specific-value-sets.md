@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-02T03:45:22Z
 updated_at: 2015-04-02T04:17:33Z
 url: https://github.com/clap-rs/clap/issues/52
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add assertion for flags with specific value sets
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-02 03:45_
+_@kbknapp_
 
 _No description provided._
 

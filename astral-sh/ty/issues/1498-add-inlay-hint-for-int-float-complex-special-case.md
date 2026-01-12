@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-07T02:21:19Z
 updated_at: 2025-11-14T08:20:33Z
 url: https://github.com/astral-sh/ty/issues/1498
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add inlay hint for int/float/complex special case
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-07 02:21_
+_@MeGaGiGaGon_
 
 It would be nice if ty added an inlay hint on typings that use the int/float/complex special case. Currently, a type hint like this:
 ```py

@@ -12,14 +12,14 @@ head: derive-check-code-prefix
 created_at: 2023-01-05T06:17:00Z
 updated_at: 2023-01-06T12:36:25Z
 url: https://github.com/astral-sh/ruff/pull/1656
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add proc-macro to derive `CheckCodePrefix`
 
 ---
 
-_Pull request opened by @messense on 2023-01-05 06:17_
+_@messense_
 
 IMO a derive macro is a natural way to generate new code, and it reduces the chance of merge conflicts.
 

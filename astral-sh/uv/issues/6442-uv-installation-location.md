@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-22T14:51:37Z
 updated_at: 2024-09-17T04:06:37Z
 url: https://github.com/astral-sh/uv/issues/6442
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv` installation location
 
 ---
 
-_Issue opened by @vwxyzjn on 2024-08-22 14:51_
+_@vwxyzjn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

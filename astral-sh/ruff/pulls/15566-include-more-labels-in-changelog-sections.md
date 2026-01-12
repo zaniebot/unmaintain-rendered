@@ -13,14 +13,14 @@ head: dhruv/changelog-sections
 created_at: 2025-01-18T05:12:52Z
 updated_at: 2025-01-20T05:04:24Z
 url: https://github.com/astral-sh/ruff/pull/15566
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Include more labels in CHANGELOG sections
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-18 05:12_
+_@dhruvmanila_
 
 ## Summary
 

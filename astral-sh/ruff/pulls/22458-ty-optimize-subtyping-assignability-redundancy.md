@@ -15,14 +15,14 @@ head: alex/union-set
 created_at: 2026-01-08T14:12:30Z
 updated_at: 2026-01-10T15:36:18Z
 url: https://github.com/astral-sh/ruff/pull/22458
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Optimize subtyping/assignability/redundancy checks against union types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-08 14:12_
+_@AlexWaygood_
 
 ## Summary
 

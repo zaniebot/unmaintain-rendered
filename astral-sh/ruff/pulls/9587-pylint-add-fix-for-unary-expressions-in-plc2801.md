@@ -13,14 +13,14 @@ head: tweak-PLC2801
 created_at: 2024-01-20T01:59:10Z
 updated_at: 2024-03-04T10:25:17Z
 url: https://github.com/astral-sh/ruff/pull/9587
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] - add fix for unary expressions in `PLC2801`
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-20 01:59_
+_@diceroll123_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/syn-annotated-assignment-exprs
 created_at: 2025-04-07T17:11:38Z
 updated_at: 2025-04-08T12:56:28Z
 url: https://github.com/astral-sh/ruff/pull/17283
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] Check annotations in annotated assignments
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-07 17:11_
+_@ntBre_
 
 Summary
 --

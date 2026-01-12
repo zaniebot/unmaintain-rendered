@@ -14,14 +14,14 @@ head: dhruv/f-string-format-spec
 created_at: 2024-04-24T10:35:53Z
 updated_at: 2024-04-26T13:37:53Z
 url: https://github.com/astral-sh/ruff/pull/11123
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Avoid multiline expression if format specifier is present
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-24 10:35_
+_@dhruvmanila_
 
 ## Summary
 

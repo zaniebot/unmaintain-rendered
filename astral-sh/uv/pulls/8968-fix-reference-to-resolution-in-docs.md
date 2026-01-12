@@ -13,14 +13,14 @@ head: doc_fix
 created_at: 2024-11-09T12:39:57Z
 updated_at: 2024-11-09T13:43:53Z
 url: https://github.com/astral-sh/uv/pull/8968
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Fix reference to `--resolution` in docs
 
 ---
 
-_Pull request opened by @KasperZutterman on 2024-11-09 12:39_
+_@KasperZutterman_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

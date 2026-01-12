@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T15:07:29Z
 updated_at: 2025-08-21T23:06:48Z
 url: https://github.com/astral-sh/uv/issues/15353
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # uv env instability
 
 ---
 
-_Issue opened by @benzid-wael on 2025-08-18 15:07_
+_@benzid-wael_
 
 ### Summary
 

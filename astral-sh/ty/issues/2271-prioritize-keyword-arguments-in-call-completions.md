@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T07:16:01Z
 updated_at: 2026-01-06T10:57:12Z
 url: https://github.com/astral-sh/ty/issues/2271
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Prioritize keyword arguments in call completions
 
 ---
 
-_Issue opened by @joecox on 2025-12-30 07:16_
+_@joecox_
 
 ### Summary
 

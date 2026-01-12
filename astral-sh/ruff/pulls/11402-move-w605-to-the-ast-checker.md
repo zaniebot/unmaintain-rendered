@@ -13,14 +13,14 @@ head: dhruv/move-w605-to-ast
 created_at: 2024-05-13T09:29:19Z
 updated_at: 2024-05-13T16:24:10Z
 url: https://github.com/astral-sh/ruff/pull/11402
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Move `W605` to the AST checker
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-13 09:29_
+_@dhruvmanila_
 
 ## Summary
 

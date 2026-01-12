@@ -13,14 +13,14 @@ head: add-fuzzing-script
 created_at: 2024-04-18T19:40:47Z
 updated_at: 2024-04-19T12:04:24Z
 url: https://github.com/astral-sh/ruff/pull/11015
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add a script to fuzz the parser (courtesy of `pysource-codegen`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-18 19:40_
+_@AlexWaygood_
 
 ## Summary
 

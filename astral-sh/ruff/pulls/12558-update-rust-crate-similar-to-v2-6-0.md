@@ -12,14 +12,14 @@ head: renovate/similar-2.x-lockfile
 created_at: 2024-07-29T02:18:03Z
 updated_at: 2024-07-29T06:12:25Z
 url: https://github.com/astral-sh/ruff/pull/12558
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update Rust crate similar to v2.6.0
 
 ---
 
-_Pull request opened by @renovate on 2024-07-29 02:18_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

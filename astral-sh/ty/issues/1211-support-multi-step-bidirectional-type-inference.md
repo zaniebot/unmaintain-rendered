@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-20T06:40:31Z
 updated_at: 2025-11-04T20:45:27Z
 url: https://github.com/astral-sh/ty/issues/1211
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support multi-step bidirectional type inference
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 06:40_
+_@KotlinIsland_
 
 ### Summary
 

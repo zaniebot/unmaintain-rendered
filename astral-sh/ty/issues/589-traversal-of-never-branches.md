@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-05T23:34:07Z
 updated_at: 2025-06-06T00:07:59Z
 url: https://github.com/astral-sh/ty/issues/589
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # traversal of 'Never' branches
 
 ---
 
-_Issue opened by @lczyk on 2025-06-05 23:34_
+_@lczyk_
 
 ### Summary
 

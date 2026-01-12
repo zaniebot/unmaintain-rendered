@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-25T06:13:37Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/602
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # subcommand arg groups
 
 ---
 
-_Issue opened by @laishulu on 2016-07-25 06:13_
+_@laishulu_
 
 Are subcommand arg groups supported?
 If supported, how to config in yaml file?

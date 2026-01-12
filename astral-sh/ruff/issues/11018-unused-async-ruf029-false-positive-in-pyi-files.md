@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T00:18:56Z
 updated_at: 2024-04-19T04:03:53Z
 url: https://github.com/astral-sh/ruff/issues/11018
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `unused-async` (`RUF029`) - false positive in `.pyi` files
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-19 00:18_
+_@DetachHead_
 
 ```py
 async def foo() -> int: ... # error: Function `foo` is declared `async`, but doesn't `await` or use `async` features.

@@ -12,14 +12,14 @@ head: charlie/from-none
 created_at: 2023-02-12T16:42:46Z
 updated_at: 2023-02-12T16:48:14Z
 url: https://github.com/astral-sh/ruff/pull/2816
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Allow non-verbose raise when cause is present
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 16:42_
+_@charliermarsh_
 
 The motivating issue here is of the following form:
 

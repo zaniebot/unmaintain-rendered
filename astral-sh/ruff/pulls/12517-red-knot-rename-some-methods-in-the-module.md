@@ -13,14 +13,14 @@ head: rename-path-methods
 created_at: 2024-07-25T19:22:44Z
 updated_at: 2024-07-25T19:38:00Z
 url: https://github.com/astral-sh/ruff/pull/12517
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Rename some methods in the module resolver
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-25 19:22_
+_@AlexWaygood_
 
 I changed the return types of these methods just before merging #12494 (addressing Micha's review), but forgot to change the names of the methods, so they're now badly named
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T22:39:06Z
 updated_at: 2025-12-17T18:33:44Z
 url: https://github.com/astral-sh/uv/issues/16242
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Is it possible to always prefer a local index?
 
 ---
 
-_Issue opened by @rabyj on 2025-10-10 22:39_
+_@rabyj_
 
 ### Question
 

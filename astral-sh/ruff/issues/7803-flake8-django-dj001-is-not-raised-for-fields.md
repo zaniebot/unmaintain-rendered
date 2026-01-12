@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T06:15:06Z
 updated_at: 2024-10-24T14:34:09Z
 url: https://github.com/astral-sh/ruff/issues/7803
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [flake8-django] DJ001 is not raised for fields inherited from text fields
 
 ---
 
-_Issue opened by @sshishov on 2023-10-04 06:15_
+_@sshishov_
 
 In our project we are using custom fields with some mixings to extend the functionality of original fields
 ```python

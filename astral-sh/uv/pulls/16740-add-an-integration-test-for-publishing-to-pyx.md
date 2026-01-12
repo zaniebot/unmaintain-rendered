@@ -13,14 +13,14 @@ head: ww/test-publish-pyx
 created_at: 2025-11-14T17:10:10Z
 updated_at: 2025-11-18T17:13:58Z
 url: https://github.com/astral-sh/uv/pull/16740
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Add an integration test for publishing to pyx
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-14 17:10_
+_@woodruffw_
 
 ## Summary
 

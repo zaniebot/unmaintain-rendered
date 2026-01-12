@@ -13,14 +13,14 @@ head: stabilize-readlines-safe
 created_at: 2025-06-06T13:48:17Z
 updated_at: 2025-06-06T13:58:35Z
 url: https://github.com/astral-sh/ruff/pull/18495
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`refurb`] Stabilize fix safety for `readlines-in-for` (`FURB129`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 13:48_
+_@dylwil3_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-05T21:14:49Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/766
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Accessing subsubcommand matches
 
 ---
 
-_Issue opened by @kirillbobyrev on 2016-12-05 21:14_
+_@kirillbobyrev_
 
 From what I have seen it is not clear how a sub-subcommand matches should be accessed.
 

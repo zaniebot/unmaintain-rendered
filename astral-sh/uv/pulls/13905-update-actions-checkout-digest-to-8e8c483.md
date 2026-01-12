@@ -13,14 +13,14 @@ head: renovate/actions-checkout-digest
 created_at: 2025-06-09T00:24:46Z
 updated_at: 2025-12-29T22:14:11Z
 url: https://github.com/astral-sh/uv/pull/13905
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Update actions/checkout digest to 8e8c483
 
 ---
 
-_Pull request opened by @renovate on 2025-06-09 00:24_
+_@renovate_
 
 This PR contains the following updates:
 

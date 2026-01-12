@@ -12,14 +12,14 @@ head: verbose_log_message
 created_at: 2023-02-19T17:50:58Z
 updated_at: 2023-02-20T18:21:05Z
 url: https://github.com/astral-sh/ruff/pull/3036
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`tryceratops`]: Verbose Log Messages
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-19 17:50_
+_@colin99d_
 
 Ref: #2056 
 

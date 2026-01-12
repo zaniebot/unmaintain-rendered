@@ -12,14 +12,14 @@ head: cargo-upgrade
 created_at: 2023-11-06T13:20:51Z
 updated_at: 2023-11-06T14:14:48Z
 url: https://github.com/astral-sh/uv/pull/330
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # `cargo upgrade --incompatible`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 13:20_
+_@konstin_
 
 Ran `cargo upgrade --incompatible`, seems there are no changes required.
 

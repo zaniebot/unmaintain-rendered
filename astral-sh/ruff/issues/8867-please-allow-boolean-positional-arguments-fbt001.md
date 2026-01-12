@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-28T13:53:50Z
 updated_at: 2023-11-29T10:38:22Z
 url: https://github.com/astral-sh/ruff/issues/8867
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # please allow boolean positional arguments (`FBT001`, `FBT002`) in case of `@override`
 
 ---
 
-_Issue opened by @ZeeD on 2023-11-28 13:53_
+_@ZeeD_
 
 While generally useful, the rules `FBT001` and `FBT002` may trigger errors if applied to an ovverriden method.
 

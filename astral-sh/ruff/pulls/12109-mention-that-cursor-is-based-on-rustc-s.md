@@ -13,14 +13,14 @@ head: credit-cursor
 created_at: 2024-06-30T08:14:38Z
 updated_at: 2024-06-30T15:53:27Z
 url: https://github.com/astral-sh/ruff/pull/12109
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Mention that `Cursor` is based on rustc's implementation.
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-30 08:14_
+_@MichaReiser_
 
 ## Summary
 

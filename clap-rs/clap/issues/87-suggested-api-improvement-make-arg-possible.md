@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-29T15:11:54Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/87
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # suggested API improvement: make `Arg::possible_values()` more flexible
 
 ---
 
-_Issue opened by @Byron on 2015-04-29 15:11_
+_@Byron_
 
 Currently it enforces the usage of `Vec<&str>`, which makes it harder to use for people who prefer different means of passing this information. They could have a statically allocated array for instance, which contains enumerations, which in turn implement `AsRef<str>` to allow a light conversion.
 

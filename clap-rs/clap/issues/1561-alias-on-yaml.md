@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-03T04:21:12Z
 updated_at: 2019-10-03T04:32:30Z
 url: https://github.com/clap-rs/clap/issues/1561
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Alias on yaml
 
 ---
 
-_Issue opened by @GrayJack on 2019-10-03 04:21_
+_@GrayJack_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

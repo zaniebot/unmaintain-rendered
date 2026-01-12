@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-24T21:39:43Z
 updated_at: 2025-10-24T14:07:21Z
 url: https://github.com/astral-sh/ruff/issues/20562
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # F821 false positive for `__class__` in lambda expression in class definition
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-24 21:39_
+_@dscorbett_
 
 ### Summary
 

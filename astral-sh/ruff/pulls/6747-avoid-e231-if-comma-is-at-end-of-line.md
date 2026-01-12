@@ -13,14 +13,14 @@ head: charlie/E23
 created_at: 2023-08-22T00:28:44Z
 updated_at: 2023-08-22T00:57:36Z
 url: https://github.com/astral-sh/ruff/pull/6747
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid E231 if comma is at end-of-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 00:28_
+_@charliermarsh_
 
 ## Summary
 

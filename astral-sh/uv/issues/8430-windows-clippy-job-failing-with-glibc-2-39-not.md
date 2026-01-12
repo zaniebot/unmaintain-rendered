@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T22:28:48Z
 updated_at: 2025-02-13T20:36:29Z
 url: https://github.com/astral-sh/uv/issues/8430
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Windows Clippy job failing with `GLIBC_2.39` not found
 
 ---
 
-_Issue opened by @zanieb on 2024-10-21 22:28_
+_@zanieb_
 
 ```
 Run cargo xwin clippy --target x86_64-pc-windows-msvc --workspace --all-targets --all-features --locked --profile fast-build -- -D warnings

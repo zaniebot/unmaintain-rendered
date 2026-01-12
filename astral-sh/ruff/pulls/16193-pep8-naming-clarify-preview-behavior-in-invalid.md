@@ -13,14 +13,14 @@ head: newmethod-followup
 created_at: 2025-02-16T20:56:03Z
 updated_at: 2025-02-16T21:02:54Z
 url: https://github.com/astral-sh/ruff/pull/16193
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`pep8-naming`] Clarify preview behavior in `invalid-first-argument-name-for-class-method` (`N804`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-16 20:56_
+_@dylwil3_
 
 Adds clarification in the documentation for [invalid-first-argument-name-for-class-method (N804)](https://docs.astral.sh/ruff/rules/invalid-first-argument-name-for-class-method/#invalid-first-argument-name-for-class-method-n804)
 

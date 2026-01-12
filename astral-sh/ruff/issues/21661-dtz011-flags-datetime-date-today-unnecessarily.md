@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T12:39:49Z
 updated_at: 2025-12-10T17:23:08Z
 url: https://github.com/astral-sh/ruff/issues/21661
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DTZ011 flags `datetime.date.today()` unnecessarily for pure date usage
 
 ---
 
-_Issue opened by @Jason-Francis-github on 2025-11-27 12:39_
+_@Jason-Francis-github_
 
 ### Summary
 

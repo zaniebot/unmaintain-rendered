@@ -12,14 +12,14 @@ head: charlie/pydocstyle
 created_at: 2022-10-17T21:36:36Z
 updated_at: 2022-10-17T21:37:21Z
 url: https://github.com/astral-sh/ruff/pull/450
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement autofix support for D214, D405, D406, and D416
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-17 21:36_
+_@charliermarsh_
 
 _No description provided._
 

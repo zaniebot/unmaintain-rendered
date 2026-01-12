@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-05T01:37:31Z
 updated_at: 2024-02-10T16:16:32Z
 url: https://github.com/astral-sh/ruff/issues/9820
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Feature Request] Static type checker and language server à la Pyright
 
 ---
 
-_Issue opened by @matthewlloyd on 2024-02-05 01:37_
+_@matthewlloyd_
 
 Ruff subsumed Python linters improving upon their performance by more than an order of magnitude. Amazing.
 

@@ -13,14 +13,14 @@ head: brent/semantic-errors-red-knot
 created_at: 2025-04-18T15:37:03Z
 updated_at: 2025-05-07T15:19:36Z
 url: https://github.com/astral-sh/ruff/pull/17463
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Detect semantic syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-18 15:37_
+_@ntBre_
 
 Summary
 --

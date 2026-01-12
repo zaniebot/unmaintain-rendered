@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:06:58Z
 updated_at: 2024-06-26T01:09:21Z
 url: https://github.com/astral-sh/uv/issues/651
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Enable persistent configuration of authenticated index URL
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-14 18:06_
+_@charliermarsh_
 
 For users of [AWS CodeArtifact](https://aws.amazon.com/codeartifact/) and other similar services, we need a way for users to provide and persist authentication credentials that lives outside of the project.
 

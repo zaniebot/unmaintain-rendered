@@ -12,14 +12,14 @@ head: charlie/match
 created_at: 2023-02-20T03:40:45Z
 updated_at: 2023-02-21T18:52:12Z
 url: https://github.com/astral-sh/ruff/pull/3047
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add support for structural pattern matching
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 03:40_
+_@charliermarsh_
 
 Closes #282.
 

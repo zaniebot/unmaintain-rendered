@@ -13,14 +13,14 @@ head: david/new-staticmethod
 created_at: 2025-09-03T14:02:47Z
 updated_at: 2025-09-03T17:55:21Z
 url: https://github.com/astral-sh/ruff/pull/20212
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Treat `__new__` as a static method
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-03 14:02_
+_@sharkdp_
 
 ## Summary
 

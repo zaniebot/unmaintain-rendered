@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-09-10T10:48:51Z
 updated_at: 2025-11-18T16:10:36Z
 url: https://github.com/astral-sh/ty/issues/1162
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider improving compatibility with other type checkers around treatment of `Hashable`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-10 10:48_
+_@AlexWaygood_
 
 In https://github.com/astral-sh/ruff/pull/20284, we reworked our logic so that `Hashable` is treated equivalently to `object` in subtyping and assignability checks. This is defensible from a theoretical perspective, since all instances of "exactly `object`" are hashable at runtime, which therefore makes `object` a subtype of `Hashable` by all normal rules of protocol assignability and subtyping. However, rules around hashability in Python do not obey the normal rules: hashable classes often inherit from unhashable ones, and unhashable classes often inherit from hashable ones, flying in the face of the Liskov Substitution Principle. Our current approach to `Hashable` and similar protocols makes these protocols effectively useless; we will not complain about code like this, even though users would expect us to do so (and even though other type checkers issue complaints):
 

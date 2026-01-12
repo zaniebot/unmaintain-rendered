@@ -13,14 +13,14 @@ head: doc_pip_compatibility_pip_install_folder
 created_at: 2024-11-11T16:07:37Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9019
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Add the differences between ``pip install`` and ``uv pip install`` installation directories in the pip compatibility document.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-11-11 16:07_
+_@FishAlchemist_
 
 ## Summary
 https://github.com/astral-sh/uv/issues/8965#issuecomment-2466743508 mentions an expected difference about ``uv pip install folder``. 

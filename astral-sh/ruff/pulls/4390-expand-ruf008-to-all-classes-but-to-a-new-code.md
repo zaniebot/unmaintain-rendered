@@ -12,14 +12,14 @@ head: only-mutable-fields
 created_at: 2023-05-12T16:12:19Z
 updated_at: 2023-06-12T16:55:21Z
 url: https://github.com/astral-sh/ruff/pull/4390
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Expand RUF008 to all classes, but to a new code (RUF012)
 
 ---
 
-_Pull request opened by @adampauls on 2023-05-12 16:12_
+_@adampauls_
 
 AFAIK, there is no reason to limit RUF008 to just dataclasses -- mutable defaults have the same problems for regular classes. 
 

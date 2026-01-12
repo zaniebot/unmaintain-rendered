@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-20T09:45:56Z
 updated_at: 2024-04-01T14:52:06Z
 url: https://github.com/astral-sh/ruff/issues/10487
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Validation for ruff config file
 
 ---
 
-_Issue opened by @VascoSch92 on 2024-03-20 09:45_
+_@VascoSch92_
 
 **Ruff-version : 0.3.3**
 

@@ -13,14 +13,14 @@ head: pep695-typealias
 created_at: 2023-12-02T14:58:51Z
 updated_at: 2023-12-02T22:15:44Z
 url: https://github.com/astral-sh/ruff/pull/8966
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`flake8-pyi`] Check PEP 695 type aliases for `snake-case-type-alias` and `t-suffixed-type-alias`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-12-02 14:58_
+_@tjkuson_
 
 ## Summary
 

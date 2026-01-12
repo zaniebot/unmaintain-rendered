@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-25T03:25:23Z
 updated_at: 2025-01-14T07:40:01Z
 url: https://github.com/astral-sh/ruff/issues/10115
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `banned-api` (`TID251`) - support specifying quick fixes
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-25 03:25_
+_@DetachHead_
 
 in some cases, `banned-api` rules suggest replacing an import with another import that has an equivalent type, in which case it's safe to have a quick fix that just replaces it:
 ```py

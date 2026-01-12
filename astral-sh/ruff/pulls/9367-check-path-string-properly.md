@@ -13,14 +13,14 @@ head: path-type-error
 created_at: 2024-01-02T20:57:33Z
 updated_at: 2024-01-02T21:13:57Z
 url: https://github.com/astral-sh/ruff/pull/9367
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Check path string properly
 
 ---
 
-_Pull request opened by @nickdrozd on 2024-01-02 20:57_
+_@nickdrozd_
 
 A minor whoopsie, 158367bf9 forgot to update this line.
 

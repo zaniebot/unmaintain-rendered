@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T00:28:36Z
 updated_at: 2024-08-19T17:21:02Z
 url: https://github.com/astral-sh/ruff/issues/12945
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PyUpgrade rule UP007 does not work on forward reference string types
 
 ---
 
-_Issue opened by @goodspark on 2024-08-17 00:28_
+_@goodspark_
 
 Keywords: forward reference, pyupgrade, UP007
 

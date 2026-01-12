@@ -12,14 +12,14 @@ head: renovate/compatible-(dev)
 created_at: 2025-04-01T03:31:32Z
 updated_at: 2025-04-07T23:15:14Z
 url: https://github.com/clap-rs/clap/pull/5964
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Update compatible (dev)
 
 ---
 
-_Pull request opened by @renovate on 2025-04-01 03:31_
+_@renovate_
 
 This PR contains the following updates:
 

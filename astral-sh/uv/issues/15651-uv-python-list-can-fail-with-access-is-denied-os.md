@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T06:04:46Z
 updated_at: 2025-09-05T14:03:42Z
 url: https://github.com/astral-sh/uv/issues/15651
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # `uv python list` can fail with Access is denied. (os error 5)
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-03 06:04_
+_@MeGaGiGaGon_
 
 ### Summary
 

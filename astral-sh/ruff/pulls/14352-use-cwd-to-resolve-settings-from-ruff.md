@@ -14,14 +14,14 @@ head: dhruv/server-user-config
 created_at: 2024-11-15T05:12:48Z
 updated_at: 2024-11-15T08:15:02Z
 url: https://github.com/astral-sh/ruff/pull/14352
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use CWD to resolve settings from `ruff.configuration`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-15 05:12_
+_@dhruvmanila_
 
 ## Summary
 

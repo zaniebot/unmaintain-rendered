@@ -14,14 +14,14 @@ head: update-salsa
 created_at: 2025-10-29T01:40:50Z
 updated_at: 2025-10-30T15:31:02Z
 url: https://github.com/astral-sh/ruff/pull/21117
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] follow the breaking API changes made in salsa-rs/salsa#1015
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-29 01:40_
+_@mtshiba_
 
 ## Summary
 

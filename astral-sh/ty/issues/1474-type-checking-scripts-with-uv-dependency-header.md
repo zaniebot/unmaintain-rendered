@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T00:07:07Z
 updated_at: 2025-11-04T04:30:46Z
 url: https://github.com/astral-sh/ty/issues/1474
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type checking scripts with uv dependency header
 
 ---
 
-_Issue opened by @PurpleMyst on 2025-11-04 00:07_
+_@PurpleMyst_
 
 ### Question
 

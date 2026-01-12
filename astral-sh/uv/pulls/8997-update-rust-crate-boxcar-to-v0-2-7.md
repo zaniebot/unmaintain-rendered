@@ -13,14 +13,14 @@ head: renovate/boxcar-0.x-lockfile
 created_at: 2024-11-11T02:03:28Z
 updated_at: 2024-11-11T02:14:28Z
 url: https://github.com/astral-sh/uv/pull/8997
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Update Rust crate boxcar to v0.2.7
 
 ---
 
-_Pull request opened by @renovate on 2024-11-11 02:03_
+_@renovate_
 
 This PR contains the following updates:
 

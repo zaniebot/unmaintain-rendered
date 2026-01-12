@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T12:46:27Z
 updated_at: 2025-08-19T01:42:55Z
 url: https://github.com/astral-sh/ty/issues/1001
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Show docstring when hovering class definition
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-15 12:46_
+_@MichaReiser_
 
 The class's docstring is shown when hovering a reference but not when hovering the definition itself.
 

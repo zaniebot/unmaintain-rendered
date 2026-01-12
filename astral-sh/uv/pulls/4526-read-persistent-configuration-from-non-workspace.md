@@ -13,14 +13,14 @@ head: charlie/poetry
 created_at: 2024-06-25T18:13:23Z
 updated_at: 2024-06-25T18:53:15Z
 url: https://github.com/astral-sh/uv/pull/4526
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Read persistent configuration from non-workspace `pyproject.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 18:13_
+_@charliermarsh_
 
 ## Summary
 

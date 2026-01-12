@@ -13,14 +13,14 @@ head: konsti/add-trusted-publishing-example
 created_at: 2025-09-09T14:43:17Z
 updated_at: 2025-09-17T17:25:19Z
 url: https://github.com/astral-sh/uv/pull/15753
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Add GitHub Actions to PyPI trusted publishing example
 
 ---
 
-_Pull request opened by @konstin on 2025-09-09 14:43_
+_@konstin_
 
 Add a complete example for the most common publishing workflow, GitHub Actions to PyPI, with screenshots for settings and a standalone companion repo.
 

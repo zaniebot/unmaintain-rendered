@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-03T16:58:32Z
 updated_at: 2025-09-03T17:06:21Z
 url: https://github.com/astral-sh/ty/issues/1123
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] too many cycle iterations
 
 ---
 
-_Issue opened by @furiousteabag on 2025-09-03 16:58_
+_@furiousteabag_
 
 First of all, thanks for creating such a great tool!
 

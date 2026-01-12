@@ -13,14 +13,14 @@ head: alex/add-actionlint
 created_at: 2024-12-16T14:25:51Z
 updated_at: 2024-12-16T17:33:05Z
 url: https://github.com/astral-sh/ruff/pull/15021
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Add `actionlint` as a pre-commit hook (with shellcheck integration)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-16 14:25_
+_@AlexWaygood_
 
 ## Summary
 

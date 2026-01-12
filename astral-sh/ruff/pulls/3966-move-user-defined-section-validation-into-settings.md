@@ -12,14 +12,14 @@ head: charlie/isort-custom-sections
 created_at: 2023-04-13T22:04:48Z
 updated_at: 2023-04-13T22:54:32Z
 url: https://github.com/astral-sh/ruff/pull/3966
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Move user-defined section validation into `Settings`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 22:04_
+_@charliermarsh_
 
 ## Summary
 

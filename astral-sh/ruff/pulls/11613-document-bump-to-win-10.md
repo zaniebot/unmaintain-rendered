@@ -13,14 +13,14 @@ head: windows-10-changelog-entry
 created_at: 2024-05-30T07:31:56Z
 updated_at: 2024-05-30T07:49:39Z
 url: https://github.com/astral-sh/ruff/pull/11613
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Document bump to win 10
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-30 07:31_
+_@MichaReiser_
 
 ## Summary
 

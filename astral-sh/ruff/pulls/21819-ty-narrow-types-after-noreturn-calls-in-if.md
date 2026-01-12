@@ -13,14 +13,14 @@ head: fix-noreturn-narrowing
 created_at: 2025-12-06T01:25:44Z
 updated_at: 2025-12-23T14:14:15Z
 url: https://github.com/astral-sh/ruff/pull/21819
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Narrow types after NoReturn calls in if branches
 
 ---
 
-_Pull request opened by @alex on 2025-12-06 01:25_
+_@alex_
 
 When a branch calls a NoReturn function, use the negation of the condition to narrow types after the if statement. For example, after `if val is None: sys.exit()`, `val` is now correctly narrowed to `int` instead of `int | None`.
 

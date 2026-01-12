@@ -13,14 +13,14 @@ head: charlie/type
 created_at: 2023-09-03T16:13:34Z
 updated_at: 2023-09-03T16:31:55Z
 url: https://github.com/astral-sh/ruff/pull/7089
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Change `Option<Result>` to `Result<Option>` in importer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 16:13_
+_@charliermarsh_
 
 `Option<Result>` isn't really a sensible type.
 

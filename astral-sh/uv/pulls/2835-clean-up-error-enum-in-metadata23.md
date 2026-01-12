@@ -13,14 +13,14 @@ head: charlie/metadata
 created_at: 2024-04-05T14:29:29Z
 updated_at: 2024-04-05T14:40:35Z
 url: https://github.com/astral-sh/uv/pull/2835
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Clean up `Error` enum in `Metadata23`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 14:29_
+_@charliermarsh_
 
 ## Summary
 

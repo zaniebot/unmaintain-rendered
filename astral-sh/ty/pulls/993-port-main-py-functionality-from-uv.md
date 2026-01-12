@@ -12,14 +12,14 @@ head: zb/port-uv-py
 created_at: 2025-08-14T18:47:55Z
 updated_at: 2025-08-14T18:49:51Z
 url: https://github.com/astral-sh/ty/pull/993
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Port `__main__.py` functionality from uv
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-14 18:47_
+_@zanieb_
 
 As part of https://github.com/astral-sh/ty/issues/989, but includes some other changes:
 

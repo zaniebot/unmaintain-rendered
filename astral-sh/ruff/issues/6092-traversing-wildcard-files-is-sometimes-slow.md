@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T11:44:54Z
 updated_at: 2023-07-28T04:28:30Z
 url: https://github.com/astral-sh/ruff/issues/6092
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Traversing wildcard files is sometimes slow
 
 ---
 
-_Issue opened by @aqeelat on 2023-07-26 11:44_
+_@aqeelat_
 
 I don't know how to explain it, but I noticed that `ruff check */tests/* --select="ARG002"` is very fast but `ruff check */test*/* --select="ARG002"` is very slow.
 

@@ -13,14 +13,14 @@ head: formatter-remove-allow-pedantic
 created_at: 2023-08-14T06:46:10Z
 updated_at: 2023-08-14T13:20:29Z
 url: https://github.com/astral-sh/ruff/pull/6549
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `allow(pedantic)` from formatter
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-14 06:46_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

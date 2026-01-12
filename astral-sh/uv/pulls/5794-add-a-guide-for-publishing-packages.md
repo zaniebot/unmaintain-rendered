@@ -14,14 +14,14 @@ head: zb/docs-publish
 created_at: 2024-08-05T16:54:05Z
 updated_at: 2024-08-07T12:48:23Z
 url: https://github.com/astral-sh/uv/pull/5794
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Add a guide for publishing packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-05 16:54_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5793
 

@@ -12,14 +12,14 @@ head: unnecessary-chained-comprehension
 created_at: 2024-06-09T00:56:17Z
 updated_at: 2024-09-07T23:10:42Z
 url: https://github.com/astral-sh/ruff/pull/11807
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [`pylint`] Implement `chained-comparison` (`R1716`)
 
 ---
 
-_Pull request opened by @max-muoto on 2024-06-09 00:56_
+_@max-muoto_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

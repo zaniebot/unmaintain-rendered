@@ -11,14 +11,14 @@ head: in-memory-metadata
 created_at: 2024-06-07T07:51:54Z
 updated_at: 2024-06-11T12:15:21Z
 url: https://github.com/astral-sh/uv/pull/4126
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # [Discussion] Allow pre-loading metadata for installed dists
 
 ---
 
-_Pull request opened by @aochagavia on 2024-06-07 07:51_
+_@aochagavia_
 
 Note: this is more an issue than a PR, but since I've already made the changes in my fork, I thought I'd open a PR so you can see the code next to my explanation.
 

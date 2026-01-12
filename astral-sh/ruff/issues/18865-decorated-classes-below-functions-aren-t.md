@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-06-22T20:47:40Z
 updated_at: 2025-06-24T14:25:46Z
 url: https://github.com/astral-sh/ruff/issues/18865
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Decorated classes below functions aren't separated with blank lines in `.pyi` files
 
 ---
 
-_Issue opened by @bzoracler on 2025-06-22 20:47_
+_@bzoracler_
 
 ### Summary
 

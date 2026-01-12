@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-11T08:30:55Z
 updated_at: 2024-09-12T01:30:44Z
 url: https://github.com/astral-sh/ruff/issues/13324
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # flake8 flag F811 when ruff not flag it
 
 ---
 
-_Issue opened by @lrandrianasoloarinavalona on 2024-09-11 08:30_
+_@lrandrianasoloarinavalona_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

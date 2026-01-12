@@ -13,14 +13,14 @@ head: b006_fix_application_order
 created_at: 2024-02-02T07:38:22Z
 updated_at: 2024-02-02T14:32:53Z
 url: https://github.com/astral-sh/ruff/pull/9776
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [flake8-bugbear][B006] remove outdated comment
 
 ---
 
-_Pull request opened by @mikaelarguedas on 2024-02-02 07:38_
+_@mikaelarguedas_
 
 I noticed that the comment doesn't match the behavior:
 - zip function is not used anymore

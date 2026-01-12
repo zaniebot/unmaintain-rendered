@@ -13,14 +13,14 @@ head: ast-ids-scope-argument
 created_at: 2024-07-01T13:39:22Z
 updated_at: 2024-07-01T13:52:31Z
 url: https://github.com/astral-sh/ruff/pull/12139
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Refactor `ast_ids` traits to take `ScopeId` instead of `VfsFile` plus `FileScopeId`.
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-01 13:39_
+_@MichaReiser_
 
 ## Summary
 

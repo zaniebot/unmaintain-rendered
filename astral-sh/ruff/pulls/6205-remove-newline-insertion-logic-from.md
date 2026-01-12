@@ -12,14 +12,14 @@ head: charlie/move-joiner
 created_at: 2023-07-31T17:52:30Z
 updated_at: 2023-07-31T21:04:35Z
 url: https://github.com/astral-sh/ruff/pull/6205
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove newline-insertion logic from `JoinNodesBuilder`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-31 17:52_
+_@charliermarsh_
 
 ## Summary
 

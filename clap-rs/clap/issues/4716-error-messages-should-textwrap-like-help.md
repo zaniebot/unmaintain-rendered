@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-18T22:11:18Z
 updated_at: 2023-02-26T02:04:45Z
 url: https://github.com/clap-rs/clap/issues/4716
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # error messages should textwrap like `--help`
 
 ---
 
-_Issue opened by @cbs228 on 2023-02-18 22:11_
+_@cbs228_
 
 ### Please complete the following tasks
 

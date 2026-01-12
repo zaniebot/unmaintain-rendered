@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-01T20:32:50Z
 updated_at: 2025-08-25T14:54:58Z
 url: https://github.com/astral-sh/uv/issues/11156
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Unable to install nvidia-cudnn-cu12==9.7.0.66
 
 ---
 
-_Issue opened by @OliverKillane on 2025-02-01 20:32_
+_@OliverKillane_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-21T21:15:43Z
 updated_at: 2025-10-02T15:24:13Z
 url: https://github.com/astral-sh/uv/issues/8427
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # uv venv: Activate.ps1 script sets an invalid base directory when using UNC paths.
 
 ---
 
-_Issue opened by @NucaChance on 2024-10-21 21:15_
+_@NucaChance_
 
 **PLATFORM:** 
 

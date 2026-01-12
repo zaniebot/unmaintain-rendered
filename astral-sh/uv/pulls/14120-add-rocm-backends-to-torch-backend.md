@@ -12,14 +12,14 @@ head: charlie/rocm
 created_at: 2025-06-17T19:47:38Z
 updated_at: 2025-06-18T11:35:07Z
 url: https://github.com/astral-sh/uv/pull/14120
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Add ROCm backends to `--torch-backend`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-17 19:47_
+_@charliermarsh_
 
 We don't yet support automatic detection, but this at least allows explicit selection (e.g., `uv pip install --torch-backend rocm5.3`).
 

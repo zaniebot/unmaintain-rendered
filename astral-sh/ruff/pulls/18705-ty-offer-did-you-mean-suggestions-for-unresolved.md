@@ -14,14 +14,14 @@ head: alex-brent/did-you-mean
 created_at: 2025-06-16T12:16:25Z
 updated_at: 2025-06-17T10:10:36Z
 url: https://github.com/astral-sh/ruff/pull/18705
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Offer "Did you mean...?" suggestions for unresolved `from` imports and unresolved attributes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-16 12:16_
+_@AlexWaygood_
 
 ## Summary
 

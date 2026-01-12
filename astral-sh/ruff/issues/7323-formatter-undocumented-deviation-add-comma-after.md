@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T21:20:58Z
 updated_at: 2023-09-29T17:27:35Z
 url: https://github.com/astral-sh/ruff/issues/7323
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: add comma after single argument definition
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-12 21:20_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: jack/semantic-index-nested-bindings
 created_at: 2025-08-08T03:40:01Z
 updated_at: 2025-10-29T15:05:28Z
 url: https://github.com/astral-sh/ruff/pull/19820
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] add nested bindings to the semantic index
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-08 03:40_
+_@oconnor663_
 
 This PR replaces #19703. It has two main components:
 

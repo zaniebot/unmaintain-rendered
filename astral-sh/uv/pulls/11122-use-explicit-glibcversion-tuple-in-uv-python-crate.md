@@ -12,14 +12,14 @@ head: explicit-glibcversion-tuples
 created_at: 2025-01-30T23:30:21Z
 updated_at: 2025-01-31T11:31:42Z
 url: https://github.com/astral-sh/uv/pull/11122
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Use explicit _GLibCVersion tuple in uv-python crate
 
 ---
 
-_Pull request opened by @cthoyt on 2025-01-30 23:30_
+_@cthoyt_
 
 ## Summary
 

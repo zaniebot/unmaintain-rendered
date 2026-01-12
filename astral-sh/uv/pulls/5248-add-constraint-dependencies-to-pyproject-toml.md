@@ -14,14 +14,14 @@ head: support-constraint-in-pyproject
 created_at: 2024-07-20T14:46:01Z
 updated_at: 2024-08-24T09:07:19Z
 url: https://github.com/astral-sh/uv/pull/5248
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Add constraint dependencies to pyproject.toml
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-20 14:46_
+_@Di-Is_
 
 Resolves #4467.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T15:41:36Z
 updated_at: 2024-02-21T15:52:34Z
 url: https://github.com/astral-sh/uv/issues/1763
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # uv venv creates path starting with \\?\ in activate.bat which doesn't work
 
 ---
 
-_Issue opened by @orlp on 2024-02-20 15:41_
+_@orlp_
 
 To reproduce on Windows 10 with uv 0.1.5:
 

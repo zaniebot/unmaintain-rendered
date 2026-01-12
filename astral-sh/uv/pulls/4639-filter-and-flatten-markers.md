@@ -12,14 +12,14 @@ head: more-marker-simplification
 created_at: 2024-06-28T22:10:22Z
 updated_at: 2024-07-08T18:59:22Z
 url: https://github.com/astral-sh/uv/pull/4639
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Filter and flatten markers
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-28 22:10_
+_@ibraheemdev_
 
 ## Summary
 

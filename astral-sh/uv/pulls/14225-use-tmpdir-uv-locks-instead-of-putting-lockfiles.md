@@ -11,14 +11,14 @@ head: jack/uv_lock_dir
 created_at: 2025-06-23T22:06:51Z
 updated_at: 2025-06-25T18:05:52Z
 url: https://github.com/astral-sh/uv/pull/14225
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # use $TMPDIR/uv-locks instead of putting lockfiles directly in $TMPDIR
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-23 22:06_
+_@oconnor663_
 
 As @zanieb has pointed out in chat, moving file locks around makes us vulnerable to races between different versions of `uv` that don't agree on the file lock path. I'm comfortable ignoring that as rare enough not to matter, but I'm curious what other folks think.
 

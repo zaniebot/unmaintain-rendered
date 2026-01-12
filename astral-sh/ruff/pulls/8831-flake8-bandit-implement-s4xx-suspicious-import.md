@@ -14,14 +14,14 @@ head: feat/banditimports
 created_at: 2023-11-24T11:22:36Z
 updated_at: 2024-01-03T19:33:24Z
 url: https://github.com/astral-sh/ruff/pull/8831
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`flake8-bandit`] Implement `S4XX` suspicious import rules
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-11-24 11:22_
+_@qdegraaf_
 
 ## Summary
 

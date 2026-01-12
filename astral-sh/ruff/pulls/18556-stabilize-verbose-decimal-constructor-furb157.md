@@ -13,14 +13,14 @@ head: dylan/stabilize-furb157
 created_at: 2025-06-08T19:02:57Z
 updated_at: 2025-06-09T17:44:16Z
 url: https://github.com/astral-sh/ruff/pull/18556
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `verbose-decimal-constructor` (`FURB157`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:02_
+_@dylwil3_
 
 _No description provided._
 

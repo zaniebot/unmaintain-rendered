@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T14:04:58Z
 updated_at: 2024-08-09T11:17:54Z
 url: https://github.com/astral-sh/ruff/issues/11776
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `# isort: split` ignored if in trailing comment
 
 ---
 
-_Issue opened by @ndevenish on 2024-06-06 14:04_
+_@ndevenish_
 
 test.py:
 ```python

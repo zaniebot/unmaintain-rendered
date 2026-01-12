@@ -15,14 +15,14 @@ head: dhruv/bitflags-for-resolved-client-capabilities
 created_at: 2025-07-17T08:33:47Z
 updated_at: 2025-07-17T10:01:49Z
 url: https://github.com/astral-sh/ruff/pull/19393
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] Use `bitflags` for resolved client capabilities
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-17 08:33_
+_@dhruvmanila_
 
 ## Summary
 

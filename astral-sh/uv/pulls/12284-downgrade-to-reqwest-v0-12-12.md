@@ -13,14 +13,14 @@ head: charlie/reqwest
 created_at: 2025-03-18T14:50:18Z
 updated_at: 2025-04-13T14:03:40Z
 url: https://github.com/astral-sh/uv/pull/12284
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Downgrade to reqwest v0.12.12
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 14:50_
+_@charliermarsh_
 
 _No description provided._
 

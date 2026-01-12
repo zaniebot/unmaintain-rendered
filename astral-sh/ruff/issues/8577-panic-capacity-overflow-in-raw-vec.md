@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T07:21:59Z
 updated_at: 2023-11-27T07:48:10Z
 url: https://github.com/astral-sh/ruff/issues/8577
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [Panic] capacity overflow in `raw_vec`
 
 ---
 
-_Issue opened by @superosku on 2023-11-09 07:21_
+_@superosku_
 
 Hi!
 

@@ -13,14 +13,14 @@ head: 4249
 created_at: 2023-05-21T18:32:06Z
 updated_at: 2023-06-09T06:59:52Z
 url: https://github.com/astral-sh/ruff/pull/4563
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Handled dict and set inside f-string (#4249)
 
 ---
 
-_Pull request opened by @DavideCanton on 2023-05-21 18:32_
+_@DavideCanton_
 
 This fixes some C40* rules by adding spaces around dict and set literals inside f-string, and quotes correctly string literals inside f-string, since dict kwargs must be converted into string literals.
 

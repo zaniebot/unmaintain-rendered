@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-19T22:09:11Z
 updated_at: 2025-07-22T12:11:07Z
 url: https://github.com/astral-sh/uv/issues/14749
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Project dependencies no longer available in JupyterLab launched with `uv run --with jupyter jupyter lab`
 
 ---
 
-_Issue opened by @bellkev on 2025-07-19 22:09_
+_@bellkev_
 
 ### Summary
 

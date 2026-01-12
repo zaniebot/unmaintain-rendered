@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T00:15:59Z
 updated_at: 2024-07-03T12:36:47Z
 url: https://github.com/astral-sh/ruff/issues/12158
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff has some cache bug that causes crashes
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-07-03 00:15_
+_@hauntsaninja_
 
 Here's a directory structure that repros:
 ```

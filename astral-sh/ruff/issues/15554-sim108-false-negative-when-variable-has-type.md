@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T16:09:16Z
 updated_at: 2025-01-17T17:46:37Z
 url: https://github.com/astral-sh/ruff/issues/15554
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `SIM108` false negative when variable has type annotation
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-17 16:09_
+_@nickdrozd_
 
 Assignment with `if/else` gets flagged with `SIM108`, suggesting ternary operator. Good. But if the variable is annotated, not flagged:
 

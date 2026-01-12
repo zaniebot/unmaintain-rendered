@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T20:06:11Z
 updated_at: 2025-01-14T20:51:02Z
 url: https://github.com/astral-sh/uv/issues/10613
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # `uv run --python 3.13  python` hangs and nothing happens on macOS
 
 ---
 
-_Issue opened by @peterbe on 2025-01-14 20:06_
+_@peterbe_
 
 ```
 ❯ uv --version

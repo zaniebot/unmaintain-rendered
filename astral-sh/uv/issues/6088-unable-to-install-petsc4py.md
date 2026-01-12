@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T16:40:14Z
 updated_at: 2025-01-09T14:59:37Z
 url: https://github.com/astral-sh/uv/issues/6088
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # unable to install petsc4py
 
 ---
 
-_Issue opened by @owlkward on 2024-08-14 16:40_
+_@owlkward_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

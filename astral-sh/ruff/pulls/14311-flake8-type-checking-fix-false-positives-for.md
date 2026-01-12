@@ -13,14 +13,14 @@ head: bugfix/annotated-annotation-context
 created_at: 2024-11-13T09:00:28Z
 updated_at: 2024-11-14T10:13:00Z
 url: https://github.com/astral-sh/ruff/pull/14311
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-type-checking`] Fix false positives for `typing.Annotated`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-13 09:00_
+_@Daverball_
 
 This partially addresses #13713
 

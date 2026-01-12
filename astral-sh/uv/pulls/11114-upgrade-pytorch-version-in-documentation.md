@@ -13,14 +13,14 @@ head: charlie/pt-2.6.0
 created_at: 2025-01-30T18:57:13Z
 updated_at: 2025-01-30T19:05:18Z
 url: https://github.com/astral-sh/uv/pull/11114
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Upgrade PyTorch version in documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 18:57_
+_@charliermarsh_
 
 ## Summary
 

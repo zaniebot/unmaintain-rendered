@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-03-21T05:05:20Z
 updated_at: 2023-03-21T14:05:36Z
 url: https://github.com/astral-sh/ruff/pull/3641
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add PostHog to users of Ruff in README
 
 ---
 
-_Pull request opened by @fuziontech on 2023-03-21 05:05_
+_@fuziontech_
 
 What's on the tin! Add PostHog to users of Ruff in README
 

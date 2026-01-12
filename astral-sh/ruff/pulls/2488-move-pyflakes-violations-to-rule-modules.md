@@ -12,14 +12,14 @@ head: move-pyflakes-violations
 created_at: 2023-02-02T18:32:48Z
 updated_at: 2023-02-02T19:01:00Z
 url: https://github.com/astral-sh/ruff/pull/2488
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move pyflakes violations to rule modules
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 18:32_
+_@akx_
 
 I also tried refactoring some more of the checks in ast.rs to functions the pyflakes package, but that didn't quite pan out due to a dizzying borrow checker error... 😁 
 

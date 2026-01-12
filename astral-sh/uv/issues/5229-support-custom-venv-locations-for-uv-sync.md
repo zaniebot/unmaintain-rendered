@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T19:33:17Z
 updated_at: 2024-09-27T22:34:04Z
 url: https://github.com/astral-sh/uv/issues/5229
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Support custom venv locations for `uv sync`
 
 ---
 
-_Issue opened by @andriygm on 2024-07-19 19:33_
+_@andriygm_
 
 `uv pip install` supports the `VIRTUAL_ENV` environment variable, allowing package installation into venvs not located in the same directory as the project. `uv sync` would also benefit from being able to install packages into external venvs (perhaps as a flag?)
 

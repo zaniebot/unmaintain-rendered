@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T09:14:47Z
 updated_at: 2024-10-25T13:22:37Z
 url: https://github.com/astral-sh/uv/issues/8559
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # maintain line ending in pyproject.toml
 
 ---
 
-_Issue opened by @ghost on 2024-10-25 09:14_
+_@ghost_
 
 uv --version
 uv 0.4.26 (1b9b9d56b 2024-10-23)

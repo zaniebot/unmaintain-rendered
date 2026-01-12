@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T08:49:58Z
 updated_at: 2025-11-28T08:25:51Z
 url: https://github.com/astral-sh/uv/issues/8717
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # `find-links` should be automatically added to `pyproject.toml` after `uv add -f`
 
 ---
 
-_Issue opened by @sheey11 on 2024-10-31 08:49_
+_@sheey11_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

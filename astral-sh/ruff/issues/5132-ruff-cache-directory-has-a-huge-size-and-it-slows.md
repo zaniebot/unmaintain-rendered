@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-15T21:19:19Z
 updated_at: 2023-06-27T13:17:09Z
 url: https://github.com/astral-sh/ruff/issues/5132
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # 🐢 `.ruff_cache` directory has a huge size and it slows down PyCharm load
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-06-15 21:19_
+_@saippuakauppias_
 
 After checking with all linters of a large project - the directory `.ruff_cache` has a large size and a huge number of files inside. The first load of PyCharm slows down at the stage of indexing all the files.
 

@@ -13,14 +13,14 @@ head: ag/bump-cache
 created_at: 2024-03-28T17:18:50Z
 updated_at: 2024-03-28T17:29:30Z
 url: https://github.com/astral-sh/uv/pull/2712
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # uv-cache: bump simple cache version
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-28 17:18_
+_@BurntSushi_
 
 It seems likely that we forgot to bump the version of the "simple" cache
 in the 0.1.25 release. I'm still working on confirming it, but I figured

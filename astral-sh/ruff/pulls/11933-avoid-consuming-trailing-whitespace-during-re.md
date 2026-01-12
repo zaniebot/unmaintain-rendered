@@ -14,14 +14,14 @@ head: dhruv/re-lex-comment-trailing-whitespace
 created_at: 2024-06-19T02:52:28Z
 updated_at: 2024-06-19T06:44:18Z
 url: https://github.com/astral-sh/ruff/pull/11933
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Avoid consuming trailing whitespace during re-lexing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-19 02:52_
+_@dhruvmanila_
 
 ## Summary
 

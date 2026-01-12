@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T08:34:29Z
 updated_at: 2025-12-22T17:13:40Z
 url: https://github.com/astral-sh/ty/issues/2142
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Align docs/type signatures (hover) of different types/objects
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-12-21 08:34_
+_@Julian-J-S_
 
 Atm the documentation/type signatures on hover are a little weird/inconsistent.
 Pyright is very consistent here (and helpful).

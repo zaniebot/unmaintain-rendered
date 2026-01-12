@@ -13,14 +13,14 @@ head: ambiguous-unicode-chars-docs
 created_at: 2023-11-12T13:58:25Z
 updated_at: 2023-11-12T17:32:34Z
 url: https://github.com/astral-sh/ruff/pull/8628
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve docs for RUF001, RUF002 and RUF003
 
 ---
 
-_Pull request opened by @bodograumann on 2023-11-12 13:58_
+_@bodograumann_
 
 I got an error from RUF001 and wanted to override it. How to do that was not quite obvious. In the process I have tried to improve the documentation for the rule and it's siblings.
 

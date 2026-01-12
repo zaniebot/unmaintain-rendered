@@ -13,14 +13,14 @@ head: konsti/warn-unbound-indirect-deps
 created_at: 2024-08-09T08:54:39Z
 updated_at: 2024-08-09T17:55:18Z
 url: https://github.com/astral-sh/uv/pull/5953
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Warn when there are missing bounds on transitive deps in lowest
 
 ---
 
-_Pull request opened by @konstin on 2024-08-09 08:54_
+_@konstin_
 
 Warn when there are missing bounds on transitive dependencies with `--resolution lowest`.
 

@@ -13,14 +13,14 @@ head: renovate/pyyaml-6.x
 created_at: 2024-08-12T00:13:26Z
 updated_at: 2024-08-12T00:19:16Z
 url: https://github.com/astral-sh/ruff/pull/12820
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update dependency PyYAML to v6.0.2
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 00:13_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

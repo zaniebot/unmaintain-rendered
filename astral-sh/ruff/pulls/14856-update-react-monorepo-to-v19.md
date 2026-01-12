@@ -12,14 +12,14 @@ head: renovate/react-monorepo
 created_at: 2024-12-09T02:00:12Z
 updated_at: 2024-12-09T05:33:43Z
 url: https://github.com/astral-sh/ruff/pull/14856
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Update react monorepo to v19
 
 ---
 
-_Pull request opened by @renovate on 2024-12-09 02:00_
+_@renovate_
 
 This PR contains the following updates:
 

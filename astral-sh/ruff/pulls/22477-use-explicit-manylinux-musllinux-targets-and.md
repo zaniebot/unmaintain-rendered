@@ -12,14 +12,14 @@ head: konsti/better-manylinux-maturin-handling
 created_at: 2026-01-09T12:36:39Z
 updated_at: 2026-01-09T12:46:30Z
 url: https://github.com/astral-sh/ruff/pull/22477
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Use explicit manylinux/musllinux targets and better pre-upload checks
 
 ---
 
-_Pull request opened by @konstin on 2026-01-09 12:36_
+_@konstin_
 
 This ensures that changes to the targets are intentional and explicit.
 

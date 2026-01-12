@@ -13,14 +13,14 @@ head: charlie/fbt
 created_at: 2023-02-07T20:04:27Z
 updated_at: 2023-02-07T20:04:35Z
 url: https://github.com/astral-sh/ruff/pull/2636
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid boolean-trap errors in `__setitem__`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 20:04_
+_@charliermarsh_
 
 Closes #2629.
 

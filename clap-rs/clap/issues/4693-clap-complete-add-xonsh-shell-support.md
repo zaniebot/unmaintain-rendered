@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-02-04T13:29:48Z
 updated_at: 2023-02-04T14:59:39Z
 url: https://github.com/clap-rs/clap/issues/4693
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete: add Xonsh shell support
 
 ---
 
-_Issue opened by @eugenesvk on 2023-02-04 13:29_
+_@eugenesvk_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/cast
 created_at: 2024-01-16T00:46:29Z
 updated_at: 2024-01-16T01:08:41Z
 url: https://github.com/astral-sh/ruff/pull/9540
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Visit deferred lambdas before type definitions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 00:46_
+_@charliermarsh_
 
 ## Summary
 

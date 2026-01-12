@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-24T10:43:48Z
 updated_at: 2021-01-30T14:52:03Z
 url: https://github.com/clap-rs/clap/issues/1859
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Regression in error messages when two args from a non-multiple group were passed
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-24 10:43_
+_@CreepySkeleton_
 
 This is what it used to look like:
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T20:34:07Z
 updated_at: 2025-05-15T02:48:34Z
 url: https://github.com/astral-sh/ty/issues/369
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Non-deterministic output on hydra-zen
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-13 20:34_
+_@sharkdp_
 
 ## How to reproduce
 

@@ -13,14 +13,14 @@ head: charlie/url
 created_at: 2023-10-31T04:10:37Z
 updated_at: 2023-11-01T13:21:45Z
 url: https://github.com/astral-sh/uv/pull/251
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Add support for URL dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 04:10_
+_@charliermarsh_
 
 ## Summary
 

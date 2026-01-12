@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-26T01:59:53Z
 updated_at: 2025-04-29T19:16:24Z
 url: https://github.com/astral-sh/uv/issues/13113
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Make tool.uv.sources recognize `~/` as home directory
 
 ---
 
-_Issue opened by @BoltonBailey on 2025-04-26 01:59_
+_@BoltonBailey_
 
 ### Summary
 

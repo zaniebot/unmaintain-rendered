@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-28T19:05:09Z
 updated_at: 2025-12-29T02:08:57Z
 url: https://github.com/astral-sh/ruff/issues/22237
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Ruff format: Blank line after "class" keyword
 
 ---
 
-_Issue opened by @danijar on 2025-12-28 19:05_
+_@danijar_
 
 This feature request is for ruff format to place blank line below the "class" keyword if there is no class docstring, either via a new configuration option or as the default behavior.
 

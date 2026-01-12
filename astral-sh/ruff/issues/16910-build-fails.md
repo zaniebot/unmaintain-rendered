@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T08:47:45Z
 updated_at: 2025-03-23T05:06:55Z
 url: https://github.com/astral-sh/ruff/issues/16910
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Build fails
 
 ---
 
-_Issue opened by @blackteahamburger on 2025-03-22 08:47_
+_@blackteahamburger_
 
 [build.log](https://github.com/user-attachments/files/19402037/build.log)
 ```

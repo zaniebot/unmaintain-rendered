@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T16:40:35Z
 updated_at: 2024-05-10T18:40:47Z
 url: https://github.com/astral-sh/ruff/issues/11363
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Wondering if there's a way for ruff to exclude a rule on certain files
 
 ---
 
-_Issue opened by @Ryang20718 on 2024-05-10 16:40_
+_@Ryang20718_
 
 First off, want to say <3 this linter.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T19:38:40Z
 updated_at: 2024-11-08T00:50:08Z
 url: https://github.com/astral-sh/uv/issues/7376
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # "uv add pybullet" throws cpp compilation error when compiling the wheel
 
 ---
 
-_Issue opened by @cube1324 on 2024-09-13 19:38_
+_@cube1324_
 
 Hello,
 

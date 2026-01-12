@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T06:28:27Z
 updated_at: 2025-12-21T23:09:15Z
 url: https://github.com/astral-sh/uv/issues/6794
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Upgrade dependencies in `pyproject.toml` (`uv upgrade`)
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-08-29 06:28_
+_@KotlinIsland_
 
 # this will update the version pins in the pyproject.toml file
 

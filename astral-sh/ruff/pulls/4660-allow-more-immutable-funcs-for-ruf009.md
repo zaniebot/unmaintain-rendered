@@ -12,14 +12,14 @@ head: fix/fixRUF009
 created_at: 2023-05-25T16:46:54Z
 updated_at: 2023-05-26T19:42:48Z
 url: https://github.com/astral-sh/ruff/pull/4660
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Allow more immutable funcs for RUF009
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-25 16:46_
+_@qdegraaf_
 
 ## Summary
 

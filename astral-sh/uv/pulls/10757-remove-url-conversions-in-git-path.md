@@ -13,14 +13,14 @@ head: charlie/u
 created_at: 2025-01-19T22:43:29Z
 updated_at: 2025-01-19T23:00:43Z
 url: https://github.com/astral-sh/uv/pull/10757
-synced_at: 2026-01-10T11:45:08Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Remove URL conversions in Git path
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-19 22:43_
+_@charliermarsh_
 
 ## Summary
 

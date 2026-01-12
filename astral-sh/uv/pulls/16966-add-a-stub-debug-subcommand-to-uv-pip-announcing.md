@@ -13,14 +13,14 @@ head: tk/pip-debug
 created_at: 2025-12-03T14:44:05Z
 updated_at: 2025-12-04T04:35:20Z
 url: https://github.com/astral-sh/uv/pull/16966
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Add a stub `debug` subcommand to `uv pip` announcing its intentional absence
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-03 14:44_
+_@EliteTK_
 
 ## Summary
 

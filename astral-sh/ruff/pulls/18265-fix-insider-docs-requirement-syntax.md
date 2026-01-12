@@ -14,14 +14,14 @@ head: fix-docs-requirements
 created_at: 2025-05-22T21:08:56Z
 updated_at: 2025-05-22T21:21:52Z
 url: https://github.com/astral-sh/ruff/pull/18265
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Fix insider docs requirement syntax
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-05-22 21:08_
+_@dylwil3_
 
 Attempting to fix the `mkdocs` workflow (maybe `uv` is more forgiving than `pip` for the syntax in `requirements.txt`?)
 

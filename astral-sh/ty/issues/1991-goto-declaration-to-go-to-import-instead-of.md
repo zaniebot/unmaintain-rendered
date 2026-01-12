@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T09:40:44Z
 updated_at: 2025-12-18T09:20:29Z
 url: https://github.com/astral-sh/ty/issues/1991
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # goto-declaration to go to import instead of definition
 
 ---
 
-_Issue opened by @sirfz on 2025-12-17 09:40_
+_@sirfz_
 
 Congrats on the Beta release!
 

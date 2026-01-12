@@ -12,14 +12,14 @@ head: charlie/top
 created_at: 2023-05-30T21:45:24Z
 updated_at: 2023-05-30T22:15:57Z
 url: https://github.com/astral-sh/ruff/pull/4735
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Rename top-of-file to start-of-file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 21:45_
+_@charliermarsh_
 
 ## Summary
 

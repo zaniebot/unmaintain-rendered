@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-22T15:33:25Z
 updated_at: 2023-12-07T03:03:02Z
 url: https://github.com/astral-sh/ruff/issues/8819
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive for `PIE796` files for custom enum_auto function
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-22 15:33_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

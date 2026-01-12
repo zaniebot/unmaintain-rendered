@@ -13,14 +13,14 @@ head: custom-dunder-names
 created_at: 2023-11-21T21:36:00Z
 updated_at: 2023-11-21T23:51:53Z
 url: https://github.com/astral-sh/ruff/pull/8812
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pylint`] Add `allow-dunder-method-names` setting for `bad-dunder-method-name` (`PLW3201`)
 
 ---
 
-_Pull request opened by @ThiefMaster on 2023-11-21 21:36_
+_@ThiefMaster_
 
 closes #8732
 

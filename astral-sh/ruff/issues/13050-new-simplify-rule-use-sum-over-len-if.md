@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T09:34:26Z
 updated_at: 2024-08-23T10:05:47Z
 url: https://github.com/astral-sh/ruff/issues/13050
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # New simplify rule: use `sum` over `len` + `if`
 
 ---
 
-_Issue opened by @janosh on 2024-08-22 09:34_
+_@janosh_
 
 ```py
 len([val for val in iterable if cond(val)]) # bad

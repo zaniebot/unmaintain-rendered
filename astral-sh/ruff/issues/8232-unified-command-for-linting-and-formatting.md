@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T22:07:07Z
 updated_at: 2025-10-09T02:24:01Z
 url: https://github.com/astral-sh/ruff/issues/8232
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Unified command for linting and formatting
 
 ---
 
-_Issue opened by @zanieb on 2023-10-25 22:07_
+_@zanieb_
 
 It should be possible to _check_ if files would be formatted _and_ if there are any lint violations in a single Ruff invocation.
 

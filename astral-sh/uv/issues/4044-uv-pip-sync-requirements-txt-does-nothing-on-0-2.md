@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T11:55:16Z
 updated_at: 2024-06-05T16:05:48Z
 url: https://github.com/astral-sh/uv/issues/4044
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # `uv pip sync requirements.txt` does nothing on 0.2.6 with `python_full_version` specified
 
 ---
 
-_Issue opened by @sterliakov on 2024-06-05 11:55_
+_@sterliakov_
 
 With the following `requirements.txt`:
 

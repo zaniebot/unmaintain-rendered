@@ -13,14 +13,14 @@ head: shifts
 created_at: 2025-07-11T12:54:46Z
 updated_at: 2025-07-28T09:09:19Z
 url: https://github.com/astral-sh/ruff/pull/19281
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Check shifts of literals ints
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-11 12:54_
+_@AlexWaygood_
 
 ## Summary
 

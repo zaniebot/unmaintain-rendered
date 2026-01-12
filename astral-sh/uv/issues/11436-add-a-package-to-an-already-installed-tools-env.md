@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T05:33:08Z
 updated_at: 2025-02-12T15:02:48Z
 url: https://github.com/astral-sh/uv/issues/11436
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Add a package to an already installed tools env
 
 ---
 
-_Issue opened by @nixjdm on 2025-02-12 05:33_
+_@nixjdm_
 
 ### Summary
 

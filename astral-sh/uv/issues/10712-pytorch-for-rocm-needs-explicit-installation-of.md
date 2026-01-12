@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T14:48:07Z
 updated_at: 2025-04-24T09:34:06Z
 url: https://github.com/astral-sh/uv/issues/10712
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Pytorch for rocm needs explicit installation of python-triton-rom
 
 ---
 
-_Issue opened by @bgs4free on 2025-01-17 14:48_
+_@bgs4free_
 
 For some reason, if you want to install `pytorch` from https://download.pytorch.org/whl/rocm6.2 index, it seems necessary to also explicitly install `python-triton-rocm` from the same index. Otherwise I run into
 

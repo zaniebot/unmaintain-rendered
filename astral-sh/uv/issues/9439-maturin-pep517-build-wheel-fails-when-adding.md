@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T11:57:29Z
 updated_at: 2024-11-26T14:26:28Z
 url: https://github.com/astral-sh/uv/issues/9439
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # `maturin pep517 build-wheel` fails when adding pydantic 2.4.2 on python 3.13
 
 ---
 
-_Issue opened by @v-zubarev on 2024-11-26 11:57_
+_@v-zubarev_
 
 Hi! 
 

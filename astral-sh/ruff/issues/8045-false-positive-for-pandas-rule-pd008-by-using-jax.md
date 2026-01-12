@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-18T14:09:46Z
 updated_at: 2025-07-09T18:15:31Z
 url: https://github.com/astral-sh/ruff/issues/8045
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # false positive for Pandas rule `PD008` by using JAX `.at` syntax
 
 ---
 
-_Issue opened by @eringrant on 2023-10-18 14:09_
+_@eringrant_
 
 The following `jax_not_pandas.py` script:
 ```python

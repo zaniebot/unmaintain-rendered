@@ -12,14 +12,14 @@ head: charlie/mccabe
 created_at: 2022-11-21T18:22:29Z
 updated_at: 2022-11-21T18:46:37Z
 url: https://github.com/astral-sh/ruff/pull/857
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid incrementing McCabe complexity for class methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-21 18:22_
+_@charliermarsh_
 
 Resolves #851.
 

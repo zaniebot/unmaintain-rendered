@@ -13,14 +13,14 @@ head: cjm/classbases
 created_at: 2025-04-18T00:34:35Z
 updated_at: 2025-04-18T13:46:24Z
 url: https://github.com/astral-sh/ruff/pull/17456
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] class bases are not affected by __future__.annotations
 
 ---
 
-_Pull request opened by @carljm on 2025-04-18 00:34_
+_@carljm_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-31T18:44:54Z
 updated_at: 2025-04-02T22:50:49Z
 url: https://github.com/astral-sh/uv/issues/12591
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # keyring support not working on MacOS
 
 ---
 
-_Issue opened by @TheFriendlyCoder on 2025-03-31 18:44_
+_@TheFriendlyCoder_
 
 ### Summary
 

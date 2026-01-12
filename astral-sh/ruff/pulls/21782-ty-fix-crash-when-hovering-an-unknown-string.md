@@ -15,14 +15,14 @@ head: gankra/hover-crash
 created_at: 2025-12-03T22:20:14Z
 updated_at: 2025-12-04T08:11:42Z
 url: https://github.com/astral-sh/ruff/pull/21782
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Fix crash when hovering an unknown string annotation
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-03 22:20_
+_@Gankra_
 
 ## Summary
 

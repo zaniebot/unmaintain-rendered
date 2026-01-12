@@ -14,14 +14,14 @@ head: takaya0/default-python-version-to-3.9
 created_at: 2024-10-23T16:14:52Z
 updated_at: 2024-11-18T13:29:27Z
 url: https://github.com/astral-sh/ruff/pull/13896
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Change default for Python version from 3.8 to 3.9
 
 ---
 
-_Pull request opened by @takaya0 on 2024-10-23 16:14_
+_@takaya0_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

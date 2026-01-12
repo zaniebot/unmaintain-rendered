@@ -12,14 +12,14 @@ head: fix-quote-style-issue
 created_at: 2023-01-03T13:41:52Z
 updated_at: 2023-01-03T15:19:54Z
 url: https://github.com/astral-sh/ruff/pull/1600
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Do not Change Quotation Style for `PT006` Autofix
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-03 13:41_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1592
 

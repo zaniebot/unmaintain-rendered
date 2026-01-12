@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-12T20:42:09Z
 updated_at: 2024-06-27T13:51:33Z
 url: https://github.com/astral-sh/ruff/issues/5037
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Detect variable shadowing / redefinition
 
 ---
 
-_Issue opened by @stefanv on 2023-06-12 20:42_
+_@stefanv_
 
 ```
 x = 3

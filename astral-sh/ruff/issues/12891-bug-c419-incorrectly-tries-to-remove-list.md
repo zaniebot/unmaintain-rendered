@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T10:33:51Z
 updated_at: 2024-08-15T01:00:11Z
 url: https://github.com/astral-sh/ruff/issues/12891
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Bug: `C419` incorrectly tries to remove list comprehension in `async for`
 
 ---
 
-_Issue opened by @MarkusSintonen on 2024-08-14 10:33_
+_@MarkusSintonen_
 
 Following code gives an incorrect linting error:
 ```python

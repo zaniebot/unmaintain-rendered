@@ -12,14 +12,14 @@ head: konsti/fix-main-contraint-less-3
 created_at: 2024-10-29T10:37:42Z
 updated_at: 2024-10-29T13:53:08Z
 url: https://github.com/astral-sh/uv/pull/8655
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Fix tests on main
 
 ---
 
-_Pull request opened by @konstin on 2024-10-29 10:37_
+_@konstin_
 
 markupsafe 3 broke the tests on main.
 

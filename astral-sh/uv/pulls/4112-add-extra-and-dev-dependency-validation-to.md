@@ -14,14 +14,14 @@ head: charlie/w
 created_at: 2024-06-06T20:09:21Z
 updated_at: 2024-06-07T18:26:10Z
 url: https://github.com/astral-sh/uv/pull/4112
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Add extra and dev dependency validation to lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 20:09_
+_@charliermarsh_
 
 ## Summary
 

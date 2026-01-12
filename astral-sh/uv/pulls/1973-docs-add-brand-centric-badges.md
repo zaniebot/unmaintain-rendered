@@ -11,14 +11,14 @@ head: uv-badging
 created_at: 2024-02-25T21:48:34Z
 updated_at: 2024-03-12T14:20:00Z
 url: https://github.com/astral-sh/uv/pull/1973
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # docs: add brand-centric badges
 
 ---
 
-_Pull request opened by @JacobCoffee on 2024-02-25 21:48_
+_@JacobCoffee_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

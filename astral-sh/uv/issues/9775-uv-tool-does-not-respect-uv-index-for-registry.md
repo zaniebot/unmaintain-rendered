@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T14:55:18Z
 updated_at: 2025-08-14T15:41:42Z
 url: https://github.com/astral-sh/uv/issues/9775
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv tool` does not respect `UV_INDEX_*` for registry authentication when pulling dependencies
 
 ---
 
-_Issue opened by @ot-goegelem on 2024-12-10 14:55_
+_@ot-goegelem_
 
 - uv version: `uv 0.5.6`
 - operating system: `Debian GNU/Linux 11 (bullseye)`

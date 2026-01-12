@@ -14,14 +14,14 @@ head: dhruv/annotation-syntax-error
 created_at: 2025-01-16T06:52:59Z
 updated_at: 2025-01-16T16:20:59Z
 url: https://github.com/astral-sh/ruff/pull/15523
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyflakes`] Show syntax error message for `F722`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-16 06:52_
+_@dhruvmanila_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-05T10:47:01Z
 updated_at: 2025-01-05T20:02:27Z
 url: https://github.com/astral-sh/uv/issues/10301
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Build-backend requirements are not contained in `uv.lock`
 
 ---
 
-_Issue opened by @tobiasdiez on 2025-01-05 10:47_
+_@tobiasdiez_
 
 Suppose you declare a build system with external dependencies in your  `pyproject.toml`:
 https://github.com/astral-sh/uv/blob/a056cb292a501ade27ed194a3cc5bbcb2021126d/scripts/benchmark/pyproject.toml#L20-L22

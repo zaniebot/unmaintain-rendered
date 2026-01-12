@@ -13,14 +13,14 @@ head: charlie/fix
 created_at: 2024-01-03T16:09:07Z
 updated_at: 2024-01-03T16:25:09Z
 url: https://github.com/astral-sh/ruff/pull/9382
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Respect multi-segment submodule imports when resolving qualified names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 16:09_
+_@charliermarsh_
 
 Ensures that if the user has `import collections.abc`, then `get_or_import_symbol` returns `collections.abc.Iterator` (or similar) when requested.
 

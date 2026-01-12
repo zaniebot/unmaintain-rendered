@@ -12,14 +12,14 @@ head: docs/PLW3201
 created_at: 2023-08-17T19:24:20Z
 updated_at: 2023-08-17T19:57:38Z
 url: https://github.com/astral-sh/ruff/pull/6657
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Clarify behavior of `PLW3201`
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-17 19:24_
+_@zanieb_
 
 Otherwise it is unclear that violations will be raised for methods like `_foo_`
 

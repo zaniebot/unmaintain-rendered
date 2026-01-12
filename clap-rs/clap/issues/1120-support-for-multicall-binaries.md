@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-30T14:47:40Z
 updated_at: 2021-10-16T01:40:14Z
 url: https://github.com/clap-rs/clap/issues/1120
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for multicall binaries
 
 ---
 
-_Issue opened by @lucab on 2017-11-30 14:47_
+_@lucab_
 
 I did a bit of digging in the ticket tracker, but I didn't see this topic covered before. In short, I would like to explore how to support [multicall binaries](https://blog.flameeyes.eu/2009/10/multicall-binaries/) in clap. 
 

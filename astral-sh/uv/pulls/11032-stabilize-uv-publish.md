@@ -13,14 +13,14 @@ head: konsti/stabilize-publish
 created_at: 2025-01-28T18:41:50Z
 updated_at: 2025-02-11T16:21:34Z
 url: https://github.com/astral-sh/uv/pull/11032
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Stabilize `uv publish`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-28 18:41_
+_@konstin_
 
 `uv publish` has not changed for some time, it has [notable production usage](https://github.com/search?q=%22uv+publish%22&type=code) and there are no outstanding blockers, it is time to stabilize it with the 0.6 release.
 

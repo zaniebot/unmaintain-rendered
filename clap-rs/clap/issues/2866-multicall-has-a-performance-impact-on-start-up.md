@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-12T21:18:58Z
 updated_at: 2021-12-13T15:22:01Z
 url: https://github.com/clap-rs/clap/issues/2866
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Multicall has a performance impact on start-up
 
 ---
 
-_Issue opened by @fishface60 on 2021-10-12 21:18_
+_@fishface60_
 
 ### Please complete the following tasks
 

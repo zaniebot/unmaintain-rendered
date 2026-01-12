@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-06-12T19:45:16Z
 updated_at: 2024-06-12T19:54:02Z
 url: https://github.com/astral-sh/uv/pull/4287
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Add `UV_EXCLUDE_NEWER` environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-12 19:45_
+_@charliermarsh_
 
 ## Summary
 

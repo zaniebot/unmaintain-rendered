@@ -12,14 +12,14 @@ head: hvh/preserve-relative-paths
 created_at: 2025-09-15T14:08:13Z
 updated_at: 2025-11-11T14:39:44Z
 url: https://github.com/astral-sh/uv/pull/15870
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Preserve relative paths in lockfiles for flat indices
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-15 14:08_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

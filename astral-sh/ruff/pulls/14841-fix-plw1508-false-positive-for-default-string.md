@@ -13,14 +13,14 @@ head: fix-PLW1508-false_positive
 created_at: 2024-12-08T17:57:06Z
 updated_at: 2024-12-09T09:26:11Z
 url: https://github.com/astral-sh/ruff/pull/14841
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix `PLW1508` false positive for default string created via a mult operation
 
 ---
 
-_Pull request opened by @UnknownPlatypus on 2024-12-08 17:57_
+_@UnknownPlatypus_
 
 ## Summary
 

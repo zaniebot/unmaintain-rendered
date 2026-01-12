@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T21:23:22Z
 updated_at: 2024-12-03T14:34:36Z
 url: https://github.com/astral-sh/uv/issues/4710
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv pip tree` should display extras
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-01 21:23_
+_@ibraheemdev_
 
 `uv pip tree` should display extras that are installed in the environment.
 

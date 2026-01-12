@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-25T11:27:20Z
 updated_at: 2024-08-25T15:01:40Z
 url: https://github.com/astral-sh/uv/issues/6601
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Docs missing uv add --editable
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-08-25 11:27_
+_@ion-elgreco_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T17:23:20Z
 updated_at: 2025-06-18T15:28:54Z
 url: https://github.com/astral-sh/ruff/issues/18728
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Request: Making `import-outside-top-level (PLC0415)` configurable per import section
 
 ---
 
-_Issue opened by @Avasam on 2025-06-17 17:23_
+_@Avasam_
 
 ### Summary
 

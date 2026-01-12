@@ -14,14 +14,14 @@ head: charlie/cargo-dist-test
 created_at: 2024-01-17T05:46:53Z
 updated_at: 2024-06-25T17:34:03Z
 url: https://github.com/astral-sh/ruff/pull/9559
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Migrate release workflow to `cargo-dist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 05:46_
+_@charliermarsh_
 
 ## Summary
 

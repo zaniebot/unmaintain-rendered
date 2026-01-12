@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-12T20:20:08Z
 updated_at: 2024-09-13T08:10:36Z
 url: https://github.com/astral-sh/uv/issues/7342
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # [Feature request] Avoiding .venv in production
 
 ---
 
-_Issue opened by @pkucmus on 2024-09-12 20:20_
+_@pkucmus_
 
 Related to: https://github.com/astral-sh/uv/issues/7341
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T13:28:44Z
 updated_at: 2024-05-29T13:51:04Z
 url: https://github.com/astral-sh/uv/issues/3903
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv pip install doesn't read the index url in the requirements.txt file
 
 ---
 
-_Issue opened by @aybidi on 2024-05-29 13:28_
+_@aybidi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

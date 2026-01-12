@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-03-12T20:04:03Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/448
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Support macros in yaml
 
 ---
 
-_Issue opened by @oars on 2016-03-12 20:04_
+_@oars_
 
 Allow for use of crate_version! and the proposed crate_authors! when using yaml to build the app.
 

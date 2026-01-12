@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T11:28:36Z
 updated_at: 2025-05-02T10:06:26Z
 url: https://github.com/astral-sh/uv/issues/13225
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # More gentle modifications of shell files
 
 ---
 
-_Issue opened by @nedbat on 2025-04-30 11:28_
+_@nedbat_
 
 ### Summary
 

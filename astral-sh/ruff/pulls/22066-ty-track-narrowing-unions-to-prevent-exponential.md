@@ -14,14 +14,14 @@ head: zb/narrow-track
 created_at: 2025-12-19T02:39:28Z
 updated_at: 2025-12-20T04:04:00Z
 url: https://github.com/astral-sh/ruff/pull/22066
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Track narrowing unions to prevent exponential blowup
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-19 02:39_
+_@zanieb_
 
 See https://github.com/astral-sh/ty/issues/2026#issuecomment-3673229602
 

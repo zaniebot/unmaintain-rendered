@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-01-22T19:38:32Z
 updated_at: 2024-01-22T20:00:57Z
 url: https://github.com/astral-sh/uv/pull/1043
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Rename metadata.msgpack to manifest.msgpack
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 19:38_
+_@charliermarsh_
 
 We store the `Manifest` at this path, so this name feels more appropriate.
 

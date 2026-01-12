@@ -13,14 +13,14 @@ head: cjm/mdtest-tracing
 created_at: 2025-05-03T00:27:30Z
 updated_at: 2025-05-03T07:00:13Z
 url: https://github.com/astral-sh/ruff/pull/17803
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] add tracing of salsa events in mdtests
 
 ---
 
-_Pull request opened by @carljm on 2025-05-03 00:27_
+_@carljm_
 
 ## Summary
 

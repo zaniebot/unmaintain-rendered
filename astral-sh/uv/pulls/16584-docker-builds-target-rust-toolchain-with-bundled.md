@@ -12,14 +12,14 @@ head: docker-musl-125
 created_at: 2025-11-03T23:54:18Z
 updated_at: 2025-11-05T01:46:52Z
 url: https://github.com/astral-sh/uv/pull/16584
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Docker builds target rust toolchain with bundled musl v1.2.5
 
 ---
 
-_Pull request opened by @samypr100 on 2025-11-03 23:54_
+_@samypr100_
 
 ## Summary
 

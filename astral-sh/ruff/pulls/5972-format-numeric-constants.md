@@ -13,14 +13,14 @@ head: format-number
 created_at: 2023-07-22T09:44:27Z
 updated_at: 2023-07-29T05:26:46Z
 url: https://github.com/astral-sh/ruff/pull/5972
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Format numeric constants
 
 ---
 
-_Pull request opened by @lkh42t on 2023-07-22 09:44_
+_@lkh42t_
 
 ## Summary
 

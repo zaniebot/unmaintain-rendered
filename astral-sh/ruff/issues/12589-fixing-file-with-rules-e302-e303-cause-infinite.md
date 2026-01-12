@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-31T05:05:47Z
 updated_at: 2024-08-01T02:09:06Z
 url: https://github.com/astral-sh/ruff/issues/12589
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Fixing file with rules E302, E303 cause infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2024-07-31 05:05_
+_@qarmin_
 
 ruff 0.5.5+369 (138e70bd5 2024-07-30)
 ```

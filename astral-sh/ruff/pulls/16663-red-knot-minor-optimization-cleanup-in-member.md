@@ -13,14 +13,14 @@ head: david/member-lookup-optimization
 created_at: 2025-03-12T07:52:49Z
 updated_at: 2025-03-12T08:11:07Z
 url: https://github.com/astral-sh/ruff/pull/16663
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Minor optimization/cleanup in member lookup
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-12 07:52_
+_@sharkdp_
 
 ## Summary
 

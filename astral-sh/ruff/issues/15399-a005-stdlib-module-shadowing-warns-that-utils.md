@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T12:58:28Z
 updated_at: 2025-02-12T16:13:33Z
 url: https://github.com/astral-sh/ruff/issues/15399
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # A005 stdlib-module-shadowing warns that utils.logging shadows python logging module
 
 ---
 
-_Issue opened by @dwt on 2025-01-10 12:58_
+_@dwt_
 
 [This rule](https://docs.astral.sh/ruff/rules/stdlib-module-shadowing/) warns for me that `utils.logging` shadows stdlib `logging`.
 

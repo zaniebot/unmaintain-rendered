@@ -13,14 +13,14 @@ head: locator-slice
 created_at: 2023-10-02T08:53:40Z
 updated_at: 2023-10-02T09:13:39Z
 url: https://github.com/astral-sh/ruff/pull/7759
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use `locator.slice(range)` over `locator.contents()[range]`
 
 ---
 
-_Pull request opened by @konstin on 2023-10-02 08:53_
+_@konstin_
 
 **Summary** Refactoring inspired by https://github.com/astral-sh/ruff/pull/7741#discussion_r1342168033
 

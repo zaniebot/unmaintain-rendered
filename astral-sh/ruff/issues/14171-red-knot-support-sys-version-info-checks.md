@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:33:27Z
 updated_at: 2024-11-13T14:46:04Z
 url: https://github.com/astral-sh/ruff/issues/14171
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support sys.version_info checks
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 16:33_
+_@carljm_
 
 This depends on https://github.com/astral-sh/ruff/issues/12700
 

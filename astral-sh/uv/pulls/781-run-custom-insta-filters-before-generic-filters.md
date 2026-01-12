@@ -13,14 +13,14 @@ head: custom-filters-before-generic-filters
 created_at: 2024-01-04T14:57:29Z
 updated_at: 2024-01-04T15:40:29Z
 url: https://github.com/astral-sh/uv/pull/781
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Run custom insta filters before generic filters
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 14:57_
+_@konstin_
 
 I've noticed some non-deterministic test failures when a temp dir looks like a timestamp (https://github.com/astral-sh/puffin/actions/runs/7410022542/job/20161416805). Running the custom filters for e.g. the temp dirs before the generic time filters should fix that.
 

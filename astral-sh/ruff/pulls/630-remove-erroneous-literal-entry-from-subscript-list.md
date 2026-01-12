@@ -12,14 +12,14 @@ head: charlie/ext
 created_at: 2022-11-07T02:03:13Z
 updated_at: 2022-11-07T02:03:41Z
 url: https://github.com/astral-sh/ruff/pull/630
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove erroneous Literal entry from subscript list
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 02:03_
+_@charliermarsh_
 
 Resolves #629.
 

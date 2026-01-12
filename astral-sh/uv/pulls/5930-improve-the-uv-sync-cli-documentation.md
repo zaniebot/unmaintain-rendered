@@ -15,14 +15,14 @@ head: zb/sync-docs
 created_at: 2024-08-08T20:48:23Z
 updated_at: 2024-08-09T19:46:34Z
 url: https://github.com/astral-sh/uv/pull/5930
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Improve the `uv sync` CLI documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 20:48_
+_@zanieb_
 
 _No description provided._
 

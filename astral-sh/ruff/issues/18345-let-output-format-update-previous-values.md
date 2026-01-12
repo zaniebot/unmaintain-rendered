@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T19:55:27Z
 updated_at: 2025-05-28T21:43:13Z
 url: https://github.com/astral-sh/ruff/issues/18345
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Let `--output-format` update previous values
 
 ---
 
-_Issue opened by @dmyersturnbull on 2025-05-27 19:55_
+_@dmyersturnbull_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/win-drive
 created_at: 2025-09-08T13:09:31Z
 updated_at: 2025-09-08T13:21:39Z
 url: https://github.com/astral-sh/uv/pull/15734
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Increase the size of the Windows dev drives from 20GB -> 25GB
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-08 13:09_
+_@zanieb_
 
 We ran out of disk space in https://github.com/astral-sh/uv/actions/runs/17551474262/job/49844770034?pr=15727
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-25T18:29:58Z
 updated_at: 2024-11-04T19:26:22Z
 url: https://github.com/astral-sh/uv/issues/7690
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv self update on Windows
 
 ---
 
-_Issue opened by @m-aherron on 2024-09-25 18:29_
+_@m-aherron_
 
 Windows 10 - Powershell 7.4.5
 Going from uv 0.4.15 to uv 0.4.16 using 

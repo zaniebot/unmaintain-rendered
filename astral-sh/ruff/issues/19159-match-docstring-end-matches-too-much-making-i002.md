@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-06T13:46:03Z
 updated_at: 2025-07-11T16:35:43Z
 url: https://github.com/astral-sh/ruff/issues/19159
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `match_docstring_end` matches too much, making I002 introduce a syntax error
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-06 13:46_
+_@dscorbett_
 
 ### Summary
 

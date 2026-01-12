@@ -13,14 +13,14 @@ head: charlie/dash
 created_at: 2024-10-22T13:14:07Z
 updated_at: 2024-10-22T13:37:58Z
 url: https://github.com/astral-sh/uv/pull/8452
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Replace dashes with underscores in index credential variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 13:14_
+_@charliermarsh_
 
 ## Summary
 

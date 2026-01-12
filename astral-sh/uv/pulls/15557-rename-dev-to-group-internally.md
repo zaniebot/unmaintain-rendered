@@ -13,14 +13,14 @@ head: konsti/dev-to-group
 created_at: 2025-08-27T18:12:48Z
 updated_at: 2025-08-27T18:35:44Z
 url: https://github.com/astral-sh/uv/pull/15557
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Rename `Dev` to `Group` internally
 
 ---
 
-_Pull request opened by @konstin on 2025-08-27 18:12_
+_@konstin_
 
 The "dev" naming is a pre-PEP 735 artifact.
 

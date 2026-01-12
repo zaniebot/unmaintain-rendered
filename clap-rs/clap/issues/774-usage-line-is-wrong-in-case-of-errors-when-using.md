@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-12T16:53:32Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/774
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Usage line is wrong in case of errors when using default values
 
 ---
 
-_Issue opened by @dotdash on 2016-12-12 16:53_
+_@dotdash_
 
 
 ### Affected Version of clap

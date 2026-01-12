@@ -13,14 +13,14 @@ head: zb/ref-tool-hint
 created_at: 2025-01-29T16:16:13Z
 updated_at: 2025-01-29T17:55:56Z
 url: https://github.com/astral-sh/uv/pull/11069
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Refactor `uv tool run` hint into separate function
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 16:16_
+_@zanieb_
 
 _No description provided._
 

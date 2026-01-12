@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-26T15:40:34Z
 updated_at: 2016-01-27T20:30:56Z
 url: https://github.com/clap-rs/clap/issues/394
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Ensure all docs are correct for v2 release
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-26 15:40_
+_@kbknapp_
 
 - [x] src/app/macros.rs
 - [x] src/app/meta.rs

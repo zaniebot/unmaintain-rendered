@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-27T13:27:06Z
 updated_at: 2023-09-27T14:16:16Z
 url: https://github.com/astral-sh/ruff/issues/7676
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False positive for F812 with ``nonlocal``
 
 ---
 
-_Issue opened by @DanielNoord on 2023-09-27 13:27_
+_@DanielNoord_
 
 Couldn't find a previous issue for this.
 

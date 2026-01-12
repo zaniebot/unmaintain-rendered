@@ -13,14 +13,14 @@ head: self-update-brew
 created_at: 2025-11-24T17:38:16Z
 updated_at: 2025-12-04T18:44:07Z
 url: https://github.com/astral-sh/uv/pull/16838
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Add brew specific message for `uv self update`
 
 ---
 
-_Pull request opened by @terror on 2025-11-24 17:38_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16833
 

@@ -13,14 +13,14 @@ head: update-quoted-annotations-docs
 created_at: 2025-10-08T12:41:51Z
 updated_at: 2025-10-14T10:43:35Z
 url: https://github.com/astral-sh/ruff/pull/20765
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # Update `lint.flake8-type-checking.quoted-annotations` docs
 
 ---
 
-_Pull request opened by @CarrotManMatt on 2025-10-08 12:41_
+_@CarrotManMatt_
 
 Update `lint.flake8-type-checking.quoted-annotations` docs to mention Python 3.14.
 

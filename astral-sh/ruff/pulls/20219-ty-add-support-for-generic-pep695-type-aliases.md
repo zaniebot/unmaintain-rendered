@@ -14,14 +14,14 @@ head: ibraheem/generic-type-alias
 created_at: 2025-09-03T21:07:28Z
 updated_at: 2025-09-08T20:26:23Z
 url: https://github.com/astral-sh/ruff/pull/20219
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Add support for generic PEP695 type aliases
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-03 21:07_
+_@ibraheemdev_
 
 ## Summary
 

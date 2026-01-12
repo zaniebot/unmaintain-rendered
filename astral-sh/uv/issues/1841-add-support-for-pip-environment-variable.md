@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T23:21:00Z
 updated_at: 2024-02-22T00:48:27Z
 url: https://github.com/astral-sh/uv/issues/1841
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Add support for `PIP_*` environment variable
 
 ---
 
-_Issue opened by @Czaki on 2024-02-21 23:21_
+_@Czaki_
 
 Next to provide some options as command flag, the pip allows passing part of arugumnts using environment variable.  (see https://pip.pypa.io/en/stable/topics/configuration/#environment-variables) 
 

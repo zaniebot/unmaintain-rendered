@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T09:28:24Z
 updated_at: 2024-09-20T17:36:16Z
 url: https://github.com/astral-sh/uv/issues/7575
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Different version pins compared to pip-compile when multiple equivalent resolutions are possible
 
 ---
 
-_Issue opened by @jf2 on 2024-09-20 09:28_
+_@jf2_
 
 I've been trying out uv to use as replacement for my workflows and so far, am very impressed by how much has been achieved in such a short period of time.
 

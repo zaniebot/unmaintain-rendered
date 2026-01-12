@@ -13,14 +13,14 @@ head: fix-20698
 created_at: 2025-10-05T22:27:11Z
 updated_at: 2025-10-14T11:45:00Z
 url: https://github.com/astral-sh/ruff/pull/20704
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Fix false negatives in `Truthiness::from_expr` for lambdas, generators, and f-strings
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-05 22:27_
+_@danparizher_
 
 ## Summary
 

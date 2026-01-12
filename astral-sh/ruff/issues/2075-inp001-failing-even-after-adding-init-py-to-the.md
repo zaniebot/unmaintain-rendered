@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T23:08:10Z
 updated_at: 2025-03-24T05:26:01Z
 url: https://github.com/astral-sh/ruff/issues/2075
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `INP001` failing even after adding `__init__.py` to the relevant folder
 
 ---
 
-_Issue opened by @StrohMatanya on 2023-01-21 23:08_
+_@StrohMatanya_
 
 I updated to ruff v0.0.229, and added `INP` to the list of linters I would like to run.
 After running the new version it failed with the below error (which was correct);

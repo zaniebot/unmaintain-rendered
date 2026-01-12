@@ -13,14 +13,14 @@ head: charlie/auto
 created_at: 2023-02-12T02:49:13Z
 updated_at: 2023-02-12T02:51:51Z
 url: https://github.com/astral-sh/ruff/pull/2791
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add documentation on enabling autocompletion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 02:49_
+_@charliermarsh_
 
 Closes #2540.
 

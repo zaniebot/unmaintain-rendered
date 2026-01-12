@@ -13,14 +13,14 @@ head: charlie/box
 created_at: 2025-01-14T16:15:34Z
 updated_at: 2025-01-14T16:53:48Z
 url: https://github.com/astral-sh/uv/pull/10601
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Reduce distribution size to 200 bytes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 16:15_
+_@charliermarsh_
 
 ## Summary
 

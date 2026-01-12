@@ -14,14 +14,14 @@ head: charlie/re
 created_at: 2024-07-09T18:44:51Z
 updated_at: 2024-07-09T19:25:25Z
 url: https://github.com/astral-sh/uv/pull/4935
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Reinstall and recreate environments when interpreter is removed
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 18:44_
+_@charliermarsh_
 
 ## Summary
 

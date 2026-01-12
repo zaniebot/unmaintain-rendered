@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T05:51:48Z
 updated_at: 2024-12-03T21:11:23Z
 url: https://github.com/astral-sh/uv/issues/9348
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # `uv run` fails to run binaries from `~/Library/Application Support` on macOS
 
 ---
 
-_Issue opened by @gusutabopb on 2024-11-22 05:51_
+_@gusutabopb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

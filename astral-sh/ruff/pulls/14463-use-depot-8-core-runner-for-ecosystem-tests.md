@@ -13,14 +13,14 @@ head: zb/ci-ecosystem
 created_at: 2024-11-19T14:54:17Z
 updated_at: 2024-11-20T00:00:40Z
 url: https://github.com/astral-sh/ruff/pull/14463
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use Depot 8-core runner for ecosystem tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 14:54_
+_@zanieb_
 
 I noticed this was exceedingly slow.
 

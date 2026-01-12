@@ -13,14 +13,14 @@ head: less-sync
 created_at: 2024-05-06T16:52:52Z
 updated_at: 2024-05-07T02:30:43Z
 url: https://github.com/astral-sh/uv/pull/3413
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Remove unnecessary uses of `DashMap` and `Arc`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-06 16:52_
+_@ibraheemdev_
 
 ## Summary
 

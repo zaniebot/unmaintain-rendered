@@ -13,14 +13,14 @@ head: called_from_venv
 created_at: 2024-05-05T20:02:44Z
 updated_at: 2024-05-06T13:56:43Z
 url: https://github.com/astral-sh/uv/pull/3379
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:36Z
 ```
 
 # Detect current venv when `uv` is invoked from within a virtualenv
 
 ---
 
-_Pull request opened by @gotcha on 2024-05-05 20:02_
+_@gotcha_
 
 Fixes #3378
 

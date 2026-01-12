@@ -12,14 +12,14 @@ head: charlie/up013
 created_at: 2023-06-12T21:16:25Z
 updated_at: 2023-06-12T21:41:50Z
 url: https://github.com/astral-sh/ruff/pull/5038
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Improve `TypedDict` conversion logic for shadowed builtins and dunder methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-12 21:16_
+_@charliermarsh_
 
 ## Summary
 

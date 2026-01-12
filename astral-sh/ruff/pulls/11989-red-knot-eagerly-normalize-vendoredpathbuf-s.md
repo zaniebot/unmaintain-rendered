@@ -12,14 +12,14 @@ head: alex/eagerly-normalize-vendored-paths
 created_at: 2024-06-23T15:06:35Z
 updated_at: 2024-06-28T12:46:08Z
 url: https://github.com/astral-sh/ruff/pull/11989
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Eagerly normalize `VendoredPathBuf`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-23 15:06_
+_@AlexWaygood_
 
 ## Summary
 

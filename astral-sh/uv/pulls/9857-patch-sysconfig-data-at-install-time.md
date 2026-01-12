@@ -15,14 +15,14 @@ head: charlie/patch-sysconfig
 created_at: 2024-12-13T00:40:33Z
 updated_at: 2024-12-17T05:12:17Z
 url: https://github.com/astral-sh/uv/pull/9857
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Patch `sysconfig` data at install time
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-13 00:40_
+_@charliermarsh_
 
 ## Summary
 

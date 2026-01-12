@@ -14,14 +14,14 @@ head: RUF049
 created_at: 2024-12-05T00:16:27Z
 updated_at: 2024-12-08T12:05:01Z
 url: https://github.com/astral-sh/ruff/pull/14779
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-use-pathlib`] Dotless suffix passed to `Path.with_suffix()` (`PTH210`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-05 00:16_
+_@InSyncWithFoo_
 
 ## Summary
 

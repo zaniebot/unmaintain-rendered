@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T06:14:25Z
 updated_at: 2025-07-29T13:52:58Z
 url: https://github.com/astral-sh/uv/issues/14865
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # How do I go back? I executed uv init by mistake.
 
 ---
 
-_Issue opened by @ciaoyizhen on 2025-07-24 06:14_
+_@ciaoyizhen_
 
 ### Question
 

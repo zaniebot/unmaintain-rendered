@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-15T04:08:12Z
 updated_at: 2023-08-15T04:16:40Z
 url: https://github.com/astral-sh/ruff/issues/6585
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ruff docs display problem
 
 ---
 
-_Issue opened by @devicehzy on 2023-08-15 04:08_
+_@devicehzy_
 
 * when i searching help by [ruff docs](https://beta.ruff.rs/docs/rules/#isort-i),i find isort rules all of is not nursery in native page,like this  
 <img width="1208" alt="image" src="https://github.com/astral-sh/ruff/assets/92512639/ec1d563b-37b8-481a-9e6a-bc4e146542c7">

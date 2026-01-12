@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-13T21:45:27Z
 updated_at: 2023-03-17T02:52:07Z
 url: https://github.com/astral-sh/ruff/issues/3494
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLC1901 false-positives with pandas
 
 ---
 
-_Issue opened by @twoertwein on 2023-03-13 21:45_
+_@twoertwein_
 
 ```py
 import pandas as pd

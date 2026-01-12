@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-08T23:14:24Z
 updated_at: 2025-07-10T10:13:22Z
 url: https://github.com/astral-sh/uv/issues/7202
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Issues creating a cuda-enabled pytorch environment with UV
 
 ---
 
-_Issue opened by @pstjohn on 2024-09-08 23:14_
+_@pstjohn_
 
 I'm having some issues using `uv lock` & `uv sync` in a package that needs to use cuda-enabled pytorch wheels.
 

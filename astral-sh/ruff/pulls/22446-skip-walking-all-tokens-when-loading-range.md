@@ -13,14 +13,14 @@ head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
 updated_at: 2026-01-10T09:42:01Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Skip walking all tokens when loading range suppressions
 
 ---
 
-_Pull request opened by @amyreese on 2026-01-07 22:39_
+_@amyreese_
 
 Adapted from https://github.com/astral-sh/ruff/pull/21441#pullrequestreview-3503773083
 

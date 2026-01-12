@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T09:14:40Z
 updated_at: 2026-01-09T14:55:33Z
 url: https://github.com/astral-sh/ty/issues/1274
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Auto completions and auto import ranking heuristics
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-29 09:14_
+_@sharkdp_
 
 I have been using the auto completions and auto import features for a while now, and I keep noticing things that could be changed to improve the user experience. So I thought I'd open a new ticket to collect them.
 

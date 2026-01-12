@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T17:38:50Z
 updated_at: 2025-05-15T02:40:21Z
 url: https://github.com/astral-sh/uv/issues/13387
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # Is there a way for one extra to include another extra?
 
 ---
 
-_Issue opened by @nikhilweee on 2025-05-11 17:38_
+_@nikhilweee_
 
 ### Question
 

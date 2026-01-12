@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T02:10:12Z
 updated_at: 2025-07-25T07:11:12Z
 url: https://github.com/astral-sh/ty/issues/259
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # type inference inside of conditionally defined functions appears incorrect
 
 ---
 
-_Issue opened by @mikeshardmind on 2025-05-08 02:10_
+_@mikeshardmind_
 
 ### Summary
 

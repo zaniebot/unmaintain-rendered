@@ -15,14 +15,14 @@ head: gankra/abs-allowed-imp
 created_at: 2025-11-11T01:11:11Z
 updated_at: 2025-11-11T18:36:31Z
 url: https://github.com/astral-sh/ruff/pull/21372
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] support absolute `from` imports introducing local submodules in `__init__.py` files
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-11 01:11_
+_@Gankra_
 
 By resolving `.` and the LHS of the from import during semantic indexing, we can check if the LHS is a submodule of `.`, and handle `from whatever.thispackage.x.y import z` exactly like we do `from .x.y import z`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T20:34:11Z
 updated_at: 2024-06-06T22:30:41Z
 url: https://github.com/astral-sh/ruff/issues/11782
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] condensed display for literal unions
 
 ---
 
-_Issue opened by @carljm on 2024-06-06 20:34_
+_@carljm_
 
 We should display `Literal[1, 2]` rather than `(Literal[1] | Literal[2])`.
 

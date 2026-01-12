@@ -14,14 +14,14 @@ head: fix-decorator-completions
 created_at: 2025-12-27T13:10:09Z
 updated_at: 2025-12-27T14:14:29Z
 url: https://github.com/astral-sh/ruff/pull/22224
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Use the AST to suppress keywords in decorators
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-27 13:10_
+_@RasmusNygren_
 
 As of 014abe1ee19e617c13ac498d09de5ae2f932f6e8 the detection of decorator nodes in the AST is better and we no longer need to fall back to token-matching to detect decorators. This makes the logic significantly simpler and fixes some bugs from inaccuracies in the state machine.
 

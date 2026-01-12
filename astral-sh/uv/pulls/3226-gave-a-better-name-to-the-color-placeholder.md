@@ -13,14 +13,14 @@ head: cli-color-argname
 created_at: 2024-04-23T21:46:14Z
 updated_at: 2024-04-23T22:13:17Z
 url: https://github.com/astral-sh/uv/pull/3226
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Gave a better name to the `--color` placeholder
 
 ---
 
-_Pull request opened by @michaelritsema on 2024-04-23 21:46_
+_@michaelritsema_
 
 ## Summary
 

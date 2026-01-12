@@ -14,14 +14,14 @@ head: auto-import-AIR302
 created_at: 2025-04-22T14:46:19Z
 updated_at: 2025-04-28T20:35:17Z
 url: https://github.com/astral-sh/ruff/pull/17553
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`airflow`] Apply auto fixes to cases where the names have changed in Airflow 3 (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-22 14:46_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-09T01:29:36Z
 updated_at: 2025-11-18T16:56:51Z
 url: https://github.com/astral-sh/ruff/issues/21345
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Using `ThreadPoolExecutor_context.map()` without iterating over it
 
 ---
 
-_Issue opened by @DeflateAwning on 2025-11-09 01:29_
+_@DeflateAwning_
 
 ### Summary
 

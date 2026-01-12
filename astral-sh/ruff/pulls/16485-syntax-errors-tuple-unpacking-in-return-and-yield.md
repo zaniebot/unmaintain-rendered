@@ -14,14 +14,14 @@ head: brent/syn-unpack-return-yield
 created_at: 2025-03-03T23:40:14Z
 updated_at: 2025-03-06T16:57:22Z
 url: https://github.com/astral-sh/ruff/pull/16485
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Tuple unpacking in `return` and `yield` before Python 3.8
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 23:40_
+_@ntBre_
 
 Summary
 --

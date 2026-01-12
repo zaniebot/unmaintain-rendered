@@ -14,14 +14,14 @@ head: charlie/py
 created_at: 2024-02-27T01:48:00Z
 updated_at: 2024-03-20T00:00:11Z
 url: https://github.com/astral-sh/uv/pull/2000
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Add a `--python` flag to allow installation into arbitrary Python interpreters
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-27 01:48_
+_@charliermarsh_
 
 ## Summary
 

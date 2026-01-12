@@ -12,14 +12,14 @@ head: fix/pyi041-in-string-annotation
 created_at: 2025-06-29T10:37:53Z
 updated_at: 2025-10-11T08:55:04Z
 url: https://github.com/astral-sh/ruff/pull/19023
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`flake8-pyi`] Fix `PYI041` not resolving string annotations
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-29 10:37_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

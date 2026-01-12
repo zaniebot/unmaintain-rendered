@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T13:13:34Z
 updated_at: 2025-09-12T20:46:51Z
 url: https://github.com/astral-sh/ruff/issues/20266
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF009 - Frozen Dataclass  with nested class should be valid
 
 ---
 
-_Issue opened by @FEsteven on 2025-09-05 13:13_
+_@FEsteven_
 
 ### Summary
 

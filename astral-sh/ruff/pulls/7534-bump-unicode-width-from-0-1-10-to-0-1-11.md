@@ -12,14 +12,14 @@ head: dependabot/cargo/unicode-width-0.1.11
 created_at: 2023-09-20T08:10:50Z
 updated_at: 2023-09-20T08:29:14Z
 url: https://github.com/astral-sh/ruff/pull/7534
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump unicode-width from 0.1.10 to 0.1.11
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-20 08:10_
+_@dependabot_
 
 Bumps [unicode-width](https://github.com/unicode-rs/unicode-width) from 0.1.10 to 0.1.11.
 <details>

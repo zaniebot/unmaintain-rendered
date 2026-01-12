@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T15:54:34Z
 updated_at: 2024-11-17T09:00:44Z
 url: https://github.com/astral-sh/uv/issues/9062
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Challenging to get started with workspaces.
 
 ---
 
-_Issue opened by @chrisfougner on 2024-11-12 15:54_
+_@chrisfougner_
 
 This is probably a me thing, but I haven't had luck getting workspaces to work, and I've had a pretty detailed read through the documentation.
 

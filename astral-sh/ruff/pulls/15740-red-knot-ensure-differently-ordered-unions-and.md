@@ -13,14 +13,14 @@ head: alex/nested-tuples
 created_at: 2025-01-25T16:28:29Z
 updated_at: 2025-01-25T16:39:09Z
 url: https://github.com/astral-sh/ruff/pull/15740
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Ensure differently ordered unions and intersections are understood as equivalent even inside arbitrarily nested tuples
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-25 16:28_
+_@AlexWaygood_
 
 ## Summary
 

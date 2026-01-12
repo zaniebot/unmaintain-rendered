@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T16:29:49Z
 updated_at: 2025-10-08T10:36:24Z
 url: https://github.com/astral-sh/uv/issues/14443
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Allow setting frozen=true or locked=true for `uv run` in pyproject.toml
 
 ---
 
-_Issue opened by @benjsec on 2025-07-03 16:29_
+_@benjsec_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: cjm/declared-types
 created_at: 2024-09-12T01:48:00Z
 updated_at: 2024-09-12T03:27:26Z
 url: https://github.com/astral-sh/ruff/pull/13331
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] track declared types and issue diagnostics
 
 ---
 
-_Pull request opened by @carljm on 2024-09-12 01:48_
+_@carljm_
 
 Subdivide Definitions into Bindings (assign a value) and Declarations (declare the acceptable upper bound type for a symbol), and add the ability to query both the inferred (from bindings) and declared types of a symbol at a given point in control flow. Emit diagnostics for bindings or declarations that would violate the "inferred type must be assignable to declared type" invariant for a symbol.
 

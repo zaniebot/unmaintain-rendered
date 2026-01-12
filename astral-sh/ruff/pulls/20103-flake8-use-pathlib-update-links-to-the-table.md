@@ -13,14 +13,14 @@ head: update-doc-link
 created_at: 2025-08-26T19:06:58Z
 updated_at: 2025-08-27T06:19:56Z
 url: https://github.com/astral-sh/ruff/pull/20103
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`flake8-use-pathlib`] Update links to the table showing the correspondence between `os` and `pathlib`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-08-26 19:06_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

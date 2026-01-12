@@ -12,14 +12,14 @@ head: fix-Name-range-in-NamedExpr
 created_at: 2023-01-01T07:09:54Z
 updated_at: 2023-01-01T07:47:26Z
 url: https://github.com/astral-sh/ruff/pull/1526
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix `Name` node range in `NamedExpr` node
 
 ---
 
-_Pull request opened by @harupy on 2023-01-01 07:09_
+_@harupy_
 
 https://github.com/RustPython/RustPython/pull/4391 fixed `Name` node range in `NamedExpr` node.
 

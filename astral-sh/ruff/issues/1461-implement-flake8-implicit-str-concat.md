@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T03:04:46Z
 updated_at: 2022-12-30T09:38:10Z
 url: https://github.com/astral-sh/ruff/issues/1461
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement `flake8-implicit-str-concat`
 
 ---
 
-_Issue opened by @pradyunsg on 2022-12-30 03:04_
+_@pradyunsg_
 
 👋🏽 
 

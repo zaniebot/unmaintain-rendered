@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-12T18:27:48Z
 updated_at: 2025-11-12T20:55:23Z
 url: https://github.com/astral-sh/ruff/issues/21408
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # add a django related rule that user visible strings should be wrapped in a gettext or gettext_lazy
 
 ---
 
-_Issue opened by @fgregg on 2025-11-12 18:27_
+_@fgregg_
 
 ### Summary
 

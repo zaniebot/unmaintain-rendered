@@ -13,14 +13,14 @@ head: supplementary_build-system
 created_at: 2025-01-01T10:38:41Z
 updated_at: 2025-01-09T18:08:05Z
 url: https://github.com/astral-sh/uv/pull/10261
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # docs: Clarify build system specific features usage.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-01-01 10:38_
+_@FishAlchemist_
 
 ## Summary
 Since there are occasional inquiries about how to configure UV for build-system specific features, I want to raise awareness that users should refer to the documentation of the build system they are using for relevant settings.

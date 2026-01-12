@@ -13,14 +13,14 @@ head: charlie/imp
 created_at: 2024-01-21T19:24:41Z
 updated_at: 2024-01-21T19:37:43Z
 url: https://github.com/astral-sh/ruff/pull/9600
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Split pycodestyle import rules into separate files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-21 19:24_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T05:47:08Z
 updated_at: 2025-12-17T07:45:03Z
 url: https://github.com/astral-sh/ty/issues/1977
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Generic type parameter incorrectly inferred from `Callable[[S], T | None]` as `T | None` instead of `T`
 
 ---
 
-_Issue opened by @fadedDexofan on 2025-12-17 05:47_
+_@fadedDexofan_
 
 ## Summary
 

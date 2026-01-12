@@ -13,14 +13,14 @@ head: renovate/windows-0.x-lockfile
 created_at: 2025-06-16T01:41:03Z
 updated_at: 2025-06-16T02:05:34Z
 url: https://github.com/astral-sh/uv/pull/14055
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Update Rust crate windows to v0.61.3
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 01:41_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T07:57:30Z
 updated_at: 2024-10-09T07:28:38Z
 url: https://github.com/astral-sh/uv/issues/7996
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # URL dependency of a dependency failing to resolve
 
 ---
 
-_Issue opened by @ringohoffman on 2024-10-08 07:57_
+_@ringohoffman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

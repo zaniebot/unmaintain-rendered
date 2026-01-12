@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-06T01:17:53Z
 updated_at: 2025-04-29T17:26:05Z
 url: https://github.com/astral-sh/ruff/issues/4887
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Some rules should be disabled for typing protocols
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-06 01:17_
+_@gaborbernat_
 
 I can think of ANN101 and D102:
 

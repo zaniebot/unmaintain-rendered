@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T20:00:15Z
 updated_at: 2024-07-05T21:17:09Z
 url: https://github.com/clap-rs/clap/issues/5566
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Panic in `Arg`'s `fmt::Display` implementation when `num_args` is not explicitly set
 
 ---
 
-_Issue opened by @chenxiaolong on 2024-07-05 20:00_
+_@chenxiaolong_
 
 ### Please complete the following tasks
 

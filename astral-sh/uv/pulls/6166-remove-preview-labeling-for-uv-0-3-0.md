@@ -13,14 +13,14 @@ head: zb/3-preview
 created_at: 2024-08-17T01:02:44Z
 updated_at: 2024-08-20T23:32:46Z
 url: https://github.com/astral-sh/uv/pull/6166
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Remove preview labeling for uv 0.3.0
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-17 01:02_
+_@zanieb_
 
 - Removes "experimental" labels from command documentation
 - Removes preview warnings

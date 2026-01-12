@@ -13,14 +13,14 @@ head: cjm/some-builtins
 created_at: 2024-07-26T03:13:42Z
 updated_at: 2024-08-02T17:02:29Z
 url: https://github.com/astral-sh/ruff/pull/12521
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] resolve int/list/dict/set/tuple to builtin type
 
 ---
 
-_Pull request opened by @carljm on 2024-07-26 03:13_
+_@carljm_
 
 Now that we have builtins available, resolve some simple cases to the right builtin type.
 

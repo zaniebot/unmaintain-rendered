@@ -12,14 +12,14 @@ head: clean-progress
 created_at: 2024-11-06T08:53:08Z
 updated_at: 2024-11-07T11:10:10Z
 url: https://github.com/astral-sh/uv/pull/8857
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add progress bar for `uv cache clean`
 
 ---
 
-_Pull request opened by @j178 on 2024-11-06 08:53_
+_@j178_
 
 ## Summary
 

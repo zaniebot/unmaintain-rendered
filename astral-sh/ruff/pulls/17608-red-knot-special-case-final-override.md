@@ -13,14 +13,14 @@ head: dhruv/final-staticmethod-override
 created_at: 2025-04-24T13:49:54Z
 updated_at: 2025-04-24T21:45:25Z
 url: https://github.com/astral-sh/ruff/pull/17608
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Special case `@final`, `@override`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-24 13:49_
+_@dhruvmanila_
 
 ## Summary
 

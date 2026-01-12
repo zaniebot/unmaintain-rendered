@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-27T20:32:23Z
 updated_at: 2025-12-29T15:13:52Z
 url: https://github.com/astral-sh/ruff/issues/22230
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Use PEP 798 in RUF017 autofix
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-12-27 20:32_
+_@hauntsaninja_
 
 ### Summary
 

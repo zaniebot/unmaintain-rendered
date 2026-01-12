@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-01T17:25:02Z
 updated_at: 2025-06-11T23:17:10Z
 url: https://github.com/astral-sh/uv/issues/10264
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # "on venv creation" script
 
 ---
 
-_Issue opened by @majidaldo on 2025-01-01 17:25_
+_@majidaldo_
 
 close to https://github.com/astral-sh/uv/issues/10211.
 

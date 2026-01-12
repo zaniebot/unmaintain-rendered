@@ -12,14 +12,14 @@ head: zb/314b3
 created_at: 2025-06-27T00:16:47Z
 updated_at: 2025-06-27T17:36:08Z
 url: https://github.com/astral-sh/uv/pull/14301
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Bump `python-build-standalone` releases to include 3.14.0b3
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 00:16_
+_@zanieb_
 
 See https://github.com/astral-sh/python-build-standalone/releases/tag/20250626
 

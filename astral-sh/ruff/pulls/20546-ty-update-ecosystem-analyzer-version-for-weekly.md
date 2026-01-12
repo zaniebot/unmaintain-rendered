@@ -13,14 +13,14 @@ head: david/ecosystem-report-update
 created_at: 2025-09-24T09:53:04Z
 updated_at: 2025-09-24T10:03:00Z
 url: https://github.com/astral-sh/ruff/pull/20546
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Update ecosystem-analyzer version for weekly report
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-24 09:53_
+_@sharkdp_
 
 ## Summary
 

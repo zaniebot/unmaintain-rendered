@@ -13,14 +13,14 @@ head: charlie/ord
 created_at: 2023-12-09T04:09:06Z
 updated_at: 2023-12-09T04:12:42Z
 url: https://github.com/astral-sh/uv/pull/598
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Use consistent change event order
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 04:09_
+_@charliermarsh_
 
 Closes #591.
 

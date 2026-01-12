@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-23T19:20:42Z
 updated_at: 2024-02-01T19:35:06Z
 url: https://github.com/astral-sh/ruff/issues/8830
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Duplicate rule `B904` and `TRY200` are duplicate
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-23 19:20_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

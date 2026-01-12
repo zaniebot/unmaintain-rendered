@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T08:49:44Z
 updated_at: 2025-11-12T16:00:14Z
 url: https://github.com/astral-sh/uv/issues/16587
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Read sources from scripts with inline metadata when using `--with-requirements script.py`
 
 ---
 
-_Issue opened by @disketten on 2025-11-04 08:49_
+_@disketten_
 
 ### Summary
 

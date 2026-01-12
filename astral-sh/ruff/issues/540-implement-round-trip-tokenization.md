@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-01T22:14:43Z
 updated_at: 2022-11-22T17:16:23Z
 url: https://github.com/astral-sh/ruff/issues/540
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement round-trip tokenization
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-01 22:14_
+_@charliermarsh_
 
 Fuzzy idea, since this would have to go through RustPython, but what Anthony's implemented in [`tokenize-rt`](https://github.com/asottile/tokenize-rt) looks really useful, because it allows you to define fixes at the token level but then generate high-fidelity source code.
 

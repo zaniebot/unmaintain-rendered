@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T12:59:25Z
 updated_at: 2025-02-04T16:23:32Z
 url: https://github.com/astral-sh/uv/issues/11060
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Failed to build `tensorrt==8.6.1.post1
 
 ---
 
-_Issue opened by @sh1man999 on 2025-01-29 12:59_
+_@sh1man999_
 
 ### Summary
 

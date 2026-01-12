@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:43:13Z
 updated_at: 2024-08-29T13:58:29Z
 url: https://github.com/astral-sh/uv/issues/1454
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv` fails to install nvidia package `nvidia-curand-cu12==10.3.2.106`
 
 ---
 
-_Issue opened by @strickvl on 2024-02-16 08:43_
+_@strickvl_
 
 Installing a bunch of packages from a requirements.txt file [fails with the following error](https://github.com/zenml-io/zenml/actions/runs/7928023500/job/21645472367#step:3:490):
 

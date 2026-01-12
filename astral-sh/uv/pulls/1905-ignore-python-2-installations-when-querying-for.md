@@ -13,14 +13,14 @@ head: ignore-python-2
 created_at: 2024-02-23T08:46:20Z
 updated_at: 2024-02-23T10:55:39Z
 url: https://github.com/astral-sh/uv/pull/1905
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Ignore Python 2 installations when querying for interpreters
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 08:46_
+_@MichaReiser_
 
 ## Summary
 

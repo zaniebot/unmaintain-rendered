@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T03:55:53Z
 updated_at: 2025-08-19T12:38:55Z
 url: https://github.com/astral-sh/uv/issues/8435
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Feature Request: Support for global venv
 
 ---
 
-_Issue opened by @gaby on 2024-10-22 03:55_
+_@gaby_
 
 The main purpose of this ticket is to request support for global venvs. Similar concept to what `pipx install --global` does. Where the package is installed in a `global` venv instead of a user one. This allows for systems that pre-install applications for multiple-users to be able to manage/isolate these easily.
 

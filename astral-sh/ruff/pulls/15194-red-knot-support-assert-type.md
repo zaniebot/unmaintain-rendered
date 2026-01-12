@@ -13,14 +13,14 @@ head: rk-assert-type
 created_at: 2024-12-30T03:53:20Z
 updated_at: 2025-01-10T16:50:07Z
 url: https://github.com/astral-sh/ruff/pull/15194
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Support `assert_type`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-30 03:53_
+_@InSyncWithFoo_
 
 ## Summary
 

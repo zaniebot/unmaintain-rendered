@@ -13,14 +13,14 @@ head: charlie/setup-ii
 created_at: 2024-03-23T02:04:13Z
 updated_at: 2025-04-01T02:23:45Z
 url: https://github.com/astral-sh/uv/pull/2633
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Use PEP 517 to extract non-static `pyproject.toml` metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-23 02:04_
+_@charliermarsh_
 
 ## Summary
 

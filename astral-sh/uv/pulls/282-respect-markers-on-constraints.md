@@ -12,14 +12,14 @@ head: zanie/python-constraint-marker
 created_at: 2023-11-01T21:49:12Z
 updated_at: 2023-11-02T01:20:33Z
 url: https://github.com/astral-sh/uv/pull/282
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Respect markers on constraints
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 21:49_
+_@zanieb_
 
 Closes #252 
 

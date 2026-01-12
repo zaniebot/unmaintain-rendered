@@ -13,14 +13,14 @@ head: ww/publish-docs-fixes
 created_at: 2025-08-01T19:22:53Z
 updated_at: 2025-08-01T20:11:00Z
 url: https://github.com/astral-sh/uv/pull/15018
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # chore(ci): address findings in publish-docs workflow
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-01 19:22_
+_@woodruffw_
 
 This addresses all findings in `publish-docs.yml`.
 

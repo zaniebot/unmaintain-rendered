@@ -13,14 +13,14 @@ head: charlie/box-ex
 created_at: 2025-03-22T15:37:39Z
 updated_at: 2025-03-22T15:53:38Z
 url: https://github.com/astral-sh/uv/pull/12391
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Use a boxed slice for extras and groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-22 15:37_
+_@charliermarsh_
 
 ## Summary
 

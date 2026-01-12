@@ -14,14 +14,14 @@ head: micha/playground-format
 created_at: 2025-04-05T08:12:23Z
 updated_at: 2025-04-07T07:29:32Z
 url: https://github.com/astral-sh/ruff/pull/17217
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add 'Format document' to playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-05 08:12_
+_@MichaReiser_
 
 ## Summary
 This is more "because we can" than something we need. 

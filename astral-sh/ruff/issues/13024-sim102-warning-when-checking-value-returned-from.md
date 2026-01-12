@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T07:31:47Z
 updated_at: 2024-08-21T14:53:10Z
 url: https://github.com/astral-sh/ruff/issues/13024
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # SIM102 Warning when checking value returned from walrus operator
 
 ---
 
-_Issue opened by @emilal on 2024-08-21 07:31_
+_@emilal_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

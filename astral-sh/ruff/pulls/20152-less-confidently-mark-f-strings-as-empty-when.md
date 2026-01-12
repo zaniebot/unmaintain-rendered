@@ -14,14 +14,14 @@ head: empty-fstring
 created_at: 2025-08-29T14:10:12Z
 updated_at: 2025-08-29T22:20:26Z
 url: https://github.com/astral-sh/ruff/pull/20152
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # Less confidently mark f-strings as empty when inferring truthiness
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-08-29 14:10_
+_@dylwil3_
 
 When computing the boolean value of an f-string, we over-eagerly interpreted some f-string interpolations as empty. In this PR we now mark the truthiness of f-strings involving format specs, debug text, and bytes literals as "unknown".
 

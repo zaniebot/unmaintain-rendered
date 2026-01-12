@@ -13,14 +13,14 @@ head: cjm/builtin-reveal-type
 created_at: 2024-09-19T00:07:20Z
 updated_at: 2024-09-19T14:58:10Z
 url: https://github.com/astral-sh/ruff/pull/13403
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] support reveal_type as pseudo-builtin
 
 ---
 
-_Pull request opened by @carljm on 2024-09-19 00:07_
+_@carljm_
 
 Support using `reveal_type` without importing it, as implied by the type spec and supported by existing type checkers.
 

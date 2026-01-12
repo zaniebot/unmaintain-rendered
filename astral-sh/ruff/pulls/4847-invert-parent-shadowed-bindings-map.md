@@ -12,14 +12,14 @@ head: charlie/shadow
 created_at: 2023-06-04T04:01:05Z
 updated_at: 2023-06-04T04:30:55Z
 url: https://github.com/astral-sh/ruff/pull/4847
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Invert parent-shadowed bindings map
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-04 04:01_
+_@charliermarsh_
 
 ## Summary
 

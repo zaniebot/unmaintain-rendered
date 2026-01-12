@@ -13,14 +13,14 @@ head: charlie/script-add
 created_at: 2024-12-24T18:55:45Z
 updated_at: 2025-01-08T21:19:14Z
 url: https://github.com/astral-sh/uv/pull/10145
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Update PEP 723 lockfile in `uv add --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 18:55_
+_@charliermarsh_
 
 ## Summary
 

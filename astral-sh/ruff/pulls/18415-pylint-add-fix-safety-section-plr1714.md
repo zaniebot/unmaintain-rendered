@@ -13,14 +13,14 @@ head: docs/fix-safety-repeated-equality-comparison
 created_at: 2025-06-01T22:12:11Z
 updated_at: 2025-06-20T15:45:54Z
 url: https://github.com/astral-sh/ruff/pull/18415
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`pylint`] add fix safety section (`PLR1714`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-06-01 22:12_
+_@yunchipang_
 
 parent #15584
 fix was introduced in #7910

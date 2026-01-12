@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-02T03:36:14Z
 updated_at: 2024-02-02T03:49:54Z
 url: https://github.com/astral-sh/ruff/pull/9774
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fixed example code in weak_cryptographic_key.rs
 
 ---
 
-_Pull request opened by @alex on 2024-02-02 03:36_
+_@alex_
 
 The proper way to use these APIs is to instantiate the curve classes
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-27T17:23:52Z
 updated_at: 2025-04-21T19:15:04Z
 url: https://github.com/astral-sh/uv/issues/8608
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Empty `UV_TOOL_DIR` and `UV_TOOL_DIR_BIN` environment variables treated differently
 
 ---
 
-_Issue opened by @NathanVaughn on 2024-10-27 17:23_
+_@NathanVaughn_
 
 Hello,
 

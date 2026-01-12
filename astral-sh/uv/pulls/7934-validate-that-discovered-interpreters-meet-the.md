@@ -13,14 +13,14 @@ head: zb/python-preference-filter
 created_at: 2024-10-04T21:11:17Z
 updated_at: 2025-07-16T20:31:49Z
 url: https://github.com/astral-sh/uv/pull/7934
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Validate that discovered interpreters meet the Python preference
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 21:11_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5144
 

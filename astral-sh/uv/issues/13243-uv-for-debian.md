@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T19:40:49Z
 updated_at: 2025-05-02T15:11:39Z
 url: https://github.com/astral-sh/uv/issues/13243
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # uv for debian
 
 ---
 
-_Issue opened by @dariogriffo on 2025-04-30 19:40_
+_@dariogriffo_
 
 ### Question
 

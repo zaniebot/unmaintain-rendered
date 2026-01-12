@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T15:05:47Z
 updated_at: 2025-09-04T20:21:00Z
 url: https://github.com/astral-sh/ruff/issues/20238
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF060 analyzes `f"" "1"` as empty
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-04 15:05_
+_@dscorbett_
 
 ### Summary
 

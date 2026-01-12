@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-09T00:03:06Z
 updated_at: 2024-06-26T09:03:01Z
 url: https://github.com/astral-sh/ruff/issues/10303
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Re-code `flake8-trio` and `flake8-async` rules to match upstream
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-09 00:03_
+_@charliermarsh_
 
 These two plugins were merged into one (`flake8-async`), and the rules were re-coded: https://github.com/python-trio/flake8-async/issues/124.
 

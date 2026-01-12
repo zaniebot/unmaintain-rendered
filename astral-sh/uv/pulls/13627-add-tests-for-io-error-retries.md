@@ -14,14 +14,14 @@ head: konsti/advanced-retry-tests
 created_at: 2025-05-23T20:57:25Z
 updated_at: 2025-06-13T09:57:47Z
 url: https://github.com/astral-sh/uv/pull/13627
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Add tests for IO Error retries
 
 ---
 
-_Pull request opened by @konstin on 2025-05-23 20:57_
+_@konstin_
 
 Often, HTTP requests don't fail due to server errors, but from spurious network errors such as connection resets. reqwest surfaces these as `io::Error`, and we have to handle their retrying separately.
 

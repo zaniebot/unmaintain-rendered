@@ -13,14 +13,14 @@ head: charlie/handle
 created_at: 2023-07-15T02:12:02Z
 updated_at: 2023-07-15T02:42:42Z
 url: https://github.com/astral-sh/ruff/pull/5770
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Handle name nodes prior to running rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 02:12_
+_@charliermarsh_
 
 ## Summary
 

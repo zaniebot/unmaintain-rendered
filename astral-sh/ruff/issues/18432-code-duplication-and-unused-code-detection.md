@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T15:03:55Z
 updated_at: 2025-07-24T12:03:13Z
 url: https://github.com/astral-sh/ruff/issues/18432
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Code Duplication and Unused Code Detection
 
 ---
 
-_Issue opened by @ALPA-Industry-and-Technology on 2025-06-02 15:03_
+_@ALPA-Industry-and-Technology_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2024-04-08T18:46:23Z
 updated_at: 2024-04-08T18:58:34Z
 url: https://github.com/astral-sh/uv/pull/2907
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Respect cached local `--find-links` in install plan
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 18:46_
+_@charliermarsh_
 
 ## Summary
 

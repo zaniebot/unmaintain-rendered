@@ -14,14 +14,14 @@ head: dcreager/abnormal
 created_at: 2025-11-18T19:38:05Z
 updated_at: 2025-11-19T16:49:49Z
 url: https://github.com/astral-sh/ruff/pull/21516
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Only normalize constraint bounds for display
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-18 19:38_
+_@dcreager_
 
 We were previously normalizing the upper and lower bounds of each constraint when constructing constraint sets. Like in #21463, this was for conflated reasons: It made constraint set displays nicer, since we wouldn't render multiple constraints with obviously equivalent bounds. (Think `T ≤ A & B` and `T ≤ B & A`) But it was also useful for correctness, since prior to #21463 we were (trying to) add the full transitive closure to a constraint set's BDD, and normalization gave a useful reduction in the number of nodes in a typical BDD.
 

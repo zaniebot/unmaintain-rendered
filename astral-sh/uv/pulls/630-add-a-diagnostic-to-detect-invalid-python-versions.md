@@ -12,14 +12,14 @@ head: charlie/requires
 created_at: 2023-12-13T03:41:35Z
 updated_at: 2023-12-13T03:45:03Z
 url: https://github.com/astral-sh/uv/pull/630
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Add a diagnostic to detect invalid Python versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 03:41_
+_@charliermarsh_
 
 Related to: https://github.com/astral-sh/puffin/issues/410.
 

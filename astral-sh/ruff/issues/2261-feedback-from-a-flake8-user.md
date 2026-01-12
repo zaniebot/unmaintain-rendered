@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T15:13:45Z
 updated_at: 2023-02-03T13:34:46Z
 url: https://github.com/astral-sh/ruff/issues/2261
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Feedback from a flake8 user
 
 ---
 
-_Issue opened by @alexprengere on 2023-01-27 15:13_
+_@alexprengere_
 
 I just spent a couple of hours testing ruff (0.0.236), replacing my flake8 config.
 It was a very pleasant experience! _flake8-to-ruff_ was great and the transition went smoothly.

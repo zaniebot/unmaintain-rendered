@@ -11,14 +11,14 @@ head: implement-cow
 created_at: 2025-10-16T09:14:46Z
 updated_at: 2025-10-16T09:31:24Z
 url: https://github.com/clap-rs/clap/pull/6153
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Implement From<Cow<>> for owned or borrowed str and Strings
 
 ---
 
-_Pull request opened by @germangarces on 2025-10-16 09:14_
+_@germangarces_
 
 Fix for #5785 
 

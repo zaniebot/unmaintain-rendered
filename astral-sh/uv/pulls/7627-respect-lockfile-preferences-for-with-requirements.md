@@ -13,14 +13,14 @@ head: charlie/pref
 created_at: 2024-09-22T20:44:39Z
 updated_at: 2024-09-23T11:36:38Z
 url: https://github.com/astral-sh/uv/pull/7627
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Respect lockfile preferences for `--with` requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-22 20:44_
+_@charliermarsh_
 
 ## Summary
 

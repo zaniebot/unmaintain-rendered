@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T11:52:45Z
 updated_at: 2025-03-18T15:27:22Z
 url: https://github.com/astral-sh/uv/issues/12274
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # uv sync fails due to invalid cache
 
 ---
 
-_Issue opened by @vlaci on 2025-03-18 11:52_
+_@vlaci_
 
 ### Summary
 

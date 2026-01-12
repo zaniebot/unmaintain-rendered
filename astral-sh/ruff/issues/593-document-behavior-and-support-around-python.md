@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-05T00:07:07Z
 updated_at: 2022-11-28T04:50:25Z
 url: https://github.com/astral-sh/ruff/issues/593
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Document behavior and support around python version
 
 ---
 
-_Issue opened by @vikigenius on 2022-11-05 00:07_
+_@vikigenius_
 
 Looking at the README it is not exactly clear how `ruff` supports different python versions.
 

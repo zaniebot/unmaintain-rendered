@@ -13,14 +13,14 @@ head: length-sort-option
 created_at: 2023-11-26T17:47:11Z
 updated_at: 2023-11-28T06:06:50Z
 url: https://github.com/astral-sh/ruff/pull/8841
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`isort`]  Add support for length-sort settings
 
 ---
 
-_Pull request opened by @bluthej on 2023-11-26 17:47_
+_@bluthej_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

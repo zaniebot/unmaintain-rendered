@@ -12,14 +12,14 @@ head: charlie/N803
 created_at: 2022-11-06T19:18:50Z
 updated_at: 2022-11-06T19:19:03Z
 url: https://github.com/astral-sh/ruff/pull/622
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Allow underscore names in N803
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-06 19:18_
+_@charliermarsh_
 
 Resolves #619.
 

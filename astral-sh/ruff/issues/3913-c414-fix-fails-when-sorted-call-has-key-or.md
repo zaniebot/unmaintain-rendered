@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-08T03:43:48Z
 updated_at: 2023-04-09T22:40:38Z
 url: https://github.com/astral-sh/ruff/issues/3913
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # C414 fix fails when `sorted()` call has `key` or `reverse` argument
 
 ---
 
-_Issue opened by @leos on 2023-04-08 03:43_
+_@leos_
 
 ruff version: 0.0.261
 

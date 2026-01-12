@@ -13,14 +13,14 @@ head: charlie/q
 created_at: 2024-04-02T03:01:02Z
 updated_at: 2024-04-02T03:44:17Z
 url: https://github.com/astral-sh/ruff/pull/10728
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Respect `Q00*` ignores in `flake8-quotes` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 03:01_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T09:12:45Z
 updated_at: 2025-02-12T11:33:20Z
 url: https://github.com/astral-sh/uv/issues/11440
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # uv doesn't correctly find upstream PyPI packages via Azure DevOps public index
 
 ---
 
-_Issue opened by @thomasaarholt on 2025-02-12 09:12_
+_@thomasaarholt_
 
 ### Summary
 

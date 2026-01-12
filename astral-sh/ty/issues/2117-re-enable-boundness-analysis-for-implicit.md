@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T17:30:57Z
 updated_at: 2025-12-20T00:32:30Z
 url: https://github.com/astral-sh/ty/issues/2117
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Re-enable boundness analysis for implicit instance attributes
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-19 17:30_
+_@sharkdp_
 
 In https://github.com/astral-sh/ruff/pull/20128, we disabled boundness analysis for *implicit* instance attributes:
 

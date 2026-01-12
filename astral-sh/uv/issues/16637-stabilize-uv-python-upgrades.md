@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-07T16:45:30Z
 updated_at: 2025-11-10T03:29:22Z
 url: https://github.com/astral-sh/uv/issues/16637
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Stabilize uv Python upgrades
 
 ---
 
-_Issue opened by @zanieb on 2025-11-07 16:45_
+_@zanieb_
 
 Tracking issue for stabilization of the `uv python upgrade` and `uv python install` transparent upgrade behaviors under the `python-upgrade` preview flag.
 

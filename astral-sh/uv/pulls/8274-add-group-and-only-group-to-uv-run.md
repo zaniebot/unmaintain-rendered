@@ -12,14 +12,14 @@ head: zb/735-run-group
 created_at: 2024-10-16T22:54:17Z
 updated_at: 2024-10-18T17:06:26Z
 url: https://github.com/astral-sh/uv/pull/8274
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Add `--group` and `--only-group` to `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 22:54_
+_@zanieb_
 
 Similar to #8110 
 

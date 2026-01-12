@@ -13,14 +13,14 @@ head: konsti/pubgrub-generic-incompatibility
 created_at: 2024-05-02T08:13:53Z
 updated_at: 2024-05-08T08:40:16Z
 url: https://github.com/astral-sh/uv/pull/3335
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Use generic pubgrub incompatibility reason
 
 ---
 
-_Pull request opened by @konstin on 2024-05-02 08:13_
+_@konstin_
 
 Pubgrub got a new feature where all unavailability is a custom, instead of the reasonless `UnavailableDependencies` and our custom `String` type previously (https://github.com/pubgrub-rs/pubgrub/pull/208). This PR introduces a `UnavailableReason` that tracks either an entire version being unusable, or a specific version. The error messages now also track this difference properly.
 

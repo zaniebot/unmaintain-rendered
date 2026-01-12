@@ -13,14 +13,14 @@ head: charlie/hint
 created_at: 2025-04-27T16:43:47Z
 updated_at: 2025-04-27T16:56:51Z
 url: https://github.com/astral-sh/uv/pull/13136
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Show tag hints when failing to find a compatible wheel in `pylock.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-27 16:43_
+_@charliermarsh_
 
 ## Summary
 

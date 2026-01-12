@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-27T19:42:51Z
 updated_at: 2024-08-27T20:22:55Z
 url: https://github.com/astral-sh/uv/issues/6719
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Docs request: showing tests folders in Workspaces layouts page
 
 ---
 
-_Issue opened by @jamesbraza on 2024-08-27 19:42_
+_@jamesbraza_
 
 I am using `uv==0.3.5` and am looking at adopting Workspaces.
 

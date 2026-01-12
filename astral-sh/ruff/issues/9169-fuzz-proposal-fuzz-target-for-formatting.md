@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-17T15:22:17Z
 updated_at: 2024-01-11T18:04:46Z
 url: https://github.com/astral-sh/ruff/issues/9169
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Fuzz proposal: fuzz target for formatting
 
 ---
 
-_Issue opened by @manunio on 2023-12-17 15:22_
+_@manunio_
 
 Hi, Would be interested in  a fuzz target that formates the code twice and checks for inconsistencies between them, something which is done here:
 https://github.com/astral-sh/ruff/blob/c944d23053fe84e63a7515c75a50ce46b63dc2e0/crates/ruff_python_formatter/tests/fixtures.rs#L213

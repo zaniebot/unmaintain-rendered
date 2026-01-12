@@ -14,14 +14,14 @@ head: ag/rug-pull
 created_at: 2025-03-17T15:24:34Z
 updated_at: 2025-03-17T16:46:51Z
 url: https://github.com/astral-sh/ruff/pull/16812
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] replace old diagnostic renderer with the new
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-03-17 15:24_
+_@BurntSushi_
 
 This PR "rug pulls" the old renderer with the new.
 

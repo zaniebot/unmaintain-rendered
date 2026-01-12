@@ -12,14 +12,14 @@ head: charlie/flake8-quotes
 created_at: 2022-10-28T21:37:53Z
 updated_at: 2022-11-02T17:51:52Z
 url: https://github.com/astral-sh/ruff/pull/495
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement the `flake8-quotes` plugin
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-28 21:37_
+_@charliermarsh_
 
 _No description provided._
 

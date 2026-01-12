@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T19:13:49Z
 updated_at: 2025-08-08T22:24:22Z
 url: https://github.com/astral-sh/uv/issues/11675
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # uv sync --only-group and --no-extra still evaluates other package sources not specified, source = path
 
 ---
 
-_Issue opened by @JWCS on 2025-02-20 19:13_
+_@JWCS_
 
 ### Summary
 

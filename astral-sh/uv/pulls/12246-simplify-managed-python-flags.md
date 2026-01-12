@@ -12,14 +12,14 @@ head: jtfm/managed-python-flags
 created_at: 2025-03-17T19:53:10Z
 updated_at: 2025-04-28T15:45:38Z
 url: https://github.com/astral-sh/uv/pull/12246
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Simplify managed Python flags
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-17 19:53_
+_@jtfmumm_
 
 Currently, for users to specify at the command line whether to use uv-managed or system Python interpreters, they use the `--python-preference` parameter, which takes four possible values. This is more complex than necessary since the normal case is to either say "only managed" or "not managed". This PR hides the old `--python-preference` parameter from help and documentation and adds two new flags: `--managed-python` and `--no-managed-python` to capture the "only managed" and "not managed" cases.
 

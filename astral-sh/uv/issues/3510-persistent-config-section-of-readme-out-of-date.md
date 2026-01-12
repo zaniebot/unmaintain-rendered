@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T15:49:17Z
 updated_at: 2024-05-10T18:53:15Z
 url: https://github.com/astral-sh/uv/issues/3510
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Persistent config section of README out of date
 
 ---
 
-_Issue opened by @jonfitt on 2024-05-10 15:49_
+_@jonfitt_
 
 > uv supports persistent configuration at both the project- and user-level.
 > 

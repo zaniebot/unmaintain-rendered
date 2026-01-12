@@ -14,14 +14,14 @@ head: micha/server-options
 created_at: 2025-06-11T09:30:03Z
 updated_at: 2025-06-12T16:58:37Z
 url: https://github.com/astral-sh/ruff/pull/18623
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # Centralize client options validation
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-11 09:30_
+_@MichaReiser_
 
 ## Summary
 

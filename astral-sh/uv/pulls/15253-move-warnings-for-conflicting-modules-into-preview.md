@@ -13,14 +13,14 @@ head: zb/gate-module-warnings
 created_at: 2025-08-13T16:43:05Z
 updated_at: 2025-08-13T20:02:07Z
 url: https://github.com/astral-sh/uv/pull/15253
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Move warnings for conflicting modules into preview
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-13 16:43_
+_@zanieb_
 
 Per https://github.com/astral-sh/uv/issues/15239, there are too many false positives here.
 

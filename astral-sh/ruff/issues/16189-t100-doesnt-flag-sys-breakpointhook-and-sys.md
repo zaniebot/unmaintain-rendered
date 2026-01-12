@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T16:03:02Z
 updated_at: 2025-02-16T19:50:18Z
 url: https://github.com/astral-sh/ruff/issues/16189
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # T100 doesn’t flag `sys.breakpointhook` and `sys.__breakpointhook__`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-16 16:03_
+_@dscorbett_
 
 ### Description
 

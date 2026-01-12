@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T23:00:31Z
 updated_at: 2025-05-03T20:34:45Z
 url: https://github.com/astral-sh/uv/issues/13206
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Injecting index URL via environment variable
 
 ---
 
-_Issue opened by @vizeit on 2025-04-29 23:00_
+_@vizeit_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: zb/conda-base
 created_at: 2024-09-25T19:00:20Z
 updated_at: 2024-10-21T22:23:51Z
 url: https://github.com/astral-sh/uv/pull/7691
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Treat the base Conda environment as a system environment
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-25 19:00_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7124
 Closes https://github.com/astral-sh/uv/issues/7137

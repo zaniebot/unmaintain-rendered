@@ -13,14 +13,14 @@ head: alex/simplify-string-literal-creations
 created_at: 2025-01-27T18:45:28Z
 updated_at: 2025-01-27T18:53:41Z
 url: https://github.com/astral-sh/ruff/pull/15775
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [minor] Simplify some `ExprStringLiteral` creation logic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-27 18:45_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: add_upate_schemastore_py
 created_at: 2023-05-22T11:02:45Z
 updated_at: 2023-05-23T11:01:37Z
 url: https://github.com/astral-sh/ruff/pull/4574
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add a script to update the schemastore
 
 ---
 
-_Pull request opened by @konstin on 2023-05-22 11:02_
+_@konstin_
 
 Hacked this together, it clones astral-sh/schemastore, updated the schema and pushes the changes to a new branch tagged with the ruff git hash. You can see the URL to create the PR to schemastore in the CLI. The script is separated into three blocks so you can rerun the schema generation in the middle before committing.
 

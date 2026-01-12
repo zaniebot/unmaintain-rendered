@@ -12,14 +12,14 @@ head: charlie/split-ast
 created_at: 2023-03-02T04:26:28Z
 updated_at: 2023-03-04T19:01:22Z
 url: https://github.com/astral-sh/ruff/pull/3298
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Move binding and scope tracking into a separate `ast::Context` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-02 04:26_
+_@charliermarsh_
 
 This PR is an attempt to split up `Checker` in such a way so as to allow us to break the Ruff linter itself into multiple crates.
 

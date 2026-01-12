@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T22:21:14Z
 updated_at: 2022-11-29T23:45:17Z
 url: https://github.com/astral-sh/ruff/issues/948
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # feat: Alternative Text Output Format(s)
 
 ---
 
-_Issue opened by @hay-kot on 2022-11-28 22:21_
+_@hay-kot_
 
 I would like to group the errors in ruff by file and output them in a more structured format Similar to the image below where issues are grouped by file and then displayed in a table like view below the file name. 
 

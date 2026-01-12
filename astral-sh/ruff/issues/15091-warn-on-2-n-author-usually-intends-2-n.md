@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-21T08:17:30Z
 updated_at: 2024-12-21T13:40:20Z
 url: https://github.com/astral-sh/ruff/issues/15091
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Warn on `2 ^ n` - author usually intends `2 ** n`
 
 ---
 
-_Issue opened by @Zac-HD on 2024-12-21 08:17_
+_@Zac-HD_
 
 It's pretty rare for people to *actually intend* to do bitwise-or with constants; making this a lint error when the "base" is either 2 or 10 would likely save quite a few people some frustrating debugging (or silent errors)
 

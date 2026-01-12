@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T06:55:01Z
 updated_at: 2025-09-22T12:41:26Z
 url: https://github.com/astral-sh/ty/issues/1214
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support transitive imports
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 06:55_
+_@KotlinIsland_
 
 ### Summary
 

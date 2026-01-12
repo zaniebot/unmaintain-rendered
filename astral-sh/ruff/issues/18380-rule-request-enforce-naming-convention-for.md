@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-30T01:54:34Z
 updated_at: 2025-05-30T05:45:13Z
 url: https://github.com/astral-sh/ruff/issues/18380
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule Request: Enforce naming convention for internal vs. exported symbols
 
 ---
 
-_Issue opened by @NeilGirdhar on 2025-05-30 01:54_
+_@NeilGirdhar_
 
 ### Summary
 

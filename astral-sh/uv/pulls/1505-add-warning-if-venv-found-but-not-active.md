@@ -11,14 +11,14 @@ head: venv-warning
 created_at: 2024-02-16T15:50:46Z
 updated_at: 2024-02-28T10:20:36Z
 url: https://github.com/astral-sh/uv/pull/1505
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Add warning if venv found but not active
 
 ---
 
-_Pull request opened by @sanders41 on 2024-02-16 15:50_
+_@sanders41_
 
 Closes #1408
 

@@ -13,14 +13,14 @@ head: gopoto/16495
 created_at: 2025-03-21T05:30:01Z
 updated_at: 2025-06-20T06:43:28Z
 url: https://github.com/astral-sh/ruff/pull/16883
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [ruff] Detect mutable defaults in dataclass `field` calls (`RUF008`)
 
 ---
 
-_Pull request opened by @codex-maintainers on 2025-03-21 05:30_
+_@codex-maintainers_
 
 ## Summary
 

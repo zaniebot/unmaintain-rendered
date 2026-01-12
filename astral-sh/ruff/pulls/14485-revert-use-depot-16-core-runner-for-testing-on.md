@@ -12,14 +12,14 @@ head: revert-14460-zb/ci-depot-linux
 created_at: 2024-11-20T11:11:14Z
 updated_at: 2024-11-20T14:22:22Z
 url: https://github.com/astral-sh/ruff/pull/14485
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Revert "Use Depot 16-core runner for testing on Linux"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-20 11:11_
+_@AlexWaygood_
 
 Reverts astral-sh/ruff#14460
 

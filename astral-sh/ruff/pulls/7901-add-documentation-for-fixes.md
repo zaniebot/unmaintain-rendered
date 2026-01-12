@@ -13,14 +13,14 @@ head: zanie/doc-fix
 created_at: 2023-10-10T18:37:18Z
 updated_at: 2023-10-11T16:48:13Z
 url: https://github.com/astral-sh/ruff/pull/7901
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add documentation for fixes
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-10 18:37_
+_@zanieb_
 
 Adds documentation for using `ruff check . --fix`
 

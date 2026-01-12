@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-20T14:34:48Z
 updated_at: 2023-04-25T05:32:17Z
 url: https://github.com/astral-sh/ruff/issues/4047
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False D417 when arguments some are keyword only.
 
 ---
 
-_Issue opened by @AlexGiazitzis on 2023-04-20 14:34_
+_@AlexGiazitzis_
 
 Running the command `ruff .\file.py` containing the snippet below, shows a D417 warning whilst all arguments are documented. If the Args section and all members of it is removed, the warning goes away, whilst arg1 is not documented. I've attached screenshots for each occasion. With the --isolated flag, no warning is emitted in both cases.
 

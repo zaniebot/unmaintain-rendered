@@ -13,14 +13,14 @@ head: charlie/static
 created_at: 2023-02-07T19:56:18Z
 updated_at: 2023-02-07T19:57:06Z
 url: https://github.com/astral-sh/ruff/pull/2635
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Treat @staticmethod as higher-precedence than ABC
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 19:56_
+_@charliermarsh_
 
 Closes #2634.
 

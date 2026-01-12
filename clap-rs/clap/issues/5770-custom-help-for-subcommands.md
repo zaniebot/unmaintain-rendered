@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T12:05:45Z
 updated_at: 2024-10-08T12:05:45Z
 url: https://github.com/clap-rs/clap/issues/5770
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Custom help for subcommands
 
 ---
 
-_Issue opened by @htngr on 2024-10-08 12:05_
+_@htngr_
 
 ### Please complete the following tasks
 

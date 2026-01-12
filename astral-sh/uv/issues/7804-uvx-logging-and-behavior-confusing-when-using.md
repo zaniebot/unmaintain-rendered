@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-30T06:40:33Z
 updated_at: 2025-04-30T02:26:37Z
 url: https://github.com/astral-sh/uv/issues/7804
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # `uvx` logging and behavior confusing when using binary name instead of package name
 
 ---
 
-_Issue opened by @ilyagr on 2024-09-30 06:40_
+_@ilyagr_
 
 I use a binary `px`, but its PyPi package is confusingly called [`pxpx`](https://pypi.org/project/pxpx/). For a clean installation, trying to run it with `uvx` without accounting for this fails as expected:
 

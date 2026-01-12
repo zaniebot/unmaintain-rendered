@@ -13,14 +13,14 @@ head: zb/installed-resolve
 created_at: 2024-03-21T18:47:07Z
 updated_at: 2024-03-28T18:49:18Z
 url: https://github.com/astral-sh/uv/pull/2596
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Consider installed packages during resolution
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-21 18:47_
+_@zanieb_
 
 Previously, we did not consider installed distributions as candidates while performing resolution. Here, we update the resolver to use installed distributions that satisfy requirements instead of pulling new distributions from the registry. 
 

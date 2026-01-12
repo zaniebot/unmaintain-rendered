@@ -12,14 +12,14 @@ head: print-installation-path
 created_at: 2024-09-16T11:14:20Z
 updated_at: 2024-10-01T15:49:46Z
 url: https://github.com/astral-sh/uv/pull/7422
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Print installation path
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-16 11:14_
+_@Aditya-PS-05_
 
 closes #2155 
 credits #4835 for reference

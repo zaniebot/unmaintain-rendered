@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T10:54:30Z
 updated_at: 2025-10-24T23:01:06Z
 url: https://github.com/astral-sh/ty/issues/1434
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Goto definition on import statements follows submodules inconsistently?
 
 ---
 
-_Issue opened by @saucoide on 2025-10-24 10:54_
+_@saucoide_
 
 ### Summary
 

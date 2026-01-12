@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-25T19:05:49Z
 updated_at: 2023-09-02T08:23:02Z
 url: https://github.com/astral-sh/ruff/issues/6880
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Refine edge-case comment handling for `PatternMatchClass`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-25 19:05_
+_@charliermarsh_
 
 In this case, comments `a` and `b` are leading on `2`, but should be leading on a node for the entire `b=2` (this requires an AST change):
 

@@ -13,14 +13,14 @@ head: alex/ephemeral-venv-parent
 created_at: 2025-05-22T17:18:02Z
 updated_at: 2025-05-27T12:46:30Z
 url: https://github.com/astral-sh/uv/pull/13598
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Write the path of the parent environment to an `extends-environment` key in the `pyvenv.cfg` file of an ephemeral environment
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-22 17:18_
+_@AlexWaygood_
 
 ## Summary
 

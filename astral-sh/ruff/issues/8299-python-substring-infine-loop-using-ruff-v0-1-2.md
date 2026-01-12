@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-28T09:00:56Z
 updated_at: 2023-10-30T23:38:15Z
 url: https://github.com/astral-sh/ruff/issues/8299
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Python Substring: infine loop using ruff v0.1.2
 
 ---
 
-_Issue opened by @bigluck on 2023-10-28 09:00_
+_@bigluck_
 
 Using `ruff` v0.1.2 and `ruff-pre-commit` v0.1.2, pre-commit fails with:
 

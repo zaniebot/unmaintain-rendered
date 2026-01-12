@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T20:52:48Z
 updated_at: 2025-01-16T11:01:43Z
 url: https://github.com/astral-sh/ruff/issues/15514
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `ruff format` output breaks certain f-strings in 0.9
 
 ---
 
-_Issue opened by @markjm on 2025-01-15 20:52_
+_@markjm_
 
 Consider the file:
 

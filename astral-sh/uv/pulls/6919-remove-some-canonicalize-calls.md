@@ -13,14 +13,14 @@ head: charlie/canon
 created_at: 2024-09-01T18:01:07Z
 updated_at: 2024-09-01T18:23:12Z
 url: https://github.com/astral-sh/uv/pull/6919
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Remove some canonicalize calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-01 18:01_
+_@charliermarsh_
 
 ## Summary
 

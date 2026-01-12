@@ -13,14 +13,14 @@ head: fix-10717
 created_at: 2025-01-19T01:05:09Z
 updated_at: 2025-01-22T07:34:45Z
 url: https://github.com/astral-sh/uv/pull/10746
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # fix(#10717): Omit stdout and stderr sections when empty in errors
 
 ---
 
-_Pull request opened by @issokuos on 2025-01-19 01:05_
+_@issokuos_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: charlie/mccabe
 created_at: 2022-11-21T18:31:13Z
 updated_at: 2022-11-21T18:31:18Z
 url: https://github.com/astral-sh/ruff/pull/859
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add unit tests for complexity check
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-21 18:31_
+_@charliermarsh_
 
 _No description provided._
 

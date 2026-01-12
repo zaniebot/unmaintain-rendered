@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T15:18:46Z
 updated_at: 2026-01-08T15:05:07Z
 url: https://github.com/astral-sh/uv/issues/12533
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Add support for declarative tool installations (e.g., like Brewfile)
 
 ---
 
-_Issue opened by @michaeltinsley on 2025-03-28 15:18_
+_@michaeltinsley_
 
 ### Summary
 

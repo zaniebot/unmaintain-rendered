@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T12:59:11Z
 updated_at: 2024-12-22T13:45:40Z
 url: https://github.com/astral-sh/uv/issues/8214
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Private Projects
 
 ---
 
-_Issue opened by @johnthagen on 2024-10-15 12:59_
+_@johnthagen_
 
 Is it possible to mark a uv project as `private` such that `uv publish` is completely disabled? For private code this is a desirable feature.
 

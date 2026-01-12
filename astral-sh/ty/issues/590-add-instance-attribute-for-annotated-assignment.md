@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T00:16:24Z
 updated_at: 2025-07-02T15:31:13Z
 url: https://github.com/astral-sh/ty/issues/590
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # add instance attribute for annotated assignment without RHS in method
 
 ---
 
-_Issue opened by @carljm on 2025-06-06 00:16_
+_@carljm_
 
 We do not currently infer that `Foo` has an instance attribute `x` for something like this:
 

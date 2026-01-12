@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T09:37:08Z
 updated_at: 2025-06-16T10:22:00Z
 url: https://github.com/astral-sh/uv/issues/14071
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # How to omit internal server addresses in uv.lock
 
 ---
 
-_Issue opened by @andreas-vester on 2025-06-16 09:37_
+_@andreas-vester_
 
 ### Question
 

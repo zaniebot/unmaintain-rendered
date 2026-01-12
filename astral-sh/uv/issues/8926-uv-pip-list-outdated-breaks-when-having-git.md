@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T08:38:25Z
 updated_at: 2024-11-08T14:12:27Z
 url: https://github.com/astral-sh/uv/issues/8926
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # uv pip list --outdated breaks when having git package
 
 ---
 
-_Issue opened by @ddorian on 2024-11-08 08:38_
+_@ddorian_
 
 This is on Ubuntu 22.04:
 

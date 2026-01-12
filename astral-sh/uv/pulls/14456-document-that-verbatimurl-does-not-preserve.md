@@ -13,14 +13,14 @@ head: jtfm/verbatim-url-doc
 created_at: 2025-07-04T08:01:19Z
 updated_at: 2025-07-04T20:42:57Z
 url: https://github.com/astral-sh/uv/pull/14456
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Document that `VerbatimUrl` does not preserve original string after serialization
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-04 08:01_
+_@jtfmumm_
 
 This came up in [discussion](https://github.com/astral-sh/uv/pull/14387#issuecomment-3032223670) on #14387.
 

@@ -13,14 +13,14 @@ head: charlie/argfile
 created_at: 2023-04-25T05:41:25Z
 updated_at: 2023-04-25T23:58:26Z
 url: https://github.com/astral-sh/ruff/pull/4087
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add support for providing command-line arguments via `argfile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-25 05:41_
+_@charliermarsh_
 
 ## Summary
 

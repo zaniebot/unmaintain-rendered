@@ -13,14 +13,14 @@ head: zb/dup-changelog
 created_at: 2024-08-21T23:25:41Z
 updated_at: 2024-08-22T00:03:43Z
 url: https://github.com/astral-sh/uv/pull/6390
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Fix duplicate changelog section
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 23:25_
+_@zanieb_
 
 _No description provided._
 

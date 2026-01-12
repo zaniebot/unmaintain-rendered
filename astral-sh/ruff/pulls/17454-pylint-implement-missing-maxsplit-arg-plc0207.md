@@ -14,14 +14,14 @@ head: vjurczenia/missing_maxsplit_arg
 created_at: 2025-04-17T22:09:17Z
 updated_at: 2025-05-28T20:49:49Z
 url: https://github.com/astral-sh/ruff/pull/17454
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pylint`] Implement `missing-maxsplit-arg` (`PLC0207`)
 
 ---
 
-_Pull request opened by @vjurczenia on 2025-04-17 22:09_
+_@vjurczenia_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T10:11:32Z
 updated_at: 2025-03-20T10:11:32Z
 url: https://github.com/astral-sh/ruff/issues/16866
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Consider using `bitflags` or otherwise unify booleans on `LinterResult` and `Parsed`
 
 ---
 
-_Issue opened by @dylwil3 on 2025-03-20 10:11_
+_@dylwil3_
 
 See https://github.com/astral-sh/ruff/pull/16848#discussion_r2005230504
 

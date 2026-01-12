@@ -14,14 +14,14 @@ head: dcreager/more-simpler
 created_at: 2025-09-15T19:04:41Z
 updated_at: 2025-09-16T14:05:03Z
 url: https://github.com/astral-sh/ruff/pull/20423
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] More constraint set simplifications via simpler constraint representation
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-15 19:04_
+_@dcreager_
 
 Previously, we used a very fine-grained representation for individual constraints: each constraint was _either_ a range constraint, a not-equivalent constraint, or an incomparable constraint. These three pieces are enough to represent all of the "real" constraints we need to create — range constraints and their negation.
 

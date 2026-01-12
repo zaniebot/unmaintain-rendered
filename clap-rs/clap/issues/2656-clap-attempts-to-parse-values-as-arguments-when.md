@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-02T15:51:52Z
 updated_at: 2021-08-02T15:56:03Z
 url: https://github.com/clap-rs/clap/issues/2656
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Clap attempts to parse values as arguments when they begin with a `-` and are quoted
 
 ---
 
-_Issue opened by @alpha-tango-kilo on 2021-08-02 15:51_
+_@alpha-tango-kilo_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T05:19:16Z
 updated_at: 2025-09-18T01:00:51Z
 url: https://github.com/astral-sh/uv/issues/8070
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv --native-tls doesn't seem to work
 
 ---
 
-_Issue opened by @andreamoro on 2024-10-10 05:19_
+_@andreamoro_
 
 On my Mac OS Sequoia 15.0 (24A335), I'm trying to run uv and as I'm behind a company proxy, I need to use the system certificates which are not recognised by default.
 

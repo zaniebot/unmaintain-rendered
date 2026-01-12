@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T17:32:14Z
 updated_at: 2025-09-16T08:58:40Z
 url: https://github.com/astral-sh/ruff/issues/20421
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff was not able to detect `RUF006` in this code.
 
 ---
 
-_Issue opened by @chirizxc on 2025-09-15 17:32_
+_@chirizxc_
 
 ### Summary
 

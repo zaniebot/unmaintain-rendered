@@ -14,14 +14,14 @@ head: alex/unresolvable-submodule-errors
 created_at: 2024-12-17T12:51:10Z
 updated_at: 2024-12-17T17:29:23Z
 url: https://github.com/astral-sh/ruff/pull/15035
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Explicitly test diagnostics are emitted for unresolvable submodule imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-17 12:51_
+_@AlexWaygood_
 
 Everything's working as expected here, but we didn't have explicit tests for these; this PR just adds some missing cases
 

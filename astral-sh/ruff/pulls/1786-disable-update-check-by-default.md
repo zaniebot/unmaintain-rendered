@@ -12,14 +12,14 @@ head: charlie/update-check
 created_at: 2023-01-11T18:47:32Z
 updated_at: 2023-01-11T18:47:41Z
 url: https://github.com/astral-sh/ruff/pull/1786
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Disable update check by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-11 18:47_
+_@charliermarsh_
 
 This has received enough criticism that I'm comfortable making it opt-in.
 

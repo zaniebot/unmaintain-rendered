@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-13T17:32:10Z
 updated_at: 2021-06-13T22:59:34Z
 url: https://github.com/clap-rs/clap/issues/2535
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Doesn't compile in WSL with ubuntu 20.04
 
 ---
 
-_Issue opened by @IceSentry on 2021-06-13 17:32_
+_@IceSentry_
 
 ### Please complete the following tasks
 

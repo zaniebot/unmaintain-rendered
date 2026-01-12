@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T19:49:56Z
 updated_at: 2024-11-06T22:07:19Z
 url: https://github.com/astral-sh/uv/issues/1535
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Support `PIP_INDEX_URL` for setting `pip` index urls
 
 ---
 
-_Issue opened by @humanzz on 2024-02-16 19:49_
+_@humanzz_
 
 This is a request to support using alternative index urls - not just via the `--index-url` option - but also via the related pip environment variables
 - `PIP_INDEX_URL`

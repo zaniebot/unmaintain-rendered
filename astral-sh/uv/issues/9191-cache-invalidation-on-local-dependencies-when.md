@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T10:11:56Z
 updated_at: 2025-10-18T18:55:29Z
 url: https://github.com/astral-sh/uv/issues/9191
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Cache invalidation on local dependencies when using docker
 
 ---
 
-_Issue opened by @hxyannay on 2024-11-18 10:11_
+_@hxyannay_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

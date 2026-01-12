@@ -12,14 +12,14 @@ head: ruf014-generate-all
 created_at: 2023-07-17T13:13:09Z
 updated_at: 2023-07-19T21:23:26Z
 url: https://github.com/astral-sh/ruff/pull/5832
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Filter off-by-default RUF014 out of schema
 
 ---
 
-_Pull request opened by @konstin on 2023-07-17 13:13_
+_@konstin_
 
 **Summary** Previously, `RUF014` would be part of ruff.schema.json depending on whether or not the `unreachable-code` feature was active. This caused problems for contributors who got unrelated RUF014 changes when updating the schema without the feature active.
 

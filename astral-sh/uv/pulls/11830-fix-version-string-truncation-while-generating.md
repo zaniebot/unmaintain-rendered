@@ -12,14 +12,14 @@ head: fix-version-truncation
 created_at: 2025-02-27T11:30:55Z
 updated_at: 2025-02-27T14:16:06Z
 url: https://github.com/astral-sh/uv/pull/11830
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Fix version string truncation while generating cache_key
 
 ---
 
-_Pull request opened by @nkitsaini on 2025-02-27 11:30_
+_@nkitsaini_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

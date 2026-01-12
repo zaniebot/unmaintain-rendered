@@ -12,14 +12,14 @@ head: zb/fix-ci
 created_at: 2024-10-22T16:06:24Z
 updated_at: 2024-10-22T16:54:30Z
 url: https://github.com/astral-sh/uv/pull/8466
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Invalidate clippy-xwin cache in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-22 16:06_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8430
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-13T00:19:43Z
 updated_at: 2025-09-14T01:57:12Z
 url: https://github.com/astral-sh/uv/issues/15822
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Call out UV_NO_CACHE=1 in logs
 
 ---
 
-_Issue opened by @williamsnell on 2025-09-13 00:19_
+_@williamsnell_
 
 ### Summary
 

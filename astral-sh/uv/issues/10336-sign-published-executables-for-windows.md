@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T23:03:52Z
 updated_at: 2026-01-08T21:54:18Z
 url: https://github.com/astral-sh/uv/issues/10336
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Sign published executables for Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-01-06 23:03_
+_@zanieb_
 
 It’d be great to sign our Windows releases so we stop getting reported by antivirus software. We haven’t done much investigation yet, but requiring a physical key on release would be disappointing — I think there are alternative workflows.
 

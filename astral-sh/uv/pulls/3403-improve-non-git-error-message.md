@@ -13,14 +13,14 @@ head: konsti/not-git-error
 created_at: 2024-05-06T11:19:29Z
 updated_at: 2024-05-06T11:28:07Z
 url: https://github.com/astral-sh/uv/pull/3403
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Improve non-git error message
 
 ---
 
-_Pull request opened by @konstin on 2024-05-06 11:19_
+_@konstin_
 
 The boxing changes are due to clippy
 

@@ -13,14 +13,14 @@ head: charlie/autotyping
 created_at: 2023-11-13T04:40:08Z
 updated_at: 2023-11-14T04:44:16Z
 url: https://github.com/astral-sh/ruff/pull/8643
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add autotyping-like return type inference for annotation rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 04:40_
+_@charliermarsh_
 
 ## Summary
 

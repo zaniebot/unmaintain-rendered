@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T13:43:47Z
 updated_at: 2022-12-14T18:57:26Z
 url: https://github.com/astral-sh/ruff/issues/1207
-synced_at: 2026-01-10T12:06:19Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Conversion from lambda to function definition leads to syntax error
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 13:43_
+_@charliermarsh_
 
 See: #1206.
 

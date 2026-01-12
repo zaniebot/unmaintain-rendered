@@ -13,14 +13,14 @@ head: charlie/glob
 created_at: 2023-02-01T17:30:34Z
 updated_at: 2023-02-01T18:03:52Z
 url: https://github.com/astral-sh/ruff/pull/2449
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Only avoid PEP604 rewrites for pre-Python 3.10 code
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-01 17:30_
+_@charliermarsh_
 
 I moved the `self.in_annotation` guard out of the version check in #1563. But, I think that was a mistake. It was done to resolve #1560, but the fix in that case _should've_ been to set a different Python version.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-21T13:46:47Z
 updated_at: 2023-08-22T14:19:58Z
 url: https://github.com/astral-sh/ruff/issues/6726
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `fmt: off` causes crash when header contains type annotation
 
 ---
 
-_Issue opened by @konstin on 2023-08-21 13:46_
+_@konstin_
 
 Formatting
 

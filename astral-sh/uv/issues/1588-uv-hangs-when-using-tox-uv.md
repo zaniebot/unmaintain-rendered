@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T13:15:59Z
 updated_at: 2024-02-17T21:33:37Z
 url: https://github.com/astral-sh/uv/issues/1588
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # uv hangs when using tox-uv
 
 ---
 
-_Issue opened by @davidszotten on 2024-02-17 13:15_
+_@davidszotten_
 
 See more details at https://github.com/tox-dev/tox-uv/issues/11
 

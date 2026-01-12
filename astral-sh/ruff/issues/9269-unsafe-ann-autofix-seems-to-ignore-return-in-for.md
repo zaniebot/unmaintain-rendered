@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-25T03:13:35Z
 updated_at: 2023-12-29T16:46:38Z
 url: https://github.com/astral-sh/ruff/issues/9269
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # unsafe ANN autofix seems to ignore return in for loop
 
 ---
 
-_Issue opened by @twoertwein on 2023-12-25 03:13_
+_@twoertwein_
 
 `ruff --select "ANN001,ANN2" --fix-only` (version 0.1.9) on the following code snippet seems to ignore the return statement in the for loop
 

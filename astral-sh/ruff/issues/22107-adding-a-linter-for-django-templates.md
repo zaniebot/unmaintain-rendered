@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T10:57:31Z
 updated_at: 2025-12-22T09:09:29Z
 url: https://github.com/astral-sh/ruff/issues/22107
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Adding a linter for Django templates
 
 ---
 
-_Issue opened by @ulgens on 2025-12-20 10:57_
+_@ulgens_
 
 ### Summary
 

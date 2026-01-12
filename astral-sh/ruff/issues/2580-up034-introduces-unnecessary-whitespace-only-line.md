@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-05T10:48:00Z
 updated_at: 2023-02-05T12:14:11Z
 url: https://github.com/astral-sh/ruff/issues/2580
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP034 introduces unnecessary whitespace-only line
 
 ---
 
-_Issue opened by @spaceone on 2023-02-05 10:48_
+_@spaceone_
 
 ```
 $ ruff --select UP034 --fix --diff foo.py

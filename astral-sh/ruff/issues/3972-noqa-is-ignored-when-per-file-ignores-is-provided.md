@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-14T07:04:48Z
 updated_at: 2023-04-14T12:43:59Z
 url: https://github.com/astral-sh/ruff/issues/3972
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # "# noqa" is ignored when `per-file-ignores` is provided
 
 ---
 
-_Issue opened by @DmytroLitvinov on 2023-04-14 07:04_
+_@DmytroLitvinov_
 
 Hi there.
 I am trying to integrate `ruff` as a possible replacement of `flake8` and I see that behavior of `per-file-ignores` option is not the same as in `flake8`. 

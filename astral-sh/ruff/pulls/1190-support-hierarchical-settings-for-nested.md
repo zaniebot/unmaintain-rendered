@@ -12,14 +12,14 @@ head: charlie/configuration-i
 created_at: 2022-12-11T03:41:04Z
 updated_at: 2022-12-12T15:12:25Z
 url: https://github.com/astral-sh/ruff/pull/1190
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Support hierarchical settings for nested directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-11 03:41_
+_@charliermarsh_
 
 The goal of this PR is to introduce hierarchical settings detection for Ruff, similar to the ESLint model, such that when we go to lint a given file, we always use the `pyproject.toml` file "closest" to that file in the filesystem hierarchy.
 

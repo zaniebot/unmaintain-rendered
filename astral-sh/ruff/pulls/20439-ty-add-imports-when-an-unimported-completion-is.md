@@ -14,14 +14,14 @@ head: ag/refactor-importer
 created_at: 2025-09-16T17:44:05Z
 updated_at: 2025-10-28T15:57:29Z
 url: https://github.com/astral-sh/ruff/pull/20439
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Add imports when an unimported completion is selected
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-16 17:44_
+_@BurntSushi_
 
 This PR does the work necessary to make the "import"
 part of "auto-import" work. That is, when an unimported

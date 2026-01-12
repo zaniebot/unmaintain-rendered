@@ -12,14 +12,14 @@ head: hk-extract-duplication
 created_at: 2022-12-28T18:47:39Z
 updated_at: 2022-12-28T21:11:30Z
 url: https://github.com/astral-sh/ruff/pull/1428
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Extract duplicated logic into method
 
 ---
 
-_Pull request opened by @hanneskaeufler on 2022-12-28 18:47_
+_@hanneskaeufler_
 
 This is purely a refactoring. While reading through some more code I discovered this duplication.
 

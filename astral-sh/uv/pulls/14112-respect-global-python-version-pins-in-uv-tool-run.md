@@ -13,14 +13,14 @@ head: zb/tool-pyver
 created_at: 2025-06-17T17:27:18Z
 updated_at: 2025-10-08T15:04:52Z
 url: https://github.com/astral-sh/uv/pull/14112
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Respect global Python version pins in `uv tool run` and `uv tool install`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-17 17:27_
+_@zanieb_
 
 Closes #12921 
 

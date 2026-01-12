@@ -13,14 +13,14 @@ head: charlie/u64
 created_at: 2023-12-04T23:37:02Z
 updated_at: 2023-12-05T02:00:56Z
 url: https://github.com/astral-sh/uv/pull/555
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Use `u64` instead of `u32` in `Version` fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 23:37_
+_@charliermarsh_
 
 It turns out that it's not uncommon to use timestamps as patch versions (e.g., `20230628214621`). I believe this is the ISO 8601 "basic format". These can't be represented by a `u32`, so I think it makes sense to just bump to `u64` to remove this limitation.
 

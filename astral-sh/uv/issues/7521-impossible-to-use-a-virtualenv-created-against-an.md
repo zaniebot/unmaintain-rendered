@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T22:57:33Z
 updated_at: 2024-09-19T11:02:26Z
 url: https://github.com/astral-sh/uv/issues/7521
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Impossible to use a virtualenv created against an interpreter not named python
 
 ---
 
-_Issue opened by @Muream on 2024-09-18 22:57_
+_@Muream_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

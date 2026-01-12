@@ -13,14 +13,14 @@ head: ibraheem/type-dict-union
 created_at: 2025-12-29T23:42:26Z
 updated_at: 2025-12-29T23:52:54Z
 url: https://github.com/astral-sh/ruff/pull/22294
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Support assignment to unions of `TypedDict`s
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-29 23:42_
+_@ibraheemdev_
 
 ## Summary
 

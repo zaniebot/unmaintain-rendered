@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T09:44:02Z
 updated_at: 2024-12-19T13:51:49Z
 url: https://github.com/astral-sh/uv/issues/10023
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # uv tries to create cache dir with --no-cache flag
 
 ---
 
-_Issue opened by @ondrados on 2024-12-19 09:44_
+_@ondrados_
 
 I wanna report issue that it seems that `uv run ... --no-cache` tries to create cache directory. But since I am running it as nonprivileged user inside docker container I get permission denied error.
 

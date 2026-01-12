@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T21:53:07Z
 updated_at: 2025-06-13T13:50:45Z
 url: https://github.com/astral-sh/uv/issues/13935
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # `uv python pin` crashes trying to inspect another Python
 
 ---
 
-_Issue opened by @geofft on 2025-06-09 21:53_
+_@geofft_
 
 [This question in #help on Discord](https://discord.com/channels/1039017663004942429/1381692679439519846) is fundamentally about #13288, that we misdetect (32-bit) arm vs. armhf and install the wrong Python variant. But as part of that question I asked,
 > are you able to work around it with `uv python pin` (maybe `--global`) or something?

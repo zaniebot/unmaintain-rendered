@@ -13,14 +13,14 @@ head: dev
 created_at: 2025-12-08T23:34:41Z
 updated_at: 2025-12-09T20:56:33Z
 url: https://github.com/astral-sh/uv/pull/17040
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Update UV_VERSION in docs for GitLab CI/CD
 
 ---
 
-_Pull request opened by @npikall on 2025-12-08 23:34_
+_@npikall_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

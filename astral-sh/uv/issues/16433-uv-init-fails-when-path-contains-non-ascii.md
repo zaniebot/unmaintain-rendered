@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T08:35:42Z
 updated_at: 2025-11-03T00:26:10Z
 url: https://github.com/astral-sh/uv/issues/16433
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # `uv init` fails when path contains non-ASCII characters
 
 ---
 
-_Issue opened by @zsdadisscy on 2025-10-24 08:35_
+_@zsdadisscy_
 
 ### Summary
 

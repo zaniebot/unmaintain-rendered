@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-23T13:53:12Z
 updated_at: 2025-01-09T13:36:44Z
 url: https://github.com/astral-sh/ruff/issues/13892
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DJ012 produces false positive when there are other dunder methods in model class
 
 ---
 
-_Issue opened by @maddrum on 2024-10-23 13:53_
+_@maddrum_
 
 `ruff check` produces false positive DJ012 for Django models like so:
 

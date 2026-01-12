@@ -12,14 +12,14 @@ head: 2427-sim-bool-builtin
 created_at: 2023-02-01T00:27:32Z
 updated_at: 2023-02-01T13:16:48Z
 url: https://github.com/astral-sh/ruff/pull/2430
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # more builtin name checks when autofixing
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-01 00:27_
+_@spaceone_
 
 Issue #2427
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T00:36:51Z
 updated_at: 2025-09-18T12:57:00Z
 url: https://github.com/astral-sh/uv/issues/15923
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # uv pip install unexpectedly works against unsourced environment in ~/.local/
 
 ---
 
-_Issue opened by @dvrogozh on 2025-09-18 00:36_
+_@dvrogozh_
 
 ### Summary
 

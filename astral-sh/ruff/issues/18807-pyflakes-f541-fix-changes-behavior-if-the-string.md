@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T23:30:02Z
 updated_at: 2025-06-20T06:59:31Z
 url: https://github.com/astral-sh/ruff/issues/18807
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pyflakes`] `F541` fix changes behavior if the string becomes a docstring
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 23:30_
+_@MeGaGiGaGon_
 
 ### Summary
 

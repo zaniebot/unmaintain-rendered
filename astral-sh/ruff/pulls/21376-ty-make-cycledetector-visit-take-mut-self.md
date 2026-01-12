@@ -13,14 +13,14 @@ head: micha/mut-cycle-detector
 created_at: 2025-11-11T09:40:57Z
 updated_at: 2025-11-16T11:46:42Z
 url: https://github.com/astral-sh/ruff/pull/21376
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Make `CycleDetector::visit` take `&mut self`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-11 09:40_
+_@MichaReiser_
 
 I have a dislike for `RefCell` but I'm not sure if this is worth it. 
 

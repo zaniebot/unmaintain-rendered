@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T02:43:10Z
 updated_at: 2024-09-20T22:29:37Z
 url: https://github.com/astral-sh/uv/issues/1415
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support `--unsafe-package` in `uv pip compile`
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-16 02:43_
+_@hauntsaninja_
 
 pip-compile has this flag that's a useful escape hatch. There's some software we use where we care about the specific build. We don't want the build from the index and we don't want it in our lock file, we want to manually manage how it gets installed.
 

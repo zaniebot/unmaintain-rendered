@@ -13,14 +13,14 @@ head: main
 created_at: 2023-06-07T17:11:08Z
 updated_at: 2023-06-07T17:56:43Z
 url: https://github.com/astral-sh/ruff/pull/4933
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove libafl_libfuzzer while it remains unstable
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-07 17:11_
+_@addisoncrump_
 
 #4928 shows that this wasn't as stable as I thought. We can revisit this when it's stable, but for now it's probably best to omit these dependencies -- I'll just enable them locally.
 

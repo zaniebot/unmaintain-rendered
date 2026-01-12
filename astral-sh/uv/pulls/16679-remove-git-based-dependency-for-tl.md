@@ -13,14 +13,14 @@ head: charlie/tl
 created_at: 2025-11-11T01:27:49Z
 updated_at: 2025-11-11T14:41:15Z
 url: https://github.com/astral-sh/uv/pull/16679
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Remove Git-based dependency for tl
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-11 01:27_
+_@charliermarsh_
 
 ## Summary
 

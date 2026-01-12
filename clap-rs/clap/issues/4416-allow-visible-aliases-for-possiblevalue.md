@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-10-22T20:06:35Z
 updated_at: 2025-12-01T16:51:05Z
 url: https://github.com/clap-rs/clap/issues/4416
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow visible aliases for PossibleValue
 
 ---
 
-_Issue opened by @dbrgn on 2022-10-22 20:06_
+_@dbrgn_
 
 ### Please complete the following tasks
 

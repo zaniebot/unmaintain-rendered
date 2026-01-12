@@ -14,14 +14,14 @@ head: symbols
 created_at: 2025-07-24T06:30:51Z
 updated_at: 2025-07-25T20:07:41Z
 url: https://github.com/astral-sh/ruff/pull/19521
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Added support for "document symbols" and "workspace symbols"
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-24 06:30_
+_@UnboundVariable_
 
 This PR adds support for "document symbols" and "workspace symbols" language server features. Most of the logic to implement these features is shared.
 

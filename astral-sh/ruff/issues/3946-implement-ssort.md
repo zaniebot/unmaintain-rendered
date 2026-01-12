@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-12T10:37:41Z
 updated_at: 2024-12-02T14:51:44Z
 url: https://github.com/astral-sh/ruff/issues/3946
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement ssort
 
 ---
 
-_Issue opened by @JackAshwell11 on 2023-04-12 10:37_
+_@JackAshwell11_
 
 Since Ruff already implements [isort](https://beta.ruff.rs/docs/rules/#isort-i), it would be nice to see [ssort](https://github.com/bwhmather/ssort) implemented as well.
 

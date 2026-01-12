@@ -14,14 +14,14 @@ head: alex/fix-union-wildcards
 created_at: 2025-11-04T20:48:10Z
 updated_at: 2025-11-06T14:02:10Z
 url: https://github.com/astral-sh/ruff/pull/21276
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Make special cases for `UnionType` slightly narrower
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-04 20:48_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1478
 

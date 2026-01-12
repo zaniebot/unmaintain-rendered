@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-08T13:22:20Z
 updated_at: 2025-09-15T12:21:30Z
 url: https://github.com/astral-sh/uv/issues/7186
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Should `uvx` use a project dependency if available?
 
 ---
 
-_Issue opened by @zanieb on 2024-09-08 13:22_
+_@zanieb_
 
 Right now, `uvx` will run in an isolated environment even if the target tool is installed in the current project. For example, `uvx ruff` will not use the version of Ruff declared in the project (e.g., with `uv add ruff==0.3.0`). If we're in a project, it might make sense to respect the version there instead of ignoring it?
 

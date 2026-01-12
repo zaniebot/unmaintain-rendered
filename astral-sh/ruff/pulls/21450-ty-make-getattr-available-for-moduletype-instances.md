@@ -14,14 +14,14 @@ head: david/fix-1346
 created_at: 2025-11-14T12:34:39Z
 updated_at: 2025-11-14T12:59:16Z
 url: https://github.com/astral-sh/ruff/pull/21450
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Make `__getattr__` available for `ModuleType` instances
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-14 12:34_
+_@sharkdp_
 
 ## Summary
 

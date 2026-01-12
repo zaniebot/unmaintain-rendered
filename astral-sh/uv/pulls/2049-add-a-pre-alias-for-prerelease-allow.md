@@ -13,14 +13,14 @@ head: charlie/pre-flag
 created_at: 2024-02-28T18:23:37Z
 updated_at: 2024-02-28T19:03:07Z
 url: https://github.com/astral-sh/uv/pull/2049
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Add a `--pre` alias for `--prerelease=allow`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 18:23_
+_@charliermarsh_
 
 Hidden alias for `pip` compatibility.
 

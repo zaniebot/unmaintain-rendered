@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T00:34:00Z
 updated_at: 2024-05-28T00:46:29Z
 url: https://github.com/astral-sh/uv/issues/2602
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # `uv pip install` fails when using #egg reference 
 
 ---
 
-_Issue opened by @mrmattwright on 2024-03-22 00:34_
+_@mrmattwright_
 
 ```
 uv --version

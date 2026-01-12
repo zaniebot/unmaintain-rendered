@@ -11,14 +11,14 @@ head: konsti/preview-feeback
 created_at: 2024-06-06T14:29:11Z
 updated_at: 2024-08-20T19:05:08Z
 url: https://github.com/astral-sh/uv/pull/4100
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Add preview feedback doc
 
 ---
 
-_Pull request opened by @konstin on 2024-06-06 14:29_
+_@konstin_
 
 _No description provided._
 

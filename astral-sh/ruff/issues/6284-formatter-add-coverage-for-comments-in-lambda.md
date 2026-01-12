@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T19:29:13Z
 updated_at: 2023-09-08T09:41:01Z
 url: https://github.com/astral-sh/ruff/issues/6284
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Add coverage for comments in lambda star parameters
 
 ---
 
-_Issue opened by @zanieb on 2023-08-02 19:29_
+_@zanieb_
 
 You can insert a comment between the star and the parameter. We'll probably want test coverage for cases like this:
 

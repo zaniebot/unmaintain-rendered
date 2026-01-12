@@ -13,14 +13,14 @@ head: update-maturin-init-template
 created_at: 2025-10-25T14:22:47Z
 updated_at: 2025-10-27T09:58:17Z
 url: https://github.com/astral-sh/uv/pull/16449
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Update maturin build backend init template
 
 ---
 
-_Pull request opened by @MatthijsKok on 2025-10-25 14:22_
+_@MatthijsKok_
 
 ## Summary
 

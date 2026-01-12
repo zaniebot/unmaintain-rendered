@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T12:24:30Z
 updated_at: 2025-07-03T17:15:50Z
 url: https://github.com/astral-sh/uv/issues/14440
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Snapshots should trim trailing whitespace
 
 ---
 
-_Issue opened by @konstin on 2025-07-03 12:24_
+_@konstin_
 
 With an editor set to trim trailing whitespace, the following line causes a test failure, as it's empty except whitespace:
 

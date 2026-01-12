@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T14:06:25Z
 updated_at: 2026-01-10T07:45:08Z
 url: https://github.com/astral-sh/uv/issues/17345
-synced_at: 2026-01-10T11:43:31Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration.
 
 ---
 
-_Issue opened by @ggoggam on 2026-01-07 14:06_
+_@ggoggam_
 
 ### Summary
 

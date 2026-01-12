@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T08:45:43Z
 updated_at: 2025-03-10T14:08:46Z
 url: https://github.com/astral-sh/ruff/issues/16312
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Bump MSRV
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-22 08:45_
+_@MichaReiser_
 
 ### Description
 

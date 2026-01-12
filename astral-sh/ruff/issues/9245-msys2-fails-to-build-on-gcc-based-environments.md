@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-22T13:04:41Z
 updated_at: 2024-02-17T18:11:17Z
 url: https://github.com/astral-sh/ruff/issues/9245
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [msys2] fails to build on GCC-based environments
 
 ---
 
-_Issue opened by @ognevny on 2023-12-22 13:04_
+_@ognevny_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

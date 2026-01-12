@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T09:52:18Z
 updated_at: 2024-01-26T16:39:59Z
 url: https://github.com/astral-sh/ruff/issues/9646
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Is it possible to suppress a rule on a block of code?
 
 ---
 
-_Issue opened by @DaniBodor on 2024-01-26 09:52_
+_@DaniBodor_
 
 I would like to disable/suppress ruff (or certain rules of ruff) on a block of code. I know that I can do this for single lines (by using # noqa: <rule_code> at the end of the line) or for entire files/folder (by specifying them in the settings file).
 

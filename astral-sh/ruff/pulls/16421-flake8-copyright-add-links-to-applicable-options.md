@@ -13,14 +13,14 @@ head: CPY001
 created_at: 2025-02-27T20:23:04Z
 updated_at: 2025-02-28T10:19:12Z
 url: https://github.com/astral-sh/ruff/pull/16421
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`flake8-copyright`] Add links to applicable options (`CPY001`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-27 20:23_
+_@InSyncWithFoo_
 
 ## Summary
 

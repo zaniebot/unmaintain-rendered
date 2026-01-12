@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-24T13:09:49Z
 updated_at: 2025-12-01T18:37:36Z
 url: https://github.com/astral-sh/uv/issues/16015
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # `uv help tool run` fails due to unsupported `less -P` option
 
 ---
 
-_Issue opened by @mesaglio on 2025-09-24 13:09_
+_@mesaglio_
 
 #### Description
 When running `uv help tool run`, the command fails because the system `less` binary does not support the `-P` option. This happens in environments where `less` is provided by BusyBox.

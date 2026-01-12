@@ -13,14 +13,14 @@ head: konsti/crate-export-backport
 created_at: 2024-02-20T08:10:22Z
 updated_at: 2024-02-20T18:33:28Z
 url: https://github.com/astral-sh/uv/pull/1739
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Backport changes from publish crates
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 08:10_
+_@konstin_
 
 Backport of changes for the published new versions of pep440_rs and pep508_rs to make it easier to keep them in sync.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T20:12:59Z
 updated_at: 2025-12-31T18:24:32Z
 url: https://github.com/astral-sh/uv/issues/9243
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Again problems with the --native-tls flag or SSL_CERT_FILE
 
 ---
 
-_Issue opened by @andreamoro on 2024-11-19 20:12_
+_@andreamoro_
 
 After a small period of joy, again today I'm experiencing problems in using the uv pip install.
 Whether using the `--native-tls` or setting the `SSL_CERT_FILE`, both the approach resolve in a "Failed to tech error".

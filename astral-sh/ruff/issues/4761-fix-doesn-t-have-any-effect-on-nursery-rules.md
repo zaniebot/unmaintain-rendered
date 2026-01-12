@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-31T16:39:51Z
 updated_at: 2023-06-05T02:25:02Z
 url: https://github.com/astral-sh/ruff/issues/4761
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `--fix` doesn't have any effect on nursery rules
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-31 16:39_
+_@charliermarsh_
 
 Running, e.g., `cargo run -p ruff_cli -- check ../scipy --select E201,E202,E203 --fix` doesn't actually cause those rules to be marked as fixable. In `src/settings/mod.rs`, we initialize the set of fixable rules with `let mut fixable_set: RuleSet = RuleSelector::All.into_iter().collect();`. However, nursery rules are omitted from `RuleSelector::All`, to avoid adding them when users do `--select ALL`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T22:40:35Z
 updated_at: 2025-11-14T18:32:45Z
 url: https://github.com/astral-sh/uv/issues/14674
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Installer creates potential security hole by prepending `$PATH`
 
 ---
 
-_Issue opened by @PaulVe2024 on 2025-07-16 22:40_
+_@PaulVe2024_
 
 ### Summary
 

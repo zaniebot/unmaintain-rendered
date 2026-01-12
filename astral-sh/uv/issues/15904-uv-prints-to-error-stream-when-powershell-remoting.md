@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T06:41:41Z
 updated_at: 2025-09-17T11:55:26Z
 url: https://github.com/astral-sh/uv/issues/15904
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # uv prints to error stream when powershell remoting
 
 ---
 
-_Issue opened by @may-day on 2025-09-17 06:41_
+_@may-day_
 
 ### Summary
 

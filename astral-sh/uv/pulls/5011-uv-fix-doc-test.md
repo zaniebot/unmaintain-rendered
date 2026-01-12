@@ -13,14 +13,14 @@ head: ag/fix-doc-test
 created_at: 2024-07-12T14:47:33Z
 updated_at: 2024-07-12T14:57:31Z
 url: https://github.com/astral-sh/uv/pull/5011
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # uv: fix doc test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-12 14:47_
+_@BurntSushi_
 
 [Doc tests can't use crate internal APIs unfortunately.][internal-doc]
 I really want them to be able to, but for now, mark such tests as

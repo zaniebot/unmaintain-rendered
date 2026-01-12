@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T22:55:35Z
 updated_at: 2025-02-24T12:15:14Z
 url: https://github.com/astral-sh/ruff/issues/16323
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F601 Dictionary key literal repeated check of ruff is not case sensitive, but python dicts are case sensitive
 
 ---
 
-_Issue opened by @timothytrust on 2025-02-22 22:55_
+_@timothytrust_
 
 ### Description
 

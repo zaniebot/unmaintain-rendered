@@ -11,14 +11,14 @@ head: feature/2155-print-installation-path
 created_at: 2024-09-15T13:29:10Z
 updated_at: 2024-09-16T09:03:19Z
 url: https://github.com/astral-sh/uv/pull/7407
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # feature/print-path
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-15 13:29_
+_@Aditya-PS-05_
 
 close #2155 
 ## Summary

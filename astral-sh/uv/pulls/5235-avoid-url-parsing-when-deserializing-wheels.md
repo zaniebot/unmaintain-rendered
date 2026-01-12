@@ -13,14 +13,14 @@ head: charlie/workspace
 created_at: 2024-07-20T01:38:53Z
 updated_at: 2024-07-20T02:11:27Z
 url: https://github.com/astral-sh/uv/pull/5235
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Avoid URL parsing when deserializing wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-20 01:38_
+_@charliermarsh_
 
 ## Summary
 

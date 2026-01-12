@@ -13,14 +13,14 @@ head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
 updated_at: 2026-01-12T08:25:49Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
 
 ---
 
-_Pull request opened by @WillDuke on 2026-01-11 17:55_
+_@WillDuke_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

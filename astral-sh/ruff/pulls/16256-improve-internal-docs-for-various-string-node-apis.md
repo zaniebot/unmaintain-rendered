@@ -13,14 +13,14 @@ head: alex/ast-docs
 created_at: 2025-02-19T15:01:43Z
 updated_at: 2025-02-19T16:19:40Z
 url: https://github.com/astral-sh/ruff/pull/16256
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Improve internal docs for various string-node APIs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-19 15:01_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-13T02:20:23Z
 updated_at: 2024-02-19T00:01:01Z
 url: https://github.com/astral-sh/uv/issues/1292
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Yank warnings should display at the end
 
 ---
 
-_Issue opened by @zanieb on 2024-02-13 02:20_
+_@zanieb_
 
 We display yank warnings during resolution, but not as a part of the summary at the end. We should probably do it there instead to avoid hiding the message.
 

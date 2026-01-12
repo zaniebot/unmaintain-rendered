@@ -14,14 +14,14 @@ head: s507_fix_doc
 created_at: 2024-01-01T15:05:39Z
 updated_at: 2024-01-02T06:08:48Z
 url: https://github.com/astral-sh/ruff/pull/9347
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [S507] fix doc recommended fix
 
 ---
 
-_Pull request opened by @mikaelarguedas on 2024-01-01 15:05_
+_@mikaelarguedas_
 
 paramiko `set_missing_host_key_policy` has mandatory positional arg.
 The [current documentation](https://docs.astral.sh/ruff/rules/ssh-no-host-key-verification/#example) leads to non-running code

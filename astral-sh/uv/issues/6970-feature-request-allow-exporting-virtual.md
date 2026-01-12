@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-03T14:45:15Z
 updated_at: 2025-11-11T21:37:49Z
 url: https://github.com/astral-sh/uv/issues/6970
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # [Feature Request] allow exporting virtual environments
 
 ---
 
-_Issue opened by @danielgafni on 2024-09-03 14:45_
+_@danielgafni_
 
 It would be great if `uv` provided a way to export virtual environments to some formats like `.tar.gz`. 
 

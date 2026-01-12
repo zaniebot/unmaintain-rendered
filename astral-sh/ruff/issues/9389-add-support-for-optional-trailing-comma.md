@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-04T05:55:51Z
 updated_at: 2025-04-23T14:32:48Z
 url: https://github.com/astral-sh/ruff/issues/9389
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add support for optional trailing comma
 
 ---
 
-_Issue opened by @17Reset on 2024-01-04 05:55_
+_@17Reset_
 
 When I format my code using ruff format, after the format, there is always a comma after the code, can this be avoided by a parameter?
 For example, my source code:

@@ -13,14 +13,14 @@ head: no-dev-tree
 created_at: 2024-10-10T20:40:20Z
 updated_at: 2024-10-12T13:17:03Z
 url: https://github.com/astral-sh/uv/pull/8109
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Implement `uv tree --no-dev`
 
 ---
 
-_Pull request opened by @bluss on 2024-10-10 20:40_
+_@bluss_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-17T17:45:14Z
 updated_at: 2025-01-21T21:45:30Z
 url: https://github.com/astral-sh/uv/issues/10717
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Omit `stdout` and `stderr` sections when empty in errors
 
 ---
 
-_Issue opened by @zanieb on 2025-01-17 17:45_
+_@zanieb_
 
 e.g., https://github.com/astral-sh/uv/blob/4d3809cc6b28d71f26a782929b994abfebd7973c/crates/uv-python/src/interpreter.rs#L565-L578
 

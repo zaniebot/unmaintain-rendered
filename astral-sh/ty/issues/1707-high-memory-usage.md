@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T13:59:54Z
 updated_at: 2025-12-03T11:16:20Z
 url: https://github.com/astral-sh/ty/issues/1707
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # High memory usage
 
 ---
 
-_Issue opened by @klonuo on 2025-12-01 13:59_
+_@klonuo_
 
 Hi,
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-03T23:52:37Z
 updated_at: 2024-12-03T23:53:33Z
 url: https://github.com/astral-sh/uv/issues/9625
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Feature request: Set `output-format = "github"` automatically when running in GitHub Actions
 
 ---
 
-_Issue opened by @zeevro on 2024-12-03 23:52_
+_@zeevro_
 
 Would be nice to have annotations in GitHub Actions. This should probably be behind some configuration setting as it possibly overrides user configuration.
 

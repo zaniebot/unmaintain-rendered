@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-10-08T12:38:04Z
 updated_at: 2025-10-09T15:47:23Z
 url: https://github.com/astral-sh/uv/pull/16184
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Move 'Scripts' section down
 
 ---
 
-_Pull request opened by @mrexodia on 2025-10-08 12:38_
+_@mrexodia_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-01T20:53:36Z
 updated_at: 2021-10-16T20:11:06Z
 url: https://github.com/clap-rs/clap/issues/2803
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Don't leak `help_heading` when flattening
 
 ---
 
-_Issue opened by @epage on 2021-10-01 20:53_
+_@epage_
 
 ### Please complete the following tasks
 

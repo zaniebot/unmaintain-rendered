@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-22T00:10:21Z
 updated_at: 2024-06-24T21:43:50Z
 url: https://github.com/astral-sh/ruff/issues/11979
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # new rule - enforce that strings passed to exceptions have a variable in them
 
 ---
 
-_Issue opened by @DetachHead on 2024-06-22 00:10_
+_@DetachHead_
 
 there have been countless times where i've encountered unhelpful error messages in software that don't provide enough information to the user. i think this is something that can be addressed with a lint rule. for example:
 

@@ -14,14 +14,14 @@ head: konsti/hint-check-url
 created_at: 2024-11-04T09:36:36Z
 updated_at: 2024-11-04T23:21:02Z
 url: https://github.com/astral-sh/uv/pull/8803
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Publish: Hint at `--skip-existing` -> `--check-url` transition
 
 ---
 
-_Pull request opened by @konstin on 2024-11-04 09:36_
+_@konstin_
 
 See https://github.com/astral-sh/uv/pull/8531#issuecomment-2442698889, we hint users coming from twine to use `--check-url` instead.
 

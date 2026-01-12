@@ -14,14 +14,14 @@ head: main
 created_at: 2024-02-26T03:48:06Z
 updated_at: 2024-02-26T19:48:48Z
 url: https://github.com/astral-sh/uv/pull/1978
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # fix 'uv pip install' handling of gzip'd response and PEP 691
 
 ---
 
-_Pull request opened by @thundergolfer on 2024-02-26 03:48_
+_@thundergolfer_
 
 Thank you for writing `uv`! We're already using it internally on some container image builds and finding that it's noticeably faster 💯 
 

@@ -13,14 +13,14 @@ head: david/playground-fix-reveal_type
 created_at: 2025-03-27T16:10:41Z
 updated_at: 2025-03-27T16:24:23Z
 url: https://github.com/astral-sh/ruff/pull/17013
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [playground] Fix `reveal_type`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-27 16:10_
+_@sharkdp_
 
 ## Summary
 

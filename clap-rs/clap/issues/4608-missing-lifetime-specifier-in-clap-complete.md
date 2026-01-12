@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T11:02:58Z
 updated_at: 2023-01-06T12:57:31Z
 url: https://github.com/clap-rs/clap/issues/4608
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Missing lifetime specifier in `clap_complete` example
 
 ---
 
-_Issue opened by @GJZwiers on 2023-01-06 11:02_
+_@GJZwiers_
 
 ### Please complete the following tasks
 

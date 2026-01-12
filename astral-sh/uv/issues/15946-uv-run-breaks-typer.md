@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T11:47:55Z
 updated_at: 2025-09-19T13:02:04Z
 url: https://github.com/astral-sh/uv/issues/15946
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # uv run breaks typer
 
 ---
 
-_Issue opened by @acmiyaguchi on 2025-09-19 11:47_
+_@acmiyaguchi_
 
 ### Summary
 

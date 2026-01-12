@@ -13,14 +13,14 @@ head: cjm/sigprimer
 created_at: 2025-05-04T19:24:24Z
 updated_at: 2025-05-05T19:21:07Z
 url: https://github.com/astral-sh/ruff/pull/17834
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [ty] add passing projects to primer
 
 ---
 
-_Pull request opened by @carljm on 2025-05-04 19:24_
+_@carljm_
 
 Add projects to primer that now pass, with https://github.com/astral-sh/ruff/pull/17833
 

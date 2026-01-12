@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T16:10:52Z
 updated_at: 2024-06-05T07:30:19Z
 url: https://github.com/astral-sh/uv/issues/3990
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Workflow confusion about upgrading packages with requirements.txt (migrating from pip-tools)
 
 ---
 
-_Issue opened by @mariokostelac on 2024-06-03 16:10_
+_@mariokostelac_
 
 What is the expected workflow for upgrading a package?
 

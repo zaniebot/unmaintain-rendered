@@ -13,14 +13,14 @@ head: 15672-fix-stack-overflow-in-type-bool-evaluation
 created_at: 2025-01-31T04:05:45Z
 updated_at: 2025-02-05T16:47:52Z
 url: https://github.com/astral-sh/ruff/pull/15843
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Fix Stack overflow in Type::bool 
 
 ---
 
-_Pull request opened by @mishamsk on 2025-01-31 04:05_
+_@mishamsk_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/nested-cycles-provisional
 created_at: 2025-09-22T14:07:36Z
 updated_at: 2025-11-16T11:47:01Z
 url: https://github.com/astral-sh/ruff/pull/20515
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Continue nested cycles with last provisional instead of starting with initial value (update salsa)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-22 14:07_
+_@MichaReiser_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: david/fix-1383
 created_at: 2025-10-20T10:40:52Z
 updated_at: 2025-10-22T12:29:13Z
 url: https://github.com/astral-sh/ruff/pull/20988
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Fall back to `Divergent` for deeply nested specializations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-20 10:40_
+_@sharkdp_
 
 ## Summary
 

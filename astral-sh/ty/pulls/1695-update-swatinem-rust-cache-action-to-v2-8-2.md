@@ -13,14 +13,14 @@ head: renovate/swatinem-rust-cache-2.x
 created_at: 2025-12-01T00:38:12Z
 updated_at: 2025-12-01T07:06:30Z
 url: https://github.com/astral-sh/ty/pull/1695
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update Swatinem/rust-cache action to v2.8.2
 
 ---
 
-_Pull request opened by @renovate on 2025-12-01 00:38_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/clap-4.5.2
 created_at: 2024-03-11T08:33:16Z
 updated_at: 2024-03-11T09:26:43Z
 url: https://github.com/astral-sh/ruff/pull/10332
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Bump clap from 4.5.1 to 4.5.2
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 08:33_
+_@dependabot_
 
 Bumps [clap](https://github.com/clap-rs/clap) from 4.5.1 to 4.5.2.
 <details>

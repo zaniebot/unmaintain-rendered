@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T17:07:59Z
 updated_at: 2025-06-06T17:10:10Z
 url: https://github.com/astral-sh/ruff/issues/18504
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`pyflakes`] Skip `__init__.py` in `undefined-export` (`F822`) if `__getattr__` is overriden at the module level?
 
 ---
 
-_Issue opened by @dylwil3 on 2025-06-06 17:07_
+_@dylwil3_
 
 Would it make any sense to avoid the diagnostic on `__init__.py` files with module-level `__getattr__`? (blocking stabilization for now, I guess)
 

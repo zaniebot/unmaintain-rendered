@@ -12,14 +12,14 @@ head: charlie/req
 created_at: 2024-01-18T20:44:26Z
 updated_at: 2024-01-18T20:46:19Z
 url: https://github.com/astral-sh/uv/pull/969
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Remove checked-in requirements file
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 20:44_
+_@charliermarsh_
 
 _No description provided._
 

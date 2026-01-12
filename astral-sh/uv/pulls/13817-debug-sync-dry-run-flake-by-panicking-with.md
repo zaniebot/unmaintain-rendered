@@ -13,14 +13,14 @@ head: zb/debug-sync_dry_run
 created_at: 2025-06-03T14:17:58Z
 updated_at: 2025-06-12T13:05:28Z
 url: https://github.com/astral-sh/uv/pull/13817
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Debug `sync_dry_run` flake by panicking with verbose output on failure
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-03 14:17_
+_@zanieb_
 
 Investigating #13744 
 

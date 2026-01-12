@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T18:52:15Z
 updated_at: 2024-08-02T19:33:27Z
 url: https://github.com/astral-sh/uv/issues/5627
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # PEP-710: Implement provenance records for installed packages
 
 ---
 
-_Issue opened by @fridex on 2024-07-30 18:52_
+_@fridex_
 
 We are discussing the possibility of introducing ``provenance_url.json`` that would help with tracking of installed packages in Python environments. It could help with creating a lock files or SBOMs from installed packages.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-05T09:57:23Z
 updated_at: 2025-05-07T14:41:22Z
 url: https://github.com/astral-sh/ty/issues/18
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Issue template
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 09:57_
+_@MichaReiser_
 
 _No description provided._
 

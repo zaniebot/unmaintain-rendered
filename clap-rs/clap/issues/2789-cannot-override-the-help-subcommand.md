@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-09-24T17:00:01Z
 updated_at: 2021-10-04T14:01:09Z
 url: https://github.com/clap-rs/clap/issues/2789
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Cannot override the help subcommand
 
 ---
 
-_Issue opened by @jonathanmorley on 2021-09-24 17:00_
+_@jonathanmorley_
 
 ### Please complete the following tasks
 

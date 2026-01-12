@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T09:46:44Z
 updated_at: 2023-03-02T21:45:28Z
 url: https://github.com/astral-sh/ruff/issues/3299
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TCH002 false positive for certain target_version or no `__future__.annotations` import
 
 ---
 
-_Issue opened by @spaceone on 2023-03-02 09:46_
+_@spaceone_
 
 I fixed my code according to `TCH002` and got a `NameError` exception when executing it and the code doesn't have the `from __future__ import annotations` import.
 

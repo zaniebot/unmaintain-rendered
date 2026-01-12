@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T16:47:36Z
 updated_at: 2024-02-29T21:56:40Z
 url: https://github.com/astral-sh/uv/issues/2089
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv complains venvs it creates are externally managed
 
 ---
 
-_Issue opened by @Julian on 2024-02-29 16:47_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

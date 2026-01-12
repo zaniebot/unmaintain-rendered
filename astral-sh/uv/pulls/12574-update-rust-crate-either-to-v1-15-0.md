@@ -13,14 +13,14 @@ head: renovate/either-1.x-lockfile
 created_at: 2025-03-31T02:41:15Z
 updated_at: 2025-03-31T13:07:22Z
 url: https://github.com/astral-sh/uv/pull/12574
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Update Rust crate either to v1.15.0
 
 ---
 
-_Pull request opened by @renovate on 2025-03-31 02:41_
+_@renovate_
 
 This PR contains the following updates:
 

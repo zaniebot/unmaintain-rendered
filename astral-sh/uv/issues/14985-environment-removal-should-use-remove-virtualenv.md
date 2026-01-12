@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T02:27:11Z
 updated_at: 2025-10-05T10:53:41Z
 url: https://github.com/astral-sh/uv/issues/14985
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Environment removal should use `remove_virtualenv`
 
 ---
 
-_Issue opened by @zanieb on 2025-07-31 02:27_
+_@zanieb_
 
 at https://github.com/astral-sh/uv/blob/6856a27711910d240a488d53d7967b73340b1524/crates/uv/src/commands/project/mod.rs#L1575 we're not using the `remove_virtualenv` which should always be used for removing virtual environment directories
 

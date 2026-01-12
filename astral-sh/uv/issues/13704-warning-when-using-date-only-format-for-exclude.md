@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T19:34:18Z
 updated_at: 2025-05-28T20:23:12Z
 url: https://github.com/astral-sh/uv/issues/13704
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Warning when using date-only format for `exclude-newer`
 
 ---
 
-_Issue opened by @johnthagen on 2025-05-28 19:34_
+_@johnthagen_
 
 ### Summary
 

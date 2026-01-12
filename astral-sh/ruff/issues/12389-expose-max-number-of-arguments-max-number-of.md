@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-18T18:04:44Z
 updated_at: 2024-07-19T05:57:19Z
 url: https://github.com/astral-sh/ruff/issues/12389
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Expose max number of arguments / max number of lines per method / etc as a specific setting
 
 ---
 
-_Issue opened by @knyazer on 2024-07-18 18:04_
+_@knyazer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

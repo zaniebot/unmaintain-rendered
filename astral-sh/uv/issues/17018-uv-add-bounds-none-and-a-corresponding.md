@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-07T14:42:24Z
 updated_at: 2025-12-12T14:19:47Z
 url: https://github.com/astral-sh/uv/issues/17018
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # `uv add --bounds none` and a corresponding environment variable
 
 ---
 
-_Issue opened by @jklaiho on 2025-12-07 14:42_
+_@jklaiho_
 
 ### Summary
 

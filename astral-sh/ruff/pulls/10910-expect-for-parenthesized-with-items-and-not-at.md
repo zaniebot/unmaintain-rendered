@@ -15,14 +15,14 @@ head: dhruv/with-item-expect-comma
 created_at: 2024-04-12T14:24:31Z
 updated_at: 2024-04-15T12:59:54Z
 url: https://github.com/astral-sh/ruff/pull/10910
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Expect `,` for parenthesized with items and not at `)`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-12 14:24_
+_@dhruvmanila_
 
 ## Summary
 

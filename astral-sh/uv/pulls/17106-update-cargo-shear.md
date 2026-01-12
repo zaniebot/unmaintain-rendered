@@ -13,14 +13,14 @@ head: konsti/update-cargo-shear
 created_at: 2025-12-12T18:02:04Z
 updated_at: 2025-12-15T17:46:37Z
 url: https://github.com/astral-sh/uv/pull/17106
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Update cargo shear
 
 ---
 
-_Pull request opened by @konstin on 2025-12-12 18:02_
+_@konstin_
 
 Requires a companion PR that updates the GitHub Action.
 

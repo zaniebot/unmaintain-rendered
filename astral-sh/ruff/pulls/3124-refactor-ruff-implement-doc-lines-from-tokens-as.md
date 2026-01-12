@@ -12,14 +12,14 @@ head: refactor/doc-lines-iterator
 created_at: 2023-02-22T14:06:43Z
 updated_at: 2023-02-22T14:22:28Z
 url: https://github.com/astral-sh/ruff/pull/3124
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor(ruff): Implement `doc_lines_from_tokens` as iterator
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-02-22 14:06_
+_@MichaReiser_
 
 This is a nit refactor... It implements the extraction of document lines as an iterator instead of a Vector to avoid the extra allocation.
 

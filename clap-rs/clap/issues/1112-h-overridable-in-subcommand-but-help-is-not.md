@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-11-20T02:25:38Z
 updated_at: 2018-08-02T03:30:15Z
 url: https://github.com/clap-rs/clap/issues/1112
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # -h overridable in subcommand but --help is not
 
 ---
 
-_Issue opened by @frewsxcv on 2017-11-20 02:25_
+_@frewsxcv_
 
 ### Rust Version
 

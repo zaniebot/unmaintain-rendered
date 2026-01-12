@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-04T20:10:38Z
 updated_at: 2023-05-04T21:35:29Z
 url: https://github.com/astral-sh/ruff/issues/4231
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Docs error: isort `section-order` default
 
 ---
 
-_Issue opened by @Secrus on 2023-05-04 20:10_
+_@Secrus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

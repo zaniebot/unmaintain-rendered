@@ -13,14 +13,14 @@ head: recude_RuleCodePrefix_iter
 created_at: 2023-06-16T14:02:50Z
 updated_at: 2023-06-18T10:39:07Z
 url: https://github.com/astral-sh/ruff/pull/5147
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Refactor top llvm-lines entry
 
 ---
 
-_Pull request opened by @konstin on 2023-06-16 14:02_
+_@konstin_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T14:17:24Z
 updated_at: 2024-06-06T17:10:26Z
 url: https://github.com/astral-sh/uv/issues/4098
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # uv doesn't include pyparsing in the requirements installed when installing pipx on python 3.10 on linux
 
 ---
 
-_Issue opened by @arohrbach-nx on 2024-06-06 14:17_
+_@arohrbach-nx_
 
 On Ubuntu 22.04 under WSL 2, I tried to set up a new python 3.10 environment to run a script with pipx, and uv installed a pipx that crashes because one of its dependencies is missing.
 

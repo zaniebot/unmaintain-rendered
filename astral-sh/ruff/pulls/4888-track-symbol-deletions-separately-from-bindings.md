@@ -12,14 +12,14 @@ head: charlie/declares
 created_at: 2023-06-06T01:29:57Z
 updated_at: 2023-06-06T19:07:02Z
 url: https://github.com/astral-sh/ruff/pull/4888
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Track symbol deletions separately from bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 01:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T08:11:45Z
 updated_at: 2025-04-03T14:00:01Z
 url: https://github.com/astral-sh/ruff/issues/17164
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Redudant-cast false positive for `@Todo` types
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-03 08:11_
+_@sharkdp_
 
 We have existing handling for filtering out `@Todo` types, but apparently it doesn't work in this case:
 ```py

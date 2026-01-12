@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T01:44:43Z
 updated_at: 2025-11-01T20:05:49Z
 url: https://github.com/astral-sh/uv/issues/16429
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # UV Build Issue
 
 ---
 
-_Issue opened by @killcoder on 2025-10-24 01:44_
+_@killcoder_
 
 ### Summary
 

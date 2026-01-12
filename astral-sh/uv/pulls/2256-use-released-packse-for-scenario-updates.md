@@ -13,14 +13,14 @@ head: zb/scenarios
 created_at: 2024-03-07T00:57:20Z
 updated_at: 2024-03-07T17:40:55Z
 url: https://github.com/astral-sh/uv/pull/2256
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Use released packse for scenario updates
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-07 00:57_
+_@zanieb_
 
 - Now that `packse` is being published to PyPI we can install it from there.
 - Tweaks the tooling around scenario updates to manage a temporary virtual environment for you.

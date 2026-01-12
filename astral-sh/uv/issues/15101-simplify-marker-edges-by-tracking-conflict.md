@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T09:07:33Z
 updated_at: 2025-08-06T10:27:18Z
 url: https://github.com/astral-sh/uv/issues/15101
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Simplify marker edges by tracking conflict reachability on nodes
 
 ---
 
-_Issue opened by @konstin on 2025-08-06 09:07_
+_@konstin_
 
 Currently, we track conflict inferences in `simplify_conflict_markers` independently of the markers, and we don't track conflict markers in reachability. This limits our power in simplifying edges. Instead, we should compute the reachability for each node including the conflict markers that need to be accessed to reach a node, than simplify each edge using the reachability marker.
 

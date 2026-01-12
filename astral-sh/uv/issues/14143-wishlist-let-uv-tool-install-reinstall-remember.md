@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T08:24:39Z
 updated_at: 2025-06-19T16:03:41Z
 url: https://github.com/astral-sh/uv/issues/14143
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Wishlist: let `uv tool install --reinstall` remember how a tool was installed
 
 ---
 
-_Issue opened by @callegar on 2025-06-19 08:24_
+_@callegar_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: fix-21142
 created_at: 2025-11-01T19:16:11Z
 updated_at: 2025-11-29T05:31:09Z
 url: https://github.com/astral-sh/ruff/pull/21189
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`flake8-bugbear`] Flag mutable defaults passed via named variables, excluding UPPER_CASE (`B006`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-01 19:16_
+_@danparizher_
 
 ## Summary
 

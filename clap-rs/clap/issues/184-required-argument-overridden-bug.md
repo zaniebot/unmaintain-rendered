@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-22T14:22:38Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/184
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Required argument overridden bug
 
 ---
 
-_Issue opened by @Vinatorul on 2015-08-22 14:22_
+_@Vinatorul_
 
 ```
 let m = App::new("req_overridden")

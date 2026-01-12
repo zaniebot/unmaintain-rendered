@@ -13,14 +13,14 @@ head: pylint_misplaced_bare_raise
 created_at: 2023-10-14T17:46:17Z
 updated_at: 2023-10-17T03:14:03Z
 url: https://github.com/astral-sh/ruff/pull/7961
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] Implement misplaced-bare-raise (E0704)
 
 ---
 
-_Pull request opened by @clemux on 2023-10-14 17:46_
+_@clemux_
 
 Related issue: #970 
  

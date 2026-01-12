@@ -14,14 +14,14 @@ head: mutable-fromkeys-value
 created_at: 2024-01-21T15:10:58Z
 updated_at: 2024-01-22T09:35:59Z
 url: https://github.com/astral-sh/ruff/pull/9597
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`ruff`] Implement `mutable-fromkeys-value` (`RUF024`)
 
 ---
 
-_Pull request opened by @tjkuson on 2024-01-21 15:10_
+_@tjkuson_
 
 ## Summary
 

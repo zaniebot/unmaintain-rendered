@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-02T22:29:21Z
 updated_at: 2023-05-18T15:59:51Z
 url: https://github.com/astral-sh/ruff/issues/2502
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # new rule: remove unnecessary list wrapping
 
 ---
 
-_Issue opened by @spaceone on 2023-02-02 22:29_
+_@spaceone_
 
 `''.join([chr(i) for i in range(128)])`
 should be:

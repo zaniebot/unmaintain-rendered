@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-07-11T19:28:25Z
 updated_at: 2021-03-30T21:32:07Z
 url: https://github.com/clap-rs/clap/issues/2009
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # `clap_generate::generate()` panics on subcommands
 
 ---
 
-_Issue opened by @cpick on 2020-07-11 19:28_
+_@cpick_
 
 ### Make sure you completed the following tasks
 

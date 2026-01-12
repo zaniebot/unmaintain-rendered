@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-11T11:59:51Z
 updated_at: 2025-12-18T14:38:30Z
 url: https://github.com/astral-sh/uv/issues/16252
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # If I remove the base Python interpreter, `uv tool list` doesn't work
 
 ---
 
-_Issue opened by @pfmoore on 2025-10-11 11:59_
+_@pfmoore_
 
 ### Summary
 

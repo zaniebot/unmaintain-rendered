@@ -13,14 +13,14 @@ head: renovate/uuid-1.x-lockfile
 created_at: 2025-05-26T02:52:32Z
 updated_at: 2025-05-26T05:40:03Z
 url: https://github.com/astral-sh/ruff/pull/18306
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # Update Rust crate uuid to v1.17.0
 
 ---
 
-_Pull request opened by @renovate on 2025-05-26 02:52_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -14,14 +14,14 @@ head: micha/remove-countme
 created_at: 2025-07-10T11:41:43Z
 updated_at: 2025-07-10T11:54:55Z
 url: https://github.com/astral-sh/ruff/pull/19257
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Remove countme from salsa-structs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-10 11:41_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/template-project-env
 created_at: 2025-07-28T12:56:04Z
 updated_at: 2025-09-15T22:55:16Z
 url: https://github.com/astral-sh/uv/pull/14937
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Allow templating the `UV_PROJECT_ENVIRONMENT` path
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-28 12:56_
+_@zanieb_
 
 I'm looking at supporting centralized environments, and this feels like a nice incremental step towards that. Basically we can re-use `UV_PROJECT_ENVIRONMENT` to empower centralized storage without adding any more settings. Later, we'd add a toggle that enables centralized storage in the cache using our "canonical" recommended naming scheme. At that point, we'd probably explore things like empowering editor discovery via `.venv` pointers and such.
 

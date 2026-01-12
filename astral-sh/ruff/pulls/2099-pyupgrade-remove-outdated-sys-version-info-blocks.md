@@ -13,14 +13,14 @@ head: OldCodeBlocks
 created_at: 2023-01-23T03:26:07Z
 updated_at: 2023-02-02T14:27:05Z
 url: https://github.com/astral-sh/ruff/pull/2099
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`pyupgrade`]: Remove outdated `sys.version_info` blocks
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-23 03:26_
+_@colin99d_
 
 A part of #827. Opening this up as a draft for visibility.
 

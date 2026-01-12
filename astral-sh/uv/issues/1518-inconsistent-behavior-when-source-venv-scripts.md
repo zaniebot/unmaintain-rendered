@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T17:33:51Z
 updated_at: 2024-02-17T23:08:08Z
 url: https://github.com/astral-sh/uv/issues/1518
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Inconsistent behavior when `source .venv/Scripts/activate` on Windows
 
 ---
 
-_Issue opened by @jfcherng on 2024-02-16 17:33_
+_@jfcherng_
 
 When in git-bash (https://gitforwindows.org/) shell on Windows,
 

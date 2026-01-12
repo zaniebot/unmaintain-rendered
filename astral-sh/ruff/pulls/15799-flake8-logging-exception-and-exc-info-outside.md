@@ -14,14 +14,14 @@ head: LOG004
 created_at: 2025-01-29T00:46:36Z
 updated_at: 2025-02-04T20:22:02Z
 url: https://github.com/astral-sh/ruff/pull/15799
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-logging`] `.exception()` and `exc_info=` outside exception handlers (`LOG004`, `LOG014`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-29 00:46_
+_@InSyncWithFoo_
 
 ## Summary
 

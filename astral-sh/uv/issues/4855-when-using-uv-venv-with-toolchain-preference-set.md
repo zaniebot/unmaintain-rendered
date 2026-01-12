@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-07T11:21:51Z
 updated_at: 2024-07-07T17:06:03Z
 url: https://github.com/astral-sh/uv/issues/4855
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # When using ``uv venv`` with ``toolchain-preference`` set to ``managed``, it will fetch the wrong platform on ``uv 0.2.21``.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-07 11:21_
+_@FishAlchemist_
 
 **OS:** Windows 11 23H2
 **UV Version:** uv 0.2.21 (ebfe6d8fc 2024-07-03)

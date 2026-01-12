@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T17:26:16Z
 updated_at: 2024-08-12T14:32:27Z
 url: https://github.com/astral-sh/ruff/issues/11695
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLE4703 false positive for loop statements with break
 
 ---
 
-_Issue opened by @Skylion007 on 2024-06-02 17:26_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: zb/run-requirements
 created_at: 2024-07-10T17:58:03Z
 updated_at: 2024-07-23T16:51:11Z
 url: https://github.com/astral-sh/uv/pull/4973
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add support for requirements files in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-10 17:58_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4824.
 

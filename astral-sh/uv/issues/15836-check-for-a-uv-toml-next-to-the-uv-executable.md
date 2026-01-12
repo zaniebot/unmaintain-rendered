@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-14T14:04:19Z
 updated_at: 2025-09-14T15:01:26Z
 url: https://github.com/astral-sh/uv/issues/15836
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Check for a `uv.toml` next to the `uv` executable
 
 ---
 
-_Issue opened by @zanieb on 2025-09-14 14:04_
+_@zanieb_
 
 Originally requested in https://github.com/astral-sh/uv/issues/11360
 

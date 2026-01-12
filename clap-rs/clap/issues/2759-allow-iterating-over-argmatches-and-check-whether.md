@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-09-09T09:38:35Z
 updated_at: 2021-09-23T12:55:05Z
 url: https://github.com/clap-rs/clap/issues/2759
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow iterating over ArgMatches and check whether a match uses default value
 
 ---
 
-_Issue opened by @romange on 2021-09-09 09:38_
+_@romange_
 
 ### Please complete the following tasks
 

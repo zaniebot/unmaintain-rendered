@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T06:46:09Z
 updated_at: 2024-03-07T20:22:27Z
 url: https://github.com/astral-sh/uv/issues/2230
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Python tests pass when packages installed with `pip` outside venv , but not with `uv pip install --system`
 
 ---
 
-_Issue opened by @strickvl on 2024-03-06 06:46_
+_@strickvl_
 
 [This is maybe a weird one, and not quite sure to what extent it's driven by `uv` vs other things, but the change made was adding `uv` so I'm going to ask here.]
 

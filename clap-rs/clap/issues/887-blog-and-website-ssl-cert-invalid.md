@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-06T00:06:38Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/887
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Blog and website ssl cert invalid
 
 ---
 
-_Issue opened by @tmccombs on 2017-03-06 00:06_
+_@tmccombs_
 
 When I go to the blog or website links in the readme, I get a certificate error because the certificate date is invalid. 
 

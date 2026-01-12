@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-10-08T18:28:33Z
 updated_at: 2023-06-30T12:18:37Z
 url: https://github.com/clap-rs/clap/issues/1570
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # global opts that take a value cannot be mixed with subcommand
 
 ---
 
-_Issue opened by @ehuss on 2019-10-08 18:28_
+_@ehuss_
 
 ### Rust Version
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-12T16:37:08Z
 updated_at: 2023-11-16T04:06:09Z
 url: https://github.com/astral-sh/ruff/issues/8629
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # 🐞 Don't remove nested comments on formatting
 
 ---
 
-_Issue opened by @jd-solanki on 2023-11-12 16:37_
+_@jd-solanki_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

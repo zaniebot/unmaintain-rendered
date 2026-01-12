@@ -14,14 +14,14 @@ head: fix-20583
 created_at: 2025-10-01T00:25:50Z
 updated_at: 2025-10-29T21:54:02Z
 url: https://github.com/astral-sh/ruff/pull/20657
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`ruff`] Add support for additional eager conversion patterns (`RUF065`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-01 00:25_
+_@danparizher_
 
 ## Summary
 

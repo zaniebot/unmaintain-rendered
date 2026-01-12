@@ -13,14 +13,14 @@ head: renovate/smallvec-1.x-lockfile
 created_at: 2025-06-16T00:45:09Z
 updated_at: 2025-06-16T01:37:33Z
 url: https://github.com/astral-sh/uv/pull/14050
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Update Rust crate smallvec to v1.15.1
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 00:45_
+_@renovate_
 
 This PR contains the following updates:
 

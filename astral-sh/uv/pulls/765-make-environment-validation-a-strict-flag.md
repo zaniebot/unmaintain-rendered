@@ -12,14 +12,14 @@ head: charlie/strict
 created_at: 2024-01-04T01:21:43Z
 updated_at: 2024-01-04T01:29:07Z
 url: https://github.com/astral-sh/uv/pull/765
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Make environment validation a `--strict` flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-04 01:21_
+_@charliermarsh_
 
 I don't necessarily want users to pay this cost every time. We could consider making this `true` by default.
 

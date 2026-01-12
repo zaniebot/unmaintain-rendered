@@ -12,14 +12,14 @@ head: charlie/prefer-type-error
 created_at: 2023-02-14T02:24:03Z
 updated_at: 2023-02-16T08:23:47Z
 url: https://github.com/astral-sh/ruff/pull/2880
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove autofix for prefer-type-error
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-14 02:24_
+_@charliermarsh_
 
 This isn't really safe, so let's remove it.
 

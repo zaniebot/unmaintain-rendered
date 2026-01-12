@@ -14,14 +14,14 @@ head: dhruv/call-expr
 created_at: 2024-04-02T06:37:24Z
 updated_at: 2024-04-03T10:07:27Z
 url: https://github.com/astral-sh/ruff/pull/10734
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for call expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 06:37_
+_@dhruvmanila_
 
 ## Summary
 

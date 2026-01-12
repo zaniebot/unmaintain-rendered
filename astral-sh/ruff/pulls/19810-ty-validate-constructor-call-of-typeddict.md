@@ -15,14 +15,14 @@ head: ty-typeddict-constructor
 created_at: 2025-08-07T15:57:49Z
 updated_at: 2025-08-25T17:49:13Z
 url: https://github.com/astral-sh/ruff/pull/19810
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] validate constructor call of `TypedDict`
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-07 15:57_
+_@PrettyWood_
 
 ## Summary
 Implement validation for `TypedDict` constructor calls and dictionary literal assignments, including support for `total=False` and proper field management.

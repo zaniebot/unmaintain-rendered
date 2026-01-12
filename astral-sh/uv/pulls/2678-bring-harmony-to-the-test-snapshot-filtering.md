@@ -14,14 +14,14 @@ head: zb/test-filters
 created_at: 2024-03-26T22:41:34Z
 updated_at: 2024-03-27T14:10:13Z
 url: https://github.com/astral-sh/uv/pull/2678
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Bring harmony to the test snapshot filtering situation
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-26 22:41_
+_@zanieb_
 
 The snapshot filtering situation has gotten way out of hand, with each test hand-rolling it's own filters on top of copied cruft from previous tests.
 

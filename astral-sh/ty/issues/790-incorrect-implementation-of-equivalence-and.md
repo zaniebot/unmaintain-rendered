@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T10:49:27Z
 updated_at: 2025-07-10T09:11:12Z
 url: https://github.com/astral-sh/ty/issues/790
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect implementation of equivalence and subtyping for module-literal types?
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-09 10:49_
+_@AlexWaygood_
 
 ### Summary
 

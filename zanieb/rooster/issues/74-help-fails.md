@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-08T10:25:11Z
 updated_at: 2025-09-12T13:07:32Z
 url: https://github.com/zanieb/rooster/issues/74
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # `--help` fails
 
 ---
 
-_Issue opened by @zsol on 2025-09-08 10:25_
+_@zsol_
 
 ```
 ❯ uvx --from rooster-blue rooster --help

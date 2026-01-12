@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T09:47:51Z
 updated_at: 2025-06-18T17:56:55Z
 url: https://github.com/astral-sh/uv/issues/13402
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # Collision with pyenv when `uv python pin <version>`
 
 ---
 
-_Issue opened by @hoxell on 2025-05-12 09:47_
+_@hoxell_
 
 ### Summary
 

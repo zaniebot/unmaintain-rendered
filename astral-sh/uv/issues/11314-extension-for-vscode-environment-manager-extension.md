@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T11:49:04Z
 updated_at: 2025-03-03T09:03:10Z
 url: https://github.com/astral-sh/uv/issues/11314
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Extension for VSCode environment manager extension
 
 ---
 
-_Issue opened by @jzazo on 2025-02-07 11:49_
+_@jzazo_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/bare
 created_at: 2025-02-03T19:27:53Z
 updated_at: 2025-02-05T16:12:29Z
 url: https://github.com/astral-sh/uv/pull/11192
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Add `--bare` option to `uv init`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-03 19:27_
+_@zanieb_
 
 People are looking for a less opinionated version of `uv init`. The goal here is to create a `pyproject.toml` and nothing else. With the `--lib` or `--package` flags, we'll still configure a build backend but we won't create the source tree. This disables things like the default `description`, author behavior, and VCS.
 

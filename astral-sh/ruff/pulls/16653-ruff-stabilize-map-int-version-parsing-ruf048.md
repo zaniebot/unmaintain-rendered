@@ -13,14 +13,14 @@ head: brent/ruf048-0.10
 created_at: 2025-03-12T02:06:27Z
 updated_at: 2025-03-12T12:34:20Z
 url: https://github.com/astral-sh/ruff/pull/16653
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `map-int-version-parsing` (`RUF048`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 02:06_
+_@ntBre_
 
 Summary
 --

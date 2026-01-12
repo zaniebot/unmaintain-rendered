@@ -13,14 +13,14 @@ head: cjm/deftypes
 created_at: 2024-11-13T00:47:57Z
 updated_at: 2024-11-13T14:03:24Z
 url: https://github.com/astral-sh/ruff/pull/14303
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] simplify type lookup in function/class definitions
 
 ---
 
-_Pull request opened by @carljm on 2024-11-13 00:47_
+_@carljm_
 
 When we look up the types of class bases or keywords (`metaclass`), we currently do this little dance: if there are type params, then look up the type using `SemanticModel` in the type-params scope, if not, look up the type directly in the definition's own scope, with support for deferred types.
 

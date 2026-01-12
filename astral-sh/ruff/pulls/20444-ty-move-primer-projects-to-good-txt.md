@@ -15,14 +15,14 @@ head: cjm/good
 created_at: 2025-09-17T00:06:57Z
 updated_at: 2025-09-17T07:31:29Z
 url: https://github.com/astral-sh/ruff/pull/20444
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] move primer projects to good.txt
 
 ---
 
-_Pull request opened by @carljm on 2025-09-17 00:06_
+_@carljm_
 
 ## Summary
 

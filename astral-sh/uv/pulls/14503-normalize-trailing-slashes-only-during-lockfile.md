@@ -12,14 +12,14 @@ head: jtfm/normalize-slash-on-check
 created_at: 2025-07-08T09:46:13Z
 updated_at: 2025-07-09T09:48:47Z
 url: https://github.com/astral-sh/uv/pull/14503
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Normalize trailing slashes only during lockfile validation
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-08 09:46_
+_@jtfmumm_
 
 NOTE: This is a possible alternative to #14387.
 

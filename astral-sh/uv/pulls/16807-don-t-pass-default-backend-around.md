@@ -13,14 +13,14 @@ head: konsti/default-backend
 created_at: 2025-11-21T15:14:47Z
 updated_at: 2025-11-21T15:29:48Z
 url: https://github.com/astral-sh/uv/pull/16807
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Don't pass `DEFAULT_BACKEND` around
 
 ---
 
-_Pull request opened by @konstin on 2025-11-21 15:14_
+_@konstin_
 
 This seem to have happened cause a function was refactored, and the static wasn't inlined.
 

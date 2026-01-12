@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-19T14:00:39Z
 updated_at: 2025-10-08T21:29:38Z
 url: https://github.com/astral-sh/uv/issues/14746
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # `uv tool install --in` to add packages to an existing tool environment
 
 ---
 
-_Issue opened by @mgaitan on 2025-07-19 14:00_
+_@mgaitan_
 
 
 When using `uv tool`, it's great that we can install tools in an isolated virtual environment with a single command. For example

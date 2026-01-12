@@ -13,14 +13,14 @@ head: konsti/async_zip-crates-io
 created_at: 2025-11-14T18:41:39Z
 updated_at: 2025-11-14T19:15:56Z
 url: https://github.com/astral-sh/uv/pull/16742
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Use crates.io async_zip fork
 
 ---
 
-_Pull request opened by @konstin on 2025-11-14 18:41_
+_@konstin_
 
 Migrate to our fork on crates.io.
 

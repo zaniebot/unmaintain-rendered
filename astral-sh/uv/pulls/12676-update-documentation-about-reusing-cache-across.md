@@ -11,14 +11,14 @@ head: update-docs-about-caching
 created_at: 2025-04-04T17:12:24Z
 updated_at: 2025-10-25T21:11:37Z
 url: https://github.com/astral-sh/uv/pull/12676
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Update documentation about reusing cache across multiple containers
 
 ---
 
-_Pull request opened by @potiuk on 2025-04-04 17:12_
+_@potiuk_
 
 With #12359 I've learned about the power of mounting shared cache when you run multiple containers, I think it's worth mentioning it in the `uv` documentation so that others can discover it more easily
 

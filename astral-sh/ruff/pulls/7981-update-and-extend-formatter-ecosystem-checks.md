@@ -14,14 +14,14 @@ head: new-ecosystem-checks
 created_at: 2023-10-16T08:39:26Z
 updated_at: 2023-10-16T11:24:43Z
 url: https://github.com/astral-sh/ruff/pull/7981
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update and extend formatter ecosystem checks
 
 ---
 
-_Pull request opened by @konstin on 2023-10-16 08:39_
+_@konstin_
 
 **Summary** Adds home-assistant, a project with 10k files, and poetry, which uses preview style, to the ecosystem checks.
 

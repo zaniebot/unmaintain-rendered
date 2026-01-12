@@ -13,14 +13,14 @@ head: dcreager/separate-constraints
 created_at: 2026-01-05T15:28:31Z
 updated_at: 2026-01-05T16:32:42Z
 url: https://github.com/astral-sh/ruff/pull/22400
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Separate out upper and lower bound constraints
 
 ---
 
-_Pull request opened by @dcreager on 2026-01-05 15:28_
+_@dcreager_
 
 A refactoring I poked at over the holiday break. Pushing up to see what CI says about the performance.
 

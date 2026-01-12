@@ -13,14 +13,14 @@ head: consider-using-in
 created_at: 2023-06-19T19:47:59Z
 updated_at: 2023-07-16T11:52:08Z
 url: https://github.com/astral-sh/ruff/pull/5193
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Implement Pylint `consider-using-in`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-19 19:47_
+_@tjkuson_
 
 ## Summary
 

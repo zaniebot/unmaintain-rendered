@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-26T07:12:58Z
 updated_at: 2025-12-16T16:00:47Z
 url: https://github.com/astral-sh/uv/issues/16034
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Windows: uv run hg fails with abort: failed to load Python DLL python312.dll while uv run python -m mercurial works
 
 ---
 
-_Issue opened by @Stefanhg on 2025-09-26 07:12_
+_@Stefanhg_
 
 ### Summary
 

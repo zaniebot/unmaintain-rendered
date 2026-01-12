@@ -12,14 +12,14 @@ head: fix-incorrect-member-narrowing
 created_at: 2025-08-07T11:35:55Z
 updated_at: 2025-08-13T04:02:39Z
 url: https://github.com/astral-sh/ruff/pull/19802
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] fix incorrect member narrowing
 
 ---
 
-_Pull request opened by @mtshiba on 2025-08-07 11:35_
+_@mtshiba_
 
 ## Summary
 

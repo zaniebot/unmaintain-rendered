@@ -13,14 +13,14 @@ head: dhruv/match-definition
 created_at: 2024-08-29T07:40:30Z
 updated_at: 2024-09-03T18:10:26Z
 url: https://github.com/astral-sh/ruff/pull/13147
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add definitions for match statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-29 07:40_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/unary
 created_at: 2024-09-30T01:49:09Z
 updated_at: 2024-09-30T18:11:10Z
 url: https://github.com/astral-sh/ruff/pull/13559
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add unary inference for integer and boolean literals
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-30 01:49_
+_@charliermarsh_
 
 ## Summary
 

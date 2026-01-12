@@ -14,14 +14,14 @@ head: charlie/pad
 created_at: 2023-09-05T17:15:26Z
 updated_at: 2023-09-05T17:44:29Z
 url: https://github.com/astral-sh/ruff/pull/7171
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add required space when fixing UP024
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 17:15_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7101.
 

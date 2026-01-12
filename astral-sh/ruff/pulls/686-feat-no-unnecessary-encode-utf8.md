@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-11T18:45:56Z
 updated_at: 2022-11-12T16:54:56Z
 url: https://github.com/astral-sh/ruff/pull/686
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # feat: no unnecessary encode utf8
 
 ---
 
-_Pull request opened by @martinlehoux on 2022-11-11 18:45_
+_@martinlehoux_
 
 - Mentions https://github.com/charliermarsh/ruff/issues/641
 - I have a doubt about replacing multiline strings like in the test

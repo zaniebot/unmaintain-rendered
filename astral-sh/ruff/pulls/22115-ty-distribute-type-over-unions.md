@@ -14,14 +14,14 @@ head: charlie/unions
 created_at: 2025-12-20T16:27:31Z
 updated_at: 2025-12-21T23:45:31Z
 url: https://github.com/astral-sh/ruff/pull/22115
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Distribute `type[]` over unions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-20 16:27_
+_@charliermarsh_
 
 ## Summary
 

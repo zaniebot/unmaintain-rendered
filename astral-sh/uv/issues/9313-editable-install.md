@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T11:55:35Z
 updated_at: 2024-11-21T13:49:53Z
 url: https://github.com/astral-sh/uv/issues/9313
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # editable install
 
 ---
 
-_Issue opened by @Helfrid on 2024-11-21 11:55_
+_@Helfrid_
 
 I am encountering a problem when trying to work with editable installs using the uv packaging system.
 

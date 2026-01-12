@@ -14,14 +14,14 @@ head: charlie/F
 created_at: 2024-04-27T12:50:43Z
 updated_at: 2024-04-27T15:44:54Z
 url: https://github.com/astral-sh/ruff/pull/11173
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Prioritize `redefined-while-unused` over `unused-import`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-27 12:50_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T08:56:28Z
 updated_at: 2026-01-09T09:03:35Z
 url: https://github.com/astral-sh/ty/issues/2409
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Throws error when pydantic's alias is being used
 
 ---
 
-_Issue opened by @viliusgudziunas on 2026-01-09 08:56_
+_@viliusgudziunas_
 
 ### Summary
 

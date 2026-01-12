@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-14T14:28:47Z
 updated_at: 2024-05-20T22:00:54Z
 url: https://github.com/astral-sh/uv/issues/3579
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Still get error running uv pip compile with --python-version specified when Python 2 is on the PATH
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-14 14:28_
+_@notatallshaw-gts_
 
 This is a follow up to https://github.com/astral-sh/uv/issues/3474 that was closed by https://github.com/astral-sh/uv/pull/3476
 

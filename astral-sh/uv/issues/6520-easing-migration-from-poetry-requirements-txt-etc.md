@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-23T14:41:15Z
 updated_at: 2024-08-26T07:35:01Z
 url: https://github.com/astral-sh/uv/issues/6520
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Easing migration from Poetry, requirements.txt, etc.
 
 ---
 
-_Issue opened by @raayu83 on 2024-08-23 14:41_
+_@raayu83_
 
 First off, congrats on the 0.3.x Release!
 I've already started migrating my projects to it!

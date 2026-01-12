@@ -14,14 +14,14 @@ head: charlie/isolate
 created_at: 2024-07-26T00:31:20Z
 updated_at: 2024-08-23T14:40:51Z
 url: https://github.com/astral-sh/uv/pull/5470
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Reframe use of `--isolated` in `tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 00:31_
+_@charliermarsh_
 
 ## Summary
 

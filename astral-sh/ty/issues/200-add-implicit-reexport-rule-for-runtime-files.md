@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-14T09:50:36Z
 updated_at: 2025-11-18T16:10:21Z
 url: https://github.com/astral-sh/ty/issues/200
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add `implicit-reexport` rule for runtime files
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-14 09:50_
+_@dhruvmanila_
 
 ### Description
 

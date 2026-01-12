@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-08T21:27:02Z
 updated_at: 2025-07-09T17:28:21Z
 url: https://github.com/astral-sh/ruff/pull/19218
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`pydoclint`] Make example error out-of-the-box (`DOC501`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-08 21:27_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

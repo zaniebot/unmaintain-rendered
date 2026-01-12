@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T17:57:10Z
 updated_at: 2024-07-08T13:21:06Z
 url: https://github.com/astral-sh/uv/issues/4815
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv tool` should use some colors in the CLI
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-04 17:57_
+_@charliermarsh_
 
 E.g., `Installed: black, blackd` sticks out a bit from the rest of the CLI. What do we want it to look like?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-21T10:10:30Z
 updated_at: 2024-01-09T03:13:38Z
 url: https://github.com/astral-sh/ruff/issues/9228
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # D406 inconsistent behaviour
 
 ---
 
-_Issue opened by @chaitanya2692 on 2023-12-21 10:10_
+_@chaitanya2692_
 
 I am running ruff on the following example code 
 

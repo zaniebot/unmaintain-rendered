@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T12:21:48Z
 updated_at: 2024-12-21T10:33:12Z
 url: https://github.com/astral-sh/ruff/issues/15034
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] `sys.platform` support
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-17 12:21_
+_@sharkdp_
 
 - New `python_platform` configuration setting for Red Knot
 - Infer `Literal["linux"]` etc for `sys.platform` if config option is set accordingly

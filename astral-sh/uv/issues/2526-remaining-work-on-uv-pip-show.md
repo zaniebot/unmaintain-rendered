@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T21:50:39Z
 updated_at: 2025-08-16T22:08:45Z
 url: https://github.com/astral-sh/uv/issues/2526
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Remaining work on `uv pip show`
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-18 21:50_
+_@danielhollas_
 
 This is a follow-up to #1594 to track the remaining work to reach pip compatibility (ordered by importance)
 

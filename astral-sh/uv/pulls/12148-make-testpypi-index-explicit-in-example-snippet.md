@@ -13,14 +13,14 @@ head: ejohnso49/guide-make-testpypi-explicit
 created_at: 2025-03-13T04:07:59Z
 updated_at: 2025-03-13T23:23:10Z
 url: https://github.com/astral-sh/uv/pull/12148
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Make testpypi index explicit in example snippet
 
 ---
 
-_Pull request opened by @ejohnso49 on 2025-03-13 04:07_
+_@ejohnso49_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

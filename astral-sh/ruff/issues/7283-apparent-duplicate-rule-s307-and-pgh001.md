@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-11T20:10:15Z
 updated_at: 2024-07-26T01:57:47Z
 url: https://github.com/astral-sh/ruff/issues/7283
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Apparent duplicate rule (`S307` and `PGH001`)
 
 ---
 
-_Issue opened by @tjkuson on 2023-09-11 20:10_
+_@tjkuson_
 
 Rules [`suspicious-eval-usage` (`S307`)](https://beta.ruff.rs/docs/rules/suspicious-eval-usage/) and [`eval` (`PGH001`)](https://beta.ruff.rs/docs/rules/eval/) seem to do the same thing. If they are, in fact, distinct, then the difference between them should probably be explained in the documentation.
 

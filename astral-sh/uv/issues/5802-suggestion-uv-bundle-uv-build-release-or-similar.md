@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T23:26:31Z
 updated_at: 2025-12-26T18:33:31Z
 url: https://github.com/astral-sh/uv/issues/5802
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Suggestion: `uv bundle`, `uv build --release` or similar to create a contained executable a la pyinstaller, py2exe
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-08-05 23:26_
+_@matterhorn103_
 
 I regularly use pyinstaller for a project, and the frequency of questions about it - or the task more generally of "compiling" an executable for distribution - around the web indicates to me that it's widely popular.
 

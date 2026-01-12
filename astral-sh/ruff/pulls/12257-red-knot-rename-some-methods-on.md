@@ -12,14 +12,14 @@ head: vendored-naming-consistency
 created_at: 2024-07-09T09:26:00Z
 updated_at: 2024-07-09T17:18:02Z
 url: https://github.com/astral-sh/ruff/pull/12257
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Rename some methods on `VendoredFileSystem` for consistency
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-09 09:26_
+_@AlexWaygood_
 
 ## Summary
 

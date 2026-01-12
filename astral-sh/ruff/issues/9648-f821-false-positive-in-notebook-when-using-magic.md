@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T14:14:50Z
 updated_at: 2024-01-29T13:44:34Z
 url: https://github.com/astral-sh/ruff/issues/9648
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F821 false positive in notebook when using magic command as variables
 
 ---
 
-_Issue opened by @mathause on 2024-01-26 14:14_
+_@mathause_
 
 ruff gives false positives for F821 (Undefined name) in notebooks when using magic command as variables. Ok, this is _very_ specific and potentially related to #9644.
 

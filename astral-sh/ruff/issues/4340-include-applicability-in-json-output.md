@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-10T06:43:56Z
 updated_at: 2023-05-10T14:36:42Z
 url: https://github.com/astral-sh/ruff/issues/4340
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Include `Applicability` in JSON output
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-10 06:43_
+_@MichaReiser_
 
 _No description provided._
 

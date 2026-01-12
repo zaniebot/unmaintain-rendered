@@ -11,14 +11,14 @@ head: global_lock
 created_at: 2025-06-18T15:11:43Z
 updated_at: 2025-06-25T20:32:59Z
 url: https://github.com/astral-sh/uv/pull/14130
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # add a UV_ONLY_GLOBAL_LOCKS flag for uv add/sync/remove
 
 ---
 
-_Pull request opened by @jpetrucciani on 2025-06-18 15:11_
+_@jpetrucciani_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

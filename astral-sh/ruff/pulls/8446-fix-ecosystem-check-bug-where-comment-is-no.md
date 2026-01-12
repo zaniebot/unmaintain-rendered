@@ -13,14 +13,14 @@ head: zanie/eco-update
 created_at: 2023-11-02T13:43:12Z
 updated_at: 2023-11-02T15:49:58Z
 url: https://github.com/astral-sh/ruff/pull/8446
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix ecosystem check bug where comment is no longer updated
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 13:43_
+_@zanieb_
 
 Instead, a second is posted
 

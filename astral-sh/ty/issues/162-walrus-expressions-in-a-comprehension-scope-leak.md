@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T15:36:10Z
 updated_at: 2025-05-11T07:30:31Z
 url: https://github.com/astral-sh/ty/issues/162
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # walrus expressions in a comprehension scope "leak" into the comprehension's enclosing scope
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-24 15:36_
+_@AlexWaygood_
 
 ### Summary
 

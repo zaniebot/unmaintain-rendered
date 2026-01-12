@@ -14,14 +14,14 @@ head: micha/remove-pre-release-warning
 created_at: 2025-10-12T05:44:54Z
 updated_at: 2025-10-13T17:50:20Z
 url: https://github.com/astral-sh/ruff/pull/20817
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Remove 'pre-release software' warning
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-12 05:44_
+_@MichaReiser_
 
 ## Summary
 

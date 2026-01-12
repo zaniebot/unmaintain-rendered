@@ -14,14 +14,14 @@ head: charlie/tool-env
 created_at: 2024-07-02T22:31:34Z
 updated_at: 2024-07-02T23:07:56Z
 url: https://github.com/astral-sh/uv/pull/4746
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Replace tool environments on updated Python request
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 22:31_
+_@charliermarsh_
 
 ## Summary
 

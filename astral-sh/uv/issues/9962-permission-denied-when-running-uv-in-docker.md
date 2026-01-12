@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T08:42:57Z
 updated_at: 2024-12-17T13:47:35Z
 url: https://github.com/astral-sh/uv/issues/9962
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # "Permission denied" when running uv in docker + Debian bookworm
 
 ---
 
-_Issue opened by @torarvid on 2024-12-17 08:42_
+_@torarvid_
 
 Hello and thanks for the wonderful `uv`. 🙌🏻
 

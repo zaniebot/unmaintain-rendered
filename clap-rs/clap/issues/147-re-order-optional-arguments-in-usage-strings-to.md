@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-06T17:39:34Z
 updated_at: 2018-08-02T03:29:40Z
 url: https://github.com/clap-rs/clap/issues/147
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Re-order optional arguments in usage strings to appear before required arguments
 
 ---
 
-_Issue opened by @manfredlotz on 2015-07-06 17:39_
+_@manfredlotz_
 
 Hi Kevin, 
 First of all, your videos are really great. Thanks for this.

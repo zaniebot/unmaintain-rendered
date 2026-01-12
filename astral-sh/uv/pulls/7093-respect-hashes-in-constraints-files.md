@@ -14,14 +14,14 @@ head: charlie/constraint-hash
 created_at: 2024-09-05T17:57:24Z
 updated_at: 2024-09-05T19:49:55Z
 url: https://github.com/astral-sh/uv/pull/7093
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Respect hashes in constraints files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-05 17:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T21:05:17Z
 updated_at: 2024-03-07T23:58:00Z
 url: https://github.com/astral-sh/uv/issues/2251
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv fails to install package with build dependency on pip
 
 ---
 
-_Issue opened by @kpeez on 2024-03-06 21:05_
+_@kpeez_
 
 ## Description
 

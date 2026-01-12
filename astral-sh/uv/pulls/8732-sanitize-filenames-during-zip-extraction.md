@@ -13,14 +13,14 @@ head: charlie/sanitize
 created_at: 2024-10-31T17:54:39Z
 updated_at: 2024-10-31T19:12:52Z
 url: https://github.com/astral-sh/uv/pull/8732
-synced_at: 2026-01-10T12:08:44Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Sanitize filenames during zip extraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-31 17:54_
+_@charliermarsh_
 
 ## Summary
 

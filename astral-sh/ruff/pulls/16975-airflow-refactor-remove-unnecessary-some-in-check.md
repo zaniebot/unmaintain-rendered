@@ -13,14 +13,14 @@ head: refactor-AIR302
 created_at: 2025-03-26T07:52:32Z
 updated_at: 2025-03-26T16:17:34Z
 url: https://github.com/astral-sh/ruff/pull/16975
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`airflow`] refactor: remove unnecessary `Some` in `check_method`, `check_class_attribute` (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-26 07:52_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

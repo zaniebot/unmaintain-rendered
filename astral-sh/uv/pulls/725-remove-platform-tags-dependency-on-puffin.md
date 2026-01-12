@@ -13,14 +13,14 @@ head: charlie/tags
 created_at: 2023-12-24T23:00:50Z
 updated_at: 2023-12-24T23:06:51Z
 url: https://github.com/astral-sh/uv/pull/725
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Remove `platform-tags` dependency on `puffin-interpreter`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-24 23:00_
+_@charliermarsh_
 
 Cuts off a large internal dependency chain from what is otherwise a very general crate.
 

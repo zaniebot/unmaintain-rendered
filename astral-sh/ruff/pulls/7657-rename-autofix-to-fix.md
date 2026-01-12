@@ -12,14 +12,14 @@ head: rename-autofix-to-fix
 created_at: 2023-09-25T14:38:49Z
 updated_at: 2023-09-28T10:59:08Z
 url: https://github.com/astral-sh/ruff/pull/7657
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Rename `Autofix` to `Fix`
 
 ---
 
-_Pull request opened by @konstin on 2023-09-25 14:38_
+_@konstin_
 
 **Summary** Mostly mechanical symbol rename and search-and-replace, with small changes to the markdown docs to read better
 

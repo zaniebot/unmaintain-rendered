@@ -14,14 +14,14 @@ head: pre-commit-ergonomics
 created_at: 2024-10-18T12:24:25Z
 updated_at: 2024-10-18T15:04:02Z
 url: https://github.com/astral-sh/ruff/pull/13811
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Set `fail_fast: false` in `.pre-commit-config.yaml`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-18 12:24_
+_@AlexWaygood_
 
 ## Summary
 

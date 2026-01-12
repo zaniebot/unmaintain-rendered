@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T23:09:38Z
 updated_at: 2023-11-22T17:02:42Z
 url: https://github.com/astral-sh/ruff/issues/8798
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # add rule for none variable
 
 ---
 
-_Issue opened by @tooptoop4 on 2023-11-20 23:09_
+_@tooptoop4_
 
 below is not being flagged by any rule, i would expect it to suggest to flip the order of the conditions
 ```

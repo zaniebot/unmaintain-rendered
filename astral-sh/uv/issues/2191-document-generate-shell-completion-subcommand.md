@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T00:57:13Z
 updated_at: 2024-08-21T14:35:46Z
 url: https://github.com/astral-sh/uv/issues/2191
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Document  generate-shell-completion subcommand
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-05 00:57_
+_@danielhollas_
 
 The `generate-shell-completion` subcommand was added in #1675 but doesn't seem to be documented anywhere. It also doesn't appear in the help output (`uv -h`) --- I guess that's intended?
 

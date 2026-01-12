@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-27T04:17:38Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/634
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Use docs.rs as official docs page
 
 ---
 
-_Issue opened by @kbknapp on 2016-08-27 04:17_
+_@kbknapp_
 
 See https://github.com/steveklabnik/semver/pull/91 as example for changes that should be made
 

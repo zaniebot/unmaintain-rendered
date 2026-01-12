@@ -13,14 +13,14 @@ head: dataset-event
 created_at: 2025-09-24T13:54:35Z
 updated_at: 2025-10-16T02:59:09Z
 url: https://github.com/astral-sh/ruff/pull/20551
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`airflow`] Add warning to `airflow.datasets.DatasetEvent` usage (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-09-24 13:54_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

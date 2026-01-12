@@ -13,14 +13,14 @@ head: zb/ruff-fix
 created_at: 2025-06-17T17:04:25Z
 updated_at: 2025-06-17T17:28:25Z
 url: https://github.com/astral-sh/uv/pull/14111
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Fix Ruff linting
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-17 17:04_
+_@zanieb_
 
 _No description provided._
 

@@ -15,14 +15,14 @@ head: david/full-project-names
 created_at: 2025-09-24T07:10:30Z
 updated_at: 2025-09-24T08:56:23Z
 url: https://github.com/astral-sh/ruff/pull/20542
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Use full project names in `good.txt`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-24 07:10_
+_@sharkdp_
 
 ## Summary
 

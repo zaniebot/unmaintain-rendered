@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-06T05:26:27Z
 updated_at: 2024-09-06T06:45:35Z
 url: https://github.com/astral-sh/uv/issues/7116
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # In Windows, `uv add` _sometimes_ adds extra lines between dependencies
 
 ---
 
-_Issue opened by @janpipek on 2024-09-06 05:26_
+_@janpipek_
 
 When I add a dependency in Windows 10:
 

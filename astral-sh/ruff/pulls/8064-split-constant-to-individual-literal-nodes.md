@@ -13,14 +13,14 @@ head: dhruv/constant-to-literal
 created_at: 2023-10-19T13:48:07Z
 updated_at: 2023-12-05T20:33:46Z
 url: https://github.com/astral-sh/ruff/pull/8064
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Split `Constant` to individual literal nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-19 13:48_
+_@dhruvmanila_
 
 ## Summary
 

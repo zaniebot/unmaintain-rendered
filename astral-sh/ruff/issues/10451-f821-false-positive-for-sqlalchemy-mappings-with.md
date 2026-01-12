@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-18T09:15:55Z
 updated_at: 2025-12-01T17:55:50Z
 url: https://github.com/astral-sh/ruff/issues/10451
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F821 false-positive for SQLAlchemy mappings with not yet declared classes
 
 ---
 
-_Issue opened by @aberres on 2024-03-18 09:15_
+_@aberres_
 
 The described behavior happens since 0.3.3. It might be related to https://github.com/astral-sh/ruff/issues/10340
 

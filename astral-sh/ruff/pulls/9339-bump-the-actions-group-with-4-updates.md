@@ -12,14 +12,14 @@ head: dependabot/github_actions/actions-b93a201fcc
 created_at: 2024-01-01T08:27:03Z
 updated_at: 2024-01-02T14:49:32Z
 url: https://github.com/astral-sh/ruff/pull/9339
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump the actions group with 4 updates
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-01 08:27_
+_@dependabot_
 
 Bumps the actions group with 4 updates: [tj-actions/changed-files](https://github.com/tj-actions/changed-files), [actions/upload-artifact](https://github.com/actions/upload-artifact), [actions/download-artifact](https://github.com/actions/download-artifact) and [cloudflare/wrangler-action](https://github.com/cloudflare/wrangler-action).
 

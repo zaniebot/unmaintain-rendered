@@ -12,14 +12,14 @@ head: import-anynoderef
 created_at: 2023-10-17T23:51:55Z
 updated_at: 2023-10-18T00:07:59Z
 url: https://github.com/astral-sh/ruff/pull/8030
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Move {AnyNodeRef, AstNode} to ruff_python_ast crate root
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-17 23:51_
+_@charliermarsh_
 
 This is a do-over of https://github.com/astral-sh/ruff/pull/8011, which I accidentally merged into a non-`main` branch. Sorry!
 

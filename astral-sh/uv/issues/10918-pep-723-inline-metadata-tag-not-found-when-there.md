@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T22:27:55Z
 updated_at: 2025-01-24T20:14:30Z
 url: https://github.com/astral-sh/uv/issues/10918
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # PEP 723 inline metadata tag not found when there's trailing whitespace
 
 ---
 
-_Issue opened by @snat-s on 2025-01-23 22:27_
+_@snat-s_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T20:06:43Z
 updated_at: 2024-09-26T19:30:48Z
 url: https://github.com/astral-sh/uv/issues/5492
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Ability to resolve lowest compatible versions of specific packages only
 
 ---
 
-_Issue opened by @connortann on 2024-07-26 20:06_
+_@connortann_
 
 First, thank you for the amazing package! We're migrating to it over at the `shap` repo and seeing wonderful speedups.
 

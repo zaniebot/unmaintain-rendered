@@ -12,14 +12,14 @@ head: support-decl-only
 created_at: 2025-06-29T18:05:53Z
 updated_at: 2025-06-29T18:06:18Z
 url: https://github.com/astral-sh/ruff/pull/19030
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Support declaration only statements
 
 ---
 
-_Pull request opened by @iyakushev on 2025-06-29 18:05_
+_@iyakushev_
 
 ## Summary
 

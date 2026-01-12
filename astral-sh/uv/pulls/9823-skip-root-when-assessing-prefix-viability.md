@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-12-11T19:45:43Z
 updated_at: 2024-12-11T19:59:50Z
 url: https://github.com/astral-sh/uv/pull/9823
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Skip root when assessing prefix viability
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-11 19:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: jack/typedict_assignment
 created_at: 2025-11-15T01:04:45Z
 updated_at: 2025-11-20T21:15:30Z
 url: https://github.com/astral-sh/ruff/pull/21467
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] implement `TypedDict` structural assignment
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-11-15 01:04_
+_@oconnor663_
 
 Closes https://github.com/astral-sh/ty/issues/1387.
 

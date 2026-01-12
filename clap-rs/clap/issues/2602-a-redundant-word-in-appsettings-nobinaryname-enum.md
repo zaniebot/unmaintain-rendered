@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-19T13:30:43Z
 updated_at: 2021-07-19T14:03:17Z
 url: https://github.com/clap-rs/clap/issues/2602
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # A redundant word in AppSettings::NoBinaryName enum explanation
 
 ---
 
-_Issue opened by @hosseind88 on 2021-07-19 13:30_
+_@hosseind88_
 
 ### Please complete the following tasks
 

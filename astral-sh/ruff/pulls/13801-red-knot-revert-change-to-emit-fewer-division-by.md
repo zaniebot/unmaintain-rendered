@@ -13,14 +13,14 @@ head: cjm/revert-div-zero-change
 created_at: 2024-10-17T18:52:20Z
 updated_at: 2024-10-17T20:26:30Z
 url: https://github.com/astral-sh/ruff/pull/13801
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] revert change to emit fewer division by zero errors
 
 ---
 
-_Pull request opened by @carljm on 2024-10-17 18:52_
+_@carljm_
 
 This reverts https://github.com/astral-sh/ruff/pull/13799, and restores the previous behavior, which I think was the most pragmatic and useful version of the divide-by-zero error, if we will emit it at all.
 

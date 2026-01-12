@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-05T11:27:09Z
 updated_at: 2025-09-08T14:57:10Z
 url: https://github.com/astral-sh/ty/issues/1131
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # invalid-argument-type for annotated `self` argument when a generic context exists
 
 ---
 
-_Issue opened by @Glyphack on 2025-09-05 11:27_
+_@Glyphack_
 
 This came up as part of https://github.com/astral-sh/ruff/pull/18007. Since it can be reproduced on main I created a separate issue & PR to check ecosystem changes.
 

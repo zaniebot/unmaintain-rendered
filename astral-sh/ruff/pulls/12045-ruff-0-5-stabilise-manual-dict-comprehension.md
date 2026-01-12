@@ -13,14 +13,14 @@ head: perflint-stabilisation
 created_at: 2024-06-26T11:16:29Z
 updated_at: 2024-06-26T12:01:41Z
 url: https://github.com/astral-sh/ruff/pull/12045
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [Ruff 0.5] Stabilise `manual-dict-comprehension` (`PERF403`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-26 11:16_
+_@AlexWaygood_
 
 ## Summary
 

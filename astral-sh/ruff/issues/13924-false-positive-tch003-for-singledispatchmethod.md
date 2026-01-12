@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T11:41:12Z
 updated_at: 2024-10-28T01:02:47Z
 url: https://github.com/astral-sh/ruff/issues/13924
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 #  False positive TCH003 for singledispatchmethod
 
 ---
 
-_Issue opened by @last-partizan on 2024-10-25 11:41_
+_@last-partizan_
 
 This is almost the same as #11520  , but for `@singledispatchmethod`
 

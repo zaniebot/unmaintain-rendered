@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T08:44:28Z
 updated_at: 2025-07-18T07:09:53Z
 url: https://github.com/astral-sh/ruff/issues/13610
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Automatically add `pragma: no cover` for `TYPE_CHECKING` blocks
 
 ---
 
-_Issue opened by @MartinJepsen on 2024-10-03 08:44_
+_@MartinJepsen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: prefetch-spawn
 created_at: 2024-05-16T16:09:20Z
 updated_at: 2024-05-17T16:26:46Z
 url: https://github.com/astral-sh/uv/pull/3627
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Parallelize Resolver
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-16 16:09_
+_@ibraheemdev_
 
 ## Summary
 

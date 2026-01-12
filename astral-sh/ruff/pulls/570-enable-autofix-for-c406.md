@@ -12,14 +12,14 @@ head: charlie/fix-C406
 created_at: 2022-11-03T15:27:35Z
 updated_at: 2022-11-03T15:27:47Z
 url: https://github.com/astral-sh/ruff/pull/570
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Enable autofix for C406
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 15:27_
+_@charliermarsh_
 
 _No description provided._
 

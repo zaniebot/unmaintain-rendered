@@ -12,14 +12,14 @@ head: zb/dockerhub-unblock
 created_at: 2025-08-18T23:19:47Z
 updated_at: 2025-08-19T00:02:51Z
 url: https://github.com/astral-sh/uv/pull/15365
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Disable DockerHub publish for extended images in 0.8.12
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 23:19_
+_@zanieb_
 
 _No description provided._
 

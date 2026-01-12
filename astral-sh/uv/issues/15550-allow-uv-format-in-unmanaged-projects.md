@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-27T14:35:15Z
 updated_at: 2025-09-05T18:14:42Z
 url: https://github.com/astral-sh/uv/issues/15550
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # Allow `uv format` in unmanaged projects
 
 ---
 
-_Issue opened by @zanieb on 2025-08-27 14:35_
+_@zanieb_
 
 e.g., from the uv repository
 

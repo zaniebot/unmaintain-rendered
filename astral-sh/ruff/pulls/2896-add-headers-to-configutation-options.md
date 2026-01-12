@@ -13,14 +13,14 @@ head: docs/fix-missing-config
 created_at: 2023-02-14T17:18:37Z
 updated_at: 2023-02-14T20:53:35Z
 url: https://github.com/astral-sh/ruff/pull/2896
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add headers to configutation options
 
 ---
 
-_Pull request opened by @Chris-May on 2023-02-14 17:18_
+_@Chris-May_
 
 This completes the word from the discussion in #2643, adding headers to clarify the `pyproject.toml` and `ruff.toml` sections.
 

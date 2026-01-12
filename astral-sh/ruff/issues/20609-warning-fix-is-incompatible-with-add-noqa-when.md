@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-28T15:38:00Z
 updated_at: 2025-09-30T06:34:19Z
 url: https://github.com/astral-sh/ruff/issues/20609
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `warning: --fix is incompatible with --add-noqa` when using `--diff`
 
 ---
 
-_Issue opened by @smurfix on 2025-09-28 15:38_
+_@smurfix_
 
 ### Summary
 

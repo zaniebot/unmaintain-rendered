@@ -12,14 +12,14 @@ head: py.typed
 created_at: 2025-05-08T15:51:26Z
 updated_at: 2025-05-08T16:01:24Z
 url: https://github.com/astral-sh/ty/pull/276
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # add `py.typed`
 
 ---
 
-_Pull request opened by @jorenham on 2025-05-08 15:51_
+_@jorenham_
 
 Because the `-> str` in `__main__.find_ty_bin` also deserves to be recognized :)
 

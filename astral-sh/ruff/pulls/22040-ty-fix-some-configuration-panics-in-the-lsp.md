@@ -14,14 +14,14 @@ head: gankra/sfinae2
 created_at: 2025-12-17T22:35:29Z
 updated_at: 2025-12-18T14:47:04Z
 url: https://github.com/astral-sh/ruff/pull/22040
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Fix some configuration panics in the LSP
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-17 22:35_
+_@Gankra_
 
 ## Summary
 

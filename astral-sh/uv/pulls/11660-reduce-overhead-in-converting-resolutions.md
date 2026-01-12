@@ -13,14 +13,14 @@ head: konsti/reduce-edge-hashing
 created_at: 2025-02-20T11:02:43Z
 updated_at: 2025-02-20T20:13:04Z
 url: https://github.com/astral-sh/uv/pull/11660
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Reduce overhead in converting resolutions
 
 ---
 
-_Pull request opened by @konstin on 2025-02-20 11:02_
+_@konstin_
 
 Solving spent a chunk of its time just converting resolutions, the left two blocks:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T15:36:36Z
 updated_at: 2025-01-13T15:47:51Z
 url: https://github.com/astral-sh/ruff/issues/15458
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # feature request: option for non newline sensitive output of call-expressions-with-a-single-multiline-string-argument
 
 ---
 
-_Issue opened by @trim21 on 2025-01-13 15:36_
+_@trim21_
 
 We have a newline sensitive output for the case of https://docs.astral.sh/ruff/formatter/black/#call-expressions-with-a-single-multiline-string-argument
 

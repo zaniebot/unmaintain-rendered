@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-27T23:43:22Z
 updated_at: 2023-02-22T00:05:38Z
 url: https://github.com/astral-sh/ruff/issues/1414
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive on match with object's attribute
 
 ---
 
-_Issue opened by @Akomer on 2022-12-27 23:43_
+_@Akomer_
 
 I got a false positive SyntaxError in case i am using the match on an object's attribute:
 

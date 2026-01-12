@@ -13,14 +13,14 @@ head: zb/ruf001
 created_at: 2024-02-01T16:43:10Z
 updated_at: 2024-02-01T17:56:19Z
 url: https://github.com/astral-sh/ruff/pull/9758
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Restore RUF011 documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-01 16:43_
+_@zanieb_
 
 For consistency with other redirected rules as in https://github.com/astral-sh/ruff/pull/9755
 

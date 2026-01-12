@@ -11,14 +11,14 @@ head: relpath-dependencies
 created_at: 2024-05-31T21:11:18Z
 updated_at: 2024-07-18T20:50:59Z
 url: https://github.com/astral-sh/uv/pull/3949
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Lenient handling of relative path dependencies
 
 ---
 
-_Pull request opened by @idlsoft on 2024-05-31 21:11_
+_@idlsoft_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

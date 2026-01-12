@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T16:33:04Z
 updated_at: 2024-10-03T17:45:40Z
 url: https://github.com/astral-sh/uv/issues/7873
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # cp27 wheels selected for psutil on windows
 
 ---
 
-_Issue opened by @bluss on 2024-10-02 16:33_
+_@bluss_
 
 See wheel `psutil-6.0.0-cp27-none-win32.whl` in lockfile. 
 

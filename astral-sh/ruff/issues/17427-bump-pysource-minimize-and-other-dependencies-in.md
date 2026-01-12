@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-16T11:35:49Z
 updated_at: 2025-05-15T14:47:39Z
 url: https://github.com/astral-sh/ruff/issues/17427
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Bump `pysource-minimize` (and other dependencies?) in `py-fuzzer`'s `uv.lock` file
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-16 11:35_
+_@AlexWaygood_
 
 There was just a new release of `pysource-minimize`, one of the libraries used by our [`py-fuzzer`](https://github.com/astral-sh/ruff/tree/main/python/py-fuzzer) script. We should try to upgrade the `pysource-minimize` pin in the script's `uv.lock` file (as long as the script still works as intended), and see if we can bump any other dependencies there as well.
 

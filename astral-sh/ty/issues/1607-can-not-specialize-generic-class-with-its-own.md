@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-21T10:49:58Z
 updated_at: 2025-11-24T17:10:55Z
 url: https://github.com/astral-sh/ty/issues/1607
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Can not specialize generic class with (its own) bound typevar in value positions
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-21 10:49_
+_@sharkdp_
 
 We currently emit the following error when trying to create a generic type alias, which specializes a generic class with a legacy typevar:
 ```py

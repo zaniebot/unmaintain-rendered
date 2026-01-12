@@ -15,14 +15,14 @@ head: zb/python-env-test
 created_at: 2025-05-09T21:10:46Z
 updated_at: 2025-05-10T20:28:34Z
 url: https://github.com/astral-sh/ruff/pull/17996
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Add test coverage for `PythonEnvironment::System` variants
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-09 21:10_
+_@zanieb_
 
 Adds test coverage for https://github.com/astral-sh/ruff/pull/17991, which includes some minor refactoring of the virtual environment test infrastructure.
 

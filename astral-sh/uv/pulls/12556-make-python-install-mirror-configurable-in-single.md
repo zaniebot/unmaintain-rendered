@@ -12,14 +12,14 @@ head: main
 created_at: 2025-03-30T09:19:25Z
 updated_at: 2025-04-14T08:00:30Z
 url: https://github.com/astral-sh/uv/pull/12556
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Make python-install-mirror configurable in single-file scripts
 
 ---
 
-_Pull request opened by @l1xnan on 2025-03-30 09:19_
+_@l1xnan_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

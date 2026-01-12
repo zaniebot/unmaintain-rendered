@@ -13,14 +13,14 @@ head: cjm/declared-vs-non
 created_at: 2024-09-18T22:44:47Z
 updated_at: 2024-09-19T17:54:40Z
 url: https://github.com/astral-sh/ruff/pull/13400
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] inferred type, not Unknown, for undeclared paths
 
 ---
 
-_Pull request opened by @carljm on 2024-09-18 22:44_
+_@carljm_
 
 After looking at more cases (for example, the case in the added test in this PR), I realized that our previous rule, "if a symbol has any declarations, use only declarations for its public type" is not adequate. Rather than using `Unknown` as fallback if the symbol is not declared in some paths, we need to use the inferred type as fallback in that case.
 

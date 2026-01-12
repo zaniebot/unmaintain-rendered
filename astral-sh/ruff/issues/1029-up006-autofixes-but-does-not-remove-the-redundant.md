@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-04T10:19:36Z
 updated_at: 2022-12-05T18:06:55Z
 url: https://github.com/astral-sh/ruff/issues/1029
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # UP006 autofixes but does not remove the redundant imports if file is __init__.py
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-04 10:19_
+_@LefterisJP_
 
 This is with `ruff==0.0.155`
 

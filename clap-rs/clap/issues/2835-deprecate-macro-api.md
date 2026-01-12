@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-10-09T13:43:27Z
 updated_at: 2023-02-11T03:03:19Z
 url: https://github.com/clap-rs/clap/issues/2835
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Deprecate Macro API
 
 ---
 
-_Issue opened by @epage on 2021-10-09 13:43_
+_@epage_
 
 The Macro API was meant to be a performant, ergonomic version of the builder API.  However, there is a level of technical load in keeping it around and sufficiently documented and seems to mostly go unused.
 

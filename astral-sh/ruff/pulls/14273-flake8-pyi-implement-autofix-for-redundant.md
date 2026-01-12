@@ -14,14 +14,14 @@ head: pyi041-redundant-numeric-union-autofix
 created_at: 2024-11-11T12:35:52Z
 updated_at: 2024-11-25T18:20:39Z
 url: https://github.com/astral-sh/ruff/pull/14273
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Implement autofix for `redundant-numeric-union` (`PYI041`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-11 12:35_
+_@sbrugman_
 
 ## Summary
 

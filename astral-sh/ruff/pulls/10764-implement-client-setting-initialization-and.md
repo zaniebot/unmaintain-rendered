@@ -13,14 +13,14 @@ head: jane/server/settings/init-options
 created_at: 2024-04-03T20:53:02Z
 updated_at: 2024-04-05T23:26:38Z
 url: https://github.com/astral-sh/ruff/pull/10764
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Implement client setting initialization and resolution for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-03 20:53_
+_@snowsignal_
 
 ## Summary
 

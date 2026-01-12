@@ -13,14 +13,14 @@ head: zb/windows-ci
 created_at: 2024-04-10T14:31:42Z
 updated_at: 2024-04-15T20:07:53Z
 url: https://github.com/astral-sh/uv/pull/2965
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # DEBUG: Futz with Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 14:31_
+_@zanieb_
 
 _No description provided._
 

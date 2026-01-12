@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-23T13:53:54Z
 updated_at: 2024-03-23T21:30:59Z
 url: https://github.com/astral-sh/ruff/issues/10535
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Why was v0.3.4 retagged and can we not do that again please?
 
 ---
 
-_Issue opened by @alerque on 2024-03-23 13:53_
+_@alerque_
 
 The v0.3.4 release was tagged at least 2 days ago. I packaged and released it for Arch Linux on the 21st. Now there is a [new tag/release](https://github.com/astral-sh/ruff/releases/tag/v0.3.4) using the same version identifier and the old tag point is gone.
 

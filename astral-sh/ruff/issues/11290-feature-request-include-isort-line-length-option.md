@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-05T13:35:39Z
 updated_at: 2024-05-05T13:41:54Z
 url: https://github.com/astral-sh/ruff/issues/11290
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature request: include isort `line_length` option (to allow decouping of linting from formatting)
 
 ---
 
-_Issue opened by @rwarren on 2024-05-05 13:35_
+_@rwarren_
 
 Ruff version: 0.4.3
 

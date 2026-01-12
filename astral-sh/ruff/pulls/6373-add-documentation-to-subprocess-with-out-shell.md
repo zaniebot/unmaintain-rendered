@@ -13,14 +13,14 @@ head: shell-docs
 created_at: 2023-08-06T13:40:50Z
 updated_at: 2023-08-07T08:12:32Z
 url: https://github.com/astral-sh/ruff/pull/6373
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add documentation to `subprocess-with[out]-shell-equals-true` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-06 13:40_
+_@tjkuson_
 
 ## Summary
 

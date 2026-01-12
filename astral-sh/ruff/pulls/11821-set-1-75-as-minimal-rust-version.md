@@ -12,14 +12,14 @@ head: set-minimal-rust-to-175
 created_at: 2024-06-10T06:30:01Z
 updated_at: 2024-06-10T12:39:23Z
 url: https://github.com/astral-sh/ruff/pull/11821
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Set 1.75 as minimal Rust version
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-10 06:30_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/bump-shellcheck
 created_at: 2025-12-29T18:39:19Z
 updated_at: 2025-12-29T18:41:50Z
 url: https://github.com/astral-sh/ty/pull/2262
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump shellcheck pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-29 18:39_
+_@AlexWaygood_
 
 ## Summary
 

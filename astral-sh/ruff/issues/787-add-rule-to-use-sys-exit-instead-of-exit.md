@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T13:54:28Z
 updated_at: 2022-11-20T23:09:41Z
 url: https://github.com/astral-sh/ruff/issues/787
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add rule to use sys.exit() instead of exit()
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-17 13:54_
+_@JonathanPlasse_
 
 `exit()` is not a built-in function and is only defined if the site module is imported during Python's initialization (which, for example, can be disabled with `-S` option passed to the interpreter). You should use `sys.exit()` instead:
 ```suggestion

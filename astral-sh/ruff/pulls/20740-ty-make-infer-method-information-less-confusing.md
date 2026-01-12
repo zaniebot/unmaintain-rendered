@@ -14,14 +14,14 @@ head: david/less-confusing-method_information
 created_at: 2025-10-07T08:12:16Z
 updated_at: 2025-10-07T15:12:09Z
 url: https://github.com/astral-sh/ruff/pull/20740
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Make `infer_method_information` less confusing
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-07 08:12_
+_@sharkdp_
 
 ## Summary
 

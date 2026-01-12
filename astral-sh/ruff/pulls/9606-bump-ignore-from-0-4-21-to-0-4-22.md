@@ -13,14 +13,14 @@ head: dependabot/cargo/ignore-0.4.22
 created_at: 2024-01-22T08:15:12Z
 updated_at: 2024-01-22T18:25:53Z
 url: https://github.com/astral-sh/ruff/pull/9606
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump ignore from 0.4.21 to 0.4.22
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-22 08:15_
+_@dependabot_
 
 Bumps [ignore](https://github.com/BurntSushi/ripgrep) from 0.4.21 to 0.4.22.
 <details>

@@ -12,14 +12,14 @@ head: ecosystem-ci-bugfix
 created_at: 2023-05-24T14:13:34Z
 updated_at: 2023-05-24T15:16:15Z
 url: https://github.com/astral-sh/ruff/pull/4628
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Don't assume unique repo names in ecosystem checks
 
 ---
 
-_Pull request opened by @konstin on 2023-05-24 14:13_
+_@konstin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

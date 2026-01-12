@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-12T08:32:29Z
 updated_at: 2024-07-12T12:50:05Z
 url: https://github.com/astral-sh/ruff/issues/12295
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # No error on `logging.Logger.warn` access [G010]
 
 ---
 
-_Issue opened by @rominf on 2024-07-12 08:32_
+_@rominf_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

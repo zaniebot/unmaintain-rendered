@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-08T19:49:38Z
 updated_at: 2024-10-13T10:33:04Z
 url: https://github.com/astral-sh/ruff/issues/13685
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Incorrect autofix for `PYI030`
 
 ---
 
-_Issue opened by @yut23 on 2024-10-08 19:49_
+_@yut23_
 
 Running Ruff 0.6.9 as `ruff check --isolated --select PYI030 --fix test.py` deletes any subscripted types in a union with the offending Literals:
 ```python

@@ -12,14 +12,14 @@ head: ecosystem_ci_without_feature_flag
 created_at: 2023-05-19T12:20:38Z
 updated_at: 2023-05-24T02:22:24Z
 url: https://github.com/astral-sh/ruff/pull/4528
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Include hidden ecosystem_ci option to show fixes without feature
 
 ---
 
-_Pull request opened by @konstin on 2023-05-19 12:20_
+_@konstin_
 
 This removes the feature flag but adds a warning akin to #4453, so we can use the ecosystem ci option to diff fixes with pypi and other normal builds. This reduces the possible build matrix .
 

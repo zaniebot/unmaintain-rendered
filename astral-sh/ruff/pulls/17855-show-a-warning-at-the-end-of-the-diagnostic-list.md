@@ -13,14 +13,14 @@ head: micha/warn-panic
 created_at: 2025-05-05T12:55:50Z
 updated_at: 2025-05-06T07:33:09Z
 url: https://github.com/astral-sh/ruff/pull/17855
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Show a warning at the end of the diagnostic list if there are any fatal warnings
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 12:55_
+_@MichaReiser_
 
 ## Test Plan
 

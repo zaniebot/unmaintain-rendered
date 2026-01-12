@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T08:13:51Z
 updated_at: 2024-08-21T08:35:43Z
 url: https://github.com/astral-sh/uv/issues/6310
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv can not be installed with "cargo install" ?
 
 ---
 
-_Issue opened by @fconil on 2024-08-21 08:13_
+_@fconil_
 
 Hi,
 

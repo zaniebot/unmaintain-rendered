@@ -13,14 +13,14 @@ head: konsti/box-some-more
 created_at: 2024-07-04T07:48:10Z
 updated_at: 2024-07-04T17:22:25Z
 url: https://github.com/astral-sh/uv/pull/4796
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Box clap args some more for `uv init`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-04 07:48_
+_@konstin_
 
 Fixes stack overflows in tests for https://github.com/astral-sh/uv/pull/4791
 

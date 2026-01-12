@@ -13,14 +13,14 @@ head: fmt-skip-statement-and-decorators
 created_at: 2023-08-14T13:51:04Z
 updated_at: 2023-08-17T06:14:15Z
 url: https://github.com/astral-sh/ruff/pull/6561
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Support `fmt: skip` for simple-statements and decorators
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-14 13:51_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

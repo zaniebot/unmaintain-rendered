@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-20T15:46:19Z
 updated_at: 2023-10-21T23:08:19Z
 url: https://github.com/astral-sh/ruff/issues/8095
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `UP036` (outdated-version-block) does not work with slicing
 
 ---
 
-_Issue opened by @tdulcet on 2023-10-20 15:46_
+_@tdulcet_
 
 ```py
 import sys

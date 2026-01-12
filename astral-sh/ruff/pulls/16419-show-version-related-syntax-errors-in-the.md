@@ -13,14 +13,14 @@ head: brent/syntax-errors-playground
 created_at: 2025-02-27T17:03:27Z
 updated_at: 2025-02-27T18:28:39Z
 url: https://github.com/astral-sh/ruff/pull/16419
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Show version-related syntax errors in the playground
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-27 17:03_
+_@ntBre_
 
 ## Summary
 

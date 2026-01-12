@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T13:47:30Z
 updated_at: 2024-02-19T13:50:12Z
 url: https://github.com/astral-sh/ruff/issues/10051
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add interrogate to ruff rules
 
 ---
 
-_Issue opened by @HenriqueAJNB on 2024-02-19 13:47_
+_@HenriqueAJNB_
 
 I was wondering if it's possible to integrate [interrogate](https://interrogate.readthedocs.io/en/latest/) to ruff's rules.
 

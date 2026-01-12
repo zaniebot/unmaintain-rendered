@@ -13,14 +13,14 @@ head: fix-safety-section-ast-ifexp
 created_at: 2025-05-14T17:39:46Z
 updated_at: 2025-05-15T20:26:11Z
 url: https://github.com/astral-sh/ruff/pull/18100
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [`flake8-simplify`] add fix safety section (`SIM210`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-14 17:39_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `SIM210` (#15584 )
 

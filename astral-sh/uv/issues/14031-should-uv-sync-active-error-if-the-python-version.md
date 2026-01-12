@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T16:32:57Z
 updated_at: 2025-06-14T09:11:58Z
 url: https://github.com/astral-sh/uv/issues/14031
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Should `uv sync --active` error if the Python version request differs from the environment?
 
 ---
 
-_Issue opened by @zanieb on 2025-06-13 16:32_
+_@zanieb_
 
 Right now, we'll invalidate and recreate the environment (https://github.com/astral-sh/uv/issues/13830) but for `--active` in particular, we may want to just error?
 

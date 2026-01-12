@@ -13,14 +13,14 @@ head: micha/make-colon-test-unix-only
 created_at: 2025-08-04T12:15:21Z
 updated_at: 2025-08-04T12:39:38Z
 url: https://github.com/astral-sh/ruff/pull/19742
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Fix failing test on windows
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-04 12:15_
+_@MichaReiser_
 
 ## Summary
 

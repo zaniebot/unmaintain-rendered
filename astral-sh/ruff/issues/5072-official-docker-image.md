@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-14T03:06:14Z
 updated_at: 2023-12-07T14:56:33Z
 url: https://github.com/astral-sh/ruff/issues/5072
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Official docker image
 
 ---
 
-_Issue opened by @daveisfera on 2023-06-14 03:06_
+_@daveisfera_
 
 Could an official docker image be created for `ruff`, so it's easier to run in CI environments?
 

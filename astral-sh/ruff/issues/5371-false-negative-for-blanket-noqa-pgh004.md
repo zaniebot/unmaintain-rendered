@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-26T15:21:31Z
 updated_at: 2023-06-27T13:51:58Z
 url: https://github.com/astral-sh/ruff/issues/5371
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False negative for blanket `noqa` (PGH004)
 
 ---
 
-_Issue opened by @mthuurne on 2023-06-26 15:21_
+_@mthuurne_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

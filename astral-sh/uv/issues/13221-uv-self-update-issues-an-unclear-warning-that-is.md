@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T10:24:19Z
 updated_at: 2025-04-30T17:23:31Z
 url: https://github.com/astral-sh/uv/issues/13221
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # `uv self update` issues an unclear warning that is actually an error
 
 ---
 
-_Issue opened by @nedbat on 2025-04-30 10:24_
+_@nedbat_
 
 ### Summary
 

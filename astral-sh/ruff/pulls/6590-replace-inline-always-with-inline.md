@@ -13,14 +13,14 @@ head: replace-inline-always-with-inline
 created_at: 2023-08-15T06:24:58Z
 updated_at: 2023-08-15T06:58:12Z
 url: https://github.com/astral-sh/ruff/pull/6590
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Replace `inline(always)` with `inline`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-15 06:24_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

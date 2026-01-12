@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-19T11:13:29Z
 updated_at: 2023-06-08T17:02:44Z
 url: https://github.com/astral-sh/ruff/issues/1994
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM118 Use `key in vd` instead of `key in vd.keys()` assumes `__iter__` is over `keys()`
 
 ---
 
-_Issue opened by @taldcroft on 2023-01-19 11:13_
+_@taldcroft_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

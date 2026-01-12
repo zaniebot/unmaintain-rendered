@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-14T17:11:32Z
 updated_at: 2025-05-14T17:23:51Z
 url: https://github.com/astral-sh/ty/issues/390
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Tuple Unpacking Not Working For Types
 
 ---
 
-_Issue opened by @andrew-cho-architect on 2025-05-14 17:11_
+_@andrew-cho-architect_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T11:45:21Z
 updated_at: 2024-10-09T10:41:12Z
 url: https://github.com/astral-sh/uv/issues/8003
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # .netrc not working on Windows without having HOME environment variable
 
 ---
 
-_Issue opened by @delreluca on 2024-10-08 11:45_
+_@delreluca_
 
 I have a `.netrc` file on Windows under my user profile. It works fine with pip.
 

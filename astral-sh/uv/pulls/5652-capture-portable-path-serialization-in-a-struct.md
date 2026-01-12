@@ -13,14 +13,14 @@ head: charlie/portable
 created_at: 2024-07-31T13:56:52Z
 updated_at: 2024-07-31T16:00:38Z
 url: https://github.com/astral-sh/uv/pull/5652
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Capture portable path serialization in a struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 13:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fix/format-spec
 created_at: 2023-08-24T19:31:35Z
 updated_at: 2023-08-25T17:57:51Z
 url: https://github.com/astral-sh/ruff/pull/6858
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid parsing other parts of a format specification if replacements are present
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-24 19:31_
+_@zanieb_
 
 Closes #6767
 Replaces https://github.com/astral-sh/ruff/pull/6773 (this cherry-picks some parts from there)

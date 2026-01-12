@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T15:31:26Z
 updated_at: 2025-02-07T17:05:19Z
 url: https://github.com/astral-sh/ruff/issues/16023
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP040 fixes introduce a syntax error
 
 ---
 
-_Issue opened by @genevieve-me on 2025-02-07 15:31_
+_@genevieve-me_
 
 ### Description
 

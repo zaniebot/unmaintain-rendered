@@ -13,14 +13,14 @@ head: zb/python-env-origin
 created_at: 2025-05-10T12:52:09Z
 updated_at: 2025-05-10T20:36:30Z
 url: https://github.com/astral-sh/ruff/pull/18003
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Do not allow invalid virtual environments from discovered `.venv` or `VIRTUAL_ENV`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-10 12:52_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/ruff/pull/17991 ensuring we do not allow detection of system environments when the origin is `VIRTUAL_ENV` or a discovered `.venv` directory — i.e., those always require a `pyvenv.cfg` file.
 

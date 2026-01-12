@@ -11,14 +11,14 @@ head: mf/11655_nested-dotgit-directories
 created_at: 2025-02-26T01:15:33Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11785
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Handle nested .git directories in `uv init`
 
 ---
 
-_Pull request opened by @mason-fabel on 2025-02-26 01:15_
+_@mason-fabel_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

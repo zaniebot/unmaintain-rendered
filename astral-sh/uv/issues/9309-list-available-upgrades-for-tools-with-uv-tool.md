@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T11:03:40Z
 updated_at: 2025-11-24T20:09:09Z
 url: https://github.com/astral-sh/uv/issues/9309
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # List available upgrades for tools with `uv tool list --outdated`
 
 ---
 
-_Issue opened by @traynier on 2024-11-21 11:03_
+_@traynier_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-19T14:28:04Z
 updated_at: 2023-07-19T14:28:28Z
 url: https://github.com/astral-sh/ruff/issues/5883
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `ruff check --diff` writes summary message to stdout instead of stderr
 
 ---
 
-_Issue opened by @zanieb on 2023-07-19 14:28_
+_@zanieb_
 
 When running `ruff check --diff` the diff _and_ summary message ("Would fix 2 errors") is written to standard output.
 

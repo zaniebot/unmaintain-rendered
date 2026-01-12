@@ -13,14 +13,14 @@ head: revert-19723-renovate/npm-development-dependencies
 created_at: 2025-08-04T07:30:50Z
 updated_at: 2025-08-04T07:33:59Z
 url: https://github.com/astral-sh/ruff/pull/19730
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # Revert "Update NPM Development dependencies"
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-04 07:30_
+_@MichaReiser_
 
 Reverts astral-sh/ruff#19723
 

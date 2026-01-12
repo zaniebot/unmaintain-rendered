@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-17T21:03:08Z
 updated_at: 2024-04-06T01:56:29Z
 url: https://github.com/astral-sh/ruff/issues/9569
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `pyupgrade` rule: upgrading `str, Enum` to `StrEnum`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-01-17 21:03_
+_@jamesbraza_
 
 Since Python 3.11 there are now `StrEnum` and `IntEnum`:
 

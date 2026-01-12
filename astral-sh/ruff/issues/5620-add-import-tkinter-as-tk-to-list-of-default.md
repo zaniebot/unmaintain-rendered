@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-08T17:15:40Z
 updated_at: 2023-07-09T10:56:33Z
 url: https://github.com/astral-sh/ruff/issues/5620
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add `import tkinter as tk` to list of default import conventions
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-07-08 17:15_
+_@benjamin-kirkbride_
 
 The python docs do this in all of the examples, so seems appropriate to include it: https://docs.python.org/3/library/tkinter.html
 

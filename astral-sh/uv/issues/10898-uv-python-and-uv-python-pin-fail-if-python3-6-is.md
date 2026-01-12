@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T14:45:31Z
 updated_at: 2025-02-19T00:31:05Z
 url: https://github.com/astral-sh/uv/issues/10898
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # `uv --python` and `uv python pin` fail if Python3.6 is found on the system
 
 ---
 
-_Issue opened by @jramcast on 2025-01-23 14:45_
+_@jramcast_
 
 ### Summary
 

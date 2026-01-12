@@ -12,14 +12,14 @@ head: PIE804-autofix-hotfix
 created_at: 2023-10-11T18:51:55Z
 updated_at: 2023-10-11T19:09:15Z
 url: https://github.com/astral-sh/ruff/pull/7922
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # fix edge case with PIE804
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-11 18:51_
+_@diceroll123_
 
 ## Summary
 

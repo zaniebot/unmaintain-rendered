@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-29T12:34:48Z
 updated_at: 2023-09-29T18:10:34Z
 url: https://github.com/astral-sh/ruff/issues/7711
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule ANN204 cause panic (looks like fstring regression)
 
 ---
 
-_Issue opened by @qarmin on 2023-09-29 12:34_
+_@qarmin_
 
 Ruff 0.0.291 (latest changes from main branch)
 ```

@@ -13,14 +13,14 @@ head: micha/shrink-reachability-constraints
 created_at: 2025-07-17T19:45:49Z
 updated_at: 2025-07-18T05:36:20Z
 url: https://github.com/astral-sh/ruff/pull/19410
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Shrink reachability constraints
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-17 19:45_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-13T13:19:00Z
 updated_at: 2024-11-08T07:38:00Z
 url: https://github.com/astral-sh/ruff/issues/7942
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Warn about pseudo-docstrings
 
 ---
 
-_Issue opened by @konstin on 2023-10-13 13:19_
+_@konstin_
 
 The motivation is the following code from cpython:
 ```python

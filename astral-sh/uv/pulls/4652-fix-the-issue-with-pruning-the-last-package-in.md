@@ -13,14 +13,14 @@ head: pip-tree-prune-fix
 created_at: 2024-06-29T20:55:45Z
 updated_at: 2024-06-29T22:45:35Z
 url: https://github.com/astral-sh/uv/pull/4652
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # fix the issue with pruning the last package in `pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-29 20:55_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/convention
 created_at: 2023-11-09T04:43:23Z
 updated_at: 2023-11-09T04:50:34Z
 url: https://github.com/astral-sh/ruff/pull/8575
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix permalink to convention setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-09 04:43_
+_@charliermarsh_
 
 _No description provided._
 

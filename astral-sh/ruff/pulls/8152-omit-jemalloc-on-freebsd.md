@@ -11,14 +11,14 @@ head: charlie/freebsd
 created_at: 2023-10-24T04:48:28Z
 updated_at: 2023-12-12T21:41:46Z
 url: https://github.com/astral-sh/ruff/pull/8152
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Omit jemalloc on FreeBSD
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-24 04:48_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: audit-unittest-assert-methods
 created_at: 2023-01-08T05:21:04Z
 updated_at: 2023-01-08T21:21:35Z
 url: https://github.com/astral-sh/ruff/pull/1736
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Audit unittest assert methods
 
 ---
 
-_Pull request opened by @harupy on 2023-01-08 05:21_
+_@harupy_
 
 I ran the following code in Python 3.10 to automatically generate a list of enums.
 

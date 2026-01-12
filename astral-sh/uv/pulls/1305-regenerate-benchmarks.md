@@ -12,14 +12,14 @@ head: charlie/benchmarks
 created_at: 2024-02-15T03:09:30Z
 updated_at: 2024-02-15T17:54:05Z
 url: https://github.com/astral-sh/uv/pull/1305
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Regenerate benchmarks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-15 03:09_
+_@charliermarsh_
 
 _No description provided._
 

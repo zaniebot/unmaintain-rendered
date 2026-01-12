@@ -14,14 +14,14 @@ head: konsti/workspace-to-workspace-dependencies
 created_at: 2024-07-05T11:52:00Z
 updated_at: 2024-07-16T20:38:47Z
 url: https://github.com/astral-sh/uv/pull/4833
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Support workspace to workspace path dependencies
 
 ---
 
-_Pull request opened by @konstin on 2024-07-05 11:52_
+_@konstin_
 
 Add support for path dependencies from a package in one workspace to a package in another workspace, which it self has workspace dependencies.
 

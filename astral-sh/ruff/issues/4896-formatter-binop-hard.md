@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-06T07:35:54Z
 updated_at: 2023-06-06T08:34:55Z
 url: https://github.com/astral-sh/ruff/issues/4896
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `BinOp` (hard)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-06 07:35_
+_@MichaReiser_
 
 _No description provided._
 

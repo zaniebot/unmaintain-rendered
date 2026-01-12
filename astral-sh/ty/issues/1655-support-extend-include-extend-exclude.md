@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-27T12:49:41Z
 updated_at: 2025-11-29T14:57:28Z
 url: https://github.com/astral-sh/ty/issues/1655
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support `extend-include`, `extend-exclude`
 
 ---
 
-_Issue opened by @alexei on 2025-11-27 12:49_
+_@alexei_
 
 It would be useful if `[tool.ty.src]` allowed `extend-include` and `extend-exclude` directives. `include` and `exclude` have some defaults which work for most packages (or at least those using the "src" layout). But sometimes there's _that_ package that has a `scripts/` directory or something. Now the config looks like:
 

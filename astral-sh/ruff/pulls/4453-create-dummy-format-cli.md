@@ -13,14 +13,14 @@ head: format_cli
 created_at: 2023-05-16T16:32:10Z
 updated_at: 2023-05-19T09:45:53Z
 url: https://github.com/astral-sh/ruff/pull/4453
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Create dummy format CLI
 
 ---
 
-_Pull request opened by @konstin on 2023-05-16 16:32_
+_@konstin_
 
 This currently only does a dummy replacement and is hidden behind a feature flag. See also the corresponding ruff-lsp PR.
 

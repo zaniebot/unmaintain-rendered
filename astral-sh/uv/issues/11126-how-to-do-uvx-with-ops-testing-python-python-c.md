@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T03:55:46Z
 updated_at: 2025-01-31T10:25:24Z
 url: https://github.com/astral-sh/uv/issues/11126
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # How to do `uvx --with 'ops[testing]' python python -c 'import ops.testing'` ?
 
 ---
 
-_Issue opened by @dimaqq on 2025-01-31 03:55_
+_@dimaqq_
 
 ### Question
 

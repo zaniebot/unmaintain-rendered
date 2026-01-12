@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-06-30T08:55:05Z
 updated_at: 2022-12-22T17:51:20Z
 url: https://github.com/clap-rs/clap/issues/552
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Auto-generate manpage, help docs, etc.
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-30 08:55_
+_@joshtriplett_
 
 Maintainer notes:
 - Blocked on https://github.com/clap-rs/clap/issues/2914 for decoupling help information gathering from formatting

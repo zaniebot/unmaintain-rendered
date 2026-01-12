@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-04T19:37:36Z
 updated_at: 2024-08-04T20:55:25Z
 url: https://github.com/astral-sh/uv/issues/5765
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # uv run strips quotes
 
 ---
 
-_Issue opened by @palfrey on 2024-08-04 19:37_
+_@palfrey_
 
 `uv run` seems to strip quotes from the command, and I'm yet to figure out a way around it.
 

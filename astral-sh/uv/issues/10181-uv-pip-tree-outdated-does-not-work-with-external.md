@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T22:34:48Z
 updated_at: 2024-12-27T17:03:07Z
 url: https://github.com/astral-sh/uv/issues/10181
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # uv pip tree --outdated does not work with external venv
 
 ---
 
-_Issue opened by @logut on 2024-12-26 22:34_
+_@logut_
 
 Hello,
 

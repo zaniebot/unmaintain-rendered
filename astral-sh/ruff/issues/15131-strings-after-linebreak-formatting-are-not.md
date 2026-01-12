@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T11:02:48Z
 updated_at: 2024-12-29T14:59:54Z
 url: https://github.com/astral-sh/ruff/issues/15131
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Strings after linebreak formatting are not combined
 
 ---
 
-_Issue opened by @tobiasdiez on 2024-12-24 11:02_
+_@tobiasdiez_
 
 The following code
 ```python

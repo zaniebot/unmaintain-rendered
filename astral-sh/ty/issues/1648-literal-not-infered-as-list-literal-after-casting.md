@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T17:48:09Z
 updated_at: 2025-12-20T02:17:14Z
 url: https://github.com/astral-sh/ty/issues/1648
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `Literal` not infered as `list[Literal]` after casting it inside a list
 
 ---
 
-_Issue opened by @mflova on 2025-11-26 17:48_
+_@mflova_
 
 ### Summary
 

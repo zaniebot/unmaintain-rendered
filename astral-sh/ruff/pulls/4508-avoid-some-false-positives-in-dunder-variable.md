@@ -12,14 +12,14 @@ head: fix/dunder-assignment
 created_at: 2023-05-18T19:47:45Z
 updated_at: 2023-05-19T10:09:48Z
 url: https://github.com/astral-sh/ruff/pull/4508
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid some false positives in dunder variable assigments
 
 ---
 
-_Pull request opened by @scop on 2023-05-18 19:47_
+_@scop_
 
 _No description provided._
 

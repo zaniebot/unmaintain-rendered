@@ -13,14 +13,14 @@ head: Arkenstone/tag-annotation-aws
 created_at: 2025-09-25T09:34:33Z
 updated_at: 2025-09-25T13:25:35Z
 url: https://github.com/astral-sh/uv/pull/16022
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # feat:add version tag annotation (pin #15980)
 
 ---
 
-_Pull request opened by @Arkenstone999 on 2025-09-25 09:34_
+_@Arkenstone999_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: extend-air302-rules
 created_at: 2025-01-16T07:49:38Z
 updated_at: 2025-01-23T08:50:03Z
 url: https://github.com/astral-sh/ruff/pull/15525
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 #  [airflow] extend and fix AIR302 rules
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-16 07:49_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

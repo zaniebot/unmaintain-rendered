@@ -14,14 +14,14 @@ head: konsti/error-on-relative-paths-in-build-backend
 created_at: 2025-09-08T12:45:08Z
 updated_at: 2025-09-09T13:03:22Z
 url: https://github.com/astral-sh/uv/pull/15733
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Error early for parent path in build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-09-08 12:45_
+_@konstin_
 
 Paths referencing above the directory of the `pyproject.toml`, such as `module-root = ".."`, are not supported by the build backend. The check that should catch was not working properly, so the source distribution built successfully and only the wheel build failed. We now error early. The same fix is applied to data includes.
 

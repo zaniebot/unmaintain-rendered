@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T19:32:13Z
 updated_at: 2025-02-01T21:54:35Z
 url: https://github.com/astral-sh/uv/issues/11154
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # `!uv pip install` in Jupyter documentation doesn't install into the kernel environment
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-01 19:32_
+_@charliermarsh_
 
 _No description provided._
 

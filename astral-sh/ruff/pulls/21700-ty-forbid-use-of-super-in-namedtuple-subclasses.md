@@ -13,14 +13,14 @@ head: charlie/named
 created_at: 2025-11-30T03:02:11Z
 updated_at: 2025-11-30T16:03:05Z
 url: https://github.com/astral-sh/ruff/pull/21700
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Forbid use of `super()` in `NamedTuple` subclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-30 03:02_
+_@charliermarsh_
 
 ## Summary
 

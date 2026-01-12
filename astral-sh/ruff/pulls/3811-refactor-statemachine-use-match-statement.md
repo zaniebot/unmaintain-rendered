@@ -12,14 +12,14 @@ head: state-machine-use-match
 created_at: 2023-03-30T11:46:13Z
 updated_at: 2023-03-30T13:55:55Z
 url: https://github.com/astral-sh/ruff/pull/3811
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # refactor: `StateMachine` use `match` statement
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-30 11:46_
+_@MichaReiser_
 
 Use a `match` statement in `StateMachine.consume` instead of an `if`
 chain to express that the branches are non-overlapping.

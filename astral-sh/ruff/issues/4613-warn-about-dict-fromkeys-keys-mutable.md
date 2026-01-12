@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-23T21:21:12Z
 updated_at: 2024-01-22T00:22:03Z
 url: https://github.com/astral-sh/ruff/issues/4613
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Warn about `dict.fromkeys(keys, mutable)`
 
 ---
 
-_Issue opened by @janosh on 2023-05-23 21:21_
+_@janosh_
 
 `ruff` should error and suggest the following fix when passing a mutable 2nd arg to `dict.fromkeys()` since modifications will affect all keys which is a common pitfall.
 

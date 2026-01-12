@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-13T03:55:57Z
 updated_at: 2024-01-13T12:43:14Z
 url: https://github.com/astral-sh/ruff/issues/9501
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [docs] Admonition in dark mode
 
 ---
 
-_Issue opened by @pabepadu on 2024-01-13 03:55_
+_@pabepadu_
 
 The admonition in dark mode are in actually same as in light mode here: https://docs.astral.sh/ruff/formatter/#ruff-format
 

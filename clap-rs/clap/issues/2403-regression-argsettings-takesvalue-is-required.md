@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-03-10T11:15:19Z
 updated_at: 2021-03-10T11:40:19Z
 url: https://github.com/clap-rs/clap/issues/2403
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # regression: "ArgSettings::TakesValue is required when ArgSettings::MultipleValues is set"
 
 ---
 
-_Issue opened by @ensc on 2021-03-10 11:15_
+_@ensc_
 
 ### Please complete the following tasks
 

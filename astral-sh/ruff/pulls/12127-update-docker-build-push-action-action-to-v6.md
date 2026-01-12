@@ -13,14 +13,14 @@ head: renovate/docker-build-push-action-6.x
 created_at: 2024-07-01T01:19:17Z
 updated_at: 2024-07-01T01:25:26Z
 url: https://github.com/astral-sh/ruff/pull/12127
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update docker/build-push-action action to v6
 
 ---
 
-_Pull request opened by @renovate on 2024-07-01 01:19_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

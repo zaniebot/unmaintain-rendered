@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-10-19T09:54:46Z
 updated_at: 2024-10-20T16:13:43Z
 url: https://github.com/astral-sh/uv/issues/8357
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # uv pip show missing --files option
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2024-10-19 09:54_
+_@CharlesPerrotMinot_
 
 Hi!
 

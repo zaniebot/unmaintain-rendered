@@ -12,14 +12,14 @@ head: yeet-linter-into-iter
 created_at: 2023-06-29T07:34:51Z
 updated_at: 2023-07-04T19:40:55Z
 url: https://github.com/astral-sh/ruff/pull/5436
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Turn Linters', etc. implicit `into_iter()`s into explicit `rules()`
 
 ---
 
-_Pull request opened by @akx on 2023-06-29 07:34_
+_@akx_
 
 ## Summary
 

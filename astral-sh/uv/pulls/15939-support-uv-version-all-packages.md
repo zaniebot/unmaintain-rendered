@@ -11,14 +11,14 @@ head: workspace-version-bump-all
 created_at: 2025-09-18T21:32:20Z
 updated_at: 2025-09-19T07:52:47Z
 url: https://github.com/astral-sh/uv/pull/15939
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Support `uv version --all-packages`
 
 ---
 
-_Pull request opened by @blueraft on 2025-09-18 21:32_
+_@blueraft_
 
 ## Summary
 

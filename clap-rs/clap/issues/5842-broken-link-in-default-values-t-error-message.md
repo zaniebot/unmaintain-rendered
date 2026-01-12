@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T18:28:36Z
 updated_at: 2024-12-12T18:53:44Z
 url: https://github.com/clap-rs/clap/issues/5842
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Broken link in `default_values_t` error message
 
 ---
 
-_Issue opened by @stevenengler on 2024-12-12 18:28_
+_@stevenengler_
 
 ### Please complete the following tasks
 

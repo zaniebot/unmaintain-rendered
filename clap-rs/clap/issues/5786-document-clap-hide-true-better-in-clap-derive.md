@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-22T20:00:54Z
 updated_at: 2024-10-23T02:17:25Z
 url: https://github.com/clap-rs/clap/issues/5786
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Document `#[clap(hide = true)]` better in clap-derive
 
 ---
 
-_Issue opened by @adamchalmers on 2024-10-22 20:00_
+_@adamchalmers_
 
 I wanted to know how to hide a Clap CLI that I made via its `derive(Parser)` macro. So I went to docs.rs/clap-derive and searched both the tutorial and the reference for the strings "hide" and "hidden". They didn't show up anywhere.
 

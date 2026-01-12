@@ -13,14 +13,14 @@ head: charlie/lint
 created_at: 2023-08-29T15:31:22Z
 updated_at: 2023-08-29T15:58:16Z
 url: https://github.com/astral-sh/ruff/pull/6980
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Rename `run.rs` command to `check.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-29 15:31_
+_@charliermarsh_
 
 The CLI command is called "check", so this is more consistent (and consistent with the pattern used in other commands).
 

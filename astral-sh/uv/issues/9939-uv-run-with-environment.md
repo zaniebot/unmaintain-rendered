@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-16T15:59:12Z
 updated_at: 2024-12-16T16:29:12Z
 url: https://github.com/astral-sh/uv/issues/9939
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `uv run` with environment?
 
 ---
 
-_Issue opened by @ameya98 on 2024-12-16 15:59_
+_@ameya98_
 
 I created two environments `.venv` and `.venv-analysis` in the same folder.
 I activated `.venv-analysis` but when I try running this:

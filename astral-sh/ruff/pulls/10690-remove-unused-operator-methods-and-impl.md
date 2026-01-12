@@ -13,14 +13,14 @@ head: dhruv/ast-cleanup
 created_at: 2024-04-01T05:46:11Z
 updated_at: 2024-04-02T10:23:21Z
 url: https://github.com/astral-sh/ruff/pull/10690
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Remove unused operator methods and impl
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-01 05:46_
+_@dhruvmanila_
 
 ## Summary
 

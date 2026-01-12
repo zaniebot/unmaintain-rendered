@@ -13,14 +13,14 @@ head: konsti/sort-version-specifiers
 created_at: 2024-08-21T14:49:39Z
 updated_at: 2024-08-29T21:06:20Z
 url: https://github.com/astral-sh/uv/pull/6333
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Normalize specifiers by sorting
 
 ---
 
-_Pull request opened by @konstin on 2024-08-21 14:49_
+_@konstin_
 
 We currently normalize package and extra names and drop the whitespace from version specifiers, but we were not normalizing the order of the specifiers. By sorting them we match the behavior of `packaging` and become independent of build backends reordering specifiers (#6332).
 

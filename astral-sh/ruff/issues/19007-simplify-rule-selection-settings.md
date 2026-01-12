@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T00:15:26Z
 updated_at: 2025-06-28T06:30:05Z
 url: https://github.com/astral-sh/ruff/issues/19007
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Simplify rule selection settings
 
 ---
 
-_Issue opened by @Tedpac on 2025-06-28 00:15_
+_@Tedpac_
 
 I've been thinking more deeply about an issue I raised a few days ago (#18884), and IMO, the rule selection settings can be simplified considerably.
 

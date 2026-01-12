@@ -13,14 +13,14 @@ head: konsti/use-c-string-literals
 created_at: 2024-03-21T15:18:40Z
 updated_at: 2024-03-21T15:36:02Z
 url: https://github.com/astral-sh/uv/pull/2590
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Use c-string literals and update trampolines
 
 ---
 
-_Pull request opened by @konstin on 2024-03-21 15:18_
+_@konstin_
 
 Rust 1.77 has stabilized c-string literals (`c"<string>"`): https://doc.rust-lang.org/nightly/edition-guide/rust-2021/c-string-literals.html. This PR replaces the usages of the custom c-string literal macro in the trampoline with the new syntax.
 

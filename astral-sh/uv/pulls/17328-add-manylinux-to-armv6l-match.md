@@ -13,14 +13,14 @@ head: charlie/arm
 created_at: 2026-01-05T20:39:05Z
 updated_at: 2026-01-06T00:37:11Z
 url: https://github.com/astral-sh/uv/pull/17328
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Add manylinux to armv6l match
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 20:39_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-18T18:17:00Z
 updated_at: 2025-05-26T09:53:05Z
 url: https://github.com/astral-sh/ruff/issues/18164
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ASYNC115 and ASYNC116 check the wrong argument name for `anyio.sleep`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-18 18:17_
+_@dscorbett_
 
 ### Summary
 

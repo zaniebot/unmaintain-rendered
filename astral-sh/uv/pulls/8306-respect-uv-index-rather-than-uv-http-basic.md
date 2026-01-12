@@ -13,14 +13,14 @@ head: fix-env-var-credentials-docs
 created_at: 2024-10-17T21:14:21Z
 updated_at: 2024-10-17T21:42:05Z
 url: https://github.com/astral-sh/uv/pull/8306
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Respect `UV_INDEX_` rather than `UV_HTTP_BASIC_`
 
 ---
 
-_Pull request opened by @odie5533 on 2024-10-17 21:14_
+_@odie5533_
 
 The docs reference `UV_INDEX_`, but the code actually uses UV_HTTP_BASIC_ as the prefix for environment variable credentials.
 

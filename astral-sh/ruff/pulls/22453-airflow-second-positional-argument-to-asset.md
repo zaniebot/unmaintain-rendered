@@ -12,14 +12,14 @@ head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
 updated_at: 2026-01-10T13:43:03Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
 
 ---
 
-_Pull request opened by @sjyangkevin on 2026-01-08 04:46_
+_@sjyangkevin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

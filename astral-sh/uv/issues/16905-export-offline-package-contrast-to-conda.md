@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T08:21:20Z
 updated_at: 2025-12-16T14:29:12Z
 url: https://github.com/astral-sh/uv/issues/16905
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Export offline package contrast to conda
 
 ---
 
-_Issue opened by @mytk2012 on 2025-12-01 08:21_
+_@mytk2012_
 
 ### Question
 

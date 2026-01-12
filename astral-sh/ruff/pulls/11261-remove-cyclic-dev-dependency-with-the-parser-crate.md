@@ -13,14 +13,14 @@ head: dhruv/resolve-ast-parser-dev-cycle-dep
 created_at: 2024-05-03T08:52:01Z
 updated_at: 2024-05-08T22:49:30Z
 url: https://github.com/astral-sh/ruff/pull/11261
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Remove cyclic dev dependency with the parser crate
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-03 08:52_
+_@dhruvmanila_
 
 ## Summary
 

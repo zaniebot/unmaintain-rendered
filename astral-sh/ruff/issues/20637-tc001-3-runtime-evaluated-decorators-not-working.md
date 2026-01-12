@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T18:57:40Z
 updated_at: 2025-11-06T13:28:44Z
 url: https://github.com/astral-sh/ruff/issues/20637
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # TC001-3 runtime-evaluated-decorators not working when an instance is created via a function.
 
 ---
 
-_Issue opened by @eseglem on 2025-09-29 18:57_
+_@eseglem_
 
 ### Summary
 

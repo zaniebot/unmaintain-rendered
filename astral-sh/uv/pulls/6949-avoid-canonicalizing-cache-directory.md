@@ -14,14 +14,14 @@ head: charlie/t
 created_at: 2024-09-02T21:52:05Z
 updated_at: 2024-09-03T00:11:45Z
 url: https://github.com/astral-sh/uv/pull/6949
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Avoid canonicalizing cache directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-02 21:52_
+_@charliermarsh_
 
 Taking a look at #6948.
 

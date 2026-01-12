@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-19T22:28:28Z
 updated_at: 2023-02-07T02:08:00Z
 url: https://github.com/astral-sh/ruff/issues/2005
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `typing-modules` should respect relative imports
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-19 22:28_
+_@charliermarsh_
 
 See: #1976.
 

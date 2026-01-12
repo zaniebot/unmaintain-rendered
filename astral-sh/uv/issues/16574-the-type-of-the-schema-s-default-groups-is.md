@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T06:49:57Z
 updated_at: 2025-11-03T16:46:35Z
 url: https://github.com/astral-sh/uv/issues/16574
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # The type of the schema's default-groups is incorrect.
 
 ---
 
-_Issue opened by @fllesser on 2025-11-03 06:49_
+_@fllesser_
 
 ### Summary
 

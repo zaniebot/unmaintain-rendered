@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T16:34:04Z
 updated_at: 2025-06-16T18:12:56Z
 url: https://github.com/astral-sh/ty/issues/661
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ttkbootstrap
 
 ---
 
-_Issue opened by @linduarte on 2025-06-16 16:34_
+_@linduarte_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/astral-sh-setup-uv-digest
 created_at: 2025-04-21T01:59:25Z
 updated_at: 2025-04-21T02:12:28Z
 url: https://github.com/astral-sh/uv/pull/12995
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Update astral-sh/setup-uv digest to d4b2f3b
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 01:59_
+_@renovate_
 
 This PR contains the following updates:
 

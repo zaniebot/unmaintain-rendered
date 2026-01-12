@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T11:55:28Z
 updated_at: 2025-11-18T11:56:03Z
 url: https://github.com/astral-sh/ty/issues/1581
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Hover on variable in a `Callable` shows the entire signature
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-11-18 11:55_
+_@dhruvmanila_
 
 ### Summary
 

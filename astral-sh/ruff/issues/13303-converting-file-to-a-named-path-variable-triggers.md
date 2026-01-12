@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T06:05:47Z
 updated_at: 2024-09-10T17:49:02Z
 url: https://github.com/astral-sh/ruff/issues/13303
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Converting `__file__` to a named path variable triggers E402
 
 ---
 
-_Issue opened by @ncoghlan on 2024-09-10 06:05_
+_@ncoghlan_
 
 While the `E402` detection makes some allowances for `sys.path` manipulation, it still doesn't like it if `__file__` gets assigned to a variable, as in code like:
 

@@ -13,14 +13,14 @@ head: charlie/thiserror
 created_at: 2024-06-10T23:30:04Z
 updated_at: 2024-06-11T11:53:44Z
 url: https://github.com/astral-sh/uv/pull/4225
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Migrate lock errors to `thiserror`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 23:30_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/ref
 created_at: 2025-07-21T19:59:48Z
 updated_at: 2025-07-21T21:07:36Z
 url: https://github.com/astral-sh/uv/pull/14798
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Add a borrowed `Realm` type
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 19:59_
+_@charliermarsh_
 
 ## Summary
 

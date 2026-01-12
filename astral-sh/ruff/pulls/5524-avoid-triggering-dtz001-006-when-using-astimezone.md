@@ -13,14 +13,14 @@ head: dhruv/dtz-astimezone
 created_at: 2023-07-05T03:05:49Z
 updated_at: 2023-07-05T04:19:00Z
 url: https://github.com/astral-sh/ruff/pull/5524
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid triggering DTZ001-006 when using `.astimezone()`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-05 03:05_
+_@dhruvmanila_
 
 ## Summary
 

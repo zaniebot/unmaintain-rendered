@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-17T23:39:50Z
 updated_at: 2025-01-17T23:54:18Z
 url: https://github.com/astral-sh/uv/issues/10727
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # `uv run -m` failed
 
 ---
 
-_Issue opened by @T-256 on 2025-01-17 23:39_
+_@T-256_
 
 ```cmd
 > uv --version

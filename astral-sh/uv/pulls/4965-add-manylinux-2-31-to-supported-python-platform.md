@@ -13,14 +13,14 @@ head: charlie/glibc
 created_at: 2024-07-10T16:23:21Z
 updated_at: 2024-07-10T16:30:36Z
 url: https://github.com/astral-sh/uv/pull/4965
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add `manylinux_2_31` to supported `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-10 16:23_
+_@charliermarsh_
 
 ## Summary
 

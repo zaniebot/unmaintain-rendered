@@ -12,14 +12,14 @@ head: claude/disable-pyx-publish-tests-1MEZn
 created_at: 2026-01-09T22:06:59Z
 updated_at: 2026-01-09T22:19:46Z
 url: https://github.com/astral-sh/uv/pull/17397
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Disable pyx staging publish tests temporarily
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-09 22:06_
+_@zanieb_
 
 _No description provided._
 

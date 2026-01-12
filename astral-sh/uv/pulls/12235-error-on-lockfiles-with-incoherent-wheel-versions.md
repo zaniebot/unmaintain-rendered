@@ -13,14 +13,14 @@ head: konsti/locked-version-coherence
 created_at: 2025-03-17T10:10:16Z
 updated_at: 2025-03-18T13:21:02Z
 url: https://github.com/astral-sh/uv/pull/12235
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Error on lockfiles with incoherent wheel versions
 
 ---
 
-_Pull request opened by @konstin on 2025-03-17 10:10_
+_@konstin_
 
 Reject lockfiles where the package version and the wheel versions are incoherent. This implicitly checks that all wheel files have the same version.
 

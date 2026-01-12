@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-28T02:46:32Z
 updated_at: 2024-11-28T02:53:30Z
 url: https://github.com/astral-sh/uv/issues/9490
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Error: uv python install pypy-3.7.12-linux-aarch64-gnu --verbose
 
 ---
 
-_Issue opened by @loganoxo on 2024-11-28 02:46_
+_@loganoxo_
 
 - command
 

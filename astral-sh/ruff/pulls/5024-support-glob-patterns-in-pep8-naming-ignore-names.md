@@ -12,14 +12,14 @@ head: thomas/issue-2787
 created_at: 2023-06-12T14:32:45Z
 updated_at: 2023-06-13T15:37:15Z
 url: https://github.com/astral-sh/ruff/pull/5024
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Support glob patterns in pep8_naming ignore-names
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-12 14:32_
+_@Thomasdezeeuw_
 
 ## Summary
 

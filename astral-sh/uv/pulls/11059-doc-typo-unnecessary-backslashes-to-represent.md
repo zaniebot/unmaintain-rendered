@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-01-29T12:56:14Z
 updated_at: 2025-01-29T14:17:31Z
 url: https://github.com/astral-sh/uv/pull/11059
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # doc typo: unnecessary backslashes to represent brackets in markdown
 
 ---
 
-_Pull request opened by @aureliobarbosa on 2025-01-29 12:56_
+_@aureliobarbosa_
 
 There is a small typo in the doc which could mislead users: reference to a table in `pyproject.toml` currently appears as [`\[project.entry-points\]`](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata) while it should be  [`[project.entry-points]`](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-06T15:20:59Z
 updated_at: 2025-04-28T18:32:35Z
 url: https://github.com/astral-sh/ruff/issues/17233
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Use relative paths in diagnostics rather than absolute paths
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-06 15:20_
+_@AlexWaygood_
 
 Diagnostics are currently reported with absolute paths, which makes them quite verbose even if you specify `--output-format=concise`. E.g. here's a diagnostic I got running red-knot from my `/Users/alexw/dev/typeshed-stats` directory:
 

@@ -13,14 +13,14 @@ head: store-notebooks-in-diagnostics
 created_at: 2023-08-17T07:51:46Z
 updated_at: 2023-08-18T14:05:18Z
 url: https://github.com/astral-sh/ruff/pull/6640
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Refactor `SourceKind` to store file content
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-17 07:51_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

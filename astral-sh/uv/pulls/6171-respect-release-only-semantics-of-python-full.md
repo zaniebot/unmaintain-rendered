@@ -14,14 +14,14 @@ head: charlie/pre-py
 created_at: 2024-08-17T17:26:41Z
 updated_at: 2024-08-17T19:29:58Z
 url: https://github.com/astral-sh/uv/pull/6171
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Respect release-only semantics of python_full_version when constructing markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-17 17:26_
+_@charliermarsh_
 
 ## Summary
 

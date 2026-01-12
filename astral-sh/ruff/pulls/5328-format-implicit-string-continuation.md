@@ -14,14 +14,14 @@ head: format-implicit-continuation
 created_at: 2023-06-23T09:47:54Z
 updated_at: 2023-06-26T13:00:42Z
 url: https://github.com/astral-sh/ruff/pull/5328
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format implicit string continuation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-23 09:47_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-09-10T18:39:32Z
 updated_at: 2025-09-10T19:07:29Z
 url: https://github.com/astral-sh/uv/pull/15773
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Avoid initiating login flow for invalid API keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-10 18:39_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T15:32:45Z
 updated_at: 2025-03-17T21:56:11Z
 url: https://github.com/astral-sh/uv/issues/12047
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # uv uses stale project pth file when switching from flat to src layout
 
 ---
 
-_Issue opened by @dalukes-csob-cz on 2025-03-07 15:32_
+_@dalukes-csob-cz_
 
 ### Summary
 

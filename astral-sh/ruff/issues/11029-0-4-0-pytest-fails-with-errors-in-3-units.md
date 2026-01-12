@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T07:20:44Z
 updated_at: 2024-04-19T14:05:17Z
 url: https://github.com/astral-sh/ruff/issues/11029
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # 0.4.0: pytest fails with errors in 3 units
 
 ---
 
-_Issue opened by @wuch-g2v on 2024-04-19 07:20_
+_@wuch-g2v_
 
 Python 3.10.14 and pytest 8.1.1.
 Looks like something is wrong with latest 0.4.0 because pytest fails

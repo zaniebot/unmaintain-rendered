@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-02-05T16:53:00Z
 updated_at: 2024-02-05T17:06:19Z
 url: https://github.com/astral-sh/ruff/pull/9838
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix default for `max-positional-args`
 
 ---
 
-_Pull request opened by @tmke8 on 2024-02-05 16:53_
+_@tmke8_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

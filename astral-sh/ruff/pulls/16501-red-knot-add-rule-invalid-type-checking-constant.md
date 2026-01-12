@@ -13,14 +13,14 @@ head: new-rule-invalid-type-checking-constant
 created_at: 2025-03-04T15:53:21Z
 updated_at: 2025-03-05T02:24:06Z
 url: https://github.com/astral-sh/ruff/pull/16501
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add rule `invalid-type-checking-constant`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-04 15:53_
+_@mtshiba_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T00:25:19Z
 updated_at: 2025-12-23T01:21:29Z
 url: https://github.com/astral-sh/ty/issues/2151
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `=` in f-string interpolation causes false positives and negatives for `invalid-assignment`
 
 ---
 
-_Issue opened by @dscorbett on 2025-12-22 00:25_
+_@dscorbett_
 
 ### Summary
 

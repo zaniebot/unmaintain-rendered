@@ -14,14 +14,14 @@ head: micha/check-file-query
 created_at: 2025-07-10T10:49:33Z
 updated_at: 2025-07-10T13:16:58Z
 url: https://github.com/astral-sh/ruff/pull/19255
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Make `check_file` a salsa query
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-10 10:49_
+_@MichaReiser_
 
 ## Summary
 We noticed that all files get reparsed when workspace diagnostics are enabled. 

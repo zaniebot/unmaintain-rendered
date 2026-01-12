@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T16:16:02Z
 updated_at: 2025-04-09T20:00:09Z
 url: https://github.com/astral-sh/uv/issues/12785
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # AWS Lambda Docker Container -> can I use uv.lock?
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-04-09 16:16_
+_@kurt-rhee_
 
 ### Question
 

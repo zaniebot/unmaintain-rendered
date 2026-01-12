@@ -13,14 +13,14 @@ head: charlie/meta
 created_at: 2024-08-09T02:04:55Z
 updated_at: 2024-08-09T20:19:45Z
 url: https://github.com/astral-sh/ruff/pull/12770
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Treat `type(Protocol)` et al as metaclass base
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 02:04_
+_@charliermarsh_
 
 ## Summary
 

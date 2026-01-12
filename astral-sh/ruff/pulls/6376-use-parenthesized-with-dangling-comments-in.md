@@ -13,14 +13,14 @@ head: charlie/arguments-dangling
 created_at: 2023-08-06T15:44:06Z
 updated_at: 2023-08-07T13:43:59Z
 url: https://github.com/astral-sh/ruff/pull/6376
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use `parenthesized_with_dangling_comments` in arguments formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-06 15:44_
+_@charliermarsh_
 
 ## Summary
 

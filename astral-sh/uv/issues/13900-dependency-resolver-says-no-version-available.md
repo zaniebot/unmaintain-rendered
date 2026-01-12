@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T17:37:32Z
 updated_at: 2025-06-09T00:22:35Z
 url: https://github.com/astral-sh/uv/issues/13900
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Dependency resolver says no version available, when there are
 
 ---
 
-_Issue opened by @signed-log on 2025-06-08 17:37_
+_@signed-log_
 
 ### Summary
 

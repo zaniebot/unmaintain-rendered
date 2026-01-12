@@ -14,14 +14,14 @@ head: feat/flake8-markupsafe
 created_at: 2024-11-09T12:35:44Z
 updated_at: 2024-11-15T10:36:13Z
 url: https://github.com/astral-sh/ruff/pull/14224
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Add implementation for `flake8-markupsafe` via `RUF035`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-09 12:35_
+_@Daverball_
 
 Closes #14124
 

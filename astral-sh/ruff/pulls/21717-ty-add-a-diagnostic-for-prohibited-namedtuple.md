@@ -13,14 +13,14 @@ head: charlie/overrides
 created_at: 2025-12-01T02:51:42Z
 updated_at: 2025-12-02T02:47:00Z
 url: https://github.com/astral-sh/ruff/pull/21717
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Add a diagnostic for prohibited `NamedTuple` attribute overrides
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-01 02:51_
+_@charliermarsh_
 
 ## Summary
 

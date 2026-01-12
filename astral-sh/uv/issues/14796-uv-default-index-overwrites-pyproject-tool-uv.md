@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T17:45:26Z
 updated_at: 2025-12-12T10:20:28Z
 url: https://github.com/astral-sh/uv/issues/14796
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # UV_DEFAULT_INDEX overwrites pyproject tool.uv.index.url
 
 ---
 
-_Issue opened by @Halkcyon on 2025-07-21 17:45_
+_@Halkcyon_
 
 ### Summary
 

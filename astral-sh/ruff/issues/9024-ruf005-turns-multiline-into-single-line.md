@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-06T16:45:07Z
 updated_at: 2023-12-07T03:44:27Z
 url: https://github.com/astral-sh/ruff/issues/9024
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # RUF005 turns multiline into single line
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-12-06 16:45_
+_@RonnyPfannschmidt_
 
 `RUF005`
 

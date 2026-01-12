@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-28T18:32:14Z
 updated_at: 2025-03-02T03:33:09Z
 url: https://github.com/astral-sh/uv/issues/6770
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Error to install RAPIDS libraries into project
 
 ---
 
-_Issue opened by @lucaskbobadilla on 2024-08-28 18:32_
+_@lucaskbobadilla_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

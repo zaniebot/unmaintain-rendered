@@ -13,14 +13,14 @@ head: konsti/warn-unnormalized-wheel-filenames
 created_at: 2024-10-15T09:00:51Z
 updated_at: 2025-03-10T23:37:27Z
 url: https://github.com/astral-sh/uv/pull/8203
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Publish: Warn about unnormalized filenames
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 09:00_
+_@konstin_
 
 The spec requires normalizing the name and the version in distribution filenames (https://packaging.python.org/en/latest/specifications/binary-distribution-format/#escaping-and-unicode). Missing normalization caused #8030, so we warn about it. Ideally, we would error, but this would break setuptools (https://github.com/pypa/setuptools/issues/3777)
 

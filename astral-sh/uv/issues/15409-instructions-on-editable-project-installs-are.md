@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:25:42Z
 updated_at: 2025-08-21T13:25:42Z
 url: https://github.com/astral-sh/uv/issues/15409
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Instructions on "editable" project installs are repeated
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:25_
+_@zanieb_
 
 e.g.,  in `/uv/concepts/projects/config/#editable-mode` and `uv/concepts/projects/sync/#editable-installation`. Nothing wrong with this per say, but they should synergize somehow
 

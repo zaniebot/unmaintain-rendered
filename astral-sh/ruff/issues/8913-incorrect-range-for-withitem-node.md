@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T23:31:12Z
 updated_at: 2023-11-30T00:11:05Z
 url: https://github.com/astral-sh/ruff/issues/8913
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Incorrect range for `WithItem` node
 
 ---
 
-_Issue opened by @LaBatata101 on 2023-11-29 23:31_
+_@LaBatata101_
 
 Ruff version: v0.1.6
 

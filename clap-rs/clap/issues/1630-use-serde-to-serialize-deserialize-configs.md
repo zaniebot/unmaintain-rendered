@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-01-10T15:02:08Z
 updated_at: 2022-01-11T18:47:32Z
 url: https://github.com/clap-rs/clap/issues/1630
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Use serde to serialize-deserialize configs, including yaml
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-01-10 15:02_
+_@CreepySkeleton_
 
 ### Summary
 

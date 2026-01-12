@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-15T05:29:54Z
 updated_at: 2025-04-28T06:26:06Z
 url: https://github.com/astral-sh/ruff/issues/12901
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # (🎁) preserve node line of `noqa` comments when formatting
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-08-15 05:29_
+_@KotlinIsland_
 
 ```py
 dict(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=1)  # noqa: C408

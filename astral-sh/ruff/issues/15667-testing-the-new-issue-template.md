@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T07:51:42Z
 updated_at: 2025-01-22T07:51:54Z
 url: https://github.com/astral-sh/ruff/issues/15667
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Testing the new issue template
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-01-22 07:51_
+_@dhruvmanila_
 
 ### Description
 

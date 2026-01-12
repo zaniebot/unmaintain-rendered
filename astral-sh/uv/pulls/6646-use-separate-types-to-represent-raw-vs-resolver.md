@@ -13,14 +13,14 @@ head: charlie/pre-interpreter
 created_at: 2024-08-26T17:22:02Z
 updated_at: 2024-08-26T18:00:22Z
 url: https://github.com/astral-sh/uv/pull/6646
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Use separate types to represent raw vs. resolver markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-26 17:22_
+_@charliermarsh_
 
 ## Summary
 

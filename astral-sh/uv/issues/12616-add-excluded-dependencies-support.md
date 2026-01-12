@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T01:38:42Z
 updated_at: 2025-10-31T14:14:13Z
 url: https://github.com/astral-sh/uv/issues/12616
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Add `excluded-dependencies` support
 
 ---
 
-_Issue opened by @zanieb on 2025-04-02 01:38_
+_@zanieb_
 
 We support this now by setting an impossible marker, e.g., `override-dependencies = ["package; sys_platform = "never"]` (https://docs.astral.sh/uv/reference/settings/#override-dependencies). We should add a dedicated option, e.g., `excluded-dependencies = ["package"]`. Unlike `--no-install-package`, this omits the whole dependency tree. We should add a dedicated option, as this is fairly bespoke.
 

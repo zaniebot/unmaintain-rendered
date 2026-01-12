@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-28T18:55:25Z
 updated_at: 2025-01-02T14:22:29Z
 url: https://github.com/clap-rs/clap/issues/5605
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Nushell completions should use `glob` type for paths
 
 ---
 
-_Issue opened by @kaathewisegit on 2024-07-28 18:55_
+_@kaathewisegit_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: rust-1.75
 created_at: 2024-01-08T11:11:05Z
 updated_at: 2024-01-08T17:03:17Z
 url: https://github.com/astral-sh/ruff/pull/9437
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use Rust 1.75 toolchain
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-08 11:11_
+_@MichaReiser_
 
 ## Summary
 

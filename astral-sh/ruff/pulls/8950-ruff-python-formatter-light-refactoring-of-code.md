@@ -15,14 +15,14 @@ head: ag/fmt/refactor-for-rest
 created_at: 2023-12-01T16:39:45Z
 updated_at: 2023-12-01T19:46:40Z
 url: https://github.com/astral-sh/ruff/pull/8950
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: light refactoring of code snippet formatting in docstrings
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-01 16:39_
+_@BurntSushi_
 
 In the source of working on #8859, I made a number of smallish refactors to how code snippet formatting works. Most or all of these were motivated by writing in support for reStructuredText blocks. They have some fundamentally different requirements than doctests, and there are a lot more ways for reStructuredText blocks to become invalid.
 

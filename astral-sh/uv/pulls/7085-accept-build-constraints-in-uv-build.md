@@ -14,14 +14,14 @@ head: charlie/build-constraints
 created_at: 2024-09-05T15:25:40Z
 updated_at: 2024-09-05T18:46:37Z
 url: https://github.com/astral-sh/uv/pull/7085
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Accept `--build-constraints` in `uv build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-05 15:25_
+_@charliermarsh_
 
 ## Summary
 

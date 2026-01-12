@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-06-15T14:49:22Z
 updated_at: 2020-02-01T10:15:53Z
 url: https://github.com/clap-rs/clap/issues/532
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # The load_yaml!() macro should not be relative to the working directory
 
 ---
 
-_Issue opened by @Lindenk on 2016-06-15 14:49_
+_@Lindenk_
 
 This seems like a new development, or maybe I just haven't noticed before, but it looks like `load_yaml!()` loads relative to the working directory rather than either the base of the project, or the `src` directory. This causes a problem when running `cargo build` from a directory that wasn't expected.
 

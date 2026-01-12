@@ -12,14 +12,14 @@ head: init-variant
 created_at: 2025-04-14T04:00:10Z
 updated_at: 2025-04-15T22:32:03Z
 url: https://github.com/astral-sh/uv/pull/12870
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # Write requested python variant to pin file in `uv init`
 
 ---
 
-_Pull request opened by @j178 on 2025-04-14 04:00_
+_@j178_
 
 ## Summary
 

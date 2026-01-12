@@ -13,14 +13,14 @@ head: konsti/doc-WrappedReqwestError
 created_at: 2024-11-19T21:27:16Z
 updated_at: 2024-11-19T21:52:03Z
 url: https://github.com/astral-sh/uv/pull/9251
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Better WrappedReqwestError docs
 
 ---
 
-_Pull request opened by @konstin on 2024-11-19 21:27_
+_@konstin_
 
 Document the hack with which we insert a hint message for offline cases.
 

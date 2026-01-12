@@ -14,14 +14,14 @@ head: micha/unary-bin-op-goto
 created_at: 2025-10-20T17:40:53Z
 updated_at: 2025-10-21T17:30:46Z
 url: https://github.com/astral-sh/ruff/pull/21001
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Implement go-to for binary and unary operators
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-20 17:40_
+_@MichaReiser_
 
 ## Summary
 

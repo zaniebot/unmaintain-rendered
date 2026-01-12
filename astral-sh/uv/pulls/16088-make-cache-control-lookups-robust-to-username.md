@@ -13,14 +13,14 @@ head: charlie/u
 created_at: 2025-10-01T16:27:57Z
 updated_at: 2025-10-01T20:59:01Z
 url: https://github.com/astral-sh/uv/pull/16088
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Make cache control lookups robust to username
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-01 16:27_
+_@charliermarsh_
 
 ## Summary
 

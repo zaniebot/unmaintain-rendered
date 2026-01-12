@@ -14,14 +14,14 @@ head: subscript-trailing-end-of-line-comment-left-bracket
 created_at: 2024-03-20T16:48:34Z
 updated_at: 2024-03-20T17:12:11Z
 url: https://github.com/astral-sh/ruff/pull/10492
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix instable formatting for trailing subscribt end-of-line comment
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-20 16:48_
+_@MichaReiser_
 
 ## Summary
 

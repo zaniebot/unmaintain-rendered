@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-14T14:12:05Z
 updated_at: 2025-09-14T14:13:15Z
 url: https://github.com/astral-sh/uv/issues/15839
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Add a command to list uv's storage directories
 
 ---
 
-_Issue opened by @zanieb on 2025-09-14 14:12_
+_@zanieb_
 
 Originally requested in https://github.com/astral-sh/uv/issues/11360
 

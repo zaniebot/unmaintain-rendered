@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T20:27:11Z
 updated_at: 2025-05-06T05:32:18Z
 url: https://github.com/astral-sh/uv/issues/12903
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # uv tool run should not perform network request if version is fully frozen
 
 ---
 
-_Issue opened by @gsemet on 2025-04-15 20:27_
+_@gsemet_
 
 ### Summary
 

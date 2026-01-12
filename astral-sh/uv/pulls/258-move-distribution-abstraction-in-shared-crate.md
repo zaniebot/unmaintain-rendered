@@ -12,14 +12,14 @@ head: charlie/pinned-package
 created_at: 2023-10-31T19:27:26Z
 updated_at: 2023-10-31T19:30:07Z
 url: https://github.com/astral-sh/uv/pull/258
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Move distribution abstraction in shared crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 19:27_
+_@charliermarsh_
 
 This also allows us to get rid of `PinnedPackage` _and_ to remove some `Result<...>` types due to needless conversions between otherwise-identical types.
 

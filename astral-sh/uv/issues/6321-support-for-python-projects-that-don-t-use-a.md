@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T12:19:29Z
 updated_at: 2025-07-11T12:45:32Z
 url: https://github.com/astral-sh/uv/issues/6321
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Support for Python projects that don't use a build system
 
 ---
 
-_Issue opened by @anze3db on 2024-08-21 12:19_
+_@anze3db_
 
 Hey! Congrats on the 0.3.0 release! 🎉 
 

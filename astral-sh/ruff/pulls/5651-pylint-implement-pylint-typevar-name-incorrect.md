@@ -13,14 +13,14 @@ head: incorrect-variance
 created_at: 2023-07-10T14:25:24Z
 updated_at: 2023-07-10T17:12:55Z
 url: https://github.com/astral-sh/ruff/pull/5651
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`pylint`] Implement Pylint `typevar-name-incorrect-variance` (`C0105`) 
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-10 14:25_
+_@tjkuson_
 
 ## Summary
 

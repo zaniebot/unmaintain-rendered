@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-09T14:28:00Z
 updated_at: 2026-01-09T15:04:52Z
 url: https://github.com/astral-sh/ty/issues/2417
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Semantic-tokens panic while typing out a `match`/`case` statement
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-09 14:28_
+_@AlexWaygood_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: use-macos13-runner
 created_at: 2024-10-13T06:28:16Z
 updated_at: 2024-10-24T15:13:30Z
 url: https://github.com/astral-sh/ruff/pull/13728
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update to macOS14 runner image
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-10-13 06:28_
+_@diceroll123_
 
 ## Summary
 

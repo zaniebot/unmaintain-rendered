@@ -12,14 +12,14 @@ head: charlie/exempt
 created_at: 2022-11-17T20:04:26Z
 updated_at: 2022-11-17T20:04:43Z
 url: https://github.com/astral-sh/ruff/pull/798
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Except BaseException from N818 checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 20:04_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/pull/796#discussion_r1025647341.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-07T16:31:06Z
 updated_at: 2025-03-28T03:16:47Z
 url: https://github.com/astral-sh/ruff/issues/13666
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Surrogate code points are internally represented as U+FFFD REPLACEMENT CHARACTER
 
 ---
 
-_Issue opened by @dscorbett on 2024-10-07 16:31_
+_@dscorbett_
 
 Ruff represents Python strings with Rust strings, replacing every surrogate with U+FFFD REPLACEMENT CHARACTER. This leads to false positives and incorrect fixes when the exact code point sequence matters. Affected rules include [`duplicate-value` (B033)](https://docs.astral.sh/ruff/rules/duplicate-value/), [`static-join-to-f-string` (FLY002)](https://docs.astral.sh/ruff/rules/static-join-to-f-string/), [`non-unique-enums` (PIE796)](https://docs.astral.sh/ruff/rules/non-unique-enums/), and [`useless-if-else` (RUF034)](https://docs.astral.sh/ruff/rules/useless-if-else/). Ruff should use a non-lossy representation of Python strings, or at least track when there was a surrogate so it can ignore certain rules for strings with surrogates.
 

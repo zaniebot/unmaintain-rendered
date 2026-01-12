@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-03T15:49:05Z
 updated_at: 2025-02-03T15:59:25Z
 url: https://github.com/astral-sh/ruff/issues/15914
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # N815 does not enforce enums to be named IN_ALL_CAPS (pylint invalid-name)
 
 ---
 
-_Issue opened by @Apakottur on 2025-02-03 15:49_
+_@Apakottur_
 
 # Description
 Consider the following code:

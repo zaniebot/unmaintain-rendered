@@ -13,14 +13,14 @@ head: micha/configuration-files
 created_at: 2025-05-09T13:57:51Z
 updated_at: 2025-05-10T10:35:27Z
 url: https://github.com/astral-sh/ty/pull/294
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # docs: Document configuration file discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-09 13:57_
+_@MichaReiser_
 
 ## Summary
 

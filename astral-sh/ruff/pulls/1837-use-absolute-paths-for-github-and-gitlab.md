@@ -12,14 +12,14 @@ head: charlie/absolute
 created_at: 2023-01-12T22:52:55Z
 updated_at: 2023-03-10T16:09:22Z
 url: https://github.com/astral-sh/ruff/pull/1837
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Use absolute paths for GitHub and Gitlab annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-12 22:52_
+_@charliermarsh_
 
 Note that the _annotation path_ is absolute, while the path encoded in the message remains relative.
 

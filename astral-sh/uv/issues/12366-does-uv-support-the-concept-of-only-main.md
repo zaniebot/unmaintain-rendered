@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T13:43:21Z
 updated_at: 2025-05-11T23:46:18Z
 url: https://github.com/astral-sh/uv/issues/12366
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Does `uv` support the concept of `--only main`?
 
 ---
 
-_Issue opened by @johnthagen on 2025-03-21 13:43_
+_@johnthagen_
 
 ### Question
 

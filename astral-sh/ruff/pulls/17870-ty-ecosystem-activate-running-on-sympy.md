@@ -14,14 +14,14 @@ head: david/ecosystem-activate-sympy
 created_at: 2025-05-05T19:34:46Z
 updated_at: 2025-05-05T19:50:16Z
 url: https://github.com/astral-sh/ruff/pull/17870
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] ecosystem: activate running on 'sympy'
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-05 19:34_
+_@sharkdp_
 
 ## Summary
 

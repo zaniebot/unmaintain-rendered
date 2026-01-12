@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:30:23Z
 updated_at: 2024-02-20T17:57:29Z
 url: https://github.com/astral-sh/uv/issues/1357
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Support Python versions with trailing `+`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-15 21:30_
+_@charliermarsh_
 
 It was reported that a locally-built Python with `3.11.4+` errors out in our version parser:
 

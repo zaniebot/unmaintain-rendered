@@ -13,14 +13,14 @@ head: zb/system-install-combine
 created_at: 2024-03-09T00:39:46Z
 updated_at: 2024-03-12T05:30:43Z
 url: https://github.com/astral-sh/uv/pull/2312
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Move system install tests into normal CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-09 00:39_
+_@zanieb_
 
 Giving this a try... just making all of these a normal part of CI.
 

@@ -13,14 +13,14 @@ head: zb/dev-deps
 created_at: 2025-07-25T18:44:57Z
 updated_at: 2025-07-25T18:57:51Z
 url: https://github.com/astral-sh/uv/pull/14903
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Use workspace dependencies for crate dev-dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 18:44_
+_@zanieb_
 
 _No description provided._
 

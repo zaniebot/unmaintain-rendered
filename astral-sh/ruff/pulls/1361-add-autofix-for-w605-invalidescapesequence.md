@@ -12,14 +12,14 @@ head: master
 created_at: 2022-12-24T18:13:40Z
 updated_at: 2023-03-10T18:02:13Z
 url: https://github.com/astral-sh/ruff/pull/1361
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add autofix for W605 [InvalidEscapeSequence]
 
 ---
 
-_Pull request opened by @Sawbez on 2022-12-24 18:13_
+_@Sawbez_
 
 I added the autofix, updated the README, and updated the insta tests.
 

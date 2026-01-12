@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T11:19:27Z
 updated_at: 2024-09-24T11:45:18Z
 url: https://github.com/astral-sh/ruff/issues/13496
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Implement flake8-libfaketime
 
 ---
 
-_Issue opened by @wwuck on 2024-09-24 11:19_
+_@wwuck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

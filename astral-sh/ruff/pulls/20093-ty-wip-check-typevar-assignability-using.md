@@ -14,14 +14,14 @@ head: dcreager/real-constraint-sets
 created_at: 2025-08-26T02:13:07Z
 updated_at: 2025-11-25T16:14:24Z
 url: https://github.com/astral-sh/ruff/pull/20093
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] WIP: Check typevar assignability using constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-26 02:13_
+_@dcreager_
 
 This stacks on top of #19997, and uses the new constraint set implementation to check assignability for typevars.
 

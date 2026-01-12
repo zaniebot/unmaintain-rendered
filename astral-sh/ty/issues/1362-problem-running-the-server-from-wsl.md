@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T14:47:06Z
 updated_at: 2025-10-15T15:28:54Z
 url: https://github.com/astral-sh/ty/issues/1362
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Problem running the server from WSL
 
 ---
 
-_Issue opened by @klonuo on 2025-10-15 14:47_
+_@klonuo_
 
 ### Summary
 

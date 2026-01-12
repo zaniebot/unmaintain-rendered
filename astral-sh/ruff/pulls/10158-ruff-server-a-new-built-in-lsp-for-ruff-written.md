@@ -13,14 +13,14 @@ head: jane/lsp/server-mvp
 created_at: 2024-02-29T01:29:22Z
 updated_at: 2024-03-09T05:00:24Z
 url: https://github.com/astral-sh/ruff/pull/10158
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # `ruff server` - A new built-in LSP for Ruff, written in Rust
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-29 01:29_
+_@snowsignal_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: gankra/script
 created_at: 2025-12-08T20:09:04Z
 updated_at: 2025-12-09T16:05:54Z
 url: https://github.com/astral-sh/ruff/pull/21852
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Teach `ty check` to ask uv to sync the venv of a PEP-723 script
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-08 20:09_
+_@Gankra_
 
 ## Summary
 

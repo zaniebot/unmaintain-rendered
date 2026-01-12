@@ -13,14 +13,14 @@ head: charlie/url
 created_at: 2024-01-16T22:32:09Z
 updated_at: 2024-01-17T14:15:22Z
 url: https://github.com/astral-sh/uv/pull/944
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Avoid storing absolute URLs for files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 22:32_
+_@charliermarsh_
 
 ## Summary
 

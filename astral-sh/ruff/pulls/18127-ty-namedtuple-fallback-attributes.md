@@ -13,14 +13,14 @@ head: david/namedtuple-fallback-attributes
 created_at: 2025-05-16T06:36:10Z
 updated_at: 2025-05-16T12:05:14Z
 url: https://github.com/astral-sh/ruff/pull/18127
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] NamedTuple 'fallback' attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-16 06:36_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: zb/release-notes
 created_at: 2025-07-17T20:25:01Z
 updated_at: 2025-07-17T22:10:06Z
 url: https://github.com/astral-sh/uv/pull/14690
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Add release notes and bump version for 0.8.0 
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-17 20:25_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/uv/blob/zb/release-notes/CHANGELOG.md)
 

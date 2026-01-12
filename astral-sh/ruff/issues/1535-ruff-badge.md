@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-01T19:45:45Z
 updated_at: 2023-01-06T04:07:32Z
 url: https://github.com/astral-sh/ruff/issues/1535
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `ruff` badge
 
 ---
 
-_Issue opened by @matteosantama on 2023-01-01 19:45_
+_@matteosantama_
 
 A nice wish-list item is a `ruff` badge that other projects can display in their `README.md`, similar to how `mypy`, `black`,  and `isort` have badges (see the badges on [this](https://github.com/matteosantama/dantzig) repo).
 

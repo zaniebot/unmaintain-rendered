@@ -14,14 +14,14 @@ head: dhruv/move-diagnostics-api
 created_at: 2025-05-26T04:11:29Z
 updated_at: 2025-05-26T04:16:39Z
 url: https://github.com/astral-sh/ruff/pull/18308
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Move diagnostics API for the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-26 04:11_
+_@dhruvmanila_
 
 ## Summary
 

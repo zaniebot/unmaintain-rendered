@@ -13,14 +13,14 @@ head: konsti/gitignore-dist
 created_at: 2024-10-01T12:19:53Z
 updated_at: 2024-10-01T13:27:00Z
 url: https://github.com/astral-sh/uv/pull/7835
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Add gitignore to dist directory
 
 ---
 
-_Pull request opened by @konstin on 2024-10-01 12:19_
+_@konstin_
 
 The build artifacts in `dist` are not meant to be checked in, so we're adding a gitignore to this directory, like `.venv`.
 

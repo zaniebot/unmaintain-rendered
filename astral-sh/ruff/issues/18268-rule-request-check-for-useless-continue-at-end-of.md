@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T02:47:41Z
 updated_at: 2025-05-23T08:36:10Z
 url: https://github.com/astral-sh/ruff/issues/18268
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule Request: Check for Useless `continue` at end of `for` loop
 
 ---
 
-_Issue opened by @collinanderson on 2025-05-23 02:47_
+_@collinanderson_
 
 ### Summary
 

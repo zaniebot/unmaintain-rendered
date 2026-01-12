@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-06T17:07:17Z
 updated_at: 2024-10-10T17:45:46Z
 url: https://github.com/astral-sh/uv/issues/4847
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Remove (or ensure) git system requirement
 
 ---
 
-_Issue opened by @wyattscarpenter on 2024-07-06 17:07_
+_@wyattscarpenter_
 
 As far as I can tell, Git is required to be installed on the host system in order for pip git sources to work. This is bad, from a software engineering perspective, because a program should not require other programs in order to work. It is also bad because when you install `uv` using `pip`, you do not get `git` as well (which would be another way of avoiding the dependency failure).
 

@@ -13,14 +13,14 @@ head: micha/program-settings-platform-refe
 created_at: 2025-01-13T14:57:30Z
 updated_at: 2025-01-13T15:23:36Z
 url: https://github.com/astral-sh/ruff/pull/15457
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Change `ProgramSettings::python_platform` to return a reference
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-13 14:57_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-02T15:05:22Z
 updated_at: 2025-03-02T15:20:21Z
 url: https://github.com/astral-sh/uv/issues/11893
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Accidentally running uv venv again caused the .venv folder to be deleted
 
 ---
 
-_Issue opened by @qingchunyy on 2025-03-02 15:05_
+_@qingchunyy_
 
 ### Question
 

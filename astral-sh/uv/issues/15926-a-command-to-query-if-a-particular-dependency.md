@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T08:22:27Z
 updated_at: 2025-09-18T08:24:02Z
 url: https://github.com/astral-sh/uv/issues/15926
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # A command to query if a particular `dependency-groups` exists in project OR allow non-existant group
 
 ---
 
-_Issue opened by @frague59 on 2025-09-18 08:22_
+_@frague59_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/fetch
 created_at: 2024-04-05T17:45:55Z
 updated_at: 2024-04-05T21:50:57Z
 url: https://github.com/astral-sh/uv/pull/2838
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Update `fetch-version-metadata` to only require the stdlib
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-05 17:45_
+_@zanieb_
 
 _No description provided._
 

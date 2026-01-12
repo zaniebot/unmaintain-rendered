@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T22:27:53Z
 updated_at: 2025-07-07T22:28:01Z
 url: https://github.com/astral-sh/uv/issues/14500
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Implement a concept of "trusted" projects
 
 ---
 
-_Issue opened by @zanieb on 2025-07-07 22:27_
+_@zanieb_
 
 ### Summary
 

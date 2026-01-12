@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-17T18:49:41Z
 updated_at: 2025-04-02T19:25:00Z
 url: https://github.com/astral-sh/uv/issues/9979
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Python listed twice on Windows
 
 ---
 
-_Issue opened by @eykamp on 2024-12-17 18:49_
+_@eykamp_
 
 In a Windows 10 CMD shell, I do this:
 

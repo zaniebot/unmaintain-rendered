@@ -14,14 +14,14 @@ head: ag/upgrade-annotate-snippets
 created_at: 2025-01-08T20:23:15Z
 updated_at: 2025-01-15T18:37:55Z
 url: https://github.com/astral-sh/ruff/pull/15359
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`ruff`] update and vendor annotate-snippets
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-08 20:23_
+_@BurntSushi_
 
 This PR upgrades to the latest version of
 [`annotate-snippets`](https://docs.rs/annotate-snippets)

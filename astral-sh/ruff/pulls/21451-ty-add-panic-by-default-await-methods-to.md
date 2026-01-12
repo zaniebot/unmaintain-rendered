@@ -14,14 +14,14 @@ head: micha/test-server-panic-by-default
 created_at: 2025-11-14T13:11:44Z
 updated_at: 2025-11-14T18:47:40Z
 url: https://github.com/astral-sh/ruff/pull/21451
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Add panic-by-default await methods to `TestServer`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-14 13:11_
+_@MichaReiser_
 
 ## Summary
 

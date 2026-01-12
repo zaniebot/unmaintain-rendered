@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-05T05:28:14Z
 updated_at: 2023-06-09T02:06:36Z
 url: https://github.com/astral-sh/ruff/issues/4857
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # (🎁) New rule for suspect dict comprehension with static key
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-06-05 05:28_
+_@KotlinIsland_
 
 I recently ran into some code where the developer was expecting a create a dict with a single key and a value created by a generator comprehension. Instead they ended up with a dict comprehension with a single entry for the value:
 ```py

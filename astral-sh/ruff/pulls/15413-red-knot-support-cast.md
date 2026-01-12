@@ -13,14 +13,14 @@ head: rk-cast
 created_at: 2025-01-11T05:19:57Z
 updated_at: 2025-01-13T18:55:12Z
 url: https://github.com/astral-sh/ruff/pull/15413
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Support `cast`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-11 05:19_
+_@InSyncWithFoo_
 
 ## Summary
 

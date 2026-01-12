@@ -12,14 +12,14 @@ head: if-imports
 created_at: 2025-06-01T16:01:21Z
 updated_at: 2025-06-02T09:13:45Z
 url: https://github.com/astral-sh/ruff/pull/18413
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # Add newline after import only if blocks (`TYPE_CHECKING`)
 
 ---
 
-_Pull request opened by @maxmynter on 2025-06-01 16:01_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

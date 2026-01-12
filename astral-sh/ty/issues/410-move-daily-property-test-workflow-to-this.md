@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-15T15:48:13Z
 updated_at: 2025-05-16T00:56:33Z
 url: https://github.com/astral-sh/ty/issues/410
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Move daily property test workflow to this repository
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-15 15:48_
+_@AlexWaygood_
 
 We have a workflow in the Ruff repo here that runs property tests daily on ty and opens an issue if they fail: https://github.com/astral-sh/ruff/blob/main/.github/workflows/daily_property_tests.yaml.
 

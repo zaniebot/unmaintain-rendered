@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-10-31T18:38:52Z
 updated_at: 2021-10-21T21:05:07Z
 url: https://github.com/clap-rs/clap/issues/2195
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Auto-derivation with `multiple_occurrences`
 
 ---
 
-_Issue opened by @fosskers on 2020-10-31 18:38_
+_@fosskers_
 
 This issue is related to the following discussion: https://github.com/clap-rs/clap/discussions/2192 . The original issue is explained it detail there. I was asked to open an issue, since there may be a UI/UX change that can be made. Below is runnable code that demonstrates the problem.
 

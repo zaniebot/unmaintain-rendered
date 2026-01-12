@@ -13,14 +13,14 @@ head: david/remove-type-unknown
 created_at: 2024-10-29T16:36:55Z
 updated_at: 2024-10-31T19:05:55Z
 url: https://github.com/astral-sh/ruff/pull/13980
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Remove `Type::Unbound`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-29 16:36_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

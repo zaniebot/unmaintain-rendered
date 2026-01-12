@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T21:26:49Z
 updated_at: 2023-03-02T03:28:14Z
 url: https://github.com/astral-sh/ruff/issues/3070
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # new cli option: --disable-noqa
 
 ---
 
-_Issue opened by @onerandomusername on 2023-02-20 21:26_
+_@onerandomusername_
 
 There are times when I want to go through the codebase and fix every error that uses a specific error code. It would be helpful to have a cli option to disable all noqa comments for a single command invoke.
 

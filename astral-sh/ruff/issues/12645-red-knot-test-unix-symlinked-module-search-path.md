@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T21:27:45Z
 updated_at: 2024-08-03T07:24:09Z
 url: https://github.com/astral-sh/ruff/issues/12645
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Red knot test unix::symlinked_module_search_path fails locally
 
 ---
 
-_Issue opened by @dylwil3 on 2024-08-02 21:27_
+_@dylwil3_
 
 One of the tests for red knot fails locally for me - MBP running Sonoma 14.5. Can anyone help me debug this? I assume it's not reproducible for the maintainers otherwise the tests would not be passing... Apologies in advance if I've done something silly.
 

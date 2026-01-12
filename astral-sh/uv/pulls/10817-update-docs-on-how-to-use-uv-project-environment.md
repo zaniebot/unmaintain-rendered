@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-01-21T15:51:20Z
 updated_at: 2025-01-22T03:40:28Z
 url: https://github.com/astral-sh/uv/pull/10817
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Update docs on how to use `UV_PROJECT_ENVIRONMENT` to use the system python environment
 
 ---
 
-_Pull request opened by @NiklasRosenstein on 2025-01-21 15:51_
+_@NiklasRosenstein_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T16:51:44Z
 updated_at: 2025-04-14T02:26:56Z
 url: https://github.com/astral-sh/uv/issues/11802
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Why does `uv run` cause a system package to be imported?
 
 ---
 
-_Issue opened by @edgarogh on 2025-02-26 16:51_
+_@edgarogh_
 
 ### Question
 

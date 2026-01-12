@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-01T10:41:10Z
 updated_at: 2024-09-20T18:45:25Z
 url: https://github.com/clap-rs/clap/issues/5063
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow using a completion-specific candidate description over the candidate's help message in rust-native completions
 
 ---
 
-_Issue opened by @ModProg on 2023-08-01 10:41_
+_@ModProg_
 
 Some shell completions, such as `fish` and `zsh` allow displaying a help message.
 

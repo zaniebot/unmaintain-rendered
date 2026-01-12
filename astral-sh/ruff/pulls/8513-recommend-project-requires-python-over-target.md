@@ -13,14 +13,14 @@ head: recommend-project.requires-python
 created_at: 2023-11-06T11:01:11Z
 updated_at: 2023-11-06T14:40:03Z
 url: https://github.com/astral-sh/ruff/pull/8513
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Recommend `project.requires-python` over `target-version`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 11:01_
+_@konstin_
 
 **Summary** Recommend the standardized, shared `project.requires-python` over ruff's custom `target-version`. See https://mastodon.social/deck/@davidism@mas.to/111347072204727710
 

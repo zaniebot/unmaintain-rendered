@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T11:05:52Z
 updated_at: 2025-10-12T21:16:52Z
 url: https://github.com/astral-sh/uv/issues/15906
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Remove special casing for `base` and `root` conda environment names
 
 ---
 
-_Issue opened by @zanieb on 2025-09-17 11:05_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/15682
 

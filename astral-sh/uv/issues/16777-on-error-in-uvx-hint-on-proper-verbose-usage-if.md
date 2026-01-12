@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-19T16:53:10Z
 updated_at: 2025-12-09T16:15:08Z
 url: https://github.com/astral-sh/uv/issues/16777
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # On error in `uvx`, hint on proper `--verbose` usage if it was provided to the subcommand
 
 ---
 
-_Issue opened by @zanieb on 2025-11-19 16:53_
+_@zanieb_
 
 ### Summary
 

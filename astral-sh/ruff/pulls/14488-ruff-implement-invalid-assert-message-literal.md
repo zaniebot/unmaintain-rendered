@@ -14,14 +14,14 @@ head: non-string-literal-as-assert-message
 created_at: 2024-11-20T13:46:44Z
 updated_at: 2024-11-28T18:09:43Z
 url: https://github.com/astral-sh/ruff/pull/14488
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implement `invalid-assert-message-literal-argument` (`RUF040`)
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-20 13:46_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

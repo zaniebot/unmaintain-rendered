@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-20T17:23:38Z
 updated_at: 2023-05-21T15:49:54Z
 url: https://github.com/astral-sh/ruff/issues/4548
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Rule TRY302 raised while the re-raise changes the error
 
 ---
 
-_Issue opened by @153957 on 2023-05-20 17:23_
+_@153957_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T14:19:18Z
 updated_at: 2025-01-15T20:11:56Z
 url: https://github.com/astral-sh/uv/issues/10598
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # [bug] Can't build Rust extensions via `pyo3` if using a `uv`-managed Python interpreter
 
 ---
 
-_Issue opened by @LukeMathWalker on 2025-01-14 14:19_
+_@LukeMathWalker_
 
 When building the extension, the following error occurs (omitting the prefixes of some paths):
 

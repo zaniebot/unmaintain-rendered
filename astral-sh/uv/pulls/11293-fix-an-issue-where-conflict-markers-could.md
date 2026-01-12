@@ -14,14 +14,14 @@ head: ag/fix-9735
 created_at: 2025-02-06T19:58:36Z
 updated_at: 2025-02-18T12:44:16Z
 url: https://github.com/astral-sh/uv/pull/11293
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # fix an issue where conflict markers could instigate a very large lock file
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-06 19:58_
+_@BurntSushi_
 
 This PR fixes a problem where re-running `uv lock` could, in some
 cases, exponentially expand the contents of a lock file with more and

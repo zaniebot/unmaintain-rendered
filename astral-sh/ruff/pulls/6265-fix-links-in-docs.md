@@ -12,14 +12,14 @@ head: fix-link-hack
 created_at: 2023-08-02T07:01:12Z
 updated_at: 2023-08-02T07:46:24Z
 url: https://github.com/astral-sh/ruff/pull/6265
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix links in docs
 
 ---
 
-_Pull request opened by @harupy on 2023-08-02 07:01_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

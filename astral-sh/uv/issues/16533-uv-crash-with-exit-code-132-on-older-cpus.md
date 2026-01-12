@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-31T10:49:07Z
 updated_at: 2025-10-31T14:53:35Z
 url: https://github.com/astral-sh/uv/issues/16533
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # uv crash with exit code 132 on older CPUs
 
 ---
 
-_Issue opened by @eyalmazuz on 2025-10-31 10:49_
+_@eyalmazuz_
 
 ### Summary
 

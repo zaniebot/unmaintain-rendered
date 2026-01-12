@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T14:44:23Z
 updated_at: 2024-06-26T12:55:13Z
 url: https://github.com/astral-sh/uv/issues/4102
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Ignore dependencies with unsupported Python versions during universal lock
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 14:44_
+_@charliermarsh_
 
 If the user has `requires-python = ">= 3.7"`, we should be able to prune dependencies with (e.g.) `flask ; python_version == '3.3'`.
 

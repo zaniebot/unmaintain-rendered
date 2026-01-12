@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-30T22:00:23Z
 updated_at: 2024-07-01T04:20:16Z
 url: https://github.com/astral-sh/ruff/issues/12114
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # new rule - flag f-strings that contain expressions with the same quote as its outer quote
 
 ---
 
-_Issue opened by @R1kaB3rN on 2024-06-30 22:00_
+_@R1kaB3rN_
 
 As a result of [PEP 701](https://peps.python.org/pep-0701/), in Python 3.12, you are now able to [use expression components that contain the same quote as the outer f-string](https://docs.python.org/3.12/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings) which allow f-strings like this:
 

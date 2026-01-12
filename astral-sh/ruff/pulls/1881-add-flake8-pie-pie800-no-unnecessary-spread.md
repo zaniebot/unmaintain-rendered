@@ -12,14 +12,14 @@ head: steve-flake8-pie800
 created_at: 2023-01-15T02:57:54Z
 updated_at: 2023-01-23T02:43:35Z
 url: https://github.com/astral-sh/ruff/pull/1881
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add flake8-pie PIE800: no-unnecessary-spread
 
 ---
 
-_Pull request opened by @sbdchd on 2023-01-15 02:57_
+_@sbdchd_
 
 Checks for unnecessary spreads, like `{**foo, **{"bar": True}}`
 rel: https://github.com/charliermarsh/ruff/issues/1879

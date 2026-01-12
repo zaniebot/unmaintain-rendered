@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T11:55:29Z
 updated_at: 2025-02-04T10:49:15Z
 url: https://github.com/astral-sh/ruff/issues/15908
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Should Ruff have an opinion on math.inf vs float("inf")?
 
 ---
 
-_Issue opened by @RubenVanEldik on 2025-02-03 11:55_
+_@RubenVanEldik_
 
 ### Description
 

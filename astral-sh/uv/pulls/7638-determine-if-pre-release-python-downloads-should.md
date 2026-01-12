@@ -13,14 +13,14 @@ head: zb/fix-pre-install
 created_at: 2024-09-23T13:35:13Z
 updated_at: 2024-09-23T19:09:02Z
 url: https://github.com/astral-sh/uv/pull/7638
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Determine if pre-release Python downloads should be allowed using the version specifiers
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-23 13:35_
+_@zanieb_
 
 Closes #7637
 

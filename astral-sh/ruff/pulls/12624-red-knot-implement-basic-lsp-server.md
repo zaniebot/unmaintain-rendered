@@ -13,14 +13,14 @@ head: dhruv/red-knot-lsp-1
 created_at: 2024-08-02T09:39:52Z
 updated_at: 2024-08-06T11:41:46Z
 url: https://github.com/astral-sh/ruff/pull/12624
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Implement basic LSP server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-02 09:39_
+_@dhruvmanila_
 
 ## Summary
 

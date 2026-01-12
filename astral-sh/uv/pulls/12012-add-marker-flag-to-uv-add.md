@@ -13,14 +13,14 @@ head: feature/req-markers
 created_at: 2025-03-06T18:01:07Z
 updated_at: 2025-03-11T15:29:36Z
 url: https://github.com/astral-sh/uv/pull/12012
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Add `--marker` flag to `uv add`
 
 ---
 
-_Pull request opened by @thejchap on 2025-03-06 18:01_
+_@thejchap_
 
 ## Summary
 

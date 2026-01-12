@@ -13,14 +13,14 @@ head: micha/fix-formatter-tuple-example
 created_at: 2024-09-10T17:44:08Z
 updated_at: 2024-09-10T17:47:12Z
 url: https://github.com/astral-sh/ruff/pull/13313
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fix tuple expansion example in formatter compatibility document
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-10 17:44_
+_@MichaReiser_
 
 
 ## Summary

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T23:59:39Z
 updated_at: 2025-08-05T18:11:04Z
 url: https://github.com/astral-sh/uv/issues/15071
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Is there a setting to disable lowercase package names on init?
 
 ---
 
-_Issue opened by @kybouw on 2025-08-04 23:59_
+_@kybouw_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T18:30:04Z
 updated_at: 2024-05-11T17:34:46Z
 url: https://github.com/astral-sh/uv/issues/3515
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # uv cache clean fails after build failures
 
 ---
 
-_Issue opened by @yeswalrus on 2024-05-10 18:30_
+_@yeswalrus_
 
 Related to https://github.com/astral-sh/uv/issues/3512
 

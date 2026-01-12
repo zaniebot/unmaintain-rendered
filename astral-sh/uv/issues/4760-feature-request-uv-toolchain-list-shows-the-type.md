@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T07:24:28Z
 updated_at: 2024-07-03T13:09:20Z
 url: https://github.com/astral-sh/uv/issues/4760
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # [feature request] uv toolchain list shows the "type" of toolchain
 
 ---
 
-_Issue opened by @baggiponte on 2024-07-03 07:24_
+_@baggiponte_
 
 When I run `uv toolchain list` I get this output:
 

@@ -13,14 +13,14 @@ head: issue-4330-registry-client-builder
 created_at: 2024-07-02T12:52:53Z
 updated_at: 2024-07-04T15:53:06Z
 url: https://github.com/astral-sh/uv/pull/4729
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Enable Registry Client Builder to be created from Base Client Builder
 
 ---
 
-_Pull request opened by @danielenricocahall on 2024-07-02 12:52_
+_@danielenricocahall_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

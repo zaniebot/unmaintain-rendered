@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T21:23:58Z
 updated_at: 2025-11-02T20:44:29Z
 url: https://github.com/astral-sh/uv/issues/15821
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # uv cache size
 
 ---
 
-_Issue opened by @charlesnicholson on 2025-09-12 21:23_
+_@charlesnicholson_
 
 ### Summary
 

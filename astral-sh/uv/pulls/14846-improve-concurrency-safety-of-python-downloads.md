@@ -12,14 +12,14 @@ head: konsti/more-resilient-windows
 created_at: 2025-07-23T14:01:30Z
 updated_at: 2025-07-23T16:52:42Z
 url: https://github.com/astral-sh/uv/pull/14846
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Improve concurrency safety of Python downloads into cache
 
 ---
 
-_Pull request opened by @konstin on 2025-07-23 14:01_
+_@konstin_
 
 _No description provided._
 

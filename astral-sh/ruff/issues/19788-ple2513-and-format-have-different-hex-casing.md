@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T17:24:46Z
 updated_at: 2025-08-08T12:25:12Z
 url: https://github.com/astral-sh/ruff/issues/19788
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLE2513 and format have different hex casing opinions
 
 ---
 
-_Issue opened by @ember91 on 2025-08-06 17:24_
+_@ember91_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T10:07:05Z
 updated_at: 2025-01-18T04:39:24Z
 url: https://github.com/astral-sh/ruff/issues/15016
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule documentation link does not work with lower case code
 
 ---
 
-_Issue opened by @DaniBodor on 2024-12-16 10:07_
+_@DaniBodor_
 
 When trying to load a specific rule's documentation page using a the lower case letter for that rule (e.g. https://docs.astral.sh/ruff/rules/f401), I get a `404 - Not Found`. 
 After loading the page once using an uppercase letter instead (which does work), if I then try it again with the lowercase, my browser (Firefox) automatically corrects the lowercase to the uppercase and the site does load.

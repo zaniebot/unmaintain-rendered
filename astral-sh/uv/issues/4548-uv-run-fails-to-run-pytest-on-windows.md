@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T13:28:03Z
 updated_at: 2024-06-26T14:05:14Z
 url: https://github.com/astral-sh/uv/issues/4548
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv run` fails to run `pytest` on Windows
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-26 13:28_
+_@charliermarsh_
 
 https://github.com/astral-sh/ruff-lsp/actions/runs/9680551699/job/26708978872?pr=443
 

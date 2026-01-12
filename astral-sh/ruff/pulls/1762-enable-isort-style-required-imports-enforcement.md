@@ -12,14 +12,14 @@ head: charlie/add-imports
 created_at: 2023-01-10T04:21:01Z
 updated_at: 2023-01-12T12:50:40Z
 url: https://github.com/astral-sh/ruff/pull/1762
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Enable isort-style `required-imports` enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-10 04:21_
+_@charliermarsh_
 
 In isort, this is called `add-imports`, but I prefer the declarative name.
 

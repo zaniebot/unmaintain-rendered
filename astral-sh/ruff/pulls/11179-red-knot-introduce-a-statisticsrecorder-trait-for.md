@@ -13,14 +13,14 @@ head: redknot-trait
 created_at: 2024-04-27T16:38:38Z
 updated_at: 2024-04-30T06:14:12Z
 url: https://github.com/astral-sh/ruff/pull/11179
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # `red-knot`: introduce a `StatisticsRecorder` trait for the `KeyValueCache`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-27 16:38_
+_@AlexWaygood_
 
 ## Summary
 

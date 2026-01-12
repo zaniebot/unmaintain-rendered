@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-27T16:39:52Z
 updated_at: 2025-12-26T08:33:24Z
 url: https://github.com/astral-sh/ruff/issues/19576
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM114: Safe fix removes comments
 
 ---
 
-_Issue opened by @Nikratio on 2025-07-27 16:39_
+_@Nikratio_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: dhruv/type-params
 created_at: 2023-10-24T11:52:34Z
 updated_at: 2023-10-24T12:02:29Z
 url: https://github.com/astral-sh/ruff/pull/8163
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Don't move type param opening parenthesis comment
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-24 11:52_
+_@dhruvmanila_
 
 ## Summary
 

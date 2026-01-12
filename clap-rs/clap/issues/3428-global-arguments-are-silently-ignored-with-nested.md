@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-09T21:07:50Z
 updated_at: 2022-02-09T22:30:33Z
 url: https://github.com/clap-rs/clap/issues/3428
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Global arguments are silently ignored with nested subcommands
 
 ---
 
-_Issue opened by @kuecks on 2022-02-09 21:07_
+_@kuecks_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: dhruv/changelog
 created_at: 2024-11-29T03:12:45Z
 updated_at: 2024-11-29T03:15:37Z
 url: https://github.com/astral-sh/ruff/pull/14664
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update CHANGELOG.md with the new commits for 0.8.1
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-29 03:12_
+_@dhruvmanila_
 
 The 0.8.1 release was delayed, so this PR updates the CHANGELOG.md with the latest commits on `main`.
 

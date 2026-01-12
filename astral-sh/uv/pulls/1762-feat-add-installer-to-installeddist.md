@@ -13,14 +13,14 @@ head: feat/add-installer
 created_at: 2024-02-20T15:36:52Z
 updated_at: 2024-02-20T17:07:09Z
 url: https://github.com/astral-sh/uv/pull/1762
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # feat: add installer to `InstalledDist`
 
 ---
 
-_Pull request opened by @tdejager on 2024-02-20 15:36_
+_@tdejager_
 
 ## Summary
 

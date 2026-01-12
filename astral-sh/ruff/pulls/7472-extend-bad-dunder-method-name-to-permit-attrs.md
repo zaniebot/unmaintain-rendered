@@ -13,14 +13,14 @@ head: extend-bad-dunder-method-name
 created_at: 2023-09-17T19:49:50Z
 updated_at: 2023-09-18T09:04:28Z
 url: https://github.com/astral-sh/ruff/pull/7472
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Extend `bad-dunder-method-name` to permit `attrs` dunders
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-17 19:49_
+_@tjkuson_
 
 ## Summary
 

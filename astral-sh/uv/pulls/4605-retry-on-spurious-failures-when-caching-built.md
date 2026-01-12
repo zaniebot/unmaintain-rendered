@@ -13,14 +13,14 @@ head: zb/rename-retry-wheel
 created_at: 2024-06-27T23:02:27Z
 updated_at: 2024-06-28T14:23:11Z
 url: https://github.com/astral-sh/uv/pull/4605
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Retry on spurious failures when caching built wheels
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 23:02_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/2419 appears to have only applied this retry to wheels that were already downloaded (though I would have to look more carefully to be certain). In https://github.com/astral-sh/uv/issues/1491, we've gotten continued reports of spurious failures on Windows and tracing reveals that we are not applying our retry logic during the rename. I believe we're in this code path — switching to our backoff retry should resolve the failures.
 

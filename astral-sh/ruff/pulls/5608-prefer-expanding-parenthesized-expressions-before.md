@@ -13,14 +13,14 @@ head: expand-by-parentheses-first
 created_at: 2023-07-08T09:23:02Z
 updated_at: 2023-07-11T12:33:39Z
 url: https://github.com/astral-sh/ruff/pull/5608
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Prefer expanding parenthesized expressions before operands
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-08 09:23_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

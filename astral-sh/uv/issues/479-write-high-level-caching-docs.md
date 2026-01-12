@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-21T16:10:18Z
 updated_at: 2024-02-02T20:10:01Z
 url: https://github.com/astral-sh/uv/issues/479
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Write high level caching docs
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 16:10_
+_@konstin_
 
 We should wrote a readme (and include it as module level docs) for puffin cache that explain the caching strategy, the different cache buckets and links to the documentation for each cache kind. Where missing, we need to write the documentation for the different cache buckets.
 

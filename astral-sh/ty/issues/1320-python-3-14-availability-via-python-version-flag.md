@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-07T20:07:59Z
 updated_at: 2025-10-07T20:40:54Z
 url: https://github.com/astral-sh/ty/issues/1320
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Python 3.14 availability via --python-version flag
 
 ---
 
-_Issue opened by @pkelaita on 2025-10-07 20:07_
+_@pkelaita_
 
 ### Summary
 

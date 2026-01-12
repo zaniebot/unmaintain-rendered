@@ -13,14 +13,14 @@ head: brent/more-option-docs
 created_at: 2025-12-30T00:10:31Z
 updated_at: 2025-12-30T13:44:14Z
 url: https://github.com/astral-sh/ruff/pull/22295
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # Document options for more rules
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-30 00:10_
+_@ntBre_
 
 Summary
 --

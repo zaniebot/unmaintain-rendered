@@ -13,14 +13,14 @@ head: pydocs
 created_at: 2023-06-27T12:50:09Z
 updated_at: 2023-07-10T09:55:03Z
 url: https://github.com/astral-sh/ruff/pull/5387
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Complete documentation for `pydocstyle` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-27 12:50_
+_@tjkuson_
 
 ## Summary
 

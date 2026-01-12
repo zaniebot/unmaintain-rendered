@@ -14,14 +14,14 @@ head: brent/inline-diagnostic-kind
 created_at: 2025-05-13T18:21:07Z
 updated_at: 2025-05-15T14:27:23Z
 url: https://github.com/astral-sh/ruff/pull/18074
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # Inline `DiagnosticKind` into other diagnostic types
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-13 18:21_
+_@ntBre_
 
 ## Summary
 

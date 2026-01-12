@@ -13,14 +13,14 @@ head: charlie/editable
 created_at: 2024-05-27T21:08:19Z
 updated_at: 2024-05-28T15:49:35Z
 url: https://github.com/astral-sh/uv/pull/3869
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Remove special-casing for editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-27 21:08_
+_@charliermarsh_
 
 ## Summary
 

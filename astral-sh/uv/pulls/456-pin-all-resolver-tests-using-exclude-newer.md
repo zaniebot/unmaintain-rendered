@@ -13,14 +13,14 @@ head: charlie/exclude-newer
 created_at: 2023-11-19T15:00:02Z
 updated_at: 2023-11-19T15:10:59Z
 url: https://github.com/astral-sh/uv/pull/456
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Pin all resolver tests using `--exclude-newer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 15:00_
+_@charliermarsh_
 
 Uses yesterday's date, which should make it much less likely that our tests become stale over time.
 

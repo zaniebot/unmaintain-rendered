@@ -13,14 +13,14 @@ head: ibraheem/uv-init
 created_at: 2024-07-03T22:19:56Z
 updated_at: 2024-07-19T15:11:49Z
 url: https://github.com/astral-sh/uv/pull/4791
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Implement `uv init`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-03 22:19_
+_@ibraheemdev_
 
 ## Summary
 

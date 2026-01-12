@@ -13,14 +13,14 @@ head: renovate/axoupdater-0.x-lockfile
 created_at: 2024-05-13T00:03:37Z
 updated_at: 2024-05-13T00:17:19Z
 url: https://github.com/astral-sh/uv/pull/3529
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Update Rust crate axoupdater to v0.6.2
 
 ---
 
-_Pull request opened by @renovate on 2024-05-13 00:03_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

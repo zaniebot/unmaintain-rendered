@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-03-25T14:07:39Z
 updated_at: 2024-03-25T18:20:30Z
 url: https://github.com/clap-rs/clap/issues/5424
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Delegate completions for a specific argument to the completions of an external program
 
 ---
 
-_Issue opened by @alerque on 2024-03-25 14:07_
+_@alerque_
 
 ### Please complete the following tasks
 

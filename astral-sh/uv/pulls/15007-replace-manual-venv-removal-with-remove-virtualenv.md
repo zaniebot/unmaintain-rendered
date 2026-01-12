@@ -13,14 +13,14 @@ head: lg/use-remove-virtualenv
 created_at: 2025-07-31T20:12:14Z
 updated_at: 2025-08-07T20:52:57Z
 url: https://github.com/astral-sh/uv/pull/15007
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # replace manual venv removal with remove_virtualenv
 
 ---
 
-_Pull request opened by @Zaloog on 2025-07-31 20:12_
+_@Zaloog_
 
 
 <!--

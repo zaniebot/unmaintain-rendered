@@ -12,14 +12,14 @@ head: charlie/star-imports
 created_at: 2022-12-05T16:48:24Z
 updated_at: 2022-12-05T16:48:39Z
 url: https://github.com/astral-sh/ruff/pull/1066
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Preserve star imports when re-formatting import blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-05 16:48_
+_@charliermarsh_
 
 Resolves: #1050.
 

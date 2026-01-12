@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T17:41:14Z
 updated_at: 2024-09-16T23:39:37Z
 url: https://github.com/astral-sh/ruff/issues/11602
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # false positive for PERF203 with try-except-continue-else
 
 ---
 
-_Issue opened by @trim21 on 2024-05-29 17:41_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

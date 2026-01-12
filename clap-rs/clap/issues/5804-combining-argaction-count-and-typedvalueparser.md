@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T07:45:46Z
 updated_at: 2024-11-04T18:01:33Z
 url: https://github.com/clap-rs/clap/issues/5804
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Combining `ArgAction::Count` and `TypedValueParser::map` doesn't seem to work.
 
 ---
 
-_Issue opened by @mkrasnitski on 2024-11-02 07:45_
+_@mkrasnitski_
 
 ### Please complete the following tasks
 

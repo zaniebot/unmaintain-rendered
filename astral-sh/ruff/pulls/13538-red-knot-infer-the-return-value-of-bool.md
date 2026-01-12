@@ -13,14 +13,14 @@ head: tomer/bool-function
 created_at: 2024-09-27T14:36:33Z
 updated_at: 2024-09-27T19:18:58Z
 url: https://github.com/astral-sh/ruff/pull/13538
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Red Knot - Infer the return value of bool() 
 
 ---
 
-_Pull request opened by @TomerBin on 2024-09-27 14:36_
+_@TomerBin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

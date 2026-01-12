@@ -14,14 +14,14 @@ head: alex/trymap
 created_at: 2025-06-24T11:28:30Z
 updated_at: 2025-06-24T12:09:02Z
 url: https://github.com/astral-sh/ruff/pull/18911
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Introduce `UnionType::try_from_elements` and `UnionType::try_map`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-24 11:28_
+_@AlexWaygood_
 
 ## Summary
 

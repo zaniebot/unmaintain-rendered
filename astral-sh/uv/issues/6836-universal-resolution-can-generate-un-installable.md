@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-29T22:23:42Z
 updated_at: 2024-09-03T22:41:17Z
 url: https://github.com/astral-sh/uv/issues/6836
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Universal resolution can generate un-installable requirements with environments
 
 ---
 
-_Issue opened by @alex on 2024-08-29 22:23_
+_@alex_
 
 ```
 (tempenv-564a2572618) ~/.v/tempenv-564a2572618 ❯❯❯ uv version

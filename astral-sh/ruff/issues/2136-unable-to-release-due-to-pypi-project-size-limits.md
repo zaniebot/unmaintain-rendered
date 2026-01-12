@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-24T16:40:38Z
 updated_at: 2023-03-28T23:06:55Z
 url: https://github.com/astral-sh/ruff/issues/2136
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Unable to release due to PyPI project size limits
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-24 16:40_
+_@charliermarsh_
 
 PyPI has a 10GB total size limit for projects. We’re at 200 releases, with 15 wheels each, and ~5MB per wheel, so we’ve now hit that limit.
 

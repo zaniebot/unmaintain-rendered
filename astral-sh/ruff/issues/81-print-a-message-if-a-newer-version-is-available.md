@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T20:00:07Z
 updated_at: 2022-09-03T20:31:45Z
 url: https://github.com/astral-sh/ruff/issues/81
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Print a message if a newer version is available
 
 ---
 
-_Issue opened by @beardgans on 2022-09-01 20:00_
+_@beardgans_
 
 👋 Hi there!
 

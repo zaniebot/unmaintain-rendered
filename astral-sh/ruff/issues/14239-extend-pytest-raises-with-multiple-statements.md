@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T04:19:05Z
 updated_at: 2025-01-13T01:47:00Z
 url: https://github.com/astral-sh/ruff/issues/14239
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Extend `pytest-raises-with-multiple-statements (PT012)` to cover `pytest.warns`
 
 ---
 
-_Issue opened by @harupy on 2024-11-10 04:19_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T19:53:52Z
 updated_at: 2024-12-22T13:58:29Z
 url: https://github.com/astral-sh/uv/issues/9449
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Improve documentation on how to do `uv lock --upgrade-package <package>` for optional dependency package
 
 ---
 
-_Issue opened by @DeflateAwning on 2024-11-26 19:53_
+_@DeflateAwning_
 
 It is not clear from the documentation and `uv lock -h` docs how to upgrade an optional dependency with the `lock` subcommand.
 

@@ -15,14 +15,14 @@ head: dhruv/avoid-warning
 created_at: 2025-08-06T15:59:49Z
 updated_at: 2025-08-06T20:48:04Z
 url: https://github.com/astral-sh/ruff/pull/19787
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Avoid warning for old settings schema too aggresively
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-06 15:59_
+_@dhruvmanila_
 
 ## Summary
 

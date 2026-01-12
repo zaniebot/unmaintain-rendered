@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T14:51:33Z
 updated_at: 2024-02-16T14:54:49Z
 url: https://github.com/astral-sh/uv/issues/1496
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Failure on Alpine Linux
 
 ---
 
-_Issue opened by @ilanschnell on 2024-02-16 14:51_
+_@ilanschnell_
 
 On the latest Alpine 3.19.1, I tried out `uv` with apk installed Python.  I get the following error:
 ```

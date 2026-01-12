@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-10T00:12:51Z
 updated_at: 2024-08-11T00:04:35Z
 url: https://github.com/clap-rs/clap/issues/5652
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Multi-part custom completions for rust native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 00:12_
+_@epage_
 
 Right now, `CustomCompleter` requires providing all options at once.  For something like `chown` or paths, you will want to complete a part at a time.
 

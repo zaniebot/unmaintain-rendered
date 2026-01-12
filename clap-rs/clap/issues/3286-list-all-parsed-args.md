@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-12T09:08:25Z
 updated_at: 2022-01-12T15:34:16Z
 url: https://github.com/clap-rs/clap/issues/3286
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # List all parsed args
 
 ---
 
-_Issue opened by @antonshkurenko on 2022-01-12 09:08_
+_@antonshkurenko_
 
 ### Please complete the following tasks
 

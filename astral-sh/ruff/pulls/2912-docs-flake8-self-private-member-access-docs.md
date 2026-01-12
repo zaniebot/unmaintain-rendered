@@ -12,14 +12,14 @@ head: more-docs
 created_at: 2023-02-15T05:11:21Z
 updated_at: 2023-02-15T15:42:39Z
 url: https://github.com/astral-sh/ruff/pull/2912
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [docs] `flake8-self` Private member access docs
 
 ---
 
-_Pull request opened by @Sawbez on 2023-02-15 05:11_
+_@Sawbez_
 
 This adds the documentation for `flake8-self`.
 

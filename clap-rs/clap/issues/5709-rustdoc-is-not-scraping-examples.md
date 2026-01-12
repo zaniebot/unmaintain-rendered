@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-30T17:22:46Z
 updated_at: 2024-08-30T18:38:02Z
 url: https://github.com/clap-rs/clap/issues/5709
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Rustdoc is not scraping examples
 
 ---
 
-_Issue opened by @willcrichton on 2024-08-30 17:22_
+_@willcrichton_
 
 The `-Zrustdoc-scrape-examples` flag is being [ignored on docs.rs](https://docs.rs/crate/clap/4.5.16/builds/1325757) due to rust-lang/cargo#11430, which requires users to explicitly indicate that examples which rely on dev-dependencies should be scraped. (This avoids breakage because `cargo doc` does not normally require dev-dependencies.)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T10:43:33Z
 updated_at: 2024-06-01T18:21:12Z
 url: https://github.com/astral-sh/uv/issues/3733
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Editable- and workspace-aware lookahead resolver
 
 ---
 
-_Issue opened by @konstin on 2024-05-22 10:43_
+_@konstin_
 
 Dependencies in uv come in two shapes: Index dependencies, with a name and a version specifier, and url dependencies, pointing to a remote file, a git repository, local file or local directory. Only url dependencies are allowed to have url dependencies, and of these only local directories are allowed to be editables. 
 

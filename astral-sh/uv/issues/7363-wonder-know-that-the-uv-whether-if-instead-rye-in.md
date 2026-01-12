@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T15:35:07Z
 updated_at: 2024-09-13T15:49:49Z
 url: https://github.com/astral-sh/uv/issues/7363
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # wonder  know  that  the   uv whether if    instead  rye in future 
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-09-13 15:35_
+_@Super1Windcloud_
 
 wonder  know  that  the   uv whether if    instead  rye in future  
 

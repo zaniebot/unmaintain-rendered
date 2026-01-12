@@ -13,14 +13,14 @@ head: charlie/dev-add
 created_at: 2024-10-25T17:00:47Z
 updated_at: 2024-10-25T18:06:36Z
 url: https://github.com/astral-sh/uv/pull/8570
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Add to `dependency-groups.dev` in `uv add --dev`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-25 17:00_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T15:09:14Z
 updated_at: 2025-03-17T16:29:31Z
 url: https://github.com/astral-sh/ruff/issues/16810
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule request: __format__ without __str__
 
 ---
 
-_Issue opened by @ilius on 2025-03-17 15:09_
+_@ilius_
 
 ### Summary
 

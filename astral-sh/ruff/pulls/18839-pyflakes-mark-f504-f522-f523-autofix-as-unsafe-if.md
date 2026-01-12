@@ -13,14 +13,14 @@ head: fix-F504
 created_at: 2025-06-20T23:04:18Z
 updated_at: 2025-06-26T08:54:11Z
 url: https://github.com/astral-sh/ruff/pull/18839
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`pyflakes`] Mark `F504`/`F522`/`F523` autofix as unsafe if there's a call with side effect
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-20 23:04_
+_@LaBatata101_
 
 
 

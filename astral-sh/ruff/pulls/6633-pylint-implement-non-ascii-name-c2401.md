@@ -11,14 +11,14 @@ head: non-ascii-name
 created_at: 2023-08-16T22:18:11Z
 updated_at: 2023-12-01T23:46:23Z
 url: https://github.com/astral-sh/ruff/pull/6633
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [`pylint`] Implement `non-ascii-name` (`C2401`)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-16 22:18_
+_@LaBatata101_
 
 ## Summary
 Checks for the use of non-ASCII unicode character in identifiers.

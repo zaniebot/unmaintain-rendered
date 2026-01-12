@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T21:09:06Z
 updated_at: 2025-08-13T21:36:03Z
 url: https://github.com/astral-sh/uv/issues/15262
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Docker tag for 0.8.10 missing from extra image bases
 
 ---
 
-_Issue opened by @zanieb on 2025-08-13 21:09_
+_@zanieb_
 
 e.g.
 

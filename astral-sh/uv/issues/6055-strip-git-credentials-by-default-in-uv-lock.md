@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-13T15:14:24Z
 updated_at: 2024-08-13T23:49:00Z
 url: https://github.com/astral-sh/uv/issues/6055
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Strip Git credentials by default in `uv lock`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-13 15:14_
+_@charliermarsh_
 
 _No description provided._
 

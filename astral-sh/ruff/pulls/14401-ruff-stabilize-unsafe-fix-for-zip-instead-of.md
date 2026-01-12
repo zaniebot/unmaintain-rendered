@@ -12,14 +12,14 @@ head: stab-ruf007
 created_at: 2024-11-17T16:41:57Z
 updated_at: 2024-11-18T11:40:44Z
 url: https://github.com/astral-sh/ruff/pull/14401
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Stabilize unsafe fix for `zip-instead-of-pairwise (RUF007)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-17 16:41_
+_@dylwil3_
 
 This PR stabilizes the unsafe fix for [zip-instead-of-pairwise (RUF007)](https://docs.astral.sh/ruff/rules/zip-instead-of-pairwise/#zip-instead-of-pairwise-ruf007), which replaces the use of zip with that of itertools.pairwise and has been available under preview since version 0.5.7.
 

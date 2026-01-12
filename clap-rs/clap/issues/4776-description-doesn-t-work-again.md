@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-22T04:42:38Z
 updated_at: 2023-03-22T12:55:02Z
 url: https://github.com/clap-rs/clap/issues/4776
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Description Doesn't Work (Again?)
 
 ---
 
-_Issue opened by @JimLynchCodes on 2023-03-22 04:42_
+_@JimLynchCodes_
 
 ### Please complete the following tasks
 

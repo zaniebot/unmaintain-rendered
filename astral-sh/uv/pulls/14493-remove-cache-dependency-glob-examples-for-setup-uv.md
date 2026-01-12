@@ -13,14 +13,14 @@ head: zb/cache
 created_at: 2025-07-07T20:01:54Z
 updated_at: 2025-07-07T20:06:24Z
 url: https://github.com/astral-sh/uv/pull/14493
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Remove `cache-dependency-glob` examples for `setup-uv`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-07 20:01_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/13163#discussion_r2063244551
 

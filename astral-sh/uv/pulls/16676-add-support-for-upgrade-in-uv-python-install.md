@@ -14,14 +14,14 @@ head: zb/install-upgrade
 created_at: 2025-11-10T23:37:31Z
 updated_at: 2025-11-13T15:55:49Z
 url: https://github.com/astral-sh/uv/pull/16676
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Add support for `--upgrade` in `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-10 23:37_
+_@zanieb_
 
 This allows us to suggest `uv python install --upgrade 3.14` as the canonical way to get the latest patch version of a given Python regardless of whether it is installed already. Currently, you can do `uv python upgrade 3.14` and it will install it, but I'd like to remove that behavior as I find it very surprising.
 

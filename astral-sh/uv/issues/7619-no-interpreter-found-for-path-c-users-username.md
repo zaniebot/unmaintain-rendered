@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-22T14:22:04Z
 updated_at: 2024-10-21T22:05:59Z
 url: https://github.com/astral-sh/uv/issues/7619
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # No interpreter found for path `C:/Users/USERNAME/miniforge3/envs/my-custom-env/python` in managed installations, system path, or `py` launcher
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-22 14:22_
+_@kdheepak_
 
 I'm unable to run `uv sync --python=$(which python)` on Windows. I'm getting the following error:
 

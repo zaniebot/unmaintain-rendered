@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T14:16:44Z
 updated_at: 2025-09-09T15:13:01Z
 url: https://github.com/astral-sh/uv/issues/15736
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Can't install package that depends from package from Gitlab package registry
 
 ---
 
-_Issue opened by @JustGevorg on 2025-09-08 14:16_
+_@JustGevorg_
 
 - The command you invoked (e.g., uv pip sync requirements.txt), ideally including the --verbose flag.
 ```bash

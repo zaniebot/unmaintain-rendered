@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-11T11:56:02Z
 updated_at: 2023-04-12T07:52:19Z
 url: https://github.com/astral-sh/ruff/issues/3932
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff detecting external import as local import
 
 ---
 
-_Issue opened by @Nar67 on 2023-04-11 11:56_
+_@Nar67_
 
 We are switching our projects to ruff and found that it sorts the `alembic` import as a local import instead of an external import and so it places it in the incorrect block of imports. 
 We have a local `alembic` folder in the root of our projects and I assume it's what is causing the problem.

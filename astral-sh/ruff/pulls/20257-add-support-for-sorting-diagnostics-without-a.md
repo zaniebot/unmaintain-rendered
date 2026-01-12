@@ -14,14 +14,14 @@ head: amy/diagnostics-sorting
 created_at: 2025-09-05T00:06:30Z
 updated_at: 2025-09-05T22:23:32Z
 url: https://github.com/astral-sh/ruff/pull/20257
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Add support for sorting diagnostics without a range
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-05 00:06_
+_@amyreese_
 
 - Update ruff ordering compare to work with optional ranges (treating
   them as starting from zero)

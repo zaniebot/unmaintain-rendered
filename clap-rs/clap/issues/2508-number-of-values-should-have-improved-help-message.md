@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-05-29T09:14:04Z
 updated_at: 2021-07-25T13:23:21Z
 url: https://github.com/clap-rs/clap/issues/2508
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # number_of_values should have improved help message
 
 ---
 
-_Issue opened by @kunzaatko on 2021-05-29 09:14_
+_@kunzaatko_
 
 ### Please complete the following tasks
 

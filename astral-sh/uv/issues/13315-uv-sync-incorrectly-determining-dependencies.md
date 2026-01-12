@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T11:44:33Z
 updated_at: 2025-07-08T05:04:49Z
 url: https://github.com/astral-sh/uv/issues/13315
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv sync incorrectly determining dependencies
 
 ---
 
-_Issue opened by @NeilGirdhar on 2025-05-06 11:44_
+_@NeilGirdhar_
 
 ### Summary
 

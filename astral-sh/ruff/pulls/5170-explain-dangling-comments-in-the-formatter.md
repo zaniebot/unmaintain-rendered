@@ -13,14 +13,14 @@ head: explain_dangling_comments_in_the_formatter
 created_at: 2023-06-18T13:39:34Z
 updated_at: 2023-06-19T12:24:47Z
 url: https://github.com/astral-sh/ruff/pull/5170
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Explain dangling comments in the formatter
 
 ---
 
-_Pull request opened by @konstin on 2023-06-18 13:39_
+_@konstin_
 
 This documentation change improves the section on dangling comments in the formatter.
 

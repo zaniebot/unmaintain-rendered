@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T00:56:57Z
 updated_at: 2024-09-29T15:02:10Z
 url: https://github.com/astral-sh/uv/issues/6397
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Bootstrapped Python `Failed to hardlink files;` Error 
 
 ---
 
-_Issue opened by @beratcmn on 2024-08-22 00:56_
+_@beratcmn_
 
 Here is the full flow that leads to this warning:
 

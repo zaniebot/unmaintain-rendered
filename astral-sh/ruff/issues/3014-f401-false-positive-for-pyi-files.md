@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-18T16:38:12Z
 updated_at: 2023-02-18T20:47:26Z
 url: https://github.com/astral-sh/ruff/issues/3014
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # F401 false positive for .pyi files
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 16:38_
+_@JonathanPlasse_
 
 ```python
 import queue

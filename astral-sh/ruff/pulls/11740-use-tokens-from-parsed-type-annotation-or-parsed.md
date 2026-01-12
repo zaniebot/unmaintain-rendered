@@ -13,14 +13,14 @@ head: dhruv/parsed-tokens
 created_at: 2024-06-04T16:44:23Z
 updated_at: 2024-06-05T08:00:46Z
 url: https://github.com/astral-sh/ruff/pull/11740
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use `Tokens` from parsed type annotation or parsed source
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-04 16:44_
+_@dhruvmanila_
 
 ## Summary
 

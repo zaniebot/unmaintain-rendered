@@ -12,14 +12,14 @@ head: dependabot/cargo/hyper-1.2.0
 created_at: 2024-03-04T22:05:25Z
 updated_at: 2024-03-04T22:07:01Z
 url: https://github.com/astral-sh/uv/pull/2181
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Bump hyper from 0.14.28 to 1.2.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-04 22:05_
+_@dependabot_
 
 Bumps [hyper](https://github.com/hyperium/hyper) from 0.14.28 to 1.2.0.
 <details>

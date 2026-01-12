@@ -12,14 +12,14 @@ head: renovate/lsp-types-digest
 created_at: 2025-09-29T02:09:54Z
 updated_at: 2025-09-29T07:04:00Z
 url: https://github.com/astral-sh/ruff/pull/20618
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # Update lsp-types digest to ddc7dc8
 
 ---
 
-_Pull request opened by @renovate on 2025-09-29 02:09_
+_@renovate_
 
 Coming soon: The Renovate bot (GitHub App) will be renamed to Mend. PRs from Renovate will soon appear from 'Mend'. Learn more [here](https://redirect.github.com/renovatebot/renovate/discussions/37842).
 

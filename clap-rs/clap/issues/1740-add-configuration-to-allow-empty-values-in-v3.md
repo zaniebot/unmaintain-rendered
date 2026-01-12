@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-11T17:58:55Z
 updated_at: 2021-03-11T09:14:41Z
 url: https://github.com/clap-rs/clap/issues/1740
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add configuration to allow empty values in v3
 
 ---
 
-_Issue opened by @matchai on 2020-03-11 17:58_
+_@matchai_
 
 ### Describe your use case
 

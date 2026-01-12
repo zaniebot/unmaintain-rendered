@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-07T12:38:24Z
 updated_at: 2024-09-07T16:25:29Z
 url: https://github.com/astral-sh/uv/issues/7167
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Allow use of `tool.uv.sources` in published build metadata
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-09-07 12:38_
+_@FishAlchemist_
 
 **uv version:** uv 0.4.7 (a178051e8 2024-09-07)
 If a project depends on a package that doesn't exist on PyPI, the resulting wheel from uv build will also be unusable.

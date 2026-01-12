@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T23:01:06Z
 updated_at: 2025-08-21T08:54:22Z
 url: https://github.com/astral-sh/uv/issues/15398
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # `uv-build` v0.8.12 does not properly encode `RECORD` hashes
 
 ---
 
-_Issue opened by @jwodder on 2025-08-20 23:01_
+_@jwodder_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/uv-pip-install-source-dont-discover-workspaces
 created_at: 2025-01-27T21:22:05Z
 updated_at: 2025-01-28T00:19:03Z
 url: https://github.com/astral-sh/uv/pull/11003
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Respect `--no-sources` for `uv pip install` workspace discovery
 
 ---
 
-_Pull request opened by @konstin on 2025-01-27 21:22_
+_@konstin_
 
 Don't discover workspace members with `uv pip install` when `--no-sources` is given.
 

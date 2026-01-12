@@ -13,14 +13,14 @@ head: charlie/local
 created_at: 2025-03-18T14:58:24Z
 updated_at: 2025-03-18T15:12:42Z
 url: https://github.com/astral-sh/uv/pull/12285
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Allow local version mismatches when validating lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 14:58_
+_@charliermarsh_
 
 ## Summary
 

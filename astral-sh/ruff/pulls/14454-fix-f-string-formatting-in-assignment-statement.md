@@ -14,14 +14,14 @@ head: dhruv/f-string-assignment-2
 created_at: 2024-11-19T13:40:11Z
 updated_at: 2024-11-26T09:37:21Z
 url: https://github.com/astral-sh/ruff/pull/14454
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Fix f-string formatting in assignment statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-19 13:40_
+_@dhruvmanila_
 
 ## Summary
 

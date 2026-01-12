@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-07T20:56:40Z
 updated_at: 2023-12-08T17:42:19Z
 url: https://github.com/astral-sh/ruff/issues/9049
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # FURB152 has too many false positives
 
 ---
 
-_Issue opened by @alanhdu on 2023-12-07 20:56_
+_@alanhdu_
 
 FURB152 tries to replace hard-coded constants with the built-in constants (e.g. `3.1415` to `math.pi`). Unfortunately -- I have found it to be too false-positive happy -- e.g. it will correct `3.15` to `math.pi`.
 

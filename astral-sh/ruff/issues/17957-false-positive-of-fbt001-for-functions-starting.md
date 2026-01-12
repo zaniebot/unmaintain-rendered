@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T16:19:47Z
 updated_at: 2025-05-09T08:53:17Z
 url: https://github.com/astral-sh/ruff/issues/17957
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # False positive of FBT001 for functions starting with `set_` and taking a single boolean argument
 
 ---
 
-_Issue opened by @sassanh on 2025-05-08 16:19_
+_@sassanh_
 
 ### Summary
 

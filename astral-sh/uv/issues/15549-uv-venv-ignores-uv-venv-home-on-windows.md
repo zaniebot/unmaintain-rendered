@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T12:25:11Z
 updated_at: 2025-08-27T14:16:11Z
 url: https://github.com/astral-sh/uv/issues/15549
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # uv venv ignores UV_VENV_HOME on Windows
 
 ---
 
-_Issue opened by @svenviktorjonsson on 2025-08-27 12:25_
+_@svenviktorjonsson_
 
 ### Summary
 

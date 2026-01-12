@@ -14,14 +14,14 @@ head: playground_refs
 created_at: 2025-07-23T22:34:24Z
 updated_at: 2025-07-24T12:54:34Z
 url: https://github.com/astral-sh/ruff/pull/19516
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Added support for "go to references" in ty playground.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-23 22:34_
+_@UnboundVariable_
 
 This PR adds support for "go to references" in the ty playground.
 

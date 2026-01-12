@@ -13,14 +13,14 @@ head: micha/dist-use-release-revision
 created_at: 2025-11-24T07:58:09Z
 updated_at: 2025-11-24T08:24:25Z
 url: https://github.com/astral-sh/ruff/pull/21610
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Use release commit for actions/checkout
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-24 07:58_
+_@MichaReiser_
 
 ## Summary
 

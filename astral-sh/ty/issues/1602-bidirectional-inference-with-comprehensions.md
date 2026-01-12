@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T17:07:10Z
 updated_at: 2026-01-09T05:27:16Z
 url: https://github.com/astral-sh/ty/issues/1602
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Bidirectional inference with comprehensions
 
 ---
 
-_Issue opened by @gjcarneiro on 2025-11-20 17:07_
+_@gjcarneiro_
 
 ### Summary
 

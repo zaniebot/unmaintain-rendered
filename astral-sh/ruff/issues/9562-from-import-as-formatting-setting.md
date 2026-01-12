@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-17T12:04:10Z
 updated_at: 2024-01-17T16:28:12Z
 url: https://github.com/astral-sh/ruff/issues/9562
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # "from import as" formatting setting?
 
 ---
 
-_Issue opened by @Modexus on 2024-01-17 12:04_
+_@Modexus_
 
 Is there a way to control formatting of "from import as" blocks" such as:
 ```python

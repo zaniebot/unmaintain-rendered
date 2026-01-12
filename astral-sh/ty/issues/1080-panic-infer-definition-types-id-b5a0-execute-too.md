@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T11:13:33Z
 updated_at: 2025-08-21T11:17:32Z
 url: https://github.com/astral-sh/ty/issues/1080
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] infer_definition_types(Id(b5a0)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @janbernloehr on 2025-08-21 11:13_
+_@janbernloehr_
 
 This panic does only happen every ~10th time of running it against our codebase
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T14:09:58Z
 updated_at: 2024-01-26T14:54:50Z
 url: https://github.com/astral-sh/ruff/issues/9647
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # mutable-class-default (RUF012) misinterprete the code block
 
 ---
 
-_Issue opened by @ArazHeydarov on 2024-01-26 14:09_
+_@ArazHeydarov_
 
 Hello, 
 

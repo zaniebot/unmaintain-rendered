@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-05T19:17:01Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/307
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # UnifiedHelpMessage doesn't sort
 
 ---
 
-_Issue opened by @birkenfeld on 2015-10-05 19:17_
+_@birkenfeld_
 
 With the UnifiedHelpMessage, the options are still listed in the same order as they would otherwise, just without headings.
 

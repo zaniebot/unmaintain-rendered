@@ -13,14 +13,14 @@ head: fix-PYI011
 created_at: 2023-03-12T11:47:14Z
 updated_at: 2023-03-12T17:42:28Z
 url: https://github.com/astral-sh/ruff/pull/3459
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [FIX] PYI011: recognize `Bool` / `Float` / `Complex` numbers as simple defaults
 
 ---
 
-_Pull request opened by @XuehaiPan on 2023-03-12 11:47_
+_@XuehaiPan_
 
 In https://github.com/PyCQA/flake8-pyi/blob/40d547e9624a50f06f0a8369cb2787addabf9ce8/pyi.py#L733-L738
 

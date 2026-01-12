@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-03T15:23:23Z
 updated_at: 2025-12-02T09:49:27Z
 url: https://github.com/astral-sh/uv/issues/308
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Consider not displaying project name if multiple `pyproject.toml` files are given
 
 ---
 
-_Issue opened by @zanieb on 2023-11-03 15:23_
+_@zanieb_
 
 If multiple projects have names, we will use the first one we see. However, this could result in ambiguous error messages for `pip-compile`. The alternative is to just say `root`.
 

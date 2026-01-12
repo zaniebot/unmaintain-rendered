@@ -12,14 +12,14 @@ head: zb/hatch-docs
 created_at: 2025-07-02T13:17:46Z
 updated_at: 2025-07-02T13:26:49Z
 url: https://github.com/astral-sh/uv/pull/14420
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Edits to the "choosing a build backend" section
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 13:17_
+_@zanieb_
 
 Review of https://github.com/astral-sh/uv/pull/14295
 

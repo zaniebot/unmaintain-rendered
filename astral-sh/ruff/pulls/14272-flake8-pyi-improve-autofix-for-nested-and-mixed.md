@@ -14,14 +14,14 @@ head: pyi055-improve-autofix
 created_at: 2024-11-11T12:24:28Z
 updated_at: 2024-11-12T20:41:32Z
 url: https://github.com/astral-sh/ruff/pull/14272
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Improve autofix for nested and mixed type unions `unnecessary-type-union` (`PYI055`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-11 12:24_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

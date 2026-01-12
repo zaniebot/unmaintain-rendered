@@ -13,14 +13,14 @@ head: cjm/recinv
 created_at: 2025-09-18T22:24:42Z
 updated_at: 2025-10-16T11:46:57Z
 url: https://github.com/astral-sh/ruff/pull/20477
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] cache Type::is_redundant_with
 
 ---
 
-_Pull request opened by @carljm on 2025-09-18 22:24_
+_@carljm_
 
 ## Summary
 

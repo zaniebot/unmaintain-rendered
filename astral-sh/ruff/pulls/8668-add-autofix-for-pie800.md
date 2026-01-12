@@ -14,14 +14,14 @@ head: alan/pie800
 created_at: 2023-11-14T04:10:13Z
 updated_at: 2023-11-16T02:33:18Z
 url: https://github.com/astral-sh/ruff/pull/8668
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add autofix for PIE800
 
 ---
 
-_Pull request opened by @alanhdu on 2023-11-14 04:10_
+_@alanhdu_
 
 ## Summary
 

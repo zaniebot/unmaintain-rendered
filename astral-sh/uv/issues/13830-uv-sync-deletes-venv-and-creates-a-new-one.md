@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T07:15:52Z
 updated_at: 2025-06-04T14:58:37Z
 url: https://github.com/astral-sh/uv/issues/13830
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # uv sync deletes venv and creates a new one
 
 ---
 
-_Issue opened by @aranvir on 2025-06-04 07:15_
+_@aranvir_
 
 ### Summary
 

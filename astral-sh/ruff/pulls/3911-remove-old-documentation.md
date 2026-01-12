@@ -12,14 +12,14 @@ head: docs
 created_at: 2023-04-08T00:43:47Z
 updated_at: 2023-04-08T02:51:25Z
 url: https://github.com/astral-sh/ruff/pull/3911
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove old documentation
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-08 00:43_
+_@evanrittenhouse_
 
 Found this while reading through `CONTRIBUTION.md` tonight - seems like it's a bit outdated
 

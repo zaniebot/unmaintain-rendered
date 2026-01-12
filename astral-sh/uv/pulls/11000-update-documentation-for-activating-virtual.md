@@ -13,14 +13,14 @@ head: docs/add-shell-activations
 created_at: 2025-01-27T18:58:17Z
 updated_at: 2025-01-27T19:24:48Z
 url: https://github.com/astral-sh/uv/pull/11000
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Update documentation for activating virtual environments in different shell
 
 ---
 
-_Pull request opened by @CedricRaison on 2025-01-27 18:58_
+_@CedricRaison_
 
 ## Add activation commands for fish shell and other alternative shells
 

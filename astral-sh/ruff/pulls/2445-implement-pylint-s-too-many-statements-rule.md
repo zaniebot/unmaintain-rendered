@@ -13,14 +13,14 @@ head: PLR0915
 created_at: 2023-02-01T17:07:16Z
 updated_at: 2023-02-02T13:18:42Z
 url: https://github.com/astral-sh/ruff/pull/2445
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Implement pylint's `too-many-statements` rule (`PLR0915`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-02-01 17:07_
+_@chanman3388_
 
 https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/too-many-statements.html
 

@@ -13,14 +13,14 @@ head: fix-B028-args-kwargs
 created_at: 2024-12-09T13:20:51Z
 updated_at: 2024-12-09T14:50:58Z
 url: https://github.com/astral-sh/ruff/pull/14870
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-bugbear`] Skip `B028` if `warnings.warn` is called with `*args` or `**kwargs`
 
 ---
 
-_Pull request opened by @harupy on 2024-12-09 13:20_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

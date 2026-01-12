@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-18T00:23:22Z
 updated_at: 2022-05-25T18:02:52Z
 url: https://github.com/clap-rs/clap/issues/3734
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Port `clap_derive` to `ValueParser`
 
 ---
 
-_Issue opened by @epage on 2022-05-18 00:23_
+_@epage_
 
 Adjusting the derive API to #3732 was proving to be difficult because of the current traits take `&ArgMatches` and because `FromArgMatches::update_from_arg_matches` derive for subcommands assumes that `ArgMatches` remains untouched.
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/log-0.4.21
 created_at: 2024-03-04T22:03:42Z
 updated_at: 2024-03-04T22:16:21Z
 url: https://github.com/astral-sh/uv/pull/2178
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Bump log from 0.4.20 to 0.4.21
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-04 22:03_
+_@dependabot_
 
 Bumps [log](https://github.com/rust-lang/log) from 0.4.20 to 0.4.21.
 <details>

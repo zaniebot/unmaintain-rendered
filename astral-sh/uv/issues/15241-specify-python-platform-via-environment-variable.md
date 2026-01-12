@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T15:44:13Z
 updated_at: 2025-12-11T22:09:29Z
 url: https://github.com/astral-sh/uv/issues/15241
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Specify Python platform via environment variable
 
 ---
 
-_Issue opened by @tlinhart on 2025-08-12 15:44_
+_@tlinhart_
 
 ### Question
 

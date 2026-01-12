@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-30T22:20:07Z
 updated_at: 2023-05-30T22:22:51Z
 url: https://github.com/astral-sh/ruff/issues/4738
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RET505: strange behavior on an innocuous code
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-30 22:20_
+_@saippuakauppias_
 
 Rule: https://beta.ruff.rs/docs/rules/superfluous-else-return/
 

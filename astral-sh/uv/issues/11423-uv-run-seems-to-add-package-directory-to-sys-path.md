@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T15:50:29Z
 updated_at: 2025-02-14T11:12:23Z
 url: https://github.com/astral-sh/uv/issues/11423
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # `uv run` seems to add package directory to `sys.path`
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2025-02-11 15:50_
+_@NiklasRosenstein_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: gankra/moduledoc
 created_at: 2025-08-13T16:00:33Z
 updated_at: 2025-08-13T16:24:03Z
 url: https://github.com/astral-sh/ruff/pull/19898
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] resolve docstrings for modules
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-13 16:00_
+_@Gankra_
 
 This also reintroduces the `ResolvedDefinition::Module` variant because reverse-engineering it in several places is a bit confusing. In an ideal world we wouldn't have `ResolvedDefinition::FileWithRange` as it kinda kills the ability to do richer analysis, so I want to chip away at its scope wherever I can (currently it's used to point at asname parts of import statements when doing `ImportAliasResolution::PreserveAliases`, and also keyword arguments).
 

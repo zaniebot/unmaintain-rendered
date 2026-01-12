@@ -12,14 +12,14 @@ head: fix-resolve-cli
 created_at: 2023-11-17T17:12:39Z
 updated_at: 2023-11-17T17:17:01Z
 url: https://github.com/astral-sh/uv/pull/445
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Remove duplicate `cache_dir` argument from `puffin-dev resolve-cli`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-17 17:12_
+_@zanieb_
 
 _No description provided._
 

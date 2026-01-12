@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T23:20:55Z
 updated_at: 2024-08-04T18:33:14Z
 url: https://github.com/astral-sh/uv/issues/5716
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # uv tree: disconnected packages (not selected for current platform)
 
 ---
 
-_Issue opened by @bluss on 2024-08-01 23:20_
+_@bluss_
 
 In some cases `uv tree` shows packages outside of the tree (not descendants of the root).
 

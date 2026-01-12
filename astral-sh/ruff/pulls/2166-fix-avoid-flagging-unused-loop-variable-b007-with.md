@@ -12,14 +12,14 @@ head: 2161-unused-variable-globals-vars
 created_at: 2023-01-25T18:56:56Z
 updated_at: 2023-01-25T20:19:14Z
 url: https://github.com/astral-sh/ruff/pull/2166
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix: avoid flagging unused loop variable (B007) with globals(), vars() or eval()
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-25 18:56_
+_@spaceone_
 
 see issue #2161
 

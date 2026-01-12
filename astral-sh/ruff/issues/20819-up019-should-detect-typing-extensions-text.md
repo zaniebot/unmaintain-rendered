@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-12T14:29:43Z
 updated_at: 2025-10-15T06:52:15Z
 url: https://github.com/astral-sh/ruff/issues/20819
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP019 should detect `typing_extensions.Text`
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-12 14:29_
+_@dscorbett_
 
 ### Summary
 

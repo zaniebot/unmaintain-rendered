@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T21:03:13Z
 updated_at: 2025-08-27T15:28:03Z
 url: https://github.com/astral-sh/uv/issues/12564
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Setting of CLICOLOR_FORCE breaks build backends
 
 ---
 
-_Issue opened by @jaraco on 2025-03-30 21:03_
+_@jaraco_
 
 ### Question
 

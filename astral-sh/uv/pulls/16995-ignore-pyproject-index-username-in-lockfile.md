@@ -13,14 +13,14 @@ head: fix/authenticated-update
 created_at: 2025-12-05T07:43:47Z
 updated_at: 2025-12-16T10:47:51Z
 url: https://github.com/astral-sh/uv/pull/16995
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Ignore pyproject index username in lockfile comparison
 
 ---
 
-_Pull request opened by @jkipper on 2025-12-05 07:43_
+_@jkipper_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

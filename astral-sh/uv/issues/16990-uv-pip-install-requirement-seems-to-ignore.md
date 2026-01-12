@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T20:20:46Z
 updated_at: 2025-12-09T13:51:43Z
 url: https://github.com/astral-sh/uv/issues/16990
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # `uv pip install --requirement` seems to ignore pyproject.toml `tool.uv.sources` for explicit indexes
 
 ---
 
-_Issue opened by @pachoo on 2025-12-04 20:20_
+_@pachoo_
 
 ### Summary
 

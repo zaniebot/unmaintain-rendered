@@ -12,14 +12,14 @@ head: konsti/batch-escaping
 created_at: 2024-11-27T12:35:10Z
 updated_at: 2024-11-28T09:12:04Z
 url: https://github.com/astral-sh/uv/pull/9466
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Escape path in batch script
 
 ---
 
-_Pull request opened by @konstin on 2024-11-27 12:35_
+_@konstin_
 
 ## Summary
 

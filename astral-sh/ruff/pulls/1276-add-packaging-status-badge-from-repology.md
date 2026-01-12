@@ -12,14 +12,14 @@ head: repology-badge
 created_at: 2022-12-18T07:07:46Z
 updated_at: 2022-12-18T19:33:28Z
 url: https://github.com/astral-sh/ruff/pull/1276
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add packaging status badge from repology
 
 ---
 
-_Pull request opened by @andersk on 2022-12-18 07:07_
+_@andersk_
 
 Preview: https://github.com/andersk/ruff/tree/repology-badge#installation
 

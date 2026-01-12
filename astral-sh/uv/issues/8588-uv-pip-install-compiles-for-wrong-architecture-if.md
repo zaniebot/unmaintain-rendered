@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T08:14:17Z
 updated_at: 2024-11-27T10:41:27Z
 url: https://github.com/astral-sh/uv/issues/8588
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # uv pip install compiles for wrong architecture if used in nix shell with rosetta-python
 
 ---
 
-_Issue opened by @dwt on 2024-10-26 08:14_
+_@dwt_
 
 Hi there,
 

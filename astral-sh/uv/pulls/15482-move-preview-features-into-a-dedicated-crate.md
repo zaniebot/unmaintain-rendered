@@ -13,14 +13,14 @@ head: charlie/pre
 created_at: 2025-08-24T13:17:22Z
 updated_at: 2025-08-24T15:02:57Z
 url: https://github.com/astral-sh/uv/pull/15482
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Move preview features into a dedicated crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 13:17_
+_@charliermarsh_
 
 ## Summary
 

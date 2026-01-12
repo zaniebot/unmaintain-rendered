@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-04-27T13:19:29Z
 updated_at: 2020-04-27T19:37:53Z
 url: https://github.com/clap-rs/clap/issues/1871
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Regression: version option not working on master
 
 ---
 
-_Issue opened by @pksunkara on 2020-04-27 13:19_
+_@pksunkara_
 
 ### Steps to reproduce the issue
 

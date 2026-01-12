@@ -13,14 +13,14 @@ head: charlie/cast-local
 created_at: 2023-06-07T21:48:32Z
 updated_at: 2023-06-07T22:21:19Z
 url: https://github.com/astral-sh/ruff/pull/4942
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Avoid attributing runtime references to module-level imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-07 21:48_
+_@charliermarsh_
 
 ## Summary
 

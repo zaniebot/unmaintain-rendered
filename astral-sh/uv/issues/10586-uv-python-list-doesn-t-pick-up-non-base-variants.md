@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T06:57:16Z
 updated_at: 2025-01-21T15:01:20Z
 url: https://github.com/astral-sh/uv/issues/10586
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # `uv python list` doesn't pick up non-base variants of python
 
 ---
 
-_Issue opened by @reteps on 2025-01-14 06:57_
+_@reteps_
 
 Since https://github.com/astral-sh/uv/pull/9781, we have been able to install more optimized builds of python. However, uv doesn't recognize these builds as legitimate in my understanding because of this line
 

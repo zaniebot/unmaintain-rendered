@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T16:14:44Z
 updated_at: 2025-02-15T16:14:47Z
 url: https://github.com/astral-sh/uv/issues/11538
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Special-case resolver error messages in `uv add`
 
 ---
 
-_Issue opened by @zanieb on 2025-02-15 16:14_
+_@zanieb_
 
 This example from https://www.bitecode.dev/p/a-year-of-uv-pros-cons-and-should is chosen to demonstrate our resolver error messages, but honestly I think it's not great :)
 

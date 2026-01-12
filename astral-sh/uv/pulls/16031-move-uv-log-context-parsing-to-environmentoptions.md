@@ -13,14 +13,14 @@ head: move-UV_LOG_CONTEXT-to-EnvironmentOptions
 created_at: 2025-09-25T20:31:10Z
 updated_at: 2025-09-26T13:10:40Z
 url: https://github.com/astral-sh/uv/pull/16031
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Move `UV_LOG_CONTEXT` parsing to `EnvironmentOptions`
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-09-25 20:31_
+_@andrey-berenda_
 
 ## Summary
 Move `UV_LOG_CONTEXT` parsing to EnvironmentOptions

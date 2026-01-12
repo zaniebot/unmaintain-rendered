@@ -13,14 +13,14 @@ head: cjm/class-methods
 created_at: 2024-05-03T01:09:47Z
 updated_at: 2024-05-03T17:34:14Z
 url: https://github.com/astral-sh/ruff/pull/11256
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] resolve class members
 
 ---
 
-_Pull request opened by @carljm on 2024-05-03 01:09_
+_@carljm_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/faq
 created_at: 2025-12-16T13:46:48Z
 updated_at: 2025-12-16T14:14:26Z
 url: https://github.com/astral-sh/ty/pull/1929
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add a basic FAQ section mirroring uv
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 13:46_
+_@zanieb_
 
 _No description provided._
 

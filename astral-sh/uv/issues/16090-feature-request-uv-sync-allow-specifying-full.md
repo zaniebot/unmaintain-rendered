@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T17:47:37Z
 updated_at: 2025-10-01T17:48:15Z
 url: https://github.com/astral-sh/uv/issues/16090
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # [feature request] `uv sync` allow specifying full path to a custom `pyproject.toml`
 
 ---
 
-_Issue opened by @vadimkantorov on 2025-10-01 17:47_
+_@vadimkantorov_
 
 ### Summary
 

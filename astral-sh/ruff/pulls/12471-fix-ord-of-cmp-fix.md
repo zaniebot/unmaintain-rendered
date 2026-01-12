@@ -13,14 +13,14 @@ head: fix-ord
 created_at: 2024-07-23T07:03:24Z
 updated_at: 2024-07-23T13:14:24Z
 url: https://github.com/astral-sh/ruff/pull/12471
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix `Ord` of `cmp_fix`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-23 07:03_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-05T14:54:02Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/418
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add examples for Default values for arguments
 
 ---
 
-_Issue opened by @Fiedzia on 2016-02-05 14:54_
+_@Fiedzia_
 
 Its really excellent library, but I am missing ability to define default value for arguments. Could this be added?
 

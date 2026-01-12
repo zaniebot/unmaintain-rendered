@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-02T21:10:36Z
 updated_at: 2024-07-04T20:09:32Z
 url: https://github.com/astral-sh/ruff/issues/12157
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR1704 issued for `_` variable
 
 ---
 
-_Issue opened by @ktbarrett on 2024-07-02 21:10_
+_@ktbarrett_
 
 I'm not sure what pylint does, but the variable `_` is idiomatically used as a "don't care" variable (in fact unused variables that *aren't* `_` trigger a different warning) and the error PLR1704 being issued for it I consider to be flying in the face of idiomatic code.
 

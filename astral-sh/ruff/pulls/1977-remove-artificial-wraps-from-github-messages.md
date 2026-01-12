@@ -12,14 +12,14 @@ head: charlie/foo
 created_at: 2023-01-18T23:20:51Z
 updated_at: 2023-01-18T23:20:57Z
 url: https://github.com/astral-sh/ruff/pull/1977
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove artificial wraps from GitHub messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 23:20_
+_@charliermarsh_
 
 _No description provided._
 

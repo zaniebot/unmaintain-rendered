@@ -13,14 +13,14 @@ head: micha/invalid-argument-names-override
 created_at: 2025-03-12T09:48:26Z
 updated_at: 2025-03-13T07:43:49Z
 url: https://github.com/astral-sh/ruff/pull/16667
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pep8-naming`]: Ignore methods decorated with `@typing.override` (`invalid-argument-name`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 09:48_
+_@MichaReiser_
 
 ## Summary
 

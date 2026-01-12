@@ -12,14 +12,14 @@ head: dtz001-false-positive
 created_at: 2022-12-21T09:25:25Z
 updated_at: 2022-12-22T00:03:36Z
 url: https://github.com/astral-sh/ruff/pull/1308
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix false positive DTZ001 on `datetime(2000, 1, 1, 0, 0, 0, 0, utc)`
 
 ---
 
-_Pull request opened by @bluetech on 2022-12-21 09:25_
+_@bluetech_
 
 Previously it would not consider this to be timezone-aware.
 

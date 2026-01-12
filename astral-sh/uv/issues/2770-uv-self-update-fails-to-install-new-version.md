@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T07:59:36Z
 updated_at: 2024-04-02T21:23:57Z
 url: https://github.com/astral-sh/uv/issues/2770
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `uv self update` fails to install new version
 
 ---
 
-_Issue opened by @joellidin on 2024-04-02 07:59_
+_@joellidin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

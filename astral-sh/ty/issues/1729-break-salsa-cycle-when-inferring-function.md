@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T19:20:28Z
 updated_at: 2025-12-11T20:00:20Z
 url: https://github.com/astral-sh/ty/issues/1729
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Break salsa cycle when inferring function signatures
 
 ---
 
-_Issue opened by @dcreager on 2025-12-02 19:20_
+_@dcreager_
 
 While digging into an unrelated issue, I noticed that we are currently very likely to enter a salsa cycle when inferring the signature of a function literal.
 

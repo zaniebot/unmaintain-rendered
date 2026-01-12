@@ -13,14 +13,14 @@ head: micha/workspace-discovery
 created_at: 2024-11-13T08:21:46Z
 updated_at: 2024-11-15T18:20:17Z
 url: https://github.com/astral-sh/ruff/pull/14308
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Workspace discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-13 08:21_
+_@MichaReiser_
 
 ## Summary
 

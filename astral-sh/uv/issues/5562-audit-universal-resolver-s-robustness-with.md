@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T14:49:22Z
 updated_at: 2024-08-16T17:29:05Z
 url: https://github.com/astral-sh/uv/issues/5562
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # audit universal resolver's robustness with respect to false positives/negatives with routines like "are these two marker expressions disjoint"
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-29 14:49_
+_@BurntSushi_
 
 Right now, the universal resolver relies on an internal routine, `marker::is_disjoint`, to report whether two marker expressions could _ever_ evaluate to `true` for the same marker environment. If they can't, then they are considered disjoint.
 

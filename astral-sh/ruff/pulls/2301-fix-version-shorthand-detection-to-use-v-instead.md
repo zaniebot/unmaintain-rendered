@@ -12,14 +12,14 @@ head: charlie/ac
 created_at: 2023-01-28T15:43:05Z
 updated_at: 2023-01-28T15:47:48Z
 url: https://github.com/astral-sh/ruff/pull/2301
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix version shorthand detection to use -V instead of -v
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-28 15:43_
+_@charliermarsh_
 
 Fixes a regression introduced in https://github.com/charliermarsh/ruff/commit/eda2be635062c37dfaaccb630d2510cf458f8dd6 (but not yet released to users). (`-v` is a real flag, but it's an alias for `--verbose`, not `--version`.)
 

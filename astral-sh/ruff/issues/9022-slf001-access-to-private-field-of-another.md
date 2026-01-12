@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-06T11:57:13Z
 updated_at: 2025-03-14T03:06:00Z
 url: https://github.com/astral-sh/ruff/issues/9022
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # SLF001: access to private field of another instance of the same class
 
 ---
 
-_Issue opened by @nktrnv on 2023-12-06 11:57_
+_@nktrnv_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

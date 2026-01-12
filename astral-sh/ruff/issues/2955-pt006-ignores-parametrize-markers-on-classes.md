@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-16T16:08:41Z
 updated_at: 2024-12-02T13:11:21Z
 url: https://github.com/astral-sh/ruff/issues/2955
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PT006: ignores parametrize markers on classes
 
 ---
 
-_Issue opened by @bastimeyer on 2023-02-16 16:08_
+_@bastimeyer_
 
 before
 ```py

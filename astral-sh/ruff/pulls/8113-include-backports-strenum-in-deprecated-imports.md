@@ -13,14 +13,14 @@ head: charlie/backports
 created_at: 2023-10-21T23:04:54Z
 updated_at: 2023-10-21T23:19:25Z
 url: https://github.com/astral-sh/ruff/pull/8113
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Include `backports.strenum` in `deprecated-imports`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-21 23:04_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8102.
 

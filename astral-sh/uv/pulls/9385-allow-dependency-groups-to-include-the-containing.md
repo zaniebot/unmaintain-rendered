@@ -13,14 +13,14 @@ head: charlie/test-group
 created_at: 2024-11-23T15:33:35Z
 updated_at: 2024-11-26T02:56:16Z
 url: https://github.com/astral-sh/uv/pull/9385
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Allow dependency groups to include the containing package
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-23 15:33_
+_@charliermarsh_
 
 ## Summary
 

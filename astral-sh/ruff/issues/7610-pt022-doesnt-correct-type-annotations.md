@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T19:20:54Z
 updated_at: 2023-09-24T06:39:49Z
 url: https://github.com/astral-sh/ruff/issues/7610
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PT022 doesnt correct type annotations
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-09-22 19:20_
+_@RonnyPfannschmidt_
 
 given
 ```python

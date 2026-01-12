@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T01:46:41Z
 updated_at: 2025-09-03T17:56:43Z
 url: https://github.com/astral-sh/uv/issues/11940
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # uv python list doesn't recognize foreign-arch installs as installed
 
 ---
 
-_Issue opened by @geofft on 2025-03-04 01:46_
+_@geofft_
 
 ### Summary
 

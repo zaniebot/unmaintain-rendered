@@ -13,14 +13,14 @@ head: renovate/mailparse-0.x
 created_at: 2024-05-06T02:02:15Z
 updated_at: 2024-05-06T02:29:56Z
 url: https://github.com/astral-sh/uv/pull/3394
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Update Rust crate mailparse to 0.15.0
 
 ---
 
-_Pull request opened by @renovate on 2024-05-06 02:02_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

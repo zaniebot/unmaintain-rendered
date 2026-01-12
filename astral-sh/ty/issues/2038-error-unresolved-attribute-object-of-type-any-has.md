@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T21:04:54Z
 updated_at: 2025-12-18T23:18:23Z
 url: https://github.com/astral-sh/ty/issues/2038
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[unresolved-attribute]: Object of type `(...) -> Any` has no attribute `__name__`
 
 ---
 
-_Issue opened by @kracekumar on 2025-12-17 21:04_
+_@kracekumar_
 
 ### Summary
 

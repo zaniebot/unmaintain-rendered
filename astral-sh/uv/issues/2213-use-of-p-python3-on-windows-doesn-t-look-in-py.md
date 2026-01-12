@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T18:48:00Z
 updated_at: 2024-03-05T19:28:25Z
 url: https://github.com/astral-sh/uv/issues/2213
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Use of `-p python3` on Windows doesn't look in `py --list-paths`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-05 18:48_
+_@charliermarsh_
 
 This should be a fallback to looking in `PATH`, just as for `-p 3.10`.
 

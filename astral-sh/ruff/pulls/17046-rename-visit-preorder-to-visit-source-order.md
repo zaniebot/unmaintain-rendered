@@ -13,14 +13,14 @@ head: micha/rename-visit-preorder
 created_at: 2025-03-28T19:23:48Z
 updated_at: 2025-03-28T19:40:27Z
 url: https://github.com/astral-sh/ruff/pull/17046
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Rename `visit_preorder` to `visit_source_order`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-28 19:23_
+_@MichaReiser_
 
 ## Summary
 

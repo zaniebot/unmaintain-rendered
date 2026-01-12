@@ -12,14 +12,14 @@ head: charlie/flake8
 created_at: 2022-10-31T20:19:20Z
 updated_at: 2022-10-31T20:21:39Z
 url: https://github.com/astral-sh/ruff/pull/529
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add a separate release job for flake8-to-ruff
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-31 20:19_
+_@charliermarsh_
 
 _No description provided._
 

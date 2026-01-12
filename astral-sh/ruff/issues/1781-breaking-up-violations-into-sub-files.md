@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T12:52:13Z
 updated_at: 2023-02-03T18:20:08Z
 url: https://github.com/astral-sh/ruff/issues/1781
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Breaking up violations into sub files
 
 ---
 
-_Issue opened by @colin99d on 2023-01-11 12:52_
+_@colin99d_
 
 Minor formatting issue. But the violations file is like 6000 lines. Should we make a folder called violations, and then have a file for each linter?
 

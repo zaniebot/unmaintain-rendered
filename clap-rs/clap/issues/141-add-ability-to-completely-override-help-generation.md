@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-06-29T09:32:00Z
 updated_at: 2015-06-30T02:27:10Z
 url: https://github.com/clap-rs/clap/issues/141
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add ability to completely override help generation
 
 ---
 
-_Issue opened by @kbknapp on 2015-06-29 09:32_
+_@kbknapp_
 
 _No description provided._
 

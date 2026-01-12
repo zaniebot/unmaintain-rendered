@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-30T20:21:56Z
 updated_at: 2025-08-01T10:10:44Z
 url: https://github.com/astral-sh/ruff/pull/19648
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Fix link: unused_import.rs
 
 ---
 
-_Pull request opened by @hunterhogan on 2025-07-30 20:21_
+_@hunterhogan_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

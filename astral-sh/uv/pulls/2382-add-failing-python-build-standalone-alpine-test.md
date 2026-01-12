@@ -13,14 +13,14 @@ head: konsti/failing-alpine-test
 created_at: 2024-03-12T13:20:14Z
 updated_at: 2024-10-15T07:31:53Z
 url: https://github.com/astral-sh/uv/pull/2382
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Add failing python-build-standalone alpine test
 
 ---
 
-_Pull request opened by @konstin on 2024-03-12 13:20_
+_@konstin_
 
 Currently, python-build-standalone is failing on alpine (musl) with the following error:
 

@@ -13,14 +13,14 @@ head: dhruv/extraneous-parens
 created_at: 2024-05-14T12:28:09Z
 updated_at: 2024-05-14T17:32:40Z
 url: https://github.com/astral-sh/ruff/pull/11424
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Move `UP034` to use `TokenKind` instead of `Tok`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-14 12:28_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/contribu-rel
 created_at: 2025-05-13T12:37:00Z
 updated_at: 2025-05-13T12:45:22Z
 url: https://github.com/astral-sh/ty/pull/355
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add more content to the release docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-13 12:37_
+_@zanieb_
 
 Small follow-up to #349 
 

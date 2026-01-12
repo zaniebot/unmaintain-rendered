@@ -13,14 +13,14 @@ head: nested-namespace-packages
 created_at: 2024-03-24T08:34:47Z
 updated_at: 2024-03-27T18:41:16Z
 url: https://github.com/astral-sh/ruff/pull/10541
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Nested namespace packages support
 
 ---
 
-_Pull request opened by @dizzy57 on 2024-03-24 08:34_
+_@dizzy57_
 
 ## Summary
 PEP 420 says [nested namespace packages](https://peps.python.org/pep-0420/#nested-namespace-packages) are allowed, i.e. marking a directory as a namespace package marks all subdirectories in the subtree as namespace packages.

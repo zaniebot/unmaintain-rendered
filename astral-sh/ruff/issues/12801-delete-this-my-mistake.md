@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-11T11:44:13Z
 updated_at: 2024-08-11T12:41:06Z
 url: https://github.com/astral-sh/ruff/issues/12801
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # delete this, my mistake
 
 ---
 
-_Issue opened by @muellert on 2024-08-11 11:44_
+_@muellert_
 
 _No description provided._
 

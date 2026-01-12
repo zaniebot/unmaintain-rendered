@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-02T20:26:42Z
 updated_at: 2024-06-03T07:18:07Z
 url: https://github.com/astral-sh/uv/pull/3966
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Windows: Statically linked C runtime
 
 ---
 
-_Pull request opened by @T-256 on 2024-06-02 20:26_
+_@T-256_
 
 Sync with Ruff: https://github.com/astral-sh/ruff/pull/11589
 

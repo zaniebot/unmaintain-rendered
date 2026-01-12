@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T00:28:49Z
 updated_at: 2024-02-22T02:01:13Z
 url: https://github.com/astral-sh/uv/issues/1842
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # UV pip install support for --trusted-host and --extra-index-url
 
 ---
 
-_Issue opened by @Cypher1 on 2024-02-22 00:28_
+_@Cypher1_
 
 OS: Mac OSX
 UV platform: unknown

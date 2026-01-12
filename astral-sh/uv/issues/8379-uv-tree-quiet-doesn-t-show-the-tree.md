@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-20T08:44:40Z
 updated_at: 2024-10-20T23:24:35Z
 url: https://github.com/astral-sh/uv/issues/8379
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # uv tree --quiet doesn't show the tree
 
 ---
 
-_Issue opened by @bluss on 2024-10-20 08:44_
+_@bluss_
 
 Just a thing I noticed, that,
 

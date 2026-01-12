@@ -12,14 +12,14 @@ head: add-more-manylinux-platform-tags
 created_at: 2024-11-19T16:49:44Z
 updated_at: 2024-11-19T19:37:43Z
 url: https://github.com/astral-sh/uv/pull/9234
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Add manylinux target triples up to glibc 2.40
 
 ---
 
-_Pull request opened by @filaretov on 2024-11-19 16:49_
+_@filaretov_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

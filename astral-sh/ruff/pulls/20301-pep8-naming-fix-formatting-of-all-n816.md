@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-09-08T03:29:49Z
 updated_at: 2025-09-09T14:43:43Z
 url: https://github.com/astral-sh/ruff/pull/20301
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`pep8-naming`] Fix formatting of `__all__` (`N816`)
 
 ---
 
-_Pull request opened by @onerandomusername on 2025-09-08 03:29_
+_@onerandomusername_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-08T18:06:20Z
 updated_at: 2023-09-14T15:44:18Z
 url: https://github.com/astral-sh/ruff/issues/7247
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Missing info about name of broken files when using `ruff format`
 
 ---
 
-_Issue opened by @qarmin on 2023-09-08 18:06_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

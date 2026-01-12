@@ -12,14 +12,14 @@ head: rename-ruleorigin-to-linter
 created_at: 2023-01-20T13:41:54Z
 updated_at: 2023-01-21T01:25:57Z
 url: https://github.com/astral-sh/ruff/pull/2029
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor: RuleOrigin, RuleCodePrefix and Rule::origin
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-20 13:41_
+_@not-my-profile_
 
 I am about to implement the many to many mapping between codes and rules and would like to rename these two enums in advance because the names don't really make much sense anymore.
 

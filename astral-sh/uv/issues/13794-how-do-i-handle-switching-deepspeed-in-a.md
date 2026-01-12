@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T03:40:10Z
 updated_at: 2025-06-03T10:17:29Z
 url: https://github.com/astral-sh/uv/issues/13794
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # How do I handle switching deepspeed in a pyproject.toml?
 
 ---
 
-_Issue opened by @032004129xuzhiyong on 2025-06-03 03:40_
+_@032004129xuzhiyong_
 
 ### Question
 

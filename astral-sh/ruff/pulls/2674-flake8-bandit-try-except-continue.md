@@ -12,14 +12,14 @@ head: try_except_continue
 created_at: 2023-02-09T00:08:41Z
 updated_at: 2023-02-09T13:51:54Z
 url: https://github.com/astral-sh/ruff/pull/2674
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # [`flake8-bandit`]: try-except-continue
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-09 00:08_
+_@colin99d_
 
 Ref: #1646 
 

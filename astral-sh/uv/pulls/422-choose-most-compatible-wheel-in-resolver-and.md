@@ -12,14 +12,14 @@ head: charlie/any-wheel
 created_at: 2023-11-14T04:12:39Z
 updated_at: 2023-11-15T18:22:12Z
 url: https://github.com/astral-sh/uv/pull/422
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Choose most-compatible wheel in resolver and installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-14 04:12_
+_@charliermarsh_
 
 ## Summary
 

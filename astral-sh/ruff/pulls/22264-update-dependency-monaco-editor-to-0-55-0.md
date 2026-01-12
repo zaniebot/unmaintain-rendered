@@ -13,14 +13,14 @@ head: renovate/monaco-editor-0.x
 created_at: 2025-12-29T16:13:40Z
 updated_at: 2025-12-29T17:24:42Z
 url: https://github.com/astral-sh/ruff/pull/22264
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update dependency monaco-editor to ^0.55.0
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:13_
+_@renovate_
 
 This PR contains the following updates:
 

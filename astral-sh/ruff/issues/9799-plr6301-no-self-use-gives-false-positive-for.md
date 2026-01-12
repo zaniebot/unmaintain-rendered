@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T20:31:26Z
 updated_at: 2024-02-08T08:26:35Z
 url: https://github.com/astral-sh/ruff/issues/9799
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `PLR6301` (`no-self-use`) gives false positive for overriding method that does not call super()
 
 ---
 
-_Issue opened by @jakob-keller on 2024-02-02 20:31_
+_@jakob-keller_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

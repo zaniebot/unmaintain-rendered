@@ -13,14 +13,14 @@ head: micha/mdtest-tracing
 created_at: 2024-12-12T13:19:03Z
 updated_at: 2024-12-13T09:12:59Z
 url: https://github.com/astral-sh/ruff/pull/14935
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Add tracing support to mdtest
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-12 13:19_
+_@MichaReiser_
 
 ## Summary
 

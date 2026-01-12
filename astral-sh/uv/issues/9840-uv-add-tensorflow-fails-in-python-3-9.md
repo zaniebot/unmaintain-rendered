@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-12T14:09:33Z
 updated_at: 2024-12-12T14:21:17Z
 url: https://github.com/astral-sh/uv/issues/9840
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # `uv add tensorflow` Fails in Python 3.9
 
 ---
 
-_Issue opened by @caipeter888 on 2024-12-12 14:09_
+_@caipeter888_
 
 ## Description
 

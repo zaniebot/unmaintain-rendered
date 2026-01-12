@@ -14,14 +14,14 @@ head: david/implicit-type-aliases-subclass-of
 created_at: 2025-11-13T09:45:59Z
 updated_at: 2025-11-13T18:02:26Z
 url: https://github.com/astral-sh/ruff/pull/21421
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Support `type[…]` and `Type[…]` in implicit type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-13 09:45_
+_@sharkdp_
 
 ## Summary
 

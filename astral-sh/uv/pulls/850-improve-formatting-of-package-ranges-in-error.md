@@ -13,14 +13,14 @@ head: zb/range-fmt
 created_at: 2024-01-09T16:55:16Z
 updated_at: 2024-01-10T00:20:35Z
 url: https://github.com/astral-sh/uv/pull/850
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Improve formatting of package ranges in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-09 16:55_
+_@zanieb_
 
 Requires https://github.com/zanieb/pubgrub/pull/18
 

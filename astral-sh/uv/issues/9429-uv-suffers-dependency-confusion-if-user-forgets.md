@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T21:42:12Z
 updated_at: 2025-04-29T21:37:08Z
 url: https://github.com/astral-sh/uv/issues/9429
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # uv suffers dependency confusion if user forgets to put username:password on internal index url
 
 ---
 
-_Issue opened by @dhandy2013 on 2024-11-25 21:42_
+_@dhandy2013_
 
 I accidentally triggered a dependency confusion vulnerability in uv just by forgetting to add credentials to our company's internal package index URL.
 

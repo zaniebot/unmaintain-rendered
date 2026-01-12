@@ -14,14 +14,14 @@ head: cjm/tddiag
 created_at: 2025-10-31T14:29:51Z
 updated_at: 2025-10-31T14:50:01Z
 url: https://github.com/astral-sh/ruff/pull/21166
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] don't assume in diagnostic messages that a TypedDict key error is about subscript access
 
 ---
 
-_Pull request opened by @carljm on 2025-10-31 14:29_
+_@carljm_
 
 ## Summary
 

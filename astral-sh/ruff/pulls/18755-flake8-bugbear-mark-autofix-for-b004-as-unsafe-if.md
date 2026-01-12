@@ -13,14 +13,14 @@ head: fix-B004
 created_at: 2025-06-18T14:27:32Z
 updated_at: 2025-06-19T13:14:48Z
 url: https://github.com/astral-sh/ruff/pull/18755
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-bugbear`] Mark autofix for `B004` as unsafe if the `hasattr` call expr contains comments
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-18 14:27_
+_@LaBatata101_
 
 
 

@@ -13,14 +13,14 @@ head: zb/exclude-newer
 created_at: 2024-03-04T17:28:19Z
 updated_at: 2024-03-04T17:51:20Z
 url: https://github.com/astral-sh/uv/pull/2166
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Expose the `--exclude-newer` flag
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-04 17:28_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2088
 

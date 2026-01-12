@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-15T11:06:25Z
 updated_at: 2023-12-15T18:11:23Z
 url: https://github.com/astral-sh/uv/issues/658
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Missing version parsing fixup: ` >="3.6"`
 
 ---
 
-_Issue opened by @konstin on 2023-12-15 11:06_
+_@konstin_
 
 https://pypi.org/simple/tensorflowonspark/?format=application/vnd.pypi.simple.v1+json
 

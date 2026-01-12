@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T22:10:49Z
 updated_at: 2025-07-09T00:53:41Z
 url: https://github.com/astral-sh/uv/issues/12324
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Include minimal git lib in uv binary
 
 ---
 
-_Issue opened by @strangemonad on 2025-03-19 22:10_
+_@strangemonad_
 
 ### Summary
 

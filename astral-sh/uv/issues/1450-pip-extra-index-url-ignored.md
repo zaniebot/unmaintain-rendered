@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:14:58Z
 updated_at: 2024-03-06T08:25:34Z
 url: https://github.com/astral-sh/uv/issues/1450
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # PIP_EXTRA_INDEX_URL ignored
 
 ---
 
-_Issue opened by @gwdekker on 2024-02-16 08:14_
+_@gwdekker_
 
 Trying to run `uv pip compile` as a direct replacement for `python -m piptools compile`, it seems that the environment variable I have set for `PIP_EXTRA_INDEX_URL` is not picked up yet by `uv`. 
 

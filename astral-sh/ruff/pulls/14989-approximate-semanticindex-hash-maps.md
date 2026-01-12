@@ -12,14 +12,14 @@ head: micha/perf-approximate-hashmaps
 created_at: 2024-12-15T18:02:38Z
 updated_at: 2024-12-15T18:09:35Z
 url: https://github.com/astral-sh/ruff/pull/14989
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Approximate SemanticIndex hash maps
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-15 18:02_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

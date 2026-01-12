@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T18:31:55Z
 updated_at: 2024-12-12T18:44:40Z
 url: https://github.com/astral-sh/ruff/issues/14941
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `ruff format` is failing  to reformat some code
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-12-12 18:31_
+_@samuelcolvin_
 
 I think I might actually found a bug in Ruff! Do I get a prize???
 

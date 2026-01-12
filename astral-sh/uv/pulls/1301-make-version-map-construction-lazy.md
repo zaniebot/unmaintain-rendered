@@ -13,14 +13,14 @@ head: ag/version-map-lazy
 created_at: 2024-02-14T19:53:09Z
 updated_at: 2024-02-15T13:10:33Z
 url: https://github.com/astral-sh/uv/pull/1301
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # make version map construction lazy
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-14 19:53_
+_@BurntSushi_
 
 This PR refactors `VersionMap` to be inherently lazy in its
 conversion of `VersionFiles` (part of `SimpleMetadata`) to

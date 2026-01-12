@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T16:14:09Z
 updated_at: 2025-07-31T19:22:50Z
 url: https://github.com/astral-sh/uv/issues/14999
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Should `extra-build-dependencies` be respected from a `uv.toml` during `uv build`
 
 ---
 
-_Issue opened by @zanieb on 2025-07-31 16:14_
+_@zanieb_
 
 e.g., if I'm building a bunch of wheels from vendored projects and don't want to edit their `pyproject.toml`  
 

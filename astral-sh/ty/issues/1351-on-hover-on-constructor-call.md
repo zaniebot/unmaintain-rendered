@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T07:05:02Z
 updated_at: 2025-11-14T08:35:40Z
 url: https://github.com/astral-sh/ty/issues/1351
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # On-hover on constructor call
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-14 07:05_
+_@MichaReiser_
 
 
 

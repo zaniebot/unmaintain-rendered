@@ -14,14 +14,14 @@ head: alex/breaking
 created_at: 2024-10-19T22:53:55Z
 updated_at: 2024-10-20T08:33:00Z
 url: https://github.com/astral-sh/ruff/pull/13828
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update BREAKING_CHANGES.md for Ruff 0.7
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-19 22:53_
+_@AlexWaygood_
 
 Somehow I forgot to update this file with the breaking changes in Ruff 0.7. Updating the file is listed in the release instructions, so I'm not sure how I missed this.
 

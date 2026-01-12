@@ -13,14 +13,14 @@ head: charlie/buf
 created_at: 2023-12-09T16:16:59Z
 updated_at: 2023-12-09T16:20:33Z
 url: https://github.com/astral-sh/uv/pull/602
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Buffer streamed file writes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 16:16_
+_@charliermarsh_
 
 _No description provided._
 

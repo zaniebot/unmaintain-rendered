@@ -12,14 +12,14 @@ head: ci/pr-comment
 created_at: 2023-03-15T08:17:27Z
 updated_at: 2023-03-15T08:34:55Z
 url: https://github.com/astral-sh/ruff/pull/3535
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow dispatching the PR comment job for testing
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-15 08:17_
+_@MichaReiser_
 
 _No description provided._
 

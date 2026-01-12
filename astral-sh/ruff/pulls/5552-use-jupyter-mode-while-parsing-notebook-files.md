@@ -12,14 +12,14 @@ head: dhruv/jupyter-cell-magic
 created_at: 2023-07-06T05:05:46Z
 updated_at: 2023-08-05T00:47:50Z
 url: https://github.com/astral-sh/ruff/pull/5552
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use `Jupyter` mode while parsing Notebook files
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-06 05:05_
+_@dhruvmanila_
 
 ## Summary
 

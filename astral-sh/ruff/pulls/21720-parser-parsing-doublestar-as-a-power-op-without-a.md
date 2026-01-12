@@ -12,14 +12,14 @@ head: double_star_as_pow
 created_at: 2025-12-01T09:13:26Z
 updated_at: 2025-12-15T07:58:31Z
 url: https://github.com/astral-sh/ruff/pull/21720
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # parser: parsing doublestar as a power op without a left hand side
 
 ---
 
-_Pull request opened by @11happy on 2025-12-01 09:13_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

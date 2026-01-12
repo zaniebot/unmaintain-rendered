@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-21T19:53:43Z
 updated_at: 2025-02-21T20:12:17Z
 url: https://github.com/clap-rs/clap/issues/5924
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow deriving ValueEnum on newtypes
 
 ---
 
-_Issue opened by @edward-shen on 2025-02-21 19:53_
+_@edward-shen_
 
 ### Please complete the following tasks
 

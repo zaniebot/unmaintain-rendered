@@ -14,14 +14,14 @@ head: dhruv/fstring-parser
 created_at: 2023-09-01T13:05:20Z
 updated_at: 2023-09-14T02:09:12Z
 url: https://github.com/astral-sh/ruff/pull/7041
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add support for parsing f-string as per PEP 701
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-01 13:05_
+_@dhruvmanila_
 
 ## Summary
 

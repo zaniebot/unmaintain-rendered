@@ -13,14 +13,14 @@ head: konsti/warn-on-module-conflicts
 created_at: 2025-05-13T20:55:00Z
 updated_at: 2025-08-18T07:53:05Z
 url: https://github.com/astral-sh/uv/pull/13437
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Warn when two packages write to the same module
 
 ---
 
-_Pull request opened by @konstin on 2025-05-13 20:55_
+_@konstin_
 
 We regularly get confusing bug reports where a package sometimes works and sometimes doesn't and it's not clear to the user why. Ultimately, it turns out that two packages contain the same module and there is a race condition when installing the two packages. Usually, it's one of the opencv-python distributions, but recently it's been z3, too. These error are completely inscrutable to users.
 

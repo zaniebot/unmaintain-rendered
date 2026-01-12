@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T16:17:50Z
 updated_at: 2025-10-20T00:19:22Z
 url: https://github.com/astral-sh/uv/issues/12990
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # `uv init` default script fails after several runs before `ModuleNotFoundError`
 
 ---
 
-_Issue opened by @grahamcracker1234 on 2025-04-20 16:17_
+_@grahamcracker1234_
 
 ### Summary
 

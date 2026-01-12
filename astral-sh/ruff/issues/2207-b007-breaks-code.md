@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T17:43:46Z
 updated_at: 2023-02-03T01:59:48Z
 url: https://github.com/astral-sh/ruff/issues/2207
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # B007 breaks code
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 17:43_
+_@spaceone_
 
 ```
 $ cat foo.py

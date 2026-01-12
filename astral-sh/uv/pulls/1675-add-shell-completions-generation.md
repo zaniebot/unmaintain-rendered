@@ -13,14 +13,14 @@ head: add-shell-completions
 created_at: 2024-02-19T01:31:39Z
 updated_at: 2024-02-19T03:43:18Z
 url: https://github.com/astral-sh/uv/pull/1675
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Add shell completions generation
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-02-19 01:31_
+_@flyaroundme_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

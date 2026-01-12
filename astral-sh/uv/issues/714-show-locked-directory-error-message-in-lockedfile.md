@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-20T20:54:38Z
 updated_at: 2023-12-20T23:05:51Z
 url: https://github.com/astral-sh/uv/issues/714
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Show locked-directory error message in `LockedFile`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-20 20:54_
+_@charliermarsh_
 
 Right now, we show the parent directory, but that's not _necessarily_ the directory that's being "locked".
 

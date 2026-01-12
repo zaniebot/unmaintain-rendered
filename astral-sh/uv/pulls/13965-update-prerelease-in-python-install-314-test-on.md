@@ -14,14 +14,14 @@ head: jtfm/fix-prerelease
 created_at: 2025-06-11T13:30:22Z
 updated_at: 2025-06-11T13:52:56Z
 url: https://github.com/astral-sh/uv/pull/13965
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Update prerelease in `python_install_314` test on upgrades feature branch
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-11 13:30_
+_@jtfmumm_
 
 The prerelease bump on `main` was lost when rebasing `feature/transparent-python-upgrades` against it. 
 

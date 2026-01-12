@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-04T18:20:51Z
 updated_at: 2024-04-16T16:49:08Z
 url: https://github.com/astral-sh/uv/issues/2822
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # HTTP Authentication doesn't work for google artifact registry python index
 
 ---
 
-_Issue opened by @ArshanKhanifar on 2024-04-04 18:20_
+_@ArshanKhanifar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-23T17:17:14Z
 updated_at: 2025-11-18T16:10:22Z
 url: https://github.com/astral-sh/ty/issues/213
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # expression-level type coverage measurement
 
 ---
 
-_Issue opened by @carljm on 2025-01-23 17:17_
+_@carljm_
 
 ### Description
 

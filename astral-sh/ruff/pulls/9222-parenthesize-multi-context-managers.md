@@ -14,14 +14,14 @@ head: parenthesize-context-managers
 created_at: 2023-12-21T03:52:44Z
 updated_at: 2023-12-22T03:45:15Z
 url: https://github.com/astral-sh/ruff/pull/9222
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Parenthesize multi-context managers
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-21 03:52_
+_@MichaReiser_
 
 ## Summary
 

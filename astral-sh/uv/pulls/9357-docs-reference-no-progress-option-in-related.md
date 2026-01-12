@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-22T14:24:58Z
 updated_at: 2024-11-22T15:33:14Z
 url: https://github.com/astral-sh/uv/pull/9357
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # docs: reference `--no-progress` option in related environment variable
 
 ---
 
-_Pull request opened by @MatthijsKok on 2024-11-22 14:24_
+_@MatthijsKok_
 
 ## Summary
 

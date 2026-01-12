@@ -13,14 +13,14 @@ head: zb/pin-msg
 created_at: 2025-06-05T14:54:45Z
 updated_at: 2025-06-05T21:48:36Z
 url: https://github.com/astral-sh/uv/pull/13862
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Improve `python pin` error messages
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-05 14:54_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/issues/13854
 

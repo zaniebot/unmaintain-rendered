@@ -15,14 +15,14 @@ head: incorrect-subdiagnostic-for-unresolved-reference
 created_at: 2025-06-05T21:22:28Z
 updated_at: 2025-06-28T23:12:52Z
 url: https://github.com/astral-sh/ruff/pull/18487
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Don't add incorrect subdiagnostic for unresolved reference
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-06-05 21:22_
+_@MatthewMckee4_
 
 
 

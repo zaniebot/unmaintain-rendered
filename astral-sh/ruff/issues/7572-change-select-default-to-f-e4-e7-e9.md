@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-21T11:36:26Z
 updated_at: 2023-10-11T16:29:36Z
 url: https://github.com/astral-sh/ruff/issues/7572
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Change `select` default to `F`, `E4`, `E7`, `E9`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-21 11:36_
+_@MichaReiser_
 
 Remove the formatting specific lint rules from the default rule set.
 

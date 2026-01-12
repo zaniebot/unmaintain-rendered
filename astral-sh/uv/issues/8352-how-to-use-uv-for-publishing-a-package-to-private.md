@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T00:01:21Z
 updated_at: 2025-06-03T09:41:49Z
 url: https://github.com/astral-sh/uv/issues/8352
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 #  How to Use uv for Publishing a Package to Private GitLab and Install from It
 
 ---
 
-_Issue opened by @the-korean-coder on 2024-10-19 00:01_
+_@the-korean-coder_
 
 Hi,
 

@@ -14,14 +14,14 @@ head: alex/callable-dataclass
 created_at: 2025-12-01T14:15:33Z
 updated_at: 2025-12-03T08:05:27Z
 url: https://github.com/astral-sh/ruff/pull/21729
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Suppress false positives when `dataclasses.dataclass(...)(cls)` is called imperatively
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-01 14:15_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1705
 

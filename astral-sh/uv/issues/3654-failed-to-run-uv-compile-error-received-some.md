@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-18T18:17:50Z
 updated_at: 2024-05-20T21:09:43Z
 url: https://github.com/astral-sh/uv/issues/3654
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 #  Failed to run uv compile error: Received some unexpected HTML Caused by: Unexpected fragment (expected `#sha256=...` or similar)
 
 ---
 
-_Issue opened by @njmaeff on 2024-05-18 18:17_
+_@njmaeff_
 
 The [jetbrains space package index](https://pypi.pkg.jetbrains.space/) uses a URL encoded sha256. Should this be handled by the package manager?
 

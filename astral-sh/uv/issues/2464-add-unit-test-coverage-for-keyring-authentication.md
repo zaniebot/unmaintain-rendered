@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-14T18:44:45Z
 updated_at: 2024-04-17T17:23:27Z
 url: https://github.com/astral-sh/uv/issues/2464
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Add unit test coverage for keyring authentication
 
 ---
 
-_Issue opened by @zanieb on 2024-03-14 18:44_
+_@zanieb_
 
 Similar to #2447 — but we should use a keyring provider instead of in-url authentication.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T23:17:08Z
 updated_at: 2024-02-12T03:03:38Z
 url: https://github.com/astral-sh/uv/issues/1276
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Add `--clear` to `puffin venv`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-11 23:17_
+_@charliermarsh_
 
 _No description provided._
 

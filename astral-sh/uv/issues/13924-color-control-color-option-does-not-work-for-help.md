@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T16:40:36Z
 updated_at: 2025-06-09T17:03:41Z
 url: https://github.com/astral-sh/uv/issues/13924
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Color control (--color) option does not work for help in the cli tool
 
 ---
 
-_Issue opened by @h-mayorquin on 2025-06-09 16:40_
+_@h-mayorquin_
 
 ### Summary
 

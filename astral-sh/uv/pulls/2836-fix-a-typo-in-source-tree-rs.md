@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-04-05T16:31:59Z
 updated_at: 2024-04-05T16:53:18Z
 url: https://github.com/astral-sh/uv/pull/2836
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Fix a typo in source_tree.rs
 
 ---
 
-_Pull request opened by @eltociear on 2024-04-05 16:31_
+_@eltociear_
 
 
 

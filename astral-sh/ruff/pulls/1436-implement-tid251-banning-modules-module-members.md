@@ -12,14 +12,14 @@ head: banned-api
 created_at: 2022-12-29T08:41:08Z
 updated_at: 2022-12-30T03:11:13Z
 url: https://github.com/astral-sh/ruff/pull/1436
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement TID251 (banning modules & module members)
 
 ---
 
-_Pull request opened by @not-my-profile on 2022-12-29 08:41_
+_@not-my-profile_
 
 Resolves  #1422.
 

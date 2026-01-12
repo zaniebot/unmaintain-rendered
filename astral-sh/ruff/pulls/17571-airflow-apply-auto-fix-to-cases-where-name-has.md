@@ -14,14 +14,14 @@ head: auto-import-AIR311
 created_at: 2025-04-23T02:43:55Z
 updated_at: 2025-04-24T19:48:54Z
 url: https://github.com/astral-sh/ruff/pull/17571
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`airflow`] Apply auto fix to cases where name has been changed in Airflow 3 (`AIR311`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-23 02:43_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

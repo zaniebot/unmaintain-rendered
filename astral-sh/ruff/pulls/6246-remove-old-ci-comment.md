@@ -12,14 +12,14 @@ head: remove_old_ci_comment
 created_at: 2023-08-01T15:15:41Z
 updated_at: 2023-08-01T16:35:48Z
 url: https://github.com/astral-sh/ruff/pull/6246
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove old CI comment
 
 ---
 
-_Pull request opened by @konstin on 2023-08-01 15:15_
+_@konstin_
 
 We don't build abi3 wheels
 

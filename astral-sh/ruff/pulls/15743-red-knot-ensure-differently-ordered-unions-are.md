@@ -13,14 +13,14 @@ head: alex/tuples-in-intersections
 created_at: 2025-01-25T18:12:53Z
 updated_at: 2025-01-25T18:19:30Z
 url: https://github.com/astral-sh/ruff/pull/15743
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Ensure differently ordered unions are considered equivalent when they appear inside tuples inside top-level intersections
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-25 18:12_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T13:26:56Z
 updated_at: 2025-06-04T13:53:58Z
 url: https://github.com/astral-sh/uv/issues/13834
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # error: Expected `--hash`, found `"--no-binary"` when requirements.txt contains --no-binary :all:
 
 ---
 
-_Issue opened by @david-banon-tecnativa on 2025-06-04 13:26_
+_@david-banon-tecnativa_
 
 ### Summary
 

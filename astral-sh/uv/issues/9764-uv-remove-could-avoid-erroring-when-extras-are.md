@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-10T06:32:18Z
 updated_at: 2025-01-07T13:47:06Z
 url: https://github.com/astral-sh/uv/issues/9764
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv remove` could avoid erroring when extras are included
 
 ---
 
-_Issue opened by @cjdxhjj on 2024-12-10 06:32_
+_@cjdxhjj_
 
 ![Image](https://github.com/user-attachments/assets/266db7eb-5580-4fb5-a7c9-ecc22bda6b77)
 i have install the tortoise-orm[asyncmy] with uv success, but when i try to remove it, it report that error

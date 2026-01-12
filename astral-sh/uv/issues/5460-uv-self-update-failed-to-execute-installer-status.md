@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-25T19:25:18Z
 updated_at: 2025-03-28T02:44:56Z
 url: https://github.com/astral-sh/uv/issues/5460
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv self update: failed to execute installer (status: exit code: 1) on Windows
 
 ---
 
-_Issue opened by @tschneiderr on 2024-07-25 19:25_
+_@tschneiderr_
 
 When running `uv self update --verbose` on my Windows 11 machine, I get the following output:
 

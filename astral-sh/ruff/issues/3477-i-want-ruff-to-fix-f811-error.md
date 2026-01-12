@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-13T04:17:03Z
 updated_at: 2024-01-09T00:29:22Z
 url: https://github.com/astral-sh/ruff/issues/3477
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # I want ruff to fix `F811` error.
 
 ---
 
-_Issue opened by @yuji38kwmt on 2023-03-13 04:17_
+_@yuji38kwmt_
 
 
 

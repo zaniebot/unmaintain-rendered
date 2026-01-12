@@ -13,14 +13,14 @@ head: jane/server/commands
 created_at: 2024-03-29T08:04:47Z
 updated_at: 2024-04-06T02:39:51Z
 url: https://github.com/astral-sh/ruff/pull/10654
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` now supports commands for auto-fixing, organizing imports, and formatting
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-29 08:04_
+_@snowsignal_
 
 ## Summary
 

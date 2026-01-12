@@ -13,14 +13,14 @@ head: flake8-pyi-docs
 created_at: 2024-03-15T13:47:34Z
 updated_at: 2024-03-20T16:00:32Z
 url: https://github.com/astral-sh/ruff/pull/10422
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Spruce up docs for flake8-pyi rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-15 13:47_
+_@AlexWaygood_
 
 This started off as an attempt to clarify some of the confusion in https://github.com/astral-sh/ruff/issues/9810#issuecomment-1999339083 and https://github.com/astral-sh/ruff/issues/9810#issuecomment-1999349880, but I figured I would take a more comprehensive look at the docs for the flake8-pyi rules while I was about it.
 

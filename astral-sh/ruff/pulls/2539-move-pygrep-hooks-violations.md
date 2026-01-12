@@ -12,14 +12,14 @@ head: move-pygrep-hooks-violations
 created_at: 2023-02-03T13:39:55Z
 updated_at: 2023-02-03T13:41:05Z
 url: https://github.com/astral-sh/ruff/pull/2539
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move pygrep-hooks violations
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 13:39_
+_@akx_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: konsti/relative-paths-in-lockfile
 created_at: 2024-06-10T17:04:28Z
 updated_at: 2024-06-11T17:02:42Z
 url: https://github.com/astral-sh/uv/pull/4205
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Support locking relative paths
 
 ---
 
-_Pull request opened by @konstin on 2024-06-10 17:04_
+_@konstin_
 
 By splitting `path` into a lockable, relative (or absolute) and an absolute installable path and by splitting between urls and paths by dist type, we can store relative paths in the lockfile.
 

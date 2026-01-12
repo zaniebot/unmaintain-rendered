@@ -13,14 +13,14 @@ head: charlie/l
 created_at: 2024-09-25T22:14:55Z
 updated_at: 2024-09-25T22:17:56Z
 url: https://github.com/astral-sh/uv/pull/7694
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Note that `uv lock --upgrade-package` retains locked versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-25 22:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/7672.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-15T18:35:52Z
 updated_at: 2025-12-15T21:45:48Z
 url: https://github.com/astral-sh/ty/issues/1898
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # typevars considered inferable when they shouldn't be
 
 ---
 
-_Issue opened by @carljm on 2025-12-15 18:35_
+_@carljm_
 
 ```py
 class Container[T]:

@@ -13,14 +13,14 @@ head: dhruv/pep-ref
 created_at: 2023-11-01T04:59:16Z
 updated_at: 2023-11-01T05:15:57Z
 url: https://github.com/astral-sh/ruff/pull/8399
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add PEP reference to `D212`, `D213` docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-01 04:59_
+_@dhruvmanila_
 
 _No description provided._
 

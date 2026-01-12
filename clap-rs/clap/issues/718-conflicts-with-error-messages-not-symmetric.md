@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-29T20:52:00Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/718
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # .conflicts_with error messages not symmetric
 
 ---
 
-_Issue opened by @joshtriplett on 2016-10-29 20:52_
+_@joshtriplett_
 
 The documentation for `conflicts_with` says:
 

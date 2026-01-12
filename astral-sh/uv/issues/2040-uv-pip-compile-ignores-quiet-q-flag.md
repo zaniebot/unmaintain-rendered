@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-28T09:24:08Z
 updated_at: 2024-02-28T09:50:25Z
 url: https://github.com/astral-sh/uv/issues/2040
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `uv pip compile` ignores `--quiet` / `-q` flag.
 
 ---
 
-_Issue opened by @Wim-De-Clercq on 2024-02-28 09:24_
+_@Wim-De-Clercq_
 
 ### Reproduce
 

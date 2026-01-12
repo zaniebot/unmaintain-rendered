@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T06:58:26Z
 updated_at: 2024-12-19T13:36:33Z
 url: https://github.com/astral-sh/uv/issues/10020
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # uv pip compile incorrectly compiles extras in requirements.txt
 
 ---
 
-_Issue opened by @mumin91 on 2024-12-19 06:58_
+_@mumin91_
 
 ### Version Information
 - UV version: uv 0.5.10 (37b11ddb2 2024-12-17)

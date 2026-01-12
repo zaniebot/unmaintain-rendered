@@ -12,14 +12,14 @@ head: zb/ecosystem-test
 created_at: 2024-04-09T21:02:27Z
 updated_at: 2024-04-10T16:42:30Z
 url: https://github.com/astral-sh/uv/pull/2946
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Add ecosystem test for homeassistant
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 21:02_
+_@zanieb_
 
 Extends #2942 with another repository.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-09T13:48:19Z
 updated_at: 2025-09-29T05:28:32Z
 url: https://github.com/astral-sh/uv/issues/15190
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv sync does not switch from editable to plain install when run with --no-sources
 
 ---
 
-_Issue opened by @per11235813 on 2025-08-09 13:48_
+_@per11235813_
 
 ### Summary
 

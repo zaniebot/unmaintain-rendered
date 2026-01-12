@@ -12,14 +12,14 @@ head: charlie/bracket
 created_at: 2023-05-17T14:46:06Z
 updated_at: 2023-05-17T16:45:15Z
 url: https://github.com/astral-sh/ruff/pull/4471
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Include precise tokens for extraneous-whitespace diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-17 14:46_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T08:01:37Z
 updated_at: 2025-05-24T13:31:28Z
 url: https://github.com/astral-sh/uv/issues/13590
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Incorrect source registry after using uv lock with custom indexes
 
 ---
 
-_Issue opened by @praisethedeviI on 2025-05-22 08:01_
+_@praisethedeviI_
 
 ### Summary
 

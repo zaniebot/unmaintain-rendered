@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-04T13:48:00Z
 updated_at: 2025-01-28T22:19:14Z
 url: https://github.com/clap-rs/clap/issues/4948
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Expose source spans for errors with error-context
 
 ---
 
-_Issue opened by @TzviPM on 2023-06-04 13:48_
+_@TzviPM_
 
 ### Please complete the following tasks
 

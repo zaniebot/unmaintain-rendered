@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-11T16:40:17Z
 updated_at: 2022-10-11T16:56:41Z
 url: https://github.com/astral-sh/ruff/issues/401
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `noqa` directives for `pydocstyle` checks should be placed on the annotated line
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-11 16:40_
+_@charliermarsh_
 
 For example, notice that the `noqa` is on the `def` line, not the docstring itself:
 

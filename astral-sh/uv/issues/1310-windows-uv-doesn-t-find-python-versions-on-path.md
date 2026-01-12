@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T08:37:03Z
 updated_at: 2024-10-08T15:14:50Z
 url: https://github.com/astral-sh/uv/issues/1310
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Windows: uv doesn't find python versions on PATH
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-15 08:37_
+_@MichaReiser_
 
 I installed Python using pyenv-win but puffin can't find it (because it's not in the PATH). Running python from the command line works as expected and starship recognises it correctly too. 
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-04T16:22:55Z
 updated_at: 2023-01-04T16:27:10Z
 url: https://github.com/astral-sh/ruff/issues/1634
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SyntaxError for PEP 634 Structural Pattern Matching
 
 ---
 
-_Issue opened by @radupotop on 2023-01-04 16:22_
+_@radupotop_
 
 I get a `E999 SyntaxError: invalid syntax. Got unexpected token` whenever structural pattern matching occurs. e.g.:
 

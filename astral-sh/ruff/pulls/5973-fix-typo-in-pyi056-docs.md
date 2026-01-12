@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-07-22T11:17:32Z
 updated_at: 2023-07-22T13:10:59Z
 url: https://github.com/astral-sh/ruff/pull/5973
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix typo in PYI056 docs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2023-07-22 11:17_
+_@AlexWaygood_
 
 The current "use instead" code would correctly be rejected by any type checker worth its salt ;)
 

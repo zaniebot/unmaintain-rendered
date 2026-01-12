@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-12-10T19:52:26Z
 updated_at: 2020-02-03T09:35:21Z
 url: https://github.com/clap-rs/clap/issues/1606
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Roadmap to 3.x
 
 ---
 
-_Issue opened by @davidMcneil on 2019-12-10 19:52_
+_@davidMcneil_
 
 I asked this a while back on the [gitter channel](https://gitter.im/kbknapp/clap-rs). Feel free to close the issue and move further discussion there if that venue is more appropriate.
 

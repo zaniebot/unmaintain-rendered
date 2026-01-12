@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-07T12:14:05Z
 updated_at: 2024-12-30T09:34:57Z
 url: https://github.com/astral-sh/ruff/issues/10812
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `quoted-annotation` (`UP037`), `undefined-name` (`F821`) & `quoted-type-alias` (`TC008`) - false positives on pyright inlined `TypedDict`s
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-07 12:14_
+_@DetachHead_
 
 pyright supports defining a `TypedDict` inline like so:
 

@@ -14,14 +14,14 @@ head: UP036
 created_at: 2025-02-11T01:46:07Z
 updated_at: 2025-02-11T07:43:28Z
 url: https://github.com/astral-sh/ruff/pull/16091
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Handle micro version numbers correctly (`UP036`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-11 01:46_
+_@InSyncWithFoo_
 
 ## Summary
 

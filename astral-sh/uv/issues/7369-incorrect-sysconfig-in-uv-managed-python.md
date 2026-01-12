@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-13T17:33:51Z
 updated_at: 2024-10-21T22:16:34Z
 url: https://github.com/astral-sh/uv/issues/7369
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Incorrect sysconfig in uv-managed Python installation
 
 ---
 
-_Issue opened by @akhilles on 2024-09-13 17:33_
+_@akhilles_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

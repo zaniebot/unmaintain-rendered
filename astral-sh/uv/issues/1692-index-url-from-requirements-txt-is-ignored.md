@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T13:58:49Z
 updated_at: 2024-02-20T19:08:57Z
 url: https://github.com/astral-sh/uv/issues/1692
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `--index-url` from `requirements.txt` is ignored
 
 ---
 
-_Issue opened by @framillien on 2024-02-19 13:58_
+_@framillien_
 
 `--index-url` is ignored in `requirements.txt`, no issue with `--extra-index-url` parameter.
 

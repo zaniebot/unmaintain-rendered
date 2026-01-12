@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T14:20:16Z
 updated_at: 2025-06-27T14:43:16Z
 url: https://github.com/astral-sh/uv/issues/14317
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Running command line script xxxx without prefixing with `uv run xxx`
 
 ---
 
-_Issue opened by @fritz-trawa on 2025-06-27 14:20_
+_@fritz-trawa_
 
 ### Summary
 

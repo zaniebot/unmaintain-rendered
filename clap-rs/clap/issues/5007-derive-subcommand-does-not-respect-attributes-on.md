@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-14T13:20:46Z
 updated_at: 2023-07-14T17:00:50Z
 url: https://github.com/clap-rs/clap/issues/5007
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # derive(Subcommand) does not respect attributes on fields of enum variants
 
 ---
 
-_Issue opened by @SlayerOfTheBad on 2023-07-14 13:20_
+_@SlayerOfTheBad_
 
 ### Please complete the following tasks
 

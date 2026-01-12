@@ -13,14 +13,14 @@ head: docs-add-missing-config-tab
 created_at: 2023-11-06T10:54:46Z
 updated_at: 2023-11-07T18:18:04Z
 url: https://github.com/astral-sh/ruff/pull/8512
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # docs: Add missing toml config tabs
 
 ---
 
-_Pull request opened by @doolio on 2023-11-06 10:54_
+_@doolio_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-02T03:36:24Z
 updated_at: 2024-09-25T13:29:54Z
 url: https://github.com/astral-sh/ruff/issues/9352
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `ANN001` and `ANN201` for override methods?
 
 ---
 
-_Issue opened by @ReubenFrankel on 2024-01-02 03:36_
+_@ReubenFrankel_
 
 When overriding a method from a parent class, is it required to define the entire original method signature with its argument and return types? I'm not sure if this is a personal preference thing, but I don't really want to have to redefine or import any non-builtin types if I don't have to (especially for more complex methods) - VS Code IntelliSense seems to pick these up already without any type hints.
 

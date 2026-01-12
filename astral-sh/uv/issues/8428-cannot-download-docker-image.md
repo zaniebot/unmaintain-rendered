@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T21:25:14Z
 updated_at: 2024-10-25T19:59:11Z
 url: https://github.com/astral-sh/uv/issues/8428
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Cannot  download Docker image
 
 ---
 
-_Issue opened by @hipertracker on 2024-10-21 21:25_
+_@hipertracker_
 
 From the web site: https://github.com/astral-sh/uv/pkgs/container/uv/292207825?tag=python3.13-bookworm
 

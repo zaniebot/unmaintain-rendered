@@ -14,14 +14,14 @@ head: micha/system-user-configurationd-directory
 created_at: 2025-02-07T13:11:52Z
 updated_at: 2025-02-10T14:51:05Z
 url: https://github.com/astral-sh/ruff/pull/16020
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Add `user_configuration_directory` to `System`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-07 13:11_
+_@MichaReiser_
 
 ## Summary
 

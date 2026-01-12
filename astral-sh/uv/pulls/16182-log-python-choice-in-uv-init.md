@@ -13,14 +13,14 @@ head: konsti/log-requires-python-uv-init
 created_at: 2025-10-08T11:26:22Z
 updated_at: 2025-10-09T13:55:28Z
 url: https://github.com/astral-sh/uv/pull/16182
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 #  Log Python choice in `uv init`
 
 ---
 
-_Pull request opened by @konstin on 2025-10-08 11:26_
+_@konstin_
 
 Example output:
 

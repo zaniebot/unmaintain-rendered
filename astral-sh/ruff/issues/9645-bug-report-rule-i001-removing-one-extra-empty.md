@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T09:25:10Z
 updated_at: 2024-05-08T16:08:09Z
 url: https://github.com/astral-sh/ruff/issues/9645
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Bug report : rule "I001" removing one extra empty line after imports
 
 ---
 
-_Issue opened by @Lenormju on 2024-01-26 09:25_
+_@Lenormju_
 
 <!--
 

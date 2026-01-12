@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T20:02:00Z
 updated_at: 2023-01-02T21:33:53Z
 url: https://github.com/astral-sh/ruff/issues/1560
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Possibly a false positive for UP007
 
 ---
 
-_Issue opened by @rassie on 2023-01-02 20:02_
+_@rassie_
 
 Here is a bit of code I adapted [from StackOverflow](https://stackoverflow.com/questions/61753056/partial-update-in-fastapi/71135795#71135795) to make Pydantic model's fields optional:
 

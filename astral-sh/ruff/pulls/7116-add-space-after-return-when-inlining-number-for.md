@@ -14,14 +14,14 @@ head: charlie/RET504
 created_at: 2023-09-03T21:20:47Z
 updated_at: 2023-09-03T21:39:47Z
 url: https://github.com/astral-sh/ruff/pull/7116
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add space after return when inlining number for RET504
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 21:20_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7098.
 

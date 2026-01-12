@@ -13,14 +13,14 @@ head: alex/stdlib-alias-isinstance
 created_at: 2025-11-11T16:53:56Z
 updated_at: 2025-11-11T19:30:03Z
 url: https://github.com/astral-sh/ruff/pull/21386
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Silence false-positive diagnostics when using `typing.Dict` or `typing.Callable` as the second argument to `isinstance()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-11 16:53_
+_@AlexWaygood_
 
 ## Summary
 

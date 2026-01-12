@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-20T03:08:19Z
 updated_at: 2025-10-20T07:28:34Z
 url: https://github.com/astral-sh/ty/issues/1401
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Ty accepts invalid override and abstract class instantiation (false negative)
 
 ---
 
-_Issue opened by @benedekaibas on 2025-10-20 03:08_
+_@benedekaibas_
 
 ### Summary
 

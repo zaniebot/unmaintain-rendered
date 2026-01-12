@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-19T00:21:34Z
 updated_at: 2023-01-19T16:27:29Z
 url: https://github.com/astral-sh/ruff/issues/1986
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # make SIM201 fixer exceptions for comparision methods? 
 
 ---
 
-_Issue opened by @spaceone on 2023-01-19 00:21_
+_@spaceone_
 
 `SIM201` makes the following changes:
 

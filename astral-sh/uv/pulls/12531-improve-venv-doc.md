@@ -12,14 +12,14 @@ head: improve-venv-doc
 created_at: 2025-03-28T14:27:51Z
 updated_at: 2025-03-28T14:56:06Z
 url: https://github.com/astral-sh/uv/pull/12531
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # improve venv doc
 
 ---
 
-_Pull request opened by @lautalom on 2025-03-28 14:27_
+_@lautalom_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

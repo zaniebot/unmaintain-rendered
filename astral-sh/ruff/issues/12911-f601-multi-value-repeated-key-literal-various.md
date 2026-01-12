@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-15T21:39:18Z
 updated_at: 2024-08-16T06:49:26Z
 url: https://github.com/astral-sh/ruff/issues/12911
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F601 `multi-value-repeated-key-literal` various issues
 
 ---
 
-_Issue opened by @dylwil3 on 2024-08-15 21:39_
+_@dylwil3_
 
 This is an extension of #12772.
 

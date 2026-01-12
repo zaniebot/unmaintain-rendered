@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T16:07:37Z
 updated_at: 2024-11-14T15:13:50Z
 url: https://github.com/astral-sh/ruff/issues/9757
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [FEATURE] Support attrs in RUF008 and RUF009
 
 ---
 
-_Issue opened by @alanhdu on 2024-02-01 16:07_
+_@alanhdu_
 
 These rules guard against using mutable default values in `dataclasses`. It would be nice if these rules *also* supported attrs,  which is the (more feature-rich) predecessor which is also pretty widely used.
 

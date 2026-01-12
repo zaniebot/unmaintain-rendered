@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T21:34:19Z
 updated_at: 2024-01-27T01:37:57Z
 url: https://github.com/astral-sh/uv/issues/1140
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Support `--emit-index-url` and `--emit-find-links`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-26 21:34_
+_@charliermarsh_
 
 We warn on these as of https://github.com/astral-sh/puffin/pull/1139, but they actually do seem important.
 

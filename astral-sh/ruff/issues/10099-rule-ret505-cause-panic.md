@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T15:17:11Z
 updated_at: 2024-08-14T16:09:12Z
 url: https://github.com/astral-sh/ruff/issues/10099
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule RET505 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-02-23 15:17_
+_@qarmin_
 
 ruff 0.2.2 (also happens with 0.3.5)
  (latest changes from main branch)

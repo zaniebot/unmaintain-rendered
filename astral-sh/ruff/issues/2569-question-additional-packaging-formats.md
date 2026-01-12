@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-04T16:33:14Z
 updated_at: 2023-02-20T14:45:33Z
 url: https://github.com/astral-sh/ruff/issues/2569
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [question] Additional packaging formats
 
 ---
 
-_Issue opened by @lengau on 2023-02-04 16:33_
+_@lengau_
 
 This is a question for the developers of this wonderful tool more than an actual issue:
 

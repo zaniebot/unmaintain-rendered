@@ -13,14 +13,14 @@ head: micha/comment-ranges-copied
 created_at: 2024-09-08T10:46:27Z
 updated_at: 2024-09-08T11:17:38Z
 url: https://github.com/astral-sh/ruff/pull/13281
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # refactor: Return copied `TextRange` in `CommentRanges` iterator
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-08 10:46_
+_@MichaReiser_
 
 ## Summary
 

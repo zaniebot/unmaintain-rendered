@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-13T15:54:10Z
 updated_at: 2023-10-16T07:39:25Z
 url: https://github.com/astral-sh/ruff/issues/7949
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Missed docstring normalization in formatter
 
 ---
 
-_Issue opened by @konstin on 2023-10-13 15:54_
+_@konstin_
 
 Ours:
 ```python

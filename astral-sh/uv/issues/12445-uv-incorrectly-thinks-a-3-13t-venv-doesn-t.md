@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T18:47:28Z
 updated_at: 2025-10-07T16:24:06Z
 url: https://github.com/astral-sh/uv/issues/12445
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # uv incorrectly thinks a 3.13t venv doesn't satisfy >=3.8
 
 ---
 
-_Issue opened by @ngoldbaum on 2025-03-24 18:47_
+_@ngoldbaum_
 
 ### Summary
 

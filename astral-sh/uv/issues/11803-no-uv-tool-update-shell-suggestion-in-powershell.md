@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T17:05:33Z
 updated_at: 2025-03-01T03:32:49Z
 url: https://github.com/astral-sh/uv/issues/11803
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # No `uv tool update-shell` suggestion in powershell
 
 ---
 
-_Issue opened by @konstin on 2025-02-26 17:05_
+_@konstin_
 
 ### Summary
 

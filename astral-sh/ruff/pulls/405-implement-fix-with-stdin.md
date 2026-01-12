@@ -12,14 +12,14 @@ head: fix-stdin
 created_at: 2022-10-12T04:18:47Z
 updated_at: 2022-10-13T02:32:43Z
 url: https://github.com/astral-sh/ruff/pull/405
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement --fix with stdin
 
 ---
 
-_Pull request opened by @fsouza on 2022-10-12 04:18_
+_@fsouza_
 
 This is a follow-up to #387 where we also support `--fix` with stdin.
 

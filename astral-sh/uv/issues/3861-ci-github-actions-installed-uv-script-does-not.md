@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-27T09:14:15Z
 updated_at: 2024-05-28T13:13:09Z
 url: https://github.com/astral-sh/uv/issues/3861
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # CI (Github Actions): Installed uv script does not detect any Python interpreters
 
 ---
 
-_Issue opened by @jenisys on 2024-05-27 09:14_
+_@jenisys_
 
 I try using `uv` to speed up Python package installations in the CI (concrete: Github Actions).
 

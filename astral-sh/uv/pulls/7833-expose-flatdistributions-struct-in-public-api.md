@@ -13,14 +13,14 @@ head: feat/expose-flat-distributions
 created_at: 2024-10-01T11:53:12Z
 updated_at: 2024-10-01T12:46:32Z
 url: https://github.com/astral-sh/uv/pull/7833
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # expose `FlatDistributions` struct in public API
 
 ---
 
-_Pull request opened by @tdejager on 2024-10-01 11:53_
+_@tdejager_
 
 Would it be okay to expose this struct? We currently use our own ResolveProvider, and it would be nice to use the `FlatDistributions` for easy `VersionMap` creation.
 

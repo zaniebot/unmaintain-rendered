@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-15T18:49:14Z
 updated_at: 2023-03-16T03:56:51Z
 url: https://github.com/astral-sh/ruff/issues/3548
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Mypy TYPE_CHECKING imports and sqlalchemy quoted class names which prevent circular imports.
 
 ---
 
-_Issue opened by @ddimmich on 2023-03-15 18:49_
+_@ddimmich_
 
 The below fails in ruff - often using sqlalchemy you need to provide class names as strings, to prevent circular imports.  Mypy suggests adding these imports inside an if TYPE_CHECKING block, so that it can do type inference.  Unfortunately this causes the pyflakes rules to break.  This is actually consistent with pyflakes behavior, but the discussion here suggests it could either interpret the values in the strings, or ignore f401 for imports in TYPE_CHECKING - neither of which are ideal.  https://github.com/PyCQA/pyflakes/issues/290
 

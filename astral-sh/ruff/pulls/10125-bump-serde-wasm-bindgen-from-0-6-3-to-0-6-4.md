@@ -13,14 +13,14 @@ head: dependabot/cargo/serde-wasm-bindgen-0.6.4
 created_at: 2024-02-26T09:05:25Z
 updated_at: 2024-02-26T09:23:39Z
 url: https://github.com/astral-sh/ruff/pull/10125
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Bump serde-wasm-bindgen from 0.6.3 to 0.6.4
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-26 09:05_
+_@dependabot_
 
 Bumps [serde-wasm-bindgen](https://github.com/RReverser/serde-wasm-bindgen) from 0.6.3 to 0.6.4.
 <details>

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-04-19T14:22:50Z
 updated_at: 2019-06-20T09:18:10Z
 url: https://github.com/clap-rs/clap/issues/1454
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # rustfmt.toml unknown configuration options
 
 ---
 
-_Issue opened by @omarabid on 2019-04-19 14:22_
+_@omarabid_
 
 Apparently, these options were available on previous Rust versions and now removed? If that's the case, I'll make the appropriate PR!
 

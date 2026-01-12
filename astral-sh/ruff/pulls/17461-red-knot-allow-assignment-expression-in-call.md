@@ -12,14 +12,14 @@ head: cover-more-assignment-expressions
 created_at: 2025-04-18T14:43:26Z
 updated_at: 2025-04-18T15:47:23Z
 url: https://github.com/astral-sh/ruff/pull/17461
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] allow assignment expression in call compare narrowing
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-18 14:43_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

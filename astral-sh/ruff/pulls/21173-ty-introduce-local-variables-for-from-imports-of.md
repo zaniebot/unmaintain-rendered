@@ -14,14 +14,14 @@ head: gankra/py-import-from
 created_at: 2025-10-31T19:19:37Z
 updated_at: 2025-11-10T23:12:06Z
 url: https://github.com/astral-sh/ruff/pull/21173
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] introduce local variables for `from` imports of submodules in `__init__.py(i)`
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-31 19:19_
+_@Gankra_
 
 This rips out the previous implementation in favour of a new implementation with 3 rules:
 

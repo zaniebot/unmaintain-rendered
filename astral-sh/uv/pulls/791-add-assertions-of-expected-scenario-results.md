@@ -12,14 +12,14 @@ head: zb/expected-assert
 created_at: 2024-01-04T22:15:30Z
 updated_at: 2024-01-05T16:32:38Z
 url: https://github.com/astral-sh/uv/pull/791
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add assertions of expected scenario results
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 22:15_
+_@zanieb_
 
 Uses new metadata added in https://github.com/zanieb/packse/pull/61 to assert that resolution succeeded or failed _and_ that the installed package versions match the expected result.
 

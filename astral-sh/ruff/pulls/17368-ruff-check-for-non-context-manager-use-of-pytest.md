@@ -14,14 +14,14 @@ head: fix-issue-16605
 created_at: 2025-04-12T14:07:33Z
 updated_at: 2025-06-16T17:03:55Z
 url: https://github.com/astral-sh/ruff/pull/17368
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`ruff`] Check for non-context-manager use of `pytest.raises`, `pytest.warns`, and `pytest.deprecated_call` (`RUF061`)
 
 ---
 
-_Pull request opened by @twentyone212121 on 2025-04-12 14:07_
+_@twentyone212121_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dcreager/specialize-default
 created_at: 2025-05-05T21:57:40Z
 updated_at: 2025-05-05T22:29:33Z
 url: https://github.com/astral-sh/ruff/pull/17872
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Don't require default typevars when specializing
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-05 21:57_
+_@dcreager_
 
 If a typevar is declared as having a default, we shouldn't require a type to be specified for that typevar when explicitly specializing a generic class:
 

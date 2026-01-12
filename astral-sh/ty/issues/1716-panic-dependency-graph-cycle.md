@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T09:18:38Z
 updated_at: 2025-12-03T19:01:43Z
 url: https://github.com/astral-sh/ty/issues/1716
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] dependency graph cycle
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-12-02 09:18_
+_@Matt-Ord_
 
 Not sure if you expect to have fixed all of these issues yet - but thought I would submit a ticket
 

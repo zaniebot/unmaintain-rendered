@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T03:33:14Z
 updated_at: 2024-04-03T16:22:18Z
 url: https://github.com/astral-sh/ruff/issues/10593
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Prefix code action message with "Ruff" and rule code
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-26 03:33_
+_@dhruvmanila_
 
 Existing implementation shows the code action prefixed with "Ruff" and also provides the rule code. This is helpful for users to understand where the code action is originating from.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-07T06:40:27Z
 updated_at: 2023-12-07T16:25:34Z
 url: https://github.com/clap-rs/clap/issues/5250
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `Vec<Option<_>>` with `num_args(0..)` Ignores flags passed with no value
 
 ---
 
-_Issue opened by @Maurdekye on 2023-12-07 06:40_
+_@Maurdekye_
 
 ### Please complete the following tasks
 

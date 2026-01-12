@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-09T16:04:39Z
 updated_at: 2025-09-06T10:25:03Z
 url: https://github.com/astral-sh/ruff/issues/9070
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autofix remove types from docstring 
 
 ---
 
-_Issue opened by @KennethEnevoldsen on 2023-12-09 16:04_
+_@KennethEnevoldsen_
 
 Currently types can be added in two places in a function as a type hint and in the documentation.
 

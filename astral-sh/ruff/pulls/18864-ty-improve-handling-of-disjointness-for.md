@@ -14,14 +14,14 @@ head: alex/disjointness
 created_at: 2025-06-22T18:19:38Z
 updated_at: 2025-06-24T20:27:38Z
 url: https://github.com/astral-sh/ruff/pull/18864
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Improve handling of disjointness for `NominalInstanceType`s and `SubclassOfType`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-22 18:19_
+_@AlexWaygood_
 
 ## Summary
 

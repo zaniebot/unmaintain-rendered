@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2025-12-17T15:11:06Z
 updated_at: 2025-12-17T15:26:19Z
 url: https://github.com/astral-sh/uv/pull/17162
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Avoid creating file contents with `uv init --bare --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 15:11_
+_@charliermarsh_
 
 ## Summary
 

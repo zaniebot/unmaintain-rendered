@@ -12,14 +12,14 @@ head: logical-lines-iter
 created_at: 2023-04-26T17:23:10Z
 updated_at: 2023-07-24T15:01:46Z
 url: https://github.com/astral-sh/ruff/pull/4120
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use iter for logical lines
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-26 17:23_
+_@MichaReiser_
 
 _No description provided._
 

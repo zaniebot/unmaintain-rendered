@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T22:18:49Z
 updated_at: 2025-09-05T15:02:34Z
 url: https://github.com/astral-sh/uv/issues/15690
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Python Rounding Precision Issue Under x86_64 Emulation
 
 ---
 
-_Issue opened by @Bradleywboggs on 2025-09-04 22:18_
+_@Bradleywboggs_
 
 ### Summary
 

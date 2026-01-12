@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-02T17:24:23Z
 updated_at: 2022-12-16T05:28:23Z
 url: https://github.com/astral-sh/ruff/issues/300
-synced_at: 2026-01-10T12:05:20Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Flag unused imports even with redefinition
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-02 17:24_
+_@charliermarsh_
 
 Given this code:
 

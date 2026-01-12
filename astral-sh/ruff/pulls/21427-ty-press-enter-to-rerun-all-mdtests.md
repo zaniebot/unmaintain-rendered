@@ -14,14 +14,14 @@ head: david/mdtest-runner-interactive
 created_at: 2025-11-13T13:41:52Z
 updated_at: 2025-11-13T16:48:36Z
 url: https://github.com/astral-sh/ruff/pull/21427
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Press 'enter' to rerun all mdtests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-13 13:41_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: requirements-parsing-line-column
 created_at: 2024-03-01T03:32:35Z
 updated_at: 2024-03-11T22:21:56Z
 url: https://github.com/astral-sh/uv/pull/2100
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # feat: report line and column on requirements parser errors
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-01 03:32_
+_@samypr100_
 
 ## Summary
 

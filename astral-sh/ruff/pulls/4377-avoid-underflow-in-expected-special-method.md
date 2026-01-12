@@ -12,14 +12,14 @@ head: charlie/unexpected
 created_at: 2023-05-11T16:41:06Z
 updated_at: 2023-05-11T17:16:35Z
 url: https://github.com/astral-sh/ruff/pull/4377
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid underflow in expected-special-method-signature
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 16:41_
+_@charliermarsh_
 
 ## Summary
 

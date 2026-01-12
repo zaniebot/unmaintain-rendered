@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-10T04:51:40Z
 updated_at: 2025-07-01T06:41:56Z
 url: https://github.com/astral-sh/ty/issues/131
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Generic classes with dynamic types (e.g. `A[Unknown]`) should not be considered fully static
 
 ---
 
-_Issue opened by @cake-monotone on 2025-04-10 04:51_
+_@cake-monotone_
 
 https://playknot.ruff.rs/73be425a-e02f-425f-b4dd-4eb70eb3fe8e
 

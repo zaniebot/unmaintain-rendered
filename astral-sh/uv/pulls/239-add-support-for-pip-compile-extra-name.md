@@ -12,14 +12,14 @@ head: zanie/extra
 created_at: 2023-10-30T19:18:37Z
 updated_at: 2023-10-31T16:59:41Z
 url: https://github.com/astral-sh/uv/pull/239
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Add support for `pip-compile --extra <name>`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-30 19:18_
+_@zanieb_
 
 Adds support for `pip-compile --extra <name> ...` which includes optional dependencies in the specified group in the resolution.
 

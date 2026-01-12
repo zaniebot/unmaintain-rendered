@@ -14,14 +14,14 @@ head: micha/unresolved-import-verbosity
 created_at: 2025-10-16T07:16:57Z
 updated_at: 2025-10-16T11:18:10Z
 url: https://github.com/astral-sh/ruff/pull/20912
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Limit shown import paths to at most 5 unless ty runs with `-v`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-16 07:16_
+_@MichaReiser_
 
 ## Summary
 

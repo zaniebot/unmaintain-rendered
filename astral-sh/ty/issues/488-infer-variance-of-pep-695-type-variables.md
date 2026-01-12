@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T14:05:47Z
 updated_at: 2025-08-21T19:25:40Z
 url: https://github.com/astral-sh/ty/issues/488
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # infer variance of PEP 695 type variables
 
 ---
 
-_Issue opened by @ilius on 2025-05-22 14:05_
+_@ilius_
 
 ### Summary
 

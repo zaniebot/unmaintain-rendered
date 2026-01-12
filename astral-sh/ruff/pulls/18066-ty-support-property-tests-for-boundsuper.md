@@ -12,14 +12,14 @@ head: cake/property-test-for-bound-super
 created_at: 2025-05-13T12:29:21Z
 updated_at: 2025-06-10T15:55:20Z
 url: https://github.com/astral-sh/ruff/pull/18066
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Support property tests for `BoundSuper`
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-05-13 12:29_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

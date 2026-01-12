@@ -12,14 +12,14 @@ head: ag/universal-requires-python
 created_at: 2024-06-12T14:19:13Z
 updated_at: 2024-06-12T17:30:48Z
 url: https://github.com/astral-sh/uv/pull/4273
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # uv-resolver: use Requires-Python to filter dependencies during universal resolution
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-12 14:19_
+_@BurntSushi_
 
 In the time before universal resolving, we would always pass a
 `MarkerEnvironment`, and this environment would capture any relevant

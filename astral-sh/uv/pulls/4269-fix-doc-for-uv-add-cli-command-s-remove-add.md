@@ -13,14 +13,14 @@ head: fix-typo-docstring
 created_at: 2024-06-12T13:35:41Z
 updated_at: 2024-06-12T14:35:34Z
 url: https://github.com/astral-sh/uv/pull/4269
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Fix doc for `uv add` cli command s/remove/add/
 
 ---
 
-_Pull request opened by @ticosax on 2024-06-12 13:35_
+_@ticosax_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

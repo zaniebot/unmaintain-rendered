@@ -13,14 +13,14 @@ head: konsti/update-dependabot-status
 created_at: 2025-05-27T21:26:37Z
 updated_at: 2025-05-27T21:55:13Z
 url: https://github.com/astral-sh/uv/pull/13690
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Update dependabot support status
 
 ---
 
-_Pull request opened by @konstin on 2025-05-27 21:26_
+_@konstin_
 
 Following user reports and https://github.com/dependabot/dependabot-core/issues?q=state%3Aopen%20label%3A%22L%3A%20python%3Auv%22%20sort%3Areactions-%2B1-desc, we're updating the dependabot support as partial.
 

@@ -13,14 +13,14 @@ head: zanie/fix-no-qa
 created_at: 2023-10-24T16:51:55Z
 updated_at: 2023-10-24T17:23:43Z
 url: https://github.com/astral-sh/ruff/pull/8172
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix link to error supression documentation in `unused-noqa`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 16:51_
+_@zanieb_
 
 _No description provided._
 

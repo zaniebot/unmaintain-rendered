@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T02:35:26Z
 updated_at: 2024-03-18T00:15:29Z
 url: https://github.com/astral-sh/ruff/issues/10402
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `SIM103` should detect implicit `else`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-14 02:35_
+_@charliermarsh_
 
 See: https://github.com/sbdchd/flake8-pie#pie801-prefer-simple-return.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-08-11T18:27:55Z
 updated_at: 2022-06-08T16:02:44Z
 url: https://github.com/clap-rs/clap/issues/2678
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Inferring more meaning from types for derives
 
 ---
 
-_Issue opened by @epage on 2021-08-11 18:27_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2637
 

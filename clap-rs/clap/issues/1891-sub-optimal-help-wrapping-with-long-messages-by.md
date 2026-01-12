@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-01T19:36:44Z
 updated_at: 2020-05-30T17:24:21Z
 url: https://github.com/clap-rs/clap/issues/1891
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Sub-optimal help wrapping with long messages by default
 
 ---
 
-_Issue opened by @kbknapp on 2020-05-01 19:36_
+_@kbknapp_
 
 ### Make sure you completed the following tasks
 

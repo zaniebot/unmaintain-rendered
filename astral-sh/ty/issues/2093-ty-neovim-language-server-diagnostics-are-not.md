@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T23:15:20Z
 updated_at: 2025-12-19T13:30:49Z
 url: https://github.com/astral-sh/ty/issues/2093
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # [ty + neovim] Language server diagnostics are not showing
 
 ---
 
-_Issue opened by @kuyugama on 2025-12-18 23:15_
+_@kuyugama_
 
 ### Question
 

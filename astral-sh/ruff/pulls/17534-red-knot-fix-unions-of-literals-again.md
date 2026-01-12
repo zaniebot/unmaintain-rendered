@@ -13,14 +13,14 @@ head: cjm/unionliterals
 created_at: 2025-04-22T00:16:15Z
 updated_at: 2025-04-22T19:44:54Z
 url: https://github.com/astral-sh/ruff/pull/17534
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] fix unions of literals, again
 
 ---
 
-_Pull request opened by @carljm on 2025-04-22 00:16_
+_@carljm_
 
 ## Summary
 

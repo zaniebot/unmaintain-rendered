@@ -13,14 +13,14 @@ head: fix-pylint-upstream-category
 created_at: 2024-03-18T01:01:16Z
 updated_at: 2024-03-18T01:38:26Z
 url: https://github.com/astral-sh/ruff/pull/10441
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix pylint upstream categories not showing in docs
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-18 01:01_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

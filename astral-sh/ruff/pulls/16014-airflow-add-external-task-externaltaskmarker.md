@@ -14,14 +14,14 @@ head: AIR302-refactor
 created_at: 2025-02-07T09:48:46Z
 updated_at: 2025-03-31T21:56:21Z
 url: https://github.com/astral-sh/ruff/pull/16014
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`airflow`] Add `external_task.{ExternalTaskMarker, ExternalTaskSensor}` for `AIR302`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-07 09:48_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

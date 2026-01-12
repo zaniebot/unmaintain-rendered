@@ -13,14 +13,14 @@ head: gen-env
 created_at: 2024-10-23T09:09:34Z
 updated_at: 2024-11-03T15:46:39Z
 url: https://github.com/astral-sh/uv/pull/8493
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Generate environment variables doc from code
 
 ---
 
-_Pull request opened by @j178 on 2024-10-23 09:09_
+_@j178_
 
 ## Summary
 

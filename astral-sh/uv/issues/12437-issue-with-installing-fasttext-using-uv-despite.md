@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T16:04:11Z
 updated_at: 2025-03-25T01:50:37Z
 url: https://github.com/astral-sh/uv/issues/12437
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Issue with installing `fasttext` Using `uv` despite Fix #1446
 
 ---
 
-_Issue opened by @ThomasFaria on 2025-03-24 16:04_
+_@ThomasFaria_
 
 ### Summary
 

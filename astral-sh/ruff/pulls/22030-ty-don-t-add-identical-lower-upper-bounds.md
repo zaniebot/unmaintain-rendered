@@ -14,14 +14,14 @@ head: dcreager/ty1968
 created_at: 2025-12-17T16:33:39Z
 updated_at: 2025-12-17T18:35:55Z
 url: https://github.com/astral-sh/ruff/pull/22030
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Don't add identical lower/upper bounds multiple times when inferring specializations
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-17 16:33_
+_@dcreager_
 
 When inferring a specialization of a `Callable` type, we use the new constraint set implementation. In the example in https://github.com/astral-sh/ty/issues/1968, we end up with a constraint set that includes all of the following clauses:
 

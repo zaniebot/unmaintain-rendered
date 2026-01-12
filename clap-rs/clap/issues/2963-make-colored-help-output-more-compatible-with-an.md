@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-29T19:58:45Z
 updated_at: 2025-01-13T15:12:37Z
 url: https://github.com/clap-rs/clap/issues/2963
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Make colored help output more compatible with an applications overall theme
 
 ---
 
-_Issue opened by @epage on 2021-10-29 19:58_
+_@epage_
 
 ### Please complete the following tasks
 

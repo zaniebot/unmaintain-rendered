@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T17:37:10Z
 updated_at: 2024-07-22T12:28:23Z
 url: https://github.com/astral-sh/uv/issues/5226
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `--resolution lowest` with `uv sync` needs to discard preferences
 
 ---
 
-_Issue opened by @konstin on 2024-07-19 17:37_
+_@konstin_
 
 Currently, when switching to `uv sync --resolution lowest` from `uv sync`, nothing changes, because we're using the existing preferences. This breaks the use case for `--resolution lowest`.
 

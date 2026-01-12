@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-05T10:20:51Z
 updated_at: 2023-02-05T13:01:09Z
 url: https://github.com/astral-sh/ruff/issues/2576
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `B007` causes infinite loop for variable suffixed with `_`
 
 ---
 
-_Issue opened by @spaceone on 2023-02-05 10:20_
+_@spaceone_
 
 ```
 $ ruff --fix --diff --isolated --select B007 foo.py

@@ -12,14 +12,14 @@ head: C402
 created_at: 2022-10-08T02:05:25Z
 updated_at: 2022-10-08T02:57:05Z
 url: https://github.com/astral-sh/ruff/pull/359
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement C402
 
 ---
 
-_Pull request opened by @harupy on 2022-10-08 02:05_
+_@harupy_
 
 #305
 

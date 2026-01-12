@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-02T22:52:38Z
 updated_at: 2022-06-04T12:03:31Z
 url: https://github.com/clap-rs/clap/issues/3784
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Show Docstrings of variants in ArgEnum in --help
 
 ---
 
-_Issue opened by @nipunn1313 on 2022-06-02 22:52_
+_@nipunn1313_
 
 ### Please complete the following tasks
 

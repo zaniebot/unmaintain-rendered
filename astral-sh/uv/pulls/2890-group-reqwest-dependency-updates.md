@@ -13,14 +13,14 @@ head: zb/group-req
 created_at: 2024-04-08T03:56:30Z
 updated_at: 2024-05-21T20:53:27Z
 url: https://github.com/astral-sh/uv/pull/2890
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Group `reqwest` dependency updates
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 03:56_
+_@zanieb_
 
 I am not entirely sure we need to do this but it might make life easier?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T03:50:32Z
 updated_at: 2023-02-19T14:59:17Z
 url: https://github.com/astral-sh/ruff/issues/3024
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Imports are formatted with different max-line-length then fixed
 
 ---
 
-_Issue opened by @Nicholas-Autio-Mitchell on 2023-02-19 03:50_
+_@Nicholas-Autio-Mitchell_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

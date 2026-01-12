@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:22:03Z
 updated_at: 2025-08-15T19:36:07Z
 url: https://github.com/astral-sh/uv/issues/15311
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # uv attempts to query password-protected private PyPI index even if only optional dependencies require the index
 
 ---
 
-_Issue opened by @ntamas on 2025-08-15 14:22_
+_@ntamas_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: konsti/relative-path-handling-fix
 created_at: 2024-06-12T10:46:44Z
 updated_at: 2024-06-13T15:51:09Z
 url: https://github.com/astral-sh/uv/pull/4266
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Fix relative and absolute path handling in lockfiles
 
 ---
 
-_Pull request opened by @konstin on 2024-06-12 10:46_
+_@konstin_
 
 Previously, `b` in the test case would have been incorrectly locked to the path of `a`. I've moved `relative_to` into uv-fs since it's now used in two different places.
 

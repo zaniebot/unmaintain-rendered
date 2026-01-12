@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T04:06:50Z
 updated_at: 2025-11-16T20:00:28Z
 url: https://github.com/astral-sh/uv/issues/15296
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # How to run `pyright` on a uv script
 
 ---
 
-_Issue opened by @stevenj on 2025-08-15 04:06_
+_@stevenj_
 
 ### Question
 

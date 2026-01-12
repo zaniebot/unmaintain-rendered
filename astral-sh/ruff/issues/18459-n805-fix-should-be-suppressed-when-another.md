@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-04T13:26:40Z
 updated_at: 2025-06-11T05:58:56Z
 url: https://github.com/astral-sh/ruff/issues/18459
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # N805 fix should be suppressed when another variable is using the recommended name
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-04 13:26_
+_@dscorbett_
 
 ### Summary
 

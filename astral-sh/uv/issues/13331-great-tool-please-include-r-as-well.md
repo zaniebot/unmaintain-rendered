@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T14:19:15Z
 updated_at: 2025-05-07T14:33:54Z
 url: https://github.com/astral-sh/uv/issues/13331
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # great tool, please include R as well
 
 ---
 
-_Issue opened by @chrboku on 2025-05-07 14:19_
+_@chrboku_
 
 ### Summary
 

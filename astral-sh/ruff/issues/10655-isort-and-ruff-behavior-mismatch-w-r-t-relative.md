@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-29T10:17:25Z
 updated_at: 2024-03-30T02:16:08Z
 url: https://github.com/astral-sh/ruff/issues/10655
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # isort and ruff behavior mismatch w.r.t. relative imports and `relative-imports-order` option.
 
 ---
 
-_Issue opened by @subhamagr on 2024-03-29 10:17_
+_@subhamagr_
 
 I have the following code:
 

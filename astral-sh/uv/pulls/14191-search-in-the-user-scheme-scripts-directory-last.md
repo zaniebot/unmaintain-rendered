@@ -13,14 +13,14 @@ head: zb/user-scheme-last
 created_at: 2025-06-21T18:41:07Z
 updated_at: 2025-08-08T11:46:33Z
 url: https://github.com/astral-sh/uv/pull/14191
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Search in the user scheme scripts directory last in `find_uv_bin`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 18:41_
+_@zanieb_
 
 We should definitely not pick up user-level installations unless we can't find uv anywhere else. Otherwise, e.g., we would find a uv installed with `pipx install uv` before the one matching the uv module.
 

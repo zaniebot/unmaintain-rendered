@@ -15,14 +15,14 @@ head: micha/redeclaration-tests
 created_at: 2025-12-05T13:10:44Z
 updated_at: 2025-12-05T18:02:35Z
 url: https://github.com/astral-sh/ruff/pull/21812
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Add redeclaration LSP tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-05 13:10_
+_@MichaReiser_
 
 ## Summary
 

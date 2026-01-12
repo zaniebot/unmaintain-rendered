@@ -13,14 +13,14 @@ head: konsti/dir-without-entrypoint-error-message
 created_at: 2024-05-21T11:15:40Z
 updated_at: 2024-05-21T11:21:21Z
 url: https://github.com/astral-sh/uv/pull/3690
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Improve `DirWithoutEntrypoint` error message
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 11:15_
+_@konstin_
 
 Ran into this and couldn't tell what the problem was without the path attached.
 

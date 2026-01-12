@@ -13,14 +13,14 @@ head: charlie/avail
 created_at: 2024-06-03T19:57:20Z
 updated_at: 2024-06-03T20:11:46Z
 url: https://github.com/astral-sh/uv/pull/3996
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Remove Python from available versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 19:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-25T15:37:12Z
 updated_at: 2024-06-26T08:30:49Z
 url: https://github.com/astral-sh/ruff/issues/12028
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule E731 cause panic (from_tokens panic - never ending story)
 
 ---
 
-_Issue opened by @qarmin on 2024-06-25 15:37_
+_@qarmin_
 
 ruff 0.4.10+46 (7109214b5 2024-06-25)
 ```

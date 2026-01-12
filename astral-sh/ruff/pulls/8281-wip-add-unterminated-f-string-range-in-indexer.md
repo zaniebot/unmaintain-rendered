@@ -12,14 +12,14 @@ head: dhruv/unterminated-fstring-ranges
 created_at: 2023-10-27T11:15:14Z
 updated_at: 2023-12-14T14:17:34Z
 url: https://github.com/astral-sh/ruff/pull/8281
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # WIP: Add unterminated f-string range in `Indexer`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-27 11:15_
+_@dhruvmanila_
 
 ## Summary
 

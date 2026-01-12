@@ -13,14 +13,14 @@ head: konsti/remove-prepended-sys-path
 created_at: 2025-03-04T15:40:22Z
 updated_at: 2025-03-04T16:00:27Z
 url: https://github.com/astral-sh/uv/pull/11954
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Remove prepended sys.path
 
 ---
 
-_Pull request opened by @konstin on 2025-03-04 15:40_
+_@konstin_
 
 We prepend the interpreter discovery in a temporary path to `sys.path`, which we have to strip to avoid the `sys.path` value containing a then-deleted temp dir.
 

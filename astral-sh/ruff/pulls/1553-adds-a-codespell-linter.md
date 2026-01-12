@@ -12,14 +12,14 @@ head: codespell
 created_at: 2023-01-02T12:18:42Z
 updated_at: 2023-01-02T20:57:59Z
 url: https://github.com/astral-sh/ruff/pull/1553
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Adds a codespell linter
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-02 12:18_
+_@colin99d_
 
 Fixes #1536
 

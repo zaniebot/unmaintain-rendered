@@ -13,14 +13,14 @@ head: hr/not_int
 created_at: 2024-09-21T00:34:41Z
 updated_at: 2024-09-25T20:44:19Z
 url: https://github.com/astral-sh/ruff/pull/13432
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # red-knot: Implement the `not` operator for all `Type` variants
 
 ---
 
-_Pull request opened by @haarisr on 2024-09-21 00:34_
+_@haarisr_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

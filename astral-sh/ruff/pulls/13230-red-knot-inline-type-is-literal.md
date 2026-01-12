@@ -13,14 +13,14 @@ head: alex/is-literal
 created_at: 2024-09-03T13:57:12Z
 updated_at: 2024-09-03T14:11:18Z
 url: https://github.com/astral-sh/ruff/pull/13230
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Inline `Type::is_literal`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-03 13:57_
+_@AlexWaygood_
 
 The name of this method is somewhat confusing currently, as I would expect it to return `true` for `LiteralString`, but it doesn't (and `LiteralString` is displayed differently, so it wouldn't suit the method's current use case for it to include `LiteralString`). The method is only used in one location currently, so let's just inline it at that location.
 

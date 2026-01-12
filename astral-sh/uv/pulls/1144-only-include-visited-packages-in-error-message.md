@@ -13,14 +13,14 @@ head: charlie/visits
 created_at: 2024-01-27T01:49:32Z
 updated_at: 2024-01-28T14:27:23Z
 url: https://github.com/astral-sh/uv/pull/1144
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Only include visited packages in error message derivation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-27 01:49_
+_@charliermarsh_
 
 ## Summary
 

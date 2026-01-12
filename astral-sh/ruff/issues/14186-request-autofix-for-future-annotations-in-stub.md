@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T01:22:44Z
 updated_at: 2024-11-08T15:47:05Z
 url: https://github.com/astral-sh/ruff/issues/14186
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: Autofix for `future-annotations-in-stub`/`PYI044`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-08 01:22_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

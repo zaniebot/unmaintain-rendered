@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T16:09:25Z
 updated_at: 2025-03-14T17:15:30Z
 url: https://github.com/astral-sh/ruff/issues/16754
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F841 not reporting unused var in for loops
 
 ---
 
-_Issue opened by @sk- on 2025-03-14 16:09_
+_@sk-_
 
 ### Summary
 

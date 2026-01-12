@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-08T17:17:30Z
 updated_at: 2025-12-05T02:01:50Z
 url: https://github.com/astral-sh/ty/issues/957
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # set a lower limit for size of literal unions we will do precise type inference of operations for
 
 ---
 
-_Issue opened by @carljm on 2025-08-08 17:17_
+_@carljm_
 
 For example, we know that if we add `Literal[1, 2]` to `Literal[3]`, we get `Literal[4, 5]`. But in some cyclic scenarios, something like `x += 1` can result in an ever-expanding union (until we hit the Salsa cycle limit). We currently set an overall limit of 100 on literal-unions size, which is lower than the 200 Salsa cycle limit, but this still means we can iterate 100 times before we converge -- that's a lot.
 

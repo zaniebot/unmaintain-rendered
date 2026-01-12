@@ -12,14 +12,14 @@ head: konsti/default-run-puffin
 created_at: 2024-01-08T12:43:25Z
 updated_at: 2024-01-08T12:49:07Z
 url: https://github.com/astral-sh/uv/pull/831
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # `cargo run` run `puffin` by default
 
 ---
 
-_Pull request opened by @konstin on 2024-01-08 12:43_
+_@konstin_
 
 `cargo run` now runs `puffin` by default. `cargo run --bin puffin-dev` remains working.
 

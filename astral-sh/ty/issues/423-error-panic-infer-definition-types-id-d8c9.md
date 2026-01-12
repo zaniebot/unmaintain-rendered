@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T12:13:31Z
 updated_at: 2025-08-15T15:14:42Z
 url: https://github.com/astral-sh/ty/issues/423
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # error[panic]: infer_definition_types(Id(d8c9)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @Alicimo on 2025-05-16 12:13_
+_@Alicimo_
 
 ### Summary
 

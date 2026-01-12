@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T06:28:48Z
 updated_at: 2025-01-16T03:38:10Z
 url: https://github.com/astral-sh/uv/issues/6302
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # ✨ How to define custom commands like `tool.rye.scripts`
 
 ---
 
-_Issue opened by @jd-solanki on 2024-08-21 06:28_
+_@jd-solanki_
 
 Hi 👋🏻 
 

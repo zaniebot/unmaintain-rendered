@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-13T15:17:56Z
 updated_at: 2023-07-18T01:25:44Z
 url: https://github.com/astral-sh/ruff/issues/5739
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff fails when a directory ends with .py
 
 ---
 
-_Issue opened by @konstin on 2023-07-13 15:17_
+_@konstin_
 
 Ruff gets confused when a directory is named like a python file (ends with `.py`):
 

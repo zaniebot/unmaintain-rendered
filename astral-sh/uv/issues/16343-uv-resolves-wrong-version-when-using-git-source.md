@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T13:15:34Z
 updated_at: 2025-10-23T10:41:35Z
 url: https://github.com/astral-sh/uv/issues/16343
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # uv resolves wrong version when using git source with a subdirectory
 
 ---
 
-_Issue opened by @Jonas-Puksta-Sensmetry on 2025-10-17 13:15_
+_@Jonas-Puksta-Sensmetry_
 
 ### Summary
 

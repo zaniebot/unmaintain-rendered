@@ -13,14 +13,14 @@ head: konsti/10s-http-timeout
 created_at: 2024-04-22T12:18:23Z
 updated_at: 2024-04-23T18:12:51Z
 url: https://github.com/astral-sh/uv/pull/3182
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # 30s default http read timeout
 
 ---
 
-_Pull request opened by @konstin on 2024-04-22 12:18_
+_@konstin_
 
 Since we're now using read timeouts and not total timeouts, we can use a lower threshold, a single read shouldn't take 5 min (and not even 10s).
 

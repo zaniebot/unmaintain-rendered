@@ -13,14 +13,14 @@ head: improve-add-rule-script
 created_at: 2023-03-24T22:02:06Z
 updated_at: 2023-03-25T16:45:14Z
 url: https://github.com/astral-sh/ruff/pull/3725
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Improve add_rule.py and add_plugin.py scripts
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 22:02_
+_@JonathanPlasse_
 
 Will sort the plugin section if unsorted.
 `add_rule.py` now separate `--code` into `--prefix` and `--code`.

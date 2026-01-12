@@ -13,14 +13,14 @@ head: charlie/set
 created_at: 2024-03-12T19:13:40Z
 updated_at: 2024-03-18T10:25:49Z
 url: https://github.com/astral-sh/ruff/pull/10370
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Sort hash maps in `Settings` display
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-12 19:13_
+_@charliermarsh_
 
 ## Summary
 

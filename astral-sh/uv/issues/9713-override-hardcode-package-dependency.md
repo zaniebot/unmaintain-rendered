@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-08T03:34:49Z
 updated_at: 2025-10-31T14:19:12Z
 url: https://github.com/astral-sh/uv/issues/9713
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Override hardcode package-dependency?
 
 ---
 
-_Issue opened by @woutervh on 2024-12-08 03:34_
+_@woutervh_
 
 I'm trying to find a simple solution for this problem:
 

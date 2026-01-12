@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T23:15:34Z
 updated_at: 2025-08-20T18:33:24Z
 url: https://github.com/astral-sh/ty/issues/980
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty wrongly respects `dataclasses.field` as a field specifier for a custom `dataclass_transform`
 
 ---
 
-_Issue opened by @carljm on 2025-08-13 23:15_
+_@carljm_
 
 In this example code:
 

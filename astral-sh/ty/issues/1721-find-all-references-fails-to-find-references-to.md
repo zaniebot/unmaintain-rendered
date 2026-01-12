@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T14:00:38Z
 updated_at: 2026-01-10T16:28:40Z
 url: https://github.com/astral-sh/ty/issues/1721
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # "Find all references" Fails to find references to `UserDict` in homeassistant
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-02 14:00_
+_@MichaReiser_
 
 ### Summary
 

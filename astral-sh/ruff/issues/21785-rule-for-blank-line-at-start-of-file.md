@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T06:06:46Z
 updated_at: 2025-12-04T09:20:15Z
 url: https://github.com/astral-sh/ruff/issues/21785
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rule for blank line at start of file
 
 ---
 
-_Issue opened by @skissane-medallia on 2025-12-04 06:06_
+_@skissane-medallia_
 
 ### Summary
 

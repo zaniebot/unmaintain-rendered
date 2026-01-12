@@ -13,14 +13,14 @@ head: single-item-membership-test-missing-set-constructor
 created_at: 2025-01-28T20:14:50Z
 updated_at: 2025-05-04T18:26:57Z
 url: https://github.com/astral-sh/ruff/pull/15793
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`refurb`] Add coverage for using set(...) in `single-item-membership-test` (`FURB171`)
 
 ---
 
-_Pull request opened by @naslundx on 2025-01-28 20:14_
+_@naslundx_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

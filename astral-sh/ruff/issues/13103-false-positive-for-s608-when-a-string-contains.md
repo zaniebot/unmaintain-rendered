@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T04:46:53Z
 updated_at: 2025-04-16T23:48:45Z
 url: https://github.com/astral-sh/ruff/issues/13103
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False positive for `S608` when a string contains "delete from"
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-26 04:46_
+_@dhruvmanila_
 
 i have this problem :(
 

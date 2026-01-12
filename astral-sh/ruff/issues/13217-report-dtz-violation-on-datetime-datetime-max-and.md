@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T18:46:46Z
 updated_at: 2024-11-12T20:36:09Z
 url: https://github.com/astral-sh/ruff/issues/13217
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Report DTZ violation on `datetime.datetime.max` and `min`
 
 ---
 
-_Issue opened by @ItsDrike on 2024-09-02 18:46_
+_@ItsDrike_
 
 Currently, ruff is properly detecting most cases where a `datetime` object is used without a timezone info, however, it does not report the use of `datetime.max` or `datetime.min`, which are constants that don't have a timezone set, which could end up causing pretty annoying and confusing issues.
 

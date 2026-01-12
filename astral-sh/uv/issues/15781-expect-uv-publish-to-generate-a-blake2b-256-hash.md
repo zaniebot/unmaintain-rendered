@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T02:14:35Z
 updated_at: 2025-09-11T20:17:08Z
 url: https://github.com/astral-sh/uv/issues/15781
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Expect `uv publish` to generate a `blake2b-256` hash value and send it to the server
 
 ---
 
-_Issue opened by @wenxue202012 on 2025-09-11 02:14_
+_@wenxue202012_
 
 ### Summary
 

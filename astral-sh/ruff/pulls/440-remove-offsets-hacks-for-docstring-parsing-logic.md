@@ -12,14 +12,14 @@ head: charlie/quotes
 created_at: 2022-10-16T16:47:51Z
 updated_at: 2022-10-16T17:43:31Z
 url: https://github.com/astral-sh/ruff/pull/440
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Remove offsets hacks for docstring parsing logic
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-16 16:47_
+_@charliermarsh_
 
 _No description provided._
 

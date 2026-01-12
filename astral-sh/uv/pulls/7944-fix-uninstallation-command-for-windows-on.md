@@ -14,14 +14,14 @@ head: main
 created_at: 2024-10-05T17:28:28Z
 updated_at: 2024-10-06T14:29:18Z
 url: https://github.com/astral-sh/uv/pull/7944
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # fix uninstallation command for windows on documentation
 
 ---
 
-_Pull request opened by @dunossauro on 2024-10-05 17:28_
+_@dunossauro_
 
 ## Summary
 

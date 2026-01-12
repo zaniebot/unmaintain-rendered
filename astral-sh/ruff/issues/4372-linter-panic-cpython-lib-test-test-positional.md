@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-11T12:39:44Z
 updated_at: 2023-05-11T16:47:49Z
 url: https://github.com/astral-sh/ruff/issues/4372
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] cpython\Lib\test\test_positional_only_arg.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-11 12:39_
+_@FishAlchemist_
 
 ## Ruff Version
 https://github.com/charliermarsh/ruff/tree/be6e00ef6e5efea68a8a1a0093611b26142b753d

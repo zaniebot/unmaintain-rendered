@@ -14,14 +14,14 @@ head: zb/docs-python-versions
 created_at: 2024-07-09T20:32:39Z
 updated_at: 2024-07-10T01:07:28Z
 url: https://github.com/astral-sh/uv/pull/4943
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Update "Python versions" documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 20:32_
+_@zanieb_
 
 Replacing references to toolchains
 

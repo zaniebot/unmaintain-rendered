@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-01T12:33:01Z
 updated_at: 2025-02-01T17:34:17Z
 url: https://github.com/astral-sh/uv/issues/11152
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # feature request: `uv install`
 
 ---
 
-_Issue opened by @MilkClouds on 2025-02-01 12:33_
+_@MilkClouds_
 
 ### Summary
 

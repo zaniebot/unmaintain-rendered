@@ -12,14 +12,14 @@ head: tryceratops-TC400
 created_at: 2023-01-23T22:57:33Z
 updated_at: 2023-01-26T00:42:19Z
 url: https://github.com/astral-sh/ruff/pull/2115
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implementing TRY400
 
 ---
 
-_Pull request opened by @Flowake on 2023-01-23 22:57_
+_@Flowake_
 
 Currently implementing TRY400 (#2056)
 

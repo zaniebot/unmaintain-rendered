@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T17:01:56Z
 updated_at: 2025-10-15T00:57:13Z
 url: https://github.com/astral-sh/uv/issues/16297
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Python crash due to stale version
 
 ---
 
-_Issue opened by @brian316 on 2025-10-14 17:01_
+_@brian316_
 
 ### Summary
 

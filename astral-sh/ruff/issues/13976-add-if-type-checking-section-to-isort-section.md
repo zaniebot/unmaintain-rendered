@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T04:42:26Z
 updated_at: 2025-01-27T15:31:15Z
 url: https://github.com/astral-sh/ruff/issues/13976
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # add if TYPE_CHECKING section to isort section order
 
 ---
 
-_Issue opened by @fraser-langton on 2024-10-29 04:42_
+_@fraser-langton_
 
 I am not sure if I just can't find the docs, because I expected this to be included in either I (isort) or TCH (flake8-type-checking).
 

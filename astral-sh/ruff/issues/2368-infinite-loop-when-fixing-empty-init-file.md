@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T22:50:35Z
 updated_at: 2023-01-30T23:01:39Z
 url: https://github.com/astral-sh/ruff/issues/2368
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [Infinite loop] When fixing empty __init__ file.
 
 ---
 
-_Issue opened by @Alphasite on 2023-01-30 22:50_
+_@Alphasite_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

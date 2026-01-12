@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-17T14:35:07Z
 updated_at: 2024-12-17T15:05:06Z
 url: https://github.com/astral-sh/uv/issues/9973
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # uv sync behavior (related to uv remove)
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-12-17 14:35_
+_@inoa-jboliveira_
 
 Hi everyone,
 This might be expected behavior, but it is slightly inconvenient on the rare occasions I use `uv remove`. I in fact would like to learn more about the internal mechanism here (skip to end for TLDR).

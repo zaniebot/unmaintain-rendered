@@ -11,14 +11,14 @@ head: fix(#18945)/SIM109-fix-reorders-statements-incorrectly
 created_at: 2025-08-05T07:14:14Z
 updated_at: 2025-11-21T08:07:18Z
 url: https://github.com/astral-sh/ruff/pull/19753
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # :bug: Fix SIM109 to preserve expression order in boolean operations
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-05 07:14_
+_@mikeleppane_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

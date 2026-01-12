@@ -14,14 +14,14 @@ head: fix/ruff-19561
 created_at: 2025-08-05T18:48:53Z
 updated_at: 2025-08-20T19:22:04Z
 url: https://github.com/astral-sh/ruff/pull/19769
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`pyupgrade`] Avoid reporting `__future__` features as unnecessary when they are used (`UP010`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-08-05 18:48_
+_@IDrokin117_
 
 ## Summary
 Resolves #19561

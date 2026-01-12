@@ -13,14 +13,14 @@ head: alex/for-loop-types
 created_at: 2024-09-01T15:39:12Z
 updated_at: 2024-09-04T10:29:19Z
 url: https://github.com/astral-sh/ruff/pull/13195
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add type inference for basic `for` loops
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-01 15:39_
+_@AlexWaygood_
 
 ## Summary
 

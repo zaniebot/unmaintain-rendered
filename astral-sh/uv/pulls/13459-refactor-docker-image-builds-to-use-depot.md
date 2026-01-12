@@ -12,14 +12,14 @@ head: kg/switch-docker-image-builds-to-depot
 created_at: 2025-05-14T18:21:39Z
 updated_at: 2025-06-19T18:18:01Z
 url: https://github.com/astral-sh/uv/pull/13459
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Refactor Docker image builds to use Depot
 
 ---
 
-_Pull request opened by @kylegalbraith on 2025-05-14 18:21_
+_@kylegalbraith_
 
 ## Summary
 

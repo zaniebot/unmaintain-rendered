@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-25T00:54:08Z
 updated_at: 2025-03-25T23:23:11Z
 url: https://github.com/astral-sh/ruff/issues/16961
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Adapt `DOC501` and `DOC502` to handle exception groups
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-25 00:54_
+_@gtkacz_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: red-knot
 created_at: 2024-04-09T16:27:18Z
 updated_at: 2024-04-27T08:43:16Z
 url: https://github.com/astral-sh/ruff/pull/10849
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Kick off Red-knot
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-09 16:27_
+_@MichaReiser_
 
 The beginning of multifile analysis. We'll eventually merge this with ruff but are using a dedicated crate to flesh out the basic infrastructure first.
 

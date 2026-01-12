@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T11:58:58Z
 updated_at: 2025-10-02T08:41:26Z
 url: https://github.com/astral-sh/uv/issues/12777
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # `uv venv` doesn't create python3 python3.xx entrypoint aliases on Windows
 
 ---
 
-_Issue opened by @yashgorana on 2025-04-09 11:58_
+_@yashgorana_
 
 ### Summary
 

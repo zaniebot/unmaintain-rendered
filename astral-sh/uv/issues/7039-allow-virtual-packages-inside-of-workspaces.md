@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T17:34:44Z
 updated_at: 2024-09-04T18:43:11Z
 url: https://github.com/astral-sh/uv/issues/7039
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Allow virtual packages inside of workspaces
 
 ---
 
-_Issue opened by @quodlibetor on 2024-09-04 17:34_
+_@quodlibetor_
 
 I have several directories that hold static data that just exists to be fed into some tool defined elsewhere -- documentation, source definitions for codegen, etc.
 

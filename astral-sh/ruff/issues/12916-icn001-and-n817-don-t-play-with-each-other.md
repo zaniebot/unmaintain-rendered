@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T05:51:14Z
 updated_at: 2024-08-19T19:37:10Z
 url: https://github.com/astral-sh/ruff/issues/12916
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ICN001 and N817 don't play with each other
 
 ---
 
-_Issue opened by @ember91 on 2024-08-16 05:51_
+_@ember91_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

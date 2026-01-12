@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T16:32:38Z
 updated_at: 2026-01-07T10:48:31Z
 url: https://github.com/astral-sh/uv/issues/17178
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # No environment marker specific to Termux
 
 ---
 
-_Issue opened by @City-of-Memphis-Wastewater on 2025-12-18 16:32_
+_@City-of-Memphis-Wastewater_
 
 
 

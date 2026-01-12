@@ -13,14 +13,14 @@ head: discard-prereleases
 created_at: 2024-10-08T20:47:33Z
 updated_at: 2024-10-09T01:55:12Z
 url: https://github.com/astral-sh/uv/pull/8020
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Add prerelease compatibility check
 
 ---
 
-_Pull request opened by @trag1c on 2024-10-08 20:47_
+_@trag1c_
 
 ## Summary
 

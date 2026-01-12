@@ -14,14 +14,14 @@ head: charlie/pep
 created_at: 2023-05-14T03:05:56Z
 updated_at: 2023-05-20T21:51:44Z
 url: https://github.com/astral-sh/ruff/pull/4427
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`pyupgrade`] Remove `keep-runtime-typing` setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-14 03:05_
+_@charliermarsh_
 
 ## Summary
 

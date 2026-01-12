@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T09:34:25Z
 updated_at: 2025-01-31T20:15:11Z
 url: https://github.com/astral-sh/uv/issues/11129
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # `uvr` alias for `uv run`
 
 ---
 
-_Issue opened by @2-5 on 2025-01-31 09:34_
+_@2-5_
 
 ### Summary
 

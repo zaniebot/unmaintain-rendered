@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T22:56:03Z
 updated_at: 2024-10-16T00:46:56Z
 url: https://github.com/astral-sh/uv/issues/7147
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # in a workspace local package A cannot depend on local package B as a build-system requirement
 
 ---
 
-_Issue opened by @mmerickel on 2024-09-06 22:56_
+_@mmerickel_
 
 This is the same issue as on https://github.com/astral-sh/rye/issues/813 but I'm reproducing it here using uv's new workspace features to replace rye with uv.
 

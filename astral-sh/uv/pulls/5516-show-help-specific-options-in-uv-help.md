@@ -13,14 +13,14 @@ head: uv-help-help
 created_at: 2024-07-28T14:35:15Z
 updated_at: 2024-07-31T17:11:36Z
 url: https://github.com/astral-sh/uv/pull/5516
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Show help specific options in `uv help`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-28 14:35_
+_@eth3lbert_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-13T15:13:41Z
 updated_at: 2023-11-14T11:55:29Z
 url: https://github.com/astral-sh/ruff/issues/7947
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Insert two empty lines after top level suite with trailing def/class
 
 ---
 
-_Issue opened by @konstin on 2023-10-13 15:13_
+_@konstin_
 
 Black formats
 ```python

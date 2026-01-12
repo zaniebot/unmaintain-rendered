@@ -13,14 +13,14 @@ head: ibraheem/constrained-typevar-solving
 created_at: 2025-10-31T14:27:47Z
 updated_at: 2025-10-31T14:58:11Z
 url: https://github.com/astral-sh/ruff/pull/21165
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Prefer exact matches when solving constrained type variables
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-31 14:27_
+_@ibraheemdev_
 
 ## Summary
 

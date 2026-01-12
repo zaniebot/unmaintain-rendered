@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T21:13:41Z
 updated_at: 2025-09-25T14:37:40Z
 url: https://github.com/astral-sh/uv/issues/6722
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uv sync --no-install-package` without pyproject.toml
 
 ---
 
-_Issue opened by @sbidoul on 2024-08-27 21:13_
+_@sbidoul_
 
 On the same theme as #6685 and #6573, but easier to solve?
 

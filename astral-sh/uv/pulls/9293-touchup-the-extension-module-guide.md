@@ -13,14 +13,14 @@ head: zb/init-ext
 created_at: 2024-11-20T22:02:38Z
 updated_at: 2024-11-21T14:24:22Z
 url: https://github.com/astral-sh/uv/pull/9293
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Touchup the extension module guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-20 22:02_
+_@zanieb_
 
 _No description provided._
 

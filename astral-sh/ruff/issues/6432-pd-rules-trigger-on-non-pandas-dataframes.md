@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-08-09T00:06:09Z
 updated_at: 2025-09-05T00:21:36Z
 url: https://github.com/astral-sh/ruff/issues/6432
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PD rules trigger on non-Pandas DataFrames
 
 ---
 
-_Issue opened by @beskep on 2023-08-09 00:06_
+_@beskep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

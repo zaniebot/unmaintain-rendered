@@ -13,14 +13,14 @@ head: single-it-binary
 created_at: 2024-10-10T14:18:05Z
 updated_at: 2024-10-11T14:41:39Z
 url: https://github.com/astral-sh/uv/pull/8093
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # chore: Move all integration tests to a single binary
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-10-10 14:18_
+_@fasterthanlime_
 
 As per https://matklad.github.io/2021/02/27/delete-cargo-integration-tests.html
 

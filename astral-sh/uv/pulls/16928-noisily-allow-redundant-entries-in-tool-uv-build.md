@@ -13,14 +13,14 @@ head: dedupe-mod-names
 created_at: 2025-12-02T12:08:50Z
 updated_at: 2025-12-03T11:10:44Z
 url: https://github.com/astral-sh/uv/pull/16928
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Noisily allow redundant entries in `tool.uv.build-backend.module-name`
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-02 12:08_
+_@EliteTK_
 
 ## Summary
 

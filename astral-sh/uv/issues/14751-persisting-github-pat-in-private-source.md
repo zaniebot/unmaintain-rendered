@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-20T12:16:36Z
 updated_at: 2025-07-22T09:18:48Z
 url: https://github.com/astral-sh/uv/issues/14751
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # persisting github pat in private source dependency url in `uv.lock`
 
 ---
 
-_Issue opened by @giuliano-97 on 2025-07-20 12:16_
+_@giuliano-97_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T19:11:50Z
 updated_at: 2025-11-25T21:30:00Z
 url: https://github.com/astral-sh/ty/issues/1632
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `typing.Annotated` error happens with `ty` but not `pyright` with `jaxtyping`
 
 ---
 
-_Issue opened by @toddpocuca on 2025-11-25 19:11_
+_@toddpocuca_
 
 ### Summary
 

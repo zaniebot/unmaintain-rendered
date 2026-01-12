@@ -13,14 +13,14 @@ head: zb/uv-platform
 created_at: 2025-07-26T20:27:10Z
 updated_at: 2025-07-28T19:12:05Z
 url: https://github.com/astral-sh/uv/pull/14918
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Split platform detection code into a dedicated `uv-platform` crate
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-26 20:27_
+_@zanieb_
 
 In service of some subsequent work...
 

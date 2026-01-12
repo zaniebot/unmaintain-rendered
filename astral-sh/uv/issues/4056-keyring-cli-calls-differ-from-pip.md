@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T17:34:55Z
 updated_at: 2025-04-03T14:09:37Z
 url: https://github.com/astral-sh/uv/issues/4056
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Keyring cli calls differ from pip
 
 ---
 
-_Issue opened by @Rogdham on 2024-06-05 17:34_
+_@Rogdham_
 
 I have noticed a difference in the calls to `keyring` between `pip` and `uv` version 0.2.6 on Linux.
 

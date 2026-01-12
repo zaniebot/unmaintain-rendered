@@ -13,14 +13,14 @@ head: charlie/er
 created_at: 2024-09-10T01:10:08Z
 updated_at: 2024-09-10T01:36:46Z
 url: https://github.com/astral-sh/uv/pull/7238
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Break up `uv-build/src/lib.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 01:10_
+_@charliermarsh_
 
 _No description provided._
 

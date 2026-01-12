@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T11:49:48Z
 updated_at: 2025-11-14T12:58:01Z
 url: https://github.com/astral-sh/ty/issues/535
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Auto-import action
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 11:49_
+_@MichaReiser_
 
 Provide an action to automatically import a symbol if it isn't defined in the current module but exported by another module.
 

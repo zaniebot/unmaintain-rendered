@@ -13,14 +13,14 @@ head: alex/redknot-attributes
 created_at: 2024-12-19T14:36:32Z
 updated_at: 2024-12-19T15:54:04Z
 url: https://github.com/astral-sh/ruff/pull/15066
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Reduce TODOs in `Type::member()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-19 14:36_
+_@AlexWaygood_
 
 ## Summary
 

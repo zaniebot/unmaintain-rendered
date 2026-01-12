@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T10:29:53Z
 updated_at: 2025-06-19T20:28:29Z
 url: https://github.com/astral-sh/ruff/issues/18746
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [ENH] Formatter: consider removing spaced around `=` for `TypeVar` defaults (PEP 696)
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-06-18 10:29_
+_@randolf-scholz_
 
 PEP 696 introduced default values for type variables. When using in combination with PEP 695 syntax, the formatter currently always inserts spaces around the equal sign: [ruff-playground](https://play.ruff.rs/7e0f829e-94db-47f9-9490-39e1a37b65ca)
 

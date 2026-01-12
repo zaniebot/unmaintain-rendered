@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T05:36:06Z
 updated_at: 2025-12-30T04:01:38Z
 url: https://github.com/astral-sh/uv/issues/6672
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv .venv and VS Code Jupyter Notebook: Connecting to Kernel
 
 ---
 
-_Issue opened by @wes-stone on 2024-08-27 05:36_
+_@wes-stone_
 
 Hello and thanks for all the great work with uv! 
 

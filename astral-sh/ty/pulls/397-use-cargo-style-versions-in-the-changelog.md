@@ -12,14 +12,14 @@ head: zb/fix-cl
 created_at: 2025-05-14T21:14:21Z
 updated_at: 2025-05-15T00:36:47Z
 url: https://github.com/astral-sh/ty/pull/397
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use Cargo-style versions in the changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-14 21:14_
+_@zanieb_
 
 Uses https://github.com/zanieb/rooster/pull/70, which should fix dist's changelog -> GitHub Release propagation.
 

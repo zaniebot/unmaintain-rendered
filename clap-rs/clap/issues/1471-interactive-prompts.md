@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-05-13T18:42:33Z
 updated_at: 2020-02-01T19:25:02Z
 url: https://github.com/clap-rs/clap/issues/1471
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Interactive prompts
 
 ---
 
-_Issue opened by @bedax on 2019-05-13 18:42_
+_@bedax_
 
 Hello, I have a small command line program which I always forget the options for and have to use --help for every time. After looking at darcs recently it occurred to me that it would be nice to get a series of prompts when clap can't parse the input. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T11:57:58Z
 updated_at: 2024-10-14T14:54:21Z
 url: https://github.com/astral-sh/uv/issues/8126
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Using UV to manage the system installation
 
 ---
 
-_Issue opened by @guillemc23 on 2024-10-11 11:57_
+_@guillemc23_
 
 I don't think that this is an issue, it's most likely a question.
 

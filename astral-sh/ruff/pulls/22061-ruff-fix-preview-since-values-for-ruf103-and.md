@@ -13,14 +13,14 @@ head: amy/rule-preview-since
 created_at: 2025-12-18T21:01:31Z
 updated_at: 2025-12-18T21:18:06Z
 url: https://github.com/astral-sh/ruff/pull/22061
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [`ruff`] fix preview-since values for `RUF103` and `RUF104`
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-18 21:01_
+_@amyreese_
 
 Missed including this in the follow-up on #21908 
 

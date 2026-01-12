@@ -14,14 +14,14 @@ head: charlie/diff
 created_at: 2023-10-03T18:40:01Z
 updated_at: 2023-10-04T14:05:26Z
 url: https://github.com/astral-sh/ruff/pull/7789
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Show per-cell diffs when analyzing notebooks over `stdin`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-03 18:40_
+_@charliermarsh_
 
 ## Summary
 

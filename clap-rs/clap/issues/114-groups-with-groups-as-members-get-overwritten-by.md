@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-09T16:12:22Z
 updated_at: 2015-05-10T18:48:01Z
 url: https://github.com/clap-rs/clap/issues/114
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Groups with groups as members get overwritten by child group members
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-09 16:12_
+_@kbknapp_
 
 I.e.
 

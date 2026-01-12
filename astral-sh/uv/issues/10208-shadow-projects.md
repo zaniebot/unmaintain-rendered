@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T21:59:56Z
 updated_at: 2025-06-17T00:05:08Z
 url: https://github.com/astral-sh/uv/issues/10208
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Shadow projects
 
 ---
 
-_Issue opened by @T-256 on 2024-12-27 21:59_
+_@T-256_
 
 Opened this to discuss and get comments about implementing new kind of projects rather than standard `project` defined in `pyproject.toml`.
 

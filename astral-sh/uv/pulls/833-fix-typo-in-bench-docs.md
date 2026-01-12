@@ -12,14 +12,14 @@ head: bojan/fix-bench-docs
 created_at: 2024-01-08T15:46:58Z
 updated_at: 2024-01-08T17:35:28Z
 url: https://github.com/astral-sh/uv/pull/833
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Fix typo in bench docs
 
 ---
 
-_Pull request opened by @bojanserafimov on 2024-01-08 15:46_
+_@bojanserafimov_
 
 Add missing /bench in the requirements path
 

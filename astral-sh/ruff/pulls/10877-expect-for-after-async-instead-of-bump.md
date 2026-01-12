@@ -15,14 +15,14 @@ head: dhruv/async-for-panic
 created_at: 2024-04-11T12:44:37Z
 updated_at: 2024-04-19T10:41:36Z
 url: https://github.com/astral-sh/ruff/pull/10877
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Expect `for` after `async` instead of `bump`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-11 12:44_
+_@dhruvmanila_
 
 _No description provided._
 

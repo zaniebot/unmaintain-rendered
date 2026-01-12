@@ -13,14 +13,14 @@ head: zb/rev
 created_at: 2024-09-21T03:30:32Z
 updated_at: 2024-09-21T12:36:04Z
 url: https://github.com/astral-sh/uv/pull/7608
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Revert "Treat invalid platform as more compatible than invalid Python (#7556)"
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-21 03:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7606
 

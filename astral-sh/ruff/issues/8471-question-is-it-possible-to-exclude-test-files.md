@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T13:22:04Z
 updated_at: 2023-11-03T15:37:32Z
 url: https://github.com/astral-sh/ruff/issues/8471
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Question: is it possible to exclude test files specifically for pydocstyle 
 
 ---
 
-_Issue opened by @neutrinoceros on 2023-11-03 13:22_
+_@neutrinoceros_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

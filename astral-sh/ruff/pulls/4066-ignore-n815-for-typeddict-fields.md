@@ -12,14 +12,14 @@ head: ignore-n815-for-typed-dict
 created_at: 2023-04-22T15:59:31Z
 updated_at: 2023-04-23T04:59:49Z
 url: https://github.com/astral-sh/ruff/pull/4066
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore `N815` for `TypedDict` fields
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-22 15:59_
+_@JonathanPlasse_
 
 - Close #4014
 

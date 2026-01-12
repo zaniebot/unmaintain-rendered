@@ -13,14 +13,14 @@ head: charlie/allowed-urls
 created_at: 2024-04-02T02:27:28Z
 updated_at: 2024-04-02T23:36:36Z
 url: https://github.com/astral-sh/uv/pull/2769
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Allow conflicting Git URLs that refer to the same commit SHA
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 02:27_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T04:45:56Z
 updated_at: 2025-02-26T15:30:46Z
 url: https://github.com/astral-sh/uv/issues/11790
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # uv can't install packages with very long version numbers
 
 ---
 
-_Issue opened by @nkitsaini on 2025-02-26 04:45_
+_@nkitsaini_
 
 ### Summary
 NOTE: This has not been fixed yet, see comment below.

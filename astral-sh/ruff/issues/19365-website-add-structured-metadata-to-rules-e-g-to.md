@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T16:50:36Z
 updated_at: 2025-10-27T16:12:00Z
 url: https://github.com/astral-sh/ruff/issues/19365
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [website]: Add structured metadata to rules, e.g. to indicate which version a rule was introduced in
 
 ---
 
-_Issue opened by @corneliusroemer on 2025-07-15 16:50_
+_@corneliusroemer_
 
 Turning this comment into a separate issue:
 

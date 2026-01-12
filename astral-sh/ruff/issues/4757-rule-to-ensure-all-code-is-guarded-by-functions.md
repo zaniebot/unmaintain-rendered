@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-31T14:41:04Z
 updated_at: 2025-08-23T15:44:10Z
 url: https://github.com/astral-sh/ruff/issues/4757
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Rule to ensure all code is guarded by functions or __main__
 
 ---
 
-_Issue opened by @quassy on 2023-05-31 14:41_
+_@quassy_
 
 I believe there is a flake8 plugn for this but I can't find it, also not a rule for ruff: Quite often I have to make sure that to avoid unintended side effects of imports all regular code should be guarded by functions, classes or `if __name__ == "__main__":`
 

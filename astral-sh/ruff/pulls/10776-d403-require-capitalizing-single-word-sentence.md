@@ -13,14 +13,14 @@ head: d403-single-word
 created_at: 2024-04-04T16:20:35Z
 updated_at: 2024-04-05T06:44:53Z
 url: https://github.com/astral-sh/ruff/pull/10776
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # D403: Require capitalizing single word sentence
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-04 16:20_
+_@MichaReiser_
 
 ## Summary
 

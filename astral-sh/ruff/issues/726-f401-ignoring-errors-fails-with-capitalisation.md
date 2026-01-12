@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-13T20:01:59Z
 updated_at: 2022-11-14T01:34:42Z
 url: https://github.com/astral-sh/ruff/issues/726
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F401: Ignoring errors fails with capitalisation
 
 ---
 
-_Issue opened by @AA-Turner on 2022-11-13 20:01_
+_@AA-Turner_
 
 Ignoring errors on a line-by-line basis should work with any capitalisation of `#noqa`, in my projects I tend to use `#NoQA`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T18:39:03Z
 updated_at: 2023-10-31T18:55:45Z
 url: https://github.com/astral-sh/ruff/issues/8364
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Docs for file-level error suppression do not match error report
 
 ---
 
-_Issue opened by @doolio on 2023-10-30 18:39_
+_@doolio_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

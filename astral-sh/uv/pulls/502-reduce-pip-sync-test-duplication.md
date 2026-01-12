@@ -12,14 +12,14 @@ head: test-duplication
 created_at: 2023-11-27T10:14:08Z
 updated_at: 2023-11-27T10:21:41Z
 url: https://github.com/astral-sh/uv/pull/502
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Reduce pip_sync test duplication
 
 ---
 
-_Pull request opened by @konstin on 2023-11-27 10:14_
+_@konstin_
 
 Move venv creation and running python to check the installation into function instead of copy&pasting them every time
 

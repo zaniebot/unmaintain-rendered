@@ -12,14 +12,14 @@ head: charlie/fix-all
 created_at: 2023-06-01T02:16:10Z
 updated_at: 2023-06-01T02:51:35Z
 url: https://github.com/astral-sh/ruff/pull/4772
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use `ALL` in `fixable` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 02:16_
+_@charliermarsh_
 
 It's confusing to enumerate all codes here, and often gets out-of-date.
 

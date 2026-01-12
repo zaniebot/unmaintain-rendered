@@ -13,14 +13,14 @@ head: rc-extension-ruf015
 created_at: 2024-02-27T22:21:25Z
 updated_at: 2024-02-28T00:29:31Z
 url: https://github.com/astral-sh/ruff/pull/10148
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`ruff`] Expand rule for `list(iterable).pop(0)` idiom (`RUF015`)
 
 ---
 
-_Pull request opened by @robincaloudis on 2024-02-27 22:21_
+_@robincaloudis_
 
 ## Summary
 

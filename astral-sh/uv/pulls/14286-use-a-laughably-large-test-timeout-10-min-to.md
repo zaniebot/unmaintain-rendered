@@ -12,14 +12,14 @@ head: jack/laughably_large_test_timeout
 created_at: 2025-06-26T17:35:26Z
 updated_at: 2025-06-26T17:53:30Z
 url: https://github.com/astral-sh/uv/pull/14286
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # use a laughably large test timeout (10 min) to unbreak CI
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-26 17:35_
+_@oconnor663_
 
 Two minutes wasn't enough here: https://github.com/astral-sh/uv/pull/14170
 

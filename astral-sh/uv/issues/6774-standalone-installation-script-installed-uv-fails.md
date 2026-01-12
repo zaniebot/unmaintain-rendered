@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T20:54:40Z
 updated_at: 2024-12-04T01:26:34Z
 url: https://github.com/astral-sh/uv/issues/6774
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Standalone installation script installed `uv` fails to `uv self update`
 
 ---
 
-_Issue opened by @scienceplease on 2024-08-28 20:54_
+_@scienceplease_
 
 Recent versions of `uv` have not been able to `uv self update` despite being installed via the standalone installation script. I have not been able to pinpoint the issue to anything in particular on my system. All relevant information below:
 

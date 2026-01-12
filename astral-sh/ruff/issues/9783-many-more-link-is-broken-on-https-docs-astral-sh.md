@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T11:00:16Z
 updated_at: 2024-02-02T14:32:24Z
 url: https://github.com/astral-sh/ruff/issues/9783
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # "many more" link is broken on https://docs.astral.sh/ruff/
 
 ---
 
-_Issue opened by @graingert on 2024-02-02 11:00_
+_@graingert_
 
 Going to https://docs.astral.sh/ruff/ and clicking "many more" doesn't go anywhere
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-26T21:51:24Z
 updated_at: 2024-07-01T01:55:50Z
 url: https://github.com/astral-sh/ruff/issues/12054
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New check: B039 
 
 ---
 
-_Issue opened by @Zac-HD on 2024-06-26 21:51_
+_@Zac-HD_
 
 https://github.com/PyCQA/flake8-bugbear/pull/476
 

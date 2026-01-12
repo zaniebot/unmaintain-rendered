@@ -14,14 +14,14 @@ head: geofft/nvidiactl-ioctl
 created_at: 2025-07-19T06:50:04Z
 updated_at: 2025-08-07T16:45:27Z
 url: https://github.com/astral-sh/uv/pull/14743
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Directly ask the NVIDIA kernel driver what version it is
 
 ---
 
-_Pull request opened by @geofft on 2025-07-19 06:50_
+_@geofft_
 
 This is the same API called by `nvidia-smi`, but doing it ourselves is both much faster and more robust to installation conditions (e.g., nvidia-smi not being installed).
 

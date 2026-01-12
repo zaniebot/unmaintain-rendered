@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-23T19:07:44Z
 updated_at: 2024-06-07T22:42:33Z
 url: https://github.com/astral-sh/uv/issues/1932
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Private dependency in pyproject.toml does not resolve
 
 ---
 
-_Issue opened by @meridionaljet on 2024-02-23 19:07_
+_@meridionaljet_
 
 Platform: Linux
 uv version: 0.1.10

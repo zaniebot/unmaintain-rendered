@@ -12,14 +12,14 @@ head: zb/client-response-type
 created_at: 2023-11-30T20:20:12Z
 updated_at: 2023-12-07T17:04:49Z
 url: https://github.com/astral-sh/uv/pull/522
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Parse `SimpleJson` into categorized data in the client
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-30 20:20_
+_@zanieb_
 
 Extends #517 with a suggestion from @konstin to parse the `SimpleJson` into an intermediate type `SimpleMetadata(BTreeMap<Version, VersionFiles>)` before converting to a `VersionMap`. This reduces the number of times we need to parse the response. Additionally, we cache the parsed response now instead of `SimpleJson`.
 

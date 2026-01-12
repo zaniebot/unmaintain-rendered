@@ -13,14 +13,14 @@ head: micha/post-init-default
 created_at: 2025-01-08T13:44:11Z
 updated_at: 2025-01-08T14:40:06Z
 url: https://github.com/astral-sh/ruff/pull/15352
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`ruff`] Stabilize `post-init-default` (RUF033)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 13:44_
+_@MichaReiser_
 
 ## Summary
 

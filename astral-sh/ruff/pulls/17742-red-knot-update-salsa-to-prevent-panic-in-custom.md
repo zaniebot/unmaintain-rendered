@@ -13,14 +13,14 @@ head: micha/update-salsa-panic
 created_at: 2025-04-30T16:04:55Z
 updated_at: 2025-04-30T16:19:09Z
 url: https://github.com/astral-sh/ruff/pull/17742
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Update salsa to prevent panic in custom panic-handler
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-30 16:04_
+_@MichaReiser_
 
 ## Summary
 Pulls in https://github.com/salsa-rs/salsa/pull/835

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-10T22:01:23Z
 updated_at: 2024-07-12T02:26:17Z
 url: https://github.com/astral-sh/uv/issues/4979
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uvx` should suggest valid commands when command is not found
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 22:01_
+_@zanieb_
 
 e.g.
 

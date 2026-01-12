@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T09:46:50Z
 updated_at: 2024-02-16T21:16:33Z
 url: https://github.com/astral-sh/uv/issues/1463
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # query values not preserved in urls
 
 ---
 
-_Issue opened by @janbernloehr on 2024-02-16 09:46_
+_@janbernloehr_
 
 When specifying a requirement using a url containing a query string
 ```

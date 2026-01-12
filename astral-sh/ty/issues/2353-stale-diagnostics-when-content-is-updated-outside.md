@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T05:37:17Z
 updated_at: 2026-01-06T10:52:54Z
 url: https://github.com/astral-sh/ty/issues/2353
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stale diagnostics when content is updated outside the editor
 
 ---
 
-_Issue opened by @dhruvmanila on 2026-01-06 05:37_
+_@dhruvmanila_
 
 ### Summary
 

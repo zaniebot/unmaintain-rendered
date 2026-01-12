@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-02-06T01:52:29Z
 updated_at: 2025-02-06T01:59:56Z
 url: https://github.com/astral-sh/uv/pull/11271
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # add pip install setuptools in flash-attn docs
 
 ---
 
-_Pull request opened by @samsja on 2025-02-06 01:52_
+_@samsja_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

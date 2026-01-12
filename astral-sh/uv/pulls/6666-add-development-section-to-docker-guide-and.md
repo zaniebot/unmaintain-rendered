@@ -13,14 +13,14 @@ head: zb/docker-docs-new
 created_at: 2024-08-27T01:42:51Z
 updated_at: 2024-08-27T11:41:46Z
 url: https://github.com/astral-sh/uv/pull/6666
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Add development section to Docker guide and reference new example project
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 01:42_
+_@zanieb_
 
 _No description provided._
 

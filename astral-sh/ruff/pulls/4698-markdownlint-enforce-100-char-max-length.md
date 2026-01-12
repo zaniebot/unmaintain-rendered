@@ -12,14 +12,14 @@ head: markdown-formatting
 created_at: 2023-05-28T23:52:09Z
 updated_at: 2023-05-29T02:46:02Z
 url: https://github.com/astral-sh/ruff/pull/4698
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # markdownlint: enforce 100 char max length
 
 ---
 
-_Pull request opened by @jlaneve on 2023-05-28 23:52_
+_@jlaneve_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

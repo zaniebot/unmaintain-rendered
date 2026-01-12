@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T08:45:21Z
 updated_at: 2025-11-13T14:38:11Z
 url: https://github.com/astral-sh/ty/issues/444
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] Panic 'too many cycle iterations' for recursive star import
 
 ---
 
-_Issue opened by @anatoli-tsinovoy on 2025-05-19 08:45_
+_@anatoli-tsinovoy_
 
 Hi, I'm experiencing the following panic when trying to use [construct](https://github.com/construct/construct), ([pypi](https://pypi.org/project/construct/)).
 

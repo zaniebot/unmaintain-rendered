@@ -13,14 +13,14 @@ head: charlie/hf
 created_at: 2025-07-21T19:38:02Z
 updated_at: 2025-07-21T20:55:34Z
 url: https://github.com/astral-sh/uv/pull/14797
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Add support for `HF_TOKEN`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 19:38_
+_@charliermarsh_
 
 ## Summary
 

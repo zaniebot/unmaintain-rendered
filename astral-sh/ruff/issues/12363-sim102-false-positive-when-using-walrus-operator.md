@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T13:01:07Z
 updated_at: 2024-07-17T14:07:04Z
 url: https://github.com/astral-sh/ruff/issues/12363
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `SIM102` false positive when using walrus operator
 
 ---
 
-_Issue opened by @adam-sikora on 2024-07-17 13:01_
+_@adam-sikora_
 
 The following code snippet does not pass validation for rule `SIM102` (Use a single if statement instead of nested if statements)
 ```

@@ -12,14 +12,14 @@ head: zb/venv-doc
 created_at: 2024-05-13T13:24:23Z
 updated_at: 2024-05-22T14:21:38Z
 url: https://github.com/astral-sh/uv/pull/3544
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Add example of creating another virtual environment name
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-13 13:24_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/3540
 

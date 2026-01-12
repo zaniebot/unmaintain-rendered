@@ -14,14 +14,14 @@ head: fix-19348
 created_at: 2025-07-15T21:29:45Z
 updated_at: 2025-07-29T19:31:11Z
 url: https://github.com/astral-sh/ruff/pull/19378
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [`pyupgrade`] Fix `UP030` to avoid modifying double curly braces in format strings
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-15 21:29_
+_@danparizher_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/is-macro-0.x-lockfile
 created_at: 2024-11-11T00:20:48Z
 updated_at: 2024-11-11T00:46:49Z
 url: https://github.com/astral-sh/ruff/pull/14248
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Update Rust crate is-macro to v0.3.7
 
 ---
 
-_Pull request opened by @renovate on 2024-11-11 00:20_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T16:15:41Z
 updated_at: 2025-11-18T16:10:23Z
 url: https://github.com/astral-sh/ty/issues/227
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Do not treat nominal types inheriting from `Any` as fully static
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-04 16:15_
+_@sharkdp_
 
 We currently don't understand that classes like `class C(Any): ...` represent non-fully-static types. This is captured in the following TODO comment:
 

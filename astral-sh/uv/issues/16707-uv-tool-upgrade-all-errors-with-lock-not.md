@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T16:40:54Z
 updated_at: 2025-11-18T13:27:26Z
 url: https://github.com/astral-sh/uv/issues/16707
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # `uv tool upgrade --all` errors with `lock() not supported` on Termux
 
 ---
 
-_Issue opened by @Jisu-Woniu on 2025-11-12 16:40_
+_@Jisu-Woniu_
 
 ### Summary
 

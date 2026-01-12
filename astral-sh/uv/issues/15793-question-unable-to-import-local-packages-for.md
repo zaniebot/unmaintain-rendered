@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T16:18:17Z
 updated_at: 2025-09-14T16:24:22Z
 url: https://github.com/astral-sh/uv/issues/15793
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # [Question] Unable to import local packages for running pytest
 
 ---
 
-_Issue opened by @vaibhavmano on 2025-09-11 16:18_
+_@vaibhavmano_
 
 ### Question
 

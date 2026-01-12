@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T22:17:57Z
 updated_at: 2023-02-07T02:14:56Z
 url: https://github.com/astral-sh/ruff/issues/2612
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `ignore-names` doesn't seem to work for me
 
 ---
 
-_Issue opened by @tmke8 on 2023-02-06 22:17_
+_@tmke8_
 
 I have code similar to this:
 ```python

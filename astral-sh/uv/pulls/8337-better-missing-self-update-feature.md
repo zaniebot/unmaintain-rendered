@@ -14,14 +14,14 @@ head: konsti/missing-self-update
 created_at: 2024-10-18T16:06:56Z
 updated_at: 2025-04-08T09:00:15Z
 url: https://github.com/astral-sh/uv/pull/8337
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Better missing self update feature
 
 ---
 
-_Pull request opened by @konstin on 2024-10-18 16:06_
+_@konstin_
 
 Show the user a proper error message when built without self-update instead of pretending the feature doesn't exist.
 

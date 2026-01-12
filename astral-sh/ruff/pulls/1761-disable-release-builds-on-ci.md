@@ -12,14 +12,14 @@ head: charlie/release
 created_at: 2023-01-10T02:20:41Z
 updated_at: 2023-01-10T12:33:04Z
 url: https://github.com/astral-sh/ruff/pull/1761
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Disable release builds on CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-10 02:20_
+_@charliermarsh_
 
 _No description provided._
 

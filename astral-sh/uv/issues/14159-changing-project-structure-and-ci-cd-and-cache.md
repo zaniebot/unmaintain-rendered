@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T15:26:11Z
 updated_at: 2025-06-22T19:36:14Z
 url: https://github.com/astral-sh/uv/issues/14159
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # changing project structure and CI/CD and cache?
 
 ---
 
-_Issue opened by @gsal on 2025-06-20 15:26_
+_@gsal_
 
 ### Question
 

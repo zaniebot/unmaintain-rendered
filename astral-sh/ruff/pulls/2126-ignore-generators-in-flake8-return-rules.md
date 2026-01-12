@@ -12,14 +12,14 @@ head: charlie/gen
 created_at: 2023-01-24T13:08:13Z
 updated_at: 2023-01-24T13:15:27Z
 url: https://github.com/astral-sh/ruff/pull/2126
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Ignore generators in flake8-return rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-24 13:08_
+_@charliermarsh_
 
 We could do a better job of handling them, but they cause too many false-positives right now.
 

@@ -13,14 +13,14 @@ head: charlie/cache2
 created_at: 2024-07-22T13:30:15Z
 updated_at: 2024-07-22T13:46:26Z
 url: https://github.com/astral-sh/uv/pull/5286
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Avoid cache prune failure due to removed interpreter
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 13:30_
+_@charliermarsh_
 
 ## Summary
 

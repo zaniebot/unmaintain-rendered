@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T14:42:18Z
 updated_at: 2024-09-13T22:21:29Z
 url: https://github.com/astral-sh/ruff/issues/13347
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Detecting possible NameError: name 'var' is not defined
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-09-13 14:42_
+_@ashrub-holvi_
 
 Hi,
 

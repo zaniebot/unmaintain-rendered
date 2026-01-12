@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-24T07:45:59Z
 updated_at: 2024-09-14T22:16:19Z
 url: https://github.com/astral-sh/uv/issues/6573
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Allow `uv sync --no-install-project` without relying on `pyproject.toml`
 
 ---
 
-_Issue opened by @albertferras-vrf on 2024-08-24 07:45_
+_@albertferras-vrf_
 
 I'm trying the new feature in today's `0.3.3` release: `uv sync --no-install-project` but I could not make it work since it keeps failing because `pyproject.toml` file is not found
 

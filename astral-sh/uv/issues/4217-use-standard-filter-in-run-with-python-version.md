@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T20:46:33Z
 updated_at: 2024-07-02T20:51:53Z
 url: https://github.com/astral-sh/uv/issues/4217
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Use standard filter in `run_with_python_version` test
 
 ---
 
-_Issue opened by @zanieb on 2024-06-10 20:46_
+_@zanieb_
 
 It looks like this test rolls its own patch version filtering but we have filtering mechanisms for this
 

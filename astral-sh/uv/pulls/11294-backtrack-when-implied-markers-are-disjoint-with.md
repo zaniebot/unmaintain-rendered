@@ -12,14 +12,14 @@ head: charlie/skip-implied
 created_at: 2025-02-06T19:59:37Z
 updated_at: 2025-05-07T20:33:31Z
 url: https://github.com/astral-sh/uv/pull/11294
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Backtrack when implied markers are disjoint with target platform
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-06 19:59_
+_@charliermarsh_
 
 ## Summary
 

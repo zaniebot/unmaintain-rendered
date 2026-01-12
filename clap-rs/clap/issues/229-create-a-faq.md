@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-06T15:58:41Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/229
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Create a FAQ
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-06 15:58_
+_@kbknapp_
 
 Link to it in the readme, but the FAQ should be a `FAQ.md` in the root directory.
 - [x] Create a Wiki Page

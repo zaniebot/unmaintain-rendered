@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2025-07-02T21:50:58Z
 updated_at: 2025-07-03T15:53:57Z
 url: https://github.com/astral-sh/ruff/pull/19104
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`flake8-pytest-style`] Make example error out-of-the-box (`PT023`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-02 21:50_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

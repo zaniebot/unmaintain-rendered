@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T02:32:35Z
 updated_at: 2024-10-10T19:39:46Z
 url: https://github.com/astral-sh/uv/issues/8066
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # [QUESTION] 3.13 docker images
 
 ---
 
-_Issue opened by @chrisemke on 2024-10-10 02:32_
+_@chrisemke_
 
 Is there any plan about the docker 3.13 images? I wish to know better the workflow around this, thanks guys nice work!
 

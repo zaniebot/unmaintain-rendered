@@ -12,14 +12,14 @@ head: ag/universal-filter-logs
 created_at: 2024-06-18T13:56:29Z
 updated_at: 2024-06-18T15:15:17Z
 url: https://github.com/astral-sh/uv/pull/4381
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # uv-resolver: add some tracing logs for when we filter requirements
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-18 13:56_
+_@BurntSushi_
 
 Specifically, these are emitted when requirements fail to satisfy
 `Requires-Python` or the markers associated with the current fork in the

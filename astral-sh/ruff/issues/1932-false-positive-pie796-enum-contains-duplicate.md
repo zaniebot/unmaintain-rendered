@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-17T15:45:44Z
 updated_at: 2023-01-17T16:14:13Z
 url: https://github.com/astral-sh/ruff/issues/1932
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False-positive PIE796: Enum contains duplicate value: `enum.auto()`
 
 ---
 
-_Issue opened by @actionless on 2023-01-17 15:45_
+_@actionless_
 
 ruff 0.0.224
 

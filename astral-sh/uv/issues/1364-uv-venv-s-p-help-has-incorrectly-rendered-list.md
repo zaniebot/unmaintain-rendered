@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T21:48:37Z
 updated_at: 2024-02-16T14:36:38Z
 url: https://github.com/astral-sh/uv/issues/1364
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv venv`'s `-p` help has incorrectly rendered list
 
 ---
 
-_Issue opened by @trag1c on 2024-02-15 21:48_
+_@trag1c_
 
 ```
 λ ~ :: uv help venv

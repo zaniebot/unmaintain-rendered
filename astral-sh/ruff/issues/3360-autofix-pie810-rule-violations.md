@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-06T15:34:13Z
 updated_at: 2023-03-10T05:17:24Z
 url: https://github.com/astral-sh/ruff/issues/3360
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Autofix PIE810 rule violations
 
 ---
 
-_Issue opened by @Skylion007 on 2023-03-06 15:34_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

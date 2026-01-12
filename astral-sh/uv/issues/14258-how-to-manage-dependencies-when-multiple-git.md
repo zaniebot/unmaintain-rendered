@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T10:27:34Z
 updated_at: 2025-06-25T13:04:56Z
 url: https://github.com/astral-sh/uv/issues/14258
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # How to manage dependencies when multiple git source package depends on another ?
 
 ---
 
-_Issue opened by @patacoing on 2025-06-25 10:27_
+_@patacoing_
 
 ### Question
 

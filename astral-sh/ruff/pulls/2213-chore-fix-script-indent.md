@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-26T18:33:45Z
 updated_at: 2023-01-26T19:02:07Z
 url: https://github.com/astral-sh/ruff/pull/2213
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # chore: fix script indent
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-26 18:33_
+_@sbrugman_
 
 _No description provided._
 

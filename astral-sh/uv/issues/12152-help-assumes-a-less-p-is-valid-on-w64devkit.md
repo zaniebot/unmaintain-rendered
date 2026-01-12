@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T18:46:35Z
 updated_at: 2026-01-09T15:00:05Z
 url: https://github.com/astral-sh/uv/issues/12152
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Help assumes a less -P is valid on w64devkit installation
 
 ---
 
-_Issue opened by @m-z-b on 2025-03-13 18:46_
+_@m-z-b_
 
 ### Summary
 

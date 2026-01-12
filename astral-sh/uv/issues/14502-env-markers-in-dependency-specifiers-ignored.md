@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T09:24:48Z
 updated_at: 2025-07-17T19:06:58Z
 url: https://github.com/astral-sh/uv/issues/14502
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Env markers in dependency specifiers ignored?
 
 ---
 
-_Issue opened by @evertlammerts on 2025-07-08 09:24_
+_@evertlammerts_
 
 ### Question
 

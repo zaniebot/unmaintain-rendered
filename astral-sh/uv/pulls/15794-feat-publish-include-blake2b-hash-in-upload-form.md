@@ -12,14 +12,14 @@ head: ww/publish-blake2
 created_at: 2025-09-11T16:36:56Z
 updated_at: 2025-09-11T20:17:08Z
 url: https://github.com/astral-sh/uv/pull/15794
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # feat(publish): include blake2b hash in upload form
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-11 16:36_
+_@woodruffw_
 
 ## Summary
 

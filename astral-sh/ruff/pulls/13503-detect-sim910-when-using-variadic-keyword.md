@@ -13,14 +13,14 @@ head: zb/sim910-dict
 created_at: 2024-09-24T14:10:21Z
 updated_at: 2024-09-25T15:03:02Z
 url: https://github.com/astral-sh/ruff/pull/13503
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Detect SIM910 when using variadic keyword arguments, i.e., `**kwargs`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 14:10_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13493
 

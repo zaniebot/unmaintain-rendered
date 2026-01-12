@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-19T02:28:41Z
 updated_at: 2024-01-12T17:44:21Z
 url: https://github.com/astral-sh/uv/issues/131
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support hash-checking mode in `pip-compile` output
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 02:28_
+_@charliermarsh_
 
 _No description provided._
 

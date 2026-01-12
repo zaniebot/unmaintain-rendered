@@ -13,14 +13,14 @@ head: AlexWaygood-patch-1
 created_at: 2024-02-28T17:35:13Z
 updated_at: 2024-02-28T17:53:48Z
 url: https://github.com/astral-sh/ruff/pull/10155
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix the ecosystem check
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-02-28 17:35_
+_@AlexWaygood_
 
 We need to bump the number of files we expect to have formatting violations following #10093
 

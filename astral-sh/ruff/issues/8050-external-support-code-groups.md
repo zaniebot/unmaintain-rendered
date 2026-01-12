@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-18T17:04:06Z
 updated_at: 2023-10-27T10:48:03Z
 url: https://github.com/astral-sh/ruff/issues/8050
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `external` support code groups
 
 ---
 
-_Issue opened by @Avasam on 2023-10-18 17:04_
+_@Avasam_
 
 Instead of the following configuration:
 ```toml

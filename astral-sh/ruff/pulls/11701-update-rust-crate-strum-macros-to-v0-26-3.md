@@ -13,14 +13,14 @@ head: renovate/strum
 created_at: 2024-06-03T00:58:44Z
 updated_at: 2024-06-03T01:18:40Z
 url: https://github.com/astral-sh/ruff/pull/11701
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update Rust crate strum_macros to v0.26.3
 
 ---
 
-_Pull request opened by @renovate on 2024-06-03 00:58_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

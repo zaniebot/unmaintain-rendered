@@ -13,14 +13,14 @@ head: zb/build-backend-docs
 created_at: 2025-06-30T20:43:06Z
 updated_at: 2025-07-01T08:44:24Z
 url: https://github.com/astral-sh/uv/pull/14376
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Edits to the build backend documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-30 20:43_
+_@zanieb_
 
 _No description provided._
 

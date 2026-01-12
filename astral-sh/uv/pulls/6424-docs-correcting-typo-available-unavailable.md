@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-22T12:04:37Z
 updated_at: 2024-08-22T17:38:28Z
 url: https://github.com/astral-sh/uv/pull/6424
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # docs: correcting typo "available" -> "unavailable"
 
 ---
 
-_Pull request opened by @villares on 2024-08-22 12:04_
+_@villares_
 
 ".. if UNavailable, uv will download Python for you."
 

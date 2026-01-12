@@ -13,14 +13,14 @@ head: dhruv/notebook-output-test
 created_at: 2023-10-12T03:59:15Z
 updated_at: 2023-10-13T00:54:14Z
 url: https://github.com/astral-sh/ruff/pull/7925
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add test for Notebook text output
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-12 03:59_
+_@dhruvmanila_
 
 ## Summary
 

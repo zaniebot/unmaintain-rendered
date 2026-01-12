@@ -14,14 +14,14 @@ head: charlie/log
 created_at: 2023-07-13T23:03:00Z
 updated_at: 2023-07-24T04:52:04Z
 url: https://github.com/astral-sh/ruff/pull/5750
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Allow specification of `logging.Logger` re-exports via `logger-objects`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 23:03_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: y016-docs
 created_at: 2023-09-07T17:10:40Z
 updated_at: 2023-09-12T13:02:04Z
 url: https://github.com/astral-sh/ruff/pull/7225
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add documentation to `duplicate-union-member`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-07 17:10_
+_@tjkuson_
 
 ## Summary
 

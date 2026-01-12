@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T15:55:23Z
 updated_at: 2024-09-03T17:21:44Z
 url: https://github.com/astral-sh/uv/issues/6973
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Feature request: allow script definition for package
 
 ---
 
-_Issue opened by @marengaz on 2024-09-03 15:55_
+_@marengaz_
 
 hi all
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T10:57:11Z
 updated_at: 2024-12-26T17:00:49Z
 url: https://github.com/astral-sh/uv/issues/8001
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # torch + transitive dependency leads to unnecessary packages
 
 ---
 
-_Issue opened by @senysenyseny16 on 2024-10-08 10:57_
+_@senysenyseny16_
 
 Hello! I found that `uv` installs unnecessary (transitive) dependencies:
 

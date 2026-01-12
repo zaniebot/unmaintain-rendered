@@ -14,14 +14,14 @@ head: micha/corpus-test-ty-semantic
 created_at: 2025-06-10T11:51:15Z
 updated_at: 2025-06-11T06:55:32Z
 url: https://github.com/astral-sh/ruff/pull/18609
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # Move corpus tests to `ty_python_semantic`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-10 11:51_
+_@MichaReiser_
 
 This is slightly more annoying than I thought. The main reason the tests were in `ty_project` is that we have access to the `ProjectDatabase`. We don't have any such `Db` struct available in `ty_python_semantic` other than `TestDb` which is gated behind `cfg(test)` and integration tests can't enable individual features. 
 

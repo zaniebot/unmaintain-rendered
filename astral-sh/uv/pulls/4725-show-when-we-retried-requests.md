@@ -14,14 +14,14 @@ head: konsti/log-retries
 created_at: 2024-07-02T09:49:15Z
 updated_at: 2024-07-02T17:04:14Z
 url: https://github.com/astral-sh/uv/pull/4725
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Show when we retried requests
 
 ---
 
-_Pull request opened by @konstin on 2024-07-02 09:49_
+_@konstin_
 
 In #3514 and #2755, users had intermittent network errors, but it was not always clear whether we had already retried these requests or not. Building upon https://github.com/TrueLayer/reqwest-middleware/pull/159, this PR adds the number of retries to the error message, so we can see at first glance where we're missing retries and where we might need to change retry settings.
 

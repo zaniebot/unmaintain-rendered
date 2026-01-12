@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T09:45:14Z
 updated_at: 2025-12-17T19:45:06Z
 url: https://github.com/astral-sh/ty/issues/1993
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty gets stuck while checking `parver` package
 
 ---
 
-_Issue opened by @RazerM on 2025-12-17 09:45_
+_@RazerM_
 
 ### Summary
 

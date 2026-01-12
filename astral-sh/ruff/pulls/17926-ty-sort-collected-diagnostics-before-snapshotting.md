@@ -13,14 +13,14 @@ head: alex/mdtest-diagnostics-sorted
 created_at: 2025-05-07T17:05:37Z
 updated_at: 2025-05-07T17:29:55Z
 url: https://github.com/astral-sh/ruff/pull/17926
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Sort collected diagnostics before snapshotting them in mdtest
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-07 17:05_
+_@AlexWaygood_
 
 ## Summary
 

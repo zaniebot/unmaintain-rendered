@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-08T14:17:59Z
 updated_at: 2025-05-15T15:46:06Z
 url: https://github.com/astral-sh/ty/issues/274
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Improve diagnostics for failed call to overloaded function
 
 ---
 
-_Issue opened by @carljm on 2025-05-08 14:17_
+_@carljm_
 
 Currently we emit a very opaque "No overload of bound method `__init__` matches" diagnostic, with zero additional context: no reference to the called function, its overloads, what failed to match, etc.
 

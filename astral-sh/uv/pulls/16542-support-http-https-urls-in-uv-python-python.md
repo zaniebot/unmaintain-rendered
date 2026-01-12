@@ -12,14 +12,14 @@ head: remote-python-downloads-json-url
 created_at: 2025-10-31T21:51:37Z
 updated_at: 2025-11-14T22:51:48Z
 url: https://github.com/astral-sh/uv/pull/16542
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Support http/https URLs in `uv python --python-downloads-json-url`
 
 ---
 
-_Pull request opened by @MeitarR on 2025-10-31 21:51_
+_@MeitarR_
 
 continuation PR based on #14687
 

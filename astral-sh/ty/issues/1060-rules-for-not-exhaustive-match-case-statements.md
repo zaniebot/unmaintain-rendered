@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T12:56:22Z
 updated_at: 2026-01-09T02:27:10Z
 url: https://github.com/astral-sh/ty/issues/1060
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Rules for not exhaustive `match` case statements
 
 ---
 
-_Issue opened by @crispyricepc on 2025-08-20 12:56_
+_@crispyricepc_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: 20240708-1515
 created_at: 2024-07-08T13:18:24Z
 updated_at: 2024-07-09T06:21:58Z
 url: https://github.com/astral-sh/ruff/pull/12243
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-return`] Exempt properties from explicit return rule (`RET501`)
 
 ---
 
-_Pull request opened by @epenet on 2024-07-08 13:18_
+_@epenet_
 
 First contribution - apologies if something is missing
 

@@ -14,14 +14,14 @@ head: zsol/jj-yspoqwnxoqkt
 created_at: 2025-11-12T11:13:48Z
 updated_at: 2025-12-05T10:54:06Z
 url: https://github.com/astral-sh/uv/pull/16702
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Mark `uv pip` invocations in linehaul data
 
 ---
 
-_Pull request opened by @zsol on 2025-11-12 11:13_
+_@zsol_
 
 ## Summary
 

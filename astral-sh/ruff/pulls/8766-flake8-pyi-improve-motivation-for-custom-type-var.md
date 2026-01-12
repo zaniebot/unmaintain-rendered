@@ -13,14 +13,14 @@ head: charlie/pyi
 created_at: 2023-11-19T14:02:45Z
 updated_at: 2023-11-19T14:16:11Z
 url: https://github.com/astral-sh/ruff/pull/8766
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`flake8-pyi`] Improve motivation for `custom-type-var-return-type` (`PYI019`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 14:02_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8765.
 

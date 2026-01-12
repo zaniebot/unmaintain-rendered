@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T20:11:03Z
 updated_at: 2024-05-11T03:32:00Z
 url: https://github.com/astral-sh/uv/issues/3516
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Feature Request: Remove Unused Generated Hashes 
 
 ---
 
-_Issue opened by @MarioIshac on 2024-05-10 20:11_
+_@MarioIshac_
 
 From the README:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T04:48:41Z
 updated_at: 2025-04-11T06:18:38Z
 url: https://github.com/astral-sh/ruff/issues/16962
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Multilingual support for rules D400 and D415
 
 ---
 
-_Issue opened by @gakugaku on 2025-03-25 04:48_
+_@gakugaku_
 
 ### Summary
 

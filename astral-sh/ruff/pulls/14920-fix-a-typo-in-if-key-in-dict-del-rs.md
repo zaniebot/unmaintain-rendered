@@ -13,14 +13,14 @@ head: RUF051
 created_at: 2024-12-11T15:48:45Z
 updated_at: 2024-12-11T16:30:35Z
 url: https://github.com/astral-sh/ruff/pull/14920
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix a typo in `if_key_in_dict_del.rs`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-11 15:48_
+_@InSyncWithFoo_
 
 (Accidentally introduced in #14553).
 

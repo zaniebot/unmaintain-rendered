@@ -13,14 +13,14 @@ head: zb/native-keyring-prefix
 created_at: 2025-09-02T21:15:30Z
 updated_at: 2025-09-02T21:56:42Z
 url: https://github.com/astral-sh/uv/pull/15641
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Add test cases for URL matching with the native keyring
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-02 21:15_
+_@zanieb_
 
 _No description provided._
 

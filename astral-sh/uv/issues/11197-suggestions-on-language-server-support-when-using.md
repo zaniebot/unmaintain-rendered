@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T21:46:56Z
 updated_at: 2025-02-12T16:50:22Z
 url: https://github.com/astral-sh/uv/issues/11197
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Suggestions on language server support when using inline script metadata
 
 ---
 
-_Issue opened by @SamEdwardes on 2025-02-03 21:46_
+_@SamEdwardes_
 
 ### Question
 

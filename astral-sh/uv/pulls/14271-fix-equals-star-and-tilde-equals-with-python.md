@@ -13,14 +13,14 @@ head: konsti/fix-star-inequality-trailing-zeroes
 created_at: 2025-06-26T09:56:35Z
 updated_at: 2025-07-01T15:48:50Z
 url: https://github.com/astral-sh/uv/pull/14271
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Fix equals-star and tilde-equals with `python_version` and `python_full_version`
 
 ---
 
-_Pull request opened by @konstin on 2025-06-26 09:56_
+_@konstin_
 
 The marker display code assumes that all versions are normalized, in that all trailing zeroes are stripped. This is not the case for tilde-equals and equals-star versions, where the trailing zeroes (before the `.*`) are semantically relevant. This would cause path dependent-behavior where we would get a different marker string depending on whether a version with or without a trailing zero was added to the cache first.
 

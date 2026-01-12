@@ -13,14 +13,14 @@ head: docs/DTZ007
 created_at: 2023-08-22T07:56:05Z
 updated_at: 2023-08-31T02:58:11Z
 url: https://github.com/astral-sh/ruff/pull/6757
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add docs for `DTZ007`
 
 ---
 
-_Pull request opened by @klistwan on 2023-08-22 07:56_
+_@klistwan_
 
 Changes:
 - Adds docs for `DTZ007`

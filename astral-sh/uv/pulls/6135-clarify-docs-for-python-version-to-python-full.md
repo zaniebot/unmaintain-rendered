@@ -14,14 +14,14 @@ head: ibraheem/marker-python-versions
 created_at: 2024-08-16T02:16:40Z
 updated_at: 2024-08-16T21:34:15Z
 url: https://github.com/astral-sh/uv/pull/6135
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Clarify docs for `python_version` to `python_full_version` transformation
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-16 02:16_
+_@ibraheemdev_
 
 Follow up to https://github.com/astral-sh/uv/pull/6126.
 

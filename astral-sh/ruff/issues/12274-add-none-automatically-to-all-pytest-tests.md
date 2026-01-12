@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T12:16:22Z
 updated_at: 2024-07-10T12:54:37Z
 url: https://github.com/astral-sh/ruff/issues/12274
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add `-> None` automatically to all pytest tests
 
 ---
 
-_Issue opened by @chbndrhnns on 2024-07-10 12:16_
+_@chbndrhnns_
 
 When running mypy on a larger codebase with many tests, it will report missing `-> None` annotations on tests in strict mode.
 

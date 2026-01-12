@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T12:28:18Z
 updated_at: 2025-07-21T16:20:55Z
 url: https://github.com/astral-sh/ty/issues/863
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # VS Code lags when using workspace diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-21 12:28_
+_@MichaReiser_
 
 VS code starts to lag when using ty's workspace diagnostics if the project has many diagnostics. 
 

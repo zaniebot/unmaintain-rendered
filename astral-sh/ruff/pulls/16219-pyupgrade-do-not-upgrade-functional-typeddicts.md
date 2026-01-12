@@ -14,14 +14,14 @@ head: UP013-private-names
 created_at: 2025-02-17T18:32:22Z
 updated_at: 2025-02-18T13:07:07Z
 url: https://github.com/astral-sh/ruff/pull/16219
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`pyupgrade`] Do not upgrade functional TypedDicts with private field names to the class-based syntax (`UP013`)
 
 ---
 
-_Pull request opened by @sobolevn on 2025-02-17 18:32_
+_@sobolevn_
 
 ## Summary
 

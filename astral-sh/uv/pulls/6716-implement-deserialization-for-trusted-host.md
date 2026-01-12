@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-08-27T19:20:48Z
 updated_at: 2024-08-27T19:30:46Z
 url: https://github.com/astral-sh/uv/pull/6716
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Implement deserialization for trusted host
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 19:20_
+_@charliermarsh_
 
 _No description provided._
 

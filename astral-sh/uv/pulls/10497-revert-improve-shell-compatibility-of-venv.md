@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2025-01-11T14:10:02Z
 updated_at: 2025-01-11T14:23:09Z
 url: https://github.com/astral-sh/uv/pull/10497
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Revert "improve shell compatibility of venv activate scripts (#10397)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 14:10_
+_@charliermarsh_
 
 ## Summary
 

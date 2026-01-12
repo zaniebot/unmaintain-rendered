@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T20:27:15Z
 updated_at: 2025-05-30T06:51:51Z
 url: https://github.com/astral-sh/uv/issues/13666
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # uv unable to uninstall ruamel.yaml
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-05-26 20:27_
+_@hauntsaninja_
 
 The old ruamel.yaml sticks around after the following:
 ```

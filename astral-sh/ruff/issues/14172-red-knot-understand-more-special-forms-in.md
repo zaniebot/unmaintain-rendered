@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T16:50:08Z
 updated_at: 2024-12-13T17:54:22Z
 url: https://github.com/astral-sh/ruff/issues/14172
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] understand more special forms in annotation expressions
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 16:50_
+_@carljm_
 
 Feel free to create and link a sub-task to claim one of these to work on:
 

@@ -12,14 +12,14 @@ head: update-pylint-prefixes
 created_at: 2022-12-06T08:50:06Z
 updated_at: 2022-12-06T13:59:46Z
 url: https://github.com/astral-sh/ruff/pull/1105
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Update readme in order to match pylint prefixes
 
 ---
 
-_Pull request opened by @billou57 on 2022-12-06 08:50_
+_@billou57_
 
 Hello
 

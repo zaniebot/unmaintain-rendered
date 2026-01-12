@@ -12,14 +12,14 @@ head: charlie/hash
 created_at: 2023-11-01T20:38:55Z
 updated_at: 2023-11-01T23:41:46Z
 url: https://github.com/astral-sh/uv/pull/281
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Add stable hash crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-01 20:38_
+_@charliermarsh_
 
 This PR adds a `puffin-hash` crate that we can share across a variety of other crates to generate stable hashes.
 

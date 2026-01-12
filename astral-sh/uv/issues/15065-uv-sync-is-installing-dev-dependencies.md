@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T20:51:35Z
 updated_at: 2025-08-05T12:57:13Z
 url: https://github.com/astral-sh/uv/issues/15065
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # `uv sync` is installing dev-dependencies.
 
 ---
 
-_Issue opened by @pspino on 2025-08-04 20:51_
+_@pspino_
 
 ### Summary
 

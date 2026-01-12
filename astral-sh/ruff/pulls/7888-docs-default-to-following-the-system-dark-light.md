@@ -12,14 +12,14 @@ head: fix-theme-toggle
 created_at: 2023-10-10T07:36:00Z
 updated_at: 2023-10-10T21:02:29Z
 url: https://github.com/astral-sh/ruff/pull/7888
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [docs] Default to following the system dark/light mode
 
 ---
 
-_Pull request opened by @flying-sheep on 2023-10-10 07:36_
+_@flying-sheep_
 
 ## Summary
 

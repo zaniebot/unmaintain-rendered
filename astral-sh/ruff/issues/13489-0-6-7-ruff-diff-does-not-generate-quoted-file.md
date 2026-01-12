@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T21:50:29Z
 updated_at: 2025-04-16T17:42:17Z
 url: https://github.com/astral-sh/ruff/issues/13489
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # 0.6.7: `ruff --diff` does not generate quoted file name when file or directory contains spaces
 
 ---
 
-_Issue opened by @kloczek on 2024-09-23 21:50_
+_@kloczek_
 
 In such cases instead generate
 ```parch

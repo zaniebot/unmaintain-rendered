@@ -13,14 +13,14 @@ head: charlie/linguist
 created_at: 2024-12-13T22:08:40Z
 updated_at: 2024-12-13T22:17:24Z
 url: https://github.com/astral-sh/uv/pull/9890
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Mark `.inc` files as Rust for GitHub Linguist
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-13 22:08_
+_@charliermarsh_
 
 ## Summary
 

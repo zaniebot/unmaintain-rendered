@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T21:03:18Z
 updated_at: 2024-03-08T14:58:47Z
 url: https://github.com/astral-sh/uv/issues/1666
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Support alternative requirements file encodings
 
 ---
 
-_Issue opened by @zanieb on 2024-02-18 21:03_
+_@zanieb_
 
 e.g. `UTF16-LE`
 

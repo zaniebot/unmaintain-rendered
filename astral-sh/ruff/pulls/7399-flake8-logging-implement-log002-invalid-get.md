@@ -13,14 +13,14 @@ head: dhruv/log002
 created_at: 2023-09-15T04:44:00Z
 updated_at: 2023-09-16T16:21:31Z
 url: https://github.com/astral-sh/ruff/pull/7399
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`flake8-logging`] Implement `LOG002`: `invalid-get-logger-argument`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-15 04:44_
+_@dhruvmanila_
 
 ## Summary
 

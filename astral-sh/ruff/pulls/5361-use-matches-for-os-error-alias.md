@@ -13,14 +13,14 @@ head: charlie/matches
 created_at: 2023-06-26T01:47:49Z
 updated_at: 2023-06-26T02:21:51Z
 url: https://github.com/astral-sh/ruff/pull/5361
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use matches for `os-error-alias`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-26 01:47_
+_@charliermarsh_
 
 _No description provided._
 

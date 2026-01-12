@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-06T19:39:32Z
 updated_at: 2023-12-13T15:11:03Z
 url: https://github.com/astral-sh/uv/issues/579
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Failure to install `tomli` from source distribution
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-06 19:39_
+_@charliermarsh_
 
 Given `tomli @ https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz`:
 

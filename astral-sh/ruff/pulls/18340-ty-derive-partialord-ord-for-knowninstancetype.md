@@ -14,14 +14,14 @@ head: alex/knowninstance-ord
 created_at: 2025-05-27T18:17:01Z
 updated_at: 2025-05-27T18:37:02Z
 url: https://github.com/astral-sh/ruff/pull/18340
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Derive `PartialOrd, Ord` for `KnownInstanceType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-27 18:17_
+_@AlexWaygood_
 
 ## Summary
 

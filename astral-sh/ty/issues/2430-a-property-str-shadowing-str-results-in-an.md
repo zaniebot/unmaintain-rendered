@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T23:16:21Z
 updated_at: 2026-01-10T00:01:36Z
 url: https://github.com/astral-sh/ty/issues/2430
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # A property `str` shadowing str results in an invalid-type-form error
 
 ---
 
-_Issue opened by @rchui on 2026-01-09 23:16_
+_@rchui_
 
 ### Summary
 

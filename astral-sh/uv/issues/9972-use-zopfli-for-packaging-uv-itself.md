@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T13:52:01Z
 updated_at: 2024-12-17T14:30:48Z
 url: https://github.com/astral-sh/uv/issues/9972
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Use zopfli for packaging `uv` itself?
 
 ---
 
-_Issue opened by @akx on 2024-12-17 13:52_
+_@akx_
 
 It might be worth it to look at using `zopfli` when creating the tarballs that are uploaded as actual version releases.
 

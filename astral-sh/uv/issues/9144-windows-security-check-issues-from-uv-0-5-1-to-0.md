@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T09:01:34Z
 updated_at: 2024-12-10T16:47:03Z
 url: https://github.com/astral-sh/uv/issues/9144
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Windows security check issues from UV 0.5.1 to 0.5.2.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-11-15 09:01_
+_@FishAlchemist_
 
 ### winget-pkgs
 * https://github.com/microsoft/winget-pkgs/pull/190127 (x64 Windows Only)

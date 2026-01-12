@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T23:13:48Z
 updated_at: 2024-10-07T15:41:03Z
 url: https://github.com/astral-sh/ruff/issues/13621
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Autofix or better error message/docs for PERF401 + walrus operator
 
 ---
 
-_Issue opened by @jamesbraza on 2024-10-03 23:13_
+_@jamesbraza_
 
 With this code:
 

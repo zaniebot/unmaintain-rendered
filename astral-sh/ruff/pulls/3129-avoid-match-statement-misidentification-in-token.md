@@ -13,14 +13,14 @@ head: charlie/match
 created_at: 2023-02-22T15:39:27Z
 updated_at: 2023-02-22T15:44:48Z
 url: https://github.com/astral-sh/ruff/pull/3129
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid match statement misidentification in token rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 15:39_
+_@charliermarsh_
 
 Closes #3108.
 

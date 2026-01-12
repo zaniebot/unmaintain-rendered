@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T13:13:48Z
 updated_at: 2025-03-18T22:23:23Z
 url: https://github.com/astral-sh/uv/issues/12003
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # uv cache prune removes binaries that are symlinked to
 
 ---
 
-_Issue opened by @eblade on 2025-03-06 13:13_
+_@eblade_
 
 ### Summary
 

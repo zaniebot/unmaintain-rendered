@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T02:01:06Z
 updated_at: 2024-01-19T20:13:09Z
 url: https://github.com/astral-sh/uv/issues/992
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Re-enable cross-compilation builds in release pipeline
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-19 02:01_
+_@charliermarsh_
 
 Right now, the `linux-cross` builds are all failing, so they're disabled: https://github.com/astral-sh/puffin/actions/runs/7575202511/job/20631293066.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-18T16:30:04Z
 updated_at: 2025-04-18T16:30:10Z
 url: https://github.com/astral-sh/uv/issues/12972
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Consider skipping empty or invalid `.python-version` files during discovery
 
 ---
 
-_Issue opened by @zanieb on 2025-04-18 16:30_
+_@zanieb_
 
 We currently stop discovery at empty `.python-version` files, should we fallback to the global configuration or search for additional version files in parent directories?
 

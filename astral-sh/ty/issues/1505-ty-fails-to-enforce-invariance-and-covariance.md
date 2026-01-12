@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-09T12:16:40Z
 updated_at: 2025-11-09T16:53:06Z
 url: https://github.com/astral-sh/ty/issues/1505
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty fails to enforce invariance and covariance rules for generic containers (List vs Sequence)
 
 ---
 
-_Issue opened by @FHaggs on 2025-11-09 12:16_
+_@FHaggs_
 
 ### Summary
 

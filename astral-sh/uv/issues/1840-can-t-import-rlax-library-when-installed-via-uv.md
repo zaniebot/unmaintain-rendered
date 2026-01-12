@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T22:53:53Z
 updated_at: 2024-02-24T13:31:36Z
 url: https://github.com/astral-sh/uv/issues/1840
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Can't import rlax library when installed via uv install
 
 ---
 
-_Issue opened by @Artur-Galstyan on 2024-02-21 22:53_
+_@Artur-Galstyan_
 
 Hi there. First off, I'm loving this project!
 

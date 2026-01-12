@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T09:54:41Z
 updated_at: 2024-08-01T03:11:02Z
 url: https://github.com/astral-sh/ruff/issues/11508
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 #  ruff check fix E305 "blank-lines-after-function-or-class" adds incorrectly placed newlines.
 
 ---
 
-_Issue opened by @kaddkaka on 2024-05-23 09:54_
+_@kaddkaka_
 
 ruff check fix E305 "blank-lines-after-function-or-class" adds incorrectly placed newlines in ruff version `0.4.4`
 

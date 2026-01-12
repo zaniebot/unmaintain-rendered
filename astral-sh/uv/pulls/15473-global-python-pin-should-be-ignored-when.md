@@ -11,14 +11,14 @@ head: pin
 created_at: 2025-08-23T17:36:36Z
 updated_at: 2025-08-30T08:30:00Z
 url: https://github.com/astral-sh/uv/pull/15473
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Global Python Pin should be ignored when incompatible with project
 
 ---
 
-_Pull request opened by @harsh-ps-2003 on 2025-08-23 17:36_
+_@harsh-ps-2003_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

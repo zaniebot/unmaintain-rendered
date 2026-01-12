@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T14:24:03Z
 updated_at: 2025-07-30T15:19:29Z
 url: https://github.com/astral-sh/uv/issues/14974
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # `required-environments`: only require that some extras build in some environments
 
 ---
 
-_Issue opened by @tbrugere on 2025-07-30 14:24_
+_@tbrugere_
 
 ### Question
 

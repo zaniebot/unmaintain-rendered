@@ -13,14 +13,14 @@ head: builtins-3
 created_at: 2024-04-16T20:43:36Z
 updated_at: 2024-04-17T06:50:14Z
 url: https://github.com/astral-sh/ruff/pull/10982
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Change more usages of `SemanticModel::is_builtin` to use `resolve_builtin_symbol` or `match_builtin_expr`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-16 20:43_
+_@AlexWaygood_
 
 ## Summary
 

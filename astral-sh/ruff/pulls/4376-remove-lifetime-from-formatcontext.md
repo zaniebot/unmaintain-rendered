@@ -13,14 +13,14 @@ head: remove-lifetime-from-format-context
 created_at: 2023-05-11T15:38:19Z
 updated_at: 2023-05-11T16:11:18Z
 url: https://github.com/astral-sh/ruff/pull/4376
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove lifetime from FormatContext
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-11 15:38_
+_@MichaReiser_
 
 _No description provided._
 

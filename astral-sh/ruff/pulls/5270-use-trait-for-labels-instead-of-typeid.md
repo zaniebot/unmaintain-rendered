@@ -14,14 +14,14 @@ head: remove-typeid-from-labelid
 created_at: 2023-06-21T21:15:46Z
 updated_at: 2023-06-21T21:42:46Z
 url: https://github.com/astral-sh/ruff/pull/5270
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use trait for labels instead of `TypeId`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-21 21:15_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

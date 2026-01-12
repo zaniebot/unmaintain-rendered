@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T12:21:59Z
 updated_at: 2025-08-22T16:00:21Z
 url: https://github.com/astral-sh/uv/issues/14680
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # uvx does not find newly published package version on private index
 
 ---
 
-_Issue opened by @dev10231235 on 2025-07-17 12:21_
+_@dev10231235_
 
 ### Summary
 

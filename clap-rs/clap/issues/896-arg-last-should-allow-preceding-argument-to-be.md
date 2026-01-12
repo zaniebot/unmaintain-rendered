@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-03-12T10:31:34Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/896
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Arg::last should allow preceding argument to be Arg::multiple(true)
 
 ---
 
-_Issue opened by @nagisa on 2017-03-12 10:31_
+_@nagisa_
 
 In current master a `Arg::last(true)` is available which makes a positional argument of the form:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T17:53:29Z
 updated_at: 2024-05-27T16:56:33Z
 url: https://github.com/astral-sh/uv/issues/3842
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # onnxruntime doesn't resolve using python-platform x86_64-unknown-linux-gnu
 
 ---
 
-_Issue opened by @rbtcollins on 2024-05-26 17:53_
+_@rbtcollins_
 
 uv version `0.2.3`
 Originally discussed https://github.com/microsoft/onnxruntime/issues/20825

@@ -14,14 +14,14 @@ head: ibraheem/bidirectional-inference
 created_at: 2025-09-10T18:37:22Z
 updated_at: 2025-09-15T10:04:48Z
 url: https://github.com/astral-sh/ruff/pull/20337
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Integrate type context for bidirectional inference
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-10 18:37_
+_@ibraheemdev_
 
 ## Summary
 

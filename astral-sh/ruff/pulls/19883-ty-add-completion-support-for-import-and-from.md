@@ -14,14 +14,14 @@ head: ag/import-module
 created_at: 2025-08-12T18:42:00Z
 updated_at: 2025-08-20T14:27:56Z
 url: https://github.com/astral-sh/ruff/pull/19883
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Add completion support for `import` and `from ... import` statements
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-12 18:42_
+_@BurntSushi_
 
 This required adding what is effectively a second implementation of
 module resolution in order to facilitate asking for "list modules"

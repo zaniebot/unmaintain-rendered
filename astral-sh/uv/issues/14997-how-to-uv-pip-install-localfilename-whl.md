@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T15:03:55Z
 updated_at: 2025-07-31T15:46:57Z
 url: https://github.com/astral-sh/uv/issues/14997
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # How to "uv pip install localfilename.whl"
 
 ---
 
-_Issue opened by @Alexisxty on 2025-07-31 15:03_
+_@Alexisxty_
 
 ### Question
 

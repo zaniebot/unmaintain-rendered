@@ -13,14 +13,14 @@ head: PT016-doc
 created_at: 2023-07-23T02:30:14Z
 updated_at: 2023-07-24T01:52:52Z
 url: https://github.com/astral-sh/ruff/pull/6005
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add `PT016` documentation
 
 ---
 
-_Pull request opened by @harupy on 2023-07-23 02:30_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

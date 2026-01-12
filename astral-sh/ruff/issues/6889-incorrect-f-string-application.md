@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-26T00:45:46Z
 updated_at: 2024-03-01T11:41:25Z
 url: https://github.com/astral-sh/ruff/issues/6889
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Incorrect f-string application
 
 ---
 
-_Issue opened by @hotpxl on 2023-08-26 00:45_
+_@hotpxl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

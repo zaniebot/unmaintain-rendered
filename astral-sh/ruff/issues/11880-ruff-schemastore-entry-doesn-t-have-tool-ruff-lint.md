@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-14T20:37:26Z
 updated_at: 2024-06-14T22:05:48Z
 url: https://github.com/astral-sh/ruff/issues/11880
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff` SchemaStore entry doesn't have `tool.ruff.lint`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-06-14 20:37_
+_@jamesbraza_
 
 With `ruff==0.4.9`, `validate-pyproject==0.18` and `validate-pyproject-schema-store==2024.6.10` in `pre-commit`:
 

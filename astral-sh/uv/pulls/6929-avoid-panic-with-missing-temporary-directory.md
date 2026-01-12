@@ -13,14 +13,14 @@ head: konsti/missing-temp
 created_at: 2024-09-02T07:26:21Z
 updated_at: 2024-09-02T07:32:43Z
 url: https://github.com/astral-sh/uv/pull/6929
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Avoid panic with missing temporary directory
 
 ---
 
-_Pull request opened by @konstin on 2024-09-02 07:26_
+_@konstin_
 
 Forward an error for missing temp directories:
 

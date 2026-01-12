@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T12:52:42Z
 updated_at: 2023-01-20T14:08:06Z
 url: https://github.com/astral-sh/ruff/issues/2026
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [Panic] when SIM102 Use a single `if` statement instead of nested `if` statements
 
 ---
 
-_Issue opened by @ded42r on 2023-01-20 12:52_
+_@ded42r_
 
 I ran the command  
 > ruff --isolated --fix --select SIM .\min_example.py

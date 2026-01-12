@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-14T17:37:36Z
 updated_at: 2025-08-14T17:48:05Z
 url: https://github.com/astral-sh/ty/issues/991
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # error[not-iterable] unexpected behavior with type narrowing
 
 ---
 
-_Issue opened by @alechouse97 on 2025-08-14 17:37_
+_@alechouse97_
 
 ### Summary
 

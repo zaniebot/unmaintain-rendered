@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T13:40:31Z
 updated_at: 2025-05-08T15:24:48Z
 url: https://github.com/astral-sh/uv/issues/13346
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Optimize binary size approaches
 
 ---
 
-_Issue opened by @kristi-balla on 2025-05-08 13:40_
+_@kristi-balla_
 
 I am a fan of uv and came across [this](https://github.com/astral-sh/uv/blob/145fe4e7e3a941a7396703a00c357b1455204c12/Dockerfile#L45) TODO. I was wondering if there is any progress in this regard. I've been playing around with `upx` for statically linked java binaries and think it could bring something here as well. 
 

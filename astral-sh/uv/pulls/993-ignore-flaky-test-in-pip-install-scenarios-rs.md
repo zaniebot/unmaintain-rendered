@@ -12,14 +12,14 @@ head: charlie/flake
 created_at: 2024-01-19T02:04:50Z
 updated_at: 2024-01-19T05:53:31Z
 url: https://github.com/astral-sh/uv/pull/993
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Ignore flaky test in `pip_install_scenarios.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 02:04_
+_@charliermarsh_
 
 I don't know if we want to remove the scenario, or add this to the generation script? But I'm losing a lot of time to CI failures due to this so just want to disable ASAP.
 

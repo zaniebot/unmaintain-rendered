@@ -11,14 +11,14 @@ head: move-parsing-compile-bytecode-timeout-to-EnvironmentOptions
 created_at: 2025-10-21T14:56:53Z
 updated_at: 2025-10-27T15:21:57Z
 url: https://github.com/astral-sh/uv/pull/16388
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Move parsing `UV_COMPILE_BYTECODE_TIMEOUT` to EnvironmentOptions
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-10-21 14:56_
+_@andrey-berenda_
 
 ## Summary
 

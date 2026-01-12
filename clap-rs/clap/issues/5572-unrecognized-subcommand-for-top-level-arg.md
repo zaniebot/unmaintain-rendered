@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T13:43:36Z
 updated_at: 2024-07-09T23:14:36Z
 url: https://github.com/clap-rs/clap/issues/5572
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Unrecognized subcommand for top level arg
 
 ---
 
-_Issue opened by @nricciardi on 2024-07-08 13:43_
+_@nricciardi_
 
 ### Please complete the following tasks
 

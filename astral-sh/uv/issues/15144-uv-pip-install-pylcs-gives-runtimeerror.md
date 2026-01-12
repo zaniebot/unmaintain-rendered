@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T18:32:19Z
 updated_at: 2025-08-08T15:33:25Z
 url: https://github.com/astral-sh/uv/issues/15144
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # ```uv pip install pylcs``` gives ```RuntimeError: Unsupported compiler -- at least C++11 support is needed!```
 
 ---
 
-_Issue opened by @YMRTZ on 2025-08-07 18:32_
+_@YMRTZ_
 
 ### Summary
 

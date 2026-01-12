@@ -12,14 +12,14 @@ head: autofix-is-enabled
 created_at: 2023-02-23T02:37:01Z
 updated_at: 2023-02-23T05:02:21Z
 url: https://github.com/astral-sh/ruff/pull/3159
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add Autofix::is_enabled() to remove repeative patterns
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-23 02:37_
+_@youknowone_
 
 _No description provided._
 

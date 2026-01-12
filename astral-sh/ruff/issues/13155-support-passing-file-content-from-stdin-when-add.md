@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-30T01:21:42Z
 updated_at: 2024-08-30T08:10:11Z
 url: https://github.com/astral-sh/ruff/issues/13155
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Support passing file content from stdin when `--add-noqa` is used
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-08-30 01:21_
+_@InSyncWithFoo_
 
 Currently this treats `-` as a directory name:
 

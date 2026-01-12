@@ -13,14 +13,14 @@ head: fix-S310-description-typo
 created_at: 2024-04-13T10:12:30Z
 updated_at: 2024-04-13T11:55:34Z
 url: https://github.com/astral-sh/ruff/pull/10917
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Fix S310 `suspicious-url-open-usage` description
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-04-13 10:12_
+_@hoel-bagard_
 
 ## Summary
 

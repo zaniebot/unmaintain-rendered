@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-01T23:34:14Z
 updated_at: 2023-04-02T19:23:42Z
 url: https://github.com/astral-sh/ruff/issues/3851
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP006  is reported for python<3.9
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2023-04-01 23:34_
+_@Cjkjvfnby_
 
 When I run ruff on pyi file with python3.7 as target UP006  `Use tuple instead of Tuple for type annotations` is reported.  This behavior is not reproduced with pyupgrade.
 

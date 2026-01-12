@@ -14,14 +14,14 @@ head: charlie/parse
 created_at: 2024-08-11T23:07:25Z
 updated_at: 2024-11-02T20:34:20Z
 url: https://github.com/astral-sh/ruff/pull/12809
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Avoid parsing joint rule codes as distinct codes in `# noqa`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-11 23:07_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-08T09:21:49Z
 updated_at: 2025-09-08T09:26:21Z
 url: https://github.com/astral-sh/ty/issues/1152
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Remove " --> " from ty output to match the ruff output format and make file paths clickable in IntelliJ IDEA products
 
 ---
 
-_Issue opened by @qarmin on 2025-09-08 09:21_
+_@qarmin_
 
 ### Summary
 

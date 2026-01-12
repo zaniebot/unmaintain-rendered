@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T07:00:18Z
 updated_at: 2024-10-09T09:57:22Z
 url: https://github.com/astral-sh/uv/issues/8035
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv pip install -e .` installs script with unusable shebang
 
 ---
 
-_Issue opened by @salty-horse on 2024-10-09 07:00_
+_@salty-horse_
 
 Using uv 0.4.18 on Linux.
 

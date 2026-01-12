@@ -13,14 +13,14 @@ head: charlie/pycache
 created_at: 2023-11-10T18:26:11Z
 updated_at: 2023-11-10T19:55:34Z
 url: https://github.com/astral-sh/uv/pull/397
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Remove `__pycache__` directories when uninstalling
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 18:26_
+_@charliermarsh_
 
 According to the [packaging documentation](https://packaging.python.org/en/latest/specifications/binary-distribution-format/#binary-distribution-format), "uninstallers should be smart enough to remove .pyc even if it is not mentioned in RECORD". Previously, we weren't handling this case, so if you installed via Puffin, then imported a file (to trigger bytecode compilation), then uninstalled, we'd leave spare `__pycache__` directories around.
 

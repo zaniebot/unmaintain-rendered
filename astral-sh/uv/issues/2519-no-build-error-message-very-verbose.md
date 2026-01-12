@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T19:31:29Z
 updated_at: 2024-08-16T20:20:01Z
 url: https://github.com/astral-sh/uv/issues/2519
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # No build error message very verbose
 
 ---
 
-_Issue opened by @konstin on 2024-03-18 19:31_
+_@konstin_
 
 The no build error messages are very verbose since they do no collapse versions. Example:
 

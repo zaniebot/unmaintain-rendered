@@ -13,14 +13,14 @@ head: feat/env-ruff-output-file
 created_at: 2024-04-17T10:34:24Z
 updated_at: 2024-04-17T16:09:56Z
 url: https://github.com/astral-sh/ruff/pull/10992
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add `RUFF_OUTPUT_FILE` environment variable support
 
 ---
 
-_Pull request opened by @sisp on 2024-04-17 10:34_
+_@sisp_
 
 ## Summary
 

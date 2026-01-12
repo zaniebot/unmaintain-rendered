@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-15T11:04:40Z
 updated_at: 2025-07-15T11:04:40Z
 url: https://github.com/astral-sh/ruff/issues/19351
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Linter diff test helper for testing different options
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-15 11:04_
+_@MichaReiser_
 
 Our current approach to testing preview behavior (or any configurable rule behavior) is to create two tests: One with preview disabled and one with preview enabled. However, both tests run on the same input file. 
 

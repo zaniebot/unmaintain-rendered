@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-12T08:29:25Z
 updated_at: 2026-01-12T08:29:25Z
 url: https://github.com/astral-sh/ty/issues/2456
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Django async_to_sync returns None
 
 ---
 
-_Issue opened by @andre-dasilva on 2026-01-12 08:29_
+_@andre-dasilva_
 
 ### Summary
 

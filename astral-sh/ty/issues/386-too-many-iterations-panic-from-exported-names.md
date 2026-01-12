@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-14T15:37:03Z
 updated_at: 2025-11-12T16:01:17Z
 url: https://github.com/astral-sh/ty/issues/386
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # "Too many iterations" panic from `exported_names` query when analysing a `*` import
 
 ---
 
-_Issue opened by @rushiagr on 2025-05-14 15:37_
+_@rushiagr_
 
 Attaching run of ty with `RUST_BACKTRACE=1`. Please let me know if you need more info.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T22:18:50Z
 updated_at: 2025-05-23T09:48:32Z
 url: https://github.com/astral-sh/ty/issues/197
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # how should `assert_type` handle the float/complex special case?
 
 ---
 
-_Issue opened by @carljm on 2025-02-14 22:18_
+_@carljm_
 
 ### Description
 

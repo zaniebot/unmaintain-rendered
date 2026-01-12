@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T10:53:47Z
 updated_at: 2025-01-21T17:05:13Z
 url: https://github.com/astral-sh/uv/issues/10809
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Package in editable mode not found
 
 ---
 
-_Issue opened by @RalfKellner on 2025-01-21 10:53_
+_@RalfKellner_
 
 Dear all, 
 

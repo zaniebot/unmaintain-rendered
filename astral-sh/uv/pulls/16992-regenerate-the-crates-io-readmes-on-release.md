@@ -13,14 +13,14 @@ head: zb/gen-readme
 created_at: 2025-12-04T23:20:17Z
 updated_at: 2025-12-05T01:19:39Z
 url: https://github.com/astral-sh/uv/pull/16992
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Regenerate the crates.io readmes on release
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-04 23:20_
+_@zanieb_
 
 Otherwise, they're stale!
 

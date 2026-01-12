@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T06:32:24Z
 updated_at: 2024-06-25T05:29:37Z
 url: https://github.com/astral-sh/uv/issues/4376
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `crates/uv/tests/toolchain_find.rs` fails on Gentoo Linux
 
 ---
 
-_Issue opened by @mgorny on 2024-06-18 06:32_
+_@mgorny_
 
 To be honest, I can't really figure out what the test is supposed to do.
 

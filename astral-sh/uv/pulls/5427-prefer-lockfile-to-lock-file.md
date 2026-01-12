@@ -13,14 +13,14 @@ head: zb/lockfile
 created_at: 2024-07-24T22:08:18Z
 updated_at: 2024-07-25T14:22:38Z
 url: https://github.com/astral-sh/uv/pull/5427
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Prefer "lockfile" to "lock file"
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-24 22:08_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5415
 

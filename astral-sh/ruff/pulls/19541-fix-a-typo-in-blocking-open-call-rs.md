@@ -11,14 +11,14 @@ head: fix-typo-in-doc
 created_at: 2025-07-24T21:44:36Z
 updated_at: 2025-07-24T22:12:55Z
 url: https://github.com/astral-sh/ruff/pull/19541
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # Fix a typo in blocking_open_call.rs
 
 ---
 
-_Pull request opened by @shotarok on 2025-07-24 21:44_
+_@shotarok_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

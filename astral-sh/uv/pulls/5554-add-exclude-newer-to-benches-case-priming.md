@@ -13,14 +13,14 @@ head: konsti/add-exclude-newer-to-cache-priming
 created_at: 2024-07-29T09:46:34Z
 updated_at: 2024-07-29T11:48:40Z
 url: https://github.com/astral-sh/uv/pull/5554
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Add exclude-newer to benches case priming
 
 ---
 
-_Pull request opened by @konstin on 2024-07-29 09:46_
+_@konstin_
 
 Uses the same cutoff that the benchmark itself uses
 

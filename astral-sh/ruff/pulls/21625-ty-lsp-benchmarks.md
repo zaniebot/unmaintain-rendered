@@ -14,14 +14,14 @@ head: micha/lsp-benchmarks
 created_at: 2025-11-25T08:01:25Z
 updated_at: 2025-12-01T11:33:54Z
 url: https://github.com/astral-sh/ruff/pull/21625
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] LSP Benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-25 08:01_
+_@MichaReiser_
 
 Adds two LSP specific benchmarks to ty's benchmark suite
 

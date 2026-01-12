@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-10-16T19:48:00Z
 updated_at: 2021-10-27T21:31:07Z
 url: https://github.com/clap-rs/clap/issues/2897
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Default value in ArgMatches rework?
 
 ---
 
-_Issue opened by @pksunkara on 2021-10-16 19:48_
+_@pksunkara_
 
 **WIP**
 

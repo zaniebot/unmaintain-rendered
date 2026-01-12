@@ -13,14 +13,14 @@ head: add-exit-code
 created_at: 2024-08-07T15:49:29Z
 updated_at: 2024-08-08T07:19:26Z
 url: https://github.com/astral-sh/ruff/pull/12735
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Exit with an error if there are check failures
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-07 15:49_
+_@MichaReiser_
 
 ## Summary
 

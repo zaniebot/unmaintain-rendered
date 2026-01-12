@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T23:54:40Z
 updated_at: 2024-03-30T00:32:35Z
 url: https://github.com/astral-sh/ruff/issues/10088
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF017 Autofix uses iadd but docs recommend iconcat
 
 ---
 
-_Issue opened by @nicodemus26 on 2024-02-22 23:54_
+_@nicodemus26_
 
 I could not find a substantive difference between `iadd` and `iconcat` in cpython aside from some narrower type contexts for iconcat. As the autofix uses `iadd` to resolve RUF017, I'd suggest updating the documents to match that behavior. If there is a significant difference, it would be helpful to call it out in the docs.
 

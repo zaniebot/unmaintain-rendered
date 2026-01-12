@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T09:43:00Z
 updated_at: 2024-02-08T04:10:56Z
 url: https://github.com/astral-sh/ruff/issues/9780
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # S308 (mark_safe) doesn't detects decorator usage and imports from another place
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-02-02 09:43_
+_@ashrub-holvi_
 
 Hi, thank you for the cool project!
 

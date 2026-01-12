@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T22:37:44Z
 updated_at: 2024-10-24T18:59:58Z
 url: https://github.com/astral-sh/uv/issues/8510
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Private repository cloudrepo.io 401 Unauthorized
 
 ---
 
-_Issue opened by @imatw4r on 2024-10-23 22:37_
+_@imatw4r_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

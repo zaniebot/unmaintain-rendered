@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T14:47:52Z
 updated_at: 2025-03-03T15:11:46Z
 url: https://github.com/astral-sh/ruff/issues/16475
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ignore trailing commas not working for function arguments
 
 ---
 
-_Issue opened by @sparxastronomy on 2025-03-03 14:47_
+_@sparxastronomy_
 
 ### Summary
 

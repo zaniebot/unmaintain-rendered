@@ -13,14 +13,14 @@ head: add-exception-E402
 created_at: 2025-02-19T12:31:07Z
 updated_at: 2025-02-19T13:34:30Z
 url: https://github.com/astral-sh/ruff/pull/16251
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [pycodestyle] Exempt `site.addsitedir(...)` calls (E402)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-19 12:31_
+_@VascoSch92_
 
 The PR addresses issue #16247 
 

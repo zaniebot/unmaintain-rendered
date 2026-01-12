@@ -14,14 +14,14 @@ head: brent/fix-missing-combine
 created_at: 2025-05-03T19:49:05Z
 updated_at: 2025-05-03T22:19:21Z
 url: https://github.com/astral-sh/ruff/pull/17823
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Fix missing `combine` call for `lint.typing-extensions` setting
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-03 19:49_
+_@ntBre_
 
 ## Summary
 

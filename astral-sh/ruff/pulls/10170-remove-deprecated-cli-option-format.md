@@ -14,14 +14,14 @@ head: remove-format-cli-option
 created_at: 2024-02-29T13:52:07Z
 updated_at: 2024-02-29T14:05:11Z
 url: https://github.com/astral-sh/ruff/pull/10170
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove deprecated CLI option `--format`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-29 13:52_
+_@MichaReiser_
 
 ## Summary
 

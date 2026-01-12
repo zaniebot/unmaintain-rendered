@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T17:45:56Z
 updated_at: 2025-01-09T13:50:47Z
 url: https://github.com/astral-sh/uv/issues/8342
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Executables not found in Docker after installing with uv
 
 ---
 
-_Issue opened by @victor-ajayi on 2024-10-18 17:45_
+_@victor-ajayi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

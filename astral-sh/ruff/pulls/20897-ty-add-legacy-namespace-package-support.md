@@ -13,14 +13,14 @@ head: gankra/legacy-namespaces
 created_at: 2025-10-15T15:34:02Z
 updated_at: 2025-10-17T03:16:39Z
 url: https://github.com/astral-sh/ruff/pull/20897
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] add legacy namespace package support
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-15 15:34_
+_@Gankra_
 
 Detect legacy namespace packages and treat them like namespace packages when looking them up as the *parent* of the module we're interested in. In all other cases treat them like a regular package.
 

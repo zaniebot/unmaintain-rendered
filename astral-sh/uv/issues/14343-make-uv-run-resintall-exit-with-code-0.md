@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-29T03:51:39Z
 updated_at: 2025-06-30T13:22:46Z
 url: https://github.com/astral-sh/uv/issues/14343
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Make `uv run --resintall` exit with code 0
 
 ---
 
-_Issue opened by @harnvo on 2025-06-29 03:51_
+_@harnvo_
 
 ### Summary
 

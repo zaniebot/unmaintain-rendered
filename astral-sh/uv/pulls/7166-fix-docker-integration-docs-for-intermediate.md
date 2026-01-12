@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-09-07T12:27:59Z
 updated_at: 2025-11-06T01:41:38Z
 url: https://github.com/astral-sh/uv/pull/7166
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Fix Docker integration docs for intermediate layers
 
 ---
 
-_Pull request opened by @NiklasRosenstein on 2024-09-07 12:27_
+_@NiklasRosenstein_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

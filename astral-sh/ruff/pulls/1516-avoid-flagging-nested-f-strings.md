@@ -12,14 +12,14 @@ head: charlie/ignore
 created_at: 2022-12-31T18:39:30Z
 updated_at: 2022-12-31T18:41:22Z
 url: https://github.com/astral-sh/ruff/pull/1516
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid flagging nested f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-31 18:39_
+_@charliermarsh_
 
 We're currently flagging cases like this:
 

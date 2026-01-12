@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T22:46:33Z
 updated_at: 2024-11-30T14:22:19Z
 url: https://github.com/astral-sh/uv/issues/9533
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Packages not installed on first `uv run --extra` with conflicting extras
 
 ---
 
-_Issue opened by @eginhard on 2024-11-29 22:46_
+_@eginhard_
 
 A basic project with 2 conflicting extras (uv 0.5.5 on Ubuntu):
 ```toml

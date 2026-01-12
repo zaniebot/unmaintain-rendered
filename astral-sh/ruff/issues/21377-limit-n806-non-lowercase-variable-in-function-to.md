@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T10:19:24Z
 updated_at: 2025-12-10T17:26:58Z
 url: https://github.com/astral-sh/ruff/issues/21377
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Limit N806 (non-lowercase-variable-in-function) to fix first letter only?
 
 ---
 
-_Issue opened by @carstenfuchs on 2025-11-11 10:19_
+_@carstenfuchs_
 
 ### Question
 

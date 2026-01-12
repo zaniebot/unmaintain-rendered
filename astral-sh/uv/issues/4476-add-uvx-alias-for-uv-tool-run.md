@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-24T16:00:21Z
 updated_at: 2024-07-02T01:42:04Z
 url: https://github.com/astral-sh/uv/issues/4476
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Add `uvx` alias for `uv tool run`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-24 16:00_
+_@zanieb_
 
 As defined in https://github.com/astral-sh/uv/issues/3560
 

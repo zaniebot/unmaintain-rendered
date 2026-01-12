@@ -14,14 +14,14 @@ head: micha/deprecate-s320
 created_at: 2025-03-12T14:51:43Z
 updated_at: 2025-03-13T07:46:26Z
 url: https://github.com/astral-sh/ruff/pull/16680
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-bandit`] Deprecate `suspicious-xmle-tree-usage` (`S320`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 14:51_
+_@MichaReiser_
 
 ## Summary
 Deprecate `S320` because defusedxml has deprecated there `lxml` module and `lxml` has been hardened since. 

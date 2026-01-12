@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-11T00:45:33Z
 updated_at: 2025-12-23T21:22:55Z
 url: https://github.com/astral-sh/ty/issues/1848
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: `place_by_id... execute: too many cycle iterations`
 
 ---
 
-_Issue opened by @correctmost on 2025-12-11 00:45_
+_@correctmost_
 
 ### Summary
 

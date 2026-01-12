@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-25T11:19:49Z
 updated_at: 2026-01-09T10:24:54Z
 url: https://github.com/astral-sh/ty/issues/2410
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Server: Mono-repo support
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-25 11:19_
+_@MichaReiser_
 
 It's not uncommon to have a single repository that contains both the frontend and backend (Python) code. As a user, I want to be able to have the ty configuration in the backend folder. See
 

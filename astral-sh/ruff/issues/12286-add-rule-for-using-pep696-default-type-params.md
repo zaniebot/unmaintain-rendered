@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-11T01:15:32Z
 updated_at: 2024-07-18T17:52:13Z
 url: https://github.com/astral-sh/ruff/issues/12286
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add rule for using PEP696 default type params
 
 ---
 
-_Issue opened by @janosh on 2024-07-11 01:15_
+_@janosh_
 
 [PEP 696](https://peps.python.org/pep-0696) allows cleaning up code like
 

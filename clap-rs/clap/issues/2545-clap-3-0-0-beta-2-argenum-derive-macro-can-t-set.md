@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-06-17T11:50:14Z
 updated_at: 2021-06-17T12:40:06Z
 url: https://github.com/clap-rs/clap/issues/2545
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap 3.0.0-beta.2 ArgEnum derive macro can't set use camelcase
 
 ---
 
-_Issue opened by @Sherlock-Holo on 2021-06-17 11:50_
+_@Sherlock-Holo_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T17:54:40Z
 updated_at: 2024-10-07T20:08:48Z
 url: https://github.com/astral-sh/uv/issues/7647
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Jupyter notebooks from project environment don't have access to `--with` requirements
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-23 17:54_
+_@charliermarsh_
 
 To repro:
 

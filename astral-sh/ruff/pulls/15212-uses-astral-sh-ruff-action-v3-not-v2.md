@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-31T10:16:49Z
 updated_at: 2024-12-31T15:48:45Z
 url: https://github.com/astral-sh/ruff/pull/15212
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # uses: astral-sh/ruff-action@v3, not v2
 
 ---
 
-_Pull request opened by @cclauss on 2024-12-31 10:16_
+_@cclauss_
 
 ## Summary
 https://docs.astral.sh/ruff/integrations/#github-actions upgraded for https://github.com/astral-sh/ruff-action/releases

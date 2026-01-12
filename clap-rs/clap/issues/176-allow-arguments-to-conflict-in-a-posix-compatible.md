@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-16T19:10:31Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/176
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow arguments to conflict in a POSIX compatible manner
 
 ---
 
-_Issue opened by @kbknapp on 2015-08-16 19:10_
+_@kbknapp_
 
 Take `ls` for example. `ls -C` is the column display mode, where as `ls -l` is the long listing display mode. The two are obviously not compatible. In POSIX, whichever argument comes _last_ wins, so to speak. Meaning, `ls -l -C` uses the default style, whereas `ls -C -l` uses the long listing format. In essence, the previous conflicting arguments are "forgotten."
 

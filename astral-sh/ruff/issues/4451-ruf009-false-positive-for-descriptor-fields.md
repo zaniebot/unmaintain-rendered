@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-16T14:41:19Z
 updated_at: 2023-07-05T19:19:25Z
 url: https://github.com/astral-sh/ruff/issues/4451
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF009 false positive for descriptor fields
 
 ---
 
-_Issue opened by @nstarman on 2023-05-16 14:41_
+_@nstarman_
 
 Dataclasses permit descriptor fields (https://docs.python.org/3.10/library/dataclasses.html#descriptor-typed-fields) but RUF009 is complaining about function calls at class construction. This is similar to https://github.com/charliermarsh/ruff/issues/4091, but I think sufficiently different to merit its own issue.
 

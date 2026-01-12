@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-03T20:12:42Z
 updated_at: 2025-01-08T10:35:29Z
 url: https://github.com/astral-sh/ruff/issues/9810
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Should `PYI041` consider `bool` to be redundant with `int`?
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-02-03 20:12_
+_@tylerlaprade_
 
 Currently, this rule only flags `int | float` unions as redundant. Coming from other languages, I didn't even realize `int` was a subtype of `float`, but I learned about it because of this rule. However, I found a bug in my code where I was converting `False` to `0.0` - this was because in Python, `bool` is actually an `int`. I found that the tests for this rule very explicitly consider `int | bool` to not be a violation, however this would have prevented me from writing the bug as I did.
 

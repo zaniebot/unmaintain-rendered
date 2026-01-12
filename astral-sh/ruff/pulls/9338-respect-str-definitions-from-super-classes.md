@@ -13,14 +13,14 @@ head: charlie/dj
 created_at: 2023-12-31T22:15:48Z
 updated_at: 2023-12-31T22:32:27Z
 url: https://github.com/astral-sh/ruff/pull/9338
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Respect `__str__` definitions from super classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 22:15_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9242.
 

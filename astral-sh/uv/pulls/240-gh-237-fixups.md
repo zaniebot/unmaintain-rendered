@@ -12,14 +12,14 @@ head: improve-error-message
 created_at: 2023-10-30T19:21:56Z
 updated_at: 2023-11-16T12:41:48Z
 url: https://github.com/astral-sh/uv/pull/240
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Gh-237 fixups
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 19:21_
+_@konstin_
 
 _No description provided._
 

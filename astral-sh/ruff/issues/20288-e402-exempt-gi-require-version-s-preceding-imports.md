@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-07T20:05:48Z
 updated_at: 2025-09-16T09:15:42Z
 url: https://github.com/astral-sh/ruff/issues/20288
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E402: Exempt `gi.require_version[s]()` preceding imports
 
 ---
 
-_Issue opened by @ferdnyc on 2025-09-07 20:05_
+_@ferdnyc_
 
 ### Summary
 

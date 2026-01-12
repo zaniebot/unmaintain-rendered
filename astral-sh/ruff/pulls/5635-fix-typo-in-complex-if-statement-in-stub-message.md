@@ -12,14 +12,14 @@ head: charlie/typos
 created_at: 2023-07-10T02:26:37Z
 updated_at: 2023-07-10T02:57:29Z
 url: https://github.com/astral-sh/ruff/pull/5635
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix typo in complex-if-statement-in-stub message
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 02:26_
+_@charliermarsh_
 
 _No description provided._
 

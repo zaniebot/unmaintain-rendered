@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-25T14:51:14Z
 updated_at: 2025-08-26T16:02:18Z
 url: https://github.com/astral-sh/ty/issues/1096
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # option to ignore all rules and opt-in only to specific ones
 
 ---
 
-_Issue opened by @vishds on 2025-08-25 14:51_
+_@vishds_
 
 ### Question
 

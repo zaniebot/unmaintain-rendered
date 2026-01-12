@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T11:25:10Z
 updated_at: 2025-04-03T10:24:26Z
 url: https://github.com/astral-sh/uv/issues/2079
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Cross-platform support
 
 ---
 
-_Issue opened by @michaelboyd2 on 2024-02-29 11:25_
+_@michaelboyd2_
 
 My goal is to support building OCI (docker) images for a platform other than the host platform.
 

@@ -12,14 +12,14 @@ head: lexer-perf
 created_at: 2024-02-07T21:51:07Z
 updated_at: 2024-02-29T13:18:54Z
 url: https://github.com/astral-sh/ruff/pull/9882
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Reduce `LexResult` size by boxing `LexicalError`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-07 21:51_
+_@MichaReiser_
 
 - Make `LexicalError` fields private
 - Box `LexicalError` to reduce Result size

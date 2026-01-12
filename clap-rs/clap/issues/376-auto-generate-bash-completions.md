@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-01-09T18:51:06Z
 updated_at: 2016-07-23T19:54:27Z
 url: https://github.com/clap-rs/clap/issues/376
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Auto generate bash completions
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-09 18:51_
+_@kbknapp_
 
 Thanks to @kamalmarhubi for reminding me about this and making some suggestions.
 

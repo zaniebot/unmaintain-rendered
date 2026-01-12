@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T13:19:43Z
 updated_at: 2024-03-18T10:00:27Z
 url: https://github.com/astral-sh/ruff/issues/10420
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # AST-based diff
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-03-15 13:19_
+_@ashrub-holvi_
 
 Just to collection of ideas. In many cases after big automatic style changes (from ruff or other tools), diff is so big that it's really hard to review. In a simple search&replace cases it's possible to simplify review by `grep`ping (of course better to do [ripgrepp](https://github.com/BurntSushi/ripgrep)ing) diff with `--word-diff=porcelain`, but in more complex cases would be good to have tool for diffing not just source code, but something like AST for see only real changes.
 I googled a bit and from alive projects I see only [difftastic](https://github.com/Wilfred/difftastic) (also in Rust!), but looks like it's not what I expected because even changing single quote to double `difftastic` shows as a change.

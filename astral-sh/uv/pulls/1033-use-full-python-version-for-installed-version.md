@@ -13,14 +13,14 @@ head: charlie/version
 created_at: 2024-01-22T02:02:07Z
 updated_at: 2024-01-22T06:44:40Z
 url: https://github.com/astral-sh/uv/pull/1033
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Use full Python version for installed version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 02:02_
+_@charliermarsh_
 
 ## Summary
 

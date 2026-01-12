@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-08T11:54:41Z
 updated_at: 2023-05-08T12:18:58Z
 url: https://github.com/astral-sh/ruff/issues/4279
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] My File: asv_bench\benchmarks\io\csv.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-08 11:54_
+_@FishAlchemist_
 
 ## Version(ruff --version)
 **ruff 0.0.265**

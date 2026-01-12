@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-12T13:15:20Z
 updated_at: 2023-10-16T13:37:59Z
 url: https://github.com/astral-sh/uv/issues/88
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Use `fs_err` everywhere (including tokio wrappers)
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-12 13:15_
+_@charliermarsh_
 
 _No description provided._
 

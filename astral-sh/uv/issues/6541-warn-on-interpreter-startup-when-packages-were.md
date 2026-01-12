@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T19:30:15Z
 updated_at: 2024-08-23T19:30:25Z
 url: https://github.com/astral-sh/uv/issues/6541
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Warn on interpreter startup when packages were skipped during sync
 
 ---
 
-_Issue opened by @zanieb on 2024-08-23 19:30_
+_@zanieb_
 
 e.g. with something like
 

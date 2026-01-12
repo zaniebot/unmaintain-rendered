@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-09T21:51:48Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/951
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Move completions / manpage generation to sub-crate
 
 ---
 
-_Issue opened by @kbknapp on 2017-05-09 21:51_
+_@kbknapp_
 
 Specifically the shell completion and manpage generation (once it lands).
 

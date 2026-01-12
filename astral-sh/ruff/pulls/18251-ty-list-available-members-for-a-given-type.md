@@ -14,14 +14,14 @@ head: david/code-completion-members
 created_at: 2025-05-22T10:56:45Z
 updated_at: 2025-05-30T17:27:30Z
 url: https://github.com/astral-sh/ruff/pull/18251
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] List available members for a given type
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-22 10:56_
+_@sharkdp_
 
 ## Summary
 

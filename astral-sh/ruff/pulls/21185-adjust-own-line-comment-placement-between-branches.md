@@ -14,14 +14,14 @@ head: comment-placement-else-finally
 created_at: 2025-11-01T16:10:56Z
 updated_at: 2025-11-17T13:30:35Z
 url: https://github.com/astral-sh/ruff/pull/21185
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Adjust own-line comment placement between branches
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-11-01 16:10_
+_@dylwil3_
 
 This PR attempts to improve the placement of own-line comments between branches in the setting where the comment is more indented than the preceding node.
 

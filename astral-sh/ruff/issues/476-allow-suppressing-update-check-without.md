@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-26T16:52:53Z
 updated_at: 2022-10-26T20:03:11Z
 url: https://github.com/astral-sh/ruff/issues/476
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Allow suppressing update check without suppressing error messages
 
 ---
 
-_Issue opened by @andersk on 2022-10-26 16:52_
+_@andersk_
 
 Ruff has frequent releases, which is great, but it also means that the “new version available” message frequently adds noise to the output. Another source of noise is the “No pyproject.toml found. Falling back to default configuration…” message. A linter that prints expected noise can drown out unexpected errors, especially when it’s run from a script alongside many other linters.
 

@@ -14,14 +14,14 @@ head: dhruv/playground-diagnostic
 created_at: 2025-04-11T16:38:42Z
 updated_at: 2025-04-11T17:14:37Z
 url: https://github.com/astral-sh/ruff/pull/17357
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Use concise message to show diagnostics in playground
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-11 16:38_
+_@dhruvmanila_
 
 ## Summary
 

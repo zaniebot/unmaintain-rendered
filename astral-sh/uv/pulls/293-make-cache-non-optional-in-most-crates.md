@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-11-02T17:19:43Z
 updated_at: 2023-11-02T17:40:22Z
 url: https://github.com/astral-sh/uv/pull/293
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Make cache non-optional in most crates
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 17:19_
+_@charliermarsh_
 
 This PR makes the cache non-optional in most of Puffin, which simplifies the code, allows us to reuse the cache within a single command (even with `--no-cache`), and also allows us to use the cache for disk storage across an invocation.
 

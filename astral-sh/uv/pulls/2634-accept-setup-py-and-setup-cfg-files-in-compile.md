@@ -14,14 +14,14 @@ head: charlie/setup-iii
 created_at: 2024-03-23T02:35:34Z
 updated_at: 2024-03-25T20:39:37Z
 url: https://github.com/astral-sh/uv/pull/2634
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Accept `setup.py` and `setup.cfg` files in compile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-23 02:35_
+_@charliermarsh_
 
 ## Summary
 

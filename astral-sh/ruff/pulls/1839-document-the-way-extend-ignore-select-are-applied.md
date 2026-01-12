@@ -12,14 +12,14 @@ head: document-extend-ignore-order
 created_at: 2023-01-13T00:10:10Z
 updated_at: 2023-01-13T00:44:10Z
 url: https://github.com/astral-sh/ruff/pull/1839
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Document the way extend-ignore/select are applied
 
 ---
 
-_Pull request opened by @jankatins on 2023-01-13 00:10_
+_@jankatins_
 
 Closes: https://github.com/charliermarsh/ruff/issues/1838
 

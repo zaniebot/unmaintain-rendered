@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-17T05:36:38Z
 updated_at: 2024-04-17T15:20:42Z
 url: https://github.com/astral-sh/uv/issues/3088
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv pip compile: resolves to unnecessarily old versions of yamlpath and ruamel.yaml
 
 ---
 
-_Issue opened by @AndydeCleyre on 2024-04-17 05:36_
+_@AndydeCleyre_
 
 Hello, and thanks!
 

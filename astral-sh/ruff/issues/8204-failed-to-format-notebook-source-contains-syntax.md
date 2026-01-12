@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T07:13:55Z
 updated_at: 2023-10-26T02:42:16Z
 url: https://github.com/astral-sh/ruff/issues/8204
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Failed to format notebook: source contains syntax errors: ParseError
 
 ---
 
-_Issue opened by @Jonas1312 on 2023-10-25 07:13_
+_@Jonas1312_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

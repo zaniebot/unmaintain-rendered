@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-08T21:37:02Z
 updated_at: 2021-12-09T03:14:15Z
 url: https://github.com/clap-rs/clap/issues/3095
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Unclear what feature flags are needed for API items
 
 ---
 
-_Issue opened by @epage on 2021-12-08 21:37_
+_@epage_
 
 ### Please complete the following tasks
 

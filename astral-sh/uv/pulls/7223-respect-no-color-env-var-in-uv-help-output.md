@@ -11,14 +11,14 @@ head: no-colors
 created_at: 2024-09-09T16:33:09Z
 updated_at: 2025-04-28T12:59:19Z
 url: https://github.com/astral-sh/uv/pull/7223
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Respect `NO_COLOR` env var in `uv help` output
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-09 16:33_
+_@blueraft_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: relative-trampoline
 created_at: 2024-05-21T19:11:52Z
 updated_at: 2024-05-22T02:32:43Z
 url: https://github.com/astral-sh/uv/pull/3717
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Allow relative Python executable paths in Windows trampoline
 
 ---
 
-_Pull request opened by @ofek on 2024-05-21 19:11_
+_@ofek_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T18:35:44Z
 updated_at: 2025-02-03T22:47:26Z
 url: https://github.com/astral-sh/ruff/issues/15916
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Feature Request: Detect Unbound Local Variables in Conditional Branches
 
 ---
 
-_Issue opened by @rodolfo-nobrega on 2025-02-03 18:35_
+_@rodolfo-nobrega_
 
 ### Description
 

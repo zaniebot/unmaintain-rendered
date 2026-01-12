@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T09:13:31Z
 updated_at: 2025-07-02T09:37:12Z
 url: https://github.com/astral-sh/uv/issues/14412
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # "uv" and "uv run" point to different venv (it seems)
 
 ---
 
-_Issue opened by @GitRon on 2025-07-02 09:13_
+_@GitRon_
 
 ### Question
 

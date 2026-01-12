@@ -14,14 +14,14 @@ head: konsti/box-pin-run-and-decrease-test-stack-size
 created_at: 2024-07-06T21:03:04Z
 updated_at: 2024-07-08T00:50:47Z
 url: https://github.com/astral-sh/uv/pull/4851
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # `Box::pin(run())` and 2MB test stack
 
 ---
 
-_Pull request opened by @konstin on 2024-07-06 21:03_
+_@konstin_
 
 By using `Box::pin(run())` we can reduce the artificial stack size for running tests on windows in debug mode from 8MB to 2MB. I've checked and 1MB/no custom stack size still fail tests, e.g. `add_workspace_editable`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-21T16:07:38Z
 updated_at: 2023-03-21T22:17:34Z
 url: https://github.com/astral-sh/ruff/issues/3651
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RUF007 - False positive when `zip()` contains more than 2 arguments
 
 ---
 
-_Issue opened by @MaxWinterstein on 2023-03-21 16:07_
+_@MaxWinterstein_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

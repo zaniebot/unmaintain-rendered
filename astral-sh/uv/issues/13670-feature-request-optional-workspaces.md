@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T02:35:40Z
 updated_at: 2025-06-19T09:08:18Z
 url: https://github.com/astral-sh/uv/issues/13670
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Feature Request: Optional Workspaces
 
 ---
 
-_Issue opened by @nixjdm on 2025-05-27 02:35_
+_@nixjdm_
 
 ### Summary
 I would like to specify a project dependency that optionally exists locally as a workspace. If the workspace directory is missing, it gracefully falls back to however else the dependency is described in the `pyproject.toml`.

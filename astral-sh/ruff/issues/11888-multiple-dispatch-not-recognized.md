@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-16T11:36:53Z
 updated_at: 2024-06-18T05:48:37Z
 url: https://github.com/astral-sh/ruff/issues/11888
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Multiple dispatch not recognized 
 
 ---
 
-_Issue opened by @oskarpfeffer on 2024-06-16 11:36_
+_@oskarpfeffer_
 
 Ruff does not recognize multiple dispatch methods. 
 

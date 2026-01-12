@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T00:37:14Z
 updated_at: 2024-08-11T00:24:50Z
 url: https://github.com/astral-sh/uv/issues/5949
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv tool upgrade` should use the lockfile update output
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-09 00:37_
+_@charliermarsh_
 
 E.g., list the updates.
 

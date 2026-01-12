@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-07-08T20:50:42Z
 updated_at: 2018-08-02T03:30:26Z
 url: https://github.com/clap-rs/clap/issues/1316
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow removal of the auto-generated version and help arguments
 
 ---
 
-_Issue opened by @blinry on 2018-07-08 20:50_
+_@blinry_
 
 I'd like to be able to use something like `app.version_short(None)` to remove the auto-generated short form of the version argument, but keep the long one.
 

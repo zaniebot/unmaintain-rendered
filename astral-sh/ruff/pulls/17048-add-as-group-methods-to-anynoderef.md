@@ -13,14 +13,14 @@ head: micha/as-expr-ref
 created_at: 2025-03-28T19:29:48Z
 updated_at: 2025-03-28T19:42:47Z
 url: https://github.com/astral-sh/ruff/pull/17048
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Add `as_group` methods to `AnyNodeRef`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-28 19:29_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: micha/identifier-tracked-scoipe
 created_at: 2025-10-24T07:16:51Z
 updated_at: 2025-10-24T07:48:59Z
 url: https://github.com/astral-sh/ruff/pull/21057
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Add comment explaining why `HasTrackedScope` is implemented for `Identifier` and why it works
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-24 07:16_
+_@MichaReiser_
 
 ## Summary
 

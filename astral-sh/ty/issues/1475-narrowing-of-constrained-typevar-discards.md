@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-04T00:19:54Z
 updated_at: 2026-01-09T20:52:52Z
 url: https://github.com/astral-sh/ty/issues/1475
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Narrowing of constrained typevar discards constraint static type generic information
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-04 00:19_
+_@MeGaGiGaGon_
 
 ### Summary
 

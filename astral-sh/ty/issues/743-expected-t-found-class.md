@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-01T16:03:38Z
 updated_at: 2025-07-02T00:47:58Z
 url: https://github.com/astral-sh/ty/issues/743
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Expected `T`, found `Class`
 
 ---
 
-_Issue opened by @Kumzy on 2025-07-01 16:03_
+_@Kumzy_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: s110
 created_at: 2023-01-26T16:22:47Z
 updated_at: 2023-11-22T20:21:27Z
 url: https://github.com/astral-sh/ruff/pull/2197
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`flake8-bandit`] Add Rule S110 (try/except/pass)
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-26 16:22_
+_@sciyoshi_
 
 Check for [flake8-bandit B110: blank `pass` in exception handler](https://bandit.readthedocs.io/en/latest/plugins/b110_try_except_pass.html). Just getting my feet wet with implementing checkers in Ruff, so let me know if anything is missing. I used the `add_rule.py` script which has a slightly different convention than the other flake8-bandit checkers.
 

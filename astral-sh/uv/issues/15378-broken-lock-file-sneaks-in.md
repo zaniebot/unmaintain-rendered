@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T11:25:36Z
 updated_at: 2025-08-20T09:54:16Z
 url: https://github.com/astral-sh/uv/issues/15378
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Broken lock file sneaks in
 
 ---
 
-_Issue opened by @zzJinux on 2025-08-19 11:25_
+_@zzJinux_
 
 ### Summary
 

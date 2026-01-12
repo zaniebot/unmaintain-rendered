@@ -14,14 +14,14 @@ head: alex/iterability-property-test
 created_at: 2025-07-07T15:44:44Z
 updated_at: 2025-07-08T09:54:09Z
 url: https://github.com/astral-sh/ruff/pull/19186
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Add a new property test: all types assignable to `Iterable[object]` should be considered iterable
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-07 15:44_
+_@AlexWaygood_
 
 ## Summary
 

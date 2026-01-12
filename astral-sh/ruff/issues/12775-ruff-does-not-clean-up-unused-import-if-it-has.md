@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T08:07:17Z
 updated_at: 2024-08-09T17:11:42Z
 url: https://github.com/astral-sh/ruff/issues/12775
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff does not clean up unused import if it has same name like object attribute
 
 ---
 
-_Issue opened by @ondrej-ivanko on 2024-08-09 08:07_
+_@ondrej-ivanko_
 
 Keywords: #F401, #imports
 

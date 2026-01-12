@@ -15,14 +15,14 @@ head: brent/a005
 created_at: 2025-02-04T22:22:25Z
 updated_at: 2025-02-11T13:20:50Z
 url: https://github.com/astral-sh/ruff/pull/15951
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-builtins`] Make strict module name comparison optional (`A005`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-04 22:22_
+_@ntBre_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: restrict-sim105
 created_at: 2023-01-18T05:19:14Z
 updated_at: 2023-02-14T06:18:03Z
 url: https://github.com/astral-sh/ruff/pull/1948
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Restrict SIM105 to try blocks with a body of one simple statement
 
 ---
 
-_Pull request opened by @andersk on 2023-01-18 05:19_
+_@andersk_
 
 If a `try` block has multiple statements, a compound statement, or control flow, rewriting it with `contextlib.suppress` would obfuscate the fact that the exception still short-circuits further statements in the block.
 

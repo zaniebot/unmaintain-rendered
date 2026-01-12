@@ -12,14 +12,14 @@ head: ci_check_dot_git_for_build
 created_at: 2023-08-07T11:11:15Z
 updated_at: 2023-08-08T15:47:32Z
 url: https://github.com/astral-sh/ruff/pull/6387
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Check .git in formatter progress checkouts for build
 
 ---
 
-_Pull request opened by @konstin on 2023-08-07 11:11_
+_@konstin_
 
 From the formatter progress CI logs:
 ```

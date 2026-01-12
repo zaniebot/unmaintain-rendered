@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-18T16:37:03Z
 updated_at: 2024-11-22T02:25:35Z
 url: https://github.com/astral-sh/uv/issues/9205
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Local + remote dependencies
 
 ---
 
-_Issue opened by @nunokaeru on 2024-11-18 16:37_
+_@nunokaeru_
 
 Let's say I have a repository that has two packages, one of them depends on the other but I want to both test that dependency with it's local version and with a remote "downgraded" version.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T10:43:12Z
 updated_at: 2023-08-18T15:34:56Z
 url: https://github.com/astral-sh/ruff/issues/6647
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Missing space between lambda own line comment
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-17 10:43_
+_@MichaReiser_
 
 Input 
 

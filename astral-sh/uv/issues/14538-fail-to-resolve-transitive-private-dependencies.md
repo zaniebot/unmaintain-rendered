@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T12:15:09Z
 updated_at: 2025-07-10T23:30:35Z
 url: https://github.com/astral-sh/uv/issues/14538
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Fail to resolve transitive private dependencies
 
 ---
 
-_Issue opened by @ThomasHezard on 2025-07-10 12:15_
+_@ThomasHezard_
 
 ### Summary
 

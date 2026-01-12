@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T14:03:58Z
 updated_at: 2025-11-02T17:39:56Z
 url: https://github.com/astral-sh/ty/issues/1368
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # False-positive `invalid-type-form` errors for type aliases inside `Literal` slices
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-16 14:03_
+_@AlexWaygood_
 
 ### Summary
 

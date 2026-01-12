@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T15:20:59Z
 updated_at: 2025-11-17T20:13:25Z
 url: https://github.com/astral-sh/uv/issues/12838
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # improvements for creating and using offline mirror for uv-python
 
 ---
 
-_Issue opened by @MeitarR on 2025-04-11 15:20_
+_@MeitarR_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: main
 created_at: 2025-02-25T21:24:01Z
 updated_at: 2025-12-31T19:58:26Z
 url: https://github.com/astral-sh/ruff/pull/16385
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add f-string consistent quotes formatting option
 
 ---
 
-_Pull request opened by @matthewlloyd on 2025-02-25 21:24_
+_@matthewlloyd_
 
 Introduces a new formatter option `f-string-consistent-quotes` that leverages Python 3.12's PEP 701 to use consistent quotes inside f-string expressions rather than alternating quote styles for compatibility.
 

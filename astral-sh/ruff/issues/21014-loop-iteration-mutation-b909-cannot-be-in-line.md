@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T11:04:15Z
 updated_at: 2025-10-21T12:03:15Z
 url: https://github.com/astral-sh/ruff/issues/21014
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `loop-iteration-mutation` (B909) cannot be in-line disabled
 
 ---
 
-_Issue opened by @Jtachan on 2025-10-21 11:04_
+_@Jtachan_
 
 ### Summary
 

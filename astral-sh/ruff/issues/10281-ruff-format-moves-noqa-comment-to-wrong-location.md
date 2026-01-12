@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T21:13:31Z
 updated_at: 2024-03-08T14:51:04Z
 url: https://github.com/astral-sh/ruff/issues/10281
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff format` moves `# noqa` comment to wrong location
 
 ---
 
-_Issue opened by @jakob-keller on 2024-03-07 21:13_
+_@jakob-keller_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

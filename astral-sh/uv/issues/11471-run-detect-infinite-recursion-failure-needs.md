@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T07:08:40Z
 updated_at: 2025-02-17T01:05:02Z
 url: https://github.com/astral-sh/uv/issues/11471
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # `run::detect_infinite_recursion` failure (needs `python-managed` mark?)
 
 ---
 
-_Issue opened by @mgorny on 2025-02-13 07:08_
+_@mgorny_
 
 ### Summary
 

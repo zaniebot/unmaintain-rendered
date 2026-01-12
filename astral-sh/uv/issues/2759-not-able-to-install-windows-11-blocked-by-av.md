@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-01T17:33:22Z
 updated_at: 2024-04-01T17:37:25Z
 url: https://github.com/astral-sh/uv/issues/2759
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Not able to install windows 11 blocked by AV
 
 ---
 
-_Issue opened by @sanjithacks on 2024-04-01 17:33_
+_@sanjithacks_
 
 Installation blocked by BitDefender
 

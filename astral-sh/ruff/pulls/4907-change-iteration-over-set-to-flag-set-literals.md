@@ -12,14 +12,14 @@ head: fix-set-check
 created_at: 2023-06-06T20:44:40Z
 updated_at: 2023-07-10T09:55:29Z
 url: https://github.com/astral-sh/ruff/pull/4907
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Change `iteration-over-set` to flag set literals only
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-06 20:44_
+_@tjkuson_
 
 ## Summary
 

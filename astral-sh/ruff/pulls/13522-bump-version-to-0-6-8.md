@@ -13,14 +13,14 @@ head: micha/release-0.6.8
 created_at: 2024-09-26T10:28:44Z
 updated_at: 2024-09-26T12:11:51Z
 url: https://github.com/astral-sh/ruff/pull/13522
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Bump version to 0.6.8
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-26 10:28_
+_@MichaReiser_
 
 _No description provided._
 

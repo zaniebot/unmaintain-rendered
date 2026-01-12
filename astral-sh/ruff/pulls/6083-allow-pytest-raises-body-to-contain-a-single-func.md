@@ -12,14 +12,14 @@ head: PT012-allow-def
 created_at: 2023-07-26T03:33:03Z
 updated_at: 2023-07-26T03:59:01Z
 url: https://github.com/astral-sh/ruff/pull/6083
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Allow pytest.raises body to contain a single func or class definition
 
 ---
 
-_Pull request opened by @harupy on 2023-07-26 03:33_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

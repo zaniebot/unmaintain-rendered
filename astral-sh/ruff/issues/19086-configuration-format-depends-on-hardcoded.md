@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T11:49:54Z
 updated_at: 2025-07-07T12:33:54Z
 url: https://github.com/astral-sh/ruff/issues/19086
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Configuration format depends on hardcoded `pyproject.toml` filename
 
 ---
 
-_Issue opened by @sin-ack on 2025-07-02 11:49_
+_@sin-ack_
 
 I am currently trying to write a Nix flake check to lint our Python project. In Nix, the actual mapped name of a file from the source directory can be different from the original file name. In our case, we have to validate a workspace with multiple Python packages so the source directory and the `pyproject.toml` files are separate. I tried to get only `pyproject.toml` as a single file, which turns its filename into `/nix/store/zgx...i2-pyproject.toml`. So the command to run becomes `.../bin/ruff format --config /nix/store/zgx...i2-pyproject.toml --check --diff /nix/store/abc...def-source/`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T19:48:00Z
 updated_at: 2025-06-23T20:01:56Z
 url: https://github.com/astral-sh/ruff/issues/18165
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `sys.version_info.major` not flagged by `UP036`
 
 ---
 
-_Issue opened by @mxr on 2025-05-18 19:48_
+_@mxr_
 
 ### Summary
 

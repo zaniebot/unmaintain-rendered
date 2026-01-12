@@ -14,14 +14,14 @@ head: micha/fix-none-true-false-highlighting
 created_at: 2025-10-20T12:43:48Z
 updated_at: 2025-10-20T17:25:10Z
 url: https://github.com/astral-sh/ruff/pull/20994
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Fix `None`, `True` and `False` highlighting in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-20 12:43_
+_@MichaReiser_
 
 ## Summary
 

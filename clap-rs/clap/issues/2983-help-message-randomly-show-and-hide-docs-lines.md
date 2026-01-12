@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-02T17:37:32Z
 updated_at: 2021-12-14T18:04:12Z
 url: https://github.com/clap-rs/clap/issues/2983
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # --help message randomly show and hide docs lines
 
 ---
 
-_Issue opened by @marcospb19 on 2021-11-02 17:37_
+_@marcospb19_
 
 ### Please complete the following tasks
 

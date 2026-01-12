@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-05T15:13:01Z
 updated_at: 2023-08-16T07:11:07Z
 url: https://github.com/astral-sh/ruff/issues/6367
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Trailing comment on list gets formatted to a separate line
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-05 15:13_
+_@dhruvmanila_
 
 Given:
 

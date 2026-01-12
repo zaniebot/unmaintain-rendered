@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-24T22:09:35Z
 updated_at: 2022-08-12T22:00:51Z
 url: https://github.com/clap-rs/clap/issues/3748
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # ArgGroups values don't work well with get_many
 
 ---
 
-_Issue opened by @epage on 2022-05-24 22:09_
+_@epage_
 
 When adding args, we also add them to their groups in `ArgMatches` but with #3732, we fail if the group has disparate types.
 

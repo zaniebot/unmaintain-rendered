@@ -14,14 +14,14 @@ head: dhruv/fix-conformance-commit
 created_at: 2025-08-05T07:39:57Z
 updated_at: 2025-08-05T09:27:25Z
 url: https://github.com/astral-sh/ruff/pull/19754
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Fix typing repository commit output in CI
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-05 07:39_
+_@dhruvmanila_
 
 ## Summary
 

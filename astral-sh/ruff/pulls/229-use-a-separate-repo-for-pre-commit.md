@@ -12,14 +12,14 @@ head: charlie/pre-commit
 created_at: 2022-09-20T03:06:29Z
 updated_at: 2022-09-20T03:06:40Z
 url: https://github.com/astral-sh/ruff/pull/229
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use a separate repo for pre-commit
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-20 03:06_
+_@charliermarsh_
 
 Resolves #225.
 

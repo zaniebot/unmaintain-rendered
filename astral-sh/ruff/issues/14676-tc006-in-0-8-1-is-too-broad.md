@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T11:45:21Z
 updated_at: 2024-12-04T13:16:33Z
 url: https://github.com/astral-sh/ruff/issues/14676
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `TC006` in `0.8.1` is too broad
 
 ---
 
-_Issue opened by @dangotbanned on 2024-11-29 11:45_
+_@dangotbanned_
 
 I was surprised by some of these *"fixes"* adding quotes
 

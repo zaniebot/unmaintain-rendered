@@ -13,14 +13,14 @@ head: dhruv/string-nodes-rename
 created_at: 2023-12-13T20:34:23Z
 updated_at: 2024-03-13T07:54:57Z
 url: https://github.com/astral-sh/ruff/pull/9120
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Rename string AST nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-13 20:34_
+_@dhruvmanila_
 
 Rename the string nodes for better understanding between the types. The following renames are performed:
 

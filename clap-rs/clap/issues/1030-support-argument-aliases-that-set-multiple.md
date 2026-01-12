@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-08-15T07:17:19Z
 updated_at: 2022-01-11T18:46:08Z
 url: https://github.com/clap-rs/clap/issues/1030
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support argument aliases that set multiple arguments
 
 ---
 
-_Issue opened by @darnir on 2017-08-15 07:17_
+_@darnir_
 
 ## Problem Description
 

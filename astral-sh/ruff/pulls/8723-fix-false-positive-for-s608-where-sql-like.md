@@ -13,14 +13,14 @@ head: zanie/S608
 created_at: 2023-11-16T15:49:45Z
 updated_at: 2024-08-24T22:16:10Z
 url: https://github.com/astral-sh/ruff/pull/8723
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix false positive for `S608` where SQL-like expression follows other text
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-16 15:49_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/8717
 

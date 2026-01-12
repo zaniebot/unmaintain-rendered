@@ -13,14 +13,14 @@ head: charlie/callable
 created_at: 2024-10-01T17:57:12Z
 updated_at: 2024-10-01T18:11:05Z
 url: https://github.com/astral-sh/ruff/pull/13595
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Avoid indirection in `class.__call__` lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 17:57_
+_@charliermarsh_
 
 _No description provided._
 

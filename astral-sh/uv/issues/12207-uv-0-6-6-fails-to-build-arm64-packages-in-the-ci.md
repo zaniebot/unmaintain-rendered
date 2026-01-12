@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T23:50:13Z
 updated_at: 2025-03-18T01:13:35Z
 url: https://github.com/astral-sh/uv/issues/12207
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # uv `0.6.6` fails to build arm64 packages in the CI?
 
 ---
 
-_Issue opened by @harshil21 on 2025-03-16 23:50_
+_@harshil21_
 
 ### Summary
 

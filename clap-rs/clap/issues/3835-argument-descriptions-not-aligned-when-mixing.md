@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-15T07:52:02Z
 updated_at: 2025-04-01T16:50:38Z
 url: https://github.com/clap-rs/clap/issues/3835
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Argument descriptions not aligned when mixing positional arguments with others under a help heading
 
 ---
 
-_Issue opened by @pemistahl on 2022-06-15 07:52_
+_@pemistahl_
 
 ### Please complete the following tasks
 

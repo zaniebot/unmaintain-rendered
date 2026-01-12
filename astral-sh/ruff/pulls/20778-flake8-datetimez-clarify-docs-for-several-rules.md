@@ -13,14 +13,14 @@ head: datetimtz-docs
 created_at: 2025-10-08T22:10:18Z
 updated_at: 2025-10-10T13:06:05Z
 url: https://github.com/astral-sh/ruff/pull/20778
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`flake8-datetimez`] Clarify docs for several rules
 
 ---
 
-_Pull request opened by @ageorgou on 2025-10-08 22:10_
+_@ageorgou_
 
 ## Summary
 

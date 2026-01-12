@@ -13,14 +13,14 @@ head: zb/zstd
 created_at: 2024-04-07T16:07:14Z
 updated_at: 2024-04-08T20:34:09Z
 url: https://github.com/astral-sh/uv/pull/2861
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Add extract support for zstd
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-07 16:07_
+_@zanieb_
 
 We need this to extract toolchain downloads
 

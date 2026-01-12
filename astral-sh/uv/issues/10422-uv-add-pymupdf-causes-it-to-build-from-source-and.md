@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-09T02:07:57Z
 updated_at: 2025-01-09T02:37:38Z
 url: https://github.com/astral-sh/uv/issues/10422
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # uv add PyMuPDF causes it to build from source and fails
 
 ---
 
-_Issue opened by @rafaeljcd on 2025-01-09 02:07_
+_@rafaeljcd_
 
 using the command causes it to build from source. 
 

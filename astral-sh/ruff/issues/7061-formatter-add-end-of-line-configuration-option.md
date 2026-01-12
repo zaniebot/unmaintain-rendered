@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-02T07:53:49Z
 updated_at: 2024-12-03T03:52:25Z
 url: https://github.com/astral-sh/ruff/issues/7061
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Add end of line configuration option
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-02 07:53_
+_@MichaReiser_
 
 Add a `end-of-line` configuration option similar to Prettier and editorconfig that allows configuring the preferred line ending. The option supports the following value:
 

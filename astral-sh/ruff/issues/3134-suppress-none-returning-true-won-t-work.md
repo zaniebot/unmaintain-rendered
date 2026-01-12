@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T16:47:07Z
 updated_at: 2023-02-22T20:10:27Z
 url: https://github.com/astral-sh/ruff/issues/3134
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `suppress-none-returning = true` won't work
 
 ---
 
-_Issue opened by @nrbnlulu on 2023-02-22 16:47_
+_@nrbnlulu_
 
 For these configurations `suppress-none-returning = true` would be ignored.
 

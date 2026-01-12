@@ -13,14 +13,14 @@ head: charlie/buf
 created_at: 2024-02-28T20:34:47Z
 updated_at: 2024-05-23T15:07:29Z
 url: https://github.com/astral-sh/uv/pull/2053
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Fallback to streaming after `BufError`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 20:34_
+_@charliermarsh_
 
 ## Summary
 

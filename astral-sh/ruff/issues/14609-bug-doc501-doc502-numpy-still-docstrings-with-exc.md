@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-26T13:26:01Z
 updated_at: 2024-11-26T14:30:03Z
 url: https://github.com/astral-sh/ruff/issues/14609
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Bug] [DOC501 & DOC502] Numpy still docstrings with `:exc:` directive for exceptions are falsely flagged
 
 ---
 
-_Issue opened by @AbstractUmbra on 2024-11-26 13:26_
+_@AbstractUmbra_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

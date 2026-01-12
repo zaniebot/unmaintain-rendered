@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T12:17:45Z
 updated_at: 2025-05-05T21:27:14Z
 url: https://github.com/astral-sh/ruff/issues/17763
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add an auto fix for adding FA100-related `from __future__ import annotations` imports
 
 ---
 
-_Issue opened by @pradyunsg on 2025-05-01 12:17_
+_@pradyunsg_
 
 ### Summary
 

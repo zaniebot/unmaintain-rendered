@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T01:56:38Z
 updated_at: 2024-11-11T20:23:35Z
 url: https://github.com/astral-sh/ruff/issues/14237
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM222 false positive in `[*iterable] or [another list]`
 
 ---
 
-_Issue opened by @rdaysky on 2024-11-10 01:56_
+_@rdaysky_
 
 Suppose I want to run some code for each element in an iterable, but if there are none, run once for the value of None. However, the natural code
 ```

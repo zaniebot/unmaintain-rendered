@@ -15,14 +15,14 @@ head: konsti/test-determinism-across-machines
 created_at: 2025-04-28T08:46:21Z
 updated_at: 2025-05-06T16:51:57Z
 url: https://github.com/astral-sh/uv/pull/13171
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:34Z
 ```
 
 # Reproducible uv build backend across operating systems
 
 ---
 
-_Pull request opened by @konstin on 2025-04-28 08:46_
+_@konstin_
 
 The goal of this PR is to support reproducible builds and best-effort platform-independent builds. Previously, while the build backend would build the same source dist and wheel on the same machine, they would look different across different operating systems. This PR fixes the platform-dependent walk dir order by sorting and removes platform-specific permissions from the source dist that had caused those differences.
 

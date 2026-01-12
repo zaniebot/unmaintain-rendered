@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-12T18:41:42Z
 updated_at: 2024-11-12T10:47:06Z
 url: https://github.com/astral-sh/ruff/issues/4396
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `self` arguments to methods should not have type annotations
 
 ---
 
-_Issue opened by @rra on 2023-05-12 18:41_
+_@rra_
 
 Currently, Ruff does not appear to exclude the `self` argument to class methods from its check for type annotations. For example, this Python file:
 

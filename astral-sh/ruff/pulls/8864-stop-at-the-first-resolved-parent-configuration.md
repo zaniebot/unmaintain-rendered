@@ -13,14 +13,14 @@ head: fix-8858
 created_at: 2023-11-28T04:02:11Z
 updated_at: 2023-11-29T04:28:05Z
 url: https://github.com/astral-sh/ruff/pull/8864
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Stop at the first resolved parent configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-11-28 04:02_
+_@MichaReiser_
 
 ## Summary
 

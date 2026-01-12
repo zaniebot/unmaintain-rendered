@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T08:50:01Z
 updated_at: 2025-10-28T23:56:54Z
 url: https://github.com/astral-sh/uv/issues/16224
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # Dependency version markers are not being resolved as expected
 
 ---
 
-_Issue opened by @skraeven on 2025-10-10 08:50_
+_@skraeven_
 
 ### Summary
 

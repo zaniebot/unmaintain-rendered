@@ -12,14 +12,14 @@ head: gankra/rootdoc
 created_at: 2025-12-12T18:18:07Z
 updated_at: 2025-12-13T20:17:12Z
 url: https://github.com/astral-sh/ty/pull/1869
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # update implicit root docs
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-12 18:18_
+_@Gankra_
 
 As of https://github.com/astral-sh/ruff/pull/21817, ./tests are no longer implicitly included.
 

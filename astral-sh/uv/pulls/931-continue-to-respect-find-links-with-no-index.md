@@ -13,14 +13,14 @@ head: charlie/warn
 created_at: 2024-01-15T16:07:34Z
 updated_at: 2024-01-15T16:19:28Z
 url: https://github.com/astral-sh/uv/pull/931
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Continue to respect `--find-links` with `--no-index`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 16:07_
+_@charliermarsh_
 
 Like `pip`, we should allow `--find-links` with `--no-index`.
 

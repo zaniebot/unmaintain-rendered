@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-04T09:47:34Z
 updated_at: 2024-07-05T21:57:41Z
 url: https://github.com/astral-sh/uv/issues/4797
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Use a relative path in `uv pip compile --emit-links`
 
 ---
 
-_Issue opened by @oriori1703 on 2024-07-04 09:47_
+_@oriori1703_
 
 When running `uv pip compile --emit-links` the lock file always contains `--find-links` with an absolute path.
 

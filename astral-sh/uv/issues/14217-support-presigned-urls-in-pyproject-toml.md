@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T15:49:22Z
 updated_at: 2025-06-23T18:52:09Z
 url: https://github.com/astral-sh/uv/issues/14217
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Support presigned URLs in pyproject.toml
 
 ---
 
-_Issue opened by @esafak on 2025-06-23 15:49_
+_@esafak_
 
 ### Summary
 

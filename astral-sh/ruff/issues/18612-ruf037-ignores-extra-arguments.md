@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T14:54:38Z
 updated_at: 2025-06-12T13:07:18Z
 url: https://github.com/astral-sh/ruff/issues/18612
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF037 ignores extra arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-10 14:54_
+_@dscorbett_
 
 ### Summary
 

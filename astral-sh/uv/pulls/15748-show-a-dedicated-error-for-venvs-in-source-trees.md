@@ -15,14 +15,14 @@ head: konsti/dedicated-venv-in-uv-build-error
 created_at: 2025-09-09T11:35:20Z
 updated_at: 2025-09-09T12:41:59Z
 url: https://github.com/astral-sh/uv/pull/15748
-synced_at: 2026-01-10T11:10:46Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Show a dedicated error for venvs in source trees
 
 ---
 
-_Pull request opened by @konstin on 2025-09-09 11:35_
+_@konstin_
 
 A user in the support chat had an error message for `uv build` with the `uv_build` backend they didn't understand, which was caused by them having a venv in their build directory. This PR adds a dedicated error message when adding something to a distribution that looks like a venv.
 

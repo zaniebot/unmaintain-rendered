@@ -12,14 +12,14 @@ head: renovate/rockylinux-9.x
 created_at: 2024-04-22T03:54:22Z
 updated_at: 2024-04-23T20:38:17Z
 url: https://github.com/astral-sh/uv/pull/3178
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:28Z
 ```
 
 # Update rockylinux Docker tag to v9
 
 ---
 
-_Pull request opened by @renovate on 2024-04-22 03:54_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

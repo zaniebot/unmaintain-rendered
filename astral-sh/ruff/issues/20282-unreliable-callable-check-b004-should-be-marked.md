@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-06T22:30:43Z
 updated_at: 2025-09-12T19:27:19Z
 url: https://github.com/astral-sh/ruff/issues/20282
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `unreliable-callable-check` (B004) should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-06 22:30_
+_@dscorbett_
 
 ### Summary
 

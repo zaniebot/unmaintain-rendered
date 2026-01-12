@@ -13,14 +13,14 @@ head: zanie/docs-preview-nursey
 created_at: 2023-09-26T20:43:47Z
 updated_at: 2023-09-26T22:53:30Z
 url: https://github.com/astral-sh/ruff/pull/7670
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Show preview notice on rule pages for nursery rules
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-26 20:43_
+_@zanieb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

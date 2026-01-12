@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T22:43:01Z
 updated_at: 2025-05-27T08:45:56Z
 url: https://github.com/astral-sh/uv/issues/13628
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # mod_wsgi compilation and installation seems to fail silently
 
 ---
 
-_Issue opened by @xnx on 2025-05-23 22:43_
+_@xnx_
 
 ### Summary
 

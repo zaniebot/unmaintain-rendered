@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-22T09:26:41Z
 updated_at: 2024-09-23T22:19:32Z
 url: https://github.com/astral-sh/ruff/issues/10522
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule to detect duplicate function definitions.
 
 ---
 
-_Issue opened by @ollz272 on 2024-03-22 09:26_
+_@ollz272_
 
 We have the rule PIE794 which detects duplicate class field definitions. I think it would be nice to have a rule which detects duplicate function definitions:
 

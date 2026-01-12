@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-08-24T12:26:57Z
 updated_at: 2020-02-01T10:15:38Z
 url: https://github.com/clap-rs/clap/issues/1333
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Rename AppSettings::SubcommandRequiredElseHelp
 
 ---
 
-_Issue opened by @stevenroose on 2018-08-24 12:26_
+_@stevenroose_
 
 To `AppSettings::SubCommandRequiredElseHelp`. Note the capital Command.
 

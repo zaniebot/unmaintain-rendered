@@ -13,14 +13,14 @@ head: charlie/exe
 created_at: 2024-01-26T14:43:07Z
 updated_at: 2024-01-26T16:19:07Z
 url: https://github.com/astral-sh/uv/pull/1124
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Avoid embedding launcher scripts on non-Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 14:43_
+_@charliermarsh_
 
 Just to reduce binary size on all other platforms.
 

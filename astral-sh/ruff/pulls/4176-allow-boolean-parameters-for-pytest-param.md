@@ -12,14 +12,14 @@ head: charlie/param
 created_at: 2023-05-02T01:01:12Z
 updated_at: 2023-05-02T01:31:51Z
 url: https://github.com/astral-sh/ruff/pull/4176
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Allow boolean parameters for `pytest.param`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-02 01:01_
+_@charliermarsh_
 
 Closes #4172.
 

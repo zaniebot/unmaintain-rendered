@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-13T16:19:10Z
 updated_at: 2025-01-13T18:12:53Z
 url: https://github.com/astral-sh/uv/issues/9873
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Certain tests & scenarios are sensitive to exported environment variables
 
 ---
 
-_Issue opened by @pradyunsg on 2024-12-13 16:19_
+_@pradyunsg_
 
 [context: I'm working on #9849, and a few tests are failing for me due to issues related to the network-related environment variables]
 

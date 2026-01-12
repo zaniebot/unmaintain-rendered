@@ -13,14 +13,14 @@ head: latyshev/ruf060
 created_at: 2025-03-16T12:39:44Z
 updated_at: 2025-03-19T08:25:40Z
 url: https://github.com/astral-sh/ruff/pull/16775
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [`ruff`] implement `IfKeyNotInDictAssign` rule (RUF060)
 
 ---
 
-_Pull request opened by @alex-700 on 2025-03-16 12:39_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T08:03:50Z
 updated_at: 2025-02-24T07:39:31Z
 url: https://github.com/astral-sh/uv/issues/11089
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # uv can not find a package for an existing version
 
 ---
 
-_Issue opened by @mneumei on 2025-01-30 08:03_
+_@mneumei_
 
 ### Summary
 

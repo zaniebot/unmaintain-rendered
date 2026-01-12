@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-10T16:58:31Z
 updated_at: 2024-04-10T18:20:10Z
 url: https://github.com/astral-sh/ruff/issues/10861
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `pytest-parametrize-values-wrong-type` (`PT007` ) unsafe fix fails if there is a list of only one item
 
 ---
 
-_Issue opened by @nyoungstudios on 2024-04-10 16:58_
+_@nyoungstudios_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

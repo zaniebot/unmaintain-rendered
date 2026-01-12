@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T21:07:10Z
 updated_at: 2023-06-07T22:25:38Z
 url: https://github.com/astral-sh/ruff/issues/4940
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F841 fix since 0.0.264 can break code
 
 ---
 
-_Issue opened by @scop on 2023-06-07 21:07_
+_@scop_
 
 ```shellsession
 $ curl -O https://raw.githubusercontent.com/home-assistant/core/03710e58b5cc3cd1e2472d2e497bf5780695eca5/tests/components/homekit_controller/test_init.py

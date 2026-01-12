@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T12:55:09Z
 updated_at: 2025-01-25T02:54:01Z
 url: https://github.com/astral-sh/uv/issues/10470
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Workspace members with a missing `build-system` are wrongly detected as `virtual` deps rather than `directory` ones
 
 ---
 
-_Issue opened by @P-E-Meunier on 2025-01-10 12:55_
+_@P-E-Meunier_
 
 A member of one of my workspaces has the following build-system section in its `pyproject.toml`:
 

@@ -14,14 +14,14 @@ head: amy/invalid-rule-code-message
 created_at: 2025-12-19T23:09:26Z
 updated_at: 2026-01-08T01:23:21Z
 url: https://github.com/astral-sh/ruff/pull/22100
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [`ruff`] Improve fix title for `RUF102` invalid rule code
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-19 23:09_
+_@amyreese_
 
 ## Summary
 

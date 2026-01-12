@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T03:17:24Z
 updated_at: 2025-04-07T18:11:48Z
 url: https://github.com/astral-sh/uv/issues/12662
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # `uv venv` activation script has side effects with zsh and bash
 
 ---
 
-_Issue opened by @zsimic on 2025-04-04 03:17_
+_@zsimic_
 
 ### Summary
 

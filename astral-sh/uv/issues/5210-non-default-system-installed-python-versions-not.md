@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T02:36:58Z
 updated_at: 2024-07-22T20:26:38Z
 url: https://github.com/astral-sh/uv/issues/5210
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Non-default system-installed Python versions not listed
 
 ---
 
-_Issue opened by @mgaitan on 2024-07-19 02:36_
+_@mgaitan_
 
 I have 3 different Python versions installed on my system (Ubuntu 24.04). The default is 3.12, and I have 3.8 and 3.10 installed via PPAs.
 

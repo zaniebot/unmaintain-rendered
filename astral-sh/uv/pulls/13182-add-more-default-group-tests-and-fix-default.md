@@ -13,14 +13,14 @@ head: tests-default-groups
 created_at: 2025-04-28T16:27:17Z
 updated_at: 2025-04-29T09:15:44Z
 url: https://github.com/astral-sh/uv/pull/13182
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Add more default group tests and fix default groups for `uv add`
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-28 16:27_
+_@blueraft_
 
 ## Summary
 

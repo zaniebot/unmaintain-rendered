@@ -12,14 +12,14 @@ head: false-positive-if-tuple
 created_at: 2022-09-04T01:34:12Z
 updated_at: 2022-09-04T02:59:31Z
 url: https://github.com/astral-sh/ruff/pull/96
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix false positive for `IfTuple`
 
 ---
 
-_Pull request opened by @harupy on 2022-09-04 01:34_
+_@harupy_
 
 This PR fixes a false positive for `IfTuple` when a tuple has no elements:
 

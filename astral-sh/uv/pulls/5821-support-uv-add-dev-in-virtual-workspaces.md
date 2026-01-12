@@ -14,14 +14,14 @@ head: charlie/add-dev
 created_at: 2024-08-06T17:48:39Z
 updated_at: 2024-08-06T18:06:06Z
 url: https://github.com/astral-sh/uv/pull/5821
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Support uv add `--dev` in virtual workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-06 17:48_
+_@charliermarsh_
 
 ## Summary
 

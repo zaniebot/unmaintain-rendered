@@ -13,14 +13,14 @@ head: charlie/non-editable
 created_at: 2025-09-06T16:16:43Z
 updated_at: 2025-09-07T15:41:18Z
 url: https://github.com/astral-sh/uv/pull/15708
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Allow `editable = false` for workspace sources
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-06 16:16_
+_@charliermarsh_
 
 ## Summary
 

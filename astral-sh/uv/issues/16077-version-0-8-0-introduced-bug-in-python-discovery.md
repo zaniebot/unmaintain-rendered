@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T17:31:40Z
 updated_at: 2025-10-03T19:36:10Z
 url: https://github.com/astral-sh/uv/issues/16077
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Version `0.8.0` introduced bug in python discovery on Windows
 
 ---
 
-_Issue opened by @wikiped on 2025-09-30 17:31_
+_@wikiped_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-01-02T19:38:44Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/801
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # App::write_help does not yield the full help message
 
 ---
 
-_Issue opened by @phrohdoh on 2017-01-02 19:38_
+_@phrohdoh_
 
 ### Rust Version
 

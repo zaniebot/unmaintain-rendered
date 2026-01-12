@@ -13,14 +13,14 @@ head: windows-exception-handler
 created_at: 2025-07-13T02:49:37Z
 updated_at: 2025-07-14T23:27:13Z
 url: https://github.com/astral-sh/uv/pull/14582
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Add an exception handler on Windows
 
 ---
 
-_Pull request opened by @geofft on 2025-07-13 02:49_
+_@geofft_
 
 We've seen a few cases of uv.exe exiting with an exception code as its exit status and no user-visible output (#14563 in the field, and #13812 in CI). It seems that recent versions of Windows no longer show dialog boxes on access violations (what UNIX calls segfaults) or similar errors. Something is probably sent to Windows Error Reporting, and we can maybe sign up to get the crashes from Microsoft, but the user experience of seeing uv exit with no output is poor, both for end users and during development. While it's possible to opt out of this behavior or set up a debugger, this isn't the default configuration. (See https://superuser.com/q/1246626 for some pointers.)
 

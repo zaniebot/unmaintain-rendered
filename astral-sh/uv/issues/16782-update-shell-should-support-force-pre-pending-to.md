@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T20:45:53Z
 updated_at: 2025-11-19T20:45:53Z
 url: https://github.com/astral-sh/uv/issues/16782
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # `update-shell` should support force pre-pending to the `PATH`
 
 ---
 
-_Issue opened by @zanieb on 2025-11-19 20:45_
+_@zanieb_
 
 ### Summary
 

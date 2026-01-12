@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-05T12:52:57Z
 updated_at: 2024-05-02T18:31:33Z
 url: https://github.com/astral-sh/ruff/issues/10790
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Displaying linter rules that are available but hasn't been configured
 
 ---
 
-_Issue opened by @flaeppe on 2024-04-05 12:52_
+_@flaeppe_
 
 I find myself going through the list of available rules from time to time. Either checking if there are any rules introduced since last time or if I've just missed any. I do this for various reasons, some times it's just a project with older `ruff` config or perhaps it's not using `ruff` at all and I'm copying a config from another project.
 

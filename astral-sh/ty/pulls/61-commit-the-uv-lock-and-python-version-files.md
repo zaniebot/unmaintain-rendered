@@ -12,14 +12,14 @@ head: zb/uv-files
 created_at: 2025-05-06T13:35:11Z
 updated_at: 2025-07-08T10:38:16Z
 url: https://github.com/astral-sh/ty/pull/61
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Commit the `uv.lock` and `.python-version` files
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-06 13:35_
+_@zanieb_
 
 These are just in my tree right now, but seem proper to commit.
 

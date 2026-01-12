@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T22:26:08Z
 updated_at: 2024-03-03T23:24:39Z
 url: https://github.com/astral-sh/uv/issues/2027
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Can't use django binary that is located in the virtual environment
 
 ---
 
-_Issue opened by @ZeyadMoustafaKamal on 2024-02-27 22:26_
+_@ZeyadMoustafaKamal_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

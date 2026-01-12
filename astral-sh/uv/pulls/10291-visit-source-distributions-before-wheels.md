@@ -13,14 +13,14 @@ head: charlie/sd
 created_at: 2025-01-03T16:24:27Z
 updated_at: 2025-01-03T17:07:31Z
 url: https://github.com/astral-sh/uv/pull/10291
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Visit source distributions before wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-03 16:24_
+_@charliermarsh_
 
 ## Summary
 

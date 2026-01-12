@@ -13,14 +13,14 @@ head: charlie/site-packages
 created_at: 2024-03-19T02:53:18Z
 updated_at: 2024-03-19T03:06:17Z
 url: https://github.com/astral-sh/uv/pull/2537
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Search in both `purelib` and `platlib` for site-packages population
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 02:53_
+_@charliermarsh_
 
 ## Summary
 

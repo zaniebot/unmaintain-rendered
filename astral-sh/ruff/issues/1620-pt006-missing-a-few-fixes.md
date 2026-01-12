@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T02:56:34Z
 updated_at: 2023-01-04T03:52:52Z
 url: https://github.com/astral-sh/ruff/issues/1620
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PT006 missing a few fixes
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-01-04 02:56_
+_@edgarrmondragon_
 
 Currently supported:
 

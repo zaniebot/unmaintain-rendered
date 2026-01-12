@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-06T12:15:49Z
 updated_at: 2024-03-06T14:30:06Z
 url: https://github.com/astral-sh/uv/issues/2239
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Second order path dependencies are not handled
 
 ---
 
-_Issue opened by @adrienball on 2024-03-06 12:15_
+_@adrienball_
 
 I am facing an issue with second order path dependencies, which I manage to isolate in a simple example.
 Let's consider the following project layout:

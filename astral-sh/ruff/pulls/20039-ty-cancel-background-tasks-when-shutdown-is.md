@@ -15,14 +15,14 @@ head: micha/shutdown-cancel-background-tasks
 created_at: 2025-08-22T07:39:34Z
 updated_at: 2025-08-22T08:20:14Z
 url: https://github.com/astral-sh/ruff/pull/20039
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Cancel background tasks when shutdown is requested
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-22 07:39_
+_@MichaReiser_
 
 ## Summary
 

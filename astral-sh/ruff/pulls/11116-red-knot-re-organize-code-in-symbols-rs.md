@@ -13,14 +13,14 @@ head: cjm/red-knot-symbols-and-types
 created_at: 2024-04-23T20:45:49Z
 updated_at: 2024-04-26T20:06:26Z
 url: https://github.com/astral-sh/ruff/pull/11116
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [red-knot] re-organize code in symbols.rs
 
 ---
 
-_Pull request opened by @carljm on 2024-04-23 20:45_
+_@carljm_
 
 Just a reorganization per feedback from Micha that I agreed with. Puts all `impl` right after the corresponding `struct`, and moves iterators further down in the file, since they are implementation detail.
 

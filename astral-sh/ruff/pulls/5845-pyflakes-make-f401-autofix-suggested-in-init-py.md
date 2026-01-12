@@ -11,14 +11,14 @@ head: F401-init-only-suggested
 created_at: 2023-07-17T22:52:42Z
 updated_at: 2024-03-20T01:20:09Z
 url: https://github.com/astral-sh/ruff/pull/5845
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`pyflakes`] make F401 autofix "suggested" in `__init__.py` files
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-07-17 22:52_
+_@edgarrmondragon_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

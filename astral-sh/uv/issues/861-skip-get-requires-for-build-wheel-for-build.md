@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-09T22:53:26Z
 updated_at: 2024-07-28T00:54:56Z
 url: https://github.com/astral-sh/uv/issues/861
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Skip `get_requires_for_build_wheel` for build backends that always return `[]`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-09 22:53_
+_@charliermarsh_
 
 This is a probably-unsafe optimization we could perform, but e.g., poetry-core always returns `[]` (https://github.com/python-poetry/poetry-core/blob/21b00338544f52df7c3ba320f5f242a2fc815b65/src/poetry/core/masonry/api.py#L20C1-L20C1). So if we're using a version of poetry-core that we _know_ always returns `[]`, we could skip that step entirely.
 

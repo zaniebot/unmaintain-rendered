@@ -14,14 +14,14 @@ head: alex/submodule-attr-code
 created_at: 2025-11-24T19:04:45Z
 updated_at: 2025-11-25T07:54:09Z
 url: https://github.com/astral-sh/ruff/pull/21618
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Switch the error code from `unresolved-attribute` to `possibly-missing-attribute` for submodules that may not be available
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 19:04_
+_@AlexWaygood_
 
 ## Summary
 

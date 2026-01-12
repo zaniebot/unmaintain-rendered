@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-12T17:28:26Z
 updated_at: 2023-01-13T05:29:43Z
 url: https://github.com/astral-sh/ruff/issues/1823
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [question/request] processing stdin?
 
 ---
 
-_Issue opened by @FrancescElies on 2023-01-12 17:28_
+_@FrancescElies_
 
 With other tools like black one can pass a file via stdin `cat myfile.py | black -` and it will be formatted.
 

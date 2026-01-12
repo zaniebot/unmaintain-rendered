@@ -13,14 +13,14 @@ head: konsti/multiline-errors
 created_at: 2025-12-15T13:06:45Z
 updated_at: 2025-12-15T16:31:26Z
 url: https://github.com/astral-sh/uv/pull/17132
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Better rendering for multiline error messages
 
 ---
 
-_Pull request opened by @konstin on 2025-12-15 13:06_
+_@konstin_
 
 Split out from https://github.com/astral-sh/uv/pull/17110
 

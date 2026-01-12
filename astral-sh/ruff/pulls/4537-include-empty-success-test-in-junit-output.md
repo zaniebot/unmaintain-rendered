@@ -12,14 +12,14 @@ head: charlie/junit
 created_at: 2023-05-20T03:33:04Z
 updated_at: 2023-05-20T04:06:21Z
 url: https://github.com/astral-sh/ruff/pull/4537
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Include empty success test in JUnit output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-20 03:33_
+_@charliermarsh_
 
 ## Summary
 

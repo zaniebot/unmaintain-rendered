@@ -13,14 +13,14 @@ head: autofix/B006
 created_at: 2023-07-27T16:10:35Z
 updated_at: 2023-08-29T18:31:57Z
 url: https://github.com/astral-sh/ruff/pull/6131
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-bugbear`] Add autofix for B006
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-07-27 16:10_
+_@qdegraaf_
 
 ## Summary
 

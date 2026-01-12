@@ -13,14 +13,14 @@ head: charlie/order
 created_at: 2025-11-30T16:12:08Z
 updated_at: 2026-01-07T01:01:56Z
 url: https://github.com/astral-sh/ruff/pull/21704
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Emit a diagnostic for subclassing with `order=True`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-30 16:12_
+_@charliermarsh_
 
 ## Summary
 

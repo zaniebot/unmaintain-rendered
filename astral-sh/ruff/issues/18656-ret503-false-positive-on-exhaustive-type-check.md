@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T01:38:44Z
 updated_at: 2025-06-13T07:00:34Z
 url: https://github.com/astral-sh/ruff/issues/18656
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RET503 false positive on exhaustive type check
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-13 01:38_
+_@MeGaGiGaGon_
 
 ### Summary
 

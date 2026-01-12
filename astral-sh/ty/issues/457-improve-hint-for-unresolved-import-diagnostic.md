@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-20T09:05:54Z
 updated_at: 2025-08-26T15:01:18Z
 url: https://github.com/astral-sh/ty/issues/457
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Improve hint for unresolved-import diagnostic
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-20 09:05_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/18207/ added a hint to the `unresolved-import` diagnostic, suggesting users to correctly configure their venv. While useful, I think we could do better by:
 

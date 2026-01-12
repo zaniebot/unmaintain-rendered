@@ -14,14 +14,14 @@ head: dcreager/visitor-recursion
 created_at: 2025-07-29T21:17:47Z
 updated_at: 2025-08-29T00:05:29Z
 url: https://github.com/astral-sh/ruff/pull/19625
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Find legacy typevars using a `TypeVisitor`
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-29 21:17_
+_@dcreager_
 
 Now that we have a nice mechanism for visiting a type, we can replace the `find_legacy_typevars` method with a `TypeVisitor`. To make this happen, this PR also adds the following:
 

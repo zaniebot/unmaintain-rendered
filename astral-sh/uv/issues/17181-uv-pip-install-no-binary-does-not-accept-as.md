@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-18T19:16:49Z
 updated_at: 2025-12-19T13:58:36Z
 url: https://github.com/astral-sh/uv/issues/17181
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # `uv pip install --no-binary` does not accept `,` as delimiter
 
 ---
 
-_Issue opened by @shumpohl on 2025-12-18 19:16_
+_@shumpohl_
 
 ### Summary
 

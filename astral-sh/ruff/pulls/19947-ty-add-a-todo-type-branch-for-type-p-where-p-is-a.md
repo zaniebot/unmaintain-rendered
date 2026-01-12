@@ -13,14 +13,14 @@ head: alex/proto-meta-todo
 created_at: 2025-08-17T14:04:28Z
 updated_at: 2025-08-18T20:38:48Z
 url: https://github.com/astral-sh/ruff/pull/19947
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Add a Todo-type branch for `type[P]` where `P` is a protocol class
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-17 14:04_
+_@AlexWaygood_
 
 ## Summary
 

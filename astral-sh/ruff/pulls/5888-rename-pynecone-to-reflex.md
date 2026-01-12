@@ -12,14 +12,14 @@ head: main
 created_at: 2023-07-19T16:37:38Z
 updated_at: 2023-07-19T17:04:20Z
 url: https://github.com/astral-sh/ruff/pull/5888
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Rename `Pynecone` to `Reflex`
 
 ---
 
-_Pull request opened by @odiseo0 on 2023-07-19 16:37_
+_@odiseo0_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

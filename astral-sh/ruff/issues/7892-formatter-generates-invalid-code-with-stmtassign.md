@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-10T12:52:37Z
 updated_at: 2023-10-19T09:24:13Z
 url: https://github.com/astral-sh/ruff/issues/7892
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter generates invalid code with StmtAssign, parentheses and comments
 
 ---
 
-_Issue opened by @konstin on 2023-10-10 12:52_
+_@konstin_
 
 Input:
 ```python

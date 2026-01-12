@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-29T20:52:08Z
 updated_at: 2025-04-30T07:32:14Z
 url: https://github.com/astral-sh/ruff/issues/17723
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Bug in reachability constraint merging
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-29 20:52_
+_@sharkdp_
 
 Combining reachability constraints does not seem to work as expected. Consider the following example where we fail to see that `print(x)` is unreachable:
 ```py

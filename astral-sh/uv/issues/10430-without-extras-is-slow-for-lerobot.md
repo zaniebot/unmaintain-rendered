@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T14:32:59Z
 updated_at: 2025-01-10T16:23:21Z
 url: https://github.com/astral-sh/uv/issues/10430
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # `without_extras` is slow for lerobot
 
 ---
 
-_Issue opened by @konstin on 2025-01-09 14:32_
+_@konstin_
 
 Given [this pyproject.toml](https://gist.github.com/konstin/e9fea6019497159554a77188e212eae6), we spend ~38% of resolver thread time in `without_extras`
 

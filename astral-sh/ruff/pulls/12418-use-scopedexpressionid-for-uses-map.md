@@ -12,14 +12,14 @@ head: use-scoped-expression-id-for-uses
 created_at: 2024-07-20T11:53:02Z
 updated_at: 2024-08-12T07:52:13Z
 url: https://github.com/astral-sh/ruff/pull/12418
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use ScopedExpressionId for uses map
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-20 11:53_
+_@MichaReiser_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T21:59:45Z
 updated_at: 2023-10-01T08:19:08Z
 url: https://github.com/astral-sh/ruff/issues/4406
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff panics when fixing file and partially change its content
 
 ---
 
-_Issue opened by @qarmin on 2023-05-12 21:59_
+_@qarmin_
 
 Ruff f5be3d8e5b2e3f3a0c5890075b552371f4061023 - still happens 0.0.285
 

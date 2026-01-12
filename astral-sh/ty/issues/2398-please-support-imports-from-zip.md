@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-08T15:59:52Z
 updated_at: 2026-01-08T16:09:29Z
 url: https://github.com/astral-sh/ty/issues/2398
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Please support imports from zip
 
 ---
 
-_Issue opened by @mitya57 on 2026-01-08 15:59_
+_@mitya57_
 
 ### Summary
 

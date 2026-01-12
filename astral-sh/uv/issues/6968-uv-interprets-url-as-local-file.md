@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-03T12:48:54Z
 updated_at: 2025-03-21T05:30:47Z
 url: https://github.com/astral-sh/uv/issues/6968
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv interprets url as local file
 
 ---
 
-_Issue opened by @bqback on 2024-09-03 12:48_
+_@bqback_
 
 I used the following command:
 

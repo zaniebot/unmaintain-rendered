@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-24T11:58:41Z
 updated_at: 2025-07-24T12:04:37Z
 url: https://github.com/astral-sh/ty/issues/883
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # isinstance(arg, A | B) does not narrow
 
 ---
 
-_Issue opened by @elbaro on 2025-07-24 11:58_
+_@elbaro_
 
 ### Summary
 

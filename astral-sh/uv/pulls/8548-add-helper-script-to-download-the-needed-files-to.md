@@ -13,14 +13,14 @@ head: add-mirror-script-for-python
 created_at: 2024-10-24T22:40:04Z
 updated_at: 2025-01-04T10:09:03Z
 url: https://github.com/astral-sh/uv/pull/8548
-synced_at: 2026-01-10T11:44:29Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # add helper script to download the needed files to mirror for UV_PYTHON_INSTALL_MIRROR
 
 ---
 
-_Pull request opened by @MeitarR on 2024-10-24 22:40_
+_@MeitarR_
 
 ## Summary
 

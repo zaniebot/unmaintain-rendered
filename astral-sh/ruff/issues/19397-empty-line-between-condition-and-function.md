@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T13:09:37Z
 updated_at: 2025-07-18T12:50:47Z
 url: https://github.com/astral-sh/ruff/issues/19397
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Empty line between condition and function
 
 ---
 
-_Issue opened by @gagaga67 on 2025-07-17 13:09_
+_@gagaga67_
 
 ### Question
 

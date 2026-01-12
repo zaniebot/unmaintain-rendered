@@ -12,14 +12,14 @@ head: ag/package-level-conflict
 created_at: 2024-11-14T19:35:12Z
 updated_at: 2025-07-25T20:39:05Z
 url: https://github.com/astral-sh/uv/pull/9130
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # add support for package level conflicts with groups
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-14 19:35_
+_@BurntSushi_
 
 This PR adds support for declaring a conflict between a group
 and a project's "production" dependencies. For example:

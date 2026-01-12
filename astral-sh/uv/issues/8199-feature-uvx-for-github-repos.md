@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T07:21:26Z
 updated_at: 2025-09-17T02:10:30Z
 url: https://github.com/astral-sh/uv/issues/8199
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # feature: uvx for github repos
 
 ---
 
-_Issue opened by @sslivkoff on 2024-10-15 07:21_
+_@sslivkoff_
 
 `uvx` is an awesome feature. It would be very nice to have something like
 

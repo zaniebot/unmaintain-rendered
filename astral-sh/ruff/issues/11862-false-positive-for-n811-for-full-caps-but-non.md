@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-13T18:30:44Z
 updated_at: 2024-11-25T23:42:03Z
 url: https://github.com/astral-sh/ruff/issues/11862
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False-positive for `N811` for full-caps, but non-constant imports
 
 ---
 
-_Issue opened by @L4rryFisherman on 2024-06-13 18:30_
+_@L4rryFisherman_
 
 The line:
 ```

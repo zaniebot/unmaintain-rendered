@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-04T23:51:06Z
 updated_at: 2026-01-05T13:56:10Z
 url: https://github.com/astral-sh/uv/issues/17319
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Early validation vs resolution-time failure in dependency solvers
 
 ---
 
-_Issue opened by @quencs on 2026-01-04 23:51_
+_@quencs_
 
 Framed in terms of uv / pip–style lock solvers, I think the tension here is really about how much responsibility we expect the solver to carry versus how much signal we give it up front.
 

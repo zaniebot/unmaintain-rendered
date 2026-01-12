@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T22:13:25Z
 updated_at: 2025-06-06T11:42:05Z
 url: https://github.com/astral-sh/uv/issues/13321
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Struggling to install `axolotl[flash-attn,deepspeed]` via `pyproject.toml` with
 
 ---
 
-_Issue opened by @sidmadala on 2025-05-06 22:13_
+_@sidmadala_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T14:16:34Z
 updated_at: 2024-09-27T07:50:59Z
 url: https://github.com/astral-sh/uv/issues/7391
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # No interpreter found in system path or `py` launcher
 
 ---
 
-_Issue opened by @michelkluger on 2024-09-14 14:16_
+_@michelkluger_
 
 ❯ uv venv env
   × No interpreter found in system path or `py` launcher

@@ -13,14 +13,14 @@ head: zb/docs-verbose
 created_at: 2025-09-17T15:00:50Z
 updated_at: 2025-09-17T15:13:01Z
 url: https://github.com/astral-sh/uv/pull/15915
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Add verbose output to the documentation help section
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-17 15:00_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15914
 

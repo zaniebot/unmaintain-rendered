@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-10T17:48:10Z
 updated_at: 2024-03-12T23:21:42Z
 url: https://github.com/astral-sh/uv/issues/2343
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv` behaves differently than `pip` when using `--only-binary=:all:` for editable installs
 
 ---
 
-_Issue opened by @rrueth on 2024-03-10 17:48_
+_@rrueth_
 
 `uv` version:
 ```

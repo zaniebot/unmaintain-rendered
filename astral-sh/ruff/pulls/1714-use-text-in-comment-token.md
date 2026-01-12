@@ -12,14 +12,14 @@ head: comment-text
 created_at: 2023-01-07T11:46:17Z
 updated_at: 2023-01-07T12:29:11Z
 url: https://github.com/astral-sh/ruff/pull/1714
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Use text in comment token
 
 ---
 
-_Pull request opened by @harupy on 2023-01-07 11:46_
+_@harupy_
 
 https://github.com/RustPython/RustPython/pull/4426 has been merged. We can simplify code using text in comment tokens.
 

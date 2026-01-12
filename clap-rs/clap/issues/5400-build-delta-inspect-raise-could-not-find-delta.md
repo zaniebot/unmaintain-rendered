@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T20:20:31Z
 updated_at: 2024-03-19T06:38:50Z
 url: https://github.com/clap-rs/clap/issues/5400
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # build delta-inspect raise could not find `delta_datafusion` in the crate root
 
 ---
 
-_Issue opened by @dgouyette on 2024-03-18 20:20_
+_@dgouyette_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T13:12:57Z
 updated_at: 2024-07-19T05:13:56Z
 url: https://github.com/astral-sh/uv/issues/5185
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Feature request: option to not update `uv.lock` file
 
 ---
 
-_Issue opened by @kdeldycke on 2024-07-18 13:12_
+_@kdeldycke_
 
 Using the latest `uv`:
 ```shell-session

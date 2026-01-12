@@ -12,14 +12,14 @@ head: check-recursion-depth
 created_at: 2025-02-10T14:47:21Z
 updated_at: 2025-02-12T18:58:43Z
 url: https://github.com/astral-sh/uv/pull/11386
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Detect infinite recursion in uv run.
 
 ---
 
-_Pull request opened by @ssanderson on 2025-02-10 14:47_
+_@ssanderson_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

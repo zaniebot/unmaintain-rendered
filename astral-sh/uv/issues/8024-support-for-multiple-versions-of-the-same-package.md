@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T22:41:06Z
 updated_at: 2024-11-13T14:52:30Z
 url: https://github.com/astral-sh/uv/issues/8024
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Support for multiple versions of the same package in different optional dependencies
 
 ---
 
-_Issue opened by @gbaudino on 2024-10-08 22:41_
+_@gbaudino_
 
 ### Summary
 I'm working on a project that requires different versions of the same package for two separate environments. For example, I need `numpy==2.1.2` for one environment and `numpy==2.0.0` for another. However, UV does not seem to support this scenario, as it results in dependency resolution conflicts.

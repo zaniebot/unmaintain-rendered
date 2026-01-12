@@ -13,14 +13,14 @@ head: konsti/top-level-marker
 created_at: 2025-02-07T11:30:46Z
 updated_at: 2025-02-07T22:08:42Z
 url: https://github.com/astral-sh/uv/pull/11313
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Optimize flattening in apache airflow workspace
 
 ---
 
-_Pull request opened by @konstin on 2025-02-07 11:30_
+_@konstin_
 
 ## Motivation
 

@@ -13,14 +13,14 @@ head: patch-4
 created_at: 2025-06-27T17:37:50Z
 updated_at: 2025-07-02T19:59:15Z
 url: https://github.com/astral-sh/ruff/pull/18988
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`Airflow`] Make `AIR302` example error out-of-the-box
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-27 17:37_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

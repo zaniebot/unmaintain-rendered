@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T13:54:46Z
 updated_at: 2025-12-31T15:37:59Z
 url: https://github.com/astral-sh/ty/issues/1720
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Cache/parallelize find references
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-02 13:54_
+_@MichaReiser_
 
 Finding common references, e.g. like finding all references for `asyncio` can be slow in a large project like homeassistant. We should speed that up by:
 

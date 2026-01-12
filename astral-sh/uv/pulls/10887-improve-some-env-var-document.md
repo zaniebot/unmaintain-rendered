@@ -13,14 +13,14 @@ head: doc
 created_at: 2025-01-23T07:20:33Z
 updated_at: 2025-01-23T15:56:04Z
 url: https://github.com/astral-sh/uv/pull/10887
-synced_at: 2026-01-10T11:45:16Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Improve some env var document
 
 ---
 
-_Pull request opened by @j178 on 2025-01-23 07:20_
+_@j178_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: pyi062-applicability-comments
 created_at: 2024-11-11T11:44:47Z
 updated_at: 2024-11-11T12:51:05Z
 url: https://github.com/astral-sh/ruff/pull/14268
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Mark fix as unsafe when type annotation contains comments for `duplicate-literal-member` (`PYI062`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-11 11:44_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

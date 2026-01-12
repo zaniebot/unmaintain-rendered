@@ -13,14 +13,14 @@ head: charlie/shell
 created_at: 2024-03-05T21:42:20Z
 updated_at: 2024-03-05T22:28:18Z
 url: https://github.com/astral-sh/uv/pull/2221
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Show appropriate activation command based on shell detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 21:42_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

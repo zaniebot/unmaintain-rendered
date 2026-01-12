@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-01-22T15:06:17Z
 updated_at: 2021-12-13T15:48:10Z
 url: https://github.com/clap-rs/clap/issues/2307
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Validate `conflicts_with`
 
 ---
 
-_Issue opened by @HalfVoxel on 2021-01-22 15:06_
+_@HalfVoxel_
 
 ### Make sure you completed the following tasks
 

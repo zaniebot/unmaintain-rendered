@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T06:54:04Z
 updated_at: 2025-09-25T06:54:04Z
 url: https://github.com/astral-sh/uv/issues/16020
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # extend the add command for adding the latest version of a package
 
 ---
 
-_Issue opened by @electronic-shop-bartel on 2025-09-25 06:54_
+_@electronic-shop-bartel_
 
 ### Summary
 

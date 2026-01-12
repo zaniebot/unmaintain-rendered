@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-09T22:36:25Z
 updated_at: 2023-01-10T03:47:54Z
 url: https://github.com/clap-rs/clap/issues/4617
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # try_update_from returns an Error MissingRequiredArgument for argument with existing values
 
 ---
 
-_Issue opened by @nh13 on 2023-01-09 22:36_
+_@nh13_
 
 ### Please complete the following tasks
 

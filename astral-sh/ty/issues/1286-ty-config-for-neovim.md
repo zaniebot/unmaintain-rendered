@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T14:56:57Z
 updated_at: 2025-10-01T15:30:04Z
 url: https://github.com/astral-sh/ty/issues/1286
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty config for neovim
 
 ---
 
-_Issue opened by @Dan7h3x on 2025-09-30 14:56_
+_@Dan7h3x_
 
 ### Question
 

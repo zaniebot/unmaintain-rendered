@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T16:02:54Z
 updated_at: 2026-01-09T04:11:25Z
 url: https://github.com/astral-sh/ty/issues/1759
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # LSP doesn't really understand `DefinitionKind::ImportFromSubmodule`
 
 ---
 
-_Issue opened by @Gankra on 2025-12-04 16:02_
+_@Gankra_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-30T19:44:22Z
 updated_at: 2024-12-08T19:08:22Z
 url: https://github.com/astral-sh/ruff/issues/9715
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # UP013, UP014: Comments inside the definition are dropped
 
 ---
 
-_Issue opened by @JelleZijlstra on 2024-01-30 19:44_
+_@JelleZijlstra_
 
 Starting with this code:
 

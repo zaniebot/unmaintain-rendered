@@ -12,14 +12,14 @@ head: zanie/extra-error
 created_at: 2023-10-31T15:47:49Z
 updated_at: 2023-10-31T19:17:38Z
 url: https://github.com/astral-sh/uv/pull/254
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Add error when user requests extras that do not exist
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 15:47_
+_@zanieb_
 
 Extends #253 
 Closes #241 

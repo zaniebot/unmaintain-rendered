@@ -14,14 +14,14 @@ head: charlie/tests
 created_at: 2024-08-12T20:55:26Z
 updated_at: 2024-08-12T21:14:15Z
 url: https://github.com/astral-sh/uv/pull/6045
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Resolve relative `tool.uv.sources` relative to containing project
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 20:55_
+_@charliermarsh_
 
 ## Summary
 

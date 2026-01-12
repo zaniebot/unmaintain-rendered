@@ -13,14 +13,14 @@ head: david/tuples-of-unions
 created_at: 2025-05-26T15:40:42Z
 updated_at: 2025-05-26T17:17:26Z
 url: https://github.com/astral-sh/ruff/pull/18323
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Normalize tuples of unions as unions of tuples
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-26 15:40_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

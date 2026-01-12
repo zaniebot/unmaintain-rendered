@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T16:12:06Z
 updated_at: 2025-06-09T00:27:43Z
 url: https://github.com/astral-sh/uv/issues/13823
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Credentials in direct URLs are not propagated to transitive URL dependencies
 
 ---
 
-_Issue opened by @zanieb on 2025-06-03 16:12_
+_@zanieb_
 
 > ```
 > [build-system]

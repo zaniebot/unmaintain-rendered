@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T20:16:13Z
 updated_at: 2025-01-31T20:45:50Z
 url: https://github.com/astral-sh/uv/issues/11082
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # uv encodes `direct_url.json` content differently than pip
 
 ---
 
-_Issue opened by @tringwald on 2025-01-29 20:16_
+_@tringwald_
 
 ### Summary
 

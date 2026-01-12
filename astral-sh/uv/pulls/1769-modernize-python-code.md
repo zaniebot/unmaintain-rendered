@@ -11,14 +11,14 @@ head: modernize
 created_at: 2024-02-20T17:23:37Z
 updated_at: 2024-02-20T19:51:18Z
 url: https://github.com/astral-sh/uv/pull/1769
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Modernize Python code
 
 ---
 
-_Pull request opened by @gaborbernat on 2024-02-20 17:23_
+_@gaborbernat_
 
 Use f-strings, walrus operator and raise SystemExit instead of sys.exit.
 

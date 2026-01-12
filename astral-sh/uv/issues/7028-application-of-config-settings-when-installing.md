@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T15:14:26Z
 updated_at: 2024-09-10T01:49:18Z
 url: https://github.com/astral-sh/uv/issues/7028
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Application of config settings when installing package depends on content of uv cache
 
 ---
 
-_Issue opened by @smackesey on 2024-09-04 15:14_
+_@smackesey_
 
 We use `uv` to build the python environments that we run pyright against for our large codebase [Dagster](https://github.com/dagster-io/dagster). Pyright environments do not handle Python import hooks correctly. It is therefore important that all editables installs in the environment use a "legacy" style, where the pth file contains a static path instead of an import hook.
 

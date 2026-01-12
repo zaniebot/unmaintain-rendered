@@ -14,14 +14,14 @@ head: FURB171
 created_at: 2025-01-30T17:37:46Z
 updated_at: 2025-01-30T23:50:19Z
 url: https://github.com/astral-sh/ruff/pull/15832
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`refurb`] Mark fix as unsafe if there are comments (`FURB171`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-30 17:37_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: users/bpl/output-format-fullpaths
 created_at: 2024-12-14T18:33:46Z
 updated_at: 2024-12-15T16:01:10Z
 url: https://github.com/astral-sh/ruff/pull/14974
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # feat: add new FullPath OutputFormat
 
 ---
 
-_Pull request opened by @brupelo on 2024-12-14 18:33_
+_@brupelo_
 
 ## Summary
 

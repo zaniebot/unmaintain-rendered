@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T09:47:08Z
 updated_at: 2025-12-18T19:56:58Z
 url: https://github.com/astral-sh/uv/issues/16279
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Where is `UV` trying to get credentials from on Windows platform
 
 ---
 
-_Issue opened by @InsaneLuv on 2025-10-13 09:47_
+_@InsaneLuv_
 
 ### Question
 

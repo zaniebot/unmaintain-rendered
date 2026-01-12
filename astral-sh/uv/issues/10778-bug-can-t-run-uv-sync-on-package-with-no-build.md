@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T14:08:30Z
 updated_at: 2025-01-20T16:32:29Z
 url: https://github.com/astral-sh/uv/issues/10778
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Bug? Can't run uv sync on package with --no-build
 
 ---
 
-_Issue opened by @Chasarr on 2025-01-20 14:08_
+_@Chasarr_
 
 When trying to create a new package with say `uv init --package`, add a dependency, say the progress package, with `uv add progress`. My pyprojects.toml looks like this:
 ```toml

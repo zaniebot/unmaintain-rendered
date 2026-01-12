@@ -13,14 +13,14 @@ head: charlie/dev
 created_at: 2024-02-20T19:25:49Z
 updated_at: 2024-02-20T21:44:19Z
 url: https://github.com/astral-sh/uv/pull/1776
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Add support for `>dev` specifier
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 19:25_
+_@charliermarsh_
 
 ## Summary
 

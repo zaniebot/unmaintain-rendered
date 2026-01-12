@@ -13,14 +13,14 @@ head: zb/fixup-cache-comment
 created_at: 2025-06-27T19:53:39Z
 updated_at: 2025-06-28T14:42:25Z
 url: https://github.com/astral-sh/uv/pull/14330
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Update the Python query cache comment
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 19:53_
+_@zanieb_
 
 _No description provided._
 

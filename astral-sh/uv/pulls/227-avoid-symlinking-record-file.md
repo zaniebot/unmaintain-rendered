@@ -13,14 +13,14 @@ head: charlie/hardlink
 created_at: 2023-10-30T03:08:01Z
 updated_at: 2023-10-30T03:10:39Z
 url: https://github.com/astral-sh/uv/pull/227
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Avoid symlinking `RECORD` file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 03:08_
+_@charliermarsh_
 
 This is the one file that gets modified during installation. Hardlinking it is bad!
 

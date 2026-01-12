@@ -13,14 +13,14 @@ head: fix_ann_assign
 created_at: 2023-07-13T10:02:13Z
 updated_at: 2023-07-13T11:11:57Z
 url: https://github.com/astral-sh/ruff/pull/5732
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix `StmtAnnAssign` formatting by mirroring `StmtAssign`
 
 ---
 
-_Pull request opened by @konstin on 2023-07-13 10:02_
+_@konstin_
 
 ## Summary
 

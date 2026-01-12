@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T21:59:08Z
 updated_at: 2025-01-20T17:23:59Z
 url: https://github.com/astral-sh/uv/issues/10695
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # `uvx` and `uv run` not equivalent? uvx fails resolving tool dependencies
 
 ---
 
-_Issue opened by @maphew on 2025-01-16 21:59_
+_@maphew_
 
 On windows in CMD prompt or Powershell with "uv 0.5.20 (1c17662b3 2025-01-15)" I get the below:
 

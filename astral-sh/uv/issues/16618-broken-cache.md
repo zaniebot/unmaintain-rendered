@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T18:34:04Z
 updated_at: 2025-12-16T14:19:33Z
 url: https://github.com/astral-sh/uv/issues/16618
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Broken cache?
 
 ---
 
-_Issue opened by @hainkind on 2025-11-06 18:34_
+_@hainkind_
 
 ### Summary
 

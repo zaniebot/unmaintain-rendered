@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-17T19:11:28Z
 updated_at: 2023-08-17T20:20:56Z
 url: https://github.com/astral-sh/ruff/issues/6656
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # RUF009 incompatible with pyserde library dataclass field function
 
 ---
 
-_Issue opened by @kujenga on 2023-08-17 19:11_
+_@kujenga_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

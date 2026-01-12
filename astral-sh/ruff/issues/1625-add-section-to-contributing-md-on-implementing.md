@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T04:50:51Z
 updated_at: 2023-01-04T04:50:51Z
 url: https://github.com/astral-sh/ruff/issues/1625
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add section to `CONTRIBUTING.md` on implementing autofix logic
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-04 04:50_
+_@charliermarsh_
 
 _No description provided._
 

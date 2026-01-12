@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-02T15:32:44Z
 updated_at: 2025-05-02T15:49:54Z
 url: https://github.com/astral-sh/uv/issues/13268
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # managing project tools with a new `uv tool sync` subcommand
 
 ---
 
-_Issue opened by @itcarroll on 2025-05-02 15:32_
+_@itcarroll_
 
 ### Summary
 

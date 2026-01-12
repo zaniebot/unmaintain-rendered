@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T20:49:56Z
 updated_at: 2025-05-20T21:32:30Z
 url: https://github.com/astral-sh/ty/issues/467
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type checker doesn't recognize SQLAlchemy 2.0 features (Mapped, mapped_column) despite correct installation
 
 ---
 
-_Issue opened by @y3bishop3y on 2025-05-20 20:49_
+_@y3bishop3y_
 
 # Description
 

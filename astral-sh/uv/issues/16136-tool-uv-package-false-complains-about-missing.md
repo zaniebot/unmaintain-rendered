@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-06T09:32:29Z
 updated_at: 2025-10-06T23:18:10Z
 url: https://github.com/astral-sh/uv/issues/16136
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # `tool.uv.package = false` complains about missing `project.requires-python`
 
 ---
 
-_Issue opened by @konstin on 2025-10-06 09:32_
+_@konstin_
 
 First reported in https://github.com/astral-sh/uv/issues/10204#issuecomment-3369249174.
 

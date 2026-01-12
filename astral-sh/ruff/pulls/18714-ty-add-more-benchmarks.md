@@ -14,14 +14,14 @@ head: micha/real-world-benchmarks
 created_at: 2025-06-17T07:13:25Z
 updated_at: 2025-06-20T18:07:01Z
 url: https://github.com/astral-sh/ruff/pull/18714
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Add more benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-17 07:13_
+_@MichaReiser_
 
 ## Summary
 

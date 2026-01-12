@@ -13,14 +13,14 @@ head: david/silence-unresolved-reference-in-unreachable-code-pt2
 created_at: 2025-04-04T11:11:53Z
 updated_at: 2025-04-08T06:37:22Z
 url: https://github.com/astral-sh/ruff/pull/17199
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Reachability analysis
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-04 11:11_
+_@sharkdp_
 
 ## Summary
 

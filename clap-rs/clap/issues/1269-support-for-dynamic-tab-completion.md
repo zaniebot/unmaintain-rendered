@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-05-04T13:28:11Z
 updated_at: 2018-08-02T03:30:23Z
 url: https://github.com/clap-rs/clap/issues/1269
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for dynamic tab completion
 
 ---
 
-_Issue opened by @softprops on 2018-05-04 13:28_
+_@softprops_
 
 Looking for something akin to the dynamic options feature of the golang cli package
 

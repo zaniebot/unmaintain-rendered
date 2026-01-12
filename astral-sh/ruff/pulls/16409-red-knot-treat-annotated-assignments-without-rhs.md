@@ -13,14 +13,14 @@ head: 16264-treat-declarations-in-stubs-as-bindings
 created_at: 2025-02-27T02:12:34Z
 updated_at: 2025-02-28T19:47:20Z
 url: https://github.com/astral-sh/ruff/pull/16409
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] treat annotated assignments without RHS in stubs as bindings
 
 ---
 
-_Pull request opened by @mishamsk on 2025-02-27 02:12_
+_@mishamsk_
 
 ## Summary
 

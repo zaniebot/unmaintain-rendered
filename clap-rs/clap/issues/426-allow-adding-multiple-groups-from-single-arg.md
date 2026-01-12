@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-15T11:25:19Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/426
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow adding multiple groups from single Arg
 
 ---
 
-_Issue opened by @kbknapp on 2016-02-15 11:25_
+_@kbknapp_
 
 ``` rust
 Arg::with_name("arg")

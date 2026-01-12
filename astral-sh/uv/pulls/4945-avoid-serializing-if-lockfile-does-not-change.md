@@ -13,14 +13,14 @@ head: ibraheem/fast-lock
 created_at: 2024-07-09T20:51:38Z
 updated_at: 2024-07-09T21:08:28Z
 url: https://github.com/astral-sh/uv/pull/4945
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Avoid serializing if lockfile does not change
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-09 20:51_
+_@ibraheemdev_
 
 ## Summary
 

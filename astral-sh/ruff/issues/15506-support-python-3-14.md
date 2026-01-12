@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T15:44:22Z
 updated_at: 2025-08-08T12:35:07Z
 url: https://github.com/astral-sh/ruff/issues/15506
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Support Python 3.14
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-01-15 15:44_
+_@InSyncWithFoo_
 
 This is the tracking issue for updates required to support Python 3.14.
 

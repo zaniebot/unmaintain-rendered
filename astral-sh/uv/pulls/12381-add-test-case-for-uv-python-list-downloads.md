@@ -13,14 +13,14 @@ head: zb/list-tests-downloads
 created_at: 2025-03-21T18:55:43Z
 updated_at: 2025-04-21T22:24:56Z
 url: https://github.com/astral-sh/uv/pull/12381
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Add test case for `uv python list` downloads
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 18:55_
+_@zanieb_
 
 Requires #12380 
 Extends new tests from #12374 

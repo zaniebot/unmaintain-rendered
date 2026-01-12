@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-30T13:35:34Z
 updated_at: 2025-09-30T15:37:30Z
 url: https://github.com/astral-sh/ty/issues/1283
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # self.<completion> not working in helix
 
 ---
 
-_Issue opened by @twoertwein on 2025-09-30 13:35_
+_@twoertwein_
 
 ### Summary
 

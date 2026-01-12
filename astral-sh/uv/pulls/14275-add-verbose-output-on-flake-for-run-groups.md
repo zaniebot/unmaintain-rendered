@@ -13,14 +13,14 @@ head: zb/flake-run-groups
 created_at: 2025-06-26T14:23:16Z
 updated_at: 2025-06-26T17:11:36Z
 url: https://github.com/astral-sh/uv/pull/14275
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Add verbose output on flake for `run_groups_requires_python`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 14:23_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/14160
 

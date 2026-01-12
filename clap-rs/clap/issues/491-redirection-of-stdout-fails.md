@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-04-28T18:48:47Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/491
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Redirection of STDOUT fails
 
 ---
 
-_Issue opened by @workanator on 2016-04-28 18:48_
+_@workanator_
 
 Hello,
 

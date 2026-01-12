@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-06T15:39:03Z
 updated_at: 2025-02-07T07:52:11Z
 url: https://github.com/astral-sh/ruff/issues/15997
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PIE800 fix introduces a syntax error for `{**{},}`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-06 15:39_
+_@dscorbett_
 
 ### Description
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-18T13:57:07Z
 updated_at: 2025-07-21T18:51:59Z
 url: https://github.com/astral-sh/ty/issues/853
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # @dataclass + Subscripted Generics error
 
 ---
 
-_Issue opened by @elbaro on 2025-07-18 13:57_
+_@elbaro_
 
 ### Summary
 

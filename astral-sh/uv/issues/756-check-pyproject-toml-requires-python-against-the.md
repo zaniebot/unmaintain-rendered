@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-03T21:33:57Z
 updated_at: 2024-06-27T11:21:34Z
 url: https://github.com/astral-sh/uv/issues/756
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Check `pyproject.toml` `requires-python` against the installed Python
 
 ---
 
-_Issue opened by @konstin on 2024-01-03 21:33_
+_@konstin_
 
 If a pyproject.toml exists and it declares a python requirement, we should check and warn (but not error) if the current venv doesn't match it, independent of where we get our dependency specification from.
 

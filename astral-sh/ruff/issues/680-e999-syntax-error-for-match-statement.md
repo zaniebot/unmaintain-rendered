@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-11T10:32:14Z
 updated_at: 2023-02-23T00:10:07Z
 url: https://github.com/astral-sh/ruff/issues/680
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # E999 syntax error for match statement
 
 ---
 
-_Issue opened by @thosil on 2022-11-11 10:32_
+_@thosil_
 
 ruff throw a syntax error for code like this:
 ```python3

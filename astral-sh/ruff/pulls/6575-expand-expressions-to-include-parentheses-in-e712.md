@@ -13,14 +13,14 @@ head: charlie/invalid-parens
 created_at: 2023-08-14T22:30:27Z
 updated_at: 2023-08-17T16:13:05Z
 url: https://github.com/astral-sh/ruff/pull/6575
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Expand expressions to include parentheses in E712
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 22:30_
+_@charliermarsh_
 
 ## Summary
 

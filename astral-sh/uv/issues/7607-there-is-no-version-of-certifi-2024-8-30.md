@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-21T02:33:13Z
 updated_at: 2024-09-21T03:34:23Z
 url: https://github.com/astral-sh/uv/issues/7607
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # there is no version of certifi==2024.8.30
 
 ---
 
-_Issue opened by @robinjhuang on 2024-09-21 02:33_
+_@robinjhuang_
 
 uv: 4.14 on Windows
 

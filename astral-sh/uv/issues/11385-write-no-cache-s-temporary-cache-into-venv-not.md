@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T14:13:48Z
 updated_at: 2025-07-02T15:17:05Z
 url: https://github.com/astral-sh/uv/issues/11385
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Write `--no-cache`'s temporary cache into venv not /tmp to allow use of hardlinks in more cases
 
 ---
 
-_Issue opened by @edmorley on 2025-02-10 14:13_
+_@edmorley_
 
 ### Summary
 

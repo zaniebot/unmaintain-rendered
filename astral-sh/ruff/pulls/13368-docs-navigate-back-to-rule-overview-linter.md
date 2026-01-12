@@ -13,14 +13,14 @@ head: docs-navigate-linter
 created_at: 2024-09-16T11:15:27Z
 updated_at: 2024-09-16T16:42:58Z
 url: https://github.com/astral-sh/ruff/pull/13368
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # DOCS: navigate back to rule overview linter
 
 ---
 
-_Pull request opened by @sbrugman on 2024-09-16 11:15_
+_@sbrugman_
 
 Implementation for one of the suggestions in https://github.com/astral-sh/ruff/issues/13367
 

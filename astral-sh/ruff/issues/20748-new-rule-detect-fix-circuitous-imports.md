@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-07T15:24:56Z
 updated_at: 2025-10-07T16:11:10Z
 url: https://github.com/astral-sh/ruff/issues/20748
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New Rule: Detect/Fix Circuitous Imports
 
 ---
 
-_Issue opened by @Redoubts on 2025-10-07 15:24_
+_@Redoubts_
 
 ### Summary
 

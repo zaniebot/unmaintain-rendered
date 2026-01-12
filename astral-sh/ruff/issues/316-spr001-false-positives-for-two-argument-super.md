@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-04T04:42:14Z
 updated_at: 2022-10-04T17:55:33Z
 url: https://github.com/astral-sh/ruff/issues/316
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # SPR001 false positives for two-argument super()
 
 ---
 
-_Issue opened by @andersk on 2022-10-04 04:42_
+_@andersk_
 
 `super(MyClass, arg)` can only be replaced with `super()` if `arg` is the first argument to a function that’s defined within `class MyClass`. In other cases, the `SPR001` diagnostic from ruff (and from flake8-super, I guess) is a false positive.
 

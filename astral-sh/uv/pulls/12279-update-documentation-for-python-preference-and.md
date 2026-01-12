@@ -13,14 +13,14 @@ head: zb/managed-python-docs
 created_at: 2025-03-18T13:29:42Z
 updated_at: 2025-03-18T16:36:25Z
 url: https://github.com/astral-sh/uv/pull/12279
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Update documentation for `python-preference` and `managed-python`
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-18 13:29_
+_@zanieb_
 
 _No description provided._
 

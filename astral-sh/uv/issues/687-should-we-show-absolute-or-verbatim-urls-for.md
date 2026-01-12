@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-18T15:48:19Z
 updated_at: 2023-12-18T22:10:25Z
 url: https://github.com/astral-sh/uv/issues/687
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Should we show absolute or verbatim URLs for editable installs?
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-18 15:48_
+_@charliermarsh_
 
 Right now, we show the verbatim URL in the installation recap.
 

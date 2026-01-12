@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-03T06:51:29Z
 updated_at: 2023-08-11T13:50:27Z
 url: https://github.com/astral-sh/ruff/issues/6299
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `MatchCase`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-03 06:51_
+_@dhruvmanila_
 
 _No description provided._
 

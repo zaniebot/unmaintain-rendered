@@ -13,14 +13,14 @@ head: etcetera-0.11
 created_at: 2025-10-31T06:15:50Z
 updated_at: 2025-10-31T12:57:50Z
 url: https://github.com/astral-sh/ruff/pull/21160
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # Update etcetera to 0.11.0
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-10-31 06:15_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

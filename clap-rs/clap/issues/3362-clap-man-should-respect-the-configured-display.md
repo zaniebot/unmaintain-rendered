@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-28T21:28:12Z
 updated_at: 2025-10-22T15:14:15Z
 url: https://github.com/clap-rs/clap/issues/3362
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `clap_man` should respect the configured display order for args and subcommands
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:28_
+_@epage_
 
 ### Please complete the following tasks
 

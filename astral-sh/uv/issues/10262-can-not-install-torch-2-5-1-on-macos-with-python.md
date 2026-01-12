@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-01T13:24:01Z
 updated_at: 2025-01-05T16:48:39Z
 url: https://github.com/astral-sh/uv/issues/10262
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # can not install torch 2.5.1 on macos with python 3.13.1
 
 ---
 
-_Issue opened by @whisper-bye on 2025-01-01 13:24_
+_@whisper-bye_
 
 ```shell
 uv init demo -p 3.13.1

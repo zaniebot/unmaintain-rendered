@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T15:52:13Z
 updated_at: 2024-12-28T22:30:46Z
 url: https://github.com/astral-sh/uv/issues/4779
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv pip install -U somepkg` should only update the specified package, unless additional upgrades are necessary
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-07-03 15:52_
+_@ThiefMaster_
 
 Classic `pip` did the same until a few years ago where they changed the default to `--upgrade-strategy only-if-needed` for which `uv` currently does not have an equivalent. The only way to get this behavior is `uv pip install -P somepkg somepkg` which is a bit ugly since I need to specify the package name twice.
 

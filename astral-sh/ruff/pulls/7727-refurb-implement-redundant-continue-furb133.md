@@ -12,14 +12,14 @@ head: redundant-continue
 created_at: 2023-09-30T23:16:55Z
 updated_at: 2025-05-11T06:04:08Z
 url: https://github.com/astral-sh/ruff/pull/7727
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`refurb`] Implement `redundant-continue` (FURB133)
 
 ---
 
-_Pull request opened by @danparizher on 2023-09-30 23:16_
+_@danparizher_
 
 ## Summary
 

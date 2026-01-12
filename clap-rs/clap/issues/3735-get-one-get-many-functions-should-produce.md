@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-18T00:25:04Z
 updated_at: 2022-05-18T00:25:04Z
 url: https://github.com/clap-rs/clap/issues/3735
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `get_one` / `get_many` functions should produce `MatchesError` when wrong one is used
 
 ---
 
-_Issue opened by @epage on 2022-05-18 00:25_
+_@epage_
 
 This is split out of #3732.  This will help catch programming mistakes like with us erroring when an undefined argument is used.
 

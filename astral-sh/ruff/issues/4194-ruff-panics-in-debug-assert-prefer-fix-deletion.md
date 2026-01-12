@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-02T16:31:18Z
 updated_at: 2023-05-04T18:42:36Z
 url: https://github.com/astral-sh/ruff/issues/4194
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff panics in debug_assert 'Prefer `Fix::deletion`' when fixing bokeh with `--select ALL`
 
 ---
 
-_Issue opened by @konstin on 2023-05-02 16:31_
+_@konstin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

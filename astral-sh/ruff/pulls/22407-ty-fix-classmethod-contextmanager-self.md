@@ -13,14 +13,14 @@ head: classmethod-contextmanager-self-fix
 created_at: 2026-01-05T19:01:18Z
 updated_at: 2026-01-11T09:11:30Z
 url: https://github.com/astral-sh/ruff/pull/22407
-synced_at: 2026-01-12T02:12:03Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Fix classmethod + contextmanager + Self
 
 ---
 
-_Pull request opened by @eclbg on 2026-01-05 19:01_
+_@eclbg_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T14:16:04Z
 updated_at: 2025-11-05T15:22:36Z
 url: https://github.com/astral-sh/uv/issues/16600
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Add (optional) confirmation before installing with `uvx`
 
 ---
 
-_Issue opened by @Saucy9607 on 2025-11-05 14:16_
+_@Saucy9607_
 
 ### Summary
 

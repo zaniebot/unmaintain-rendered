@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T20:50:00Z
 updated_at: 2025-07-30T15:04:29Z
 url: https://github.com/astral-sh/uv/issues/14693
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Conflicting information about the PATH on Windows
 
 ---
 
-_Issue opened by @konstin on 2025-07-17 20:50_
+_@konstin_
 
 In my Windows PowerShell, uv 0.8.0 (branch) can't decide whether the bin directory is already on path or not:
 

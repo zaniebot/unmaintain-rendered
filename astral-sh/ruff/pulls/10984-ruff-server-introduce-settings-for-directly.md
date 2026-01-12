@@ -13,14 +13,14 @@ head: jane/server/editor-settings
 created_at: 2024-04-16T21:12:28Z
 updated_at: 2024-04-20T15:23:31Z
 url: https://github.com/astral-sh/ruff/pull/10984
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Introduce settings for directly configuring the linter and formatter
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-16 21:12_
+_@snowsignal_
 
 ## Summary
 

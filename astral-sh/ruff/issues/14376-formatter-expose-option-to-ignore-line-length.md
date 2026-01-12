@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T05:01:54Z
 updated_at: 2024-11-16T21:49:04Z
 url: https://github.com/astral-sh/ruff/issues/14376
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter: expose option to ignore line length
 
 ---
 
-_Issue opened by @gvfarns on 2024-11-16 05:01_
+_@gvfarns_
 
 The ruff formatter's decision to mimic black's defaults is a good one, but the decision to be as unwilling to allow any configuration as black is, I think, a mistake. We need at least a parameter to allow the formatter to ignore line length.
 

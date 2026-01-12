@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T10:24:35Z
 updated_at: 2025-12-17T11:16:03Z
 url: https://github.com/astral-sh/ruff/issues/21691
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # playground: Share button says Copied! before actually copying, then fails if you tab away too fast
 
 ---
 
-_Issue opened by @injust on 2025-11-29 10:24_
+_@injust_
 
 ### Summary
 

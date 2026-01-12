@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T15:52:06Z
 updated_at: 2024-05-09T14:43:47Z
 url: https://github.com/astral-sh/uv/issues/2160
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Show direct dependencies with uv pip compile
 
 ---
 
-_Issue opened by @jmbond on 2024-03-04 15:52_
+_@jmbond_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

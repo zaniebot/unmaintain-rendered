@@ -13,14 +13,14 @@ head: main
 created_at: 2024-11-02T18:03:19Z
 updated_at: 2024-12-09T08:25:18Z
 url: https://github.com/astral-sh/ruff/pull/14056
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Promote uv in installation guides
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-02 18:03_
+_@InSyncWithFoo_
 
 > [Because this is an Astral repository ;)](https://github.com/astral-sh/packse/pull/183)
 

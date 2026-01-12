@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T13:32:53Z
 updated_at: 2025-07-24T12:02:53Z
 url: https://github.com/astral-sh/ruff/issues/18460
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F841: `unused-variable` conflicts with Pydantic's ForwardRef
 
 ---
 
-_Issue opened by @Konfus-ius on 2025-06-04 13:32_
+_@Konfus-ius_
 
 ### Summary
 

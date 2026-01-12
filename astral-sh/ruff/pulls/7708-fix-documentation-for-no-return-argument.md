@@ -13,14 +13,14 @@ head: pyi050-docs
 created_at: 2023-09-29T10:38:18Z
 updated_at: 2023-09-29T16:49:25Z
 url: https://github.com/astral-sh/ruff/pull/7708
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix documentation for `no-return-argument-annotation-in-stub` [`PYI050`]
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-29 10:38_
+_@tjkuson_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T09:17:34Z
 updated_at: 2024-07-16T14:16:53Z
 url: https://github.com/astral-sh/uv/issues/5097
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Make clear where Python interpreters are downloaded from
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-07-16 09:17_
+_@matterhorn103_
 
 Just a thought that for transparency it would be nice if it was made obvious what the source is for `uv python install`.
 

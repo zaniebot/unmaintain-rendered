@@ -12,14 +12,14 @@ head: charlie/gitlab
 created_at: 2023-03-13T02:55:38Z
 updated_at: 2023-03-13T03:09:10Z
 url: https://github.com/astral-sh/ruff/pull/3475
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Output GitLab paths relative to `CI_PROJECT_DIR`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 02:55_
+_@charliermarsh_
 
 It turns out that GitLab [expects relative paths](https://docs.gitlab.com/ee/ci/testing/code_quality.html#implement-a-custom-tool) in its structured output. I can't find a definitive link to back up the claim that they're meant to be relative to `CI_PROJECT_DIR`, but I see it in some StackOverflow answers, and you see it in some other [GitLab docs](https://docs.gitlab.com/13.12/ee/ci/yaml/README.html#artifactspaths).
 

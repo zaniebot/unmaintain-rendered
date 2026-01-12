@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-04T03:15:40Z
 updated_at: 2022-12-04T18:14:29Z
 url: https://github.com/clap-rs/clap/issues/4540
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # value_parser with Vec<String>
 
 ---
 
-_Issue opened by @gleich on 2022-12-04 03:15_
+_@gleich_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-05T11:31:59Z
 updated_at: 2024-11-13T11:43:51Z
 url: https://github.com/astral-sh/ruff/issues/13252
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Detect `not_called()` and similar mistakes with Python mocks before Python 3.12
 
 ---
 
-_Issue opened by @potiuk on 2024-09-05 11:31_
+_@potiuk_
 
 Python 3.12 started to report errors when mock assertion is done with a "common" mistake:
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-09-05T20:36:34Z
 updated_at: 2024-09-07T13:25:50Z
 url: https://github.com/astral-sh/ruff/issues/13258
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF032 fix can produce strings that are invalid for `Decimal`
 
 ---
 
-_Issue opened by @dscorbett on 2024-09-05 20:36_
+_@dscorbett_
 
 [RUF032](https://docs.astral.sh/ruff/rules/decimal-from-float-literal/) produces an invalid string argument when the existing argument is a float with multiple unary operators. `Decimal`’s string parser only accepts one sign character.
 ```console

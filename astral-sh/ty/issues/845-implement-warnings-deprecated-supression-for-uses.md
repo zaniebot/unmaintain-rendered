@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T16:59:24Z
 updated_at: 2025-11-14T09:13:24Z
 url: https://github.com/astral-sh/ty/issues/845
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Implement `@warnings.deprecated` supression for uses of imported symbols
 
 ---
 
-_Issue opened by @Gankra on 2025-07-17 16:59_
+_@Gankra_
 
 I'm landing https://github.com/astral-sh/ruff/pull/19376 without this functionality.
 

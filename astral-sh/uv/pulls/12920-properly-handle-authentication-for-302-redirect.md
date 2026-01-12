@@ -13,14 +13,14 @@ head: jtfm/redirects
 created_at: 2025-04-16T15:23:38Z
 updated_at: 2025-04-18T12:56:19Z
 url: https://github.com/astral-sh/uv/pull/12920
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Properly handle authentication for 302 redirect URLs
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-16 15:23_
+_@jtfmumm_
 
 uv was failing to authenticate on 302 redirects when credentials were available. This was because it was relying on `reqwest_middleware`'s default redirect behavior which bypasses the middleware pipeline when trying the redirect request (and hence bypasses our authentication middleware). This PR updates uv to retrigger the middleware pipeline when handling a 302 redirect, correctly using credentials from the URL, the keyring, or `.netrc`. 
 

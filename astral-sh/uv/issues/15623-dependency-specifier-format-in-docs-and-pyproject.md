@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T19:36:38Z
 updated_at: 2025-09-02T11:08:20Z
 url: https://github.com/astral-sh/uv/issues/15623
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Dependency specifier format in docs and `pyproject.toml` don't match
 
 ---
 
-_Issue opened by @paduszyk on 2025-09-01 19:36_
+_@paduszyk_
 
 I've noticed a tiny formatting inconsistency in formatting of dependency version specifiers when added with `add-bounds` option.
 

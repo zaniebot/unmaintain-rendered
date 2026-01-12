@@ -12,14 +12,14 @@ head: fix-python-module-invocation
 created_at: 2023-02-04T08:35:27Z
 updated_at: 2023-02-04T21:47:26Z
 url: https://github.com/astral-sh/ruff/pull/2563
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix python module invocation
 
 ---
 
-_Pull request opened by @trottomv on 2023-02-04 08:35_
+_@trottomv_
 
 This changes fix the #2520 Issue
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T16:24:19Z
 updated_at: 2025-10-17T20:03:10Z
 url: https://github.com/astral-sh/uv/issues/11185
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Automatic resolution of merge conflicts in lockfiles
 
 ---
 
-_Issue opened by @JanPokorny on 2025-02-03 16:24_
+_@JanPokorny_
 
 ### Summary
 

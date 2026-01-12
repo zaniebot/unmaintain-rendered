@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-11T05:22:34Z
 updated_at: 2025-08-11T07:35:37Z
 url: https://github.com/astral-sh/ruff/issues/19861
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add pycharm like check rule about "Remove redundant parentheses"
 
 ---
 
-_Issue opened by @andyxning on 2025-08-11 05:22_
+_@andyxning_
 
 ### Summary
 

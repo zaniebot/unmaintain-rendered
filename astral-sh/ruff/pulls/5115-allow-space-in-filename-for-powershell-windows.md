@@ -12,14 +12,14 @@ head: fix_subprocess_invocation_on_windows
 created_at: 2023-06-15T07:48:45Z
 updated_at: 2023-06-15T18:57:02Z
 url: https://github.com/astral-sh/ruff/pull/5115
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Allow space in filename for powershell + windows + python module
 
 ---
 
-_Pull request opened by @konstin on 2023-06-15 07:48_
+_@konstin_
 
 Fixes #5077
 

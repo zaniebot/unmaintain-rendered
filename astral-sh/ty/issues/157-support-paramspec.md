@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:04:49Z
 updated_at: 2025-12-05T16:37:30Z
 url: https://github.com/astral-sh/ty/issues/157
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support `ParamSpec`
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:04_
+_@carljm_
 
 _No description provided._
 

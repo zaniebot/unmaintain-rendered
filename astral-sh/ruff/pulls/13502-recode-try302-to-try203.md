@@ -12,14 +12,14 @@ head: zb/try203
 created_at: 2024-09-24T13:56:15Z
 updated_at: 2024-10-08T16:41:29Z
 url: https://github.com/astral-sh/ruff/pull/13502
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Recode `TRY302` to `TRY203`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 13:56_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13492
 

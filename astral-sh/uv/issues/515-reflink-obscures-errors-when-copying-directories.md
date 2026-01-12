@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-29T18:30:21Z
 updated_at: 2023-12-01T18:53:29Z
 url: https://github.com/astral-sh/uv/issues/515
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Reflink obscures errors when copying directories
 
 ---
 
-_Issue opened by @zanieb on 2023-11-29 18:30_
+_@zanieb_
 
 ```
 error: Failed to install: example-pkg-b @ git+https://github.com/pypa/sample-namespace-packages.git@df7530eeb8fa0cb7dbb8ecb28363e8e36bfa2f45#subdirectory=pkg_resources/pkg_b

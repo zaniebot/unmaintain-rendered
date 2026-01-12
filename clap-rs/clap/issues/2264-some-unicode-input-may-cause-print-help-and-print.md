@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-12-23T11:35:08Z
 updated_at: 2020-12-23T17:22:55Z
 url: https://github.com/clap-rs/clap/issues/2264
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Some unicode input may cause print_help and print_long_help panic(found by afl.rs)
 
 ---
 
-_Issue opened by @StevenJiang1110 on 2020-12-23 11:35_
+_@StevenJiang1110_
 
 ### Code
 

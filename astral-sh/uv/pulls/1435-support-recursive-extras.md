@@ -13,14 +13,14 @@ head: charlie/all
 created_at: 2024-02-16T05:38:46Z
 updated_at: 2024-02-16T16:42:05Z
 url: https://github.com/astral-sh/uv/pull/1435
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Support recursive extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 05:38_
+_@charliermarsh_
 
 ## Summary
 

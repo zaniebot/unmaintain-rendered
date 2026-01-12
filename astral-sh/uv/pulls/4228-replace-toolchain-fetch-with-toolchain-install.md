@@ -14,14 +14,14 @@ head: replace-toolchain-fetch-with-toolchain-install
 created_at: 2024-06-11T11:33:05Z
 updated_at: 2024-06-11T13:10:23Z
 url: https://github.com/astral-sh/uv/pull/4228
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Replace `toolchain fetch` with `toolchain install`
 
 ---
 
-_Pull request opened by @SigureMo on 2024-06-11 11:33_
+_@SigureMo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

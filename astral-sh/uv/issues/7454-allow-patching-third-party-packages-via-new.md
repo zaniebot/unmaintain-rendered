@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T10:47:11Z
 updated_at: 2025-09-19T07:45:23Z
 url: https://github.com/astral-sh/uv/issues/7454
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # ✨ Allow patching third-party packages via new command `uv patch <pkg_name>`
 
 ---
 
-_Issue opened by @jd-solanki on 2024-09-17 10:47_
+_@jd-solanki_
 
 Hi 👋🏻 
 

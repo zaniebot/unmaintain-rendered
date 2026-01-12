@@ -14,14 +14,14 @@ head: add-pep732
 created_at: 2024-08-10T14:45:13Z
 updated_at: 2024-08-11T08:02:53Z
 url: https://github.com/astral-sh/uv/pull/5995
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Support PEP 723 scripts in `uv add` and `uv remove`
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-10 14:45_
+_@blueraft_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T20:32:41Z
 updated_at: 2025-12-29T16:54:03Z
 url: https://github.com/astral-sh/ty/issues/2209
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Inlay Hints Variable Types Not Respected in VS Code
 
 ---
 
-_Issue opened by @agedburd on 2025-12-24 20:32_
+_@agedburd_
 
 ### Summary
 

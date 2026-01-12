@@ -13,14 +13,14 @@ head: alex/callabletypefrommethod
 created_at: 2025-03-28T19:29:47Z
 updated_at: 2025-03-30T18:04:36Z
 url: https://github.com/astral-sh/ruff/pull/17047
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Allow `CallableTypeFromFunction` to display the signatures of callable types that are not function literals
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-28 19:29_
+_@AlexWaygood_
 
 I found this helpful for understanding some of the stuff that was going on in https://github.com/astral-sh/ruff/pull/17005. It means the name of the special form is perhaps no longer ideal; I could possibly rename it if we agree that this is a useful feature.
 

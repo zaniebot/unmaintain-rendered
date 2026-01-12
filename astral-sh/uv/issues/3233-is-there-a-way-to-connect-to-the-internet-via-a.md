@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-24T05:52:20Z
 updated_at: 2024-04-24T16:07:42Z
 url: https://github.com/astral-sh/uv/issues/3233
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Is there a way to connect to the Internet via a proxy server? 
 
 ---
 
-_Issue opened by @tealgreen0503 on 2024-04-24 05:52_
+_@tealgreen0503_
 
 In pip, we can connect Internet via a proxy server using the `--proxy` option or by following the method described [here](https://pip.pypa.io/en/stable/user_guide/#using-a-proxy-server). How can we do the same in uv?
 

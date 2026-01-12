@@ -13,14 +13,14 @@ head: charlie/index-name
 created_at: 2024-10-22T15:51:03Z
 updated_at: 2024-10-22T16:10:21Z
 url: https://github.com/astral-sh/uv/pull/8464
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Add type-based validation for index names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 15:51_
+_@charliermarsh_
 
 ## Summary
 

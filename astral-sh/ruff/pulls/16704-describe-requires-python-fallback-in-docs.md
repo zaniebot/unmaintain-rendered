@@ -13,14 +13,14 @@ head: config-docs
 created_at: 2025-03-13T12:22:02Z
 updated_at: 2025-03-13T16:48:13Z
 url: https://github.com/astral-sh/ruff/pull/16704
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # describe requires-python fallback in docs
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-13 12:22_
+_@dylwil3_
 
 Adds description of `requires-python` fallback to documentation for configuration file discovery.
 

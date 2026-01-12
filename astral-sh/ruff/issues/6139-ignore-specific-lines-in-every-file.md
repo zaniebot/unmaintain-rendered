@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-28T01:23:19Z
 updated_at: 2023-07-28T18:29:43Z
 url: https://github.com/astral-sh/ruff/issues/6139
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ignore specific lines in every file
 
 ---
 
-_Issue opened by @bryevdv on 2023-07-28 01:23_
+_@bryevdv_
 
 Here is the situation I am in: We have received a new license comment header from corporate that we are mandated to use. The license header contains e.g. SPDX markers in a very specific format. We have no leeway to modify this header in any way, e.g by adding `noqa` to any lines, as this will interfere with some sort of mandatory automated license scanning. 
 

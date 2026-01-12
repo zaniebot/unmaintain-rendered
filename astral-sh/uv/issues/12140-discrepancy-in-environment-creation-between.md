@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T18:02:17Z
 updated_at: 2025-03-12T22:03:13Z
 url: https://github.com/astral-sh/uv/issues/12140
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Discrepancy in environment creation between projects and `uv run`
 
 ---
 
-_Issue opened by @antoinebrl on 2025-03-12 18:02_
+_@antoinebrl_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-25T20:39:09Z
 updated_at: 2023-01-25T20:43:27Z
 url: https://github.com/astral-sh/ruff/issues/2172
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Missing builtins-ignorelist settings in README.md
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-25 20:39_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: isort-add-options-link
 created_at: 2024-09-10T12:58:07Z
 updated_at: 2024-09-13T14:07:09Z
 url: https://github.com/astral-sh/ruff/pull/13308
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`isort`] Improve rule documentation with a link to the option (`I002`)
 
 ---
 
-_Pull request opened by @dizzy57 on 2024-09-10 12:58_
+_@dizzy57_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/pyversion-hint-import
 created_at: 2025-05-31T12:31:19Z
 updated_at: 2025-06-02T10:52:27Z
 url: https://github.com/astral-sh/ruff/pull/18403
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Improve diagnostics if the user attempts to import a stdlib module that does not exist on their configured Python version
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-31 12:31_
+_@AlexWaygood_
 
 ## Summary
 

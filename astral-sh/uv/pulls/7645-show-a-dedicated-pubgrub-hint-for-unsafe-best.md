@@ -12,14 +12,14 @@ head: charlie/index-error
 created_at: 2024-09-23T16:40:27Z
 updated_at: 2024-09-23T19:02:20Z
 url: https://github.com/astral-sh/uv/pull/7645
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Show a dedicated PubGrub hint for `--unsafe-best-match`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-23 16:40_
+_@charliermarsh_
 
 ## Summary
 

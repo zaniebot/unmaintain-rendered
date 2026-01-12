@@ -13,14 +13,14 @@ head: fix-safety-section-path_constructor_current_directory
 created_at: 2025-06-20T22:09:26Z
 updated_at: 2025-06-23T16:58:01Z
 url: https://github.com/astral-sh/ruff/pull/18837
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`flake8-use-pathlib`] Add fix safety section to `PTH201`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 22:09_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

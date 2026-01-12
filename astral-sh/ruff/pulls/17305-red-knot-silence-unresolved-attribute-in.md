@@ -13,14 +13,14 @@ head: david/unreachable-attribute-expressions
 created_at: 2025-04-09T08:34:22Z
 updated_at: 2025-04-10T16:32:55Z
 url: https://github.com/astral-sh/ruff/pull/17305
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Silence `unresolved-attribute` in unreachable code
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-09 08:34_
+_@sharkdp_
 
 ## Summary
 

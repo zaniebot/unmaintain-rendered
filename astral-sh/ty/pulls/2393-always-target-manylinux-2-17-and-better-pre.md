@@ -13,14 +13,14 @@ head: konsti/manylinux_2_17
 created_at: 2026-01-08T08:40:07Z
 updated_at: 2026-01-09T12:05:12Z
 url: https://github.com/astral-sh/ty/pull/2393
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Always target manylinux 2_17 and better pre-upload checks
 
 ---
 
-_Pull request opened by @konstin on 2026-01-08 08:40_
+_@konstin_
 
 We currently build for manylinux_2_17, and if this target changes, it should be an intentional, explicit change.
 

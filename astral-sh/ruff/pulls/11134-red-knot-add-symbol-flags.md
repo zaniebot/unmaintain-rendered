@@ -12,14 +12,14 @@ head: red-knot_symbol-flags
 created_at: 2024-04-24T19:02:03Z
 updated_at: 2024-04-30T00:07:30Z
 url: https://github.com/astral-sh/ruff/pull/11134
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Red Knot - Add symbol flags
 
 ---
 
-_Pull request opened by @plredmond on 2024-04-24 19:02_
+_@plredmond_
 
 * Adds `Symbol.flag` bitfield. Populates it from (the three renamed) `add_or_update_symbol*` methods.
 * Currently there are these flags supported:

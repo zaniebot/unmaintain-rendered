@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-02T09:38:04Z
 updated_at: 2025-11-03T20:32:57Z
 url: https://github.com/astral-sh/uv/issues/16551
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # uv cache prune not pruning?
 
 ---
 
-_Issue opened by @sergiocallegari on 2025-11-02 09:38_
+_@sergiocallegari_
 
 ### Summary
 

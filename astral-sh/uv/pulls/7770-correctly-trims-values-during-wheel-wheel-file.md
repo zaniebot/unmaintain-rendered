@@ -13,14 +13,14 @@ head: fix/wheel-file-trimming
 created_at: 2024-09-28T23:55:10Z
 updated_at: 2024-09-29T00:08:25Z
 url: https://github.com/astral-sh/uv/pull/7770
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Correctly trims values during wheel WHEEL file parsing
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-09-28 23:55_
+_@Coruscant11_
 
 
 

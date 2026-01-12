@@ -13,14 +13,14 @@ head: pip-resolve-without-a-venv
 created_at: 2023-11-23T10:02:32Z
 updated_at: 2024-01-05T15:01:07Z
 url: https://github.com/astral-sh/uv/pull/494
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Allow `pip-compile` without a venv
 
 ---
 
-_Pull request opened by @konstin on 2023-11-23 10:02_
+_@konstin_
 
 The semantics are a bit unintuitive because `--python-version` is a preference when looking for a python version without a venv, but if we don't find that exact version we'll take `python3` and patch the markers. This will make more sense once we start provisioning python builds.
 

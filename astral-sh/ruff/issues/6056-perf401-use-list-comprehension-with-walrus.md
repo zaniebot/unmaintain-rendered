@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-25T07:56:52Z
 updated_at: 2023-07-25T10:59:09Z
 url: https://github.com/astral-sh/ruff/issues/6056
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PERF401 (use-list-comprehension) with walrus operator
 
 ---
 
-_Issue opened by @fabien-michel on 2023-07-25 07:56_
+_@fabien-michel_
 
 I'm not sure the PERF401 should trigger when a walrus operator is implied in the condition.
 

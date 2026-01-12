@@ -14,14 +14,14 @@ head: charlie/strip
 created_at: 2024-07-25T17:20:52Z
 updated_at: 2024-07-29T01:47:46Z
 url: https://github.com/astral-sh/uv/pull/5451
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Use stripped variants by default in Python install
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-25 17:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: raw-sources
 created_at: 2024-06-26T04:59:55Z
 updated_at: 2024-06-26T18:50:06Z
 url: https://github.com/astral-sh/uv/pull/4538
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Rename `uv add --raw` to `--raw-sources`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-26 04:59_
+_@ibraheemdev_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-13T19:19:05Z
 updated_at: 2024-06-13T21:43:12Z
 url: https://github.com/astral-sh/uv/pull/4315
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Rename README to README.md
 
 ---
 
-_Pull request opened by @hofbi on 2024-06-13 19:19_
+_@hofbi_
 
 Make use of GitHub's markdown rendering
 

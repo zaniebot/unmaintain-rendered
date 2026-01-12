@@ -14,14 +14,14 @@ head: ruf059
 created_at: 2025-03-01T01:40:29Z
 updated_at: 2025-03-03T15:34:22Z
 url: https://github.com/astral-sh/ruff/pull/16449
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Add new rule RUF059: Unused unpacked assignment
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-03-01 01:40_
+_@JelleZijlstra_
 
 Split from F841 following discussion in #8884.
 

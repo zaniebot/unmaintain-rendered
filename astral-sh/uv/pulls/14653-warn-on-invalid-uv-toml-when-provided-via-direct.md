@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2025-07-16T13:34:55Z
 updated_at: 2025-07-16T13:48:17Z
 url: https://github.com/astral-sh/uv/pull/14653
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Warn on invalid `uv.toml` when provided via direct path
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-16 13:34_
+_@charliermarsh_
 
 ## Summary
 

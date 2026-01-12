@@ -12,14 +12,14 @@ head: tim/update-to-graalpy24.1
 created_at: 2024-10-10T14:50:16Z
 updated_at: 2024-10-10T15:29:22Z
 url: https://github.com/astral-sh/uv/pull/8095
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Update to GraalPy 24.1, remove workaround for 24.0
 
 ---
 
-_Pull request opened by @timfel on 2024-10-10 14:50_
+_@timfel_
 
 ## Summary
 

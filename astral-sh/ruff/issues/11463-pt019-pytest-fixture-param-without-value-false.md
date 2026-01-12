@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-18T21:06:07Z
 updated_at: 2025-05-15T13:34:41Z
 url: https://github.com/astral-sh/ruff/issues/11463
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `PT019` `pytest-fixture-param-without-value` False positive when using patch
 
 ---
 
-_Issue opened by @augustelalande on 2024-05-18 21:06_
+_@augustelalande_
 
 This presumably applies to any test function with an unused argument, which is not actually a test fixture. But I'm specifically in the situation bellow.
 ```python

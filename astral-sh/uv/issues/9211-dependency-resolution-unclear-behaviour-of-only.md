@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T19:50:49Z
 updated_at: 2024-11-20T20:21:34Z
 url: https://github.com/astral-sh/uv/issues/9211
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Dependency resolution: unclear behaviour of `--only-group`
 
 ---
 
-_Issue opened by @ThomasHezard on 2024-11-18 19:50_
+_@ThomasHezard_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

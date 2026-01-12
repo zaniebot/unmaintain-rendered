@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-23T21:23:51Z
 updated_at: 2023-08-23T21:41:05Z
 url: https://github.com/clap-rs/clap/issues/5085
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Complete _derive docs? - Example doesn't build
 
 ---
 
-_Issue opened by @SamuelMarks on 2023-08-23 21:23_
+_@SamuelMarks_
 
 ### Please complete the following tasks
 

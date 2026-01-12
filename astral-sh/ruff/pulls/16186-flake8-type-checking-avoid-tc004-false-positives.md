@@ -11,14 +11,14 @@ head: bugfix/tc004-overlapping-import-bindings
 created_at: 2025-02-16T15:25:04Z
 updated_at: 2025-04-30T06:41:41Z
 url: https://github.com/astral-sh/ruff/pull/16186
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-type-checking`] Avoid `TC004` false positives for submodules
 
 ---
 
-_Pull request opened by @Daverball on 2025-02-16 15:25_
+_@Daverball_
 
 Closes #15723
 

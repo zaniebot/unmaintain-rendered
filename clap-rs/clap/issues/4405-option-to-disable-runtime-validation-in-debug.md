@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-19T21:47:40Z
 updated_at: 2022-11-08T04:47:43Z
 url: https://github.com/clap-rs/clap/issues/4405
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Option to disable runtime-validation in debug release?
 
 ---
 
-_Issue opened by @fanzeyi on 2022-10-19 21:47_
+_@fanzeyi_
 
 ### Please complete the following tasks
 

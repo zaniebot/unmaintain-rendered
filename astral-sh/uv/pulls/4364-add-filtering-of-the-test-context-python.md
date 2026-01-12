@@ -13,14 +13,14 @@ head: zb/filter-python-version
 created_at: 2024-06-17T17:51:02Z
 updated_at: 2024-06-17T18:11:13Z
 url: https://github.com/astral-sh/uv/pull/4364
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Add filtering of the test context Python interpreter
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-17 17:51_
+_@zanieb_
 
 Does not handle tests with multiple Python versions yet, working on that separately because the change is more invasive
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-26T19:35:22Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/517
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add literal math support for shift operators
 
 ---
 
-_Issue opened by @correctmost on 2025-05-26 19:35_
+_@correctmost_
 
 ### Summary
 

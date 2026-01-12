@@ -14,14 +14,14 @@ head: dhruv/init-simple-stmt
 created_at: 2024-04-03T14:06:11Z
 updated_at: 2024-04-04T10:09:32Z
 url: https://github.com/astral-sh/ruff/pull/10758
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `global`, `nonlocal`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-03 14:06_
+_@dhruvmanila_
 
 ## Summary
 

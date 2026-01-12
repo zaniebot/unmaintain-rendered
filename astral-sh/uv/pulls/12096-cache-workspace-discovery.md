@@ -13,14 +13,14 @@ head: konsti/cache-workspace-discovery
 created_at: 2025-03-10T14:43:19Z
 updated_at: 2025-03-11T15:43:41Z
 url: https://github.com/astral-sh/uv/pull/12096
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 #  Cache workspace discovery
 
 ---
 
-_Pull request opened by @konstin on 2025-03-10 14:43_
+_@konstin_
 
 Reduce the overhead of `uv run` in large workspaces. Instead of re-discovering the entire workspace each time we resolve the metadata of a member, we can the discovered set of workspace members. Care needs to be taken to not cache the discovery for `uv init`, `uv add` and `uv remove`, which change the definitions of workspace members.
 

@@ -14,14 +14,14 @@ head: zb/docs-first-steps
 created_at: 2024-07-31T14:47:17Z
 updated_at: 2024-07-31T15:13:06Z
 url: https://github.com/astral-sh/uv/pull/5655
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Prompt an early jump to the feature overview during first steps
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 14:47_
+_@zanieb_
 
 Addressing some feedback about the first-steps covering the help and version commands.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T21:24:28Z
 updated_at: 2024-03-19T17:44:23Z
 url: https://github.com/astral-sh/ruff/issues/10396
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # problematic formatting: indentation change in docstring
 
 ---
 
-_Issue opened by @kaddkaka on 2024-03-13 21:24_
+_@kaddkaka_
 
 black and ruff format might destroy ascii art in dosctring when re-indenting docstring lines. (so I'm not sure if this issue should be filed here or at the black project)
 

@@ -12,14 +12,14 @@ head: charlie/empty
 created_at: 2023-01-31T21:54:40Z
 updated_at: 2023-01-31T21:56:05Z
 url: https://github.com/astral-sh/ruff/pull/2421
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid Bandit false-positives for empty-string-as-password
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 21:54_
+_@charliermarsh_
 
 Closes #2383.
 

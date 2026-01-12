@@ -14,14 +14,14 @@ head: multiline-string
 created_at: 2023-12-22T09:19:43Z
 updated_at: 2024-01-10T12:37:51Z
 url: https://github.com/astral-sh/ruff/pull/9243
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Hug multiline-strings preview style
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-22 09:19_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fix/flask-logger-candidate
 created_at: 2023-05-06T07:22:09Z
 updated_at: 2023-05-13T16:38:58Z
 url: https://github.com/astral-sh/ruff/pull/4253
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Consider Flask app logger as logger candidate
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-06 07:22_
+_@dhruvmanila_
 
 For future reference, the logger can also be invoked directly through the `app` variable as mentioned below. But, this requires type inference.
 

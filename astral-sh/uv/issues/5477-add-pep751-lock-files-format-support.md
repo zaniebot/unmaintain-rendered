@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T12:14:38Z
 updated_at: 2025-03-31T18:50:30Z
 url: https://github.com/astral-sh/uv/issues/5477
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Add PEP751 lock files format support
 
 ---
 
-_Issue opened by @JonZeolla on 2024-07-26 12:14_
+_@JonZeolla_
 
 Add support for lockfiles [PEP751](https://peps.python.org/pep-0751/) format (currently draft).
 

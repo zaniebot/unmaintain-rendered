@@ -11,14 +11,14 @@ head: third_party_autocompleter
 created_at: 2025-01-24T11:54:12Z
 updated_at: 2025-01-24T13:04:15Z
 url: https://github.com/clap-rs/clap/pull/5890
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: called the third_party_subcommands function
 
 ---
 
-_Pull request opened by @ibilalkayy on 2025-01-24 11:54_
+_@ibilalkayy_
 
 Hey there,
 

@@ -13,14 +13,14 @@ head: zb/fix-install
 created_at: 2024-12-18T20:32:51Z
 updated_at: 2024-12-18T22:12:55Z
 url: https://github.com/astral-sh/uv/pull/10011
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Fix `uv python install --default` note about multiple requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-18 20:32_
+_@zanieb_
 
 _No description provided._
 

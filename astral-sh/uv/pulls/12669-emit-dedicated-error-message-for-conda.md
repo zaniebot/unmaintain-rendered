@@ -13,14 +13,14 @@ head: error-msg-for-environment-yml
 created_at: 2025-04-04T12:25:06Z
 updated_at: 2025-04-13T17:05:01Z
 url: https://github.com/astral-sh/uv/pull/12669
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Emit dedicated error message for Conda environment.yml files
 
 ---
 
-_Pull request opened by @christeefy on 2025-04-04 12:25_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

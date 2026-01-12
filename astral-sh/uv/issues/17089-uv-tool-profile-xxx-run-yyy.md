@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T18:17:45Z
 updated_at: 2025-12-11T18:20:33Z
 url: https://github.com/astral-sh/uv/issues/17089
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # uv tool --profile XXX run YYY
 
 ---
 
-_Issue opened by @gsemet on 2025-12-11 18:17_
+_@gsemet_
 
 ### Summary
 

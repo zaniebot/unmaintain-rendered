@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T11:40:14Z
 updated_at: 2025-11-14T18:48:39Z
 url: https://github.com/astral-sh/ty/issues/1551
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Test server: Swallows test errors because it throws an exception that there are unawaited responses
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 11:40_
+_@MichaReiser_
 
 The `Drop` handler of the test server contains an assertion that all messages were processed. This assertion runs except when a test panicks. 
 

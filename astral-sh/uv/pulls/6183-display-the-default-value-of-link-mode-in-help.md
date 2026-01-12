@@ -11,14 +11,14 @@ head: help-link-mode
 created_at: 2024-08-18T16:08:14Z
 updated_at: 2024-10-09T22:35:49Z
 url: https://github.com/astral-sh/uv/pull/6183
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Display the default value of `--link-mode` in help
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-18 16:08_
+_@eth3lbert_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-10T16:29:45Z
 updated_at: 2021-10-12T21:23:55Z
 url: https://github.com/clap-rs/clap/issues/2767
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Different expected exit code with usage of ArgRequiredElseHelp between 3-beta-2 and 3-beta-4
 
 ---
 
-_Issue opened by @nicolacSNPS on 2021-09-10 16:29_
+_@nicolacSNPS_
 
 ### Please complete the following tasks
 

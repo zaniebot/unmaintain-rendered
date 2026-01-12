@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T15:31:27Z
 updated_at: 2025-05-29T23:40:35Z
 url: https://github.com/astral-sh/ty/issues/230
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # generic classes
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 15:31_
+_@carljm_
 
 _No description provided._
 

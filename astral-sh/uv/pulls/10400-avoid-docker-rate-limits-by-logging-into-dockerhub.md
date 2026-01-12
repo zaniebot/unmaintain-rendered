@@ -13,14 +13,14 @@ head: zb/docker-rate
 created_at: 2025-01-08T17:05:30Z
 updated_at: 2025-01-08T18:46:25Z
 url: https://github.com/astral-sh/uv/pull/10400
-synced_at: 2026-01-10T11:44:46Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Avoid Docker rate limits by logging into DockerHub
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-08 17:05_
+_@zanieb_
 
 The latest release flaked failing to fetch the buildx image, which is reportedly due to rate limits. Last I checked, DockerHub enforces much stricter limits on unauthenticated requests. I added a bot account and a corresponding read-only token.
 

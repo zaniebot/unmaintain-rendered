@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-10-01T19:55:18Z
 updated_at: 2021-10-07T15:02:08Z
 url: https://github.com/clap-rs/clap/issues/2801
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Speed up CI with a two-tier system built on bors
 
 ---
 
-_Issue opened by @epage on 2021-10-01 19:55_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2723
 

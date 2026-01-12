@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-07T23:47:43Z
 updated_at: 2024-03-07T23:56:27Z
 url: https://github.com/astral-sh/uv/issues/2290
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv pip install halo fails
 
 ---
 
-_Issue opened by @marvin8 on 2024-03-07 23:47_
+_@marvin8_
 
 I am unable to install the package `halo` in my docker image based on Alpine linux
 

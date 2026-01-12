@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-18T06:18:44Z
 updated_at: 2022-10-19T16:07:56Z
 url: https://github.com/clap-rs/clap/issues/4398
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `--help` flag straight up not working even after copy-pasting example
 
 ---
 
-_Issue opened by @tomaka on 2022-10-18 06:18_
+_@tomaka_
 
 ### Please complete the following tasks
 

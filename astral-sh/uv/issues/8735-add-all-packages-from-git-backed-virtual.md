@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T23:18:42Z
 updated_at: 2024-11-03T10:25:54Z
 url: https://github.com/astral-sh/uv/issues/8735
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Add all packages from git-backed virtual workspace as a single source
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-10-31 23:18_
+_@mjclarke94_
 
 We are trying to centralise all of our libraries in a mono-repo, some of which are interdependent. 
 

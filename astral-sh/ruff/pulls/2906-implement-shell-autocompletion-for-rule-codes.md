@@ -12,14 +12,14 @@ head: rule-code-autocompletion
 created_at: 2023-02-14T23:37:39Z
 updated_at: 2023-02-15T13:09:54Z
 url: https://github.com/astral-sh/ruff/pull/2906
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement shell autocompletion for rule codes
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-14 23:37_
+_@not-my-profile_
 
 For example:
 

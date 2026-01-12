@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-27T10:47:38Z
 updated_at: 2025-07-28T09:38:36Z
 url: https://github.com/astral-sh/ruff/issues/19573
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff --watch improvements: ignore dirs, debouncee
 
 ---
 
-_Issue opened by @sathishvj on 2025-07-27 10:47_
+_@sathishvj_
 
 ### Summary
 

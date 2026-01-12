@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-07T19:42:43Z
 updated_at: 2023-10-09T12:10:30Z
 url: https://github.com/astral-sh/uv/issues/46
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Do we need to support .egg files?
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-07 19:42_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-15T13:36:23Z
 updated_at: 2025-09-09T18:59:24Z
 url: https://github.com/astral-sh/ruff/issues/19357
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP008 should only apply when the `__class__` cell exists
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-15 13:36_
+_@dscorbett_
 
 ### Summary
 

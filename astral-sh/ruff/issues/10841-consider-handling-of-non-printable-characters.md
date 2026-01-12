@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T23:45:05Z
 updated_at: 2024-06-08T06:22:04Z
 url: https://github.com/astral-sh/ruff/issues/10841
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Consider handling of non-printable characters when showing code/diffs
 
 ---
 
-_Issue opened by @carljm on 2024-04-08 23:45_
+_@carljm_
 
 Search keyword used: "non-printable"
 

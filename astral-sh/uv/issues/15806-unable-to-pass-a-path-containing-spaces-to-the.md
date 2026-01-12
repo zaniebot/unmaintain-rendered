@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T10:13:11Z
 updated_at: 2025-09-18T11:38:38Z
 url: https://github.com/astral-sh/uv/issues/15806
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Unable to pass a path containing spaces to the `--env-file` option of `uv run`
 
 ---
 
-_Issue opened by @angelo-peronio on 2025-09-12 10:13_
+_@angelo-peronio_
 
 ### Summary
 

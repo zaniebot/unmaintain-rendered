@@ -12,14 +12,14 @@ head: renovate/aws-actions-configure-aws-credentials-digest
 created_at: 2025-09-22T02:30:11Z
 updated_at: 2025-09-25T13:27:03Z
 url: https://github.com/astral-sh/uv/pull/15972
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Update aws-actions/configure-aws-credentials digest to 0be22f9 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-09-22 02:30_
+_@renovate_
 
 Coming soon: The Renovate bot (GitHub App) will be renamed to Mend. PRs from Renovate will soon appear from 'Mend'. Learn more [here](https://redirect.github.com/renovatebot/renovate/discussions/37842).
 

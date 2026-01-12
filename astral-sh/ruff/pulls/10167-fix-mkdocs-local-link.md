@@ -13,14 +13,14 @@ head: hoel/fix_local_documentation_link
 created_at: 2024-02-29T10:00:15Z
 updated_at: 2024-02-29T10:35:10Z
 url: https://github.com/astral-sh/ruff/pull/10167
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix mkdocs local link
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-02-29 10:00_
+_@hoel-bagard_
 
 ## Summary
 

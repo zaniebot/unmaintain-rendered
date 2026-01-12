@@ -14,14 +14,14 @@ head: alex/contraints-dbg
 created_at: 2025-09-11T11:45:30Z
 updated_at: 2025-09-11T13:34:42Z
 url: https://github.com/astral-sh/ruff/pull/20348
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Require that implementors of `Constraints` also implement `Debug`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-11 11:45_
+_@AlexWaygood_
 
 The debug representation isn't as useful as calling `.display(db)`, but it's still kind-of annoying when `dbg!()` calls don't compile locally due to the compiler not being able to guarantee that an object of type `impl Constraints` implements `Debug`
 

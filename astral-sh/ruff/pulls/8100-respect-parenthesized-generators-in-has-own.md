@@ -14,14 +14,14 @@ head: charlie/generator
 created_at: 2023-10-20T21:11:03Z
 updated_at: 2023-10-22T23:58:26Z
 url: https://github.com/astral-sh/ruff/pull/8100
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Respect parenthesized generators in `has_own_parentheses`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-20 21:11_
+_@charliermarsh_
 
 ## Summary
 

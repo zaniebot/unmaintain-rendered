@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T10:34:08Z
 updated_at: 2025-04-15T10:01:16Z
 url: https://github.com/astral-sh/uv/issues/12461
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # `uv sync` with upgraded system Python version fails to update `activate_this.py`
 
 ---
 
-_Issue opened by @andersk on 2025-03-25 10:34_
+_@andersk_
 
 ### Summary
 

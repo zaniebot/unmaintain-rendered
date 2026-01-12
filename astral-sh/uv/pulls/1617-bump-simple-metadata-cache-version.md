@@ -12,14 +12,14 @@ head: charlie/simple
 created_at: 2024-02-17T22:06:52Z
 updated_at: 2024-02-17T22:10:45Z
 url: https://github.com/astral-sh/uv/pull/1617
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Bump simple metadata cache version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 22:06_
+_@charliermarsh_
 
 ## Summary
 

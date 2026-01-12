@@ -12,14 +12,14 @@ head: allow-bump-specific-version
 created_at: 2025-11-02T22:41:40Z
 updated_at: 2025-11-11T17:27:32Z
 url: https://github.com/astral-sh/uv/pull/16555
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Allow explicit values with `uv version --bump`
 
 ---
 
-_Pull request opened by @terror on 2025-11-02 22:41_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16427
 

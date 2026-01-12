@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-29T13:06:27Z
 updated_at: 2023-03-29T13:48:38Z
 url: https://github.com/clap-rs/clap/issues/4808
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # TypedValueParser cannot return single Vec<String>
 
 ---
 
-_Issue opened by @LegionMammal978 on 2023-03-29 13:06_
+_@LegionMammal978_
 
 ### Please complete the following tasks
 

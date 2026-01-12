@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-28T13:29:22Z
 updated_at: 2024-08-20T18:23:33Z
 url: https://github.com/astral-sh/uv/issues/3878
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Support custom tool entrypoints
 
 ---
 
-_Issue opened by @konstin on 2024-05-28 13:29_
+_@konstin_
 
 The package `build` doesn't install an entrypoint, you are supposed to call it as `pythom -m build` instead. `pipx run build .` while `uv tool run build .` fails. We should support whatever workaround pipx is using, too.
 

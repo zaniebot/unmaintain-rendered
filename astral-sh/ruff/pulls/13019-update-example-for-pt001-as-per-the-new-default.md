@@ -13,14 +13,14 @@ head: fix-docs-rule-PT001
 created_at: 2024-08-21T01:31:12Z
 updated_at: 2024-08-21T04:04:19Z
 url: https://github.com/astral-sh/ruff/pull/13019
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update example for `PT001` as per the new default behavior
 
 ---
 
-_Pull request opened by @FinchPowers on 2024-08-21 01:31_
+_@FinchPowers_
 
 
 

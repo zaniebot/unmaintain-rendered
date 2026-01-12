@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T01:28:16Z
 updated_at: 2025-12-19T09:39:21Z
 url: https://github.com/astral-sh/ty/issues/2097
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Bazel rules
 
 ---
 
-_Issue opened by @SamuelMarks on 2025-12-19 01:28_
+_@SamuelMarks_
 
 [Bazel](https://bazel.build) is a popular cross-platform cross-language build system. E.g., at Google it is commonly and publicly known that essentially every [sub]repo in its monorepo has `BUILD` files for Bazel integration.
 

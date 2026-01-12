@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:32:39Z
 updated_at: 2024-12-13T14:03:42Z
 url: https://github.com/astral-sh/ruff/issues/14170
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support typing.TYPE_CHECKING
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 16:32_
+_@carljm_
 
 Supporting the symbol itself should be quite easy, the trickier part of this is just https://github.com/astral-sh/ruff/issues/12700
 

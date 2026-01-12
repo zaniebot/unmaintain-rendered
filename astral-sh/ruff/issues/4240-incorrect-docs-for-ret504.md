@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-05T09:58:51Z
 updated_at: 2023-05-06T20:56:54Z
 url: https://github.com/astral-sh/ruff/issues/4240
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Incorrect docs for RET504
 
 ---
 
-_Issue opened by @Apakottur on 2023-05-05 09:58_
+_@Apakottur_
 
 I am looking at the docs for [RET504 (unnecessary-assign)](https://beta.ruff.rs/docs/rules/unnecessary-assign/). The following code is given there as an example:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-28T23:04:57Z
 updated_at: 2018-08-02T03:30:19Z
 url: https://github.com/clap-rs/clap/issues/1197
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support subcommand aliases
 
 ---
 
-_Issue opened by @darnir on 2018-02-28 23:04_
+_@darnir_
 
 ### Affected Version of clap
 

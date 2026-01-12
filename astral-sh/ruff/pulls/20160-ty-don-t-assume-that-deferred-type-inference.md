@@ -13,14 +13,14 @@ head: cjm/deferred
 created_at: 2025-08-29T19:20:43Z
 updated_at: 2025-08-29T23:19:46Z
 url: https://github.com/astral-sh/ruff/pull/20160
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] don't assume that deferred type inference means deferred name resolution
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 19:20_
+_@carljm_
 
 ## Summary
 

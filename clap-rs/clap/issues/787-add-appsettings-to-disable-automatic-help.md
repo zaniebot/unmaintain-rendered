@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-27T20:34:30Z
 updated_at: 2016-12-31T06:15:13Z
 url: https://github.com/clap-rs/clap/issues/787
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add AppSettings to disable automatic "help" subcommand
 
 ---
 
-_Issue opened by @Xion on 2016-12-27 20:34_
+_@Xion_
 
 When using `SubCommand`s, clap will automatically include a "help" subcommand:
 ```

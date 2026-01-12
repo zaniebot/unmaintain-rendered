@@ -13,14 +13,14 @@ head: feature/format-yield
 created_at: 2023-07-20T14:34:30Z
 updated_at: 2023-07-27T08:12:00Z
 url: https://github.com/astral-sh/ruff/pull/5921
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `ExprYield`/`ExprYieldFrom`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-07-20 14:34_
+_@qdegraaf_
 
 ## Summary
 

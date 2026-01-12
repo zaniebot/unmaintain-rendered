@@ -14,14 +14,14 @@ head: charlie/directory
 created_at: 2024-07-29T23:30:48Z
 updated_at: 2024-07-29T23:58:18Z
 url: https://github.com/astral-sh/uv/pull/5579
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Make `--directory` a global argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-29 23:30_
+_@charliermarsh_
 
 ## Summary
 

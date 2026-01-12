@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T10:12:13Z
 updated_at: 2026-01-09T11:18:37Z
 url: https://github.com/astral-sh/uv/issues/17334
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # `uv publish` fails on first upload to Gitlab package repository
 
 ---
 
-_Issue opened by @j-hiller on 2026-01-06 10:12_
+_@j-hiller_
 
 ### Summary
 

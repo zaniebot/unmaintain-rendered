@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-11-28T01:28:09Z
 updated_at: 2018-08-02T03:30:15Z
 url: https://github.com/clap-rs/clap/issues/1118
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support case insensitve values
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-28 01:28_
+_@kbknapp_
 
 via `Arg::case_insensitive(bool)` for use with  `Arg::possible_values`
 

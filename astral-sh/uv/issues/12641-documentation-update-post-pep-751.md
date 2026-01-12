@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T02:41:25Z
 updated_at: 2025-04-10T20:23:34Z
 url: https://github.com/astral-sh/uv/issues/12641
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Documentation update post PEP 751
@@ -18,7 +18,7 @@ synced_at: 2026-01-10T03:41:47Z
 
 ---
 
-_Issue opened by @purepani on 2025-04-03 02:41_
+_@purepani_
 
 Currently on [this page](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile),
 The last sentence states 

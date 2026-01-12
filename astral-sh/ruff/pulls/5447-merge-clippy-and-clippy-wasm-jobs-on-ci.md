@@ -12,14 +12,14 @@ head: merge_clippy_and_clippy_wasm_jobs
 created_at: 2023-06-29T18:38:49Z
 updated_at: 2023-07-04T19:22:02Z
 url: https://github.com/astral-sh/ruff/pull/5447
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Merge clippy and clippy (wasm) jobs on CI
 
 ---
 
-_Pull request opened by @konstin on 2023-06-29 18:38_
+_@konstin_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T13:24:30Z
 updated_at: 2023-11-21T11:49:44Z
 url: https://github.com/astral-sh/uv/issues/436
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support path dependencies
 
 ---
 
-_Issue opened by @konstin on 2023-11-16 13:24_
+_@konstin_
 
 We should support path dependencies. They come in two flavors: One is "source dist flavored", where we just treat them like an unpacked source distribution or git checkout and build them with PEP 517 or setup.py. The other is "editable flavored" using [PEP 660](https://peps.python.org/pep-0660/), supported by an additional `build_editable` hook. In requirements.txt the latter form is requested by `-e`. We have to investigate the correct behavior for pyproject.toml requirements. This is an essential part for workspace support.
 

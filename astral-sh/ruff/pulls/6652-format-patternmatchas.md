@@ -13,14 +13,14 @@ head: format-pattern-match-as
 created_at: 2023-08-17T14:31:32Z
 updated_at: 2023-11-23T09:15:23Z
 url: https://github.com/astral-sh/ruff/pull/6652
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchAs`
 
 ---
 
-_Pull request opened by @lkh42t on 2023-08-17 14:31_
+_@lkh42t_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

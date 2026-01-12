@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T15:23:19Z
 updated_at: 2024-11-08T15:57:53Z
 url: https://github.com/astral-sh/uv/issues/8889
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # manylinux support is missing for riscv64
 
 ---
 
-_Issue opened by @markdryan on 2024-11-07 15:23_
+_@markdryan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: change_lamda_dummy
 created_at: 2023-07-11T13:09:17Z
 updated_at: 2023-07-11T13:34:59Z
 url: https://github.com/astral-sh/ruff/pull/5687
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Change lambda dummy to NOT_YET_IMPLEMENTED_lambda
 
 ---
 
-_Pull request opened by @konstin on 2023-07-11 13:09_
+_@konstin_
 
 This only changes the dummy to be easier to identify.
 

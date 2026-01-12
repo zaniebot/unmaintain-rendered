@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-09-29T13:50:07Z
 updated_at: 2025-03-20T01:04:11Z
 url: https://github.com/clap-rs/clap/issues/672
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # How does one print help or usage when no arguments supplied?
 
 ---
 
-_Issue opened by @lunemec on 2016-09-29 13:50_
+_@lunemec_
 
 Hello,
 I haven't found this in any of the examples, nor going through the documentation. I would like to get some usage string or the help when someone invokes the program without arguments.

@@ -14,14 +14,14 @@ head: alex/typing-conformance-diff
 created_at: 2025-08-04T09:33:39Z
 updated_at: 2025-08-04T18:24:50Z
 url: https://github.com/astral-sh/ruff/pull/19736
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Link directly to typing conformance test suite when commenting the diff
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-04 09:33_
+_@AlexWaygood_
 
 ## Summary
 

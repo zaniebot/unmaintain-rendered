@@ -14,14 +14,14 @@ head: ty-snapshot-filenames
 created_at: 2025-05-12T11:34:32Z
 updated_at: 2025-05-13T17:02:34Z
 url: https://github.com/astral-sh/ruff/pull/18039
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Shorten snapshot names
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-12 11:34_
+_@InSyncWithFoo_
 
 ## Summary
 

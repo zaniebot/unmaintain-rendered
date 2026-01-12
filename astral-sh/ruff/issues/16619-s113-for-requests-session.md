@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-11T09:07:53Z
 updated_at: 2025-03-12T21:13:26Z
 url: https://github.com/astral-sh/ruff/issues/16619
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `S113` for requests.Session
 
 ---
 
-_Issue opened by @osauldmy on 2025-03-11 09:07_
+_@osauldmy_
 
 ### Summary
 

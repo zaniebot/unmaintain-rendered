@@ -12,14 +12,14 @@ head: zb/fix-cygpath
 created_at: 2025-01-11T05:10:48Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/10492
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Fix `cygpath` missing error in virtualenv activate script
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-11 05:10_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10487
 

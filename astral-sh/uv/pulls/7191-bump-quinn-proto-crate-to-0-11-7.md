@@ -13,14 +13,14 @@ head: kr/bump-quinn-proto-crate
 created_at: 2024-09-08T15:38:30Z
 updated_at: 2024-09-08T16:45:43Z
 url: https://github.com/astral-sh/uv/pull/7191
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # bump quinn-proto crate to 0.11.7
 
 ---
 
-_Pull request opened by @kranurag7 on 2024-09-08 15:38_
+_@kranurag7_
 
 addresses the following security advisory: https://github.com/quinn-rs/quinn/security/advisories/GHSA-vr26-jcq5-fjj8
 

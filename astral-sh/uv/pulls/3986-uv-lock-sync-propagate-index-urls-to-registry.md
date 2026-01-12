@@ -12,14 +12,14 @@ head: ag/index-urls-in-client
 created_at: 2024-06-03T14:30:29Z
 updated_at: 2024-06-03T14:38:37Z
 url: https://github.com/astral-sh/uv/pull/3986
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # uv {lock,sync}: propagate index URLs to registry client
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-03 14:30_
+_@BurntSushi_
 
 Otherwise the `uv lock` command wasn't respecting the index URL option.
 

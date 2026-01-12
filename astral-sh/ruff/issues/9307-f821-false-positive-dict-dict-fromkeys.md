@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-29T09:48:33Z
 updated_at: 2023-12-29T16:03:45Z
 url: https://github.com/astral-sh/ruff/issues/9307
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F821 false positive: `dict.__dict__['fromkeys']`
 
 ---
 
-_Issue opened by @AA-Turner on 2023-12-29 09:48_
+_@AA-Turner_
 
 Ruff doesn't like classmethod descriptors, or seems to think that they're undefined, which is rather odd.
 

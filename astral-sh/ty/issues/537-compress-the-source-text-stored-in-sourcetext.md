@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T12:11:53Z
 updated_at: 2025-08-15T07:01:46Z
 url: https://github.com/astral-sh/ty/issues/537
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Compress the source text stored in `SourceText`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 12:11_
+_@MichaReiser_
 
 ty holds on to all read source files because it can't purge the file without risking that it won't be able to re-read the file later. 
 

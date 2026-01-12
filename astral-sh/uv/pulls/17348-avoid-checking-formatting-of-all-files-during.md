@@ -13,14 +13,14 @@ head: claude/fix-windows-trampoline-ci-mdVt8
 created_at: 2026-01-07T17:16:32Z
 updated_at: 2026-01-07T19:14:47Z
 url: https://github.com/astral-sh/uv/pull/17348
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Avoid checking formatting of all files during windows trampoline checks
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-07 17:16_
+_@zanieb_
 
 I've noticed this escapes the trampoline crates so these fail whenever there's bad formatting in the workspace.
 

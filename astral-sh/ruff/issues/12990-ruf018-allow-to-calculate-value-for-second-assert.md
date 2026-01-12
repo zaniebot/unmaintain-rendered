@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-19T15:46:17Z
 updated_at: 2024-12-10T07:11:24Z
 url: https://github.com/astral-sh/ruff/issues/12990
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `RUF018` Allow to calculate value for second `assert` expression in first expression
 
 ---
 
-_Issue opened by @minmax on 2024-08-19 15:46_
+_@minmax_
 
 Currently `assignment-in-assert` (`RUF018`) warns for every `:=` in `assert` section, but IMHO its ok to code like this:
 ```python

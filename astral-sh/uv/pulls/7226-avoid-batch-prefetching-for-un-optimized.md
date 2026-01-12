@@ -13,14 +13,14 @@ head: charlie/range-stop
 created_at: 2024-09-09T18:17:53Z
 updated_at: 2024-09-09T19:46:20Z
 url: https://github.com/astral-sh/uv/pull/7226
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Avoid batch prefetching for un-optimized registries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-09 18:17_
+_@charliermarsh_
 
 ## Summary
 

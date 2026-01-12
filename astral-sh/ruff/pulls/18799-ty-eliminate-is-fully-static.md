@@ -14,14 +14,14 @@ head: cjm/nofullystatic
 created_at: 2025-06-19T17:52:09Z
 updated_at: 2025-06-25T01:02:06Z
 url: https://github.com/astral-sh/ruff/pull/18799
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [ty] eliminate is_fully_static
 
 ---
 
-_Pull request opened by @carljm on 2025-06-19 17:52_
+_@carljm_
 
 ## Summary
 

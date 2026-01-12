@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T17:45:01Z
 updated_at: 2024-10-18T15:20:17Z
 url: https://github.com/astral-sh/uv/issues/8296
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # uv index feature will leak credentials to uv.lock
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-10-17 17:45_
+_@inoa-jboliveira_
 
 Hi, 
 

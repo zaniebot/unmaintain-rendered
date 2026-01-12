@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-02T12:18:48Z
 updated_at: 2025-09-02T12:32:41Z
 url: https://github.com/astral-sh/ty/issues/1115
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Ty does not remove `None` from return type after assertion
 
 ---
 
-_Issue opened by @tamir-bahar on 2025-09-02 12:18_
+_@tamir-bahar_
 
 ### Summary
 

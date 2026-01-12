@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-14T23:31:27Z
 updated_at: 2025-12-30T13:30:41Z
 url: https://github.com/astral-sh/ty/issues/1569
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # TypeIs does not work as a method/classmethod
 
 ---
 
-_Issue opened by @carljm on 2025-11-14 23:31_
+_@carljm_
 
 In [this snippet](https://play.ty.dev/2f2334a7-0510-4d2c-8280-3c1f69983d18) all `reveal_type` should reveal `int`; currently all but the first reveal `object`.
 

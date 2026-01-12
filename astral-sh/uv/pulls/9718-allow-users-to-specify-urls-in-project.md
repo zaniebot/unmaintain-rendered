@@ -13,14 +13,14 @@ head: charlie/urls
 created_at: 2024-12-08T13:45:17Z
 updated_at: 2024-12-09T17:16:10Z
 url: https://github.com/astral-sh/uv/pull/9718
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Allow users to specify URLs in `project.dependencies` and `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-08 13:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-02T19:55:05Z
 updated_at: 2024-02-12T00:51:38Z
 url: https://github.com/astral-sh/uv/issues/1238
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Puffin can't build ujson on windows due to pip difference
 
 ---
 
-_Issue opened by @konstin on 2024-02-02 19:55_
+_@konstin_
 
  The `ujson` package includes a `[build-system]`, but no `build-backend`. It installs with pip but fails with puffin.
 

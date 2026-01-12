@@ -14,14 +14,14 @@ head: david/ty-renaming
 created_at: 2025-01-20T13:44:28Z
 updated_at: 2025-01-22T08:06:58Z
 url: https://github.com/astral-sh/ruff/pull/15617
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Rename *_ty functions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-20 13:44_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: ruf101
 created_at: 2024-04-20T02:06:12Z
 updated_at: 2024-04-27T03:22:40Z
 url: https://github.com/astral-sh/ruff/pull/11052
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`ruff`] Implement `redirected-noqa` (`RUF101`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-20 02:06_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-27T12:40:44Z
 updated_at: 2021-11-06T10:48:33Z
 url: https://github.com/clap-rs/clap/issues/1946
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Website is not linking back to github repo
 
 ---
 
-_Issue opened by @erdii on 2020-05-27 12:40_
+_@erdii_
 
 Nice community work here btw!
 

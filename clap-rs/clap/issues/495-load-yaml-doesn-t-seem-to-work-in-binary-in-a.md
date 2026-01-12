@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-05-05T19:01:20Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/495
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # load_yaml! doesn't seem to work in binary in a library project.
 
 ---
 
-_Issue opened by @locallycompact on 2016-05-05 19:01_
+_@locallycompact_
 
 with features = ["yaml"] enabled, this doesn't seem to propagate to binaries in a library project.
 

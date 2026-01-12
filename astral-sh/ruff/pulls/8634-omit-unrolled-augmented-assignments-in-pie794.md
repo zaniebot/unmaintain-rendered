@@ -13,14 +13,14 @@ head: charlie/pie
 created_at: 2023-11-12T20:29:15Z
 updated_at: 2023-11-12T20:46:30Z
 url: https://github.com/astral-sh/ruff/pull/8634
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Omit unrolled augmented assignments in `PIE794`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-12 20:29_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8497.
 

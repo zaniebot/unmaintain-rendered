@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T04:58:32Z
 updated_at: 2025-05-21T13:46:11Z
 url: https://github.com/astral-sh/uv/issues/13548
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Support workspaces in `uv version`
 
 ---
 
-_Issue opened by @AsafMah on 2025-05-20 04:58_
+_@AsafMah_
 
 ### Summary
 

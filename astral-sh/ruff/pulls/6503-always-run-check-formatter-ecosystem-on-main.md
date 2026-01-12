@@ -13,14 +13,14 @@ head: run-check-formatter-ecosystem-on-main-always
 created_at: 2023-08-11T13:52:43Z
 updated_at: 2023-08-14T12:01:28Z
 url: https://github.com/astral-sh/ruff/pull/6503
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Always run check-formatter-ecosystem on main
 
 ---
 
-_Pull request opened by @konstin on 2023-08-11 13:52_
+_@konstin_
 
 This makes it easier to get the latest similarity numbers from main
 

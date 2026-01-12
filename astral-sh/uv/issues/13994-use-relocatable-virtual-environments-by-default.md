@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T13:38:22Z
 updated_at: 2025-06-22T10:47:15Z
 url: https://github.com/astral-sh/uv/issues/13994
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Use relocatable virtual environments by default
 
 ---
 
-_Issue opened by @zanieb on 2025-06-12 13:38_
+_@zanieb_
 
 We should probably use relocatable virtual environments by default, instead of having users opt-in. Especially in projects.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-07-15T14:43:26Z
 updated_at: 2021-12-07T21:58:24Z
 url: https://github.com/clap-rs/clap/issues/2599
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `multiple_occurrences` behaviour does not match documentation
 
 ---
 
-_Issue opened by @sstadick on 2021-07-15 14:43_
+_@sstadick_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T00:52:51Z
 updated_at: 2025-08-18T01:14:59Z
 url: https://github.com/astral-sh/uv/issues/15335
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Concurrent `uv pip install -e` Linux race conditions
 
 ---
 
-_Issue opened by @charlesnicholson on 2025-08-18 00:52_
+_@charlesnicholson_
 
 ### Summary
 

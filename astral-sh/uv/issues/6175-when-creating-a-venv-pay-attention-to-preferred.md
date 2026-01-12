@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T21:37:25Z
 updated_at: 2024-08-18T12:09:40Z
 url: https://github.com/astral-sh/uv/issues/6175
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # When creating a venv pay attention to preferred Python version set via PY_PYTHON
 
 ---
 
-_Issue opened by @dalito on 2024-08-17 21:37_
+_@dalito_
 
 As of `uv 0.2.37 (15dfb660a 2024-08-15)` the environment variable `PY_PYTHON` is ignored. On my windows system I have 3.12 set as default version via the environment variable `PY_PYTHON` but have also 3.13.0rc1 installed. If I run `uv venv` a Python-3.13rc1 env is created.
 

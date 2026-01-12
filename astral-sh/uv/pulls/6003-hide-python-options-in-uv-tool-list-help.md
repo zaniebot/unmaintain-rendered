@@ -14,14 +14,14 @@ head: tool-list-help
 created_at: 2024-08-11T07:55:27Z
 updated_at: 2024-08-16T10:14:39Z
 url: https://github.com/astral-sh/uv/pull/6003
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Hide python options in `uv tool list` help
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-11 07:55_
+_@eth3lbert_
 
 ## Summary
 

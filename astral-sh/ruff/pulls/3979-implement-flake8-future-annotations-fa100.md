@@ -12,14 +12,14 @@ head: pr
 created_at: 2023-04-15T18:47:45Z
 updated_at: 2023-05-14T03:16:39Z
 url: https://github.com/astral-sh/ruff/pull/3979
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement `flake8-future-annotations` FA100
 
 ---
 
-_Pull request opened by @TylerYep on 2023-04-15 18:47_
+_@TylerYep_
 
 This PR tackles the first part of #3072, which is to raise a lint error when a rewrite-able type is used without `from __future__ import annotations` present.
 

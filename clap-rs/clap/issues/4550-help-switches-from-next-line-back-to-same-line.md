@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-13T06:33:51Z
 updated_at: 2023-01-31T22:12:33Z
 url: https://github.com/clap-rs/clap/issues/4550
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Help switches from next-line back to same-line format when name/placeholder gets *wider*
 
 ---
 
-_Issue opened by @gnprice on 2022-12-13 06:33_
+_@gnprice_
 
 ### Please complete the following tasks
 

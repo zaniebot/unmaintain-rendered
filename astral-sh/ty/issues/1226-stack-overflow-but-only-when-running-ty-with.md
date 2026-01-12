@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-21T09:08:41Z
 updated_at: 2025-12-05T13:08:47Z
 url: https://github.com/astral-sh/ty/issues/1226
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Stack overflow, but only when running ty with AddressSanitizer
 
 ---
 
-_Issue opened by @qarmin on 2025-09-21 09:08_
+_@qarmin_
 
 When running the file check with ty under AddressSanitizer, I get a stack overflow error.
 Running ty normally, however, does not cause this issue.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T18:05:40Z
 updated_at: 2023-12-02T00:37:53Z
 url: https://github.com/astral-sh/uv/issues/280
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Ensure that all cache directories are excluded from backups and indexing
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-01 18:05_
+_@charliermarsh_
 
 Cargo has a nice `exclude_from_backups_and_indexing` that it calls in various places.
 

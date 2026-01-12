@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-03T05:34:28Z
 updated_at: 2023-06-22T21:21:11Z
 url: https://github.com/astral-sh/ruff/issues/4827
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F541: Invalid replacement with string concatenation
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-03 05:34_
+_@addisoncrump_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

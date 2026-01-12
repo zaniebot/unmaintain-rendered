@@ -13,14 +13,14 @@ head: alex/remove-pt-rules
 created_at: 2024-11-16T19:32:25Z
 updated_at: 2024-11-19T09:01:36Z
 url: https://github.com/astral-sh/ruff/pull/14385
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff 0.8] [`flake8-pytest-style`] Remove deprecated rules PT004 and PT005
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-16 19:32_
+_@AlexWaygood_
 
 ## Summary
 

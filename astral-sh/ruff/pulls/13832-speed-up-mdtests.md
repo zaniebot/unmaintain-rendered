@@ -13,14 +13,14 @@ head: micha/speed-up-md-test
 created_at: 2024-10-20T15:14:04Z
 updated_at: 2024-10-21T19:13:24Z
 url: https://github.com/astral-sh/ruff/pull/13832
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Speed up mdtests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-20 15:14_
+_@MichaReiser_
 
 ## Summary
 

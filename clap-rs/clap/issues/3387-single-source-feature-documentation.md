@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-02T11:30:33Z
 updated_at: 2022-11-08T04:31:50Z
 url: https://github.com/clap-rs/clap/issues/3387
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Single-source feature documentation
 
 ---
 
-_Issue opened by @epage on 2022-02-02 11:30_
+_@epage_
 
 ### Please complete the following tasks
 

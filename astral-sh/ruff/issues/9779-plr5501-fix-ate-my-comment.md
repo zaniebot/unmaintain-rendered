@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-02T09:07:18Z
 updated_at: 2024-12-06T04:01:02Z
 url: https://github.com/astral-sh/ruff/issues/9779
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PLR5501 fix ate my comment!
 
 ---
 
-_Issue opened by @akx on 2024-02-02 09:07_
+_@akx_
 
 ### plr5501-testcase.py
 

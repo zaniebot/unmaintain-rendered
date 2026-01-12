@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T21:41:58Z
 updated_at: 2025-11-14T21:41:58Z
 url: https://github.com/astral-sh/ty/issues/1568
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add context sensitive keyword completions for `in` and `as` in some cases
 
 ---
 
-_Issue opened by @BurntSushi on 2025-11-14 21:41_
+_@BurntSushi_
 
 Like we did in https://github.com/astral-sh/ruff/pull/21291, we should be able to provide very specific keyword completions for `in`. For example, `for name <CURSOR>`.
 

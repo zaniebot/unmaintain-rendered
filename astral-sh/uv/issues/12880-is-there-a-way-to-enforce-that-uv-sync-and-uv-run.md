@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T14:16:38Z
 updated_at: 2025-04-14T14:20:40Z
 url: https://github.com/astral-sh/uv/issues/12880
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Is there a way to enforce that `uv sync` and `uv run` only use `uv`-installed Python?
 
 ---
 
-_Issue opened by @johnthagen on 2025-04-14 14:16_
+_@johnthagen_
 
 ### Question
 

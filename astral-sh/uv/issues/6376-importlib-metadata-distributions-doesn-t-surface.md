@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T20:47:16Z
 updated_at: 2024-08-22T19:58:01Z
 url: https://github.com/astral-sh/uv/issues/6376
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # importlib.metadata.distributions() doesn't surface all installed packages/endpoints, breaking pytest plugins
 
 ---
 
-_Issue opened by @ashbywinch on 2024-08-21 20:47_
+_@ashbywinch_
 
 I tried to migrate a project to uv, but pytest could no longer find its plugins pytest-cov and pytest-testmon.
 

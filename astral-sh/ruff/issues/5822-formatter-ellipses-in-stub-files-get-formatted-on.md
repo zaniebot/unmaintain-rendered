@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-17T06:53:20Z
 updated_at: 2024-02-16T21:33:30Z
 url: https://github.com/astral-sh/ruff/issues/5822
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Ellipses in stub files get formatted on a single line
 
 ---
 
-_Issue opened by @konstin on 2023-07-17 06:53_
+_@konstin_
 
 If a class, method or function is stub out with an ellipsis (`...`), black gives them their own line in python files and appends them end-of-line after the colon in stub files:
 

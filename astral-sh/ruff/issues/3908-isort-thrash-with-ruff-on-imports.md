@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-07T22:21:26Z
 updated_at: 2023-04-13T04:05:30Z
 url: https://github.com/astral-sh/ruff/issues/3908
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `isort` thrash with `ruff` on imports
 
 ---
 
-_Issue opened by @leos on 2023-04-07 22:21_
+_@leos_
 
 `isort` version 5.12.0, `ruff` version 0.0.261
 

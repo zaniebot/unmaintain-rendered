@@ -15,14 +15,14 @@ head: david/ecosystem-analyzer-ty_cmd
 created_at: 2025-11-20T08:03:51Z
 updated_at: 2025-11-20T08:10:58Z
 url: https://github.com/astral-sh/ruff/pull/21534
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Ecosystem analyzer: support custom `ty_cmd`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-20 08:03_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/goblin-0.x-lockfile
 created_at: 2025-01-11T16:09:26Z
 updated_at: 2025-01-11T17:27:02Z
 url: https://github.com/astral-sh/uv/pull/10504
-synced_at: 2026-01-10T11:44:53Z
+synced_at: 2026-01-12T16:09:20Z
 ```
 
 # Update Rust crate goblin to v0.9.3
 
 ---
 
-_Pull request opened by @renovate on 2025-01-11 16:09_
+_@renovate_
 
 This PR contains the following updates:
 

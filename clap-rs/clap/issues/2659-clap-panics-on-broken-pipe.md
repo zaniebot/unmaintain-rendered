@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-08-02T20:18:25Z
 updated_at: 2021-08-18T16:51:02Z
 url: https://github.com/clap-rs/clap/issues/2659
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Clap panics on broken pipe
 
 ---
 
-_Issue opened by @epage on 2021-08-02 20:18_
+_@epage_
 
 ### Please complete the following tasks
 

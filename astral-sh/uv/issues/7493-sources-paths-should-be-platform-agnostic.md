@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T12:05:36Z
 updated_at: 2024-09-18T18:51:16Z
 url: https://github.com/astral-sh/uv/issues/7493
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Sources paths should be platform-agnostic
 
 ---
 
-_Issue opened by @SnirShechter on 2024-09-18 12:05_
+_@SnirShechter_
 
 Running `uv add <path>` on Windows adds the sources path with backslash (\) Windows-style, which causes it to fail when running on other platforms.
 

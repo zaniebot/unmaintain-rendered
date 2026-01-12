@@ -13,14 +13,14 @@ head: micha/use-expect
 created_at: 2025-05-03T18:40:24Z
 updated_at: 2025-05-03T19:20:33Z
 url: https://github.com/astral-sh/ruff/pull/17822
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Use `#[expect(lint)]` over `#[allow(lint)]` where possible
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-03 18:40_
+_@MichaReiser_
 
 ## Summary
 

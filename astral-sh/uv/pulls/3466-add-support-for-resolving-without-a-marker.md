@@ -13,14 +13,14 @@ head: ag/partial-marker-eval
 created_at: 2024-05-08T18:10:47Z
 updated_at: 2024-05-09T13:24:38Z
 url: https://github.com/astral-sh/uv/pull/3466
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # add support for resolving without a marker environment
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-08 18:10_
+_@BurntSushi_
 
 This PR touches a lot of code, but the conceptual change here is
 pretty simple: make it so we can run the resolver without providing a

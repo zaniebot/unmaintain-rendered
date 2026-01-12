@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-15T09:53:03Z
 updated_at: 2024-08-15T11:31:24Z
 url: https://github.com/astral-sh/ruff/issues/12902
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ISC001: False positive for comma-separated strings
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-15 09:53_
+_@MichaReiser_
 
 Not sure if this is the right thread (maybe this should be a new issue), but there is a conflict between ISC001 and Ruff format if the string has a method associated with it.
 

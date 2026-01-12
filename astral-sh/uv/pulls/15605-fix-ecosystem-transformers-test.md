@@ -12,14 +12,14 @@ head: zsol/jj-kzzwwmkulsts
 created_at: 2025-08-31T10:24:11Z
 updated_at: 2025-08-31T10:56:00Z
 url: https://github.com/astral-sh/uv/pull/15605
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # fix ecosystem::transformers test
 
 ---
 
-_Pull request opened by @zsol on 2025-08-31 10:24_
+_@zsol_
 
 ## Summary
 This test is broken because faiss-1.8.0.post1's sdist was deleted(?) from [pypi](https://pypi.org/project/faiss-cpu/1.8.0.post1/#files).

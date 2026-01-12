@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-20T06:05:18Z
 updated_at: 2024-11-28T12:58:24Z
 url: https://github.com/astral-sh/ruff/issues/13829
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [preview] FURB118 can be unsafe for methods
 
 ---
 
-_Issue opened by @henryiii on 2024-10-20 06:05_
+_@henryiii_
 
 If you run with `preview` set, then the FURB118 check makes an unsafe replacement, you can see me rolling back the change https://github.com/wntrblm/nox/pull/870/commits/a91dbe2356a42bf8d2f03021ccd3b19a903484c8 to make the tests pass, the difference in behavior can be shown with this MWE:
 

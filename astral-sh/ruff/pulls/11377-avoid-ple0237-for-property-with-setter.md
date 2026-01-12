@@ -13,14 +13,14 @@ head: dhruv/setter-PLE0237
 created_at: 2024-05-12T09:41:37Z
 updated_at: 2024-05-13T00:23:01Z
 url: https://github.com/astral-sh/ruff/pull/11377
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Avoid `PLE0237` for property with setter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-12 09:41_
+_@dhruvmanila_
 
 ## Summary
 

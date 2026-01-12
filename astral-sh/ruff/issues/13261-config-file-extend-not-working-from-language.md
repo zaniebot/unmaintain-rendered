@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-06T07:44:50Z
 updated_at: 2024-09-17T12:50:55Z
 url: https://github.com/astral-sh/ruff/issues/13261
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Config file "extend" not working from language server
 
 ---
 
-_Issue opened by @jakeanq on 2024-09-06 07:44_
+_@jakeanq_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

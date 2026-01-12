@@ -13,14 +13,14 @@ head: charlie/dir-lock
 created_at: 2024-05-15T16:28:29Z
 updated_at: 2024-05-15T16:46:46Z
 url: https://github.com/astral-sh/uv/pull/3609
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Add local path conversions from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 16:28_
+_@charliermarsh_
 
 ## Summary
 

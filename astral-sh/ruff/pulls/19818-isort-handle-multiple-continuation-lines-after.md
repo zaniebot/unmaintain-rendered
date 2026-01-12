@@ -14,14 +14,14 @@ head: fix-19815
 created_at: 2025-08-08T03:23:57Z
 updated_at: 2025-08-15T21:41:46Z
 url: https://github.com/astral-sh/ruff/pull/19818
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [`isort`] Handle multiple continuation lines after module docstring (`I002`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-08 03:23_
+_@danparizher_
 
 ## Summary
 

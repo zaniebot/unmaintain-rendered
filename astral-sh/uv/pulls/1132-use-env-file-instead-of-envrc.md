@@ -13,14 +13,14 @@ head: zb/env
 created_at: 2024-01-26T19:37:35Z
 updated_at: 2024-01-26T20:00:07Z
 url: https://github.com/astral-sh/uv/pull/1132
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Use `.env` file instead of `.envrc`
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 19:37_
+_@zanieb_
 
 #1131 shows that `direnv` installation is _most_ of the CI overhead introduced by #1105.
 

@@ -13,14 +13,14 @@ head: DTZ901
 created_at: 2024-11-17T01:26:32Z
 updated_at: 2024-11-18T02:32:33Z
 url: https://github.com/astral-sh/ruff/pull/14394
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-datetimez`] Also exempt `.time()` (`DTZ901`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-17 01:26_
+_@InSyncWithFoo_
 
 ## Summary
 

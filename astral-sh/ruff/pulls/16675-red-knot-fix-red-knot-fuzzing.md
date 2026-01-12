@@ -12,14 +12,14 @@ head: cjm/fuzzer
 created_at: 2025-03-12T13:00:08Z
 updated_at: 2025-03-12T13:25:32Z
 url: https://github.com/astral-sh/ruff/pull/16675
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] fix red-knot fuzzing
 
 ---
 
-_Pull request opened by @carljm on 2025-03-12 13:00_
+_@carljm_
 
 The red-knot CLI changed since the fuzzer script was added; update it to work with current red-knot CLI.
 

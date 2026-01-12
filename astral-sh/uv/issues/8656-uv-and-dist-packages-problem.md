@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T11:28:47Z
 updated_at: 2024-10-29T13:44:25Z
 url: https://github.com/astral-sh/uv/issues/8656
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # UV and dist-packages problem.
 
 ---
 
-_Issue opened by @koodzi on 2024-10-29 11:28_
+_@koodzi_
 
 I got a problem with `uv` not seeing system packages.
 

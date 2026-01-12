@@ -12,14 +12,14 @@ head: zb/test-zstd
 created_at: 2025-12-30T15:01:15Z
 updated_at: 2025-12-30T15:21:25Z
 url: https://github.com/astral-sh/uv/pull/17269
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Add test cases for registry with zstd wheels
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-30 15:01_
+_@zanieb_
 
 Included in https://github.com/astral-sh/uv/pull/17265
 

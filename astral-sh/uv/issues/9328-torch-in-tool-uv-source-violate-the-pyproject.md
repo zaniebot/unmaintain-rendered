@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T16:31:13Z
 updated_at: 2024-11-21T22:37:09Z
 url: https://github.com/astral-sh/uv/issues/9328
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # torch in tool.uv.source violate the pyproject.toml schema
 
 ---
 
-_Issue opened by @Xiao-Chenguang on 2024-11-21 16:31_
+_@Xiao-Chenguang_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

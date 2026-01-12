@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T02:29:47Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4719
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `requires-python` normalization is unintuitive
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-02 02:29_
+_@charliermarsh_
 
 E.g., `python_version <= '3.9' or python_version > '3.9'` doesn't simplify out, nor does `python_version < '3.9' or python_version >= '3.9'`.
 

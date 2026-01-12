@@ -14,14 +14,14 @@ head: pad-ruf037
 created_at: 2025-06-09T20:06:05Z
 updated_at: 2025-06-09T20:38:39Z
 url: https://github.com/astral-sh/ruff/pull/18598
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`ruff`] Preserve parentheses around `deque` in fix for `unnecessary-empty-iterable-within-deque-call` (`RUF037`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-09 20:06_
+_@dylwil3_
 
 Closes #18552 
 

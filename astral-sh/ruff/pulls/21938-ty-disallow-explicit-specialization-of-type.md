@@ -13,14 +13,14 @@ head: ban-typevar-specialization
 created_at: 2025-12-12T09:34:54Z
 updated_at: 2025-12-15T08:42:51Z
 url: https://github.com/astral-sh/ruff/pull/21938
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] disallow explicit specialization of type variables themselves
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-12 09:34_
+_@mtshiba_
 
 ## Summary
 

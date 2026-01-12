@@ -12,14 +12,14 @@ head: charlie/unused
 created_at: 2023-02-22T19:13:44Z
 updated_at: 2023-02-22T19:32:09Z
 url: https://github.com/astral-sh/ruff/pull/3137
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Include match in nested block check
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 19:13_
+_@charliermarsh_
 
 _No description provided._
 

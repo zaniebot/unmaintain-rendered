@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T19:03:29Z
 updated_at: 2024-02-22T17:22:02Z
 url: https://github.com/astral-sh/uv/issues/1528
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv pip compile does not find a package that pip-compile does (nltk==3.6)
 
 ---
 
-_Issue opened by @merc1031 on 2024-02-16 19:03_
+_@merc1031_
 
 uv pip compile
 ```

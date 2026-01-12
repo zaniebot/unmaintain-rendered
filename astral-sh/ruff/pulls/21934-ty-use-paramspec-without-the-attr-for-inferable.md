@@ -14,14 +14,14 @@ head: dhruv/inferrable-paramspec-check-without-attr
 created_at: 2025-12-12T07:49:00Z
 updated_at: 2025-12-15T18:36:13Z
 url: https://github.com/astral-sh/ruff/pull/21934
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Use `ParamSpec` without the attr for inferable check
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-12 07:49_
+_@dhruvmanila_
 
 ## Summary
 

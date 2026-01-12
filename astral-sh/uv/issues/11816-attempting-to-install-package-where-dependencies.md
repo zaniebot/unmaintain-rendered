@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T01:52:20Z
 updated_at: 2025-04-18T19:12:51Z
 url: https://github.com/astral-sh/uv/issues/11816
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Attempting to install package where dependencies give git+url and needs environment variables to be set.
 
 ---
 
-_Issue opened by @CompRhys on 2025-02-27 01:52_
+_@CompRhys_
 
 ### Question
 

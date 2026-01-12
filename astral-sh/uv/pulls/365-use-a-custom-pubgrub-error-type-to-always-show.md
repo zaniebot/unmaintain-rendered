@@ -12,14 +12,14 @@ head: charlie/error-type
 created_at: 2023-11-08T05:03:14Z
 updated_at: 2023-11-08T14:57:27Z
 url: https://github.com/astral-sh/uv/pull/365
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Use a custom PubGrub error type to always show resolution report
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-08 05:03_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/356.
 

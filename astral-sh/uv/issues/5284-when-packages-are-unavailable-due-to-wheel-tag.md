@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T13:21:25Z
 updated_at: 2024-07-22T18:31:09Z
 url: https://github.com/astral-sh/uv/issues/5284
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # When packages are unavailable due to wheel tag Python requirement mismatches, error message should reflect that
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-22 13:21_
+_@charliermarsh_
 
 E.g., given `echo "dearpygui==1.11.1" | cargo run pip compile --universal --python 3.12.3 --verbose -`, I think we're rejecting the package because there are no wheels with the Python tags we need (though it might be a buggy, but that's separate), yet the message says:
 

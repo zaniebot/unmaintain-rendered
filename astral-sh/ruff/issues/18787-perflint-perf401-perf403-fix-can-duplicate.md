@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T07:38:58Z
 updated_at: 2025-06-19T22:35:07Z
 url: https://github.com/astral-sh/ruff/issues/18787
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Perflint] PERF401/PERF403 fix can duplicate comments
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 07:38_
+_@MeGaGiGaGon_
 
 ### Summary
 

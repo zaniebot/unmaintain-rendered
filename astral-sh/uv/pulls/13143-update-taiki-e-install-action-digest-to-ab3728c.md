@@ -13,14 +13,14 @@ head: renovate/taiki-e-install-action-digest
 created_at: 2025-04-28T00:17:06Z
 updated_at: 2025-04-28T00:32:31Z
 url: https://github.com/astral-sh/uv/pull/13143
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Update taiki-e/install-action digest to ab3728c
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 00:17_
+_@renovate_
 
 This PR contains the following updates:
 

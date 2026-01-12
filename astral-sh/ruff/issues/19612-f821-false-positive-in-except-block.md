@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-29T07:23:39Z
 updated_at: 2025-07-30T12:17:43Z
 url: https://github.com/astral-sh/ruff/issues/19612
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F821 false positive in except block
 
 ---
 
-_Issue opened by @pavelschon on 2025-07-29 07:23_
+_@pavelschon_
 
 ### Summary
 

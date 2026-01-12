@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-26T09:54:00Z
 updated_at: 2024-03-26T14:45:34Z
 url: https://github.com/astral-sh/uv/issues/2667
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Download Progress Bar for Large Files
 
 ---
 
-_Issue opened by @AidinHamedi on 2024-03-26 09:54_
+_@AidinHamedi_
 
 I would like to request a feature for the `uv` package: a download progress bar for large files during installation. This would enhance the user experience by providing visual feedback on the download status, especially when installing sizable packages like `torch` using the command `uv pip install torch`.
 

@@ -13,14 +13,14 @@ head: upgrade-criterion
 created_at: 2024-02-26T11:30:17Z
 updated_at: 2024-02-26T11:49:09Z
 url: https://github.com/astral-sh/ruff/pull/10134
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Upgrade codspeed-criterion for perf boost
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-26 11:30_
+_@MichaReiser_
 
 ## Summary
 

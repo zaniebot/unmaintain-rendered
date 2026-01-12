@@ -13,14 +13,14 @@ head: zb/extern-macos
 created_at: 2025-11-07T04:11:55Z
 updated_at: 2025-11-07T05:53:48Z
 url: https://github.com/astral-sh/uv/pull/16628
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Add expectation for externally managed marker in x86-64 macOS system test
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-07 04:11_
+_@zanieb_
 
 This is failing with
 

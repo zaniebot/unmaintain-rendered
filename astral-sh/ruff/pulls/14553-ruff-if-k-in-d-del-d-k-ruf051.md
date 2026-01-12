@@ -14,14 +14,14 @@ head: RUF041
 created_at: 2024-11-23T04:29:43Z
 updated_at: 2024-12-11T12:54:32Z
 url: https://github.com/astral-sh/ruff/pull/14553
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] `if k in d: del d[k]` (`RUF051`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-23 04:29_
+_@InSyncWithFoo_
 
 ## Summary
 

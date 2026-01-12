@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T20:50:27Z
 updated_at: 2025-04-09T13:01:23Z
 url: https://github.com/astral-sh/uv/issues/12762
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # uv-build fails if the path of a module is too long
 
 ---
 
-_Issue opened by @leiserfg on 2025-04-08 20:50_
+_@leiserfg_
 
 ### Summary
 

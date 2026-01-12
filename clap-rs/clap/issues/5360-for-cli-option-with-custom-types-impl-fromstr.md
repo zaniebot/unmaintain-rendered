@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T06:59:31Z
 updated_at: 2024-02-18T00:43:22Z
 url: https://github.com/clap-rs/clap/issues/5360
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # For cli option with custom types, `impl FromStr` with `FromStr::Err` set to `()` won't work
 
 ---
 
-_Issue opened by @SteveLauC on 2024-02-17 06:59_
+_@SteveLauC_
 
 ### Please complete the following tasks
 

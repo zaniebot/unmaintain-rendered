@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-25T02:02:23Z
 updated_at: 2024-05-22T03:14:19Z
 url: https://github.com/astral-sh/ruff/issues/11138
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` does not respect `exclude` configuration
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-25 02:02_
+_@snowsignal_
 
 At the moment, `ruff server` does not yet respect `exclude` configuration, either in the editor configuration or in workspace configuration. This may cause unexpected behavior when editing an excluded file.
 

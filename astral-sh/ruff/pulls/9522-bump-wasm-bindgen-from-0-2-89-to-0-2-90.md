@@ -12,14 +12,14 @@ head: dependabot/cargo/wasm-bindgen-0.2.90
 created_at: 2024-01-15T08:27:27Z
 updated_at: 2024-01-15T09:47:40Z
 url: https://github.com/astral-sh/ruff/pull/9522
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump wasm-bindgen from 0.2.89 to 0.2.90
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-15 08:27_
+_@dependabot_
 
 Bumps [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) from 0.2.89 to 0.2.90.
 <details>

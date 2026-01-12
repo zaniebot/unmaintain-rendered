@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T02:08:31Z
 updated_at: 2025-02-16T19:20:19Z
 url: https://github.com/astral-sh/uv/issues/7062
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # perf: `uv build` is slower on the second run compared to `uvx hatch build`
 
 ---
 
-_Issue opened by @pplmx on 2024-09-05 02:08_
+_@pplmx_
 
 ## Reproduce Steps
 

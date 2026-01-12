@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T04:36:04Z
 updated_at: 2023-11-13T23:03:42Z
 url: https://github.com/astral-sh/ruff/issues/8197
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Proposal: Formatting options to enable "vertical formatting" and "grid formatting"
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-10-25 04:36_
+_@NeilGirdhar_
 
 I realize that this may not be a popular feature request, but it's the only thing stopping me from using Black, and I love the idea of Black, so I feel compelled to propose it.  Feel free to close this as "will not implement".
 

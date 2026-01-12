@@ -13,14 +13,14 @@ head: zb/abi-python-version
 created_at: 2024-10-19T13:43:36Z
 updated_at: 2024-10-20T16:14:13Z
 url: https://github.com/astral-sh/uv/pull/8363
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Use a dedicated message for incompatible Python versions in wheel ABI tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-19 13:43_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/2777
 

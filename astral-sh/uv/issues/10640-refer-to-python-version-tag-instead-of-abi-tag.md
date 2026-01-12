@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T20:01:00Z
 updated_at: 2025-01-15T20:01:04Z
 url: https://github.com/astral-sh/uv/issues/10640
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Refer to "Python version tag" instead of "ABI" tag where feasible
 
 ---
 
-_Issue opened by @zanieb on 2025-01-15 20:01_
+_@zanieb_
 
 We say "Python version tag" specifically in some places but "Python ABI tag" or "ABI tag" in others. If we can narrow it down to _just_ a version incompatibility that seems easy for users to understand.
 

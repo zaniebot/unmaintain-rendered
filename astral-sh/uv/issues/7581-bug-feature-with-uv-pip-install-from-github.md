@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-20T11:47:16Z
 updated_at: 2024-09-20T15:21:19Z
 url: https://github.com/astral-sh/uv/issues/7581
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Bug/Feature with uv pip install from github
 
 ---
 
-_Issue opened by @freand76 on 2024-09-20 11:47_
+_@freand76_
 
 When using **uv pip install** from a github repository, a working SHA from any of the repository forks will be picked up as valid.
 

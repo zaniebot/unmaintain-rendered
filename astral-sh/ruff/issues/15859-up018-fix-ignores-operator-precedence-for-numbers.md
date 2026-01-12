@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T20:51:07Z
 updated_at: 2025-02-14T07:42:01Z
 url: https://github.com/astral-sh/ruff/issues/15859
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP018 fix ignores operator precedence for numbers with unary operators
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-31 20:51_
+_@dscorbett_
 
 ### Description
 

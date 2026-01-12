@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T17:39:33Z
 updated_at: 2025-09-21T15:13:06Z
 url: https://github.com/astral-sh/uv/issues/11153
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # How to associate optional `override-dependencies` with a specific `optional-dependencies`
 
 ---
 
-_Issue opened by @tlambert03 on 2025-02-01 17:39_
+_@tlambert03_
 
 ### Question
 

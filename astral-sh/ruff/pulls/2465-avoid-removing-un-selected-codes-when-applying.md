@@ -12,14 +12,14 @@ head: charlie/select
 created_at: 2023-02-02T03:04:17Z
 updated_at: 2023-02-02T03:22:32Z
 url: https://github.com/astral-sh/ruff/pull/2465
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid removing un-selected codes when applying `--add-noqa` edits
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 03:04_
+_@charliermarsh_
 
 The downside here is that we have to leave blank `# noqa` directives intact. Otherwise, we risk removing necessary `# noqa` coverage for rules that aren't selected.
 

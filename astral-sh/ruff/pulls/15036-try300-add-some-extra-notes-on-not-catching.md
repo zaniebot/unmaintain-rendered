@@ -13,14 +13,14 @@ head: try-consider-else-extra-note
 created_at: 2024-12-17T13:31:41Z
 updated_at: 2025-01-18T16:23:44Z
 url: https://github.com/astral-sh/ruff/pull/15036
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # TRY300: Add some extra notes on not catching exceptions you didn't expect
 
 ---
 
-_Pull request opened by @wlach on 2024-12-17 13:31_
+_@wlach_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

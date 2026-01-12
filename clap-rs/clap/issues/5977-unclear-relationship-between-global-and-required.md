@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-24T14:09:26Z
 updated_at: 2025-10-24T15:10:09Z
 url: https://github.com/clap-rs/clap/issues/5977
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Unclear relationship between `global` and `required`
 
 ---
 
-_Issue opened by @mlegner on 2025-04-24 14:09_
+_@mlegner_
 
 It is unclear whether an argument can be marked as `global` and `required` simultaneously. There used to be a note "Global arguments *cannot* be required." in the docs, which was removed in #1075. There still remains a [debug assertion](https://github.com/clap-rs/clap/blob/183cfe3b011f2f1385a996ee9606289c69189550/clap_builder/src/builder/debug_asserts.rs#L255-L260) forbidding the combination.
 

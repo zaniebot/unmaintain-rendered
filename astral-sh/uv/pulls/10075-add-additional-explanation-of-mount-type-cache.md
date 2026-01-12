@@ -11,14 +11,14 @@ head: mr/cache-mount-explanation
 created_at: 2024-12-21T12:19:49Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/10075
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Add additional explanation of --mount=type=cache
 
 ---
 
-_Pull request opened by @mirober on 2024-12-21 12:19_
+_@mirober_
 
 ## Summary
 

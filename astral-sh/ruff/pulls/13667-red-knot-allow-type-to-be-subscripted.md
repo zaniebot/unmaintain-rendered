@@ -13,14 +13,14 @@ head: alex/redknot-type-subscription
 created_at: 2024-10-07T16:52:25Z
 updated_at: 2024-10-07T18:43:49Z
 url: https://github.com/astral-sh/ruff/pull/13667
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Allow `type[]` to be subscripted
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-07 16:52_
+_@AlexWaygood_
 
 Fixed a TODO by adding another TODO. It's the red-knot way!
 

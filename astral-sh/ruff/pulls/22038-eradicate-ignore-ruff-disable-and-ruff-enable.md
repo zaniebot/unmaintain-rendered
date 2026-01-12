@@ -13,14 +13,14 @@ head: amy/era001-ruff-disable
 created_at: 2025-12-17T20:04:08Z
 updated_at: 2025-12-18T01:04:50Z
 url: https://github.com/astral-sh/ruff/pull/22038
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [`eradicate`] ignore ruff:disable and ruff:enable comments in `ERA001`
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-17 20:04_
+_@amyreese_
 
 ## Summary
 

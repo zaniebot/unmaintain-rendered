@@ -12,14 +12,14 @@ head: complete_try_generate
 created_at: 2025-05-22T15:29:03Z
 updated_at: 2025-05-27T17:24:06Z
 url: https://github.com/clap-rs/clap/pull/6009
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(clap-complete): Introduce fallible generator
 
 ---
 
-_Pull request opened by @gtema on 2025-05-22 15:29_
+_@gtema_
 
 It may happen that writing completion fails due to whichever reason. Currently clap-complete panics without letting calling code to react on that error (i.e. ignore). Introduce fallible version of the `generate` function by mostly only getting rid of except and instead exposing Result.  For backwards compatibility make default trait implementation of `try_generate` function to call `generate` not to break users defining their own `generate`.
 

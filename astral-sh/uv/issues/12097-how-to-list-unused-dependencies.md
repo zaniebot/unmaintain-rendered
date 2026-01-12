@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T14:54:32Z
 updated_at: 2025-06-10T12:50:37Z
 url: https://github.com/astral-sh/uv/issues/12097
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # How to list unused dependencies
 
 ---
 
-_Issue opened by @andreas-vester on 2025-03-10 14:54_
+_@andreas-vester_
 
 ### Question
 

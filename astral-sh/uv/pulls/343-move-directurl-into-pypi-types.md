@@ -12,14 +12,14 @@ head: charlie/direct-url
 created_at: 2023-11-06T18:22:13Z
 updated_at: 2023-11-06T18:26:35Z
 url: https://github.com/astral-sh/uv/pull/343
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Move `DirectUrl` into `pypi-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 18:22_
+_@charliermarsh_
 
 This needs to be reused elsewhere, and there's nothing specific to wheel installation about it.
 

@@ -14,14 +14,14 @@ head: single-with-item-pre-39
 created_at: 2024-03-07T15:30:16Z
 updated_at: 2024-03-08T23:59:51Z
 url: https://github.com/astral-sh/ruff/pull/10276
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Formatter: Improve single-with item formatting for Python 3.8 or older
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-07 15:30_
+_@MichaReiser_
 
 ## Summary
 

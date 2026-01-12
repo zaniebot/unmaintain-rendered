@@ -12,14 +12,14 @@ head: charlie/extract
 created_at: 2023-12-14T04:40:56Z
 updated_at: 2023-12-14T04:49:10Z
 url: https://github.com/astral-sh/uv/pull/647
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Move archive extraction into its own crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-14 04:40_
+_@charliermarsh_
 
 We have some shared utilities beyond `puffin-build` and `puffin-distribution`, and further, I want to be able to access the sdist archive extraction logic from `puffin-distribution`. This is really generic, so moving into its own crate.
 

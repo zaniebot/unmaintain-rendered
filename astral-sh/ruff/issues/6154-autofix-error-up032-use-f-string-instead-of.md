@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-28T14:31:53Z
 updated_at: 2023-07-28T17:52:44Z
 url: https://github.com/astral-sh/ruff/issues/6154
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Autofix error] UP032 Use f-string instead of `format` call
 
 ---
 
-_Issue opened by @jbradaric on 2023-07-28 14:31_
+_@jbradaric_
 
 * A minimal code snippet that reproduces the bug (saved in /tmp/a.py)
 

@@ -14,14 +14,14 @@ head: alex/dogfood-ty
 created_at: 2025-10-17T18:56:48Z
 updated_at: 2025-10-17T19:30:19Z
 url: https://github.com/astral-sh/ruff/pull/20946
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Dogfood ty on py-fuzzer in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-17 18:56_
+_@AlexWaygood_
 
 ## Summary
 

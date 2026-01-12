@@ -13,14 +13,14 @@ head: zb/toolchain-only-installed
 created_at: 2024-06-20T15:45:51Z
 updated_at: 2024-07-02T01:59:15Z
 url: https://github.com/astral-sh/uv/pull/4425
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Add option to disable fetching managed toolchains
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-20 15:45_
+_@zanieb_
 
 Adds a toolchain preference (introduced in #4424) to only allow installed managed toolchains.
 

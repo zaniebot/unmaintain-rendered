@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T14:07:38Z
 updated_at: 2024-04-21T12:17:27Z
 url: https://github.com/astral-sh/ruff/issues/11043
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RUF029 trigger errors on async interators
 
 ---
 
-_Issue opened by @Greesb on 2024-04-19 14:07_
+_@Greesb_
 
 Here's a sample code for reproduction:
 ```python

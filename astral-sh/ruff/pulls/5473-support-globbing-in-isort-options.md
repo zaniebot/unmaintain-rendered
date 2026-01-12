@@ -14,14 +14,14 @@ head: glob
 created_at: 2023-07-03T09:44:58Z
 updated_at: 2023-07-10T09:54:47Z
 url: https://github.com/astral-sh/ruff/pull/5473
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Support globbing in `isort` options
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-03 09:44_
+_@tjkuson_
 
 ## Summary
 

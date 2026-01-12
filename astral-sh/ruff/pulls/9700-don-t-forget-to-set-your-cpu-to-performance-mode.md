@@ -13,14 +13,14 @@ head: konsti/dont-forget-to-set-your-cpu-to-performance-mode
 created_at: 2024-01-30T10:38:30Z
 updated_at: 2024-02-13T03:36:12Z
 url: https://github.com/astral-sh/ruff/pull/9700
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Don't forget to set your cpu to performance mode
 
 ---
 
-_Pull request opened by @konstin on 2024-01-30 10:38_
+_@konstin_
 
 Since i just spent quite some time wondering why my benchmarks were the opposite of what they should be, a reminder to check your cpu governor. Setting mine to perf mode was crucial.
 

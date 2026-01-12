@@ -14,14 +14,14 @@ head: dhruv/release-2
 created_at: 2025-03-19T12:29:54Z
 updated_at: 2025-03-19T12:47:15Z
 url: https://github.com/astral-sh/ruff/pull/16843
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Use the Depot Ubuntu runners instead of GitHub for release workflows
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-19 12:29_
+_@dhruvmanila_
 
 ## Summary
 

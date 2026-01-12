@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T11:22:00Z
 updated_at: 2023-08-06T19:20:48Z
 url: https://github.com/astral-sh/ruff/issues/6270
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [rule proposal] avoid creating temporary lists
 
 ---
 
-_Issue opened by @dorschw on 2023-08-02 11:22_
+_@dorschw_
 
 ```diff
 - any([foo,bar])

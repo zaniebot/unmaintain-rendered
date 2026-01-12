@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T14:34:34Z
 updated_at: 2025-04-09T20:56:38Z
 url: https://github.com/astral-sh/uv/issues/11065
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Automatically install and use a matching uv version to satisfy `requires-version`.
 
 ---
 
-_Issue opened by @mjpieters on 2025-01-29 14:34_
+_@mjpieters_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-18T11:18:57Z
 updated_at: 2025-11-12T01:57:35Z
 url: https://github.com/astral-sh/ty/issues/851
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrectly inferred Pandas indexing return type
 
 ---
 
-_Issue opened by @kormalev on 2025-07-18 11:18_
+_@kormalev_
 
 ### Summary
 

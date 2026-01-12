@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-23T19:04:59Z
 updated_at: 2025-12-23T20:56:49Z
 url: https://github.com/astral-sh/ruff/issues/22165
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Can we add a rule to turn the `Invalid # ruff: noqa directive` warnings into an error?
 
 ---
 
-_Issue opened by @yilei on 2025-12-23 19:04_
+_@yilei_
 
 ### Summary
 

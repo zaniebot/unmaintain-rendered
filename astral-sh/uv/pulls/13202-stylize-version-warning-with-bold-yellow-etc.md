@@ -13,14 +13,14 @@ head: charlie/warn
 created_at: 2025-04-29T21:03:56Z
 updated_at: 2025-04-29T21:24:48Z
 url: https://github.com/astral-sh/uv/pull/13202
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Stylize version warning with bold, yellow, etc.
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-29 21:03_
+_@charliermarsh_
 
 _No description provided._
 

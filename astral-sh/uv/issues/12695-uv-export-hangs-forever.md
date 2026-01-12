@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T02:06:13Z
 updated_at: 2025-04-07T19:11:00Z
 url: https://github.com/astral-sh/uv/issues/12695
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # `uv export` hangs forever
 
 ---
 
-_Issue opened by @fabito on 2025-04-07 02:06_
+_@fabito_
 
 ### Summary
 

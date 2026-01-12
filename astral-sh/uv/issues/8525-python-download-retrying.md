@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-24T12:12:51Z
 updated_at: 2024-11-20T14:42:44Z
 url: https://github.com/astral-sh/uv/issues/8525
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Python download retrying
 
 ---
 
-_Issue opened by @JanLubojacky on 2024-10-24 12:12_
+_@JanLubojacky_
 
 uv 0.4.26
 

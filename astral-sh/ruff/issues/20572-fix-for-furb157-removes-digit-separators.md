@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T13:27:29Z
 updated_at: 2025-10-29T08:29:51Z
 url: https://github.com/astral-sh/ruff/issues/20572
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fix for `FURB157` removes digit separators
 
 ---
 
-_Issue opened by @ntBre on 2025-09-25 13:27_
+_@ntBre_
 
 The fix in latest ruff (v0.13.1) converts `Decimal("1_000")` to `Decimal(1000)` instead of to `Decimal(1_000)`.
 

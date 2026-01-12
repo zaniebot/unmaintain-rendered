@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-11T08:13:55Z
 updated_at: 2023-06-12T00:21:25Z
 url: https://github.com/astral-sh/ruff/issues/5012
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Strange behavior --add-noqa
 
 ---
 
-_Issue opened by @rSedoy on 2023-06-11 08:13_
+_@rSedoy_
 
 ```
 cat >> pyproject.toml << EOF

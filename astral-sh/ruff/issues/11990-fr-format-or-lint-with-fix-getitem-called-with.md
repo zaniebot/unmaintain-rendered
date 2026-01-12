@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-23T15:55:53Z
 updated_at: 2024-08-07T13:11:30Z
 url: https://github.com/astral-sh/ruff/issues/11990
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FR: format (or lint with fix) getitem called with tuples litteral (e.g. `a[(b, c)]` -> `a[b, c]`) ?
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-06-23 15:55_
+_@neutrinoceros_
 
 This is an idea for a formatting or linting rule (not sure where it would fit best). Basically I'd like ruff to drop unneeded parentheses from `a[(b, c)]` (into `a[b, c]`). This pattern comes up a lot in idiomatic [`yt`](https://github.com/yt-project/yt), but there are currently no formatter (that we know of) for it, so our docs and code base have two widely spread, competing styles.
 I couldn't find a similar open issue, apologies if there is.

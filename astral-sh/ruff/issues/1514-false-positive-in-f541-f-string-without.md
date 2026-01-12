@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T16:10:36Z
 updated_at: 2023-01-01T05:10:43Z
 url: https://github.com/astral-sh/ruff/issues/1514
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive in F541 (f-string without placeholders) after v0.0.204
 
 ---
 
-_Issue opened by @tlambert03 on 2022-12-31 16:10_
+_@tlambert03_
 
 not sure if it's #1494 or a different PR... but a F541 "f-string without placeholders" false positive is now appearing in v0.0.204 when using format specifiers in f-strings:
 

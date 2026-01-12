@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T16:19:17Z
 updated_at: 2024-01-22T04:30:03Z
 url: https://github.com/astral-sh/ruff/issues/9579
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # namespace-packages option stopped working in a recent update
 
 ---
 
-_Issue opened by @gokay05 on 2024-01-19 16:19_
+_@gokay05_
 
 When running Ruff with version 0.1.11, namespace-packages option excluded INP001 from being thrown. I recently updated Ruff to 0.1.13 and even though my ruff.toml hasnt changed, I am getting a bunch of INP001 from my test folders and such. I checked the website and I dont see anything change in terms of how the option works, so I think there might be a bug in the new version that effectively breaks namespace-packages.
 

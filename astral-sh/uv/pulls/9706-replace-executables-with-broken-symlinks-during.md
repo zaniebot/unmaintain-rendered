@@ -13,14 +13,14 @@ head: zb/link-invalid-install
 created_at: 2024-12-07T16:49:10Z
 updated_at: 2024-12-10T22:39:24Z
 url: https://github.com/astral-sh/uv/pull/9706
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Replace executables with broken symlinks during `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-07 16:49_
+_@zanieb_
 
 I somehow got in a state where we'd fail to install with
 

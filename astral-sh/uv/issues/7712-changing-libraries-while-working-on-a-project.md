@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T15:07:21Z
 updated_at: 2024-09-26T15:07:21Z
 url: https://github.com/astral-sh/uv/issues/7712
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Changing libraries while working on a project syncs heavy dependencies
 
 ---
 
-_Issue opened by @jbohnslav on 2024-09-26 15:07_
+_@jbohnslav_
 
 Hi, I'm looking for advice on how to use UV in my workflow. Right now, changing any code in local library requires 7GB of changes in my Docker image.
 

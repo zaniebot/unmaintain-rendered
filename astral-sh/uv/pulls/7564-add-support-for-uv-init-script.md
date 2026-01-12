@@ -12,14 +12,14 @@ head: tfsingh/init-script
 created_at: 2024-09-20T00:14:16Z
 updated_at: 2024-09-20T00:22:27Z
 url: https://github.com/astral-sh/uv/pull/7564
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Add support for uv init --script
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-20 00:14_
+_@tfsingh_
 
 This PR adds support for ```uv init --script```, as defined in issue #7402 (started working on this before I saw jbvsmo's PR). Wanted to highlight a few decisions I made that differ from the existing PR:
 

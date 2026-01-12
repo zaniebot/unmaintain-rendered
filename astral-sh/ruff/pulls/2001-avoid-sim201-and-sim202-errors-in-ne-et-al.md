@@ -12,14 +12,14 @@ head: charlie/ne
 created_at: 2023-01-19T16:27:03Z
 updated_at: 2023-01-19T16:27:29Z
 url: https://github.com/astral-sh/ruff/pull/2001
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid `SIM201` and `SIM202` errors in `__ne__` et al
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-19 16:27_
+_@charliermarsh_
 
 Closes #1986.
 

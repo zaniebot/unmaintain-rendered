@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-15T14:07:57Z
 updated_at: 2023-12-15T18:01:33Z
 url: https://github.com/astral-sh/ruff/issues/9150
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Bug] Ruff doesn't detect DJ012 rule after first fix
 
 ---
 
-_Issue opened by @vldmrrz on 2023-12-15 14:07_
+_@vldmrrz_
 
 ### Bug description
 

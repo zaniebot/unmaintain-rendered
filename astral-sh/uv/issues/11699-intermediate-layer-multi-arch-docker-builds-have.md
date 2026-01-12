@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T15:15:13Z
 updated_at: 2025-02-28T16:51:15Z
 url: https://github.com/astral-sh/uv/issues/11699
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Intermediate layer multi-arch Docker builds have intermittent hang during "uv sync"
 
 ---
 
-_Issue opened by @vicchi on 2025-02-21 15:15_
+_@vicchi_
 
 ### Summary
 

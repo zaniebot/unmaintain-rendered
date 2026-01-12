@@ -14,14 +14,14 @@ head: init-vcs
 created_at: 2024-07-26T12:12:10Z
 updated_at: 2025-02-25T06:03:44Z
 url: https://github.com/astral-sh/uv/pull/5476
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Initialize a Git repository in `uv init`
 
 ---
 
-_Pull request opened by @j178 on 2024-07-26 12:12_
+_@j178_
 
 ## Summary
 

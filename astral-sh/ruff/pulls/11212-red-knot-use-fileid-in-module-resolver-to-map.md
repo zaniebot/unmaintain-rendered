@@ -13,14 +13,14 @@ head: red-knot-modules-use-file-ids
 created_at: 2024-04-30T12:38:55Z
 updated_at: 2024-04-30T14:14:55Z
 url: https://github.com/astral-sh/ruff/pull/11212
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Use `FileId` in module resolver to map from file to module
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-30 12:38_
+_@MichaReiser_
 
 ## Summary
 

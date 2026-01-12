@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-07T17:05:14Z
 updated_at: 2024-07-07T20:24:58Z
 url: https://github.com/astral-sh/uv/issues/4858
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Download bars do not use the full 80 character width
 
 ---
 
-_Issue opened by @zanieb on 2024-07-07 17:05_
+_@zanieb_
 
 e.g. in
 

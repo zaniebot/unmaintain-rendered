@@ -14,14 +14,14 @@ head: zb/github-windows
 created_at: 2025-08-08T17:37:44Z
 updated_at: 2025-08-08T17:56:03Z
 url: https://github.com/astral-sh/uv/pull/15169
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Test GitHub Windows runner
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-08 17:37_
+_@zanieb_
 
 We've seen CI times for Windows tests creep up lately — want to rule this (https://github.com/astral-sh/uv/pull/14122) out as a cause.
 

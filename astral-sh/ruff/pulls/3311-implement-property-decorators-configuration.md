@@ -13,14 +13,14 @@ head: feat_pydocstyle_property_decorator
 created_at: 2023-03-02T20:48:40Z
 updated_at: 2023-03-02T22:00:21Z
 url: https://github.com/astral-sh/ruff/pull/3311
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement `property-decorators` configuration option for pydocstyle
 
 ---
 
-_Pull request opened by @staticssleever668 on 2023-03-02 20:48_
+_@staticssleever668_
 
 Implements the second part of #2205.
 (I did not run pre-commit locally as it's installing the environment indefinitely)

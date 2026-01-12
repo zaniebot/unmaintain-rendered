@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T15:14:24Z
 updated_at: 2023-02-11T17:22:55Z
 url: https://github.com/astral-sh/ruff/issues/2765
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Error on E701 Multiple statements on one line (colon)
 
 ---
 
-_Issue opened by @cclauss on 2023-02-11 15:14_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

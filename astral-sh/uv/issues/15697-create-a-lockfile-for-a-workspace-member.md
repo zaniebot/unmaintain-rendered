@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T09:05:54Z
 updated_at: 2025-09-05T10:00:10Z
 url: https://github.com/astral-sh/uv/issues/15697
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Create a lockfile for a workspace member
 
 ---
 
-_Issue opened by @fau-st on 2025-09-05 09:05_
+_@fau-st_
 
 ### Question
 

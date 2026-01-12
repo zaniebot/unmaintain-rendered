@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T04:06:22Z
 updated_at: 2024-08-20T18:23:37Z
 url: https://github.com/astral-sh/uv/issues/4087
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Allow user to specify "Python range to lock" separate from `Requires-Python`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 04:06_
+_@charliermarsh_
 
 There's a lot of discussion around this idea in #4071 and #4022. It makes sense to me. I want it in my own projects!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:06:17Z
 updated_at: 2025-11-26T19:29:40Z
 url: https://github.com/astral-sh/ty/issues/155
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support `@typing.override`
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:06_
+_@carljm_
 
 - [x] (basic) error if a method decorated `@override` does not override anything
 - [ ] (strict) error if a method that overrides a super method is not decorated with `@override`

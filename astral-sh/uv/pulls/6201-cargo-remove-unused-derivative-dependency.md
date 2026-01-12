@@ -12,14 +12,14 @@ head: ag/fix-shear
 created_at: 2024-08-19T12:06:11Z
 updated_at: 2024-08-19T12:19:25Z
 url: https://github.com/astral-sh/uv/pull/6201
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # cargo: remove unused 'derivative' dependency
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-19 12:06_
+_@BurntSushi_
 
 This seems to be failing the `cargo shear` check on `main`. It looks
 like this was caused by #6200.

@@ -14,14 +14,14 @@ head: alex/simplify-check-call
 created_at: 2025-06-27T11:07:22Z
 updated_at: 2025-06-27T11:23:30Z
 url: https://github.com/astral-sh/ruff/pull/18981
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Simplify `KnownClass::check_call()` and `KnownFunction::check_call()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-27 11:07_
+_@AlexWaygood_
 
 Neither of these methods really need a mutable reference to a `Binding`. `KnownFunction::check_call()` doesnt need a reference to a binding at all; it only needs the parameter types
 

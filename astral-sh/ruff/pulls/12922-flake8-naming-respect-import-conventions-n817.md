@@ -13,14 +13,14 @@ head: fix-icn001-n817-incompatibility
 created_at: 2024-08-16T09:55:57Z
 updated_at: 2024-08-16T15:38:14Z
 url: https://github.com/astral-sh/ruff/pull/12922
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-naming`]: Respect import conventions (`N817`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-16 09:55_
+_@MichaReiser_
 
 ## Summary
 

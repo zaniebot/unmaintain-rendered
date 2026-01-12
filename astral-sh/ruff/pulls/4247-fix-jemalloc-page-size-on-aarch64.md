@@ -12,14 +12,14 @@ head: fix-aarch64-build
 created_at: 2023-05-05T15:51:37Z
 updated_at: 2023-05-08T06:10:05Z
 url: https://github.com/astral-sh/ruff/pull/4247
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix jemalloc page size on aarch64
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-05 15:51_
+_@MichaReiser_
 
 This pr sets the jemalloc large page size on aarch64 to fix a panic during start.
 

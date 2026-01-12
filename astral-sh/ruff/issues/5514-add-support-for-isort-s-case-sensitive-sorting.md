@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-04T20:27:15Z
 updated_at: 2023-07-05T20:10:55Z
 url: https://github.com/astral-sh/ruff/issues/5514
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add support for isort's `--case-sensitive` sorting
 
 ---
 
-_Issue opened by @matejsp on 2023-07-04 20:27_
+_@matejsp_
 
 We currently use flake8 with import order that is set to pycharm. And would like to sort case sensitive.
 

@@ -13,14 +13,14 @@ head: charlie/rename-model
 created_at: 2023-06-09T19:29:47Z
 updated_at: 2023-06-09T19:53:35Z
 url: https://github.com/astral-sh/ruff/pull/4990
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Rename some methods on `SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-09 19:29_
+_@charliermarsh_
 
 ## Summary
 

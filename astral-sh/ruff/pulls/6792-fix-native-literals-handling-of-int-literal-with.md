@@ -14,14 +14,14 @@ head: fix/native-literals
 created_at: 2023-08-22T19:05:08Z
 updated_at: 2023-08-23T16:34:58Z
 url: https://github.com/astral-sh/ruff/pull/6792
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix `native-literals` handling of int literal with attribute access
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 19:05_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6788 by special casing integer literals with attribute access — either retaining parenthesis for literals with values (e.g. `int(7).denominator` to `(7).denominator)` or leaving calls without values (e.g. `int().denominator`) unchanged.
 

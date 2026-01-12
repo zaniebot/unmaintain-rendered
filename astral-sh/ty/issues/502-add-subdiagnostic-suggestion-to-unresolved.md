@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T23:28:35Z
 updated_at: 2025-06-04T15:13:52Z
 url: https://github.com/astral-sh/ty/issues/502
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add subdiagnostic suggestion to `unresolved-reference` diagnostic if it's a method scope and the variable exists on `self`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-23 23:28_
+_@AlexWaygood_
 
 If you do something like this in Rust:
 

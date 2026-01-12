@@ -12,14 +12,14 @@ head: charlie/default
 created_at: 2023-08-09T12:03:46Z
 updated_at: 2023-08-09T15:42:16Z
 url: https://github.com/astral-sh/ruff/pull/6446
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Set a default on `PythonVersion`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 12:03_
+_@charliermarsh_
 
 ## Summary
 

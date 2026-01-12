@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T23:27:13Z
 updated_at: 2025-02-04T00:11:45Z
 url: https://github.com/astral-sh/uv/issues/11206
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # `uv sync` refers to system Python as a virtual environment when using `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Issue opened by @edmorley on 2025-02-03 23:27_
+_@edmorley_
 
 ### Summary
 

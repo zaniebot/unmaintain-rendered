@@ -12,14 +12,14 @@ head: warn-but-dont-fix-604
 created_at: 2023-05-01T17:07:24Z
 updated_at: 2023-05-02T06:49:21Z
 url: https://github.com/astral-sh/ruff/pull/4170
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Warn on PEP 604 syntax not in an annotation, but don't autofix
 
 ---
 
-_Pull request opened by @wookie184 on 2023-05-01 17:07_
+_@wookie184_
 
 Closes #3937. (also related, #4108)
 

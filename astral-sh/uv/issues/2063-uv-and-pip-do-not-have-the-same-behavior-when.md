@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T00:27:22Z
 updated_at: 2024-02-29T01:16:25Z
 url: https://github.com/astral-sh/uv/issues/2063
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv and pip do not have the same behavior when pinning a constraint to a prerelease
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-29 00:27_
+_@notatallshaw_
 
 Environment: Linux Python 3.11.6 pip 24.0 uv 0.1.12
 

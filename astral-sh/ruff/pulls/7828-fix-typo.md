@@ -13,14 +13,14 @@ head: typo-mypy
 created_at: 2023-10-05T16:48:09Z
 updated_at: 2023-10-05T17:04:33Z
 url: https://github.com/astral-sh/ruff/pull/7828
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix typo
 
 ---
 
-_Pull request opened by @konstin on 2023-10-05 16:48_
+_@konstin_
 
 _No description provided._
 

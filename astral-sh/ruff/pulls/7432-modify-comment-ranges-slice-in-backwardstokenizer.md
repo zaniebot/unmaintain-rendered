@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-09-16T03:38:53Z
 updated_at: 2023-09-18T08:33:12Z
 url: https://github.com/astral-sh/ruff/pull/7432
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Modify `comment_ranges` slice in `BackwardsTokenizer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-16 03:38_
+_@charliermarsh_
 
 ## Summary
 

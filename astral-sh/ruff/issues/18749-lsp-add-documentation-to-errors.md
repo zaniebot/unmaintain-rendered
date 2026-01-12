@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T13:08:59Z
 updated_at: 2025-07-11T15:37:30Z
 url: https://github.com/astral-sh/ruff/issues/18749
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # lsp: add documentation to errors
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-06-18 13:08_
+_@KotlinIsland_
 
 ### Summary
 

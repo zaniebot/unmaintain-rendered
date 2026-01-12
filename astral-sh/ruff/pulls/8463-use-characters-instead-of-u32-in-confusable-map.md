@@ -13,14 +13,14 @@ head: charlie/chars
 created_at: 2023-11-03T04:59:56Z
 updated_at: 2023-11-03T14:01:21Z
 url: https://github.com/astral-sh/ruff/pull/8463
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use characters instead of `u32` in confusable map
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 04:59_
+_@charliermarsh_
 
 _No description provided._
 

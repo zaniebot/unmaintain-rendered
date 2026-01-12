@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T14:21:30Z
 updated_at: 2025-01-09T17:45:22Z
 url: https://github.com/astral-sh/uv/issues/10429
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Fetch from registries concurrently when non-default `--index-strategy` is present
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-09 14:21_
+_@charliermarsh_
 
 Within the `RegistryClient`, for a single package, we can fetch from all registries concurrently if the user has an unsafe `--index-strategy`, since we _know_ we'll fetch from all of them.
 

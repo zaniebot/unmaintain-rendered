@@ -13,14 +13,14 @@ head: feat/update-bandit-rules
 created_at: 2024-03-09T12:05:53Z
 updated_at: 2024-03-11T21:19:16Z
 url: https://github.com/astral-sh/ruff/pull/10313
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`flake8-bandit`] Implement upstream updates for `S311`, `S324` and `S605`
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-03-09 12:05_
+_@mkniewallner_
 
 ## Summary
 

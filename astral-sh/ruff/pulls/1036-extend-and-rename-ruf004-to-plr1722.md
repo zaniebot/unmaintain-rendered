@@ -12,14 +12,14 @@ head: rename-and-extend-ruf004-plr1722
 created_at: 2022-12-04T15:08:34Z
 updated_at: 2023-04-30T19:47:28Z
 url: https://github.com/astral-sh/ruff/pull/1036
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Extend and rename RUF004 to PLR1722
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-12-04 15:08_
+_@JonathanPlasse_
 
 - [x] Rename `RUF004` to `PLR1722`
 - [x] Consider using `sys.exit()` for `quit()`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T14:41:30Z
 updated_at: 2025-09-12T15:57:43Z
 url: https://github.com/astral-sh/uv/issues/15792
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # How to uninstall additional deps installed with a tool
 
 ---
 
-_Issue opened by @idnsunset on 2025-09-11 14:41_
+_@idnsunset_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T13:22:05Z
 updated_at: 2024-02-29T13:29:41Z
 url: https://github.com/astral-sh/ruff/issues/10050
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Fix for `D413` introduces whitespace
 
 ---
 
-_Issue opened by @jhossbach on 2024-02-19 13:22_
+_@jhossbach_
 
 Minimal `test.py`:
 ```python

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-19T18:08:02Z
 updated_at: 2023-12-25T00:26:54Z
 url: https://github.com/astral-sh/uv/issues/705
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Support for index without `simple` API
 
 ---
 
-_Issue opened by @zanieb on 2023-12-19 18:08_
+_@zanieb_
 
 With `devpi`, when we make a request for a project at `/<project>` instead of `/+simple/<project>` we get a HTTP 404 because we only accept `application/vnd.pypi.simple.v1+json` and their API returns `application/json` or `text/html` for those endpoints. `pip` will happily install from here, but `puffin pip-install` fails. 
 

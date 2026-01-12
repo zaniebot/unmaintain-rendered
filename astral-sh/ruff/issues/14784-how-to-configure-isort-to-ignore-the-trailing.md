@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-05T09:58:58Z
 updated_at: 2024-12-06T02:24:26Z
 url: https://github.com/astral-sh/ruff/issues/14784
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to configure isort to ignore the trailing comma?
 
 ---
 
-_Issue opened by @ofk on 2024-12-05 09:58_
+_@ofk_
 
 The formatting of from-import statements with and without parentheses is not consistent.
 

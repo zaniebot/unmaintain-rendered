@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-26T21:39:22Z
 updated_at: 2024-06-06T21:33:03Z
 url: https://github.com/clap-rs/clap/issues/4265
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Subcommand aliases not included in completion scripts
 
 ---
 
-_Issue opened by @martinvonz on 2022-09-26 21:39_
+_@martinvonz_
 
 ### Please complete the following tasks
 

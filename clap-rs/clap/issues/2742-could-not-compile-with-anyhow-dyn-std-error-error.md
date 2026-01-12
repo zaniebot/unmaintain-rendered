@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-29T08:00:27Z
 updated_at: 2021-08-29T10:29:20Z
 url: https://github.com/clap-rs/clap/issues/2742
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Could not compile with `anyhow`: `(dyn std::error::Error + 'static)` cannot be sent between threads safely
 
 ---
 
-_Issue opened by @JakkuSakura on 2021-08-29 08:00_
+_@JakkuSakura_
 
 
 [project.zip](https://github.com/clap-rs/clap/files/7072114/project.zip)

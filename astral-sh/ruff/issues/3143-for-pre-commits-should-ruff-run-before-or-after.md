@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-22T20:43:12Z
 updated_at: 2023-02-23T18:34:34Z
 url: https://github.com/astral-sh/ruff/issues/3143
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # For pre-commits, should ruff run before or after black?
 
 ---
 
-_Issue opened by @bellini666 on 2023-02-22 20:43_
+_@bellini666_
 
 The documentation doesn't specify if ruff should run before or after black for best results.
 

@@ -12,14 +12,14 @@ head: ag/lock-redundant-source
 created_at: 2024-06-25T18:36:18Z
 updated_at: 2024-06-26T12:55:54Z
 url: https://github.com/astral-sh/uv/pull/4528
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # omit `distribution.sdist` when it is redundant
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-25 18:36_
+_@BurntSushi_
 
 This PR re-arranges our logic for emitting an `sdist` field such that
 it is only done when it is non-redundant with data included in the

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T14:42:00Z
 updated_at: 2023-03-29T03:53:40Z
 url: https://github.com/astral-sh/ruff/issues/3059
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # isort: bug in sorting sub-package modules
 
 ---
 
-_Issue opened by @spaceone on 2023-02-20 14:42_
+_@spaceone_
 
 `.isort.cfg`
 ```ini

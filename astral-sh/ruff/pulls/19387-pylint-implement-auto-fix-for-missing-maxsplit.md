@@ -14,14 +14,14 @@ head: jjb-maxsplit-autofix
 created_at: 2025-07-16T18:16:14Z
 updated_at: 2025-07-28T14:45:26Z
 url: https://github.com/astral-sh/ruff/pull/19387
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [`pylint`] Implement auto-fix for `missing-maxsplit-arg` (`PLC0207`)
 
 ---
 
-_Pull request opened by @junhsonjb on 2025-07-16 18:16_
+_@junhsonjb_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

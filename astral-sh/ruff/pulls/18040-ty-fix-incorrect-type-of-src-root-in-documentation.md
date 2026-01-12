@@ -14,14 +14,14 @@ head: micha/src-root-not-a-list
 created_at: 2025-05-12T12:25:04Z
 updated_at: 2025-05-12T12:29:17Z
 url: https://github.com/astral-sh/ruff/pull/18040
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Fix incorrect type of `src.root` in documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-12 12:25_
+_@MichaReiser_
 
 ## Summary
 

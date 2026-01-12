@@ -12,14 +12,14 @@ head: jack/i_know_ty_is_prerelease
 created_at: 2025-07-16T01:16:47Z
 updated_at: 2025-07-22T15:10:37Z
 url: https://github.com/astral-sh/ruff/pull/19380
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] add an `I_KNOW_TY_IS_PRE_RELEASE` env var to turn off the pre-release warning
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-16 01:16_
+_@oconnor663_
 
 _No description provided._
 

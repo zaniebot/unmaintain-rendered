@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T04:11:14Z
 updated_at: 2025-03-18T12:47:12Z
 url: https://github.com/astral-sh/uv/issues/12261
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `uv init --script` on existing file could initialize required imports...
 
 ---
 
-_Issue opened by @patniemeyer on 2025-03-18 04:11_
+_@patniemeyer_
 
 ### Summary
 

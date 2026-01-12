@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-29T16:03:08Z
 updated_at: 2024-04-29T17:29:38Z
 url: https://github.com/astral-sh/uv/issues/3313
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Add environment variable for `--link-mode`
 
 ---
 
-_Issue opened by @davidfritzsche on 2024-04-29 16:03_
+_@davidfritzsche_
 
 Hello,
 

@@ -13,14 +13,14 @@ head: correct-try300
 created_at: 2024-03-01T21:06:30Z
 updated_at: 2024-03-01T23:50:56Z
 url: https://github.com/astral-sh/ruff/pull/10190
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Removed unused variable in `TRY300`'s example
 
 ---
 
-_Pull request opened by @trag1c on 2024-03-01 21:06_
+_@trag1c_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

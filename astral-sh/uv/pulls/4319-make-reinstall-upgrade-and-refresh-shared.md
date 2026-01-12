@@ -13,14 +13,14 @@ head: charlie/rein
 created_at: 2024-06-13T23:43:54Z
 updated_at: 2024-06-14T01:43:19Z
 url: https://github.com/astral-sh/uv/pull/4319
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Make `--reinstall`, `--upgrade`, and `--refresh` shared arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 23:43_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/callable-equivalence-2
 created_at: 2025-04-02T10:38:01Z
 updated_at: 2025-05-07T15:21:04Z
 url: https://github.com/astral-sh/ruff/pull/17145
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix equivalence of differently ordered unions that contain `Callable` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-02 10:38_
+_@AlexWaygood_
 
 ## Summary
 

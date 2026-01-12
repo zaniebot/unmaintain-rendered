@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T16:37:26Z
 updated_at: 2024-03-13T08:49:58Z
 url: https://github.com/astral-sh/uv/issues/2385
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # 'no entry found for key' while doing `uv pip compile`
 
 ---
 
-_Issue opened by @strickvl on 2024-03-12 16:37_
+_@strickvl_
 
 Using the following requirements in a file:
 

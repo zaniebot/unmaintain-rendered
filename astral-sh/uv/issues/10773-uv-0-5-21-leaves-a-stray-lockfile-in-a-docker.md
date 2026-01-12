@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T08:48:45Z
 updated_at: 2025-03-17T15:13:54Z
 url: https://github.com/astral-sh/uv/issues/10773
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # uv 0.5.21 leaves a stray lockfile in a Docker image's /tmp
 
 ---
 
-_Issue opened by @akx on 2025-01-20 08:48_
+_@akx_
 
 ## Environment
 

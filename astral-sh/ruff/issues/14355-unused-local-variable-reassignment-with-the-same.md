@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T09:03:25Z
 updated_at: 2024-11-18T08:15:31Z
 url: https://github.com/astral-sh/ruff/issues/14355
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Unused local variable reassignment with the same name is not reported (F841?)
 
 ---
 
-_Issue opened by @MiroPsota on 2024-11-15 09:03_
+_@MiroPsota_
 
 In the following code snippet, the first assignment to `a` is never used, but is not reported by Ruff 0.7.3. PyCharm reports it and suggests to delete assignment target.
 ```

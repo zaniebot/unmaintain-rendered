@@ -12,14 +12,14 @@ head: rule/pyi016
 created_at: 2023-07-07T17:27:07Z
 updated_at: 2023-07-10T17:33:06Z
 url: https://github.com/astral-sh/ruff/pull/5598
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add support for `Union` declarations without `|` to PYI016
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-07 17:27_
+_@zanieb_
 
 Previously, PYI016 only supported reporting violations for unions defined with `|`. Now, union declarations with `typing.Union` are supported.
 

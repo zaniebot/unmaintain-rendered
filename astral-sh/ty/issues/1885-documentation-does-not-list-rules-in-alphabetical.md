@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T16:09:26Z
 updated_at: 2025-12-19T19:11:07Z
 url: https://github.com/astral-sh/ty/issues/1885
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Documentation does not list rules in alphabetical order
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-14 16:09_
+_@AlexWaygood_
 
 Most of our rules are listed in alphabetical order at https://docs.astral.sh/ty/reference/rules/, but when you scroll down towards the bottom there are several that are out of order, which is confusing:
 

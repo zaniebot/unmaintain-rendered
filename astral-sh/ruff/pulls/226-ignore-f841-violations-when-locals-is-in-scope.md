@@ -12,14 +12,14 @@ head: charlie/locals
 created_at: 2022-09-20T01:41:47Z
 updated_at: 2022-09-20T02:13:56Z
 url: https://github.com/astral-sh/ruff/pull/226
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Ignore F841 violations when locals() is in scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-20 01:41_
+_@charliermarsh_
 
 Resolves #220.
 

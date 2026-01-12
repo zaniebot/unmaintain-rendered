@@ -12,14 +12,14 @@ head: charlie/debug
 created_at: 2022-10-29T21:07:42Z
 updated_at: 2022-10-29T21:07:46Z
 url: https://github.com/astral-sh/ruff/pull/506
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Move pyproject.toml logging to debug
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-29 21:07_
+_@charliermarsh_
 
 _No description provided._
 

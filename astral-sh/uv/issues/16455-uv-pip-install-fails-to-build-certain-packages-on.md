@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-26T21:03:30Z
 updated_at: 2025-11-07T10:13:03Z
 url: https://github.com/astral-sh/uv/issues/16455
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # uv pip install fails to build certain packages on Ubuntu 24.04 when Python is invoked via nested symlinks 
 
 ---
 
-_Issue opened by @desertfury on 2025-10-26 21:03_
+_@desertfury_
 
 ### Summary
 

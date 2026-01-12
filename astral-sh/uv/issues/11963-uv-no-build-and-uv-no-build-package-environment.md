@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T00:14:57Z
 updated_at: 2025-03-05T04:58:20Z
 url: https://github.com/astral-sh/uv/issues/11963
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # `UV_NO_BUILD` and `UV_NO_BUILD_PACKAGE` environment variables
 
 ---
 
-_Issue opened by @lengau on 2025-03-05 00:14_
+_@lengau_
 
 ### Summary
 

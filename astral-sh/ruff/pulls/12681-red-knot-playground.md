@@ -14,14 +14,14 @@ head: red-knot-playground
 created_at: 2024-08-05T07:12:05Z
 updated_at: 2025-03-18T16:19:43Z
 url: https://github.com/astral-sh/ruff/pull/12681
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Red Knot Playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-05 07:12_
+_@MichaReiser_
 
 ## Summary
 

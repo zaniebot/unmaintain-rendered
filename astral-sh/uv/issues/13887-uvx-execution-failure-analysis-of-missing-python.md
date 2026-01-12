@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T15:19:28Z
 updated_at: 2025-06-10T05:30:46Z
 url: https://github.com/astral-sh/uv/issues/13887
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # uvx Execution Failure — Analysis of Missing Python Interpreter Path in Startup Script
 
 ---
 
-_Issue opened by @wang-qijia on 2025-06-06 15:19_
+_@wang-qijia_
 
 ### Question
 

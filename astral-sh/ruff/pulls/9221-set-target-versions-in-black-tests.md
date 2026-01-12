@@ -14,14 +14,14 @@ head: set-target-version-in-black-tests
 created_at: 2023-12-21T03:19:28Z
 updated_at: 2023-12-21T04:25:11Z
 url: https://github.com/astral-sh/ruff/pull/9221
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Set target versions in Black tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-21 03:19_
+_@MichaReiser_
 
 ## Summary
 

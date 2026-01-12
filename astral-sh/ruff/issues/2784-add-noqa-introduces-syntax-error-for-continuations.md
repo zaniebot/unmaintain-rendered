@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T23:10:36Z
 updated_at: 2023-02-11T23:29:39Z
 url: https://github.com/astral-sh/ruff/issues/2784
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `--add-noqa` introduces syntax error for continuations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-11 23:10_
+_@charliermarsh_
 
 If you use `--add-noqa` on this snippet:
 

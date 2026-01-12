@@ -12,14 +12,14 @@ head: charlie/multi
 created_at: 2023-02-08T16:07:00Z
 updated_at: 2023-02-08T16:13:27Z
 url: https://github.com/astral-sh/ruff/pull/2662
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Accommodate multiple `@pytest.mark.parametrize` decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 16:07_
+_@charliermarsh_
 
 Closes #2630.
 

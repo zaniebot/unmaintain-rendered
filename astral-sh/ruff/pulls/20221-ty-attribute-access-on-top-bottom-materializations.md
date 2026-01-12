@@ -13,14 +13,14 @@ head: topattr
 created_at: 2025-09-03T23:12:42Z
 updated_at: 2025-09-04T19:27:18Z
 url: https://github.com/astral-sh/ruff/pull/20221
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Attribute access on top/bottom materializations
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-09-03 23:12_
+_@JelleZijlstra_
 
 
 ## Summary

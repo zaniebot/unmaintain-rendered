@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-15T17:45:48Z
 updated_at: 2025-10-10T20:52:30Z
 url: https://github.com/astral-sh/uv/issues/2478
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Enabling local version constraints with dependency range
 
 ---
 
-_Issue opened by @brendan-morin on 2024-03-15 17:45_
+_@brendan-morin_
 
 # Background
 

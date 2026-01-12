@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T11:13:34Z
 updated_at: 2024-11-02T02:38:14Z
 url: https://github.com/astral-sh/uv/issues/8002
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Provide `uv sync --all-dev` for workspace projects
 
 ---
 
-_Issue opened by @tonnico on 2024-10-08 11:13_
+_@tonnico_
 
 I would like to install all dev dependencies in the workspaces.
 

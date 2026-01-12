@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T09:58:20Z
 updated_at: 2025-10-28T10:47:17Z
 url: https://github.com/astral-sh/uv/issues/10589
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # `uv init --script` changes line endings
 
 ---
 
-_Issue opened by @leimgruberf on 2025-01-14 09:58_
+_@leimgruberf_
 
 As a Windows user, if I run `uv init --script script.py` on an existing `script.py` file the line endings of that file are changed from LF to CRLF. I assume uv queries a Windows setting to determine which EOL characters to use? For an existing script I expect that the line endings are not changed.
 

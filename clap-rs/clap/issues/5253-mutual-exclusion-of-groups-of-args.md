@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-08T23:53:22Z
 updated_at: 2025-08-30T13:26:35Z
 url: https://github.com/clap-rs/clap/issues/5253
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Mutual exclusion of groups of args
 
 ---
 
-_Issue opened by @johnrichardrinehart on 2023-12-08 23:53_
+_@johnrichardrinehart_
 
 ### Please complete the following tasks
 

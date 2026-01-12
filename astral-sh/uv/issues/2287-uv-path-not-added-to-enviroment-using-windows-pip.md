@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T20:54:32Z
 updated_at: 2024-04-28T19:49:52Z
 url: https://github.com/astral-sh/uv/issues/2287
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # UV path not added to enviroment using windows pip install
 
 ---
 
-_Issue opened by @2zzly on 2024-03-07 20:54_
+_@2zzly_
 
 c:\>pip install uv
 Defaulting to user installation because normal site-packages is not writeable

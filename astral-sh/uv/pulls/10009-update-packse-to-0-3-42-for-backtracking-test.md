@@ -13,14 +13,14 @@ head: konsti/0.3.42
 created_at: 2024-12-18T19:41:31Z
 updated_at: 2024-12-18T19:53:35Z
 url: https://github.com/astral-sh/uv/pull/10009
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Update packse to 0.3.42 for backtracking test
 
 ---
 
-_Pull request opened by @konstin on 2024-12-18 19:41_
+_@konstin_
 
 Add the missing test for #9843.
 

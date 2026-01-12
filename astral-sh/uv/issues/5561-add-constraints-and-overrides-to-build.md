@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-29T14:24:42Z
 updated_at: 2024-09-01T16:57:23Z
 url: https://github.com/astral-sh/uv/issues/5561
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Add constraints (and overrides?) to build environments
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-29 14:24_
+_@charliermarsh_
 
 We should add a `--build-constraints` that apply to the build environments.
 

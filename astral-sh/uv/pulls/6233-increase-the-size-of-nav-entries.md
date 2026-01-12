@@ -14,14 +14,14 @@ head: zb/nav-size
 created_at: 2024-08-19T21:31:34Z
 updated_at: 2024-08-20T16:22:31Z
 url: https://github.com/astral-sh/uv/pull/6233
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Increase the size of nav entries
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 21:31_
+_@zanieb_
 
 It's a common complaint that these are two small. I'm a bit on the fence here, but we can make them bigger.
 

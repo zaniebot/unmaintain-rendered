@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T19:05:59Z
 updated_at: 2023-10-28T03:30:47Z
 url: https://github.com/astral-sh/ruff/issues/7990
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rename use of `--format` in `ruff rule` to `--output-format`
 
 ---
 
-_Issue opened by @zanieb on 2023-10-16 19:05_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

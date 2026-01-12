@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-17T11:08:33Z
 updated_at: 2022-08-25T13:47:02Z
 url: https://github.com/clap-rs/clap/issues/4086
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # default_value_if derive macro has no effect
 
 ---
 
-_Issue opened by @grebnetiew on 2022-08-17 11:08_
+_@grebnetiew_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: extend-AIR301-create-dagrun
 created_at: 2025-10-27T07:51:35Z
 updated_at: 2025-10-29T14:57:37Z
 url: https://github.com/astral-sh/ruff/pull/21093
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`airflow`] warning `airflow....DAG.create_dagrun` has been removed (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-10-27 07:51_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

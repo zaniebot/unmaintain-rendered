@@ -14,14 +14,14 @@ head: rule/float-literal-decimal
 created_at: 2024-08-15T18:50:55Z
 updated_at: 2024-08-19T16:17:20Z
 url: https://github.com/astral-sh/ruff/pull/12909
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [ruff] Implement check for Decimal called with a float literal (RUF032)
 
 ---
 
-_Pull request opened by @kbaskett248 on 2024-08-15 18:50_
+_@kbaskett248_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-12T20:49:01Z
 updated_at: 2021-12-13T15:22:00Z
 url: https://github.com/clap-rs/clap/issues/2864
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Multicall executables should support matching argv[0] with a prefix stripped off
 
 ---
 
-_Issue opened by @fishface60 on 2021-10-12 20:49_
+_@fishface60_
 
 ### Please complete the following tasks
 

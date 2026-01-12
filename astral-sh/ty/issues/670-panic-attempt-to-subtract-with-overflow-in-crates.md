@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-06-17T12:55:53Z
 updated_at: 2025-12-05T13:08:56Z
 url: https://github.com/astral-sh/ty/issues/670
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Panic `attempt to subtract with overflow` in `crates/ruff_annotate_snippets/src/renderer/margin.rs:74:16`
 
 ---
 
-_Issue opened by @qarmin on 2025-06-17 12:55_
+_@qarmin_
 
 (Release build of ty with overflow-checks = true)
 

@@ -13,14 +13,14 @@ head: charlie/unbound
 created_at: 2024-10-30T02:39:22Z
 updated_at: 2024-10-30T13:18:43Z
 url: https://github.com/astral-sh/ruff/pull/13987
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use binary semantics when `__iadd__` et al are unbound
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 02:39_
+_@charliermarsh_
 
 ## Summary
 

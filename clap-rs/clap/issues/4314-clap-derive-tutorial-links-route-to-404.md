@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-01T00:50:48Z
 updated_at: 2022-10-01T00:56:22Z
 url: https://github.com/clap-rs/clap/issues/4314
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `clap_derive` tutorial links route to 404.
 
 ---
 
-_Issue opened by @Xithrius on 2022-10-01 00:50_
+_@Xithrius_
 
 The README [here](https://github.com/clap-rs/clap/blob/master/clap_derive/README.md) for `clap_derive` has broken links for the tutorial and reference.
 

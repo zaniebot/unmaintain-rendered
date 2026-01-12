@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T02:24:03Z
 updated_at: 2025-12-19T07:25:30Z
 url: https://github.com/astral-sh/ty/issues/2050
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # How to configure per-module ignores?
 
 ---
 
-_Issue opened by @AlecThomson on 2025-12-18 02:24_
+_@AlecThomson_
 
 ### Question
 

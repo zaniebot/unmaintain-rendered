@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-23T09:00:44Z
 updated_at: 2025-11-26T16:50:28Z
 url: https://github.com/astral-sh/ty/issues/1415
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Remove max-specialization-depth trick
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-23 09:00_
+_@sharkdp_
 
 Revert the changes in https://github.com/astral-sh/ruff/pull/20988 and only fall back to `C[Divergent]` is there are actual cyclic references, not if there are simply too many layers of specialization.
 

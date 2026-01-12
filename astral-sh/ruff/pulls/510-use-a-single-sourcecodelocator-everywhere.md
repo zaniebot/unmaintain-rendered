@@ -12,14 +12,14 @@ head: charlie/locator
 created_at: 2022-10-29T22:22:01Z
 updated_at: 2022-10-29T22:23:25Z
 url: https://github.com/astral-sh/ruff/pull/510
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use a single SourceCodeLocator everywhere
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-29 22:22_
+_@charliermarsh_
 
 Resolves #500.
 

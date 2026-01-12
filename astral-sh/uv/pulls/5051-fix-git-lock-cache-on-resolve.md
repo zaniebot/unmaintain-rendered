@@ -14,14 +14,14 @@ head: fix/concurrent-git-source-install
 created_at: 2024-07-14T23:58:54Z
 updated_at: 2024-07-16T20:07:45Z
 url: https://github.com/astral-sh/uv/pull/5051
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # fix(git): lock cache on resolve
 
 ---
 
-_Pull request opened by @shcheklein on 2024-07-14 23:58_
+_@shcheklein_
 
 Fixes a concurrency issue when multiple processes are installing the same package in different virtual environments from Git ref (not a specific Git commit).
 

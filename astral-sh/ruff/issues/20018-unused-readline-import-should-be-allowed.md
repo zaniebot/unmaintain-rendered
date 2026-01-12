@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T07:40:08Z
 updated_at: 2025-08-23T15:39:04Z
 url: https://github.com/astral-sh/ruff/issues/20018
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # unused `readline` import should be allowed
 
 ---
 
-_Issue opened by @A5rocks on 2025-08-21 07:40_
+_@A5rocks_
 
 ### Summary
 

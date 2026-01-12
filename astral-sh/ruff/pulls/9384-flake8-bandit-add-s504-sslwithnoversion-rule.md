@@ -14,14 +14,14 @@ head: rule/S504
 created_at: 2024-01-03T20:17:08Z
 updated_at: 2024-01-03T23:42:32Z
 url: https://github.com/astral-sh/ruff/pull/9384
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`flake8-bandit`] Add `S504` `SslWithNoVersion` rule
 
 ---
 
-_Pull request opened by @qdegraaf on 2024-01-03 20:17_
+_@qdegraaf_
 
 ## Summary
 Adds `S504` rule for the [flake8-bandit](https://github.com/tylerwince/flake8-bandit) plugin port. 

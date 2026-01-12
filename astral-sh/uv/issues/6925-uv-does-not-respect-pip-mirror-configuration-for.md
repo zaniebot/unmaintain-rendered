@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-02T01:20:44Z
 updated_at: 2025-04-16T02:47:16Z
 url: https://github.com/astral-sh/uv/issues/6925
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # UV does not respect pip mirror configuration for uv add and uv tool install
 
 ---
 
-_Issue opened by @sanbei101 on 2024-09-02 01:20_
+_@sanbei101_
 
 Description:
 

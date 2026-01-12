@@ -13,14 +13,14 @@ head: dhruv/ruff-dev
 created_at: 2023-11-28T20:01:38Z
 updated_at: 2023-11-28T20:27:36Z
 url: https://github.com/astral-sh/ruff/pull/8878
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update `ruff-dev` to use `SourceKind`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-28 20:01_
+_@dhruvmanila_
 
 Just a small quality of life improvement to be able to pass in the Jupyter Notebook to `ruff-dev` CLI.
 

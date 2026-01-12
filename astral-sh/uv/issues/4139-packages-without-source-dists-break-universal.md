@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T18:00:50Z
 updated_at: 2024-06-10T12:38:22Z
 url: https://github.com/astral-sh/uv/issues/4139
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Packages without source dists break universal resolver
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 18:00_
+_@konstin_
 
 Consider a project with one of the following requirements, where the host linux and `tensorflow-macos` has only mac os wheels and no source dist, i.e. it is only installable on mac os. 
 1. `tensorflow-macos==2.16.1`

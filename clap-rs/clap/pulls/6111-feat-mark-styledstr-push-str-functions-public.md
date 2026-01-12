@@ -12,14 +12,14 @@ head: public-styledstr-method
 created_at: 2025-08-25T07:00:54Z
 updated_at: 2025-08-26T16:15:31Z
 url: https://github.com/clap-rs/clap/pull/6111
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: mark `StyledStr::push_str` functions public
 
 ---
 
-_Pull request opened by @eatradish on 2025-08-25 07:00_
+_@eatradish_
 
 Mark `StyledStr::push_str` as public, so that `ErrorFormatter` trait available outside of clap crate.
 

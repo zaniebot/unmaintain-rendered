@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T21:16:35Z
 updated_at: 2025-08-08T23:45:15Z
 url: https://github.com/astral-sh/uv/issues/15176
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # new uv release has a keyword argument error  on python 3.9
 
 ---
 
-_Issue opened by @gibsondan on 2025-08-08 21:16_
+_@gibsondan_
 
 ### Summary
 

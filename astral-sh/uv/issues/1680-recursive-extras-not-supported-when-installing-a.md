@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T05:08:59Z
 updated_at: 2024-02-20T02:56:22Z
 url: https://github.com/astral-sh/uv/issues/1680
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Recursive extras not supported when installing a local package with `package-name[extra] @ .`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-02-19 05:08_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: fix/self-update-take-token-option
 created_at: 2024-09-11T03:25:36Z
 updated_at: 2024-09-12T23:04:34Z
 url: https://github.com/astral-sh/uv/pull/7279
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # feat(cli): add `--token` option to `self update` command
 
 ---
 
-_Pull request opened by @frostming on 2024-09-11 03:25_
+_@frostming_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

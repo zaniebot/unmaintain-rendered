@@ -13,14 +13,14 @@ head: charlie/text
 created_at: 2023-02-24T22:54:48Z
 updated_at: 2023-02-24T22:57:34Z
 url: https://github.com/astral-sh/ruff/pull/3219
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add TextMate to editor-integrations.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 22:54_
+_@charliermarsh_
 
 Closes #3213.
 

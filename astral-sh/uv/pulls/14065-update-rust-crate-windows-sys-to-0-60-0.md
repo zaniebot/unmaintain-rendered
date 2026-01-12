@@ -12,14 +12,14 @@ head: renovate/windows-sys-0.x
 created_at: 2025-06-16T02:28:55Z
 updated_at: 2025-06-16T02:40:25Z
 url: https://github.com/astral-sh/uv/pull/14065
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Update Rust crate windows-sys to 0.60.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 02:28_
+_@renovate_
 
 This PR contains the following updates:
 

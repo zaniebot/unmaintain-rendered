@@ -12,14 +12,14 @@ head: charlie/fields
 created_at: 2024-01-06T22:00:15Z
 updated_at: 2024-01-06T22:05:19Z
 url: https://github.com/astral-sh/uv/pull/821
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Remove `pub(crate)` from `RegistryClient` fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 22:00_
+_@charliermarsh_
 
 _No description provided._
 

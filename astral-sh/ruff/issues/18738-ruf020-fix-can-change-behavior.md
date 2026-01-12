@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T00:30:58Z
 updated_at: 2025-06-18T19:04:11Z
 url: https://github.com/astral-sh/ruff/issues/18738
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF020 fix can change behavior
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 00:30_
+_@MeGaGiGaGon_
 
 ### Summary
 

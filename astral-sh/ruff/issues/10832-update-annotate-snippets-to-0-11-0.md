@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T07:05:52Z
 updated_at: 2025-01-15T18:37:54Z
 url: https://github.com/astral-sh/ruff/issues/10832
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Update annotate-snippets to 0.11.0
 
 ---
 
-_Issue opened by @MichaReiser on 2024-04-08 07:05_
+_@MichaReiser_
 
 See https://github.com/astral-sh/ruff/pull/10699
 

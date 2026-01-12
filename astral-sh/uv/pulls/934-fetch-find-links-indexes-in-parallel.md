@@ -14,14 +14,14 @@ head: charlie/parallel
 created_at: 2024-01-15T19:07:07Z
 updated_at: 2024-01-16T10:37:37Z
 url: https://github.com/astral-sh/uv/pull/934
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Fetch `--find-links` indexes in parallel
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 19:07_
+_@charliermarsh_
 
 ## Summary
 

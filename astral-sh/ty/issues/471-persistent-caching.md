@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T13:55:00Z
 updated_at: 2025-11-18T16:10:27Z
 url: https://github.com/astral-sh/ty/issues/471
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Persistent caching
 
 ---
 
-_Issue opened by @serjflint on 2025-05-21 13:55_
+_@serjflint_
 
 ### Question
 

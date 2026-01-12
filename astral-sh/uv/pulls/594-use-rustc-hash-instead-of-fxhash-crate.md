@@ -13,14 +13,14 @@ head: charlie/rustc
 created_at: 2023-12-08T20:21:27Z
 updated_at: 2023-12-08T20:27:50Z
 url: https://github.com/astral-sh/uv/pull/594
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Use `rustc-hash` instead of `fxhash` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-08 20:21_
+_@charliermarsh_
 
 `fxhash` is the old, less maintained version of this crate (`rustc-hash`). We use the latter in Ruff.
 

@@ -12,14 +12,14 @@ head: zb/password-std
 created_at: 2025-09-02T21:17:50Z
 updated_at: 2025-09-02T22:00:00Z
 url: https://github.com/astral-sh/uv/pull/15642
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Allow providing the `uv auth login` password or token via stdin
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-02 21:17_
+_@zanieb_
 
 _No description provided._
 

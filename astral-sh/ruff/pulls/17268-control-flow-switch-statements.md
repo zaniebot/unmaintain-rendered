@@ -14,14 +14,14 @@ head: cfg-switch
 created_at: 2025-04-07T07:45:36Z
 updated_at: 2025-12-10T18:00:36Z
 url: https://github.com/astral-sh/ruff/pull/17268
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Control flow: Switch statements
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-07 07:45_
+_@dylwil3_
 
 This PR implements switch statements in the control flow graph builder.
 

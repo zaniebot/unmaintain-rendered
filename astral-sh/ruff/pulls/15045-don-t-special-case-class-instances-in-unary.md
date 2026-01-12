@@ -13,14 +13,14 @@ head: dcreager/unary
 created_at: 2024-12-18T15:48:39Z
 updated_at: 2024-12-18T19:37:19Z
 url: https://github.com/astral-sh/ruff/pull/15045
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Don't special-case class instances in unary expression inference
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-18 15:48_
+_@dcreager_
 
 We have a handy `to_meta_type` that does the right thing for class instances, and also works for all of the other types that are “instances of” something.  Unless I'm missing something, this should let us get rid of the catch-all clause in one fell swoop.
 

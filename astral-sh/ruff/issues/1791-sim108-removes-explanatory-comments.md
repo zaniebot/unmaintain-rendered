@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T22:36:13Z
 updated_at: 2023-01-11T22:51:39Z
 url: https://github.com/astral-sh/ruff/issues/1791
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM108 removes explanatory comments
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 22:36_
+_@spaceone_
 
 ```
 $ ruff --isolated  --select SIM108 foo.py

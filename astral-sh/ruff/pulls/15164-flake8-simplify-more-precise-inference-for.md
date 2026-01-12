@@ -13,14 +13,14 @@ head: SIM300
 created_at: 2024-12-28T03:25:52Z
 updated_at: 2024-12-30T10:42:26Z
 url: https://github.com/astral-sh/ruff/pull/15164
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-simplify`] More precise inference for dictionaries (`SIM300`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-28 03:25_
+_@InSyncWithFoo_
 
 ## Summary
 

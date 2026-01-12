@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-21T02:43:23Z
 updated_at: 2024-01-04T00:09:25Z
 url: https://github.com/astral-sh/uv/issues/717
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Treat partial directories as a diagnostic rather than hard failure
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-21 02:43_
+_@charliermarsh_
 
 During the verification phase.
 

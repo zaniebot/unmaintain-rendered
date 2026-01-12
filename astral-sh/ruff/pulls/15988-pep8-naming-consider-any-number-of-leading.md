@@ -13,14 +13,14 @@ head: fix-false-positive-N801
 created_at: 2025-02-06T08:09:29Z
 updated_at: 2025-02-06T08:38:28Z
 url: https://github.com/astral-sh/ruff/pull/15988
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pep8-naming`] Consider any number of leading underscore for `N801`
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-06 08:09_
+_@VascoSch92_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/tool-receipt-entry-points
 created_at: 2024-06-28T19:31:06Z
 updated_at: 2024-06-29T03:45:42Z
 url: https://github.com/astral-sh/uv/pull/4634
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Track tool entry points in receipts
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 19:31_
+_@zanieb_
 
 We need this to power uninstallations! 
 

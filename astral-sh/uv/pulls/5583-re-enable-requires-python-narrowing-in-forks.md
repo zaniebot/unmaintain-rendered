@@ -14,14 +14,14 @@ head: charlie/prop
 created_at: 2024-07-30T01:30:21Z
 updated_at: 2024-07-30T14:07:01Z
 url: https://github.com/astral-sh/uv/pull/5583
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Re-enable requires-python narrowing in forks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 01:30_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/4669
 See: https://github.com/astral-sh/uv/issues/4668

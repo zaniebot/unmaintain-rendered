@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T14:39:36Z
 updated_at: 2023-12-16T21:14:36Z
 url: https://github.com/astral-sh/uv/issues/650
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Add custom error messages for package name-less requirements
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-14 14:39_
+_@charliermarsh_
 
 Given a dependency in a `requirements.txt` file like:
 

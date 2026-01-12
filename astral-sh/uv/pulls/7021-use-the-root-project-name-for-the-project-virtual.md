@@ -13,14 +13,14 @@ head: zb/venv-prompt
 created_at: 2024-09-04T14:02:17Z
 updated_at: 2024-09-04T15:16:32Z
 url: https://github.com/astral-sh/uv/pull/7021
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Use the root project name for the project virtual environment prompt
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-04 14:02_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7001
 

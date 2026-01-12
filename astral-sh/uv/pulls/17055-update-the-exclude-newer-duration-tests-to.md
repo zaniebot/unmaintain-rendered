@@ -13,14 +13,14 @@ head: zb/exclude-newer-delay-tests
 created_at: 2025-12-09T19:56:17Z
 updated_at: 2025-12-10T13:47:46Z
 url: https://github.com/astral-sh/uv/pull/17055
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Update the exclude newer duration tests to demonstrate package version changes
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-09 19:56_
+_@zanieb_
 
 Follows #16814 updating the test cases with Claude so that the timestamps and durations are on the boundary of package versions so we see actual version changes in the lockfile.
 

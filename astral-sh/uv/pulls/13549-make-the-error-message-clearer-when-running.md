@@ -13,14 +13,14 @@ head: jack/find_ld_add_warnings
 created_at: 2025-05-20T07:12:03Z
 updated_at: 2025-05-29T17:29:03Z
 url: https://github.com/astral-sh/uv/pull/13549
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # make the error message clearer when running distroless containers
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-05-20 07:12_
+_@oconnor663_
 
 Previously you could generate a confusing warning like this:
 

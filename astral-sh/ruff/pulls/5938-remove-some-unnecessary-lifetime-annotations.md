@@ -13,14 +13,14 @@ head: charlie/lifetime
 created_at: 2023-07-21T02:36:24Z
 updated_at: 2023-07-21T03:08:51Z
 url: https://github.com/astral-sh/ruff/pull/5938
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove some unnecessary lifetime annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-21 02:36_
+_@charliermarsh_
 
 _No description provided._
 

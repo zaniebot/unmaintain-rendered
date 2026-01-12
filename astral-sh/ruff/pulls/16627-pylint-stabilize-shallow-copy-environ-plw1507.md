@@ -13,14 +13,14 @@ head: brent/plw1507-0.10
 created_at: 2025-03-11T14:27:38Z
 updated_at: 2025-03-11T15:30:18Z
 url: https://github.com/astral-sh/ruff/pull/16627
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pylint`] Stabilize `shallow-copy-environ` (`PLW1507`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 14:27_
+_@ntBre_
 
 Summary
 --

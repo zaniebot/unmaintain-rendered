@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T20:49:19Z
 updated_at: 2026-01-06T18:47:43Z
 url: https://github.com/astral-sh/uv/issues/17191
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # `uv self update` fails when /tmp is mounted noexec
 
 ---
 
-_Issue opened by @dotysan on 2025-12-19 20:49_
+_@dotysan_
 
 Not really sure if this is a uv bug or if uv can do anything about this. But here goes...
  $ `uv self update`

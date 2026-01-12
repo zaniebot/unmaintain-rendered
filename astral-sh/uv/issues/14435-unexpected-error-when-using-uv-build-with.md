@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T08:51:54Z
 updated_at: 2025-07-09T17:45:46Z
 url: https://github.com/astral-sh/uv/issues/14435
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Unexpected error when using uv_build with namespace=true and no-editable install
 
 ---
 
-_Issue opened by @hmvp on 2025-07-03 08:51_
+_@hmvp_
 
 ### Summary
 

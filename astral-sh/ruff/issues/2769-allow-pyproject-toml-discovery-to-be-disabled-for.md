@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T16:28:52Z
 updated_at: 2023-02-12T10:44:06Z
 url: https://github.com/astral-sh/ruff/issues/2769
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Allow `pyproject.toml` discovery to be disabled for subdirectories
 
 ---
 
-_Issue opened by @isaacharrisholt on 2023-02-11 16:28_
+_@isaacharrisholt_
 
 ## Context
 

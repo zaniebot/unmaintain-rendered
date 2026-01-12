@@ -13,14 +13,14 @@ head: charlie/version
 created_at: 2024-01-15T04:49:38Z
 updated_at: 2024-01-15T13:51:13Z
 url: https://github.com/astral-sh/uv/pull/924
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Remove `PubGrubVersion`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 04:49_
+_@charliermarsh_
 
 ## Summary
 

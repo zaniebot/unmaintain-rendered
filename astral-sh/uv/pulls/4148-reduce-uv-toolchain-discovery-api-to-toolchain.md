@@ -12,14 +12,14 @@ head: zb/uv-toolchain-pub
 created_at: 2024-06-07T21:15:09Z
 updated_at: 2024-06-07T21:56:26Z
 url: https://github.com/astral-sh/uv/pull/4148
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Reduce `uv-toolchain` discovery API to `Toolchain`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 21:15_
+_@zanieb_
 
 Drops `find_toolchain`, `find_best_toolchain`, etc. in favor of `Toolchain::find_...`
 

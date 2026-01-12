@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-08T19:55:50Z
 updated_at: 2024-06-13T00:07:49Z
 url: https://github.com/astral-sh/ruff/issues/4972
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Use ruff_fix_validity to catch regressions in CI not detected by unit tests
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-08 19:55_
+_@addisoncrump_
 
 The fuzzers added in #4822 can be used to catch regressions for which there exists no unit tests (see: #4863 as an example of this; caught by `ruff_fix_validity` within ~30 seconds). PRs should include a short fuzz run (5-10m) before merging. Failure cases can then be added to the unit test suite.
 

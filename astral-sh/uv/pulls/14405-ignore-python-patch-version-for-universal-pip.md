@@ -13,14 +13,14 @@ head: charlie/uni
 created_at: 2025-07-02T01:59:12Z
 updated_at: 2025-07-02T15:12:19Z
 url: https://github.com/astral-sh/uv/pull/14405
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Ignore Python patch version for `--universal` pip compile
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-02 01:59_
+_@charliermarsh_
 
 ## Summary
 

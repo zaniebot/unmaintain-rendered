@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T15:53:10Z
 updated_at: 2025-05-19T21:24:26Z
 url: https://github.com/astral-sh/ty/issues/453
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `unresolved-import`: Add note if no third-party search path is configured
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-19 15:53_
+_@MichaReiser_
 
 Let's add a note to the `unresolved-import` diagnostic hinting users towards configuring the path to their virtual environment, or setting `VIRTUAL_ENV` if no third party search path is set.
 

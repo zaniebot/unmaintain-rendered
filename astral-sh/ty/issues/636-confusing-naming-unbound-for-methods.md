@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T14:30:13Z
 updated_at: 2025-09-23T14:26:57Z
 url: https://github.com/astral-sh/ty/issues/636
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Confusing naming `unbound` for methods
 
 ---
 
-_Issue opened by @Tishka17 on 2025-06-11 14:30_
+_@Tishka17_
 
 ### Summary
 

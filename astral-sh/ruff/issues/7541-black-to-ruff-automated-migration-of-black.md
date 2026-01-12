@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T12:19:54Z
 updated_at: 2023-11-03T03:05:42Z
 url: https://github.com/astral-sh/ruff/issues/7541
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `black_to_ruff`: automated migration of black configuration settings
 
 ---
 
-_Issue opened by @konstin on 2023-09-20 12:19_
+_@konstin_
 
 Once the configuration for the formatter is implemented, we should write a tool, let's call it `black_to_ruff`, that automatically migrates as much of the black configuration to ruff configuration as possible. This should be based on or extend `flake8_to_ruff` which already reads some basic black config.
 

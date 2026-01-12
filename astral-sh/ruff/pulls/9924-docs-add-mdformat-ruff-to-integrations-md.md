@@ -13,14 +13,14 @@ head: doc
 created_at: 2024-02-10T15:00:25Z
 updated_at: 2024-02-11T03:39:16Z
 url: https://github.com/astral-sh/ruff/pull/9924
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # docs: add mdformat-ruff to integrations.md
 
 ---
 
-_Pull request opened by @Freed-Wu on 2024-02-10 15:00_
+_@Freed-Wu_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

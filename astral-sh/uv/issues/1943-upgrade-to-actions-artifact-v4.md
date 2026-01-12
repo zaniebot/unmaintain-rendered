@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T20:03:10Z
 updated_at: 2024-02-26T01:09:06Z
 url: https://github.com/astral-sh/uv/issues/1943
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Upgrade to `actions/*-artifact@v4`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-23 20:03_
+_@zanieb_
 
 We need to make changes to support the latest artifacts versions https://github.com/actions/upload-artifact/issues/472
 

@@ -13,14 +13,14 @@ head: eb/diagnostic-tag
 created_at: 2025-04-27T20:58:32Z
 updated_at: 2025-05-03T18:35:04Z
 url: https://github.com/astral-sh/ruff/pull/17657
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Add support for the LSP diagnostic tag
 
 ---
 
-_Pull request opened by @ercbot on 2025-04-27 20:58_
+_@ercbot_
 
 ## Summary
 

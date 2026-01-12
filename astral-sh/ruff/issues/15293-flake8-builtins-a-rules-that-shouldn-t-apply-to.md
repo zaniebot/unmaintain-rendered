@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T03:50:24Z
 updated_at: 2025-01-08T17:13:24Z
 url: https://github.com/astral-sh/ruff/issues/15293
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `flake8-builtins (A)` rules that shouldn't apply to stubs
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 03:50_
+_@Avasam_
 
 The following I'm pretty sure should be disabled in stubs, as they are out of a stub author's control:
 - [builtin-variable-shadowing (A001)](https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/#builtin-variable-shadowing-a001) (344 hits in typeshed)

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-08-19T01:53:39Z
 updated_at: 2021-09-23T12:43:26Z
 url: https://github.com/clap-rs/clap/issues/2725
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Number as a simultaneous flag and value
 
 ---
 
-_Issue opened by @mbhall88 on 2021-08-19 01:53_
+_@mbhall88_
 
 ### Please complete the following tasks
 

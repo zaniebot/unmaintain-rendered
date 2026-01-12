@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T14:14:01Z
 updated_at: 2024-12-03T11:03:27Z
 url: https://github.com/astral-sh/ruff/issues/14731
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Incorrect subtyping behavior of `Literal` instances and `_SpecialForm`
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-02 14:14_
+_@sharkdp_
 
 We have a correct test for the subtype relationship between these two types here:
 

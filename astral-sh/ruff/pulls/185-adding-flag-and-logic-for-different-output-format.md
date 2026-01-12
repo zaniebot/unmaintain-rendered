@@ -12,14 +12,14 @@ head: struct_output
 created_at: 2022-09-14T12:18:51Z
 updated_at: 2022-09-14T18:40:16Z
 url: https://github.com/astral-sh/ruff/pull/185
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Adding flag and logic for different output format
 
 ---
 
-_Pull request opened by @HallerPatrick on 2022-09-14 12:18_
+_@HallerPatrick_
 
 PR for #181, WIP
 

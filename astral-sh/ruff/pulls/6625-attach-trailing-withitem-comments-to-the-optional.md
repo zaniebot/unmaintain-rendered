@@ -13,14 +13,14 @@ head: charlie/with-item
 created_at: 2023-08-16T17:33:27Z
 updated_at: 2023-08-31T21:04:18Z
 url: https://github.com/astral-sh/ruff/pull/6625
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Attach trailing `WithItem` comments to the optional variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 17:33_
+_@charliermarsh_
 
 ## Summary
 

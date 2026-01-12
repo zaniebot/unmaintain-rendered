@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-12T23:31:32Z
 updated_at: 2025-11-18T16:10:26Z
 url: https://github.com/astral-sh/ty/issues/338
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Intersections of multiple synthesized protocols should be merged together into a single synthesized protocol
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-12 23:31_
+_@AlexWaygood_
 
 Currently we reveal the following here:
 

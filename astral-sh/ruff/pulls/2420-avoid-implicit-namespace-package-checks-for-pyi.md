@@ -13,14 +13,14 @@ head: charlie/imp
 created_at: 2023-01-31T21:46:56Z
 updated_at: 2023-01-31T22:35:32Z
 url: https://github.com/astral-sh/ruff/pull/2420
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid implicit-namespace-package checks for .pyi files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 21:46_
+_@charliermarsh_
 
 Closes #2328.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T07:39:46Z
 updated_at: 2023-08-01T05:55:05Z
 url: https://github.com/astral-sh/ruff/issues/5970
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # parser needs special handling of self-documenting f-strings
 
 ---
 
-_Issue opened by @davidszotten on 2023-07-22 07:39_
+_@davidszotten_
 
 python 3.8 and https://bugs.python.org/issue36817 (note no pep "was needed")
 added [self documenting expressions for f-strings](https://docs.python.org/3/whatsnew/3.8.html#f-strings-support-for-self-documenting-expressions-and-debugging)

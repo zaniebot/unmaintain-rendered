@@ -12,14 +12,14 @@ head: testing-expand-parent
 created_at: 2023-06-25T08:56:38Z
 updated_at: 2023-06-26T10:45:02Z
 url: https://github.com/astral-sh/ruff/pull/5353
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # stop having end-of-line comments expand parent
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-25 08:56_
+_@davidszotten_
 
 this seems more in line with black (and seems to help with `StmtWith`
 formatting)

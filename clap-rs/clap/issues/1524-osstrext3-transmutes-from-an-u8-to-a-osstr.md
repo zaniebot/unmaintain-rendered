@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-07-22T14:33:02Z
 updated_at: 2020-02-01T13:04:05Z
 url: https://github.com/clap-rs/clap/issues/1524
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # OsStrExt3 transmutes from an &[u8] to a OsStr
 
 ---
 
-_Issue opened by @BurntSushi on 2019-07-22 14:33_
+_@BurntSushi_
 
 In this code:
 

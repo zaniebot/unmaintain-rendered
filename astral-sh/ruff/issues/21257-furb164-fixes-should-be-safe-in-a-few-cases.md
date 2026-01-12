@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T15:19:54Z
 updated_at: 2025-11-03T21:09:03Z
 url: https://github.com/astral-sh/ruff/issues/21257
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB164 fixes should be safe in a few cases
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-03 15:19_
+_@dscorbett_
 
 ### Summary
 

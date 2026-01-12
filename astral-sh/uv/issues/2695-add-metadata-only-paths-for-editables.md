@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-27T16:40:59Z
 updated_at: 2024-05-28T15:49:35Z
 url: https://github.com/astral-sh/uv/issues/2695
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Add metadata-only paths for editables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-27 16:40_
+_@charliermarsh_
 
 We have a fast-path for getting _just_ the metadata of a source distribution (check `PKG-INFO`, check `pyproject.toml`, try `prepare_metadata_for_build_wheel`, and then build the wheel if necessary). But for editables, we _always_ build them. Editables should run through the same process.
 

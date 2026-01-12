@@ -12,14 +12,14 @@ head: dhruv/c417
 created_at: 2023-08-22T04:21:59Z
 updated_at: 2023-08-22T19:15:46Z
 url: https://github.com/astral-sh/ruff/pull/6752
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid `C417` for `lambda` with default and variadic parameters
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-22 04:21_
+_@dhruvmanila_
 
 ## Summary
 

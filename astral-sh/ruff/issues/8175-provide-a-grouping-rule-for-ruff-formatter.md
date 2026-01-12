@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T17:17:30Z
 updated_at: 2025-06-22T08:17:30Z
 url: https://github.com/astral-sh/ruff/issues/8175
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Provide a grouping rule for ruff formatter conflicting rules
 
 ---
 
-_Issue opened by @gaborbernat on 2023-10-24 17:17_
+_@gaborbernat_
 
 Ruff warns these rules conflict with the formatter, would be nice if we could disable these in a single line then need to disable one by one:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-08T22:48:39Z
 updated_at: 2023-02-22T00:04:56Z
 url: https://github.com/astral-sh/ruff/issues/2671
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # handle match-case using a function argument
 
 ---
 
-_Issue opened by @buchs on 2023-02-08 22:48_
+_@buchs_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

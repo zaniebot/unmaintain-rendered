@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-15T16:52:35Z
 updated_at: 2024-05-15T17:31:00Z
 url: https://github.com/astral-sh/uv/issues/3612
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Cache on CI gets broken whenever UV updates
 
 ---
 
-_Issue opened by @haarisr on 2024-05-15 16:52_
+_@haarisr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

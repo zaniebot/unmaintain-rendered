@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-07T22:24:22Z
 updated_at: 2024-04-08T18:07:18Z
 url: https://github.com/astral-sh/uv/issues/2863
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Always return unzipped wheels from distribution database
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-07 22:24_
+_@charliermarsh_
 
 We already do this in most cases, and in the others, we just immediately unzip them. It would let us remove some complexity to just preemptively unzip in the remaining cases (which are: local wheels, and built wheels -- remote wheels are already unzipped while downloading).
 

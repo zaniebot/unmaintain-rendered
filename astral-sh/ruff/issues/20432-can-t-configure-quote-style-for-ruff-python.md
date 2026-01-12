@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T07:53:13Z
 updated_at: 2025-09-18T10:57:22Z
 url: https://github.com/astral-sh/ruff/issues/20432
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Can't configure quote style for `ruff_python_codegen::Generator`
 
 ---
 
-_Issue opened by @ShaharNaveh on 2025-09-16 07:53_
+_@ShaharNaveh_
 
 There's support for creating a `Generator` from a `Stylist` instance:
 

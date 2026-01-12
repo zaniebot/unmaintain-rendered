@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T14:11:31Z
 updated_at: 2025-11-30T15:13:29Z
 url: https://github.com/astral-sh/uv/issues/16875
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Missing Latest GraalPy Versions (3.12, Java 25.0.1) in uv
 
 ---
 
-_Issue opened by @ezzarghili on 2025-11-27 14:11_
+_@ezzarghili_
 
 ### Question
 

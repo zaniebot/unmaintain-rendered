@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T13:50:15Z
 updated_at: 2024-02-22T13:48:30Z
 url: https://github.com/astral-sh/ruff/issues/10071
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # docs: overload-with-docstring does not really explain "why this is bad"
 
 ---
 
-_Issue opened by @pawamoy on 2024-02-21 13:50_
+_@pawamoy_
 
 https://docs.astral.sh/ruff/rules/overload-with-docstring/
 

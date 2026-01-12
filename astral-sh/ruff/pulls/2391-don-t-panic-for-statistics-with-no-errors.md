@@ -13,14 +13,14 @@ head: charlie/panic
 created_at: 2023-01-31T12:40:29Z
 updated_at: 2023-01-31T12:53:30Z
 url: https://github.com/astral-sh/ruff/pull/2391
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Don't panic for --statistics with no errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 12:40_
+_@charliermarsh_
 
 Closes #2378.
 

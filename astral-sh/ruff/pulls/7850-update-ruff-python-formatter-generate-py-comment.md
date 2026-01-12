@@ -13,14 +13,14 @@ head: chore
 created_at: 2023-10-07T23:49:59Z
 updated_at: 2023-10-08T00:58:21Z
 url: https://github.com/astral-sh/ruff/pull/7850
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update `ruff_python_formatter` generate.py comment
 
 ---
 
-_Pull request opened by @cnpryer on 2023-10-07 23:49_
+_@cnpryer_
 
 I believe Docs.md is old.
 

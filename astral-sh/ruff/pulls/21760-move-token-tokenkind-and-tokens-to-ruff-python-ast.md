@@ -13,14 +13,14 @@ head: micha/tokens-to-ast
 created_at: 2025-12-02T18:49:01Z
 updated_at: 2025-12-02T19:10:49Z
 url: https://github.com/astral-sh/ruff/pull/21760
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Move `Token`, `TokenKind` and `Tokens` to `ruff-python-ast`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-02 18:49_
+_@MichaReiser_
 
 ## Summary
 

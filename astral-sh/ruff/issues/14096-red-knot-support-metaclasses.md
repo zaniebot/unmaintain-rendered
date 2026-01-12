@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T17:49:07Z
 updated_at: 2024-11-06T20:41:37Z
 url: https://github.com/astral-sh/ruff/issues/14096
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Support metaclasses
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-04 17:49_
+_@AlexWaygood_
 
 Currently we infer that all class objects are instances of `builtins.type`:
 

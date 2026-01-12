@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T09:40:38Z
 updated_at: 2024-11-05T02:32:47Z
 url: https://github.com/astral-sh/uv/issues/8412
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Outdated pip reference in "Strictness and spec enforcement" docs
 
 ---
 
-_Issue opened by @edmorley on 2024-10-21 09:40_
+_@edmorley_
 
 On https://docs.astral.sh/uv/pip/compatibility/#strictness-and-spec-enforcement it says:
 

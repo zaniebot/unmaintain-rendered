@@ -13,14 +13,14 @@ head: use-settings-where-all-isnt-required
 created_at: 2023-09-19T14:35:32Z
 updated_at: 2023-09-19T21:16:22Z
 url: https://github.com/astral-sh/ruff/pull/7518
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use `Settings` where `AllSettings` isn't required
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-19 14:35_
+_@MichaReiser_
 
 
 ## Summary

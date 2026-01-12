@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-29T14:43:29Z
 updated_at: 2022-01-31T08:15:21Z
 url: https://github.com/clap-rs/clap/issues/3369
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Single backslash character not recognized on Windows
 
 ---
 
-_Issue opened by @jgranduel on 2022-01-29 14:43_
+_@jgranduel_
 
 ### Please complete the following tasks
 

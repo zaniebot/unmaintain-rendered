@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-31T07:58:31Z
 updated_at: 2025-12-31T10:55:16Z
 url: https://github.com/astral-sh/ty/issues/2289
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Reading `__v` from the outside of the class, ty doesn't give any error while Python interpreter gives error
 
 ---
 
-_Issue opened by @hyperkai on 2025-12-31 07:58_
+_@hyperkai_
 
 ### Summary
 

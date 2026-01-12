@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-29T08:22:23Z
 updated_at: 2024-02-17T16:52:31Z
 url: https://github.com/clap-rs/clap/issues/4286
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive requires field types to impl `Clone`
 
 ---
 
-_Issue opened by @djc on 2022-09-29 08:22_
+_@djc_
 
 Maintainer's notes
 - For Sync+Sync, see #4347

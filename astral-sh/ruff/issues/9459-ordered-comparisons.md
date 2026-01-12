@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-10T19:49:30Z
 updated_at: 2024-01-14T03:24:57Z
 url: https://github.com/astral-sh/ruff/issues/9459
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ordered comparisons
 
 ---
 
-_Issue opened by @Armavica on 2024-01-10 19:49_
+_@Armavica_
 
 The rule `SIM300` discourages so-called "Yoda comparisons", i.e. comparisons where the numerical constant is first. While this can make sense to focus on the variable, this can lead to code that is more difficult to read and more easy to get wrong, especially for interval checking. See for example https://llewellynfalco.blogspot.com/2016/02/dont-use-greater-than-sign-in.html for the full argument.
 

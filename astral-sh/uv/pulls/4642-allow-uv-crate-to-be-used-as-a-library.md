@@ -13,14 +13,14 @@ head: zb/lib
 created_at: 2024-06-29T03:52:30Z
 updated_at: 2024-07-11T04:00:19Z
 url: https://github.com/astral-sh/uv/pull/4642
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Allow `uv` crate to be used as a library
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-29 03:52_
+_@zanieb_
 
 This is pulled out of #4632 — a user noted that it would be useful to use the `uv` crate from Rust. This makes it way easier to invoke `uv` from Rust with arbitrary arguments as well as use various functionality in the `uv` crate.
 

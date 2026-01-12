@@ -13,14 +13,14 @@ head: charlie/local-index
 created_at: 2024-06-25T17:23:52Z
 updated_at: 2024-06-25T17:57:13Z
 url: https://github.com/astral-sh/uv/pull/4524
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Allow non-file:// paths to serve as `--index-url` values
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 17:23_
+_@charliermarsh_
 
 ## Summary
 

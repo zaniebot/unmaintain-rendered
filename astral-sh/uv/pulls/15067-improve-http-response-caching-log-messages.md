@@ -13,14 +13,14 @@ head: zb/cache-trace
 created_at: 2025-08-04T21:51:36Z
 updated_at: 2025-08-05T19:34:14Z
 url: https://github.com/astral-sh/uv/pull/15067
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Improve HTTP response caching log messages
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-04 21:51_
+_@zanieb_
 
 "Cached request ... is not storable" doesn't make sense from a user perspective, it's leaking our internal `CachedClient` abstraction. I think it makes more sense to talk about this as "Response from ... is not storable"
 

@@ -12,14 +12,14 @@ head: zanie/root-version
 created_at: 2023-11-02T21:24:57Z
 updated_at: 2023-11-03T15:47:03Z
 url: https://github.com/astral-sh/uv/pull/300
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Implement custom resolution failure reporter to hide root package versions
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 21:24_
+_@zanieb_
 
 Extends #295 
 Closes #214 

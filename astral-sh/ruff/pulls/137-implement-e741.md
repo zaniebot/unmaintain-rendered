@@ -12,14 +12,14 @@ head: E741
 created_at: 2022-09-10T06:15:58Z
 updated_at: 2022-09-11T16:30:28Z
 url: https://github.com/astral-sh/ruff/pull/137
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement E741
 
 ---
 
-_Pull request opened by @harupy on 2022-09-10 06:15_
+_@harupy_
 
 Test:
 

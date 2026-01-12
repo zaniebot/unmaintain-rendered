@@ -13,14 +13,14 @@ head: konsti/uv-publish-timeout
 created_at: 2025-05-26T12:25:01Z
 updated_at: 2025-05-26T12:34:31Z
 url: https://github.com/astral-sh/uv/pull/13658
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Increase uv publish integration test timeout
 
 ---
 
-_Pull request opened by @konstin on 2025-05-26 12:25_
+_@konstin_
 
 Sometimes we have to wait a long time for remote caches to update, see e.g. https://github.com/astral-sh/uv/actions/runs/15252860797/job/42893715464
 

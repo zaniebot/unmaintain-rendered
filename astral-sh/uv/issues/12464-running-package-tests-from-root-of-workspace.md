@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T13:44:16Z
 updated_at: 2025-03-25T13:48:47Z
 url: https://github.com/astral-sh/uv/issues/12464
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Running package tests from root of workspace?
 
 ---
 
-_Issue opened by @Time0o on 2025-03-25 13:44_
+_@Time0o_
 
 ### Question
 

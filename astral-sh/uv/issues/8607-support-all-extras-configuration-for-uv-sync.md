@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-27T11:39:46Z
 updated_at: 2025-09-02T17:37:01Z
 url: https://github.com/astral-sh/uv/issues/8607
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Support `all-extras` configuration for `uv sync` command
 
 ---
 
-_Issue opened by @zmeir on 2024-10-27 11:39_
+_@zmeir_
 
 The `tool.uv.pip` configuration section allows setting `all-extras = true` which affects all subcommands in the `uv pip` namespace. Is it possible to add the same configuration for the `[tool.uv]` table? This will allow, for example, to use `uv sync` to sync all extras automatically (instead of having to type `uv sync --all-extras`).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-28T15:56:09Z
 updated_at: 2025-08-28T16:59:04Z
 url: https://github.com/astral-sh/ty/issues/1103
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [internal] mdtest silently ignores "python" code blocks
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-08-28 15:56_
+_@JelleZijlstra_
 
 If you use a code block tagged with "python" instead of "py" in an mdtest, it's silently ignored. For example, after this patch the relevant test still passes:
 

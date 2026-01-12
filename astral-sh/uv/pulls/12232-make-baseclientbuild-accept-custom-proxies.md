@@ -13,14 +13,14 @@ head: work/proxy
 created_at: 2025-03-17T09:14:21Z
 updated_at: 2025-03-17T19:18:56Z
 url: https://github.com/astral-sh/uv/pull/12232
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # make BaseClientBuild accept custom proxies
 
 ---
 
-_Pull request opened by @gzm55 on 2025-03-17 09:14_
+_@gzm55_
 
 close #12230 
 

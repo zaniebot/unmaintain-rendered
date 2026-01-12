@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-18T22:31:39Z
 updated_at: 2025-10-19T06:56:23Z
 url: https://github.com/astral-sh/ty/issues/1396
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # incompatible override error
 
 ---
 
-_Issue opened by @vlashada on 2025-10-18 22:31_
+_@vlashada_
 
 ### Summary
 

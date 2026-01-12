@@ -13,14 +13,14 @@ head: fix-PLE251-escaping
 created_at: 2023-10-01T15:35:56Z
 updated_at: 2023-10-02T08:57:48Z
 url: https://github.com/astral-sh/ruff/pull/7741
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix PLE251 rules with f-string escaping
 
 ---
 
-_Pull request opened by @konstin on 2023-10-01 15:35_
+_@konstin_
 
 **Summary** The `value` of the `FStringMiddle` for `f"""}}ab"""` is `}ab`, i.e. the curly brace escaping is decoded. If we iterate over string this gives us false indices causing exploding fixes for PLE251 rules (PLE2510, PLE2512, PLE2513, PLE2514, PLE2515). Instead, we now use the source range.
 

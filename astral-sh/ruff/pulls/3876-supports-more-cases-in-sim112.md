@@ -12,14 +12,14 @@ head: fix_SIM112
 created_at: 2023-04-04T04:21:31Z
 updated_at: 2023-04-04T19:49:24Z
 url: https://github.com/astral-sh/ruff/pull/3876
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Supports more cases in `SIM112`
 
 ---
 
-_Pull request opened by @kyoto7250 on 2023-04-04 04:21_
+_@kyoto7250_
 
 I checked 46bcb1f725999540a315bc6fd44f455ec3cc38a9.
 

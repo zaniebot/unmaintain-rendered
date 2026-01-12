@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T20:00:16Z
 updated_at: 2025-10-10T21:36:46Z
 url: https://github.com/astral-sh/uv/issues/16216
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # HPC cluster problems: uv pip not respecting indexes?
 
 ---
 
-_Issue opened by @rabyj on 2025-10-09 20:00_
+_@rabyj_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: fix-PLW1508
 created_at: 2024-11-21T11:24:55Z
 updated_at: 2024-11-22T23:39:23Z
 url: https://github.com/astral-sh/ruff/pull/14512
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Extend `invalid-envvar-default (PLW1508)` to detect `os.environ.get`
 
 ---
 
-_Pull request opened by @harupy on 2024-11-21 11:24_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

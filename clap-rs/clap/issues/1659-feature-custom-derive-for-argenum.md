@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-12T19:49:31Z
 updated_at: 2020-04-22T18:44:16Z
 url: https://github.com/clap-rs/clap/issues/1659
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Feature: Custom Derive for ArgEnum
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-12 19:49_
+_@kbknapp_
 
 _From @Hoverbear on November 12, 2017 18:11_
 

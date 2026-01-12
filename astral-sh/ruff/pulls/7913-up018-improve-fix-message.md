@@ -12,14 +12,14 @@ head: UP018
 created_at: 2023-10-11T09:15:40Z
 updated_at: 2023-10-11T09:49:01Z
 url: https://github.com/astral-sh/ruff/pull/7913
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # `UP018`: Improve Fix message
 
 ---
 
-_Pull request opened by @T-256 on 2023-10-11 09:15_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

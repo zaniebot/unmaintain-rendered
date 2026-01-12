@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T03:32:54Z
 updated_at: 2025-06-06T03:42:34Z
 url: https://github.com/astral-sh/uv/issues/13877
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # [Question] Where does uv install python
 
 ---
 
-_Issue opened by @monchin on 2025-06-06 03:32_
+_@monchin_
 
 ### Question
 

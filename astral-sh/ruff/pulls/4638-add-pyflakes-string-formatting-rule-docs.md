@@ -12,14 +12,14 @@ head: f5-rules
 created_at: 2023-05-24T16:28:17Z
 updated_at: 2023-05-29T15:34:44Z
 url: https://github.com/astral-sh/ruff/pull/4638
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add Pyflakes string formatting rule docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-24 16:28_
+_@tjkuson_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix_subprocess_run_on_windows_py37
 created_at: 2023-06-20T17:42:41Z
 updated_at: 2023-06-20T18:14:39Z
 url: https://github.com/astral-sh/ruff/pull/5220
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix subprocess.run on Windows Python 3.7
 
 ---
 
-_Pull request opened by @konstin on 2023-06-20 17:42_
+_@konstin_
 
 ## Summary
 

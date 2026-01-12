@@ -13,14 +13,14 @@ head: hr/pr1
 created_at: 2025-11-06T22:30:41Z
 updated_at: 2025-11-07T04:33:34Z
 url: https://github.com/astral-sh/uv/pull/16625
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Fix typo in uv tool list doc
 
 ---
 
-_Pull request opened by @haarisr on 2025-11-06 22:30_
+_@haarisr_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

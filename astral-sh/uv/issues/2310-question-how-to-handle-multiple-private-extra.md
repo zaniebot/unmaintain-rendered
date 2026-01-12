@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T22:43:10Z
 updated_at: 2024-04-05T17:40:29Z
 url: https://github.com/astral-sh/uv/issues/2310
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Question: How to handle multiple private extra indexes?
 
 ---
 
-_Issue opened by @atti92 on 2024-03-08 22:43_
+_@atti92_
 
 I decided to create a new issue, because I think the currently present issues don't exactly match my problem, and ask for different solutions:
  - https://github.com/astral-sh/uv/pull/2135

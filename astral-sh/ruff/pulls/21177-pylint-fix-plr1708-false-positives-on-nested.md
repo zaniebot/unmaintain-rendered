@@ -15,14 +15,14 @@ head: plr1708
 created_at: 2025-10-31T21:59:35Z
 updated_at: 2025-11-21T20:51:29Z
 url: https://github.com/astral-sh/ruff/pull/21177
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`pylint`] Fix `PLR1708` false positives on nested functions
 
 ---
 
-_Pull request opened by @chirizxc on 2025-10-31 21:59_
+_@chirizxc_
 
 ## Summary
 

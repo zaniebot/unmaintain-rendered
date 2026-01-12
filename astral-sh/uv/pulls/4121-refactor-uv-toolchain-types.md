@@ -13,14 +13,14 @@ head: zb/toolchain-iii
 created_at: 2024-06-07T00:09:32Z
 updated_at: 2024-06-07T19:20:29Z
 url: https://github.com/astral-sh/uv/pull/4121
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Refactor `uv-toolchain` types
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 00:09_
+_@zanieb_
 
 Extends #4120 
 Part of #2607 

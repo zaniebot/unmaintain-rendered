@@ -12,14 +12,14 @@ head: brent/stabilize-up047
 created_at: 2025-06-06T23:59:50Z
 updated_at: 2025-06-12T14:39:16Z
 url: https://github.com/astral-sh/ruff/pull/18524
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`pyupgrade`] Stabilize `non-pep695-generic-function` (`UP047`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 23:59_
+_@ntBre_
 
 ## Summary
 - Stabilizes UP047 (non-pep695-generic-function) rule by changing it from Preview to Stable

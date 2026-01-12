@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T14:45:33Z
 updated_at: 2026-01-05T10:21:24Z
 url: https://github.com/astral-sh/ty/issues/2303
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Migrating from Pyright
 
 ---
 
-_Issue opened by @samirotiv-polybee on 2026-01-02 14:45_
+_@samirotiv-polybee_
 
 ### Question
 

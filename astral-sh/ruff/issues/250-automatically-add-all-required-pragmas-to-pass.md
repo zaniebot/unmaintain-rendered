@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-21T21:56:52Z
 updated_at: 2022-09-22T21:43:46Z
 url: https://github.com/astral-sh/ruff/issues/250
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically add all required pragmas to pass
 
 ---
 
-_Issue opened by @adriangb on 2022-09-21 21:56_
+_@adriangb_
 
 Adding a tool like `ruff` or any linter to an existing unchecked codebase can be really painful.
 

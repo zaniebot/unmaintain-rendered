@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T10:59:36Z
 updated_at: 2024-09-02T18:23:44Z
 url: https://github.com/astral-sh/uv/issues/6859
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Buggy interplay between `--python`, `--python-version` and dependency with Python upper bound in `pip compile`
 
 ---
 
-_Issue opened by @BarrensZeppelin on 2024-08-30 10:59_
+_@BarrensZeppelin_
 
 I use uv@0.4.0 to `pip compile` the dependency specifier `scipy==1.9.0`.
 `scipy==1.9.0` has a Python version requirement of `>=3.8,<3.12`.

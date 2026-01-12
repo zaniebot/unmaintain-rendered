@@ -13,14 +13,14 @@ head: zb/ty-docs-iii
 created_at: 2025-12-15T17:56:48Z
 updated_at: 2025-12-15T18:58:39Z
 url: https://github.com/astral-sh/ty/pull/1894
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Restructure the content on the "Getting started" page
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 17:56_
+_@zanieb_
 
 This restructures the existing "Getting started" content. I'll add more content in a separate pull request.
 

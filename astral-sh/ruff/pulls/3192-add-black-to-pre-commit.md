@@ -12,14 +12,14 @@ head: add-black-pre-commit
 created_at: 2023-02-23T20:37:09Z
 updated_at: 2023-02-23T22:23:51Z
 url: https://github.com/astral-sh/ruff/pull/3192
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add black to pre-commit
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-23 20:37_
+_@JonathanPlasse_
 
 _No description provided._
 

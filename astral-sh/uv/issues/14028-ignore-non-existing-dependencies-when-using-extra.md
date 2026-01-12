@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T14:46:12Z
 updated_at: 2025-06-27T13:07:27Z
 url: https://github.com/astral-sh/uv/issues/14028
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Ignore non-existing dependencies when using --extra flag
 
 ---
 
-_Issue opened by @elephaint on 2025-06-13 14:46_
+_@elephaint_
 
 ### Question
 

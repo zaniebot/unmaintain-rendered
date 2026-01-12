@@ -12,14 +12,14 @@ head: move-blind-except-violations
 created_at: 2023-02-02T14:40:41Z
 updated_at: 2023-02-02T17:21:26Z
 url: https://github.com/astral-sh/ruff/pull/2479
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-blind-except violation to rule module
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 14:40_
+_@akx_
 
 _No description provided._
 

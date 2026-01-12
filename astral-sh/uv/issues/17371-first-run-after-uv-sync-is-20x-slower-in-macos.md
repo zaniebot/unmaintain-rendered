@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T02:16:47Z
 updated_at: 2026-01-10T16:11:21Z
 url: https://github.com/astral-sh/uv/issues/17371
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # first run after `uv sync` is ~20x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)
 
 ---
 
-_Issue opened by @joamatab on 2026-01-09 02:16_
+_@joamatab_
 
 ### Question
 

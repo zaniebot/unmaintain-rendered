@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T13:55:24Z
 updated_at: 2025-05-13T14:15:12Z
 url: https://github.com/astral-sh/uv/issues/13431
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Ephemeral environments are not ephemeral
 
 ---
 
-_Issue opened by @engpas on 2025-05-13 13:55_
+_@engpas_
 
 # Expectation
 The [documentation](https://docs.astral.sh/uv/reference/cli/#uv-run) of  the `uv run` command states

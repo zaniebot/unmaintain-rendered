@@ -13,14 +13,14 @@ head: dhruv/print-debug-info-return-string
 created_at: 2025-02-17T15:42:02Z
 updated_at: 2025-02-18T09:46:45Z
 url: https://github.com/astral-sh/ruff/pull/16214
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Update server to return the debug info as string
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-17 15:42_
+_@dhruvmanila_
 
 ## Summary
 

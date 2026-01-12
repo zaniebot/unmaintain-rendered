@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T16:01:09Z
 updated_at: 2024-01-15T07:01:13Z
 url: https://github.com/astral-sh/ruff/issues/9471
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Base set RUF100 positive on a pragma for a superset rule
 
 ---
 
-_Issue opened by @arthur-st on 2024-01-11 16:01_
+_@arthur-st_
 
 Let's imagine a repository structure like this:
 

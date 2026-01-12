@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T10:39:34Z
 updated_at: 2025-11-12T18:06:07Z
 url: https://github.com/astral-sh/uv/issues/7004
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Running out of memory with uv pip install
 
 ---
 
-_Issue opened by @atti92 on 2024-09-04 10:39_
+_@atti92_
 
 We are using uv inside CI/CD, and we are constantly hitting Memory kills by the kubernetes executor. 
 We don't really want to increase the memory requests to high because it's not needed outside of uv install and it's costly.

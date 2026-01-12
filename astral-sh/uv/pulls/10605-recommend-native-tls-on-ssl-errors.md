@@ -13,14 +13,14 @@ head: charlie/native-tls
 created_at: 2025-01-14T17:33:49Z
 updated_at: 2025-01-14T18:17:22Z
 url: https://github.com/astral-sh/uv/pull/10605
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Recommend `--native-tls` on SSL errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 17:33_
+_@charliermarsh_
 
 ## Summary
 

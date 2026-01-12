@@ -12,14 +12,14 @@ head: zb/simplify-pubgrub-report
 created_at: 2023-12-04T17:38:47Z
 updated_at: 2023-12-12T23:25:17Z
 url: https://github.com/astral-sh/uv/pull/547
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Use available versions to simplify unsat error reports
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-04 17:38_
+_@zanieb_
 
 Uses https://github.com/pubgrub-rs/pubgrub/pull/156 to consolidate version ranges in error reports using the actual available versions for each package.
 

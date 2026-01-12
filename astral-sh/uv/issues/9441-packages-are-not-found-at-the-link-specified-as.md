@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T14:02:39Z
 updated_at: 2024-11-27T15:24:22Z
 url: https://github.com/astral-sh/uv/issues/9441
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Packages are NOT found at the link specified as "index". But if specify the link as "find-links" then the installation is correct.
 
 ---
 
-_Issue opened by @VladislavSoren on 2024-11-26 14:02_
+_@VladislavSoren_
 
 Info:
 OS: MacOS

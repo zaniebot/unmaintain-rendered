@@ -13,14 +13,14 @@ head: renovate/node-22.x
 created_at: 2025-09-15T02:56:05Z
 updated_at: 2025-09-15T09:23:39Z
 url: https://github.com/astral-sh/ruff/pull/20410
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Update dependency node to v22
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 02:56_
+_@renovate_
 
 This PR contains the following updates:
 

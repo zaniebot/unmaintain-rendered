@@ -13,14 +13,14 @@ head: charlie/retries
 created_at: 2025-10-31T14:15:37Z
 updated_at: 2025-10-31T14:28:54Z
 url: https://github.com/astral-sh/uv/pull/16535
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Avoid pluralizing 'retry' for single value
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-31 14:15_
+_@charliermarsh_
 
 _No description provided._
 

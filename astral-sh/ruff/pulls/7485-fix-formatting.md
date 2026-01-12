@@ -13,14 +13,14 @@ head: string-formatting-edge-case
 created_at: 2023-09-18T09:14:40Z
 updated_at: 2023-09-18T10:28:16Z
 url: https://github.com/astral-sh/ruff/pull/7485
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix `''' ""'''` formatting
 
 ---
 
-_Pull request opened by @konstin on 2023-09-18 09:14_
+_@konstin_
 
 ## Summary
 

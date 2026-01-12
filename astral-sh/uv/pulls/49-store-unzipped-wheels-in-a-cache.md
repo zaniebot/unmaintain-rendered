@@ -12,14 +12,14 @@ head: charlie/zip
 created_at: 2023-10-08T03:53:32Z
 updated_at: 2023-10-08T04:04:50Z
 url: https://github.com/astral-sh/uv/pull/49
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Store unzipped wheels in a cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-08 03:53_
+_@charliermarsh_
 
 This PR massively speeds up the case in which you need to install wheels that already exist in the global cache.
 

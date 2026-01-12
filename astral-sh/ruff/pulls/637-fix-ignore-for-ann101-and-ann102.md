@@ -12,14 +12,14 @@ head: charlie/ann201
 created_at: 2022-11-07T14:01:56Z
 updated_at: 2022-11-07T14:03:10Z
 url: https://github.com/astral-sh/ruff/pull/637
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix --ignore for ANN101 and ANN102
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 14:01_
+_@charliermarsh_
 
 ANN201 and ANN202 were swapped in our enable / disable path.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-07T20:48:09Z
 updated_at: 2016-08-28T03:42:32Z
 url: https://github.com/clap-rs/clap/issues/574
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Unhelpful error on Arg parse
 
 ---
 
-_Issue opened by @mbStavola on 2016-07-07 20:48_
+_@mbStavola_
 
 For context, this is what was being read in `from_yaml()`:
 

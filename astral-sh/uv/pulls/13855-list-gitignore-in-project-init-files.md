@@ -13,14 +13,14 @@ head: AbhiUpadhye-patch-1
 created_at: 2025-06-05T06:55:03Z
 updated_at: 2025-06-05T14:21:16Z
 url: https://github.com/astral-sh/uv/pull/13855
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # List `.gitignore` in project init files
 
 ---
 
-_Pull request opened by @AbhiUpadhye on 2025-06-05 06:55_
+_@AbhiUpadhye_
 
 Fixes https://github.com/astral-sh/uv/issues/13639
 

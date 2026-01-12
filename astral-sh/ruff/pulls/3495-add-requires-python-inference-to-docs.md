@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2023-03-13T22:02:20Z
 updated_at: 2023-03-13T22:14:40Z
 url: https://github.com/astral-sh/ruff/pull/3495
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add `requires-python` inference to docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 22:02_
+_@charliermarsh_
 
 _No description provided._
 

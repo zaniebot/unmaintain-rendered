@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T21:12:23Z
 updated_at: 2023-10-26T15:33:56Z
 url: https://github.com/astral-sh/ruff/issues/8228
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Invalid autofix for RSE102
 
 ---
 
-_Issue opened by @Geo5 on 2023-10-25 21:12_
+_@Geo5_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

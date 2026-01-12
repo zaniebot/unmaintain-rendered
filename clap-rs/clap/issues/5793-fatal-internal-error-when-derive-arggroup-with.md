@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T06:45:28Z
 updated_at: 2024-10-29T18:11:53Z
 url: https://github.com/clap-rs/clap/issues/5793
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Fatal Internal Error when derive ArgGroup with flag that doesn't exist in separate crate
 
 ---
 
-_Issue opened by @JulianKnodt on 2024-10-29 06:45_
+_@JulianKnodt_
 
 ### Please complete the following tasks
 

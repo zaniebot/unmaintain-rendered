@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T22:06:46Z
 updated_at: 2026-01-12T08:29:21Z
 url: https://github.com/astral-sh/ty/issues/2383
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Overload resolution fails to match through `ThreadPoolExecutor.submit()`
 
 ---
 
-_Issue opened by @bcmills on 2026-01-07 22:06_
+_@bcmills_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T22:12:41Z
 updated_at: 2023-01-22T22:40:58Z
 url: https://github.com/astral-sh/ruff/issues/2094
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [ERROR] Failed to fix nested if: Expected outer if to have indented body and no else
 
 ---
 
-_Issue opened by @LefterisJP on 2023-01-22 22:12_
+_@LefterisJP_
 
 ruff version: `0.0.230`
 

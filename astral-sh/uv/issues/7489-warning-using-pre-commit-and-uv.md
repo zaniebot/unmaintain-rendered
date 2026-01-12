@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T09:54:26Z
 updated_at: 2024-09-18T15:34:28Z
 url: https://github.com/astral-sh/uv/issues/7489
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Warning using pre-commit and uv
 
 ---
 
-_Issue opened by @Kludex on 2024-09-18 09:54_
+_@Kludex_
 
 I'm running ruff on the pre-commit job on the GitHub CI.
 

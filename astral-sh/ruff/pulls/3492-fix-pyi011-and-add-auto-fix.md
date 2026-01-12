@@ -12,14 +12,14 @@ head: pyi011-auto-fix
 created_at: 2023-03-13T21:02:13Z
 updated_at: 2023-03-14T20:05:03Z
 url: https://github.com/astral-sh/ruff/pull/3492
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix PYI011 and add auto-fix
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-13 21:02_
+_@JonathanPlasse_
 
 - Fix PYI011 accept math constants in defaults
 - Add auto-fix

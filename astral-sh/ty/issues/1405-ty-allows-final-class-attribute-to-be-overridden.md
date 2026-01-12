@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-20T15:38:30Z
 updated_at: 2025-12-22T13:13:28Z
 url: https://github.com/astral-sh/ty/issues/1405
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty allows Final class attribute to be overridden by property
 
 ---
 
-_Issue opened by @benedekaibas on 2025-10-20 15:38_
+_@benedekaibas_
 
 ### Summary
 

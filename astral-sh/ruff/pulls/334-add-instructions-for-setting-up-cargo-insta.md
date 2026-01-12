@@ -12,14 +12,14 @@ head: add-carg-insta-to-setup
 created_at: 2022-10-06T06:51:18Z
 updated_at: 2022-10-06T12:01:12Z
 url: https://github.com/astral-sh/ruff/pull/334
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # add instructions for setting up cargo insta
 
 ---
 
-_Pull request opened by @adriangb on 2022-10-06 06:51_
+_@adriangb_
 
 _No description provided._
 

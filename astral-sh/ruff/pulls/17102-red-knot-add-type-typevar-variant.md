@@ -13,14 +13,14 @@ head: dcreager/typevar-type
 created_at: 2025-03-31T21:50:47Z
 updated_at: 2025-04-03T23:17:47Z
 url: https://github.com/astral-sh/ruff/pull/17102
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add `Type::TypeVar` variant
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-31 21:50_
+_@dcreager_
 
 This adds a new `Type` variant for holding an instance of a typevar inside of a generic function or class.  We don't handle specializing the typevars yet, but this should implement most of the typing rules for inside the generic function/class, where we don't know yet which specific type the typevar will be specialized to.
 

@@ -12,14 +12,14 @@ head: charlie/string-option
 created_at: 2023-07-13T04:11:16Z
 updated_at: 2023-07-13T11:34:05Z
 url: https://github.com/astral-sh/ruff/pull/5725
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Extend PEP 604 rewrites to support some quoted annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 04:11_
+_@charliermarsh_
 
 ## Summary
 

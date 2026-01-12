@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T23:58:48Z
 updated_at: 2024-09-27T00:32:44Z
 url: https://github.com/astral-sh/uv/issues/7728
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Can install pypi package pmtiles
 
 ---
 
-_Issue opened by @giswqs on 2024-09-26 23:58_
+_@giswqs_
 
 Get the following error.  However, the pmtiles source distribution does have `setup.py`.  Any advice?
 

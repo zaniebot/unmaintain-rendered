@@ -13,14 +13,14 @@ head: david/no-object-fallback
 created_at: 2025-05-26T08:11:51Z
 updated_at: 2025-05-26T10:03:32Z
 url: https://github.com/astral-sh/ruff/pull/18312
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Respect `MRO_NO_OBJECT_FALLBACK` policy when looking up symbols on `type` instances
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-26 08:11_
+_@sharkdp_
 
 ## Summary
 

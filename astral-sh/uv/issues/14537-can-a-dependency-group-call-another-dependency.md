@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T11:17:29Z
 updated_at: 2025-07-10T11:28:42Z
 url: https://github.com/astral-sh/uv/issues/14537
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Can a dependency group "call" another dependency group?
 
 ---
 
-_Issue opened by @stdedos on 2025-07-10 11:17_
+_@stdedos_
 
 ### Question
 

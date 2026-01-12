@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T14:02:29Z
 updated_at: 2022-11-18T19:15:40Z
 url: https://github.com/astral-sh/ruff/issues/788
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add flake8-blind-except rules
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-17 14:02_
+_@JonathanPlasse_
 
 This would check when `BaseException` or `Exception` is used instead of a specific one.
 

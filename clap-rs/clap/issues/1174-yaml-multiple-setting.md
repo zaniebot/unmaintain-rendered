@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-11T20:28:56Z
 updated_at: 2018-08-02T03:30:18Z
 url: https://github.com/clap-rs/clap/issues/1174
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # YAML multiple setting
 
 ---
 
-_Issue opened by @AndrewGaspar on 2018-02-11 20:28_
+_@AndrewGaspar_
 
 ### Rust Version
 `rustc 1.23.0 (766bd11c8 2018-01-01)`

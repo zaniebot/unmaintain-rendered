@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-04-19T20:05:49Z
 updated_at: 2024-04-19T21:14:01Z
 url: https://github.com/astral-sh/uv/pull/3144
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Enforce HTTP timeouts on a per-read (rather than per-request) basis
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 20:05_
+_@charliermarsh_
 
 ## Summary
 

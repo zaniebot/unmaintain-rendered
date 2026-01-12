@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T16:45:09Z
 updated_at: 2024-10-24T14:34:11Z
 url: https://github.com/astral-sh/ruff/issues/8725
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # TCH002 false positive with pydantic subclassing
 
 ---
 
-_Issue opened by @sorgfresser on 2023-11-16 16:45_
+_@sorgfresser_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

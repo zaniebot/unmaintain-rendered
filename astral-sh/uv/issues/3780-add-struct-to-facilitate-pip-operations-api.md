@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T00:11:15Z
 updated_at: 2024-05-23T04:20:38Z
 url: https://github.com/astral-sh/uv/issues/3780
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Add struct to facilitate pip operations API
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-23 00:11_
+_@charliermarsh_
 
 _No description provided._
 

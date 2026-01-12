@@ -13,14 +13,14 @@ head: run-zipapp
 created_at: 2024-09-11T13:30:26Z
 updated_at: 2024-09-28T05:41:35Z
 url: https://github.com/astral-sh/uv/pull/7289
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # `uv run` supports python zipapp
 
 ---
 
-_Pull request opened by @j178 on 2024-09-11 13:30_
+_@j178_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T22:13:13Z
 updated_at: 2025-04-21T22:19:21Z
 url: https://github.com/astral-sh/ruff/issues/17531
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Mention minimal Python version in Ruff rules
 
 ---
 
-_Issue opened by @danra on 2025-04-21 22:13_
+_@danra_
 
 The documentation for Ruff rules should mention the required minimal python version to be enabled, if there is one.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T01:10:38Z
 updated_at: 2024-10-10T16:24:19Z
 url: https://github.com/astral-sh/ruff/issues/13699
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `unexpected-spaces-around-keyword-parameter-equals` (`E251`) - conflicts with formatter / false positive on python 3.13 type var defaults
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-10 01:10_
+_@DetachHead_
 
 ```py
 def foo[T = int](): ... # Unexpected spaces around keyword / parameter equals

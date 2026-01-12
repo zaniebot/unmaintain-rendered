@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T06:13:56Z
 updated_at: 2024-11-11T15:36:46Z
 url: https://github.com/astral-sh/uv/issues/8921
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Confusion about adding new dependencies using uv add
 
 ---
 
-_Issue opened by @TonyYanOnFire on 2024-11-08 06:13_
+_@TonyYanOnFire_
 
 Hello. I'm new to uv and trying to incorporate it into my existing project.
 

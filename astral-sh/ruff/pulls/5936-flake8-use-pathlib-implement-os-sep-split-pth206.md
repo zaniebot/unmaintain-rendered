@@ -12,14 +12,14 @@ head: os-sep-split-pth206
 created_at: 2023-07-21T02:05:13Z
 updated_at: 2023-07-23T12:31:18Z
 url: https://github.com/astral-sh/ruff/pull/5936
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-use-pathlib`] Implement `os-sep-split` (`PTH206`)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-21 02:05_
+_@sbrugman_
 
 Implements https://github.com/astral-sh/ruff/issues/5905#issuecomment-1644822548
 

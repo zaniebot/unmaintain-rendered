@@ -13,14 +13,14 @@ head: charlie/target-version
 created_at: 2023-12-04T03:16:14Z
 updated_at: 2023-12-04T10:27:38Z
 url: https://github.com/astral-sh/uv/pull/532
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Enforce target and interpreter `requires-python` versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 03:16_
+_@charliermarsh_
 
 ## Summary
 

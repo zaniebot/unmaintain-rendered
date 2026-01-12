@@ -11,14 +11,14 @@ head: main
 created_at: 2023-02-06T01:37:17Z
 updated_at: 2023-05-24T02:25:29Z
 url: https://github.com/astral-sh/ruff/pull/2599
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Autofix for RET504 UnnecessaryAssign
 
 ---
 
-_Pull request opened by @Sawbez on 2023-02-06 01:37_
+_@Sawbez_
 
 Works on #2263 
 

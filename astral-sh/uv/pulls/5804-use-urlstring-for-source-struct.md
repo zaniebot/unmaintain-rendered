@@ -13,14 +13,14 @@ head: charlie/lock-hash
 created_at: 2024-08-05T23:46:33Z
 updated_at: 2024-08-06T12:58:10Z
 url: https://github.com/astral-sh/uv/pull/5804
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Use `UrlString` for `Source` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 23:46_
+_@charliermarsh_
 
 I don't think this will save any time in serialization, but it should save us some deserialization, since we only need to parse URLs for the packages we use...
 

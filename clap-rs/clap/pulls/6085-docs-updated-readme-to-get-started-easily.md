@@ -12,14 +12,14 @@ head: update-readme
 created_at: 2025-08-01T03:41:36Z
 updated_at: 2025-08-05T17:11:03Z
 url: https://github.com/clap-rs/clap/pull/6085
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Updated README to get started easily
 
 ---
 
-_Pull request opened by @JiaBao-do on 2025-08-01 03:41_
+_@JiaBao-do_
 
 <!--
 Thanks for helping out!

@@ -13,14 +13,14 @@ head: jane/bugs/fix-output-format-preview-mode
 created_at: 2024-02-01T21:20:16Z
 updated_at: 2024-02-01T22:19:27Z
 url: https://github.com/astral-sh/ruff/pull/9763
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix issue where output format mode would not change to `full` if preview mode was set in configuration file
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-01 21:20_
+_@snowsignal_
 
 ## Summary
 

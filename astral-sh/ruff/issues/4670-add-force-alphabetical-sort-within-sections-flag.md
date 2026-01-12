@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-26T14:49:00Z
 updated_at: 2024-04-28T17:08:04Z
 url: https://github.com/astral-sh/ruff/issues/4670
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # add force-alphabetical-sort-within-sections flag to isort settings
 
 ---
 
-_Issue opened by @alexdauenhauer on 2023-05-26 14:49_
+_@alexdauenhauer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

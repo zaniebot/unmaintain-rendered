@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-02-12T11:41:32Z
 updated_at: 2023-02-12T16:53:18Z
 url: https://github.com/astral-sh/ruff/pull/2807
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # fix: script `add_plugin.py` test import
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-12 11:41_
+_@sbrugman_
 
 _No description provided._
 

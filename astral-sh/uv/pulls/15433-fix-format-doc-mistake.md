@@ -13,14 +13,14 @@ head: zb/uv-format-iii
 created_at: 2025-08-21T20:59:00Z
 updated_at: 2025-08-21T21:12:07Z
 url: https://github.com/astral-sh/uv/pull/15433
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Fix format doc mistake
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-21 20:59_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T13:25:54Z
 updated_at: 2024-08-07T14:56:16Z
 url: https://github.com/astral-sh/uv/issues/5860
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Precise commits raise panic when locking
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-07 13:25_
+_@charliermarsh_
 
 Addendum:
 

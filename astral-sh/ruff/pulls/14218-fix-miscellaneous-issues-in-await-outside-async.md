@@ -13,14 +13,14 @@ head: charlie/await
 created_at: 2024-11-09T01:50:04Z
 updated_at: 2024-11-09T02:07:15Z
 url: https://github.com/astral-sh/ruff/pull/14218
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Fix miscellaneous issues in `await-outside-async detection`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 01:50_
+_@charliermarsh_
 
 ## Summary
 

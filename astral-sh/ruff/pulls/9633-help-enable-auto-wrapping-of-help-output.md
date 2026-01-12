@@ -13,14 +13,14 @@ head: ag/wrap-help
 created_at: 2024-01-24T14:34:59Z
 updated_at: 2024-01-24T16:33:01Z
 url: https://github.com/astral-sh/ruff/pull/9633
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # help: enable auto-wrapping of help output
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-24 14:34_
+_@BurntSushi_
 
 Previously, without the 'wrap_help' feature enabled, Clap would not do
 any auto-wrapping of help text. For help text with long lines, this

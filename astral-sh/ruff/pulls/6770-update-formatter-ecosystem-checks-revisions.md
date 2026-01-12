@@ -13,14 +13,14 @@ head: update-formatter-ecosystem-check-hashes
 created_at: 2023-08-22T12:24:32Z
 updated_at: 2023-08-22T18:19:11Z
 url: https://github.com/astral-sh/ruff/pull/6770
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update formatter ecosystem checks revisions
 
 ---
 
-_Pull request opened by @konstin on 2023-08-22 12:24_
+_@konstin_
 
 With https://github.com/django/django/pull/17181 merged, this removes an odd edge case (tuple expression statements aka bogus trailing commas after statements that turn them into a tuple without you noticing) that we don't want to care about because the input code is ~wrong from the similarity index. I've took this opportunity to update the revisions of all projects we test.
 

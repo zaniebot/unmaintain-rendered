@@ -13,14 +13,14 @@ head: david/hashable-sized
 created_at: 2024-12-04T13:41:03Z
 updated_at: 2024-12-04T14:00:29Z
 url: https://github.com/astral-sh/ruff/pull/14769
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Test: Hashable/Sized => A/B
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-04 13:41_
+_@sharkdp_
 
 ## Summary
 

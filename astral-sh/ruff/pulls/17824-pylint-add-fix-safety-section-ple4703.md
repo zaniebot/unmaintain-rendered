@@ -13,14 +13,14 @@ head: docs/fix-safety-modified-iterating-set
 created_at: 2025-05-03T20:23:56Z
 updated_at: 2025-05-12T21:40:14Z
 url: https://github.com/astral-sh/ruff/pull/17824
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [`pylint`] add fix safety section (`PLE4703`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-03 20:23_
+_@yunchipang_
 
 This PR adds a fix safety section in comment for rule PLE4703.
 

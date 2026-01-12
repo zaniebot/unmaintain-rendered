@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T15:45:20Z
 updated_at: 2024-11-18T18:19:32Z
 url: https://github.com/astral-sh/uv/issues/9201
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Can't use a private index in script dependency
 
 ---
 
-_Issue opened by @oxenit on 2024-11-18 15:45_
+_@oxenit_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

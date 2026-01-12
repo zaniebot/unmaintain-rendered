@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-10T20:54:32Z
 updated_at: 2025-07-23T05:51:25Z
 url: https://github.com/astral-sh/ruff/issues/1773
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Human-friendly rule names
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-10 20:54_
+_@not-my-profile_
 
 Pylint, ESLint and Clippy all let you enable or disable lints via human-friendly names e.g. Pylint [lets you configure](https://pylint.pycqa.org/en/v2.11.1/faq.html#do-i-have-to-remember-all-these-numbers):
 

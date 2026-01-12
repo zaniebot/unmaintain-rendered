@@ -12,14 +12,14 @@ head: charlie/f-string
 created_at: 2022-11-26T15:31:19Z
 updated_at: 2022-11-26T15:31:24Z
 url: https://github.com/astral-sh/ruff/pull/914
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Respect f-string locations in B023 check
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-26 15:31_
+_@charliermarsh_
 
 Resolves #910.
 

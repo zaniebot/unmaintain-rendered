@@ -14,14 +14,14 @@ head: charlie/many
 created_at: 2025-06-26T23:48:02Z
 updated_at: 2025-07-18T11:12:24Z
 url: https://github.com/astral-sh/uv/pull/14300
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Bump `--python-platform linux` to `manylinux_2_28`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-26 23:48_
+_@charliermarsh_
 
 ## Summary
 

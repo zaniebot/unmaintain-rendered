@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-30T09:17:45Z
 updated_at: 2025-09-07T17:12:30Z
 url: https://github.com/astral-sh/uv/issues/7806
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Don't create .python-version in workspace subprojects
 
 ---
 
-_Issue opened by @bluss on 2024-09-30 09:17_
+_@bluss_
 
 I suggest that `.python-version` should not be created in subprojects in a workspace. The workspace root should contain this file already, and subprojects should not have them. The current version of uv creates this file when initing a new workspace member, and the user can/should delete the file afterwards - if I understand correctly.
 

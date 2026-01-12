@@ -13,14 +13,14 @@ head: hvh/sync-debug-message
 created_at: 2025-09-15T19:59:06Z
 updated_at: 2025-09-16T18:39:09Z
 url: https://github.com/astral-sh/uv/pull/15881
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # fix misleading debug message in uv sync
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-15 19:59_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

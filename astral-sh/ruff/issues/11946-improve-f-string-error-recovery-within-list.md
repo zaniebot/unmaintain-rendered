@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-20T03:33:50Z
 updated_at: 2024-06-20T03:56:03Z
 url: https://github.com/astral-sh/ruff/issues/11946
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Improve f-string error recovery within list parsing
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-20 03:33_
+_@dhruvmanila_
 
 F-string error recovery within list parsing is good but it breaks when it's within a parenthesized context.
 

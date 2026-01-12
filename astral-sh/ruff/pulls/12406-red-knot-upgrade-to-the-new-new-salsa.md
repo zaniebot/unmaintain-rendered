@@ -13,14 +13,14 @@ head: upgrade-to-new-new-salsa
 created_at: 2024-07-19T13:47:42Z
 updated_at: 2024-07-29T07:36:03Z
 url: https://github.com/astral-sh/ruff/pull/12406
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Upgrade to the *new* *new* salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-19 13:47_
+_@MichaReiser_
 
 This PR upgrades Salsa and refactors our code to the [*hassle free* salsa](https://salsa.zulipchat.com/#narrow/stream/333573-salsa-3.2E0/topic/branch.3A.20.22hassle-free.22.20salsa).
 

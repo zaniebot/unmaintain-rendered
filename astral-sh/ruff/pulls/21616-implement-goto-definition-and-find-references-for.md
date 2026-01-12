@@ -14,14 +14,14 @@ head: gankra/non-exprs
 created_at: 2025-11-24T17:56:14Z
 updated_at: 2025-11-25T13:56:59Z
 url: https://github.com/astral-sh/ruff/pull/21616
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Implement goto-definition and find-references for global/nonlocal statements
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-24 17:56_
+_@Gankra_
 
 ## Summary
 

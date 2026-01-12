@@ -14,14 +14,14 @@ head: charlie/mark
 created_at: 2025-02-03T01:02:43Z
 updated_at: 2025-02-03T17:51:36Z
 url: https://github.com/astral-sh/uv/pull/11174
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Use Astral-maintained `tokio-tar` fork
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-03 01:02_
+_@charliermarsh_
 
 ## Summary
 

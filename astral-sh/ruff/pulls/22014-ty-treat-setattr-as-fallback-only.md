@@ -14,14 +14,14 @@ head: charlie/set
 created_at: 2025-12-17T02:40:35Z
 updated_at: 2025-12-31T00:01:12Z
 url: https://github.com/astral-sh/ruff/pull/22014
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Treat `__setattr__` as fallback-only
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 02:40_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T04:11:43Z
 updated_at: 2024-05-01T18:13:34Z
 url: https://github.com/astral-sh/uv/issues/1900
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `uv pip compile`: add `--no-upgrade` flag
 
 ---
 
-_Issue opened by @gotmax23 on 2024-02-23 04:11_
+_@gotmax23_
 
 (Version: uv 0.1.9)
 

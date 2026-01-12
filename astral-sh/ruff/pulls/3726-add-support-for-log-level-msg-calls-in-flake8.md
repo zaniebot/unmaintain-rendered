@@ -12,14 +12,14 @@ head: fix/detect-log-fn
 created_at: 2023-03-25T06:01:10Z
 updated_at: 2023-03-27T03:58:25Z
 url: https://github.com/astral-sh/ruff/pull/3726
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add support for `.log(level, msg)` calls in `flake8-logging-format`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-25 06:01_
+_@dhruvmanila_
 
 fixes: #2562 
 

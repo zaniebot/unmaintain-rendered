@@ -13,14 +13,14 @@ head: red-knot-relative-imports
 created_at: 2024-04-27T17:04:30Z
 updated_at: 2024-04-27T18:07:09Z
 url: https://github.com/astral-sh/ruff/pull/11180
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] Fix absolute imports in `module.resolve_name`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-27 17:04_
+_@MichaReiser_
 
 ## Summary
 

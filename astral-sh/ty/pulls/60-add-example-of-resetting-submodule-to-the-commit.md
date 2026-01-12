@@ -13,14 +13,14 @@ head: zb/example-main-reset
 created_at: 2025-05-06T13:23:43Z
 updated_at: 2025-07-08T10:38:11Z
 url: https://github.com/astral-sh/ty/pull/60
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add example of resetting submodule to the commit from `main`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-06 13:23_
+_@zanieb_
 
 _No description provided._
 

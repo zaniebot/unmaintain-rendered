@@ -13,14 +13,14 @@ head: ag/add-universal-marker
 created_at: 2024-11-21T19:27:49Z
 updated_at: 2024-11-23T15:59:57Z
 url: https://github.com/astral-sh/uv/pull/9334
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # uv-resolver: add new `UniversalMarker` type
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-21 19:27_
+_@BurntSushi_
 
 This effectively combines a PEP 508 marker and an as-yet-specified
 marker for expressing conflicts among extras and groups.

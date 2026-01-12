@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T16:20:17Z
 updated_at: 2024-08-09T09:13:40Z
 url: https://github.com/astral-sh/uv/issues/5817
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Don't preserve forks when using `--upgrade`
 
 ---
 
-_Issue opened by @konstin on 2024-08-06 16:20_
+_@konstin_
 
 We should start from universal again when we don't use the preferences from `uv.lock`.
 

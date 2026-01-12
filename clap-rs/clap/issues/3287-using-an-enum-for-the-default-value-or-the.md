@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-12T11:04:51Z
 updated_at: 2022-01-12T17:13:21Z
 url: https://github.com/clap-rs/clap/issues/3287
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Using an enum for the default_value or the possible_values
 
 ---
 
-_Issue opened by @Vagelis-Prokopiou on 2022-01-12 11:04_
+_@Vagelis-Prokopiou_
 
 ### Please complete the following tasks
 

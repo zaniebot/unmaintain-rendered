@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-08T14:49:15Z
 updated_at: 2025-11-02T14:44:32Z
 url: https://github.com/clap-rs/clap/issues/5202
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clap outputs wrong error message context when using an environment variable with invalid content
 
 ---
 
-_Issue opened by @inf17101 on 2023-11-08 14:49_
+_@inf17101_
 
 ### Please complete the following tasks
 

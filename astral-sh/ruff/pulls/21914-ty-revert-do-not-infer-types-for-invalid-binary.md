@@ -14,14 +14,14 @@ head: david/revert-binary-type-expr-inference
 created_at: 2025-12-11T11:52:48Z
 updated_at: 2025-12-11T11:57:47Z
 url: https://github.com/astral-sh/ruff/pull/21914
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Revert "Do not infer types for invalid binary expressions in annotations"
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-11 11:52_
+_@sharkdp_
 
 See discussion here: https://github.com/astral-sh/ruff/pull/21911#discussion_r2610155157
 

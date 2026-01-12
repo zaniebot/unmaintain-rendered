@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-03T00:49:06Z
 updated_at: 2025-08-04T21:42:12Z
 url: https://github.com/astral-sh/uv/issues/15037
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # `extra-build-dependencies` don't respect index pinning
 
 ---
 
-_Issue opened by @charliermarsh on 2025-08-03 00:49_
+_@charliermarsh_
 
 It looks like we convert from `uv_distribution_types::Requirement` _back_ to `uv_pep508::Requirement`, which is lossy. We lose the ability to pin to specific indexes, for example.
 

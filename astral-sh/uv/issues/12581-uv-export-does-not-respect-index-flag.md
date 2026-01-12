@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T09:42:39Z
 updated_at: 2025-03-31T13:10:33Z
 url: https://github.com/astral-sh/uv/issues/12581
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # uv export does not respect --index flag
 
 ---
 
-_Issue opened by @liiight on 2025-03-31 09:42_
+_@liiight_
 
 ### Summary
 

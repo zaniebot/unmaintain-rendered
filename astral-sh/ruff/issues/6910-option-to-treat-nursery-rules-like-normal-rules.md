@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-27T01:22:46Z
 updated_at: 2023-09-13T02:23:07Z
 url: https://github.com/astral-sh/ruff/issues/6910
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # option to treat nursery rules like normal rules
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-27 01:22_
+_@DetachHead_
 
 i just found out that there are a bunch of rules that i thought i was using because i enabled the category they were in, and i didn't know about the nursery.
 

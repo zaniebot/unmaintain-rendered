@@ -13,14 +13,14 @@ head: dcreager/ancestor-specialization
 created_at: 2025-05-06T15:43:56Z
 updated_at: 2025-05-06T18:25:23Z
 url: https://github.com/astral-sh/ruff/pull/17892
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Propagate specializations to ancestor base classes
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-06 15:43_
+_@dcreager_
 
 @AlexWaygood discovered that even though we've been propagating specializations to _parent_ base classes correctly, we haven't been passing them on to _grandparent_ base classes: https://github.com/astral-sh/ruff/pull/17832#issuecomment-2854360969
 

@@ -14,14 +14,14 @@ head: alex/method-metatype
 created_at: 2025-07-07T17:20:12Z
 updated_at: 2025-07-25T10:16:08Z
 url: https://github.com/astral-sh/ruff/pull/19187
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Do not consider a type `T` to satisfy a method member on a protocol unless the method is available on the meta-type of `T`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-07 17:20_
+_@AlexWaygood_
 
 ## Summary
 

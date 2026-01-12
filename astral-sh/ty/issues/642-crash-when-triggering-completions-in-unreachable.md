@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-06-12T14:05:21Z
 updated_at: 2025-10-03T12:20:03Z
 url: https://github.com/astral-sh/ty/issues/642
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Crash when triggering completions in unreachable match cases
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-12 14:05_
+_@sharkdp_
 
 ~~I tried to trigger this in the corpus tests and the LSP server, but didn't manage to do so, so reporting as a playground problem for now:~~
 

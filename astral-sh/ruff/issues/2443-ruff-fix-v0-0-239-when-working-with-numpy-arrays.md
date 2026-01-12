@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-01T15:41:19Z
 updated_at: 2023-05-21T16:06:02Z
 url: https://github.com/astral-sh/ruff/issues/2443
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [ruff --fix] (v0.0.239) When working with numpy arrays `mask == True` is not the same as `mask is True`
 
 ---
 
-_Issue opened by @FrancescElies on 2023-02-01 15:41_
+_@FrancescElies_
 
 After running `ruff --fix` the last line of the following script gets reformatted as `np.where(mask is True)` but in this context is not the same.
 

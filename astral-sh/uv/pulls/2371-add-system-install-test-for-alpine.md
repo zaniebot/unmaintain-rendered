@@ -14,14 +14,14 @@ head: zb/system-install-alpine
 created_at: 2024-03-11T23:31:32Z
 updated_at: 2024-03-12T14:26:07Z
 url: https://github.com/astral-sh/uv/pull/2371
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Add system install test for alpine
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-11 23:31_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-17T12:54:46Z
 updated_at: 2024-06-23T16:35:01Z
 url: https://github.com/astral-sh/ruff/issues/11904
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `Args:` section not correctly formatted when no description is provided
 
 ---
 
-_Issue opened by @antoinebrl on 2024-06-17 12:54_
+_@antoinebrl_
 
 Hello,
 

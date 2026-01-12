@@ -13,14 +13,14 @@ head: fix-root-missing-in-all-packages-sbom-export
 created_at: 2026-01-08T16:51:26Z
 updated_at: 2026-01-08T18:19:34Z
 url: https://github.com/astral-sh/uv/pull/17363
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Fix missing dependencies on synthetic root in SBOM export
 
 ---
 
-_Pull request opened by @thomasschafer on 2026-01-08 16:51_
+_@thomasschafer_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

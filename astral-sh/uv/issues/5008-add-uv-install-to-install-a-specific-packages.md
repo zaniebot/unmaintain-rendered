@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-12T13:48:46Z
 updated_at: 2024-07-31T15:27:19Z
 url: https://github.com/astral-sh/uv/issues/5008
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add `uv install` to install a specific packages from the workspace
 
 ---
 
-_Issue opened by @bschoenmaeckers on 2024-07-12 13:48_
+_@bschoenmaeckers_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

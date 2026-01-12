@@ -14,14 +14,14 @@ head: alex/fuzz-profile-profiling
 created_at: 2025-11-03T21:27:37Z
 updated_at: 2025-11-03T21:53:44Z
 url: https://github.com/astral-sh/ruff/pull/21266
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Run py-fuzzer with `--profile=profiling` locally and in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-03 21:27_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-06T11:56:05Z
 updated_at: 2025-09-08T13:55:23Z
 url: https://github.com/astral-sh/ruff/issues/20281
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feature: Add Workflow for Manual Version Bumps
 
 ---
 
-_Issue opened by @taj54 on 2025-09-06 11:56_
+_@taj54_
 
 
 We should add a GitHub Actions workflow powered by [**Universal Version Bump**](https://github.com/marketplace/actions/universal-version-bump).  

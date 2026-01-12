@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-20T15:16:19Z
 updated_at: 2024-12-20T15:17:58Z
 url: https://github.com/astral-sh/uv/issues/10057
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv python install --default with .python-versions misbehaves
 
 ---
 
-_Issue opened by @jooon on 2024-12-20 15:16_
+_@jooon_
 
 I know that uv does not allow you to specify multiple python versions on the command-line with --default. But specifying no version on the command-line and having multiple versions in .python-versions works. If you do that, then the symlinks are not consistent.
 

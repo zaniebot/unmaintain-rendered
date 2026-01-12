@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T11:21:06Z
 updated_at: 2024-03-14T08:00:24Z
 url: https://github.com/astral-sh/ruff/issues/10310
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `RUF001` isn't highlighted for implicitly concatenated f-string
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-09 11:21_
+_@dhruvmanila_
 
 Given:
 

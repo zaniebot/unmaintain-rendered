@@ -14,14 +14,14 @@ head: recursive-generic-type-alias
 created_at: 2025-10-19T13:16:20Z
 updated_at: 2025-10-23T14:27:28Z
 url: https://github.com/astral-sh/ruff/pull/20969
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] fix infinite recursion with generic type aliases
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-19 13:16_
+_@mtshiba_
 
 ## Summary
 

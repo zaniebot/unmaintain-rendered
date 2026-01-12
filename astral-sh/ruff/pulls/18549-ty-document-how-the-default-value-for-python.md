@@ -14,14 +14,14 @@ head: document-requires-python
 created_at: 2025-06-08T10:05:31Z
 updated_at: 2025-06-09T13:32:44Z
 url: https://github.com/astral-sh/ruff/pull/18549
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] document how the default value for `python-version` is determined
 
 ---
 
-_Pull request opened by @DetachHead on 2025-06-08 10:05_
+_@DetachHead_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

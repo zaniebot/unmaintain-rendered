@@ -13,14 +13,14 @@ head: PT027
 created_at: 2023-08-14T09:09:43Z
 updated_at: 2023-08-14T22:29:14Z
 url: https://github.com/astral-sh/ruff/pull/6554
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # [`flake8-pytest-style`] Implement `pytest-unittest-raises-assertion` (`PT027`)
 
 ---
 
-_Pull request opened by @harupy on 2023-08-14 09:09_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

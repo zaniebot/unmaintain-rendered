@@ -11,14 +11,14 @@ head: ignore-com812-for-single-arguments-in-calls
 created_at: 2023-05-18T19:40:07Z
 updated_at: 2023-06-27T22:45:50Z
 url: https://github.com/astral-sh/ruff/pull/4507
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore COM812 for single arguments in calls
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-18 19:40_
+_@JonathanPlasse_
 
 - Discussed in #3303
 

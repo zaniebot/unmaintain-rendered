@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-24T18:12:50Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/279
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Feature: Allow matching on argument group
 
 ---
 
-_Issue opened by @Diggsey on 2015-09-24 18:12_
+_@Diggsey_
 
 Within an argument group, only one of the arguments may be present, so it's useful to be able to match on that group.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T06:41:28Z
 updated_at: 2024-11-27T17:58:49Z
 url: https://github.com/astral-sh/ruff/issues/14554
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Checking file with rule TC006 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-11-23 06:41_
+_@qarmin_
 
 
 ruff 0.8.0+1366 (3fda2d17c 2024-11-22)

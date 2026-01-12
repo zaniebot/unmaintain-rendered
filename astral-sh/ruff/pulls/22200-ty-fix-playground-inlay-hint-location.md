@@ -14,14 +14,14 @@ head: ty-playground-inlay-hint-location
 created_at: 2025-12-26T01:47:02Z
 updated_at: 2025-12-27T00:21:53Z
 url: https://github.com/astral-sh/ruff/pull/22200
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Fix playground inlay hint location
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-26 01:47_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

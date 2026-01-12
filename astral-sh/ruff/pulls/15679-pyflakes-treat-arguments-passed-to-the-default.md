@@ -13,14 +13,14 @@ head: alex/tvar-default
 created_at: 2025-01-22T22:50:14Z
 updated_at: 2025-01-22T23:04:22Z
 url: https://github.com/astral-sh/ruff/pull/15679
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyflakes`] Treat arguments passed to the `default=` parameter of `TypeVar` as type expressions (`F821`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-22 22:50_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: heading
 created_at: 2025-11-03T17:15:57Z
 updated_at: 2025-11-03T17:20:50Z
 url: https://github.com/clap-rs/clap/pull/6177
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs(group): Cross-link ArgGroup to help heading
 
 ---
 
-_Pull request opened by @epage on 2025-11-03 17:15_
+_@epage_
 
 <!--
 Thanks for helping out!

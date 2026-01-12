@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-04T19:28:03Z
 updated_at: 2022-12-12T00:49:19Z
 url: https://github.com/astral-sh/ruff/issues/1043
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Ruff incorrectly reports on redefined imports with explicit re-exports
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-04 19:28_
+_@charliermarsh_
 
 Given this snippet:
 

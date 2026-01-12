@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T07:56:08Z
 updated_at: 2025-06-28T13:26:37Z
 url: https://github.com/astral-sh/uv/issues/14068
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Introduce source preference for conflicting dependencies
 
 ---
 
-_Issue opened by @j-adamczyk on 2025-06-16 07:56_
+_@j-adamczyk_
 
 ### Summary
 

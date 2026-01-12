@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T21:24:17Z
 updated_at: 2025-11-20T19:07:09Z
 url: https://github.com/astral-sh/uv/issues/4711
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv pip tree` machine readable output
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-01 21:24_
+_@ibraheemdev_
 
 e.g. JSON with `-j`. This is useful for interacting with graph tools such as mermaid.
 

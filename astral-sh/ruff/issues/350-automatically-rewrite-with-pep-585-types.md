@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-07T20:06:55Z
 updated_at: 2022-10-09T00:28:13Z
 url: https://github.com/astral-sh/ruff/issues/350
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically rewrite with PEP 585 types
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 20:06_
+_@charliermarsh_
 
 From `pyupgrade` (I really want this one personally):
 

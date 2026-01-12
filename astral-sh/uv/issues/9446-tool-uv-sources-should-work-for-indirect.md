@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T17:35:25Z
 updated_at: 2025-03-06T14:01:38Z
 url: https://github.com/astral-sh/uv/issues/9446
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # `tool.uv.sources` should work for indirect dependencies
 
 ---
 
-_Issue opened by @zeevro on 2024-11-26 17:35_
+_@zeevro_
 
 Currently (version 0.5.4), `uv` ignores `tool.uv.sources` if a package is not a direct dependency (i.e. listed in the project's `pyproject.toml`). I think `tool.uv.sources` should apply for all dependencies.
 

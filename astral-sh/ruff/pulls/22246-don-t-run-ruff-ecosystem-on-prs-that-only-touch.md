@@ -13,14 +13,14 @@ head: alex/benchmark-ecosystem
 created_at: 2025-12-29T15:57:57Z
 updated_at: 2025-12-29T17:33:55Z
 url: https://github.com/astral-sh/ruff/pull/22246
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Don't run ruff-ecosystem on PRs that only touch ruff_benchmark
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-29 15:57_
+_@AlexWaygood_
 
 ## Summary
 

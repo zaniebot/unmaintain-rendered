@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-03T11:32:49Z
 updated_at: 2022-08-09T19:31:46Z
 url: https://github.com/clap-rs/clap/issues/3785
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive API doesn't respect `id` attribute
 
 ---
 
-_Issue opened by @survived on 2022-06-03 11:32_
+_@survived_
 
 ### Please complete the following tasks
 

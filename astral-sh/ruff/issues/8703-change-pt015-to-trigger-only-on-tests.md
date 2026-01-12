@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T19:15:49Z
 updated_at: 2023-11-20T20:02:25Z
 url: https://github.com/astral-sh/ruff/issues/8703
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Change PT015 to trigger only on tests
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-11-15 19:15_
+_@NeilGirdhar_
 
 [PT015](https://docs.astral.sh/ruff/rules/pytest-assert-always-false/) recommends using `pytest.fail`, which makes perfect sense inside a test.  But why is it triggering in ordinary code?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T22:44:16Z
 updated_at: 2024-10-28T08:44:48Z
 url: https://github.com/astral-sh/uv/issues/8580
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Suggestion to improve downloads from registries that expose the METADATA file (PEP 658)
 
 ---
 
-_Issue opened by @mmarston on 2024-10-25 22:44_
+_@mmarston_
 
 I was looking into range support on a registry server and looking at the sequence of requests that `uv` makes. Currently, when a registry server doesn't support PEP 658, but does support range requests, then `uv` will make 3 or 4 different requests for the wheel:
 

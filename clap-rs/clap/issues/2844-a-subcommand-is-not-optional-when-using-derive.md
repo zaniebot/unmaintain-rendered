@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-11T12:35:44Z
 updated_at: 2021-10-11T14:05:17Z
 url: https://github.com/clap-rs/clap/issues/2844
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # A subcommand is not optional when using derive macros
 
 ---
 
-_Issue opened by @tobx on 2021-10-11 12:35_
+_@tobx_
 
 ### Please complete the following tasks
 

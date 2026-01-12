@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-08T16:25:01Z
 updated_at: 2023-09-12T07:49:53Z
 url: https://github.com/astral-sh/ruff/issues/7245
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Format cause panic 'slice index starts at 4 but ends at 3'
 
 ---
 
-_Issue opened by @qarmin on 2023-09-08 16:25_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 ```

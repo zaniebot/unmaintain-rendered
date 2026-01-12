@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-06T14:32:59Z
 updated_at: 2025-02-06T23:52:51Z
 url: https://github.com/astral-sh/uv/issues/11282
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Add `uv sync --dry-run`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-06 14:32_
+_@charliermarsh_
 
 _No description provided._
 

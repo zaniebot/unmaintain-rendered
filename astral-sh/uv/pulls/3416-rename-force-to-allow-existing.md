@@ -13,14 +13,14 @@ head: charlie/force
 created_at: 2024-05-07T04:29:25Z
 updated_at: 2024-05-07T17:11:32Z
 url: https://github.com/astral-sh/uv/pull/3416
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Rename `--force` to `--allow-existing`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-07 04:29_
+_@charliermarsh_
 
 ## Summary
 

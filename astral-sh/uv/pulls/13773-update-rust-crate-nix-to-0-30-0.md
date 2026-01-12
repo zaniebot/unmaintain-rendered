@@ -13,14 +13,14 @@ head: renovate/nix-0.x
 created_at: 2025-06-02T00:56:08Z
 updated_at: 2025-06-02T08:05:02Z
 url: https://github.com/astral-sh/uv/pull/13773
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update Rust crate nix to 0.30.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 00:56_
+_@renovate_
 
 This PR contains the following updates:
 

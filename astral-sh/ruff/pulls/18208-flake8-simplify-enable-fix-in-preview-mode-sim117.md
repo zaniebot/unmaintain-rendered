@@ -14,14 +14,14 @@ head: fix-safety-ast-with
 created_at: 2025-05-19T21:16:17Z
 updated_at: 2025-05-20T13:34:51Z
 url: https://github.com/astral-sh/ruff/pull/18208
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [`flake8-simplify`] enable fix in preview mode (`SIM117`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-19 21:16_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `SIM117` (#15584 ), and enable a fix in preview mode.
 

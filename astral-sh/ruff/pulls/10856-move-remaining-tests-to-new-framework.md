@@ -14,14 +14,14 @@ head: dhruv/move-tests
 created_at: 2024-04-10T04:20:01Z
 updated_at: 2024-04-10T04:39:24Z
 url: https://github.com/astral-sh/ruff/pull/10856
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Move remaining tests to new framework
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 04:20_
+_@dhruvmanila_
 
 ## Summary
 

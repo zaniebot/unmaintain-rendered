@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-23T15:59:07Z
 updated_at: 2025-12-15T03:55:17Z
 url: https://github.com/astral-sh/uv/issues/171
-synced_at: 2026-01-10T03:11:30Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add support for pinning a package to a specific index
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-23 15:59_
+_@charliermarsh_
 
 Discussed this with Armin -- pip doesn't support it, and it seems like a big problem? If you have an internal index, but also want to get some packages from PyPI, there's no way to ensure that your internal packages come from your internal index. Packages on PyPI could even shadow them.
 

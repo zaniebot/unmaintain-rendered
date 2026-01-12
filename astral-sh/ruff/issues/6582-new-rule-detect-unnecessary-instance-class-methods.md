@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-15T03:34:52Z
 updated_at: 2023-08-19T06:56:16Z
 url: https://github.com/astral-sh/ruff/issues/6582
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # new rule - detect unnecessary instance/class methods
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-15 03:34_
+_@DetachHead_
 
 ```py
 class Foo:

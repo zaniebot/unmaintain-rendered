@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-09-09T18:54:41Z
 updated_at: 2023-07-21T19:45:19Z
 url: https://github.com/clap-rs/clap/issues/2766
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Don't suggest `--` in errors if it isn't relevant
 
 ---
 
-_Issue opened by @silvioprog on 2021-09-09 18:54_
+_@silvioprog_
 
 ### Please complete the following tasks
 

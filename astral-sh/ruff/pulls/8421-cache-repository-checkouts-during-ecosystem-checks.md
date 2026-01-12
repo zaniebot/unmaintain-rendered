@@ -13,14 +13,14 @@ head: zanie/eco-cache
 created_at: 2023-11-01T19:53:09Z
 updated_at: 2023-11-11T16:37:44Z
 url: https://github.com/astral-sh/ruff/pull/8421
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Cache repository checkouts during ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 19:53_
+_@zanieb_
 
 Requires https://github.com/astral-sh/ruff/pull/8420
 

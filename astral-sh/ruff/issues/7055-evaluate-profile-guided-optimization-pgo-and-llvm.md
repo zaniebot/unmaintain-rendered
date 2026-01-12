@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-01T23:29:12Z
 updated_at: 2025-04-11T18:33:00Z
 url: https://github.com/astral-sh/ruff/issues/7055
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Evaluate Profile-Guided Optimization (PGO) and LLVM BOLT
 
 ---
 
-_Issue opened by @zamazan4ik on 2023-09-01 23:29_
+_@zamazan4ik_
 
 Hi!
 

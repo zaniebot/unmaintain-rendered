@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-21T21:11:56Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/623
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help output printed twice
 
 ---
 
-_Issue opened by @eukaryote on 2016-08-21 21:11_
+_@eukaryote_
 
 I'm seeing help/usage info being printed twice. I tried cloning from master and checking one of the examples, and I see the same output there. 
 

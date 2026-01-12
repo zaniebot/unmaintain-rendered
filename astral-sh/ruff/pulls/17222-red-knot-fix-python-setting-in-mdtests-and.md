@@ -14,14 +14,14 @@ head: alex/rewrite-test-2
 created_at: 2025-04-05T16:04:25Z
 updated_at: 2025-04-06T17:24:34Z
 url: https://github.com/astral-sh/ruff/pull/17222
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix `python` setting in mdtests, and rewrite a `site-packages` test as an mdtest
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-05 16:04_
+_@AlexWaygood_
 
 ## Summary
 

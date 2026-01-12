@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T23:58:58Z
 updated_at: 2024-08-11T14:45:52Z
 url: https://github.com/astral-sh/uv/issues/5986
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Revisit LTO for ppc64le binaries
 
 ---
 
-_Issue opened by @zanieb on 2024-08-09 23:58_
+_@zanieb_
 
 In #5904, LTO was added to our release profile. However, in #5984, this failed for just the ppc64le musl cross build (which uses the nightly toolchain): 
 

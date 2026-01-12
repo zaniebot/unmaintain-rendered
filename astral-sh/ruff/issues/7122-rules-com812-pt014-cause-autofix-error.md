@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-04T06:03:56Z
 updated_at: 2023-10-01T08:34:47Z
 url: https://github.com/astral-sh/ruff/issues/7122
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules COM812,PT014 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-04 06:03_
+_@qarmin_
 
 
 Ruff 0.0.287 (latest changes from main branch)

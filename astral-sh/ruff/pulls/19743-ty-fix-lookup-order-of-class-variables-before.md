@@ -13,14 +13,14 @@ head: fix-875-class-var-lookup
 created_at: 2025-08-04T12:32:04Z
 updated_at: 2025-08-07T03:09:59Z
 url: https://github.com/astral-sh/ruff/pull/19743
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] fix lookup order of class variables before they are defined
 
 ---
 
-_Pull request opened by @mtshiba on 2025-08-04 12:32_
+_@mtshiba_
 
 ## Summary
 

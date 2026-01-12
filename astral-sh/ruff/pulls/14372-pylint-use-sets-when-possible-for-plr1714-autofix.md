@@ -14,14 +14,14 @@ head: use-set-for-PLR1714
 created_at: 2024-11-15T23:48:57Z
 updated_at: 2024-11-18T07:57:44Z
 url: https://github.com/astral-sh/ruff/pull/14372
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pylint`] - use sets when possible for `PLR1714` autofix (`repeated-equality-comparison`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-15 23:48_
+_@diceroll123_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: red-knot-file-watching
 created_at: 2024-04-24T13:23:32Z
 updated_at: 2024-04-25T07:54:57Z
 url: https://github.com/astral-sh/ruff/pull/11127
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Red knot: Add file watching and cancellation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-24 13:23_
+_@MichaReiser_
 
 ## Summary
 

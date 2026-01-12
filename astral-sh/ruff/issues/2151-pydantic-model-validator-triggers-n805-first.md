@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T09:20:13Z
 updated_at: 2025-09-10T13:53:58Z
 url: https://github.com/astral-sh/ruff/issues/2151
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # pydantic model validator triggers N805: First argument of a method should be named `self`
 
 ---
 
-_Issue opened by @hofrob on 2023-01-25 09:20_
+_@hofrob_
 
 Sorry to bother you guys with this again (#769), but there may be a regression here (or I'm too stupid  to find out what I'm doing wrong).
 

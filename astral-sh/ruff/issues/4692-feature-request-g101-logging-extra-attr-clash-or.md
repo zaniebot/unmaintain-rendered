@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-28T12:45:47Z
 updated_at: 2024-05-05T17:59:32Z
 url: https://github.com/astral-sh/ruff/issues/4692
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Feature request: G101 logging-extra-attr-clash (or a new, similar rule) to detect (potentially) unsafe dict unpacking
 
 ---
 
-_Issue opened by @roikoren755 on 2023-05-28 12:45_
+_@roikoren755_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

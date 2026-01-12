@@ -13,14 +13,14 @@ head: dhruv/em-msg
 created_at: 2023-12-08T20:59:02Z
 updated_at: 2023-12-08T21:16:17Z
 url: https://github.com/astral-sh/ruff/pull/9059
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow `EM` fixes even if `msg` variable is defined
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-08 20:59_
+_@dhruvmanila_
 
 This PR updates the `EM` rules to generate the auto-fix even if the `msg` variable is defined in the current scope.
 

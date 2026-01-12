@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T15:49:43Z
 updated_at: 2025-09-18T17:05:29Z
 url: https://github.com/astral-sh/ruff/issues/20453
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Improve import sorting for namespace packages
 
 ---
 
-_Issue opened by @lkollar on 2025-09-17 15:49_
+_@lkollar_
 
 ### Summary
 

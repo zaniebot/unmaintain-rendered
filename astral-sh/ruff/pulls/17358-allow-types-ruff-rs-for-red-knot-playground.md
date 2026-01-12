@@ -14,14 +14,14 @@ head: charlie/ty
 created_at: 2025-04-11T16:46:21Z
 updated_at: 2025-04-11T16:56:05Z
 url: https://github.com/astral-sh/ruff/pull/17358
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Allow types.ruff.rs for red-knot playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-11 16:46_
+_@charliermarsh_
 
 _No description provided._
 

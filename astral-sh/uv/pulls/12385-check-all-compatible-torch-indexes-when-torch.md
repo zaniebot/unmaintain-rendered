@@ -14,14 +14,14 @@ head: charlie/t
 created_at: 2025-03-22T00:37:40Z
 updated_at: 2025-03-22T15:53:28Z
 url: https://github.com/astral-sh/uv/pull/12385
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Check all compatible torch indexes when `--torch-backend` is enabled
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-22 00:37_
+_@charliermarsh_
 
 ## Summary
 

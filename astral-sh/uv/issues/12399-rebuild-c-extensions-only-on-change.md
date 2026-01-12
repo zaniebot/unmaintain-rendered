@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T01:15:51Z
 updated_at: 2025-04-01T20:26:03Z
 url: https://github.com/astral-sh/uv/issues/12399
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Rebuild C Extensions only on change
 
 ---
 
-_Issue opened by @imanoid on 2025-03-23 01:15_
+_@imanoid_
 
 I have a workspace with several python projects containing c++ extensions. Setuptools is configured as the build system.
 

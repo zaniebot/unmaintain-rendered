@@ -13,14 +13,14 @@ head: charlie/extras
 created_at: 2024-01-25T18:14:21Z
 updated_at: 2024-01-25T18:21:55Z
 url: https://github.com/astral-sh/uv/pull/1103
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Remove `Option` wrapper from requirement extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 18:14_
+_@charliermarsh_
 
 There's no semantic difference between `None` and empty, so seems simpler to represent this way.
 

@@ -14,14 +14,14 @@ head: fix-20781
 created_at: 2025-10-15T04:05:44Z
 updated_at: 2025-10-24T13:47:11Z
 url: https://github.com/astral-sh/ruff/pull/20881
-synced_at: 2026-01-10T17:28:45Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [`flake8-pyi`] Fix PYI034 to not trigger on metaclasses (`PYI034`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-15 04:05_
+_@danparizher_
 
 ## Summary
 

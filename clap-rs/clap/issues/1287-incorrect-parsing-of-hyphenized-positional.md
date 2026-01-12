@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-06-04T22:12:22Z
 updated_at: 2020-06-30T13:29:38Z
 url: https://github.com/clap-rs/clap/issues/1287
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Incorrect parsing of hyphenized positional arguments with mutiple positionals
 
 ---
 
-_Issue opened by @hstefan on 2018-06-04 22:12_
+_@hstefan_
 
 ### Rust Version
 

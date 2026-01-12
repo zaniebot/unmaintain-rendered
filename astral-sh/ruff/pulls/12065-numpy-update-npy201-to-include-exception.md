@@ -13,14 +13,14 @@ head: update-numpy2-rule
 created_at: 2024-06-27T08:56:08Z
 updated_at: 2024-07-05T12:40:44Z
 url: https://github.com/astral-sh/ruff/pull/12065
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`numpy`] Update `NPY201` to include exception deprecations
 
 ---
 
-_Pull request opened by @mtsokol on 2024-06-27 08:56_
+_@mtsokol_
 
 Hi!
 

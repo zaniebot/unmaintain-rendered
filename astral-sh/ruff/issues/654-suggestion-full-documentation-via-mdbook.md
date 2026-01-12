@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-08T04:21:08Z
 updated_at: 2023-02-08T01:13:06Z
 url: https://github.com/astral-sh/ruff/issues/654
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Suggestion: Full documentation via mdbook
 
 ---
 
-_Issue opened by @tgross35 on 2022-11-08 04:21_
+_@tgross35_
 
 Have you considered adding some documentation outside of the readme, potentially with mdbook?
 

@@ -13,14 +13,14 @@ head: fuzz-ci
 created_at: 2024-04-22T12:27:26Z
 updated_at: 2024-04-23T10:33:29Z
 url: https://github.com/astral-sh/ruff/pull/11089
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add a new CI job to fuzz the parser
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-22 12:27_
+_@AlexWaygood_
 
 ## Summary
 

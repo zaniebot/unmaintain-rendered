@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T00:31:50Z
 updated_at: 2025-12-18T17:23:01Z
 url: https://github.com/astral-sh/uv/issues/17156
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Workspace package resolution improvement
 
 ---
 
-_Issue opened by @DiDeoxy on 2025-12-17 00:31_
+_@DiDeoxy_
 
 ### Summary
 

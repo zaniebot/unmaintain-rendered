@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-01T11:04:48Z
 updated_at: 2025-02-03T15:46:27Z
 url: https://github.com/astral-sh/uv/issues/11151
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # No solution found when resolving dependencies for split (platform_python_implementation == 'PyPy')
 
 ---
 
-_Issue opened by @kdebrab on 2025-02-01 11:04_
+_@kdebrab_
 
 ### Summary
 

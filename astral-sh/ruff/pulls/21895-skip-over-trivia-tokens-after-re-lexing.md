@@ -14,14 +14,14 @@ head: micha/parser-trivia-relex
 created_at: 2025-12-10T14:10:26Z
 updated_at: 2025-12-12T06:13:22Z
 url: https://github.com/astral-sh/ruff/pull/21895
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Skip over trivia tokens after re-lexing
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-10 14:10_
+_@MichaReiser_
 
 ## Summary
 

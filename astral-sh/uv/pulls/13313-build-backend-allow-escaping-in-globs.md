@@ -13,14 +13,14 @@ head: konsti/support-escaping-other-characters
 created_at: 2025-05-06T11:04:09Z
 updated_at: 2025-05-07T16:31:43Z
 url: https://github.com/astral-sh/uv/pull/13313
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Build backend: Allow escaping in globs
 
 ---
 
-_Pull request opened by @konstin on 2025-05-06 11:04_
+_@konstin_
 
 PEP 639 does not allow any characters that aren't in either their limited glob syntax or the alphanumeric Unicode characters. This means there's no way to express a glob such as `**/@test` for the excludes.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T14:03:01Z
 updated_at: 2025-07-09T21:36:26Z
 url: https://github.com/astral-sh/uv/issues/2111
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Feature request: show available package versions (equivalent of `pip index versions`)
 
 ---
 
-_Issue opened by @tlambert03 on 2024-03-01 14:03_
+_@tlambert03_
 
 Apologies if in my search I've missed an open issue...
 

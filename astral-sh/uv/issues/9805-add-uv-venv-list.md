@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T11:13:49Z
 updated_at: 2024-12-28T00:11:13Z
 url: https://github.com/astral-sh/uv/issues/9805
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Add uv venv list
 
 ---
 
-_Issue opened by @etterathe on 2024-12-11 11:13_
+_@etterathe_
 
 It'd be great to have something like uv venv list that lists all virtual envs created on pc and allows for quick actions on them, like activating and switching between them. Similar concepts: conda env list or lsvirtualenv from virtualenvwrapper.
 

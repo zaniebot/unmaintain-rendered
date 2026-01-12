@@ -13,14 +13,14 @@ head: ruff-format-a-project
 created_at: 2023-08-25T11:59:47Z
 updated_at: 2023-08-27T19:12:33Z
 url: https://github.com/astral-sh/ruff/pull/6871
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add prototype of `ruff format` for projects
 
 ---
 
-_Pull request opened by @konstin on 2023-08-25 11:59_
+_@konstin_
 
 **Summary** Add recursive formatting based on `ruff check` file discovery for `ruff format`, as a prototype for the formatter alpha. This allows e.g. `format ../projects/django/`. It's still lacking support for any settings except line length.
 

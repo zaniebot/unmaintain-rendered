@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T16:58:46Z
 updated_at: 2024-07-03T06:32:34Z
 url: https://github.com/astral-sh/ruff/issues/12154
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Proposal: detect exposed secrets
 
 ---
 
-_Issue opened by @knyazer on 2024-07-02 16:58_
+_@knyazer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

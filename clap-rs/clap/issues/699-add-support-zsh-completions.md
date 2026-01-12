@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-21T20:26:26Z
 updated_at: 2016-10-24T04:57:40Z
 url: https://github.com/clap-rs/clap/issues/699
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support ZSH completions
 
 ---
 
-_Issue opened by @kbknapp on 2016-10-21 20:26_
+_@kbknapp_
 
 _No description provided._
 

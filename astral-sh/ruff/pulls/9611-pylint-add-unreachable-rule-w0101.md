@@ -12,14 +12,14 @@ head: add-PLW0101
 created_at: 2024-01-22T08:29:30Z
 updated_at: 2024-03-28T17:30:57Z
 url: https://github.com/astral-sh/ruff/pull/9611
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] - Add `unreachable` rule (`W0101`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-22 08:29_
+_@diceroll123_
 
 ## Summary
 

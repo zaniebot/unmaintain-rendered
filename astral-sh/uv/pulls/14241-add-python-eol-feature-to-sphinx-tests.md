@@ -13,14 +13,14 @@ head: charlie/eol
 created_at: 2025-06-24T13:47:20Z
 updated_at: 2025-06-24T15:15:20Z
 url: https://github.com/astral-sh/uv/pull/14241
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Add `"python-eol"` feature to Sphinx tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-24 13:47_
+_@charliermarsh_
 
 ## Summary
 

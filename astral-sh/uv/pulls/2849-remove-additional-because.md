@@ -13,14 +13,14 @@ head: charlie/because
 created_at: 2024-04-06T00:29:43Z
 updated_at: 2024-04-06T14:58:29Z
 url: https://github.com/astral-sh/uv/pull/2849
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Remove additional 'because'
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-06 00:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2025-08-04T21:09:54Z
 updated_at: 2025-08-04T23:43:34Z
 url: https://github.com/astral-sh/uv/pull/15066
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Show wheel tag hints in install plan
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-04 21:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-08T14:13:23Z
 updated_at: 2024-10-08T20:56:00Z
 url: https://github.com/astral-sh/uv/issues/8004
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Add an argument which makes `uv pip compile` consider installed packages
 
 ---
 
-_Issue opened by @antony-frolov on 2024-10-08 14:13_
+_@antony-frolov_
 
 Hi! I'm trying to use `uv pip compile` to lock my dependencies for a docker image build. I've got a package already installed in my base image which is not present in any package index, so I need the dependency resolver to consider installed packages.
 

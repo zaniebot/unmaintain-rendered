@@ -14,14 +14,14 @@ head: cjm/addprojects
 created_at: 2025-04-18T22:30:46Z
 updated_at: 2025-04-22T12:32:38Z
 url: https://github.com/astral-sh/ruff/pull/17474
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add list of failing/slow ecosystem projects
 
 ---
 
-_Pull request opened by @carljm on 2025-04-18 22:30_
+_@carljm_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: run-jobs-based-on-changed-files
 created_at: 2023-07-20T07:53:31Z
 updated_at: 2023-07-20T14:45:07Z
 url: https://github.com/astral-sh/ruff/pull/5908
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Only run jobs if relevant files changed
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 07:53_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

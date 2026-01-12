@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T12:50:17Z
 updated_at: 2024-07-09T22:18:32Z
 url: https://github.com/astral-sh/uv/issues/4803
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv sync` should handle a missing `uv lock`.
 
 ---
 
-_Issue opened by @konstin on 2024-07-04 12:50_
+_@konstin_
 
 When trying to sync an empty workspace i got:
 

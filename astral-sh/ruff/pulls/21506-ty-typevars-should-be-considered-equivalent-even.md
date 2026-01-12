@@ -13,14 +13,14 @@ head: dcreager/typevar-bug
 created_at: 2025-11-18T02:59:43Z
 updated_at: 2025-11-18T18:37:26Z
 url: https://github.com/astral-sh/ruff/pull/21506
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Typevars should be considered equivalent even after lazy defaults/bounds/etc are forced
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-18 02:59_
+_@dcreager_
 
 This was a lingering place where we were still using `TypeVarInstance` equality to check whether two typevars are the same. We need to fall back on comparing the typevar `identity`, since that remains the same even after evaluating lazy defaults, bounds, or constraints.
 

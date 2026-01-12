@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:54:30Z
 updated_at: 2025-06-27T11:11:59Z
 url: https://github.com/astral-sh/uv/issues/1455
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv` fails to install `pyyaml==5.4.1`
 
 ---
 
-_Issue opened by @sbrugman on 2024-02-16 08:54_
+_@sbrugman_
 
 `uv pip install "pyyaml<6"`
 

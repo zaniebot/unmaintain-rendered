@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T22:54:27Z
 updated_at: 2024-12-06T11:26:31Z
 url: https://github.com/astral-sh/uv/issues/9664
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Add support for Poetry-like groups
 
 ---
 
-_Issue opened by @fre-edin on 2024-12-05 22:54_
+_@fre-edin_
 
 Purpose: faster Docker build for increased iteration speed when working with Docker development images.
 

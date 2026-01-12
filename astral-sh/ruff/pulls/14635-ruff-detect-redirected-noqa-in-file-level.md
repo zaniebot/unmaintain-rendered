@@ -13,14 +13,14 @@ head: brent/fix-14531
 created_at: 2024-11-27T14:35:03Z
 updated_at: 2024-11-27T22:39:33Z
 url: https://github.com/astral-sh/ruff/pull/14635
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Detect redirected-noqa in file-level comments (`RUF101`)
 
 ---
 
-_Pull request opened by @ntBre on 2024-11-27 14:35_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

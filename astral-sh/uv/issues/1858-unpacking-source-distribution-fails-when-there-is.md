@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T08:55:49Z
 updated_at: 2024-02-24T03:22:15Z
 url: https://github.com/astral-sh/uv/issues/1858
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Unpacking source distribution fails when there is a symlink in the archive
 
 ---
 
-_Issue opened by @Janarthanam on 2024-02-22 08:55_
+_@Janarthanam_
 
 my docker build with uv fails with this error:
 

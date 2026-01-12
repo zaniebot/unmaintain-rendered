@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T20:31:48Z
 updated_at: 2025-08-10T21:51:37Z
 url: https://github.com/astral-sh/uv/issues/15206
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # installing but not available at path
 
 ---
 
-_Issue opened by @Qazalbash on 2025-08-10 20:31_
+_@Qazalbash_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: alex/mdtest-first-run
 created_at: 2025-04-01T17:50:58Z
 updated_at: 2025-04-01T18:27:57Z
 url: https://github.com/astral-sh/ruff/pull/17128
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # mdtest.py: do a full mdtest run immediately when the script is executed
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-01 17:50_
+_@AlexWaygood_
 
 ## Summary
 

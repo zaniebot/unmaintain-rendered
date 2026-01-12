@@ -13,14 +13,14 @@ head: zb/sync-extra
 created_at: 2024-09-04T12:47:12Z
 updated_at: 2024-09-04T15:05:22Z
 url: https://github.com/astral-sh/uv/pull/7013
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Add note to `extra` and `all-extras` in `uv sync` help
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-04 12:47_
+_@zanieb_
 
 _No description provided._
 

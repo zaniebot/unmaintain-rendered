@@ -13,14 +13,14 @@ head: ruf012-sqlmodel-exemption
 created_at: 2024-12-12T23:58:32Z
 updated_at: 2024-12-13T12:10:08Z
 url: https://github.com/astral-sh/ruff/pull/14949
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`]  Skip SQLModel base classes for `mutable-class-default` (`RUF012`)
 
 ---
 
-_Pull request opened by @krishnan-chandra on 2024-12-12 23:58_
+_@krishnan-chandra_
 
 ## Summary
 

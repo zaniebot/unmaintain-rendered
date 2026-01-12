@@ -13,14 +13,14 @@ head: zb/python-source
 created_at: 2025-03-05T00:17:16Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11964
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Include the Python request source in not found error messages
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-05 00:17_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11203
 

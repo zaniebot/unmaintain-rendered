@@ -13,14 +13,14 @@ head: renovate/tracing-indicatif-0.x-lockfile
 created_at: 2025-01-20T01:33:53Z
 updated_at: 2025-01-20T03:31:40Z
 url: https://github.com/astral-sh/ruff/pull/15593
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Update Rust crate tracing-indicatif to v0.3.9
 
 ---
 
-_Pull request opened by @renovate on 2025-01-20 01:33_
+_@renovate_
 
 This PR contains the following updates:
 

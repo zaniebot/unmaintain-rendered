@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-11-29T12:02:32Z
 updated_at: 2022-12-05T17:46:09Z
 url: https://github.com/clap-rs/clap/issues/4521
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow global args in top-level multicall
 
 ---
 
-_Issue opened by @jaskij on 2022-11-29 12:02_
+_@jaskij_
 
 ### Please complete the following tasks
 

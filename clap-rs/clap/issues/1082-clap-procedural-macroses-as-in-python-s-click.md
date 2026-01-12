@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-25T14:58:27Z
 updated_at: 2018-08-02T03:30:13Z
 url: https://github.com/clap-rs/clap/issues/1082
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `clap` procedural macroses as in python's `click` module
 
 ---
 
-_Issue opened by @iddm on 2017-10-25 14:58_
+_@iddm_
 
 Can `clap` do something like [this](https://realpython.com/blog/python/comparing-python-command-line-parsing-libraries-argparse-docopt-click/) with procedural macroses?
 

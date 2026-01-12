@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-02T19:56:42Z
 updated_at: 2025-05-05T14:50:45Z
 url: https://github.com/astral-sh/ruff/issues/17798
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `subprocess-without-shell-equals-true (S603)` false-positives on tuples
 
 ---
 
-_Issue opened by @Avasam on 2025-05-02 19:56_
+_@Avasam_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T14:00:13Z
 updated_at: 2026-01-07T07:33:10Z
 url: https://github.com/astral-sh/uv/issues/17335
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # UV_INIT_BUILD_BACKEND invalidates --app flag
 
 ---
 
-_Issue opened by @jpkolsen on 2026-01-06 14:00_
+_@jpkolsen_
 
 ### Summary
 

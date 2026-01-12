@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-04T14:34:23Z
 updated_at: 2016-12-29T16:57:24Z
 url: https://github.com/clap-rs/clap/issues/764
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Argument cannot require a particular value of positional argument
 
 ---
 
-_Issue opened by @nagisa on 2016-12-04 14:34_
+_@nagisa_
 
 ### Affected Version of clap
 

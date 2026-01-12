@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T09:51:31Z
 updated_at: 2025-05-06T14:17:21Z
 url: https://github.com/astral-sh/ty/issues/12
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Setup release pipeline
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 09:51_
+_@MichaReiser_
 
 _No description provided._
 

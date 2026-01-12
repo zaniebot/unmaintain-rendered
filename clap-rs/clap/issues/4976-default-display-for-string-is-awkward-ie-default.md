@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-19T19:29:54Z
 updated_at: 2025-12-31T15:15:56Z
 url: https://github.com/clap-rs/clap/issues/4976
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Default display for `String` is awkward, ie `[default: ]`
 
 ---
 
-_Issue opened by @nathan-at-least on 2023-06-19 19:29_
+_@nathan-at-least_
 
 ### Please complete the following tasks
 

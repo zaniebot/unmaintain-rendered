@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T17:04:43Z
 updated_at: 2025-08-31T16:18:54Z
 url: https://github.com/astral-sh/uv/issues/15459
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Dynamic version in workspace package causes failure to parse uv.lock when using --frozen
 
 ---
 
-_Issue opened by @quartox on 2025-08-22 17:04_
+_@quartox_
 
 ### Summary
 

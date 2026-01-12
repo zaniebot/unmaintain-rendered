@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T06:14:56Z
 updated_at: 2023-10-28T22:50:35Z
 url: https://github.com/astral-sh/ruff/issues/8243
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Docs: `extend-ignore` deprecated but not removed from all docs
 
 ---
 
-_Issue opened by @thernstig on 2023-10-26 06:14_
+_@thernstig_
 
 For example https://docs.astral.sh/ruff/linter/#rule-selection says:
 

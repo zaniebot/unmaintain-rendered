@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T15:32:17Z
 updated_at: 2025-09-05T12:22:30Z
 url: https://github.com/astral-sh/uv/issues/15632
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # 🍑 Dependencies in packaged project with scripts (x4 questions)
 
 ---
 
-_Issue opened by @michellepace on 2025-09-02 15:32_
+_@michellepace_
 
 ### Question
 

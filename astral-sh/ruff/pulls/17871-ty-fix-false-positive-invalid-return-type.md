@@ -13,14 +13,14 @@ head: alex/generator-function-return
 created_at: 2025-05-05T20:37:15Z
 updated_at: 2025-05-05T21:45:01Z
 url: https://github.com/astral-sh/ruff/pull/17871
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Fix false-positive `[invalid-return-type]` diagnostics on generator functions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-05 20:37_
+_@AlexWaygood_
 
 ## Summary
 

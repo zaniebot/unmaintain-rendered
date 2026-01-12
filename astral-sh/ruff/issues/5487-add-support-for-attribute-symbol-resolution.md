@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T17:32:16Z
 updated_at: 2023-07-05T19:19:15Z
 url: https://github.com/astral-sh/ruff/issues/5487
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add support for attribute symbol resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-03 17:32_
+_@charliermarsh_
 
 See the discussion in https://github.com/astral-sh/ruff/pull/5444#discussion_r1248987832.
 

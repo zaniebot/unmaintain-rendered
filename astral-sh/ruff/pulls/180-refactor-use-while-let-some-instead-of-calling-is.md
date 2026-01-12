@@ -12,14 +12,14 @@ head: dd/while-let-some
 created_at: 2022-09-13T12:32:40Z
 updated_at: 2022-09-13T14:35:32Z
 url: https://github.com/astral-sh/ruff/pull/180
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # refactor: Use `while let Some` instead of calling `is_empty`
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-13 12:32_
+_@Stranger6667_
 
 This feels a bit more concise & should be a bit faster as one length check is gone
 

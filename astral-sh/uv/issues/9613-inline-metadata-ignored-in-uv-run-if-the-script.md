@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T18:06:34Z
 updated_at: 2024-12-03T18:43:50Z
 url: https://github.com/astral-sh/uv/issues/9613
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Inline metadata ignored in uv run if the script is named `__main__.py`
 
 ---
 
-_Issue opened by @mgaitan on 2024-12-03 18:06_
+_@mgaitan_
 
 When attempting to run a script named `toolbot/__main__.py` using `uv run toolbot`, uv does not recognize the inline metadata defined in the script. However, it still try to run it resulting in a `ModuleNotFoundError`
 

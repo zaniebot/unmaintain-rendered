@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T10:48:49Z
 updated_at: 2023-06-08T16:03:05Z
 url: https://github.com/astral-sh/ruff/issues/3507
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Fuzzer support
 
 ---
 
-_Issue opened by @qarmin on 2023-03-14 10:48_
+_@qarmin_
 
 Recently I tried to create simple automatic fuzzer to test project to find crashes/leaks but I got few problems.
 

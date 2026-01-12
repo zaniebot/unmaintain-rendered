@@ -13,14 +13,14 @@ head: charlie/al
 created_at: 2024-12-23T18:53:34Z
 updated_at: 2024-12-23T19:05:20Z
 url: https://github.com/astral-sh/uv/pull/10124
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Remove redundant alias in `uv init` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-23 18:53_
+_@charliermarsh_
 
 _No description provided._
 

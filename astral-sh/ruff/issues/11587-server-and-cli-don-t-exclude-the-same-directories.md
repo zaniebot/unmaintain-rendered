@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-28T21:36:18Z
 updated_at: 2024-10-15T10:14:50Z
 url: https://github.com/astral-sh/ruff/issues/11587
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Server and CLI don' t exclude the same directories
 
 ---
 
-_Issue opened by @EricDepagne on 2024-05-28 21:36_
+_@EricDepagne_
 
 I' m using ruff server in vscode.
 Ruff version: 0.4.5

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-18T15:46:02Z
 updated_at: 2024-02-09T21:56:38Z
 url: https://github.com/astral-sh/ruff/issues/9186
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # docstring code formatter: add a `--docstring-code-format` parameter to `ruff format` CLI
 
 ---
 
-_Issue opened by @kdeldycke on 2023-12-18 15:46_
+_@kdeldycke_
 
 Following the implementation of experimental docstring format, a `docstring-code-format` configuration "knob" has been added in #8854. That way you can activate this new behavior by adding the following to `ruff.toml` (or any equivalent):
 

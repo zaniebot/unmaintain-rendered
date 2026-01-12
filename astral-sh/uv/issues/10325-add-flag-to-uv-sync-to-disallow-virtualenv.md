@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-06T11:13:21Z
 updated_at: 2025-11-09T15:11:07Z
 url: https://github.com/astral-sh/uv/issues/10325
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Add flag to `uv sync` to disallow virtualenv recreation
 
 ---
 
-_Issue opened by @sd2k on 2025-01-06 11:13_
+_@sd2k_
 
 I've been porting a few Dockerfiles from Poetry to uv using a multistage build and the following happened:
 

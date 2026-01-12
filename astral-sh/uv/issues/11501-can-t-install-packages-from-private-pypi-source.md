@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T05:57:04Z
 updated_at: 2025-02-19T13:12:55Z
 url: https://github.com/astral-sh/uv/issues/11501
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # Can't install packages from private PYPI source since v0.5.15
 
 ---
 
-_Issue opened by @Remalloc on 2025-02-14 05:57_
+_@Remalloc_
 
 ### Summary
 

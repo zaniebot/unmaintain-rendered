@@ -13,14 +13,14 @@ head: konsti/reject-incoherent-source-dist
 created_at: 2025-03-17T11:39:53Z
 updated_at: 2025-10-09T13:48:34Z
 url: https://github.com/astral-sh/uv/pull/12237
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Error on lockfiles with inconsistent source distribution versions
 
 ---
 
-_Pull request opened by @konstin on 2025-03-17 11:39_
+_@konstin_
 
 Reject all cases where a source distribution builds into a wheel of a different version than was locked in the lockfile.
 

@@ -14,14 +14,14 @@ head: micha/inter-file-dependencies
 created_at: 2025-04-11T12:47:10Z
 updated_at: 2025-04-11T14:03:15Z
 url: https://github.com/astral-sh/ruff/pull/17350
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Refresh diagnostics when changing related files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-11 12:47_
+_@MichaReiser_
 
 ## Summary
 

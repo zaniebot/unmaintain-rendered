@@ -12,14 +12,14 @@ head: charlie/url
 created_at: 2023-11-06T05:17:30Z
 updated_at: 2023-11-06T05:20:44Z
 url: https://github.com/astral-sh/uv/pull/324
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Fix bad Flask reference in tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 05:17_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T02:09:38Z
 updated_at: 2025-08-01T13:59:01Z
 url: https://github.com/astral-sh/uv/issues/12768
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # 32-bit Python for Windows
 
 ---
 
-_Issue opened by @fishsixs on 2025-04-09 02:09_
+_@fishsixs_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T15:28:59Z
 updated_at: 2025-12-08T18:11:09Z
 url: https://github.com/astral-sh/ruff/issues/19864
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP018 should detect more unnecessarily wrapped literals
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-11 15:28_
+_@dscorbett_
 
 ### Summary
 

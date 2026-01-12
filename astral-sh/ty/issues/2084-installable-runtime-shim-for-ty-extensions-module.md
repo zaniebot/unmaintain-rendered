@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T19:21:29Z
 updated_at: 2025-12-18T23:09:20Z
 url: https://github.com/astral-sh/ty/issues/2084
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # installable runtime shim for ty_extensions module
 
 ---
 
-_Issue opened by @carljm on 2025-12-18 19:21_
+_@carljm_
 
 For users who are OK restricting themselves to ty and want to use intersections, there's no reason for us not to make it easier for them to do so.
 

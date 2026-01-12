@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-12T05:23:31Z
 updated_at: 2023-03-14T02:37:13Z
 url: https://github.com/astral-sh/ruff/issues/3458
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ecosystem CI sometimes gets confused about upstream
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-12 05:23_
+_@charliermarsh_
 
 E.g., in https://github.com/charliermarsh/ruff/pull/3456 -- that PR didn't affect any _actual_ change, but the ecosystem check triggered on it, and the output seemed to compare against another open PR (https://github.com/charliermarsh/ruff/pull/3455).
 

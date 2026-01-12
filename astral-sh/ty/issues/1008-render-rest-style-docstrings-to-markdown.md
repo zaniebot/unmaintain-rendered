@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:24:46Z
 updated_at: 2025-11-21T16:01:32Z
 url: https://github.com/astral-sh/ty/issues/1008
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Render reST-style docstrings to markdown
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 14:24_
+_@Gankra_
 
 Currently we punt on this and just wrap the raw contents in a plaintext codeblock: 
 https://github.com/astral-sh/ruff/blob/6de84ed56eac4f1f3efe9d8a9d47c9b30a445707/crates/ty_ide/src/docstring.rs#L65-L73

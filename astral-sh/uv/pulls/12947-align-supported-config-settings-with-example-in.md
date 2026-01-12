@@ -13,14 +13,14 @@ head: config-settings
 created_at: 2025-04-17T15:13:39Z
 updated_at: 2025-04-17T16:59:31Z
 url: https://github.com/astral-sh/uv/pull/12947
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Align supported Config-settings with example in docs
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-17 15:13_
+_@maxmynter_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

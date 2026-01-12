@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-22T05:21:10Z
 updated_at: 2022-12-07T17:15:42Z
 url: https://github.com/astral-sh/ruff/issues/870
-synced_at: 2026-01-10T12:06:14Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Feature request: support flake8-unused-arguments
 
 ---
 
-_Issue opened by @tekumara on 2022-11-22 05:21_
+_@tekumara_
 
 [flake8-unused-arguments](https://pypi.org/project/flake8-unused-arguments/) has warnings for:
 

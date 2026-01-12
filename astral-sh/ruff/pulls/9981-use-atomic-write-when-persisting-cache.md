@@ -14,14 +14,14 @@ head: atomic-cache-write
 created_at: 2024-02-14T09:56:30Z
 updated_at: 2024-02-14T14:09:22Z
 url: https://github.com/astral-sh/ruff/pull/9981
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use atomic write when persisting cache
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-14 09:56_
+_@MichaReiser_
 
 ## Summary
 

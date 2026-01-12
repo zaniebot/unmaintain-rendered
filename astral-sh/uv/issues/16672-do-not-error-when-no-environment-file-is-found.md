@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-10T17:25:00Z
 updated_at: 2025-11-10T19:26:42Z
 url: https://github.com/astral-sh/uv/issues/16672
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Do not error when no environment file is found
 
 ---
 
-_Issue opened by @alanmun on 2025-11-10 17:25_
+_@alanmun_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-25T15:25:10Z
 updated_at: 2025-09-25T15:56:13Z
 url: https://github.com/astral-sh/ty/issues/1255
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # error[unresolved-attribute]: Type `<module 'sqlalchemy'>` has no attribute `types`
 
 ---
 
-_Issue opened by @benglewis on 2025-09-25 15:25_
+_@benglewis_
 
 ### Summary
 

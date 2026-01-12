@@ -11,14 +11,14 @@ head: konsti/pubgrub-range
 created_at: 2024-05-21T18:09:06Z
 updated_at: 2024-10-14T21:48:51Z
 url: https://github.com/astral-sh/uv/pull/3713
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Override range to avoid patching pubgrub
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 18:09_
+_@konstin_
 
 Create a newtype `struct PubGrubRange(pubgrub::range::Range<Version>)` to avoid overriding the `Display` implementation on `Range` in pubgrub itself, reducing our diff with upstream. Used methods taking an `&Self` or returning `Self` were overridden, the rest of the methods succeeds through deref.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-01-04T21:57:45Z
 updated_at: 2020-03-08T20:10:48Z
 url: https://github.com/clap-rs/clap/issues/1622
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Conflicting Flags Error message contains the same flag twice
 
 ---
 
-_Issue opened by @lucidBrot on 2020-01-04 21:57_
+_@lucidBrot_
 
 ### Rust Version
 ```

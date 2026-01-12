@@ -13,14 +13,14 @@ head: fix/ruff-20282
 created_at: 2025-09-09T16:30:26Z
 updated_at: 2025-09-12T19:35:11Z
 url: https://github.com/astral-sh/ruff/pull/20318
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [`flake8-bugbear`] Mark the fix for `unreliable-callable-check` as always unsafe (`B004`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-09-09 16:30_
+_@IDrokin117_
 
 ## Summary
 Resolves #20282

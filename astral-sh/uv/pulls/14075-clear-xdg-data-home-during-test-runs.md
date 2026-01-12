@@ -13,14 +13,14 @@ head: zb/data-home
 created_at: 2025-06-16T14:38:09Z
 updated_at: 2025-06-16T20:01:19Z
 url: https://github.com/astral-sh/uv/pull/14075
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Clear `XDG_DATA_HOME` during test runs
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-16 14:38_
+_@zanieb_
 
 _No description provided._
 

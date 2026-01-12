@@ -12,14 +12,14 @@ head: add-flake8-debugger
 created_at: 2022-11-26T09:56:24Z
 updated_at: 2023-01-21T16:26:38Z
 url: https://github.com/astral-sh/ruff/pull/909
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add flake8-debugger
 
 ---
 
-_Pull request opened by @karpa4o4 on 2022-11-26 09:56_
+_@karpa4o4_
 
 _No description provided._
 

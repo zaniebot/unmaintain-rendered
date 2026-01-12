@@ -13,14 +13,14 @@ head: konsti/arch-i686
 created_at: 2024-05-29T08:55:03Z
 updated_at: 2024-05-29T15:31:40Z
 url: https://github.com/astral-sh/uv/pull/3899
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Add missing i686 alias for x86
 
 ---
 
-_Pull request opened by @konstin on 2024-05-29 08:55_
+_@konstin_
 
 This alias is required for the 32-bit x86 manylinux builder.
 

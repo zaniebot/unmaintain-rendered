@@ -14,14 +14,14 @@ head: gankra/signature-print
 created_at: 2025-11-13T21:31:59Z
 updated_at: 2025-11-21T20:15:54Z
 url: https://github.com/astral-sh/ruff/pull/21438
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] print function names for bare Signatures opportunistically
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-13 21:31_
+_@Gankra_
 
 This is a followup to #21417 that improves some places where we pretty-display types (hence being restricted to `multiline` printing). Even in cases where we can't get the name it behooves us to add a `def _` to fix python syntax highlighting in e.g. hovers.
 

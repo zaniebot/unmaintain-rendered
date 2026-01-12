@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T19:44:17Z
 updated_at: 2023-11-17T02:34:07Z
 url: https://github.com/astral-sh/uv/issues/429
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Add warn_once macro
 
 ---
 
-_Issue opened by @konstin on 2023-11-15 19:44_
+_@konstin_
 
 We should add a reusable warn_once macro, like we have in ruff, for cases where we want to warn but only once (e.g. when an invariant was broken) even though the code block runs multiple times.
 

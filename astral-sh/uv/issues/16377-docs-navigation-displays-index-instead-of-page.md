@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T22:43:43Z
 updated_at: 2025-12-18T15:41:06Z
 url: https://github.com/astral-sh/uv/issues/16377
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Docs navigation displays "Index" instead of page name in nested nav structure
 
 ---
 
-_Issue opened by @FlaviusRaducu on 2025-10-20 22:43_
+_@FlaviusRaducu_
 
 # Description
 

@@ -13,14 +13,14 @@ head: brent/syn-global-in-try
 created_at: 2025-04-07T19:51:49Z
 updated_at: 2025-04-09T16:54:23Z
 url: https://github.com/astral-sh/ruff/pull/17285
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] Document behavior of `global` declarations in `try` nodes before 3.13
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-07 19:51_
+_@ntBre_
 
 Summary
 --

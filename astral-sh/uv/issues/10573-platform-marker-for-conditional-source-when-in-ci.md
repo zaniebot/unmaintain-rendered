@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T17:49:36Z
 updated_at: 2025-01-14T12:13:19Z
 url: https://github.com/astral-sh/uv/issues/10573
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Platform marker for conditional source when in CI
 
 ---
 
-_Issue opened by @baskrahmer on 2025-01-13 17:49_
+_@baskrahmer_
 
 Hi there! I was wondering if there is some [platform marker](https://docs.astral.sh/uv/concepts/projects/dependencies/#platform-specific-dependencies) that only evaluates to `True` when in GitHub Actions, similarly to evaluating `os.getenv('GITHUB_ACTIONS')`. Or I guess more broadly; can environment variables be used as markers?
 

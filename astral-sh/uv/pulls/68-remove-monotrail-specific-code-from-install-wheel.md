@@ -12,14 +12,14 @@ head: charlie/monotrail
 created_at: 2023-10-08T21:59:52Z
 updated_at: 2023-10-08T22:28:58Z
 url: https://github.com/astral-sh/uv/pull/68
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Remove Monotrail-specific code from `install-wheel-rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-08 21:59_
+_@charliermarsh_
 
 I think this isn't necessary to support in this generic crate. If we choose to adopt Monotrail-style concepts, we'll likely need to rework them anyway.
 

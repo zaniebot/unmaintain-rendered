@@ -14,14 +14,14 @@ head: dhruv/callable-subtype-fix
 created_at: 2025-04-01T16:52:20Z
 updated_at: 2025-04-01T18:07:37Z
 url: https://github.com/astral-sh/ruff/pull/17125
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix callable subtyping for standard parameters
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-01 16:52_
+_@dhruvmanila_
 
 ## Summary
 

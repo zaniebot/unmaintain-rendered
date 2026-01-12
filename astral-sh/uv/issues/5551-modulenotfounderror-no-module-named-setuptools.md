@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T05:13:04Z
 updated_at: 2024-07-29T14:24:52Z
 url: https://github.com/astral-sh/uv/issues/5551
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # ModuleNotFoundError: No module named 'setuptools.command.test'
 
 ---
 
-_Issue opened by @yu-iskw on 2024-07-29 05:13_
+_@yu-iskw_
 
 ## Overview
 

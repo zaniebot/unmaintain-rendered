@@ -15,14 +15,14 @@ head: david/benchmark-union-of-tuples
 created_at: 2025-05-13T19:11:25Z
 updated_at: 2025-05-13T20:14:32Z
 url: https://github.com/astral-sh/ruff/pull/18076
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Add benchmark for union of tuples
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-13 19:11_
+_@sharkdp_
 
 ## Summary
 

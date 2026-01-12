@@ -13,14 +13,14 @@ head: renovate/rustls-0.x-lockfile
 created_at: 2025-12-01T02:52:02Z
 updated_at: 2025-12-01T08:31:14Z
 url: https://github.com/astral-sh/uv/pull/16902
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Update Rust crate rustls to v0.23.35
 
 ---
 
-_Pull request opened by @renovate on 2025-12-01 02:52_
+_@renovate_
 
 This PR contains the following updates:
 

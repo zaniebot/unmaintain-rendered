@@ -13,14 +13,14 @@ head: cfg-jumps
 created_at: 2025-04-01T13:45:24Z
 updated_at: 2025-04-03T13:30:29Z
 url: https://github.com/astral-sh/ruff/pull/17121
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Control flow: `return` and `raise`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-01 13:45_
+_@dylwil3_
 
 We add support for `return` and `raise` statements in the control flow graph: we simply add an edge to the terminal block, push the statements to the current block, and proceed.
 

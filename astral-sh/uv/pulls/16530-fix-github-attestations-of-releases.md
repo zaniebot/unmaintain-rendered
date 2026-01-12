@@ -13,14 +13,14 @@ head: gankra/attest-announce2
 created_at: 2025-10-31T02:14:04Z
 updated_at: 2025-10-31T02:31:21Z
 url: https://github.com/astral-sh/uv/pull/16530
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Fix github attestations of releases
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-31 02:14_
+_@Gankra_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-16T10:09:30Z
 updated_at: 2025-09-30T16:04:17Z
 url: https://github.com/astral-sh/ruff/issues/10430
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Feature request] Support Github output for `ruff format`
 
 ---
 
-_Issue opened by @henribru on 2024-03-16 10:09_
+_@henribru_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

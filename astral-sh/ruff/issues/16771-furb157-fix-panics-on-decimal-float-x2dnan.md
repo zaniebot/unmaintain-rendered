@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-15T21:08:08Z
 updated_at: 2025-03-17T10:09:09Z
 url: https://github.com/astral-sh/ruff/issues/16771
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # FURB157 fix panics on `Decimal(float("\x2dnan"))`
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-15 21:08_
+_@dscorbett_
 
 ### Summary
 

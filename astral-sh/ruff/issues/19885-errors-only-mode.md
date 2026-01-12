@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T20:16:11Z
 updated_at: 2025-11-10T15:19:49Z
 url: https://github.com/astral-sh/ruff/issues/19885
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # "errors-only" mode
 
 ---
 
-_Issue opened by @ctcjab on 2025-08-12 20:16_
+_@ctcjab_
 
 # Use case
 Our company has a large monorepo of Python notebooks* with varying levels of code quality (a lot of it was written by quantitative researchers and other folks who aren't professional software engineers), where type hints and automated tests are practically nonexistent, and this code is nonetheless used in production.

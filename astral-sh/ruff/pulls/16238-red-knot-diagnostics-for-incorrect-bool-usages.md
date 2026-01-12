@@ -13,14 +13,14 @@ head: micha/type-iterate-bool
 created_at: 2025-02-18T18:41:01Z
 updated_at: 2025-02-21T18:35:23Z
 url: https://github.com/astral-sh/ruff/pull/16238
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Diagnostics for incorrect `bool` usages
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-18 18:41_
+_@MichaReiser_
 
 ## Summary
 

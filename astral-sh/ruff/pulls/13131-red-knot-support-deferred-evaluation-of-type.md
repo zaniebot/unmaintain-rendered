@@ -13,14 +13,14 @@ head: lazy-bases
 created_at: 2024-08-28T00:52:32Z
 updated_at: 2024-08-28T18:41:03Z
 url: https://github.com/astral-sh/ruff/pull/13131
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] support deferred evaluation of type expressions
 
 ---
 
-_Pull request opened by @carljm on 2024-08-28 00:52_
+_@carljm_
 
 Prototype deferred evaluation of type expressions by deferring evaluation of class bases in a stub file. This allows self-referential class definitions, as occur with the definition of `str` in typeshed (which inherits `Sequence[str]`).
 

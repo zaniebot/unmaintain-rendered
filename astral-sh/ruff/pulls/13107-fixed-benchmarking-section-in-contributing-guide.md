@@ -13,14 +13,14 @@ head: teofr/fix_contribution_benchmarking
 created_at: 2024-08-26T11:43:35Z
 updated_at: 2024-08-26T13:40:50Z
 url: https://github.com/astral-sh/ruff/pull/13107
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fixed benchmarking section in Contributing guide
 
 ---
 
-_Pull request opened by @teofr on 2024-08-26 11:43_
+_@teofr_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

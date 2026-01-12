@@ -13,14 +13,14 @@ head: fix-PT005-doc
 created_at: 2023-08-15T12:39:03Z
 updated_at: 2023-08-15T13:11:00Z
 url: https://github.com/astral-sh/ruff/pull/6596
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix PT005 doc
 
 ---
 
-_Pull request opened by @harupy on 2023-08-15 12:39_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

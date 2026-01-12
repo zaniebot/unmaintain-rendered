@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T18:57:47Z
 updated_at: 2024-09-20T19:34:36Z
 url: https://github.com/astral-sh/ruff/issues/13424
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add `exclude` field to `[tool.ruff.analyze]`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-20 18:57_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: charlie/update-check
 created_at: 2022-12-29T18:06:18Z
 updated_at: 2022-12-29T18:06:23Z
 url: https://github.com/astral-sh/ruff/pull/1445
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Make update check enablement cofnigurable
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-29 18:06_
+_@charliermarsh_
 
 You can now use `--no-update-check` on the command-line, or set `update-check = false` in `pyproject.toml`.
 

@@ -13,14 +13,14 @@ head: cjm/select2
 created_at: 2024-04-10T18:23:03Z
 updated_at: 2024-04-12T13:31:10Z
 url: https://github.com/astral-sh/ruff/pull/10863
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Fix docs and add overlap test for negated per-file-ignores 
 
 ---
 
-_Pull request opened by @carljm on 2024-04-10 18:23_
+_@carljm_
 
 Refs #3172 
 

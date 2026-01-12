@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-01T07:12:15Z
 updated_at: 2023-08-01T16:01:50Z
 url: https://github.com/astral-sh/ruff/issues/6226
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `PLE0605` false positive when specifying the generic in `list` or `tuple` constructor
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-01 07:12_
+_@DetachHead_
 
 ```py
 __all__ = list[str]()

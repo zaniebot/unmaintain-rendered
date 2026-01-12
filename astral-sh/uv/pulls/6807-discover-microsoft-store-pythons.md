@@ -14,14 +14,14 @@ head: konsti/read-python-from-store
 created_at: 2024-08-29T12:32:13Z
 updated_at: 2024-08-29T20:56:42Z
 url: https://github.com/astral-sh/uv/pull/6807
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Discover Microsoft Store Pythons
 
 ---
 
-_Pull request opened by @konstin on 2024-08-29 12:32_
+_@konstin_
 
 Microsoft Store Pythons do not always register themselves in the registry, so we port <https://github.com/python/cpython/blob/58ce131037ecb34d506a613f21993cde2056f628/PC/launcher2.c#L1744> and look them up on the filesystem in known locations.
 

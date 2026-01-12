@@ -12,14 +12,14 @@ head: faster-ci
 created_at: 2023-01-09T19:50:20Z
 updated_at: 2023-01-10T19:33:04Z
 url: https://github.com/astral-sh/ruff/pull/1750
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Cache build artifacts using Swatinem/rust-cache@v1
 
 ---
 
-_Pull request opened by @ducaale on 2023-01-09 19:50_
+_@ducaale_
 
 This GitHub Action caches build artifacts in addition to dependencies which halves the CI duration time.
 

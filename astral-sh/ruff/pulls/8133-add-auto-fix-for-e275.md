@@ -13,14 +13,14 @@ head: fix-275
 created_at: 2023-10-23T09:57:26Z
 updated_at: 2023-10-23T19:04:55Z
 url: https://github.com/astral-sh/ruff/pull/8133
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add auto-fix for E275
 
 ---
 
-_Pull request opened by @reswqa on 2023-10-23 09:57_
+_@reswqa_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

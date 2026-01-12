@@ -13,14 +13,14 @@ head: konsti/from-range-bounds
 created_at: 2024-08-30T16:40:34Z
 updated_at: 2024-08-30T20:06:56Z
 url: https://github.com/astral-sh/uv/pull/6879
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Use `from_range_bounds`
 
 ---
 
-_Pull request opened by @konstin on 2024-08-30 16:40_
+_@konstin_
 
 Not the most ergonomic api pubgrub has to offer, but better than rolling our own.
 

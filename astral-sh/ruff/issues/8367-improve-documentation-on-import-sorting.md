@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T20:56:35Z
 updated_at: 2023-12-15T10:47:20Z
 url: https://github.com/astral-sh/ruff/issues/8367
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Improve documentation on import sorting
 
 ---
 
-_Issue opened by @zanieb on 2023-10-30 20:56_
+_@zanieb_
 
 We've seen a lot of confusion about the relationship of import sorting with the linter and formatter. In the future, this situation may be improved i.e. by #8232 but until then it'd be great to have some clear guides in the documentation about how these currently interact and a recipe for enabling import sorting in projects.
 

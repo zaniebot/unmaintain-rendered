@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T10:15:30Z
 updated_at: 2024-09-18T12:33:02Z
 url: https://github.com/astral-sh/uv/issues/7453
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # HTTP Git credentials in `pyproject.toml` are ignored during sync
 
 ---
 
-_Issue opened by @flbraun on 2024-09-17 10:15_
+_@flbraun_
 
 I'm currently evaluating uv for our Python teams. So far I'm very impressed with the overall snappiness (compared to Pipenv), thank you very much for the good work so far. Unfortunately I ran into an issue when dealing with private packages from our Gitlab.  
 I don't have knowledge about uv's internal workings, but my guess is that the authentication credentials aren't stored properly at some point and are then missing for successive operations.

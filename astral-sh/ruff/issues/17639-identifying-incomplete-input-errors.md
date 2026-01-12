@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-26T04:45:19Z
 updated_at: 2025-04-27T09:50:30Z
 url: https://github.com/astral-sh/ruff/issues/17639
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Identifying incomplete input errors
 
 ---
 
-_Issue opened by @aneeshdurg on 2025-04-26 04:45_
+_@aneeshdurg_
 
 This is a feature request to allow Ruff's parser to indicate when an error might be due to incomplete input. This would allow for projects using Ruff as a python parser to identify cases where future input might make the input valid (e.g. in a REPL).
 

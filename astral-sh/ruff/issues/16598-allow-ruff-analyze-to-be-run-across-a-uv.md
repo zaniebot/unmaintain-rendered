@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-10T11:00:30Z
 updated_at: 2025-05-01T15:29:54Z
 url: https://github.com/astral-sh/ruff/issues/16598
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow `ruff analyze` to be run across a uv workspace packages
 
 ---
 
-_Issue opened by @mjclarke94 on 2025-03-10 11:00_
+_@mjclarke94_
 
 We currently have a monorepo setup where customer specific packages load in logic from several core (shared) libraries. It would be useful to be able to use ruff graph analyze to identify recursively what the minimum set of files from our other packages that is required to run the customer code package, enabling sparse checkouts.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T10:46:34Z
 updated_at: 2024-10-07T08:16:13Z
 url: https://github.com/astral-sh/ruff/issues/13623
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add diff aware filtering to `analyze graph`
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-10-04 10:46_
+_@mjclarke94_
 
 This may be a post-`red-knot` issue (or even a `uv` issue), so happy to relocate this as needed.
 

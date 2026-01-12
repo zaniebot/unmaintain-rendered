@@ -13,14 +13,14 @@ head: micha/assert-unsupported-syntax-errors-in-formatter-tests
 created_at: 2025-03-07T08:00:17Z
 updated_at: 2025-03-07T14:01:25Z
 url: https://github.com/astral-sh/ruff/pull/16549
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Assert that formatted code doesn't introduce any new unsupported syntax errors
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-07 08:00_
+_@MichaReiser_
 
 ## Summary
 

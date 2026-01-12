@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T04:17:22Z
 updated_at: 2025-11-14T15:49:47Z
 url: https://github.com/astral-sh/uv/issues/16291
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Allow the option to make index explicit when using `uv add`
 
 ---
 
-_Issue opened by @BaoNguyen6742 on 2025-10-14 04:17_
+_@BaoNguyen6742_
 
 ### Summary
 

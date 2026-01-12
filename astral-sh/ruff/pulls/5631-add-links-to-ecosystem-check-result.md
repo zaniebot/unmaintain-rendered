@@ -12,14 +12,14 @@ head: dhruv/ecosystem-links
 created_at: 2023-07-09T16:39:40Z
 updated_at: 2023-07-10T03:55:27Z
 url: https://github.com/astral-sh/ruff/pull/5631
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add links to ecosystem check result
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-09 16:39_
+_@dhruvmanila_
 
 ## Summary
 

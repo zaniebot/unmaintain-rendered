@@ -13,14 +13,14 @@ head: lambda_ranges_and_formatting_bugs
 created_at: 2023-07-21T10:45:48Z
 updated_at: 2023-07-23T12:36:37Z
 url: https://github.com/astral-sh/ruff/pull/5944
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix formatting lambda with empty arguments
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 10:45_
+_@konstin_
 
 **Summary** Fix implemented in https://github.com/astral-sh/RustPython-Parser/pull/35: Previously, empty lambda arguments (e.g. `lambda: 1`) would get the range of the entire expression, which leads to incorrect comment placement. Now empty lambda arguments get an empty range between the `lambda` and the `:` tokens.
 

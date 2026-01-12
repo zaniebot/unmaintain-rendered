@@ -13,14 +13,14 @@ head: alex/moduletype-equivalence
 created_at: 2025-07-09T18:27:59Z
 updated_at: 2025-07-10T09:11:11Z
 url: https://github.com/astral-sh/ruff/pull/19243
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Improve and document equivalence for module-literal types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-09 18:27_
+_@AlexWaygood_
 
 ## Summary
 

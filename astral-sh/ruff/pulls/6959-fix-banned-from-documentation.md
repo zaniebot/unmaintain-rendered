@@ -13,14 +13,14 @@ head: charlie/banned-from
 created_at: 2023-08-29T00:42:24Z
 updated_at: 2023-08-29T13:21:59Z
 url: https://github.com/astral-sh/ruff/pull/6959
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix banned-from documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-29 00:42_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6839.
 

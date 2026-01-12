@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T17:47:48Z
 updated_at: 2026-01-06T19:20:59Z
 url: https://github.com/astral-sh/uv/issues/16741
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # `uv sync` with a private repo does not work in docker with uv >= 0.98
 
 ---
 
-_Issue opened by @morbatex on 2025-11-14 17:47_
+_@morbatex_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-15T11:39:26Z
 updated_at: 2023-11-15T14:21:17Z
 url: https://github.com/clap-rs/clap/issues/5215
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Auto-generated Short Flags Cause Collision When Args Start With the Same Letter
 
 ---
 
-_Issue opened by @Ghvstcode on 2023-11-15 11:39_
+_@Ghvstcode_
 
 ### Please complete the following tasks
 

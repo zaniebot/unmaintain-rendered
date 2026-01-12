@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-08T13:35:21Z
 updated_at: 2024-04-08T13:38:19Z
 url: https://github.com/astral-sh/ruff/issues/10836
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Extending specific rule configurations
 
 ---
 
-_Issue opened by @seamuswn on 2024-04-08 13:35_
+_@seamuswn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: fix-RUF010
 created_at: 2025-06-15T23:25:35Z
 updated_at: 2025-06-26T20:27:10Z
 url: https://github.com/astral-sh/ruff/pull/18690
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`ruff`] Fix false positives and negatives in `RUF010`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-15 23:25_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

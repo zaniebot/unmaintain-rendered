@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T16:27:40Z
 updated_at: 2025-03-15T08:00:05Z
 url: https://github.com/astral-sh/ruff/issues/16755
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [IMPROVEMENT] Make `--select` other CLI short hands more lenient with whitespace
 
 ---
 
-_Issue opened by @lenormf on 2025-03-14 16:27_
+_@lenormf_
 
 ### Summary
 

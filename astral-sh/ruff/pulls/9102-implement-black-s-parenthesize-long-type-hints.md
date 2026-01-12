@@ -12,14 +12,14 @@ head: parenthesize-long-type-hints
 created_at: 2023-12-12T03:09:03Z
 updated_at: 2024-01-16T10:02:50Z
 url: https://github.com/astral-sh/ruff/pull/9102
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Implement Black's `parenthesize-long-type-hints` preview style
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-12 03:09_
+_@MichaReiser_
 
 ## Summary
 

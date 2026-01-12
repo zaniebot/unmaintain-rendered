@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T20:09:09Z
 updated_at: 2025-09-19T16:01:30Z
 url: https://github.com/astral-sh/ty/issues/1044
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support ``.ty.toml`` for configuration
 
 ---
 
-_Issue opened by @AA-Turner on 2025-08-18 20:09_
+_@AA-Turner_
 
 I initially created my configuration file as `.ty.toml`, to mirror `.ruff.toml` and group files next to each other in the directory. However, this [seems unsupported](https://docs.astral.sh/ty/configuration/).
 

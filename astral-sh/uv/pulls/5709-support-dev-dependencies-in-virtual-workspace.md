@@ -14,14 +14,14 @@ head: charlie/virtual-dev
 created_at: 2024-08-01T20:12:59Z
 updated_at: 2024-08-01T21:04:31Z
 url: https://github.com/astral-sh/uv/pull/5709
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Support dev dependencies in virtual workspace roots
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 20:12_
+_@charliermarsh_
 
 ## Summary
 

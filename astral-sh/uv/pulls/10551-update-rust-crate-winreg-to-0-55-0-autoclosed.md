@@ -12,14 +12,14 @@ head: renovate/winreg-0.x
 created_at: 2025-01-13T01:15:55Z
 updated_at: 2025-02-26T17:57:00Z
 url: https://github.com/astral-sh/uv/pull/10551
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Update Rust crate winreg to 0.55.0 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-01-13 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

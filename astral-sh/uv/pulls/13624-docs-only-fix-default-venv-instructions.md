@@ -11,14 +11,14 @@ head: patch-2
 created_at: 2025-05-23T18:53:36Z
 updated_at: 2025-05-27T15:17:19Z
 url: https://github.com/astral-sh/uv/pull/13624
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Docs only: Fix default venv instructions
 
 ---
 
-_Pull request opened by @stevenae on 2025-05-23 18:53_
+_@stevenae_
 
 ## Summary
 

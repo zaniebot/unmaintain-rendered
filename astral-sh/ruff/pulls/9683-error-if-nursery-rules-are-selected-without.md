@@ -12,14 +12,14 @@ head: zb/nursery-err-020
 created_at: 2024-01-29T18:45:42Z
 updated_at: 2024-01-30T15:27:57Z
 url: https://github.com/astral-sh/ruff/pull/9683
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Error if nursery rules are selected without preview
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-29 18:45_
+_@zanieb_
 
 Extends #9682 to error if the nursery selector is used or nursery rules are selected without preview.
 

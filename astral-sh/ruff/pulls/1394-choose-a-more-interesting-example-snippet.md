@@ -12,14 +12,14 @@ head: charlie/fib
 created_at: 2022-12-26T20:19:14Z
 updated_at: 2022-12-26T20:19:18Z
 url: https://github.com/astral-sh/ruff/pull/1394
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Choose a more interesting example snippet
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-26 20:19_
+_@charliermarsh_
 
 _No description provided._
 

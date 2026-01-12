@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T09:57:45Z
 updated_at: 2024-02-26T23:11:58Z
 url: https://github.com/astral-sh/uv/issues/1801
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # pip compile --no-deps fails with extras
 
 ---
 
-_Issue opened by @mitsuhiko on 2024-02-21 09:57_
+_@mitsuhiko_
 
 It looks like the `--no-deps` mode somehow fails with `pip-compile` when extras are specified.
 

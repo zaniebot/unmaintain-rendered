@@ -14,14 +14,14 @@ head: alex/snapshot-diagnostics-typos
 created_at: 2025-02-27T22:53:21Z
 updated_at: 2025-02-28T10:04:49Z
 url: https://github.com/astral-sh/ruff/pull/16426
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Reject obvious `snapshot-diagnostics` typos in mdtests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-27 22:53_
+_@AlexWaygood_
 
 ## Summary
 

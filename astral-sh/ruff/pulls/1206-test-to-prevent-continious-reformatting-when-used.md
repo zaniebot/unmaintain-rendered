@@ -12,14 +12,14 @@ head: black-compatibility-test
 created_at: 2022-12-12T07:20:55Z
 updated_at: 2022-12-27T05:43:00Z
 url: https://github.com/astral-sh/ruff/pull/1206
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Test to prevent continious reformatting when used together with black
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-12 07:20_
+_@squiddy_
 
 Runs the sequence `ruff -> black -> ruff` against all test fixtures and fails when that sequence is not stable.
 

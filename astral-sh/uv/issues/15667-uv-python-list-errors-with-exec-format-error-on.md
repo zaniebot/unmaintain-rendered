@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T17:56:24Z
 updated_at: 2025-09-03T17:56:54Z
 url: https://github.com/astral-sh/uv/issues/15667
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # `uv python list` errors with `Exec format error` on non-native installation
 
 ---
 
-_Issue opened by @zanieb on 2025-09-03 17:56_
+_@zanieb_
 
 > With `uv` version `0.8.15` on Linux, I'm getting a related issue leading to `uv python list` failing. It works until there is some cross-platform installation in the directory. I'm doing this in order to build cross-platform libraries.
 > 

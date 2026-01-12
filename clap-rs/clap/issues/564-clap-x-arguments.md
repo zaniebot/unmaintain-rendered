@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-03T01:52:33Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/564
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # --clap-X arguments
 
 ---
 
-_Issue opened by @hgrecco on 2016-07-03 01:52_
+_@hgrecco_
 
 This proposal is to introduce automagically a family of arguments to scripts using clap. They would be used to support some of the new features at run time (instead of compile time).
 

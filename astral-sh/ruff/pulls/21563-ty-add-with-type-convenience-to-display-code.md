@@ -14,14 +14,14 @@ head: gankra/ty_clean
 created_at: 2025-11-21T16:25:24Z
 updated_at: 2025-11-21T16:36:23Z
 url: https://github.com/astral-sh/ruff/pull/21563
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Add `with_type` convenience to display code
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-21 16:25_
+_@Gankra_
 
 Code is much more readable.
 

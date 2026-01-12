@@ -14,14 +14,14 @@ head: jane/server/beta/doc-update
 created_at: 2024-05-22T20:50:02Z
 updated_at: 2024-05-22T21:38:11Z
 url: https://github.com/astral-sh/ruff/pull/11499
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update documentation for `ruff server` with new migration guide
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-22 20:50_
+_@snowsignal_
 
 ## Summary
 

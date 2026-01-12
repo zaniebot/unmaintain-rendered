@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T22:07:07Z
 updated_at: 2023-02-20T23:08:20Z
 url: https://github.com/astral-sh/ruff/issues/3073
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `FBT001` triggers for builtin types where positional arguments have to be used
 
 ---
 
-_Issue opened by @jakob-keller on 2023-02-20 22:07_
+_@jakob-keller_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

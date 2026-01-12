@@ -13,14 +13,14 @@ head: typo
 created_at: 2024-12-09T15:32:07Z
 updated_at: 2024-12-09T15:47:29Z
 url: https://github.com/astral-sh/ruff/pull/14877
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix a typo in `class.rs`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-09 15:32_
+_@InSyncWithFoo_
 
 (Accidentally introduced in #14801.)
 

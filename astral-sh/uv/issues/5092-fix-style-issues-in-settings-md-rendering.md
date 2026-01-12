@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T02:39:33Z
 updated_at: 2024-07-16T14:00:04Z
 url: https://github.com/astral-sh/uv/issues/5092
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Fix style issues in `settings.md` rendering
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 02:39_
+_@charliermarsh_
 
 ![Screenshot 2024-07-15 at 10 38 50 PM](https://github.com/user-attachments/assets/a6b98e9c-a04e-40b6-9fd5-5abe1f0f1a99)
 

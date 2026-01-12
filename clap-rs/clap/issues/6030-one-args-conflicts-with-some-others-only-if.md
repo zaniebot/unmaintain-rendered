@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-10T10:14:06Z
 updated_at: 2025-06-10T15:44:17Z
 url: https://github.com/clap-rs/clap/issues/6030
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # one args conflicts with some others only if condition met
 
 ---
 
-_Issue opened by @jnmdf on 2025-06-10 10:14_
+_@jnmdf_
 
 ```rust
 /// 支持的哈希算法枚举

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-12T17:21:32Z
 updated_at: 2023-07-10T01:26:08Z
 url: https://github.com/astral-sh/ruff/issues/3462
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement flake8-aaa
 
 ---
 
-_Issue opened by @Cielquan on 2023-03-12 17:21_
+_@Cielquan_
 
 # [flake8-aaa](https://pypi.org/project/flake8-aaa/)
 

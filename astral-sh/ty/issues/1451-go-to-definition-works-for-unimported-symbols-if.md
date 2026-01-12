@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-29T13:24:15Z
 updated_at: 2025-10-29T18:39:37Z
 url: https://github.com/astral-sh/ty/issues/1451
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Go-to definition works for unimported symbols if they are imported in `builtins.pyi`
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-10-29 13:24_
+_@MatthewMckee4_
 
 ### Summary
 

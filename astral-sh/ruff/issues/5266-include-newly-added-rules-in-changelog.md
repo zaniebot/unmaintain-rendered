@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T19:19:33Z
 updated_at: 2023-06-28T21:25:11Z
 url: https://github.com/astral-sh/ruff/issues/5266
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Include newly added rules in changelog
 
 ---
 
-_Issue opened by @namurphy on 2023-06-21 19:19_
+_@namurphy_
 
 ## Proposed change
 

@@ -12,14 +12,14 @@ head: zanie/rule-tests
 created_at: 2023-09-13T21:00:52Z
 updated_at: 2024-01-31T19:12:40Z
 url: https://github.com/astral-sh/ruff/pull/7369
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add internal rules for testing
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-13 21:00_
+_@zanieb_
 
 Follow-up to discussion in #7210
 

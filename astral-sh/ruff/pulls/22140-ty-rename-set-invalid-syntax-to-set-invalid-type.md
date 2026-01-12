@@ -14,14 +14,14 @@ head: renamte-set-invalid-syntax
 created_at: 2025-12-22T14:13:25Z
 updated_at: 2025-12-27T00:21:23Z
 url: https://github.com/astral-sh/ruff/pull/22140
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Rename `set_invalid_syntax` to `set_invalid_type_annotation`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-22 14:13_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

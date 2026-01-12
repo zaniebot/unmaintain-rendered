@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T23:20:02Z
 updated_at: 2025-12-11T11:51:07Z
 url: https://github.com/astral-sh/uv/issues/17081
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Certain options/subcommands could be hidden from completions to reduce noise
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-10 23:20_
+_@EliteTK_
 
 ### Summary
 

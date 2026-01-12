@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T14:13:07Z
 updated_at: 2024-03-15T03:55:58Z
 url: https://github.com/astral-sh/ruff/issues/10358
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Don't strip an ellipsis (`...`) from a function's body - this has special meaning to type-checkers
 
 ---
 
-_Issue opened by @rsokl on 2024-03-12 14:13_
+_@rsokl_
 
 Before `ruff`:
 

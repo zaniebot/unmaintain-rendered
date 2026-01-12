@@ -13,14 +13,14 @@ head: fix-workspace-with-relative-pathing
 created_at: 2025-10-14T16:34:59Z
 updated_at: 2025-10-15T07:56:15Z
 url: https://github.com/astral-sh/uv/pull/16296
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Fix workspace with relative pathing
 
 ---
 
-_Pull request opened by @doddi on 2025-10-14 16:34_
+_@doddi_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

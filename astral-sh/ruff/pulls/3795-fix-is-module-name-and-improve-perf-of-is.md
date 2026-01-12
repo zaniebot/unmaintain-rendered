@@ -12,14 +12,14 @@ head: fix-is-module-name
 created_at: 2023-03-29T15:11:27Z
 updated_at: 2023-03-31T19:28:31Z
 url: https://github.com/astral-sh/ruff/pull/3795
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix `is_module_name()` and improve perf of `is_identifier()`
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-29 15:11_
+_@JonathanPlasse_
 
 - For `is_module_name()`
   - Must not be a reserved keyword

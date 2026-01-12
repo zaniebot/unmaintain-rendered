@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:05:36Z
 updated_at: 2024-12-17T13:12:07Z
 url: https://github.com/astral-sh/uv/issues/1368
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Access denied for `uv pip sync` on Windows
 
 ---
 
-_Issue opened by @jrkerns on 2024-02-15 22:05_
+_@jrkerns_
 
 Within a given venv, running `uv pip sync <requirement file>` fails with Access is denied. This is on Windows. 
 

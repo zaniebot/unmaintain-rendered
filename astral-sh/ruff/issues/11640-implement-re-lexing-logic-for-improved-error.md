@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T14:29:12Z
 updated_at: 2024-06-17T06:47:02Z
 url: https://github.com/astral-sh/ruff/issues/11640
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Implement re-lexing logic for improved error recovery
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-31 14:29_
+_@dhruvmanila_
 
 https://github.com/astral-sh/ruff/pull/11457 builds up the necessary infrastructure to completely synchronize the lexer and parser. The final step is to implement re-lexing logic in the lexer and update the parser to use it during error recovery for list parsing.
 

@@ -12,14 +12,14 @@ head: charlie/errr
 created_at: 2023-12-19T05:35:04Z
 updated_at: 2023-12-29T02:44:36Z
 url: https://github.com/astral-sh/uv/pull/697
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Add a dedicated error message to hint users towards enabling pre-releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-19 05:35_
+_@charliermarsh_
 
 This PR adds a dedicated error message for resolutions that fail, but might've succeeded if pre-releases were allowed. Specifically, if we see a failed resolution, and failed to find a version for a package that included a pre-release marker, we add a hint nudging the user to explicitly enable all pre-releases.
 

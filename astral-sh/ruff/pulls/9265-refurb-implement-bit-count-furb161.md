@@ -14,14 +14,14 @@ head: add-FURB161
 created_at: 2023-12-23T21:52:03Z
 updated_at: 2023-12-27T15:38:51Z
 url: https://github.com/astral-sh/ruff/pull/9265
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`refurb`] Implement `bit-count` (`FURB161`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-23 21:52_
+_@diceroll123_
 
 ## Summary
 

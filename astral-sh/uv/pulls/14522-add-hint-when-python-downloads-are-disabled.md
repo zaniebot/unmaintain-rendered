@@ -13,14 +13,14 @@ head: zb/skip-extensive
 created_at: 2025-07-09T15:00:20Z
 updated_at: 2025-07-10T17:06:26Z
 url: https://github.com/astral-sh/uv/pull/14522
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Add hint when Python downloads are disabled
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-09 15:00_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/14509 to provide the _reason_ downloads are disabled and surface it as a hint rather than a debug log.
 

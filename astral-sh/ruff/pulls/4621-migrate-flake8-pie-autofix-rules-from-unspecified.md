@@ -12,14 +12,14 @@ head: fix/migrateflake8pie
 created_at: 2023-05-24T08:32:33Z
 updated_at: 2023-05-24T17:03:38Z
 url: https://github.com/astral-sh/ruff/pull/4621
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Migrate flake8_pie autofix rules from `unspecified` to `suggested` and `automatic`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-24 08:32_
+_@qdegraaf_
 
 ## Summary
 Relates to: https://github.com/charliermarsh/ruff/issues/4184 

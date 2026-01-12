@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-19T07:37:43Z
 updated_at: 2024-08-19T08:12:05Z
 url: https://github.com/astral-sh/ruff/pull/12981
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Quote default values consistently
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-08-19 07:37_
+_@InSyncWithFoo_
 
 Fixes #12979 by quoting all unquoted values.
 

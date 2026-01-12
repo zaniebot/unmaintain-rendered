@@ -14,14 +14,14 @@ head: UP050
 created_at: 2025-01-31T00:36:26Z
 updated_at: 2025-02-06T18:37:14Z
 url: https://github.com/astral-sh/ruff/pull/15841
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] Classes with mixed type variable style (`RUF053`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-31 00:36_
+_@InSyncWithFoo_
 
 ## Summary
 

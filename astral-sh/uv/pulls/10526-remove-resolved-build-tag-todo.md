@@ -13,14 +13,14 @@ head: charlie/tod
 created_at: 2025-01-11T23:01:34Z
 updated_at: 2025-01-11T23:12:12Z
 url: https://github.com/astral-sh/uv/pull/10526
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Remove resolved build tag TODO
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 23:01_
+_@charliermarsh_
 
 _No description provided._
 

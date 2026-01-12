@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-13T15:39:45Z
 updated_at: 2023-07-10T01:26:10Z
 url: https://github.com/astral-sh/ruff/issues/3482
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement flake8-dunder-all
 
 ---
 
-_Issue opened by @Goldziher on 2023-03-13 15:39_
+_@Goldziher_
 
 Would be great to see, also the optional script there that auto adds it: 
 

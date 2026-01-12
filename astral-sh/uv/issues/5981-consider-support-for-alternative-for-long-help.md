@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T22:45:52Z
 updated_at: 2024-08-09T22:45:55Z
 url: https://github.com/astral-sh/uv/issues/5981
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Consider support for alternative for long help for `uvx`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-09 22:45_
+_@zanieb_
 
 Right now this tries to invoke the command, but I bet this project is reserved on PyPI. Right now, we suggest using `uv help tool run` instead. At the very least, we should support `uv help uvx`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T19:58:21Z
 updated_at: 2024-11-12T03:38:06Z
 url: https://github.com/astral-sh/uv/issues/9028
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Error when adding a non-existent version for the current OS
 
 ---
 
-_Issue opened by @genchik1 on 2024-11-11 19:58_
+_@genchik1_
 
 ```
 uv --version

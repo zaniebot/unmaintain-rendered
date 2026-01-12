@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-12T16:39:04Z
 updated_at: 2024-06-27T11:16:11Z
 url: https://github.com/astral-sh/uv/issues/620
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Conflicting version gives bad error
 
 ---
 
-_Issue opened by @konstin on 2023-12-12 16:39_
+_@konstin_
 
 On python 3.12
 

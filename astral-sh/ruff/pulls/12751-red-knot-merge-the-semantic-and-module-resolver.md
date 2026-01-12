@@ -13,14 +13,14 @@ head: alex/merge-crates
 created_at: 2024-08-08T12:36:27Z
 updated_at: 2024-08-08T14:34:13Z
 url: https://github.com/astral-sh/ruff/pull/12751
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Merge the semantic and module-resolver crates
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-08 12:36_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: jane/server/lint-with-path
 created_at: 2024-05-01T00:26:06Z
 updated_at: 2024-05-02T02:24:36Z
 url: https://github.com/astral-sh/ruff/pull/11224
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server` respects `per-file-ignores` configuration
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-01 00:26_
+_@snowsignal_
 
 ## Summary
 

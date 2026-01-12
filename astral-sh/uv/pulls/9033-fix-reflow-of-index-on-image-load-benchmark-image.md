@@ -11,14 +11,14 @@ head: Jerrod_6264
 created_at: 2024-11-11T23:19:51Z
 updated_at: 2025-09-26T07:27:41Z
 url: https://github.com/astral-sh/uv/pull/9033
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Fix reflow of index on image load: benchmark image - #6264
 
 ---
 
-_Pull request opened by @jvestell on 2024-11-11 23:19_
+_@jvestell_
 
 This PR sets a fixed height and width for the benchmark image and description text underneath it. 
 

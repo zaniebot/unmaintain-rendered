@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T02:36:21Z
 updated_at: 2024-06-12T06:44:59Z
 url: https://github.com/astral-sh/ruff/issues/11841
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR1711 (useless-return) does not check return statements if they are indented.
 
 ---
 
-_Issue opened by @yuji38kwmt on 2024-06-12 02:36_
+_@yuji38kwmt_
 
 
 # Description

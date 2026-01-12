@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T18:18:59Z
 updated_at: 2025-09-18T07:10:05Z
 url: https://github.com/astral-sh/uv/issues/12054
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # UV fails to fetch during concurrent downloads
 
 ---
 
-_Issue opened by @nithish-b on 2025-03-07 18:18_
+_@nithish-b_
 
 ### Question
 

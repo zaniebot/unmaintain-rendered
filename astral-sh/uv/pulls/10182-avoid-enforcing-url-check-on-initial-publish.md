@@ -13,14 +13,14 @@ head: charlie/fir
 created_at: 2024-12-26T22:55:46Z
 updated_at: 2024-12-26T23:46:37Z
 url: https://github.com/astral-sh/uv/pull/10182
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Avoid enforcing URL check on initial publish
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-26 22:55_
+_@charliermarsh_
 
 ## Summary
 

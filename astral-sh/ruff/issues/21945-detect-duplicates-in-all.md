@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T13:05:57Z
 updated_at: 2025-12-16T16:24:20Z
 url: https://github.com/astral-sh/ruff/issues/21945
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Detect duplicates in `__all__`
 
 ---
 
-_Issue opened by @chirizxc on 2025-12-12 13:05_
+_@chirizxc_
 
 ### Summary
 

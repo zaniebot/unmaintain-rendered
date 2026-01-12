@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-08-06T23:03:02Z
 updated_at: 2024-08-06T23:41:00Z
 url: https://github.com/astral-sh/uv/pull/5842
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Reject `pyproject.toml` in `--config-file`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-06 23:03_
+_@charliermarsh_
 
 This already rejects `pyproject.toml`... but because the schema validation is relaxed (we allow unknown fields, and all fields are optional), a `pyproject.toml` doesn't get properly rejected here.
 

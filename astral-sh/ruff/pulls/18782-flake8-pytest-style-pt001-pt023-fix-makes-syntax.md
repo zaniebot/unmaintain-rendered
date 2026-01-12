@@ -14,14 +14,14 @@ head: fix-18771
 created_at: 2025-06-19T05:28:28Z
 updated_at: 2025-06-23T12:46:25Z
 url: https://github.com/astral-sh/ruff/pull/18782
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-pytest-style`] PT001/PT023 fix makes syntax error on parenthesized decorator
 
 ---
 
-_Pull request opened by @danparizher on 2025-06-19 05:28_
+_@danparizher_
 
 Fixes https://github.com/astral-sh/ruff/issues/18771
 

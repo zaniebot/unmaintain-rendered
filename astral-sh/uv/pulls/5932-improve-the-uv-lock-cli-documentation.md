@@ -15,14 +15,14 @@ head: zb/lock-docs
 created_at: 2024-08-08T20:58:21Z
 updated_at: 2024-08-09T13:51:05Z
 url: https://github.com/astral-sh/uv/pull/5932
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Improve the `uv lock` CLI documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 20:58_
+_@zanieb_
 
 _No description provided._
 

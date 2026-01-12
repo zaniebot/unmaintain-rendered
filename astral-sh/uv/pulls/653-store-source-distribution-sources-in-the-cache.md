@@ -13,14 +13,14 @@ head: charlie/sdist
 created_at: 2023-12-15T03:46:52Z
 updated_at: 2023-12-15T17:19:35Z
 url: https://github.com/astral-sh/uv/pull/653
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Store source distribution sources in the cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 03:46_
+_@charliermarsh_
 
 ## Summary
 

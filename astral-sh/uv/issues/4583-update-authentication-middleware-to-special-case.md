@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T11:03:00Z
 updated_at: 2025-04-29T21:37:04Z
 url: https://github.com/astral-sh/uv/issues/4583
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Update authentication middleware to special-case index urls
 
 ---
 
-_Issue opened by @zanieb on 2024-06-27 11:03_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/uv/issues/4056, pip makes a keyring request for credentials for the _index url_ but we make a request for the _package url_ and the _index url host name_ which for some plugins (e.g. Azure #3542) does not seem to work.
 

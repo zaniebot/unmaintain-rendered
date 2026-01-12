@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2024-09-07T17:25:39Z
 updated_at: 2024-10-15T15:31:05Z
 url: https://github.com/astral-sh/uv/pull/7172
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Respect `[tool.uv.sources]` in build requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-07 17:25_
+_@charliermarsh_
 
 ## Summary
 

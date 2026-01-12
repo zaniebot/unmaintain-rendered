@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T19:15:01Z
 updated_at: 2025-10-20T16:58:00Z
 url: https://github.com/astral-sh/uv/issues/6715
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Support passing `--cert` and setting `cert` in `uv.toml`
 
 ---
 
-_Issue opened by @kohlrabi on 2024-08-27 19:15_
+_@kohlrabi_
 
 With the merge of #6591 it is now possible to trust hosts to disable certificate verification, but compared to pip the "other way" around, providing  a valid cert, is still a bit a bit lacking. I know it's currently possible to set a path to a cert file using `SSL_CERT_FILE`, but I think it would be more in line with pip and more consistent if `--cert CERTFILE` could be passed on the command line, and `uv.toml` got an option to set the cert file as well.
 

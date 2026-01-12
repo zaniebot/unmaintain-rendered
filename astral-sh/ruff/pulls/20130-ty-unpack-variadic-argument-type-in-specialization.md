@@ -13,14 +13,14 @@ head: dhruv/unpack-variadic-arg-type
 created_at: 2025-08-28T10:17:15Z
 updated_at: 2025-08-29T13:23:10Z
 url: https://github.com/astral-sh/ruff/pull/20130
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Unpack variadic argument type in specialization
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-28 10:17_
+_@dhruvmanila_
 
 ## Summary
 

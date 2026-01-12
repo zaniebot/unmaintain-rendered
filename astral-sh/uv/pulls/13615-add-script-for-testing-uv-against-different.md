@@ -13,14 +13,14 @@ head: jtfm/registry-test-script
 created_at: 2025-05-23T10:38:52Z
 updated_at: 2025-06-18T07:43:47Z
 url: https://github.com/astral-sh/uv/pull/13615
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Add script for testing uv against different registries
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-23 10:38_
+_@jtfmumm_
 
 This PR provides a script that uses environment variables to determine which registries to test. This script is being used to run automated registry tests in CI for AWS, Azure, GCP, Artifactory, GitLab, Cloudsmith, and Gemfury.
 

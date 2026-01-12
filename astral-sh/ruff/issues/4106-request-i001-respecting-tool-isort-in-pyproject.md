@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T00:03:41Z
 updated_at: 2023-04-26T00:49:24Z
 url: https://github.com/astral-sh/ruff/issues/4106
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: `I001` respecting `[tool.isort]` in `pyproject.toml`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-26 00:03_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

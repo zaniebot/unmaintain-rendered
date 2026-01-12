@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-25T16:42:51Z
 updated_at: 2025-01-01T20:07:52Z
 url: https://github.com/astral-sh/uv/issues/10155
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Suggestion to add `any` to possible values of `--python-platform` parametr
 
 ---
 
-_Issue opened by @oliversen on 2024-12-25 16:42_
+_@oliversen_
 
 I suggest adding `any` to the possible values ​​of the `--python-platform` parameter to support installing [Pure Python Wheels](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#pure-python-wheels).
 

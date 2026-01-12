@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T08:18:14Z
 updated_at: 2025-12-18T20:41:41Z
 url: https://github.com/astral-sh/uv/issues/15125
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `--resolution=lowest` does not fork on requires-python
 
 ---
 
-_Issue opened by @ego-thales on 2025-08-07 08:18_
+_@ego-thales_
 
 ### Summary
 

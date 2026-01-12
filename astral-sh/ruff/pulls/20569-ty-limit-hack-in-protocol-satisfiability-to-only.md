@@ -15,14 +15,14 @@ head: alex/proto-hack-reduce
 created_at: 2025-09-25T10:35:09Z
 updated_at: 2025-09-25T11:26:02Z
 url: https://github.com/astral-sh/ruff/pull/20569
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Limit hack in protocol satisfiability to only apply to subtyping (not assignability)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-25 10:35_
+_@AlexWaygood_
 
 ## Summary
 

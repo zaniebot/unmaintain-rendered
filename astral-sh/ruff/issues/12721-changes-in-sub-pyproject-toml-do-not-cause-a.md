@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T20:41:27Z
 updated_at: 2024-08-07T19:53:46Z
 url: https://github.com/astral-sh/ruff/issues/12721
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Changes in sub pyproject.toml do not cause a cache bust
 
 ---
 
-_Issue opened by @fellhorn on 2024-08-06 20:41_
+_@fellhorn_
 
 When modifying a `pyproject.toml` in a subfolder ruff does correctly handle this as a cache bust. The same modification of the root level `pyproject.toml` causes a cache bust.
 

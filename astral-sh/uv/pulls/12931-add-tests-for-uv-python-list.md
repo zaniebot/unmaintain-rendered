@@ -11,14 +11,14 @@ head: list-only-downloads-all-arches
 created_at: 2025-04-17T04:03:08Z
 updated_at: 2025-11-01T15:51:58Z
 url: https://github.com/astral-sh/uv/pull/12931
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Add tests for `uv python list`
 
 ---
 
-_Pull request opened by @j178 on 2025-04-17 04:03_
+_@j178_
 
 # Summary
 

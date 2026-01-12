@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T19:51:23Z
 updated_at: 2025-05-20T08:02:24Z
 url: https://github.com/astral-sh/uv/issues/13543
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # How to allow users to simply `pip install` when I use uv workspaces?
 
 ---
 
-_Issue opened by @adamtuft on 2025-05-19 19:51_
+_@adamtuft_
 
 ### Question
 

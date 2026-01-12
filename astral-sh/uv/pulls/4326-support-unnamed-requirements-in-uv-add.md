@@ -13,14 +13,14 @@ head: ibraheem/uv-add-unnamed
 created_at: 2024-06-14T13:56:51Z
 updated_at: 2024-06-14T17:42:40Z
 url: https://github.com/astral-sh/uv/pull/4326
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Support unnamed requirements in `uv add`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-14 13:56_
+_@ibraheemdev_
 
 ## Summary
 

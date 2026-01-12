@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T12:21:50Z
 updated_at: 2024-10-30T12:37:38Z
 url: https://github.com/astral-sh/uv/issues/8698
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # uv add --group dev --include-group docs --include-group lint --include-group test
 
 ---
 
-_Issue opened by @dbrtly on 2024-10-30 12:21_
+_@dbrtly_
 
 It would be nice to be able to add this group from the cli. 
 currently `include-group` is not a valid option.

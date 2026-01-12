@@ -13,14 +13,14 @@ head: konsti/faster-is-disjoint
 created_at: 2025-01-09T18:10:53Z
 updated_at: 2025-01-09T18:31:53Z
 url: https://github.com/astral-sh/uv/pull/10439
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Use faster disjointness check for markers
 
 ---
 
-_Pull request opened by @konstin on 2025-01-09 18:10_
+_@konstin_
 
 Motivated by #10438. Ideally we wouldn't be calling this code that much in the first place, but it's the more idiomatic way to write this code.
 

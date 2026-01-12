@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T11:09:27Z
 updated_at: 2025-06-03T11:09:53Z
 url: https://github.com/astral-sh/ty/issues/548
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support type annotations that use legacy typing aliases for generic classes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-30 11:09_
+_@AlexWaygood_
 
 ty currently only has partial support for legacy aliases such as `Dict`, `List`, `FrozenSet`, etc. For example, these two `reveal_type` calls should both reveal `dict[str, int]`, but the second one does not:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-21T14:28:47Z
 updated_at: 2022-10-21T14:50:00Z
 url: https://github.com/astral-sh/ruff/issues/459
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add pre commit hook
 
 ---
 
-_Issue opened by @lusmoura on 2022-10-21 14:28_
+_@lusmoura_
 
 In order to use Ruff as a hook in other projects, the repo needs to contain a pre-commit-hooks.yaml file configuring the new hook.
 

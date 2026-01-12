@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-09T09:40:34Z
 updated_at: 2024-12-27T16:43:31Z
 url: https://github.com/astral-sh/uv/issues/9734
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Support PyTorch CPU and GPU dependency
 
 ---
 
-_Issue opened by @jbcdnr on 2024-12-09 09:40_
+_@jbcdnr_
 
 I followed the guide for supporting [PyTorch CPU and GPU dependency](https://docs.astral.sh/uv/guides/integration/pytorch/). It works well until I added a package `accelerate` that depends on torch, then this package would depend on both version and both `cpu` and `gpu` version are installed.
 

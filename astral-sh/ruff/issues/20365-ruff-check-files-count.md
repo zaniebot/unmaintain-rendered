@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T15:40:23Z
 updated_at: 2025-09-15T13:03:07Z
 url: https://github.com/astral-sh/ruff/issues/20365
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff check files count?
 
 ---
 
-_Issue opened by @GeeCastro on 2025-09-12 15:40_
+_@GeeCastro_
 
 ### Question
 

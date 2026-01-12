@@ -13,14 +13,14 @@ head: zanie/up-precommit
 created_at: 2023-11-06T15:56:27Z
 updated_at: 2024-03-24T22:48:48Z
 url: https://github.com/astral-sh/ruff/pull/8518
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Upgrade pre-commit dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 15:56_
+_@zanieb_
 
 _No description provided._
 

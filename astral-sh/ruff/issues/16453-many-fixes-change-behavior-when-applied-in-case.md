@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T19:07:40Z
 updated_at: 2025-03-02T17:02:40Z
 url: https://github.com/astral-sh/ruff/issues/16453
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Many fixes change behavior when applied in `case` patterns
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-01 19:07_
+_@dscorbett_
 
 ### Summary
 

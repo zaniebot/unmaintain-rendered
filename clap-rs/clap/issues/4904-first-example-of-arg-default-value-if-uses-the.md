@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-14T16:20:44Z
 updated_at: 2023-05-18T18:57:28Z
 url: https://github.com/clap-rs/clap/issues/4904
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # First example of Arg::default_value_if uses the wrong predicate
 
 ---
 
-_Issue opened by @piksel on 2023-05-14 16:20_
+_@piksel_
 
 ### Please complete the following tasks
 

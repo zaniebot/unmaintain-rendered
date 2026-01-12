@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T11:49:07Z
 updated_at: 2023-10-17T22:32:58Z
 url: https://github.com/astral-sh/ruff/issues/8009
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # B005 doc error
 
 ---
 
-_Issue opened by @ahmedabdou14 on 2023-10-17 11:49_
+_@ahmedabdou14_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

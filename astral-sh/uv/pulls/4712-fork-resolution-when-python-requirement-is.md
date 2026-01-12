@@ -12,14 +12,14 @@ head: charlie/fork-python
 created_at: 2024-07-01T21:27:56Z
 updated_at: 2024-10-27T18:58:05Z
 url: https://github.com/astral-sh/uv/pull/4712
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Fork resolution when Python requirement is narrowed
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 21:27_
+_@charliermarsh_
 
 ## Summary
 

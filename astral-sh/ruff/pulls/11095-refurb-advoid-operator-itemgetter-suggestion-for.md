@@ -13,14 +13,14 @@ head: charlie/furb
 created_at: 2024-04-23T00:12:22Z
 updated_at: 2024-04-23T00:26:27Z
 url: https://github.com/astral-sh/ruff/pull/11095
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`refurb`] Advoid `operator.itemgetter` suggestion for single-item tuple
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 00:12_
+_@charliermarsh_
 
 ## Summary
 

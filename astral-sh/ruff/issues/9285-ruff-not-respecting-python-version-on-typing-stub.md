@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-26T18:59:28Z
 updated_at: 2024-01-01T01:14:56Z
 url: https://github.com/astral-sh/ruff/issues/9285
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ruff not respecting python version on typing stub files?
 
 ---
 
-_Issue opened by @ktbarrett on 2023-12-26 18:59_
+_@ktbarrett_
 
 I used mypy's stubgen to generate a `.pyi` file for a C extension module. Some functions return a tuple. It looks a bit like this.
 

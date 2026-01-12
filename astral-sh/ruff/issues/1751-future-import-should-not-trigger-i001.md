@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-09T20:29:24Z
 updated_at: 2023-01-10T04:16:32Z
 url: https://github.com/astral-sh/ruff/issues/1751
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # __future__ import should not trigger I001
 
 ---
 
-_Issue opened by @zpz on 2023-01-09 20:29_
+_@zpz_
 
 I suspect I'm missing something. I have this in pyproject.toml
 

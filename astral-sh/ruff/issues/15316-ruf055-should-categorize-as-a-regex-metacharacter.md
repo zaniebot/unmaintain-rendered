@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T13:40:48Z
 updated_at: 2025-01-07T17:11:06Z
 url: https://github.com/astral-sh/ruff/issues/15316
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF055 should categorize `)` as a regex metacharacter
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-07 13:40_
+_@dscorbett_
 
 [`unnecessary-regular-expression` (RUF055)](https://docs.astral.sh/ruff/rules/unnecessary-regular-expression/) treats `)` as a normal character that needs no escaping, but it is actually a metacharacter. This leads to false positives and fixes that change program behavior.
 

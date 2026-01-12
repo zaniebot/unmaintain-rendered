@@ -14,14 +14,14 @@ head: zb/cachedir-tag-perm
 created_at: 2024-09-19T14:10:10Z
 updated_at: 2024-09-19T14:40:00Z
 url: https://github.com/astral-sh/uv/pull/7550
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Do not error if the `CACHEDIR.TAG` file exists but cannot be written to
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 14:10_
+_@zanieb_
 
 Attempting to address the error in https://github.com/astral-sh/uv/issues/7434 — it seems overkill to fail if the file exists but isn't writable.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T08:01:44Z
 updated_at: 2023-09-26T15:39:09Z
 url: https://github.com/astral-sh/ruff/issues/7236
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Versioning policy
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 08:01_
+_@MichaReiser_
 
 Update the versioning policy to account for changes to the formatter. 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-14T14:38:13Z
 updated_at: 2022-02-11T19:56:14Z
 url: https://github.com/clap-rs/clap/issues/3173
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Unpredictable what derive attributes allow only literals vs expressions
 
 ---
 
-_Issue opened by @epage on 2021-12-14 14:38_
+_@epage_
 
 ### Please complete the following tasks
 

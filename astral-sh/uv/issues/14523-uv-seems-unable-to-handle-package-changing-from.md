@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-09T15:23:44Z
 updated_at: 2025-07-09T16:54:54Z
 url: https://github.com/astral-sh/uv/issues/14523
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # UV seems unable to handle package changing from SemVer to CalVer (e.g.: s3fs)
 
 ---
 
-_Issue opened by @pdpark-wex on 2025-07-09 15:23_
+_@pdpark-wex_
 
 ### Summary
 

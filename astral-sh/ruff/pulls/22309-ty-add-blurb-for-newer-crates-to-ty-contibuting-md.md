@@ -14,14 +14,14 @@ head: add-new-ty-creates-to-contrib
 created_at: 2025-12-30T20:27:19Z
 updated_at: 2025-12-31T07:58:34Z
 url: https://github.com/astral-sh/ruff/pull/22309
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Add blurb for newer crates to `ty/CONTIBUTING.md
 
 ---
 
-_Pull request opened by @sinon on 2025-12-30 20:27_
+_@sinon_
 
 ## Summary
 

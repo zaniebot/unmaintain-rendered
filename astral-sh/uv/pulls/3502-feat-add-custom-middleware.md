@@ -12,14 +12,14 @@ head: feat/custom-middleware
 created_at: 2024-05-10T08:49:58Z
 updated_at: 2026-01-04T19:38:03Z
 url: https://github.com/astral-sh/uv/pull/3502
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # feat: add custom middleware
 
 ---
 
-_Pull request opened by @tdejager on 2024-05-10 08:49_
+_@tdejager_
 
 
 ## Summary

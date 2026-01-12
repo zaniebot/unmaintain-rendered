@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T11:58:35Z
 updated_at: 2025-12-09T21:49:02Z
 url: https://github.com/astral-sh/ty/issues/1804
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `async with` usage with `asynccontextmanager`-decorated function results in `Unknown`
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-08 11:58_
+_@sharkdp_
 
 Consider the following example, where the usage of a `asynccontextmanager`-decorated function in an `async with` statement results in an `Unknown` type:
 ```py

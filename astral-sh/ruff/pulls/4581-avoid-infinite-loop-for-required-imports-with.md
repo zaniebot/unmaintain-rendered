@@ -12,14 +12,14 @@ head: charlie/isort-off
 created_at: 2023-05-22T15:35:44Z
 updated_at: 2023-05-22T16:18:57Z
 url: https://github.com/astral-sh/ruff/pull/4581
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid infinite loop for required imports with isort: off
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-22 15:35_
+_@charliermarsh_
 
 ## Summary
 

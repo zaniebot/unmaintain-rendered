@@ -12,14 +12,14 @@ head: charlie/mem
 created_at: 2025-12-18T01:53:56Z
 updated_at: 2025-12-18T03:01:52Z
 url: https://github.com/astral-sh/ruff/pull/22045
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # Make `analyze_single_pattern_predicate` a `#[salsa::tracked]` function
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-18 01:53_
+_@charliermarsh_
 
 ## Summary
 

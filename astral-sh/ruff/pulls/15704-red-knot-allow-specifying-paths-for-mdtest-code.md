@@ -12,14 +12,14 @@ head: rk-mdtest-paths
 created_at: 2025-01-24T00:27:36Z
 updated_at: 2025-02-02T23:49:29Z
 url: https://github.com/astral-sh/ruff/pull/15704
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Allow specifying paths for mdtest code blocks in a separate preceding line
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-24 00:27_
+_@InSyncWithFoo_
 
 ## Summary
 

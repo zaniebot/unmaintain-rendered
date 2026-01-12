@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-07T14:14:07Z
 updated_at: 2023-08-16T07:11:17Z
 url: https://github.com/astral-sh/ruff/issues/6390
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatting of end-of-line comments in empty parentheses
 
 ---
 
-_Issue opened by @konstin on 2023-08-07 14:14_
+_@konstin_
 
 A challenge we have wrt to black compatibility and formatter stability is the formatting of dangling end-of-line comments in empty parentheses such as `()` (empty tuple) `f()`, `[]`, `{}`, etc.
 

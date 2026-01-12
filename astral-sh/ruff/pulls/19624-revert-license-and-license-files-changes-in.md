@@ -12,14 +12,14 @@ head: brent/revert-license-changes
 created_at: 2025-07-29T21:16:54Z
 updated_at: 2025-08-01T14:29:39Z
 url: https://github.com/astral-sh/ruff/pull/19624
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Revert `license` and `license-files` changes in `pyproject.toml`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-29 21:16_
+_@ntBre_
 
 Summary
 --

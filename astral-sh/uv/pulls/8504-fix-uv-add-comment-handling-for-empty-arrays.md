@@ -13,14 +13,14 @@ head: charlie/comm
 created_at: 2024-10-23T15:41:34Z
 updated_at: 2024-10-23T16:14:59Z
 url: https://github.com/astral-sh/uv/pull/8504
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Fix `uv add` comment handling for empty arrays
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-23 15:41_
+_@charliermarsh_
 
 ## Summary
 

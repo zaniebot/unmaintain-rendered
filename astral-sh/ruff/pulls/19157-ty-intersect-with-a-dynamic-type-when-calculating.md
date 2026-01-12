@@ -14,14 +14,14 @@ head: alex/dynamic-mro-metaclass
 created_at: 2025-07-05T20:56:37Z
 updated_at: 2025-07-10T08:34:36Z
 url: https://github.com/astral-sh/ruff/pull/19157
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Intersect with a dynamic type when calculating the metaclass of a class if that class has a dynamic type in its MRO
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-05 20:56_
+_@AlexWaygood_
 
 ## Summary
 

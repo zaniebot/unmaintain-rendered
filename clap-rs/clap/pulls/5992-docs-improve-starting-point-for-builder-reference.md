@@ -12,14 +12,14 @@ head: docs
 created_at: 2025-05-07T22:04:49Z
 updated_at: 2025-06-05T08:45:11Z
 url: https://github.com/clap-rs/clap/pull/5992
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Improve starting point for builder reference
 
 ---
 
-_Pull request opened by @epage on 2025-05-07 22:04_
+_@epage_
 
 Fixes #5989
 

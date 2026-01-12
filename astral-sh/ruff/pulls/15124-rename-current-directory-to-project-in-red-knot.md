@@ -13,14 +13,14 @@ head: micha/fix-knot-benchmark
 created_at: 2024-12-23T12:45:52Z
 updated_at: 2024-12-23T12:50:36Z
 url: https://github.com/astral-sh/ruff/pull/15124
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Rename `--current-directory` to `--project` in Red Knot benchmark script
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-23 12:45_
+_@MichaReiser_
 
 ## Summary
 

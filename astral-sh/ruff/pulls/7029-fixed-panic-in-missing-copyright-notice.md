@@ -13,14 +13,14 @@ head: fix_missing_copyright_notice_panic
 created_at: 2023-08-31T16:36:15Z
 updated_at: 2023-09-02T07:18:55Z
 url: https://github.com/astral-sh/ruff/pull/7029
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fixed panic in `missing_copyright_notice`
 
 ---
 
-_Pull request opened by @WindowGenerator on 2023-08-31 16:36_
+_@WindowGenerator_
 
 ## Summary
 

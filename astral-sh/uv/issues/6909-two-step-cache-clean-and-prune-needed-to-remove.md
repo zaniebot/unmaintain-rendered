@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-01T11:00:50Z
 updated_at: 2024-09-02T11:50:02Z
 url: https://github.com/astral-sh/uv/issues/6909
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Two-step cache clean and prune needed to remove package from cache
 
 ---
 
-_Issue opened by @bluss on 2024-09-01 11:00_
+_@bluss_
 
 Removing a big package like torch or similar requires both cache clean and prune to remove it from cache. It's expected that the first clean would remove it?
 

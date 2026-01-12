@@ -14,14 +14,14 @@ head: konsti/update-windows-binaries-again
 created_at: 2024-07-07T20:15:37Z
 updated_at: 2024-07-07T22:58:24Z
 url: https://github.com/astral-sh/uv/pull/4864
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Update windows binaries, again
 
 ---
 
-_Pull request opened by @konstin on 2024-07-07 20:15_
+_@konstin_
 
 https://github.com/astral-sh/uv/pull/4850#issuecomment-2212557050
 

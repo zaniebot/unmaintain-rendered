@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-07-29T19:22:59Z
 updated_at: 2025-11-01T12:06:05Z
 url: https://github.com/clap-rs/clap/issues/2639
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # [Derive] `#[doc = macro_name!()]` doesn't play well with doc comments
 
 ---
 
-_Issue opened by @rami3l on 2021-07-29 19:22_
+_@rami3l_
 
 ### Please complete the following tasks
 

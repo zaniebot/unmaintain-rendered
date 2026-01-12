@@ -13,14 +13,14 @@ head: zb/python-executables
 created_at: 2024-11-27T00:29:44Z
 updated_at: 2024-11-27T01:34:40Z
 url: https://github.com/astral-sh/uv/pull/9458
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Avoid filtering Python executables names during install tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-27 00:29_
+_@zanieb_
 
 These were erroneously being filtered, interfering with the snapshots in #8650 
 

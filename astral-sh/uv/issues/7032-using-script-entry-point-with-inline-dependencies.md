@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T16:07:24Z
 updated_at: 2024-12-30T05:57:59Z
 url: https://github.com/astral-sh/uv/issues/7032
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Using script entry point with inline dependencies 
 
 ---
 
-_Issue opened by @samsja on 2024-09-04 16:07_
+_@samsja_
 
 First thanks for the great work on uv !
 

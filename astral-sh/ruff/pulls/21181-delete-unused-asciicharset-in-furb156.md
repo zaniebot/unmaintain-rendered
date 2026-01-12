@@ -13,14 +13,14 @@ head: brent/furb156-set
 created_at: 2025-11-01T02:22:16Z
 updated_at: 2025-11-03T13:38:36Z
 url: https://github.com/astral-sh/ruff/pull/21181
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Delete unused `AsciiCharSet` in `FURB156`
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-01 02:22_
+_@ntBre_
 
 Summary
 --

@@ -12,14 +12,14 @@ head: main
 created_at: 2024-02-26T09:11:12Z
 updated_at: 2024-02-26T14:52:22Z
 url: https://github.com/astral-sh/uv/pull/1979
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Use full python version in `pyvenv.cfg`
 
 ---
 
-_Pull request opened by @j178 on 2024-02-26 09:11_
+_@j178_
 
 ## Summary
 

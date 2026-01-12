@@ -12,14 +12,14 @@ head: renovate-rate-limiting
 created_at: 2024-04-01T11:34:19Z
 updated_at: 2024-04-01T11:43:09Z
 url: https://github.com/astral-sh/ruff/pull/10695
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Allow renovate to create more PRs at once
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-01 11:34_
+_@AlexWaygood_
 
 ## Summary
 

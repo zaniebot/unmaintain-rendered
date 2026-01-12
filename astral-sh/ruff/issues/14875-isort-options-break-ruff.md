@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-09T14:38:26Z
 updated_at: 2024-12-09T17:26:01Z
 url: https://github.com/astral-sh/ruff/issues/14875
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Isort options break ruff
 
 ---
 
-_Issue opened by @berislavlopac-wpp on 2024-12-09 14:38_
+_@berislavlopac-wpp_
 
 When including (some of) the documented options under the `[tool.ruff.lint.isort]` section in `pyproject.toml`, ruff breaks being unable to parse the file. Specifically:
 

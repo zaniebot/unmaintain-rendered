@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T14:09:09Z
 updated_at: 2025-04-10T15:59:42Z
 url: https://github.com/astral-sh/uv/issues/12652
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Docs mention example code that doesn't exist
 
 ---
 
-_Issue opened by @hutch3232 on 2025-04-03 14:09_
+_@hutch3232_
 
 https://github.com/astral-sh/uv/blob/be3d5dfa84876c903bf98c1a76a97989c27e7247/docs/reference/cli.md?plain=1#L8822
 

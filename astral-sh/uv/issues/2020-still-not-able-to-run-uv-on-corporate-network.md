@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T16:13:19Z
 updated_at: 2024-09-02T09:35:45Z
 url: https://github.com/astral-sh/uv/issues/2020
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Still not able to run uv on corporate network with custom root certificates (uv 0.0.11)
 
 ---
 
-_Issue opened by @carlosjourdan on 2024-02-27 16:13_
+_@carlosjourdan_
 
 https://github.com/astral-sh/uv/issues/1474 was not fixed by https://github.com/astral-sh/uv/pull/1512 for me on v 0.1.11
 

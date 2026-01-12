@@ -12,14 +12,14 @@ head: renovate/rkyv-0.x
 created_at: 2024-09-16T00:23:14Z
 updated_at: 2024-09-18T18:50:31Z
 url: https://github.com/astral-sh/uv/pull/7415
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Update Rust crate rkyv to 0.8.0
 
 ---
 
-_Pull request opened by @renovate on 2024-09-16 00:23_
+_@renovate_
 
 This PR contains the following updates:
 

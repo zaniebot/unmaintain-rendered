@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-03T08:26:12Z
 updated_at: 2025-10-24T07:49:03Z
 url: https://github.com/astral-sh/ty/issues/572
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Panic during completions: `no entry found for key`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-03 08:26_
+_@MichaReiser_
 
 ### Summary
 

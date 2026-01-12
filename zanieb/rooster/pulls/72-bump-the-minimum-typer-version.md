@@ -12,14 +12,14 @@ head: zb/bump-typer
 created_at: 2025-07-29T21:41:51Z
 updated_at: 2025-08-26T16:10:09Z
 url: https://github.com/zanieb/rooster/pull/72
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Bump the minimum typer version
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-29 21:41_
+_@zanieb_
 
 Closes https://github.com/zanieb/rooster/issues/65
 

@@ -12,14 +12,14 @@ head: charlie/add-gitignore
 created_at: 2022-12-14T21:04:03Z
 updated_at: 2022-12-14T21:04:07Z
 url: https://github.com/astral-sh/ruff/pull/1240
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add new .gitignore behavior to BREAKING_CHANGES.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-14 21:04_
+_@charliermarsh_
 
 _No description provided._
 

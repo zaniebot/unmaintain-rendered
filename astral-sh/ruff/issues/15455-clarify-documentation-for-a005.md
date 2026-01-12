@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T12:41:06Z
 updated_at: 2025-01-14T07:42:14Z
 url: https://github.com/astral-sh/ruff/issues/15455
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Clarify documentation for A005
 
 ---
 
-_Issue opened by @DaniBodor on 2025-01-13 12:41_
+_@DaniBodor_
 
 I got an error for this rule (as the newest version of ruff got installed) and was reading the documentation and it took me quite a while to realize that the issue was the name of the module I was working on. As the error message tracks to line 1 of the file in question, which is an import X as Y statement, I kept thinking that the Y was the problem, but that didn't make sense given that the error message stated something else than Y.
 

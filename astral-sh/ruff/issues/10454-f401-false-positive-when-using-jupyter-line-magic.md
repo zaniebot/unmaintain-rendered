@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-18T11:04:42Z
 updated_at: 2024-03-20T12:43:13Z
 url: https://github.com/astral-sh/ruff/issues/10454
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F401 false positive when using Jupyter line magic (`%timeit imported_thing()`)
 
 ---
 
-_Issue opened by @flying-sheep on 2024-03-18 11:04_
+_@flying-sheep_
 
 I searched for “timeit F401” and didn’t find anything relevant.
 

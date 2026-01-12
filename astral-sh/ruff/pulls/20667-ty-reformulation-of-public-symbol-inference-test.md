@@ -14,14 +14,14 @@ head: david/reformulate-public-symbol-test-suite
 created_at: 2025-10-01T12:15:47Z
 updated_at: 2025-10-01T12:26:20Z
 url: https://github.com/astral-sh/ruff/pull/20667
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Reformulation of public symbol inference test suite
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-01 12:15_
+_@sharkdp_
 
 ## Summary
 

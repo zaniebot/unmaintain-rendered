@@ -14,14 +14,14 @@ head: pip-list-args
 created_at: 2024-02-26T14:16:47Z
 updated_at: 2024-02-26T20:52:48Z
 url: https://github.com/astral-sh/uv/pull/1985
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # `--exclude-editable` and `--exclude` args for `uv pip list`
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-26 14:16_
+_@sbrugman_
 
 Allows filtering out editable (`--exclude-editable`) and explicitly provided packages (`--exclude setuptools`) from `uv pip list`.
 

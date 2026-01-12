@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T10:18:01Z
 updated_at: 2024-12-28T12:46:02Z
 url: https://github.com/astral-sh/uv/issues/9634
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Add an option to add a local dependency also as workspace member for `uv add`
 
 ---
 
-_Issue opened by @NicholasPini on 2024-12-04 10:18_
+_@NicholasPini_
 
 I'm working with a bit of an unorthodox setup: I have a bunch of different, independent projects. Some of these projects are utilities meant to be used by other projects, and I found that the easiest way to manage this setup is to make the "main" projects workspaces that depend on the utilities packages, which are also members of these workspaces. Something like this:
 ```

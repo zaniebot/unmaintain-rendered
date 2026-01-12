@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-13T13:33:20Z
 updated_at: 2025-08-22T14:14:19Z
 url: https://github.com/astral-sh/ruff/issues/19895
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF010 fix ignores t-strings
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-13 13:33_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/avoid-repeating-paths
 created_at: 2024-03-20T19:44:00Z
 updated_at: 2024-03-20T21:16:10Z
 url: https://github.com/astral-sh/uv/pull/2573
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Avoid repeating paths of workspace packages
 
 ---
 
-_Pull request opened by @konstin on 2024-03-20 19:44_
+_@konstin_
 
 Scott schafer got me the idea: We can avoid repeating the path for workspaces dependencies everywhere if we declare them in the virtual package once and treat them as workspace dependencies from there on.
 

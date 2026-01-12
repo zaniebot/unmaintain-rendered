@@ -13,14 +13,14 @@ head: pandas-docs
 created_at: 2023-07-09T15:53:26Z
 updated_at: 2023-07-10T17:09:42Z
 url: https://github.com/astral-sh/ruff/pull/5629
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add documentation to `pandas-vet` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-09 15:53_
+_@tjkuson_
 
 ## Summary
 

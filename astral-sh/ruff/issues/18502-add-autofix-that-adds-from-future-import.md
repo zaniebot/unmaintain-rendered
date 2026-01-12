@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T16:35:09Z
 updated_at: 2025-10-01T10:32:57Z
 url: https://github.com/astral-sh/ruff/issues/18502
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add autofix that adds `from __future__ import annotations` only when it would be useful
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-06-06 16:35_
+_@AlexWaygood_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T23:16:18Z
 updated_at: 2024-06-01T23:21:12Z
 url: https://github.com/astral-sh/ruff/issues/11685
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SIM103 creates double negative
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-01 23:16_
+_@charliermarsh_
 
 here's another example of an un-pleasing suggestion from SIM103.  I wavered over whether to raise this separately but decided is is related enough: easy to split things apart later if desired.
 ```python

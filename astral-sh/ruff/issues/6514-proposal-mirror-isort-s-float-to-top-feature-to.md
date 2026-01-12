@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-12T00:14:00Z
 updated_at: 2025-12-26T19:07:29Z
 url: https://github.com/astral-sh/ruff/issues/6514
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Proposal] Mirror isort's float-to-top feature to autofix simple cases of E402
 
 ---
 
-_Issue opened by @SummerStorm on 2023-08-12 00:14_
+_@SummerStorm_
 
 ### Minimal reproducible example
 ```

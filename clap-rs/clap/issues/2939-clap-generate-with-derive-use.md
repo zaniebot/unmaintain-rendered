@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-24T19:28:00Z
 updated_at: 2021-10-26T21:56:49Z
 url: https://github.com/clap-rs/clap/issues/2939
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # clap_generate with derive use
 
 ---
 
-_Issue opened by @ghost on 2021-10-24 19:28_
+_@ghost_
 
 ### Please complete the following tasks
 

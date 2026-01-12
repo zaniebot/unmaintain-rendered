@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-08T03:35:31Z
 updated_at: 2025-11-12T07:17:30Z
 url: https://github.com/astral-sh/ruff/issues/21333
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `deprecated-import` (`UP035`) - `Deprecated` tag does not appear on deprecated types that are replaced with a builtin type
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-08 03:35_
+_@DetachHead_
 
 ### Summary
 

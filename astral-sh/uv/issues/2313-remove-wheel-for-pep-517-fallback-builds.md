@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-09T02:31:30Z
 updated_at: 2024-03-10T23:34:38Z
 url: https://github.com/astral-sh/uv/issues/2313
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Remove wheel for PEP 517 fallback builds
 
 ---
 
-_Issue opened by @henryiii on 2024-03-09 02:31_
+_@henryiii_
 
 Setuptools declares wheel as a wheel build dependency for PEP 517 builds already via a build hook. Both pip 24 (https://github.com/pypa/pip/pull/12449)  and build 1.1 (https://github.com/pypa/build/pull/716) have removed wheel from the default PEP 517 fallback environment. I think uv should do the same. 
 

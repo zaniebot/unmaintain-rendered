@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T18:02:48Z
 updated_at: 2024-10-22T20:10:54Z
 url: https://github.com/astral-sh/ruff/issues/13863
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] rename `Type::Class` and `Type::Function` to `Type::ClassLiteral` and `Type::FunctionLiteral`
 
 ---
 
-_Issue opened by @carljm on 2024-10-21 18:02_
+_@carljm_
 
 We've discussed and agreed this rename would be an improvement. It clarifies better what these types represent, and avoids the likely confusion of assuming `Type::Function` is something like `typing.Callable` and `Type::Class` is the representation of a type expression like `str`.
 

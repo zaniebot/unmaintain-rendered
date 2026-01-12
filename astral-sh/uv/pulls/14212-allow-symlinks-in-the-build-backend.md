@@ -14,14 +14,14 @@ head: konsti/allow-symlinks-in-the-build-backend
 created_at: 2025-06-23T09:41:48Z
 updated_at: 2025-06-25T07:44:23Z
 url: https://github.com/astral-sh/uv/pull/14212
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Allow symlinks in the build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-06-23 09:41_
+_@konstin_
 
 In workspaces with multiple packages, you usually don't want to include shared files such as the license repeatedly. Instead, we reading from symlinked files. This would be supported if we had used std's `is_file` and read methods, but walkdir's `is_file` does not consider symlinked files as files.
 

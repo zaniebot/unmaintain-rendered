@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T15:29:39Z
 updated_at: 2025-10-08T16:00:22Z
 url: https://github.com/astral-sh/uv/issues/16193
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # cc error after release of the new version
 
 ---
 
-_Issue opened by @fihbrs on 2025-10-08 15:29_
+_@fihbrs_
 
 ### Question
 

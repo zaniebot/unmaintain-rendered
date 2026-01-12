@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T10:03:17Z
 updated_at: 2025-04-04T13:17:41Z
 url: https://github.com/astral-sh/ruff/issues/17196
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Referencing an otherwise unused variable in an argument to `Annotated` falsely triggers F841
 
 ---
 
-_Issue opened by @bkis on 2025-04-04 10:03_
+_@bkis_
 
 ### Summary
 

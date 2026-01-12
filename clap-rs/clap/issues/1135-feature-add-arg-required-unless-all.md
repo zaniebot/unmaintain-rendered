@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-12-22T10:43:11Z
 updated_at: 2021-12-09T18:03:09Z
 url: https://github.com/clap-rs/clap/issues/1135
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Feature: add Arg::required_unless_all
 
 ---
 
-_Issue opened by @gbear605 on 2017-12-22 10:43_
+_@gbear605_
 
 ### Rust Version
 

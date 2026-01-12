@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-04T16:51:10Z
 updated_at: 2020-04-21T17:05:31Z
 url: https://github.com/clap-rs/clap/issues/1721
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Document that multi-value options do not get along with trailing subcommands
 
 ---
 
-_Issue opened by @nagisa on 2020-03-04 16:51_
+_@nagisa_
 
 ### Rust Version
 

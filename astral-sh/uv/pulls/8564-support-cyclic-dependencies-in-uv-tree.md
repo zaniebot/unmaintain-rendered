@@ -13,14 +13,14 @@ head: charlie/cy
 created_at: 2024-10-25T13:27:47Z
 updated_at: 2024-10-26T17:30:44Z
 url: https://github.com/astral-sh/uv/pull/8564
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Support cyclic dependencies in `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-25 13:27_
+_@charliermarsh_
 
 ## Summary
 

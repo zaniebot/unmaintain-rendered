@@ -13,14 +13,14 @@ head: charlie/tilde
 created_at: 2024-07-28T18:22:51Z
 updated_at: 2024-07-28T19:13:07Z
 url: https://github.com/astral-sh/uv/pull/5520
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Warn, but don't error, when encountering tilde .dist-info directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 18:22_
+_@charliermarsh_
 
 ## Summary
 

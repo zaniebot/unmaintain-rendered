@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-28T11:45:56Z
 updated_at: 2025-02-27T17:07:29Z
 url: https://github.com/astral-sh/ruff/issues/7696
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Allow configuration to be defined on a file-scoped basis
 
 ---
 
-_Issue opened by @Czaki on 2023-09-28 11:45_
+_@Czaki_
 
 It will be nice to allow define `banned-api` rules per file pattern. 
 

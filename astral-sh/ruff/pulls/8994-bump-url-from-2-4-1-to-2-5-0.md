@@ -13,14 +13,14 @@ head: dependabot/cargo/url-2.5.0
 created_at: 2023-12-04T08:41:33Z
 updated_at: 2023-12-04T15:16:41Z
 url: https://github.com/astral-sh/ruff/pull/8994
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump url from 2.4.1 to 2.5.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-04 08:41_
+_@dependabot_
 
 Bumps [url](https://github.com/servo/rust-url) from 2.4.1 to 2.5.0.
 <details>

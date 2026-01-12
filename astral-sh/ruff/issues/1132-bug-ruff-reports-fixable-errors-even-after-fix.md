@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-07T23:52:41Z
 updated_at: 2022-12-08T00:14:45Z
 url: https://github.com/astral-sh/ruff/issues/1132
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] Ruff reports fixable errors even after `--fix`
 
 ---
 
-_Issue opened by @smackesey on 2022-12-07 23:52_
+_@smackesey_
 
 I don't know exactly under what situations this occurs but I see this fairly often:
 

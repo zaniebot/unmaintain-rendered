@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T14:35:07Z
 updated_at: 2025-10-17T14:35:37Z
 url: https://github.com/astral-sh/uv/issues/6440
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # FRs: Commit lint and changelog generation
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-22 14:35_
+_@chrisrodrigue_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

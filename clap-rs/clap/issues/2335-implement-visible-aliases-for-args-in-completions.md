@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-02-07T14:14:57Z
 updated_at: 2021-02-22T09:09:25Z
 url: https://github.com/clap-rs/clap/issues/2335
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Implement visible aliases for args in completions.
 
 ---
 
-_Issue opened by @pksunkara on 2021-02-07 14:14_
+_@pksunkara_
 
 Currently, completions correctly support arg's short visible aliases but not the arg's long visible aliases. This issue is about rectifying it.
 

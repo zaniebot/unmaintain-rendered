@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-12T15:54:39Z
 updated_at: 2023-06-12T21:23:41Z
 url: https://github.com/astral-sh/ruff/issues/5027
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP013 does not account for functional use-cases
 
 ---
 
-_Issue opened by @ergoithz on 2023-06-12 15:54_
+_@ergoithz_
 
 pyupgrade UP013 does not check for when typed dict cannot be expressed as a class (in this example because of reserved keys).
 

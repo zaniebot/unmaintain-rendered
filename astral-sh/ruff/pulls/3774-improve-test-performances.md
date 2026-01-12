@@ -12,14 +12,14 @@ head: improve-test-performance
 created_at: 2023-03-28T15:55:49Z
 updated_at: 2023-03-28T17:31:49Z
 url: https://github.com/astral-sh/ruff/pull/3774
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Improve test performances
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-28 15:55_
+_@JonathanPlasse_
 
 - Close #3752
 

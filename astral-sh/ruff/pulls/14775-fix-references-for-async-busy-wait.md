@@ -13,14 +13,14 @@ head: main
 created_at: 2024-12-04T16:53:48Z
 updated_at: 2024-12-04T17:05:50Z
 url: https://github.com/astral-sh/ruff/pull/14775
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix references for `async-busy-wait` 
 
 ---
 
-_Pull request opened by @Well2333 on 2024-12-04 16:53_
+_@Well2333_
 
 ## Summary
 

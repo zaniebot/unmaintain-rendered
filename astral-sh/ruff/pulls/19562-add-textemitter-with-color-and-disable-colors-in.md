@@ -13,14 +13,14 @@ head: brent/fix-e902-colors
 created_at: 2025-07-25T19:37:27Z
 updated_at: 2025-07-25T19:47:51Z
 url: https://github.com/astral-sh/ruff/pull/19562
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # Add `TextEmitter::with_color` and disable colors in `unreadable_files` test
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-25 19:37_
+_@ntBre_
 
 Summary
 --

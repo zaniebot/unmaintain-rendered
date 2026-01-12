@@ -13,14 +13,14 @@ head: david/bare-classvar-annotation
 created_at: 2025-01-27T10:31:21Z
 updated_at: 2025-07-08T11:28:17Z
 url: https://github.com/astral-sh/ruff/pull/15768
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [ty] Bare `ClassVar` annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-27 10:31_
+_@sharkdp_
 
 ## Summary
 

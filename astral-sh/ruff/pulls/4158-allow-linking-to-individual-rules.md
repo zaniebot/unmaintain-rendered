@@ -13,14 +13,14 @@ head: link-individual-rules
 created_at: 2023-04-30T10:25:50Z
 updated_at: 2023-05-10T14:55:13Z
 url: https://github.com/astral-sh/ruff/pull/4158
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Allow linking to individual rules
 
 ---
 
-_Pull request opened by @calumy on 2023-04-30 10:25_
+_@calumy_
 
 Adds an id to each rule to allow linking directly to the rule.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T03:39:12Z
 updated_at: 2024-12-23T10:02:43Z
 url: https://github.com/astral-sh/ruff/issues/15117
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `FAST002` only checks positional and keyword parameters
 
 ---
 
-_Issue opened by @harupy on 2024-12-23 03:39_
+_@harupy_
 
 `FAST002` only checks positional and keyword parameters. Should it also check keyword-only parameters?
 

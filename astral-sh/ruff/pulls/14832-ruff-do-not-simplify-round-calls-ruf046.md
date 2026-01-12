@@ -14,14 +14,14 @@ head: RUF046-1
 created_at: 2024-12-08T04:15:26Z
 updated_at: 2024-12-09T16:39:14Z
 url: https://github.com/astral-sh/ruff/pull/14832
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Do not simplify `round()` calls (`RUF046`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-08 04:15_
+_@InSyncWithFoo_
 
 ## Summary
 

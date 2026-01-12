@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T08:22:45Z
 updated_at: 2025-04-22T16:00:47Z
 url: https://github.com/astral-sh/uv/issues/13046
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Support `environments` in PEP 751
 
 ---
 
-_Issue opened by @konstin on 2025-04-22 08:22_
+_@konstin_
 
 PEP 751 has an `environments` field with a list of Environment Markers for which the lock file is considered compatible with. We should support this field both when writing and when reading.
 

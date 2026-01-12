@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-27T17:10:47Z
 updated_at: 2025-05-07T15:22:57Z
 url: https://github.com/astral-sh/ruff/issues/17016
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] False-positive errors in `finally` suites when all other branches of the `try` block have terminal statements
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-27 17:10_
+_@AlexWaygood_
 
 ### Summary
 

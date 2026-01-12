@@ -14,14 +14,14 @@ head: charlie/path
 created_at: 2024-03-04T00:07:49Z
 updated_at: 2024-03-04T17:46:11Z
 url: https://github.com/astral-sh/ruff/pull/10219
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Move shell expansion into `--config` lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 00:07_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/revert-add
 created_at: 2024-07-31T17:14:50Z
 updated_at: 2024-07-31T17:27:36Z
 url: https://github.com/astral-sh/uv/pull/5664
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Avoid persisting `uv add` calls that result in resolver errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 17:14_
+_@charliermarsh_
 
 ## Summary
 

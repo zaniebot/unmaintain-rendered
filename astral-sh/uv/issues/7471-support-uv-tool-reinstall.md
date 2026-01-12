@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-17T16:45:59Z
 updated_at: 2024-09-25T22:50:59Z
 url: https://github.com/astral-sh/uv/issues/7471
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Support uv tool reinstall
 
 ---
 
-_Issue opened by @gaborbernat on 2024-09-17 16:45_
+_@gaborbernat_
 
 When upgrading Python interpreters, it would be beneficial to allow upgrading all tools to a different Python. Something like:
 

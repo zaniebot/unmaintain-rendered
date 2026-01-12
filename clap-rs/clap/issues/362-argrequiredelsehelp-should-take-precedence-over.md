@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-12-17T09:26:13Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/362
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # ArgRequiredElseHelp should take precedence over required args
 
 ---
 
-_Issue opened by @WiSaGaN on 2015-12-17 09:26_
+_@WiSaGaN_
 
 Currently, if we have required args present and no args are provided at run-time, clap will output an error message even if ArgRequiredElseHelp is set in the app setting.
 Providing the usage without error is more friendly in this case, especially when we supply ArgRequiredElseHelp.

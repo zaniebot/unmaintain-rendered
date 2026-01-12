@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T15:04:16Z
 updated_at: 2024-08-01T01:21:17Z
 url: https://github.com/astral-sh/ruff/issues/12594
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PLR1736 does not account for custom start index
 
 ---
 
-_Issue opened by @pork-you-pine on 2024-07-31 15:04_
+_@pork-you-pine_
 
 Hi there, it seems like PLR1736 does not account for custom start indices in enumerate and transforms:
 

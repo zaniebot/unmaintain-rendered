@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T15:19:14Z
 updated_at: 2024-06-05T20:45:52Z
 url: https://github.com/astral-sh/uv/issues/4050
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Locking depends on the current python version if `requires-python` isn't set
 
 ---
 
-_Issue opened by @konstin on 2024-06-05 15:19_
+_@konstin_
 
 Locking dependencies with `uv lock` or `uv run` depends on the current python version when no explicit `requires-python` is given:
 

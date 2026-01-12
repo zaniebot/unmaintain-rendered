@@ -13,14 +13,14 @@ head: UP032-await
 created_at: 2023-08-03T14:39:22Z
 updated_at: 2023-08-03T15:16:54Z
 url: https://github.com/astral-sh/ruff/pull/6304
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Update `UP032` to support `await` expressions
 
 ---
 
-_Pull request opened by @harupy on 2023-08-03 14:39_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

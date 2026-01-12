@@ -12,14 +12,14 @@ head: puffin-interpreter-refacotring
 created_at: 2023-11-23T08:53:42Z
 updated_at: 2023-11-23T08:57:34Z
 url: https://github.com/astral-sh/uv/pull/492
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # puffin_interpreter cleanup ahead of #235
 
 ---
 
-_Pull request opened by @konstin on 2023-11-23 08:53_
+_@konstin_
 
 Preparing for #235, some refactoring to `puffin_interpreter`.
 

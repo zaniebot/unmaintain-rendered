@@ -13,14 +13,14 @@ head: konsti/0.7.1-changelog-indent
 created_at: 2025-04-30T10:10:56Z
 updated_at: 2025-04-30T10:11:51Z
 url: https://github.com/astral-sh/uv/pull/13219
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Fix changelog indentation level
 
 ---
 
-_Pull request opened by @konstin on 2025-04-30 10:10_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-09T17:43:47Z
 updated_at: 2025-07-11T12:26:41Z
 url: https://github.com/astral-sh/ruff/pull/19241
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`flake8-bandit`] Make example error out-of-the-box (`S412`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-09 17:43_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

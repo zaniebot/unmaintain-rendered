@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T13:23:42Z
 updated_at: 2025-09-05T12:55:45Z
 url: https://github.com/astral-sh/uv/issues/14239
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same)
 
 ---
 
-_Issue opened by @ssbarnea on 2025-06-24 13:23_
+_@ssbarnea_
 
 ### Summary
 

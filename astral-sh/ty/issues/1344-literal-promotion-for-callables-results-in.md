@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T12:41:15Z
 updated_at: 2025-10-13T13:21:56Z
 url: https://github.com/astral-sh/ty/issues/1344
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Literal promotion for callables results in missing attributes
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-13 12:41_
+_@sharkdp_
 
 Consider:
 ```py

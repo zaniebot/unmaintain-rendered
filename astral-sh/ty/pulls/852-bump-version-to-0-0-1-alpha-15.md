@@ -13,14 +13,14 @@ head: david/bump-0-0-1a15
 created_at: 2025-07-18T12:37:46Z
 updated_at: 2025-07-18T12:49:15Z
 url: https://github.com/astral-sh/ty/pull/852
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1-alpha.15
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-18 12:37_
+_@sharkdp_
 
 Some of the things I chose to leave out of the CHANGELOG. Let me know if you want them to be included:
 ```

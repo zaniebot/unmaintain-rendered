@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-14T09:21:47Z
 updated_at: 2024-10-17T07:14:35Z
 url: https://github.com/astral-sh/ruff/issues/11421
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # C901, PLR0912 and PLR0915 treat match/case as one statement
 
 ---
 
-_Issue opened by @jaap3 on 2024-05-14 09:21_
+_@jaap3_
 
 Using ruff 0.4.4 the following code triggers `C901`, `PLR0912` and `PLR0915`:
 

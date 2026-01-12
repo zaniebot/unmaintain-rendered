@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T17:02:01Z
 updated_at: 2024-10-09T13:01:54Z
 url: https://github.com/astral-sh/uv/issues/8011
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Minor: when uv tool fails to install something the environment remains dangling
 
 ---
 
-_Issue opened by @callegar on 2024-10-08 17:02_
+_@callegar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

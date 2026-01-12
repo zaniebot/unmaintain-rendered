@@ -14,14 +14,14 @@ head: david/ecosystem-analyzer-panic-messages
 created_at: 2025-12-17T13:37:18Z
 updated_at: 2025-12-17T14:03:01Z
 url: https://github.com/astral-sh/ruff/pull/22023
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] ecosystem-analyzer: Flush full stderr output in case of panics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-17 13:37_
+_@sharkdp_
 
 Pulls in https://github.com/astral-sh/ecosystem-analyzer/commit/2e1816eac09c90140b1ba51d19afc5f59da460f5
 

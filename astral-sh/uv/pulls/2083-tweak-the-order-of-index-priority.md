@@ -13,14 +13,14 @@ head: ag/multi-registry
 created_at: 2024-02-29T15:16:33Z
 updated_at: 2024-09-03T15:11:04Z
 url: https://github.com/astral-sh/uv/pull/2083
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # tweak the order of index priority
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-29 15:16_
+_@BurntSushi_
 
 Previously, `uv` would always prioritize the index given by
 `--index-url`. It would then try any indexes after that given by zero

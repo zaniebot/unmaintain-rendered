@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T17:05:57Z
 updated_at: 2025-08-12T05:52:08Z
 url: https://github.com/astral-sh/uv/issues/4970
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv python pin` should support writing to a `uv.toml` or `pyproject.toml`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 17:05_
+_@zanieb_
 
 We need to design the schema for this data. Probably at `uv.python-version` or `uv.python.default-version`.
 

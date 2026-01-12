@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T07:21:21Z
 updated_at: 2024-08-09T06:43:42Z
 url: https://github.com/astral-sh/ruff/issues/12743
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Add support for nosec comments for bandit rules
 
 ---
 
-_Issue opened by @Daverball on 2024-08-08 07:21_
+_@Daverball_
 
 I already brought this up a while back in the issue for the flake8-bandit rules, which has recently been completed.
 

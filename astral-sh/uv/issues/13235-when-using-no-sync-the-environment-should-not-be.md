@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T15:50:50Z
 updated_at: 2025-05-05T14:57:48Z
 url: https://github.com/astral-sh/uv/issues/13235
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # When using `--no-sync`, the environment should not be invalidated
 
 ---
 
-_Issue opened by @zanieb on 2025-04-30 15:50_
+_@zanieb_
 
 As reported in https://github.com/astral-sh/uv/issues/13233 — invalidating the environment during `uv run` is problematic if syncing is disabled.
 

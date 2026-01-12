@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T17:32:58Z
 updated_at: 2025-10-07T20:55:57Z
 url: https://github.com/astral-sh/ruff/issues/20694
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B905 and B912 fixes should be unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-03 17:32_
+_@dscorbett_
 
 ### Summary
 

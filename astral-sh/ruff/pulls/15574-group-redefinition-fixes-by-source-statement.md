@@ -13,14 +13,14 @@ head: charlie/f811
 created_at: 2025-01-18T22:22:32Z
 updated_at: 2025-01-18T22:35:09Z
 url: https://github.com/astral-sh/ruff/pull/15574
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Group redefinition fixes by source statement
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-18 22:22_
+_@charliermarsh_
 
 ## Summary
 

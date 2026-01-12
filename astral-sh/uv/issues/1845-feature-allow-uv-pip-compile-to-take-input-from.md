@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T01:56:29Z
 updated_at: 2024-06-19T00:37:52Z
 url: https://github.com/astral-sh/uv/issues/1845
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # feature: Allow uv pip compile to take input from CLI
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-22 01:56_
+_@gaborbernat_
 
 I would appreciate it if we could get the resolved packages list without needing to install them into a virtual environment. For example it would be super helpful to be able to do:
 

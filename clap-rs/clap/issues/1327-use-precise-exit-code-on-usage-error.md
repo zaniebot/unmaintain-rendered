@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-08-03T14:05:12Z
 updated_at: 2020-01-30T19:30:58Z
 url: https://github.com/clap-rs/clap/issues/1327
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Use precise exit code on usage error
 
 ---
 
-_Issue opened by @killercup on 2018-08-03 14:05_
+_@killercup_
 
 Most people exit their program status code `1` on an error. To differentiate between program errors, the BSD folks made a guideline with exit codes (>1) to be more specific. For example, if the user doesn't have the necessary permissions, you should exit with `77`.
 

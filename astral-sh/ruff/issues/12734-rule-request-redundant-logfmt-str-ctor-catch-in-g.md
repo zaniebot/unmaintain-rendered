@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T15:27:09Z
 updated_at: 2025-09-19T20:43:45Z
 url: https://github.com/astral-sh/ruff/issues/12734
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule Request: redundant logfmt str ctor catch in G rules or add new rule
 
 ---
 
-_Issue opened by @Skylion007 on 2024-08-07 15:27_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

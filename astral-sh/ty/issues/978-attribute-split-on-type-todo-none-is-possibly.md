@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T21:47:21Z
 updated_at: 2025-08-15T19:06:43Z
 url: https://github.com/astral-sh/ty/issues/978
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Attribute `split` on type `@Todo | None` is possibly unbound
 
 ---
 
-_Issue opened by @MamadouSDiallo on 2025-08-13 21:47_
+_@MamadouSDiallo_
 
 ### Summary
 

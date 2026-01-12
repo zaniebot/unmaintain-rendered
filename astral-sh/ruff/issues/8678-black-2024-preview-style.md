@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-14T17:03:38Z
 updated_at: 2024-04-12T14:53:56Z
 url: https://github.com/astral-sh/ruff/issues/8678
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # 🏖️  Black 2024 Preview Style
 
 ---
 
-_Issue opened by @konstin on 2023-11-14 17:03_
+_@konstin_
 
 Black is planning to stabilize a subset of the preview style as stable style for 2024 (https://github.com/psf/black/issues/4042). Ruff implements a subset of the current preview style, and subsequently a subset of the planned stable style.
 

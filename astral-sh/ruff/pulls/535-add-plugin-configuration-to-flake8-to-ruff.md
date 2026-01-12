@@ -12,14 +12,14 @@ head: charlie/props
 created_at: 2022-11-01T21:07:54Z
 updated_at: 2022-11-01T21:08:54Z
 url: https://github.com/astral-sh/ruff/pull/535
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add plugin configuration to flake8-to-ruff
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-01 21:07_
+_@charliermarsh_
 
 _No description provided._
 

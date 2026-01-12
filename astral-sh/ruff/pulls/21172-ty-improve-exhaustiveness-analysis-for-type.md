@@ -13,14 +13,14 @@ head: alex/neg-intersection2
 created_at: 2025-10-31T19:07:29Z
 updated_at: 2025-10-31T20:51:13Z
 url: https://github.com/astral-sh/ruff/pull/21172
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Improve exhaustiveness analysis for type variables with bounds or constraints
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-31 19:07_
+_@AlexWaygood_
 
 ## Summary
 

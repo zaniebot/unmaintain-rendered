@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T18:40:56Z
 updated_at: 2025-02-16T20:12:27Z
 url: https://github.com/astral-sh/ruff/issues/13154
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # A `__new__` method should be considered a staticmethod, not a classmethod.
 
 ---
 
-_Issue opened by @cake-monotone on 2024-08-29 18:40_
+_@cake-monotone_
 
 This is a subtle tweak: The `__new__` method is currently causing classmethod warnings (e.g., ARG003). However, it should actually be causing staticmethod warnings (e.g., ARG004).
 

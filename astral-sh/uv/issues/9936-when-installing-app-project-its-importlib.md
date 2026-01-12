@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-16T14:05:24Z
 updated_at: 2024-12-16T14:49:28Z
 url: https://github.com/astral-sh/uv/issues/9936
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # When installing app project, its `importlib.metadata` is not available
 
 ---
 
-_Issue opened by @rafalkrupinski on 2024-12-16 14:05_
+_@rafalkrupinski_
 
 I use a simple pattern to display version in my app projects, either in webapps or programs with CLI:
 ```py

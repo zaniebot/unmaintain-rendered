@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T01:43:47Z
 updated_at: 2025-02-05T08:37:11Z
 url: https://github.com/astral-sh/ruff/issues/15920
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Conflicting behavior of ruff isort rule for same file in different environments
 
 ---
 
-_Issue opened by @rashishhume on 2025-02-04 01:43_
+_@rashishhume_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T16:01:24Z
 updated_at: 2024-05-14T23:07:26Z
 url: https://github.com/astral-sh/uv/issues/3356
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: track version numbers for all distributions
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 16:01_
+_@BurntSushi_
 
 When creating a `Lock`, we currently have a `todo!()` when trying to extract version numbers:
 

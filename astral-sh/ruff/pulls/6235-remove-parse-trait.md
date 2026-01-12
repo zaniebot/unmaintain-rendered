@@ -13,14 +13,14 @@ head: remove-parse-trait
 created_at: 2023-08-01T10:39:31Z
 updated_at: 2023-08-01T16:35:05Z
 url: https://github.com/astral-sh/ruff/pull/6235
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove `Parse` trait
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-01 10:39_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

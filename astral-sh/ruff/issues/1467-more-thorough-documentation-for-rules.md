@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T08:02:41Z
 updated_at: 2023-02-07T23:19:31Z
 url: https://github.com/astral-sh/ruff/issues/1467
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # More thorough documentation for rules
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-30 08:02_
+_@not-my-profile_
 
 The idea is that for each rule we want to document:
 

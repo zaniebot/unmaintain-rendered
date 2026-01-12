@@ -12,14 +12,14 @@ head: fix-release-script
 created_at: 2025-12-03T15:21:36Z
 updated_at: 2025-12-04T18:52:30Z
 url: https://github.com/astral-sh/uv/pull/16971
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Adjust release script to handle uv-trampoline lockfile changes
 
 ---
 
-_Pull request opened by @samypr100 on 2025-12-03 15:21_
+_@samypr100_
 
 ## Summary
 

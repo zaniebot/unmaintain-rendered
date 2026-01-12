@@ -13,14 +13,14 @@ head: dhruv/server-workspace
 created_at: 2025-02-21T08:33:59Z
 updated_at: 2025-02-21T08:40:41Z
 url: https://github.com/astral-sh/ruff/pull/16295
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Refactor workspace logic into `workspace.rs`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-21 08:33_
+_@dhruvmanila_
 
 ## Summary
 

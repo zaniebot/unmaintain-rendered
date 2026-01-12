@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-25T19:35:37Z
 updated_at: 2024-09-25T19:37:44Z
 url: https://github.com/astral-sh/uv/issues/7692
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Cannot download and use a new version of python
 
 ---
 
-_Issue opened by @knaus on 2024-09-25 19:35_
+_@knaus_
 
 * A minimal code snippet that reproduces the bug.
 <img width="518" alt="image" src="https://github.com/user-attachments/assets/83111dbf-0b97-44f4-aee5-94c279c23601">

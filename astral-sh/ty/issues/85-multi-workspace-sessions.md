@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:19:15Z
 updated_at: 2025-05-28T08:56:21Z
 url: https://github.com/astral-sh/ty/issues/85
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Multi-workspace sessions
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:19_
+_@MichaReiser_
 
 Support for VS code's multi workspace feature (opening multiple folders in a single window)
 

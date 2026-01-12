@@ -12,14 +12,14 @@ head: main
 created_at: 2023-07-03T12:42:18Z
 updated_at: 2023-07-03T14:09:40Z
 url: https://github.com/astral-sh/ruff/pull/5475
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix python_formatter generate.py with rust path
 
 ---
 
-_Pull request opened by @LouisDISPA on 2023-07-03 12:42_
+_@LouisDISPA_
 
 ## Summary
 

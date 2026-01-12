@@ -12,14 +12,14 @@ head: fix-clippy-error-on-main
 created_at: 2022-12-03T09:07:47Z
 updated_at: 2022-12-03T15:02:36Z
 url: https://github.com/astral-sh/ruff/pull/1010
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix clippy errors on main
 
 ---
 
-_Pull request opened by @harupy on 2022-12-03 09:07_
+_@harupy_
 
 Fix https://github.com/charliermarsh/ruff/actions/runs/3607156653/jobs/6078988561
 

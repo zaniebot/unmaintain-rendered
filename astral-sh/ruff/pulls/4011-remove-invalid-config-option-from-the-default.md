@@ -12,14 +12,14 @@ head: docs/fix_default
 created_at: 2023-04-18T22:25:09Z
 updated_at: 2023-04-18T23:07:33Z
 url: https://github.com/astral-sh/ruff/pull/4011
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # (📚) Remove invalid config option from the default config example
 
 ---
 
-_Pull request opened by @KotlinIsland on 2023-04-18 22:25_
+_@KotlinIsland_
 
 _No description provided._
 

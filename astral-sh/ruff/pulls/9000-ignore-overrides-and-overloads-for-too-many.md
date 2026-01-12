@@ -13,14 +13,14 @@ head: charlie/override
 created_at: 2023-12-04T23:32:41Z
 updated_at: 2023-12-04T23:45:13Z
 url: https://github.com/astral-sh/ruff/pull/9000
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Ignore `@overrides` and `@overloads` for `too-many-positional`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 23:32_
+_@charliermarsh_
 
 Same as `too-many-arguments`.
 

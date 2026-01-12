@@ -12,14 +12,14 @@ assignees: []
 created_at: 2015-09-22T18:23:57Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/270
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # name property not used.
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-22 18:23_
+_@XAMPPRocky_
 
 When I was checking the help, and version output, and I realised that the name being printed is the not the name used in the yaml file. It seems to be using my `Cargo.toml` name instead.
 

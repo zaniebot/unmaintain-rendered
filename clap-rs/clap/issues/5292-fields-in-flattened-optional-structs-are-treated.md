@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-08T20:20:29Z
 updated_at: 2024-01-08T21:27:18Z
 url: https://github.com/clap-rs/clap/issues/5292
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Fields in flattened optional structs are treated as required
 
 ---
 
-_Issue opened by @akonradi-signal on 2024-01-08 20:20_
+_@akonradi-signal_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: implicit-string-concat-modulo-operator
 created_at: 2023-07-21T11:45:45Z
 updated_at: 2023-07-24T16:30:44Z
 url: https://github.com/astral-sh/ruff/pull/5947
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Prefer breaking the implicit string concatenation over breaking before `%`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-21 11:45_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

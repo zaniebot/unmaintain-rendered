@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T13:28:51Z
 updated_at: 2024-12-04T04:44:27Z
 url: https://github.com/astral-sh/uv/issues/8970
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Enhance offline testing
 
 ---
 
-_Issue opened by @mgorny on 2024-11-09 13:28_
+_@mgorny_
 
 I think uv's getting quite mature at this point. Unfortunately, the test suite is still largely dependent on accessing `pypi.org` online. FWICS, on top of 65e2f955f152304c1a4857a96d69d3507d548221 there are ~1250 tests skipped with it disabled, i.e. only ~10% of the test suite is run without it, and I suppose a lot of important features aren't tested.
 

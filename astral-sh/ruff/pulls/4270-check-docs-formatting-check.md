@@ -13,14 +13,14 @@ head: check-docs-formatting
 created_at: 2023-05-07T16:07:00Z
 updated_at: 2023-05-10T14:55:22Z
 url: https://github.com/astral-sh/ruff/pull/4270
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Check docs formatting check
 
 ---
 
-_Pull request opened by @calumy on 2023-05-07 16:07_
+_@calumy_
 
 This PR: 
 - Adds a script that runs black over the docs and returns the formatting violations and parse errors found

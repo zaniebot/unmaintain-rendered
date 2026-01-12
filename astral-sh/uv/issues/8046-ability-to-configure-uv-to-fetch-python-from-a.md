@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T13:13:46Z
 updated_at: 2024-10-09T14:03:00Z
 url: https://github.com/astral-sh/uv/issues/8046
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Ability to Configure uv to Fetch Python from a Mirrored python-build-standalone Repository
 
 ---
 
-_Issue opened by @PandyaDarshit on 2024-10-09 13:13_
+_@PandyaDarshit_
 
 Hi,
 I am using uv for Python package management in my Dockerfile. Specifically, I use the following command to install Python and set up a virtual environment:

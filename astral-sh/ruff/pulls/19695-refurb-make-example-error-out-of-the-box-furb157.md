@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-08-01T17:30:06Z
 updated_at: 2025-08-01T18:10:09Z
 url: https://github.com/astral-sh/ruff/pull/19695
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [`refurb`] Make example error out-of-the-box (`FURB157`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-08-01 17:30_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: alex/star-import-no-error
 created_at: 2025-03-21T14:34:24Z
 updated_at: 2025-03-21T14:41:50Z
 url: https://github.com/astral-sh/ruff/pull/16899
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Avoid false-positive diagnostics on `*` import statements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-21 14:34_
+_@AlexWaygood_
 
 ## Summary
 

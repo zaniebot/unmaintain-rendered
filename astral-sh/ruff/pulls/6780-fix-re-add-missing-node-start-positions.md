@@ -13,14 +13,14 @@ head: fix-write-start-positions
 created_at: 2023-08-22T16:34:20Z
 updated_at: 2023-08-23T07:59:38Z
 url: https://github.com/astral-sh/ruff/pull/6780
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix: Re-add missing node start positions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-22 16:34_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

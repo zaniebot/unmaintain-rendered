@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T09:43:22Z
 updated_at: 2025-04-04T19:15:40Z
 url: https://github.com/astral-sh/uv/issues/12666
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Strange behavior with tools.uv.sources and tools.uv.index
 
 ---
 
-_Issue opened by @khaume on 2025-04-04 09:43_
+_@khaume_
 
 ### Summary
 

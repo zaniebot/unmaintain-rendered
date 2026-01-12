@@ -11,14 +11,14 @@ head: patch-4
 created_at: 2025-06-17T02:53:52Z
 updated_at: 2025-06-17T15:09:44Z
 url: https://github.com/astral-sh/uv/pull/14099
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Create devcontainer.json
 
 ---
 
-_Pull request opened by @alanthian on 2025-06-17 02:53_
+_@alanthian_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T16:08:51Z
 updated_at: 2025-09-10T14:57:08Z
 url: https://github.com/astral-sh/ruff/issues/13630
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Pydantic model not detected by RUF012
 
 ---
 
-_Issue opened by @cbornet on 2024-10-04 16:08_
+_@cbornet_
 
 * List of keywords you searched for before creating this issue: pydantic ruf012
 * The current Ruff version : 0.5.0

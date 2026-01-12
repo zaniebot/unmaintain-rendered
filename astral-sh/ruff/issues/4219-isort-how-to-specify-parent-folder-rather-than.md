@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-04T09:45:00Z
 updated_at: 2023-07-10T01:21:23Z
 url: https://github.com/astral-sh/ruff/issues/4219
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # isort: how to specify parent folder rather than all children folders in "known-x" rule?
 
 ---
 
-_Issue opened by @ddahan on 2023-05-04 09:45_
+_@ddahan_
 
 Hi, I'm trying to organise my imports using ruff.
 

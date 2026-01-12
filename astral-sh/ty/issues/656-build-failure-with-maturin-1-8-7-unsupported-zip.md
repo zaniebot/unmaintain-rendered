@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-14T14:28:54Z
 updated_at: 2025-06-15T12:10:49Z
 url: https://github.com/astral-sh/ty/issues/656
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Build failure with maturin 1.8.7: "unsupported Zip archive: Unsupported compression level"
 
 ---
 
-_Issue opened by @gyscos on 2025-06-14 14:28_
+_@gyscos_
 
 ### Summary
 

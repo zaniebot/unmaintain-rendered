@@ -13,14 +13,14 @@ head: contributing-md-fix
 created_at: 2024-05-15T12:26:00Z
 updated_at: 2024-05-15T14:36:28Z
 url: https://github.com/astral-sh/ruff/pull/11434
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update CONTRIBUTING.md to reflect the new parser
 
 ---
 
-_Pull request opened by @lemeb on 2024-05-15 12:26_
+_@lemeb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

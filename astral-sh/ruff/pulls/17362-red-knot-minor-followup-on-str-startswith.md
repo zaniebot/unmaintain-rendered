@@ -13,14 +13,14 @@ head: david/startswith-followup
 created_at: 2025-04-11T18:31:45Z
 updated_at: 2025-04-11T18:40:09Z
 url: https://github.com/astral-sh/ruff/pull/17362
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Minor followup on str.startswith
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-11 18:31_
+_@sharkdp_
 
 ## Summary
 

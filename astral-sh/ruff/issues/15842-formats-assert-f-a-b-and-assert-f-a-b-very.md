@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T01:43:56Z
 updated_at: 2025-02-04T00:56:16Z
 url: https://github.com/astral-sh/ruff/issues/15842
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # formats `assert f(a,) == (b)` and `assert f(a,) == b` very differently
 
 ---
 
-_Issue opened by @rdaysky on 2025-01-31 01:43_
+_@rdaysky_
 
 ### Description
 

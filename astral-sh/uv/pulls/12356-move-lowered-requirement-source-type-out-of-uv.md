@@ -13,14 +13,14 @@ head: charlie/dist-types
 created_at: 2025-03-21T00:50:48Z
 updated_at: 2025-03-21T01:16:14Z
 url: https://github.com/astral-sh/uv/pull/12356
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Move lowered requirement source type out of `uv-pypi-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-21 00:50_
+_@charliermarsh_
 
 ## Summary
 

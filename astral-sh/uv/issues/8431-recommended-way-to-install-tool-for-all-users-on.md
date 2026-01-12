@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T22:41:55Z
 updated_at: 2024-12-26T16:59:50Z
 url: https://github.com/astral-sh/uv/issues/8431
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Recommended way to install tool for all users on system
 
 ---
 
-_Issue opened by @lambda674 on 2024-10-21 22:41_
+_@lambda674_
 
 I have CLI package `foo` that is published to PyPi. At work, we have a few servers that many users use for one off tasks. I want to distribute `foo` on these servers.
 

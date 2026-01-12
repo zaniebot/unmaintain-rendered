@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T08:42:53Z
 updated_at: 2023-01-01T22:06:16Z
 url: https://github.com/astral-sh/ruff/issues/1468
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PD011 false positives for other objects and method calls
 
 ---
 
-_Issue opened by @guyrosin on 2022-12-30 08:42_
+_@guyrosin_
 
 PD011 (UseOfDotValues) triggers for `.values` attribute access and `.values()` method calls for objects that are not dataframes. Examples:
 

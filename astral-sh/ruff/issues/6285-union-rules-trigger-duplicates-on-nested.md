@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-02T19:45:44Z
 updated_at: 2023-08-07T19:17:28Z
 url: https://github.com/astral-sh/ruff/issues/6285
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Union rules trigger duplicates on nested violations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-02 19:45_
+_@charliermarsh_
 
 In `expression.rs`, we have some logic to avoid checking nested `Union` operators, since our `Union` checks operate recursively (and so re-checking nested `Union` operators leads to duplicate diagnostics).
 

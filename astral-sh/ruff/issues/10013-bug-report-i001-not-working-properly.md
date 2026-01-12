@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T19:45:37Z
 updated_at: 2024-02-23T21:08:20Z
 url: https://github.com/astral-sh/ruff/issues/10013
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Bug report: I001 not working properly
 
 ---
 
-_Issue opened by @mvadari on 2024-02-16 19:45_
+_@mvadari_
 
 Command: `poetry run ruff format`
 

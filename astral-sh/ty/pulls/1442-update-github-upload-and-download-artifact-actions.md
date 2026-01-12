@@ -13,14 +13,14 @@ head: renovate/github-artifact-actions
 created_at: 2025-10-27T02:09:33Z
 updated_at: 2025-10-30T16:27:59Z
 url: https://github.com/astral-sh/ty/pull/1442
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update GitHub upload and download artifact Actions
 
 ---
 
-_Pull request opened by @renovate on 2025-10-27 02:09_
+_@renovate_
 
 This PR contains the following updates:
 

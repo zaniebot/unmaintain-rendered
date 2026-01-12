@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-12T22:09:38Z
 updated_at: 2025-03-05T00:20:19Z
 url: https://github.com/astral-sh/uv/issues/4291
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support `UV_ONLY_BINARY` and `UV_NO_BINARY` environment variables
 
 ---
 
-_Issue opened by @njzjz on 2024-06-12 22:09_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

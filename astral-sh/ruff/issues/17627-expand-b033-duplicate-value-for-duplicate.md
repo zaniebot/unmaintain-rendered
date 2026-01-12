@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-25T14:00:49Z
 updated_at: 2025-05-11T10:57:32Z
 url: https://github.com/astral-sh/ruff/issues/17627
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Expand B033 duplicate-value for duplicate variables (not just literals)
 
 ---
 
-_Issue opened by @jack-mcivor on 2025-04-25 14:00_
+_@jack-mcivor_
 
 ### Summary
 

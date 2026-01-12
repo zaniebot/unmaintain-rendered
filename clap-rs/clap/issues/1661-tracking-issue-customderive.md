@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-12T19:52:50Z
 updated_at: 2021-10-12T14:31:27Z
 url: https://github.com/clap-rs/clap/issues/1661
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Tracking issue CustomDerive
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-12 19:52_
+_@kbknapp_
 
 _From @kbknapp on July 6, 2015 1:22_
 

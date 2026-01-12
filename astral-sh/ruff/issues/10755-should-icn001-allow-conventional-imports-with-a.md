@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-03T10:58:04Z
 updated_at: 2024-04-03T12:59:08Z
 url: https://github.com/astral-sh/ruff/issues/10755
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Should `ICN001` allow conventional imports with a leading underscore?
 
 ---
 
-_Issue opened by @lucascolley on 2024-04-03 10:58_
+_@lucascolley_
 
 [PEP8](https://peps.python.org/pep-0008/#public-and-internal-interfaces) says:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T17:45:11Z
 updated_at: 2025-08-08T21:00:57Z
 url: https://github.com/astral-sh/uv/issues/15170
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv creates a new directory with a new .venv instead of using the .venv in the project root
 
 ---
 
-_Issue opened by @dwschulze on 2025-08-08 17:45_
+_@dwschulze_
 
 From a linux terminal (no VIRTUAL_ENV set):
 

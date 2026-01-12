@@ -12,14 +12,14 @@ head: charlie/doc-format
 created_at: 2023-05-27T02:46:01Z
 updated_at: 2023-05-27T03:18:19Z
 url: https://github.com/astral-sh/ruff/pull/4675
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix `async for` formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-27 02:46_
+_@charliermarsh_
 
 (My mistake.)
 

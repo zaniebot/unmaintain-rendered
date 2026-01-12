@@ -13,14 +13,14 @@ head: cjm/inference-context
 created_at: 2024-09-17T21:32:41Z
 updated_at: 2024-10-21T15:59:12Z
 url: https://github.com/astral-sh/ruff/pull/13387
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Extract a TypeInferenceContext
 
 ---
 
-_Pull request opened by @carljm on 2024-09-17 21:32_
+_@carljm_
 
 _No description provided._
 

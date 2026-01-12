@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T07:08:17Z
 updated_at: 2024-01-12T23:26:38Z
 url: https://github.com/astral-sh/ruff/issues/6931
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `no-indented-block` (`E112`) rule is not needed because it's already covered by `syntax-error` (`E999`)
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-28 07:08_
+_@DetachHead_
 
 ```py
 for item in items:

@@ -12,14 +12,14 @@ head: confusable-units
 created_at: 2023-05-14T13:18:52Z
 updated_at: 2024-04-26T13:16:19Z
 url: https://github.com/astral-sh/ruff/pull/4430
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Autoformat confusable units
 
 ---
 
-_Pull request opened by @covracer on 2023-05-14 13:18_
+_@covracer_
 
 I've seen errors crop up from using the different micro and mu characters. Follow matching recommendations on which character to prefer for micro, ohm, and angstrom. References:
 * Section 22.2 Letterlike Symbols, subsection Unit Symbols, page 877 of [The Unicode Standard, Version 15.0

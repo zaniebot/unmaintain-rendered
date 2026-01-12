@@ -13,14 +13,14 @@ head: charlie/docs
 created_at: 2024-02-28T15:07:16Z
 updated_at: 2024-02-28T15:11:33Z
 url: https://github.com/astral-sh/uv/pull/2044
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Remove patch version caveat from CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 15:07_
+_@charliermarsh_
 
 _No description provided._
 

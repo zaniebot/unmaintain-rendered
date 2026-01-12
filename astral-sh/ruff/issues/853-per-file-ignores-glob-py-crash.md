@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T14:29:52Z
 updated_at: 2022-11-21T18:39:20Z
 url: https://github.com/astral-sh/ruff/issues/853
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # per-file-ignores glob **.py crash
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-21 14:29_
+_@JonathanPlasse_
 
 Running the command below with double star crash Ruff.
 

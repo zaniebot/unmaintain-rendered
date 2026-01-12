@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-30T14:11:41Z
 updated_at: 2024-10-30T14:17:15Z
 url: https://github.com/astral-sh/uv/issues/8700
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Cannot change project python version
 
 ---
 
-_Issue opened by @voodoojunk on 2024-10-30 14:11_
+_@voodoojunk_
 
 Hi
 

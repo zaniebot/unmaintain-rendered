@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T12:37:19Z
 updated_at: 2026-01-11T16:36:45Z
 url: https://github.com/astral-sh/ty/issues/2154
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve `invalid-method-override` diagnostics for overloaded methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-22 12:37_
+_@AlexWaygood_
 
 Currently for this file:
 

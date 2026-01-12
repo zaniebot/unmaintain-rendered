@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T08:11:49Z
 updated_at: 2025-04-28T21:43:15Z
 url: https://github.com/astral-sh/ruff/issues/11332
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `printf-string-formatting` (`UP031`) - fix should f-string instead of `str.format`
 
 ---
 
-_Issue opened by @DetachHead on 2024-05-08 08:11_
+_@DetachHead_
 
 when both `UP031` and `UP032` are enabled, the fix for `UP031` causes `UP032`:
 

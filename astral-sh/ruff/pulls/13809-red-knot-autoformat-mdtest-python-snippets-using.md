@@ -13,14 +13,14 @@ head: redknot-formatting
 created_at: 2024-10-18T10:30:51Z
 updated_at: 2024-10-19T16:10:34Z
 url: https://github.com/astral-sh/ruff/pull/13809
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Autoformat `mdtest` Python snippets using `blacken-docs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-18 10:30_
+_@AlexWaygood_
 
 ## Summary
 

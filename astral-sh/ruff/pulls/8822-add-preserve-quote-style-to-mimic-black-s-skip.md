@@ -13,14 +13,14 @@ head: quote-style-preserve
 created_at: 2023-11-22T20:32:46Z
 updated_at: 2024-01-10T23:48:24Z
 url: https://github.com/astral-sh/ruff/pull/8822
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add "preserve" quote-style to mimic Black's skip-string-normalization
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-11-22 20:32_
+_@sciyoshi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

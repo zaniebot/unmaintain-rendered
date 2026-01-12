@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T13:19:19Z
 updated_at: 2023-05-18T19:09:16Z
 url: https://github.com/astral-sh/ruff/issues/4491
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Rule C416 broke some pandas code
 
 ---
 
-_Issue opened by @wlach on 2023-05-18 13:19_
+_@wlach_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

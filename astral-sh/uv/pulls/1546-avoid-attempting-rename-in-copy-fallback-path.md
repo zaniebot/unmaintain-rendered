@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-02-16T22:02:45Z
 updated_at: 2024-02-16T23:28:12Z
 url: https://github.com/astral-sh/uv/pull/1546
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Avoid attempting rename in copy fallback path
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 22:02_
+_@charliermarsh_
 
 ## Summary
 

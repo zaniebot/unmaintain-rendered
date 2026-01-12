@@ -13,14 +13,14 @@ head: zb/div-zero-msg
 created_at: 2024-10-01T12:39:48Z
 updated_at: 2024-10-01T13:58:40Z
 url: https://github.com/astral-sh/ruff/pull/13588
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use operator specific messaging in division by zero diagnostics
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-01 12:39_
+_@zanieb_
 
 Requested at https://github.com/astral-sh/ruff/pull/13576#discussion_r1782530971
 

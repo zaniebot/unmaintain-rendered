@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-02T04:17:42Z
 updated_at: 2024-03-02T20:36:30Z
 url: https://github.com/astral-sh/uv/issues/2127
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv pip install does not accept empty extras
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-02 04:17_
+_@hauntsaninja_
 
 @AlexWaygood ran into this in https://github.com/python/typeshed/pull/11517. I didn't see an issue from him, so here one is :-)
 ```

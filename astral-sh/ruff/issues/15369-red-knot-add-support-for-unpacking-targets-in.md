@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T08:55:31Z
 updated_at: 2025-04-19T01:12:50Z
 url: https://github.com/astral-sh/ruff/issues/15369
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Add support for unpacking targets in comprehensions
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-01-09 08:55_
+_@dhruvmanila_
 
 This should be very similar to what was done in the `for` statement (https://github.com/astral-sh/ruff/pull/15058). 
 

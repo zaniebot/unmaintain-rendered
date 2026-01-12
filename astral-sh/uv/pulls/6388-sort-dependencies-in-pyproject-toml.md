@@ -12,14 +12,14 @@ head: sort-dependency
 created_at: 2024-08-21T23:11:47Z
 updated_at: 2024-08-29T14:55:04Z
 url: https://github.com/astral-sh/uv/pull/6388
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # sort dependencies in `pyproject.toml`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-08-21 23:11_
+_@ChannyClaus_
 
 ## Summary
 resolves https://github.com/astral-sh/uv/issues/6203

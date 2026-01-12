@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T08:10:11Z
 updated_at: 2024-11-11T18:30:04Z
 url: https://github.com/astral-sh/ruff/issues/14124
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add flake8-markupsafe or broaden S308
 
 ---
 
-_Issue opened by @Daverball on 2024-11-06 08:10_
+_@Daverball_
 
 Improper use of `markupsafe.Markup` is a common source of XSS vulnerabilities and I've seen many people, including myself, make mistakes here regardless of how experienced they are, in part due to f-string's convenience and sometimes due to being API-compatible with regular `str`, so it's easy to write `Markup(''.format(unsafe))` instead of `Markup('').format(safe)`, this particular error can also be quite tricky to spot depending on the formatting.
 

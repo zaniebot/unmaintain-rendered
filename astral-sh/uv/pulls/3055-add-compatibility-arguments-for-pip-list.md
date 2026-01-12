@@ -13,14 +13,14 @@ head: amv213/pip-list-outdated
 created_at: 2024-04-16T07:36:44Z
 updated_at: 2024-04-16T13:35:57Z
 url: https://github.com/astral-sh/uv/pull/3055
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Add compatibility arguments for pip list
 
 ---
 
-_Pull request opened by @amv213 on 2024-04-16 07:36_
+_@amv213_
 
 Hello! This is my first PR so do not hesitate to let me know if anything should be done differently 🙌🏽  
 

@@ -13,14 +13,14 @@ head: zb/auth-abs
 created_at: 2024-02-22T22:19:31Z
 updated_at: 2024-02-23T00:10:18Z
 url: https://github.com/astral-sh/uv/pull/1886
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Ensure authentication is passed from the index url to distribution files
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 22:19_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1709
 Closes https://github.com/astral-sh/uv/issues/1371

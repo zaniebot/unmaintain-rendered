@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T02:32:48Z
 updated_at: 2025-02-28T13:19:15Z
 url: https://github.com/astral-sh/uv/issues/11818
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Use of project with playwright -- multi-stage package install
 
 ---
 
-_Issue opened by @mcint on 2025-02-27 02:32_
+_@mcint_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: f541-doc-gh11357
 created_at: 2024-05-10T15:00:17Z
 updated_at: 2024-05-11T20:35:06Z
 url: https://github.com/astral-sh/ruff/pull/11362
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [pyflakes] Update docs to describe WAI behavior (F541)
 
 ---
 
-_Pull request opened by @dougthor42 on 2024-05-10 15:00_
+_@dougthor42_
 
 Addresses this comment:
 https://github.com/astral-sh/ruff/issues/11357#issuecomment-2104714029

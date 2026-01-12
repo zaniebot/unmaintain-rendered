@@ -13,14 +13,14 @@ head: charlie/lenient
 created_at: 2023-11-13T20:31:10Z
 updated_at: 2023-11-13T20:46:22Z
 url: https://github.com/astral-sh/uv/pull/418
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Co-locate lenient requirement parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 20:31_
+_@charliermarsh_
 
 No behavior changes.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:05:25Z
 updated_at: 2025-12-03T19:43:16Z
 url: https://github.com/astral-sh/ty/issues/156
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support TypeVarTuple
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:05_
+_@carljm_
 
 _No description provided._
 

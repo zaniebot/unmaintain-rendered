@@ -13,14 +13,14 @@ head: pyi-annassign-bindings
 created_at: 2024-03-11T14:17:29Z
 updated_at: 2024-03-11T22:15:28Z
 url: https://github.com/astral-sh/ruff/pull/10341
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # F821, F822: fix false positive for `.pyi` files; add more test coverage for `.pyi` files
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-11 14:17_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: gankra/attr-doc
 created_at: 2025-12-17T19:40:26Z
 updated_at: 2025-12-18T12:18:22Z
 url: https://github.com/astral-sh/ruff/pull/22036
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Add support for attribute docstrings
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-17 19:40_
+_@Gankra_
 
 ## Summary
 

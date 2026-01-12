@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-01-30T16:46:37Z
 updated_at: 2021-10-26T20:22:06Z
 url: https://github.com/clap-rs/clap/issues/2319
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Cryptic unwrap error when using wrong format of yaml
 
 ---
 
-_Issue opened by @booleancoercion on 2021-01-30 16:46_
+_@booleancoercion_
 
 Given `Cargo.toml`:
 ```toml

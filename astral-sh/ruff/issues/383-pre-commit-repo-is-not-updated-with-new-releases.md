@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-10T08:04:46Z
 updated_at: 2022-10-12T15:19:39Z
 url: https://github.com/astral-sh/ruff/issues/383
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Pre-commit repo is not updated with new releases
 
 ---
 
-_Issue opened by @ghost on 2022-10-10 08:04_
+_@ghost_
 
 pre-commit version is only 0.0.48
 https://github.com/charliermarsh/ruff-pre-commit

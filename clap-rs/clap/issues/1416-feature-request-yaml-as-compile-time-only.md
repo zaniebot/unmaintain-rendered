@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-02-17T14:54:27Z
 updated_at: 2021-12-08T20:00:00Z
 url: https://github.com/clap-rs/clap/issues/1416
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Feature request: YAML as compile-time only dependency
 
 ---
 
-_Issue opened by @devinrsmith on 2019-02-17 14:54_
+_@devinrsmith_
 
 I think that the YAML dependency could be a compile-time only dependency. That would be the best of both world IMO - keep the source neat and tidy, no need for runtime parsing of the parser, and no runtime YAML dependency!
 

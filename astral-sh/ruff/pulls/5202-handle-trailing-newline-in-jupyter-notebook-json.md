@@ -12,14 +12,14 @@ head: dhruv/jupyter-newline
 created_at: 2023-06-20T04:51:29Z
 updated_at: 2023-06-20T10:51:16Z
 url: https://github.com/astral-sh/ruff/pull/5202
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Handle trailing newline in Jupyter notebook JSON string
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-20 04:51_
+_@dhruvmanila_
 
 ## Summary
 

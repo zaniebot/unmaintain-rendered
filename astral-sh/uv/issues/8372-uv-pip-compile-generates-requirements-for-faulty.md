@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T20:52:09Z
 updated_at: 2024-10-20T16:08:56Z
 url: https://github.com/astral-sh/uv/issues/8372
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # `uv pip compile` generates requirements for faulty dependencies
 
 ---
 
-_Issue opened by @alphavector on 2024-10-19 20:52_
+_@alphavector_
 
 Just for fun, I created a script that generates requirements.txt c using `uv` and `pip-compile` for the `577,502` dependencies that exist in pypi. 
 

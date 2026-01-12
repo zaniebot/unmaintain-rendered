@@ -12,14 +12,14 @@ head: markdryan/riscv64_manylinux
 created_at: 2024-11-08T12:12:10Z
 updated_at: 2024-11-08T15:57:52Z
 url: https://github.com/astral-sh/uv/pull/8934
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Allow installation of manylinux wheels on riscv64
 
 ---
 
-_Pull request opened by @markdryan on 2024-11-08 12:12_
+_@markdryan_
 
 
 <!--

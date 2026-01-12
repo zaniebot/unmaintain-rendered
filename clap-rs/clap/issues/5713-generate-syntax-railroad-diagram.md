@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T14:05:34Z
 updated_at: 2024-09-02T15:43:41Z
 url: https://github.com/clap-rs/clap/issues/5713
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Generate syntax/railroad diagram
 
 ---
 
-_Issue opened by @ronanM on 2024-09-02 14:05_
+_@ronanM_
 
 ### Please complete the following tasks
 

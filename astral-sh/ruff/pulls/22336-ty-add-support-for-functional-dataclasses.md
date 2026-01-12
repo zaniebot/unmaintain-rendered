@@ -11,16 +11,16 @@ draft: true
 base: charlie/functional-namedtuple
 head: charlie/functional-dataclass
 created_at: 2026-01-02T13:37:05Z
-updated_at: 2026-01-02T20:19:34Z
+updated_at: 2026-01-12T13:46:27Z
 url: https://github.com/astral-sh/ruff/pull/22336
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Add support for functional dataclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-02 13:37_
+_@charliermarsh_
 
 ## Summary
 

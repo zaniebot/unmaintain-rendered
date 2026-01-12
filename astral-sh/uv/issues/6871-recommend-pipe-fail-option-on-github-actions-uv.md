@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T14:05:01Z
 updated_at: 2024-09-03T13:59:21Z
 url: https://github.com/astral-sh/uv/issues/6871
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Recommend pipe fail option on GitHub actions uv install? 
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-30 14:05_
+_@notatallshaw_
 
 I'd be happy to open a PR to update the docs, but it wasn't clear to me just yet if this *should* be recommended.
 

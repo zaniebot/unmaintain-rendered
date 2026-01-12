@@ -13,14 +13,14 @@ head: ag/fix-1453
 created_at: 2024-02-20T15:03:53Z
 updated_at: 2024-02-20T15:57:51Z
 url: https://github.com/astral-sh/uv/pull/1757
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # fix 'pip install' for zips with bunk permissions
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-20 15:03_
+_@BurntSushi_
 
 This fixes an issue where installing a source dist from a `zip` file could
 fail if the permissions in the `zip` file were bunk. Namely, after extracting

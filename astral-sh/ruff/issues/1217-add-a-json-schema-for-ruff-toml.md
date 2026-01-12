@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T17:14:07Z
 updated_at: 2022-12-26T01:16:00Z
 url: https://github.com/astral-sh/ruff/issues/1217
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add a JSON schema for `ruff.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 17:14_
+_@charliermarsh_
 
 And submit it to https://github.com/SchemaStore/schemastore. That way, you'll get autocomplete in editors, etc.
 

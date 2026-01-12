@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T12:58:29Z
 updated_at: 2023-10-25T16:08:59Z
 url: https://github.com/astral-sh/ruff/issues/8214
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter -- Length of line exceeds the default width
 
 ---
 
-_Issue opened by @vigneshmanick on 2023-10-25 12:58_
+_@vigneshmanick_
 
 Hello,
 

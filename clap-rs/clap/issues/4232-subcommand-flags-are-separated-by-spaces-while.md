@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-19T08:14:08Z
 updated_at: 2022-09-19T14:22:25Z
 url: https://github.com/clap-rs/clap/issues/4232
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Subcommand flags are separated by spaces while argument flags use commas
 
 ---
 
-_Issue opened by @Trivernis on 2022-09-19 08:14_
+_@Trivernis_
 
 ### Please complete the following tasks
 

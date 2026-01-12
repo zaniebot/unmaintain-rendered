@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:13:45Z
 updated_at: 2025-05-13T07:35:02Z
 url: https://github.com/astral-sh/ty/issues/150
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # basic usage documentation
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:13_
+_@carljm_
 
 _No description provided._
 

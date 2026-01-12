@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T15:26:10Z
 updated_at: 2024-09-04T23:55:22Z
 url: https://github.com/astral-sh/uv/issues/7030
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Consider removing `ENTRYPOINT` from non-distroless uv Docker images
 
 ---
 
-_Issue opened by @zanieb on 2024-09-04 15:26_
+_@zanieb_
 
 Using `uv` as an entrypoint is surprising (it differs from the base image) and broke the example at https://github.com/astral-sh/uv-docker-example/pull/13 — I had to add:
 

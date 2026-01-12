@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-11T23:14:12Z
 updated_at: 2023-01-12T00:02:22Z
 url: https://github.com/astral-sh/ruff/issues/1796
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ignore `__exit__` for ARG002
 
 ---
 
-_Issue opened by @ofek on 2023-01-11 23:14_
+_@ofek_
 
 This method is implemented for classes to support being used as a context manager and it would be nice to add an exception for this method because the arguments are often unused. For example, this is what I've been doing:
 

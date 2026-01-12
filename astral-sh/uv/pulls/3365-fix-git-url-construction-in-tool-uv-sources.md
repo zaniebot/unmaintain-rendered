@@ -13,14 +13,14 @@ head: charlie/source
 created_at: 2024-05-04T02:54:05Z
 updated_at: 2024-05-04T03:02:15Z
 url: https://github.com/astral-sh/uv/pull/3365
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Fix Git URL construction in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 02:54_
+_@charliermarsh_
 
 ## Summary
 

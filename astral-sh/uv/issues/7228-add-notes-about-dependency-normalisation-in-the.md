@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-09T19:02:44Z
 updated_at: 2024-09-09T19:02:44Z
 url: https://github.com/astral-sh/uv/issues/7228
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Add notes about dependency normalisation in the documentation
 
 ---
 
-_Issue opened by @mkniewallner on 2024-09-09 19:02_
+_@mkniewallner_
 
 [Dependency normalisation](https://packaging.python.org/en/latest/specifications/name-normalization/) is applied at multiple levels in uv. This might be something that is not obvious to people that do not know too much about Python packaging internals, or are new to Python.
 

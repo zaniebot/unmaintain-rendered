@@ -13,14 +13,14 @@ head: fix-parametrize-message
 created_at: 2024-12-04T13:54:49Z
 updated_at: 2024-12-04T15:08:05Z
 url: https://github.com/astral-sh/ruff/pull/14770
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Remove `@` in `pytest.mark.parametrize` rule messages
 
 ---
 
-_Pull request opened by @harupy on 2024-12-04 13:54_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

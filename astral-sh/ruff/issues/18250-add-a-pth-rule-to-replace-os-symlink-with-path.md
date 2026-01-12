@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T07:05:26Z
 updated_at: 2025-05-28T10:39:07Z
 url: https://github.com/astral-sh/ruff/issues/18250
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add a PTH rule to replace os.symlink with Path.symlink_to
 
 ---
 
-_Issue opened by @IlanCosman on 2025-05-22 07:05_
+_@IlanCosman_
 
 ### Summary
 

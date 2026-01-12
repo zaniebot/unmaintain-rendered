@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T15:34:18Z
 updated_at: 2025-01-09T08:37:03Z
 url: https://github.com/astral-sh/uv/issues/10327
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Building multiple packages in a workspace results in single dist folder irrespective of pyproject.toml location
 
 ---
 
-_Issue opened by @Dzeneralen on 2025-01-06 15:34_
+_@Dzeneralen_
 
 Hi, this is a question I was unable to find the answer to. 
 

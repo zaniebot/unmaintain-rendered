@@ -13,14 +13,14 @@ head: charlie/zip
 created_at: 2025-08-07T13:54:05Z
 updated_at: 2025-08-07T14:31:50Z
 url: https://github.com/astral-sh/uv/pull/15136
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Harden ZIP streaming to reject repeated entries and other malformed ZIP files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-07 13:54_
+_@charliermarsh_
 
 ## Summary
 

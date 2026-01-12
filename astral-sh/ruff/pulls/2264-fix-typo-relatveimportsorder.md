@@ -12,14 +12,14 @@ head: relatve
 created_at: 2023-01-27T16:14:07Z
 updated_at: 2023-01-29T16:29:53Z
 url: https://github.com/astral-sh/ruff/pull/2264
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix typo: RelatveImportsOrder
 
 ---
 
-_Pull request opened by @akx on 2023-01-27 16:14_
+_@akx_
 
 _No description provided._
 

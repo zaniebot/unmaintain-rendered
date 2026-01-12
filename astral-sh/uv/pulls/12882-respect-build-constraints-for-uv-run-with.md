@@ -13,14 +13,14 @@ head: build-constraints-for-uv-run-with
 created_at: 2025-04-14T15:12:40Z
 updated_at: 2025-04-14T19:30:51Z
 url: https://github.com/astral-sh/uv/pull/12882
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Respect build constraints for `uv run --with` dependencies
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-14 15:12_
+_@blueraft_
 
 ## Summary
 

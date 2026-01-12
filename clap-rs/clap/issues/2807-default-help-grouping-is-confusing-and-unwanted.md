@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-04T18:43:35Z
 updated_at: 2021-10-13T22:45:12Z
 url: https://github.com/clap-rs/clap/issues/2807
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Default help grouping is confusing and unwanted
 
 ---
 
-_Issue opened by @epage on 2021-10-04 18:43_
+_@epage_
 
 ### Rust Version
 

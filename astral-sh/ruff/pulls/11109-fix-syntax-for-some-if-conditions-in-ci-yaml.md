@@ -13,14 +13,14 @@ head: forks
 created_at: 2024-04-23T17:43:03Z
 updated_at: 2024-04-23T18:47:02Z
 url: https://github.com/astral-sh/ruff/pull/11109
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Fix syntax for some if-conditions in `ci.yaml`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-23 17:43_
+_@AlexWaygood_
 
 ## Summary
 

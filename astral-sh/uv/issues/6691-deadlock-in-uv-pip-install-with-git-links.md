@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T15:07:53Z
 updated_at: 2024-10-28T09:16:36Z
 url: https://github.com/astral-sh/uv/issues/6691
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Deadlock in `uv pip install` with git links
 
 ---
 
-_Issue opened by @gozdal on 2024-08-27 15:07_
+_@gozdal_
 
 It seems that `uv pip install` deadlocks when running in parallel installing from git links.
 

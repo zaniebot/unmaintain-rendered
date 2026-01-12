@@ -12,14 +12,14 @@ head: henryiii/chore/314classifier
 created_at: 2025-08-09T02:02:15Z
 updated_at: 2025-08-11T20:22:25Z
 url: https://github.com/astral-sh/uv/pull/15187
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # chore: add 3.14 classifier
 
 ---
 
-_Pull request opened by @henryiii on 2025-08-09 02:02_
+_@henryiii_
 
 
 <!--

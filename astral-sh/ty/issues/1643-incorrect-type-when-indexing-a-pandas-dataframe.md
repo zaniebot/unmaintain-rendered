@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T08:47:55Z
 updated_at: 2025-11-28T19:38:25Z
 url: https://github.com/astral-sh/ty/issues/1643
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect type when indexing a pandas dataframe through `.loc` and selecting a single column
 
 ---
 
-_Issue opened by @diego-pm on 2025-11-26 08:47_
+_@diego-pm_
 
 ### Summary
 

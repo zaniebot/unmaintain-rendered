@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T05:31:54Z
 updated_at: 2022-12-31T18:22:25Z
 url: https://github.com/astral-sh/ruff/issues/1498
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # New GitHub issue labels
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-31 05:31_
+_@not-my-profile_
 
 I think it would make sense to introduce the following labels:
 

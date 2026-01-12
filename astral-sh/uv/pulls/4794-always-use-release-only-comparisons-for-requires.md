@@ -13,14 +13,14 @@ head: charlie/requires-python-upper-bound
 created_at: 2024-07-03T23:50:44Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/pull/4794
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Always use release-only comparisons for `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 23:50_
+_@charliermarsh_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: tstring-unsupported
 created_at: 2025-06-13T17:04:13Z
 updated_at: 2025-06-13T19:04:37Z
 url: https://github.com/astral-sh/ruff/pull/18664
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [syntax-errors] Raise unsupported syntax error for template strings prior to Python 3.14
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-13 17:04_
+_@dylwil3_
 
 Closes #18662
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T08:21:12Z
 updated_at: 2024-08-23T05:04:39Z
 url: https://github.com/astral-sh/ruff/issues/13046
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Implement `G200` from `flake8-logging-format`
 
 ---
 
-_Issue opened by @jvacek on 2024-08-22 08:21_
+_@jvacek_
 
 Heya, I noticed that the majority of flake8 logging rules were ported thanks to the work done on here https://github.com/astral-sh/ruff/pull/2150, however I'm still missing G200 and am hoping it can be implemented ✌️ 
 

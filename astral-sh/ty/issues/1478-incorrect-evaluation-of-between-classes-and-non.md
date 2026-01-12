@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T14:48:39Z
 updated_at: 2025-11-06T14:00:44Z
 url: https://github.com/astral-sh/ty/issues/1478
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect evaluation of `|` between classes and non-classes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-04 14:48_
+_@AlexWaygood_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: playground-persist-source-and-panel
 created_at: 2023-07-25T12:59:05Z
 updated_at: 2023-07-26T05:56:00Z
 url: https://github.com/astral-sh/ruff/pull/6071
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # playground: Persist source and panel
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-25 12:59_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

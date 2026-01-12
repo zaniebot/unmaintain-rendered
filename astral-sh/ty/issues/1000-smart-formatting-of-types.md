@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T12:40:25Z
 updated_at: 2025-08-19T17:31:45Z
 url: https://github.com/astral-sh/ty/issues/1000
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Smart formatting of types
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-15 12:40_
+_@MichaReiser_
 
 Smart formatting of complex types for improved readability (esp. signatures of callables) with a focus on the LSP, but it would also be nice if some of it could be ported to CLI diagnostics.
 

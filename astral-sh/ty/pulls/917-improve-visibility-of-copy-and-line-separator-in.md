@@ -13,14 +13,14 @@ head: micha/copy-line-dark-theme
 created_at: 2025-07-31T06:37:02Z
 updated_at: 2025-07-31T06:51:01Z
 url: https://github.com/astral-sh/ty/pull/917
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Improve visibility of copy and line separator in dark mode
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-31 06:37_
+_@MichaReiser_
 
 ## Summary
 

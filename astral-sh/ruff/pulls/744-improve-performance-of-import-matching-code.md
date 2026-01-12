@@ -12,14 +12,14 @@ head: charlie/perf
 created_at: 2022-11-14T22:04:02Z
 updated_at: 2022-11-14T22:14:24Z
 url: https://github.com/astral-sh/ruff/pull/744
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve performance of import matching code
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-14 22:04_
+_@charliermarsh_
 
 This significantly improves the import matching performance, which degraded a bunch in #743.
 

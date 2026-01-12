@@ -13,14 +13,14 @@ head: konsti/jupyter-in-and-main-instrumentation
 created_at: 2024-01-30T11:01:18Z
 updated_at: 2024-01-30T11:03:25Z
 url: https://github.com/astral-sh/uv/pull/1186
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Instrument the main function and add jupyter.in
 
 ---
 
-_Pull request opened by @konstin on 2024-01-30 11:01_
+_@konstin_
 
 Instrument the main function as anchor span for checking overhead and update tracing-durations-export to 0.2.0 for differentiating blocking/non-blocking tasks.
 

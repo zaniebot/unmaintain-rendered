@@ -14,14 +14,14 @@ head: fix-playground-build-win
 created_at: 2025-11-15T13:00:51Z
 updated_at: 2025-11-25T11:27:36Z
 url: https://github.com/astral-sh/ruff/pull/21471
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] fix ty playground initialization and vite optimization issues
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-15 13:00_
+_@mtshiba_
 
 ## Summary
 

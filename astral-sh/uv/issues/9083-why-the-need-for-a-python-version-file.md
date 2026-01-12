@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T13:17:10Z
 updated_at: 2024-11-13T14:01:19Z
 url: https://github.com/astral-sh/uv/issues/9083
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Why the need for a .python-version file?
 
 ---
 
-_Issue opened by @ANL06488 on 2024-11-13 13:17_
+_@ANL06488_
 
 Not really a bug, but just looking into this project and wondering why a new file is needed on top of the existing and standard pyproject.toml?
 

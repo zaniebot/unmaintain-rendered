@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-12T08:46:38Z
 updated_at: 2023-10-20T20:47:02Z
 url: https://github.com/astral-sh/ruff/issues/7288
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # SIM401 should catch ternary operations
 
 ---
 
-_Issue opened by @jerr0328 on 2023-09-12 08:46_
+_@jerr0328_
 
 In #4932, there was a bug because if-else blocks were rewritten as ternary operations which SIM401 wouldn't be able to fix. The bug was fixed but there's still the fact that you can have code like
 

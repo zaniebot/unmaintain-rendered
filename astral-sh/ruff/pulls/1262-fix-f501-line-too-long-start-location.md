@@ -12,14 +12,14 @@ head: fix-F501-range
 created_at: 2022-12-16T08:44:17Z
 updated_at: 2022-12-17T01:46:46Z
 url: https://github.com/astral-sh/ruff/pull/1262
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix F501 (line-too-long) start location
 
 ---
 
-_Pull request opened by @harupy on 2022-12-16 08:44_
+_@harupy_
 
 This PR fixes the start location of F501 (line-too-long).
 

@@ -13,14 +13,14 @@ head: alex/stub-not-so-deferred
 created_at: 2025-11-14T14:14:36Z
 updated_at: 2025-11-14T21:07:05Z
 url: https://github.com/astral-sh/ruff/pull/21456
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Further improve details around which expressions should be deferred in stub files
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-14 14:14_
+_@AlexWaygood_
 
 ## Summary
 

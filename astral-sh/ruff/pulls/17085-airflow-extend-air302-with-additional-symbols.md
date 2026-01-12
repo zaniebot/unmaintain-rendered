@@ -14,14 +14,14 @@ head: add-new-AIR302-rules
 created_at: 2025-03-31T09:14:11Z
 updated_at: 2025-04-02T15:08:52Z
 url: https://github.com/astral-sh/ruff/pull/17085
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`airflow`] Extend `AIR302` with additional symbols
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-31 09:14_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

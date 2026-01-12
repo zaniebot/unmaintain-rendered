@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T14:50:49Z
 updated_at: 2025-10-22T16:30:29Z
 url: https://github.com/astral-sh/uv/issues/16410
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # pip download capabilities
 
 ---
 
-_Issue opened by @lemming622 on 2025-10-22 14:50_
+_@lemming622_
 
 ### Summary
 

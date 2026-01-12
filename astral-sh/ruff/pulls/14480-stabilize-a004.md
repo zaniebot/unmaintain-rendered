@@ -14,14 +14,14 @@ head: stabilize-a004
 created_at: 2024-11-20T08:34:21Z
 updated_at: 2024-11-20T12:06:53Z
 url: https://github.com/astral-sh/ruff/pull/14480
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Stabilize `A004`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-20 08:34_
+_@MichaReiser_
 
 ## Summary
 

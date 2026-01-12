@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T13:30:44Z
 updated_at: 2024-03-12T02:41:23Z
 url: https://github.com/astral-sh/uv/issues/2043
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv pip install error: No such host is known. (os error 11001)
 
 ---
 
-_Issue opened by @contang0 on 2024-02-28 13:30_
+_@contang0_
 
 I am trying to use uv in a corporate environment and unfortunately packages fail to install. I get the following error:
 

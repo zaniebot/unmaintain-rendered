@@ -13,14 +13,14 @@ head: FURB142
 created_at: 2025-11-01T20:12:15Z
 updated_at: 2025-11-10T12:10:51Z
 url: https://github.com/astral-sh/ruff/pull/21191
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # FURB142: Parenthesize generator expression arguments in fixer to preserve scoping
 
 ---
 
-_Pull request opened by @sohamukute on 2025-11-01 20:12_
+_@sohamukute_
 
 ## Summary
 

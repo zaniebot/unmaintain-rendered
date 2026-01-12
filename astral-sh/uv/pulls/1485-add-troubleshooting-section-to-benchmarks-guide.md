@@ -12,14 +12,14 @@ head: benchmark-troubleshooting
 created_at: 2024-02-16T12:37:00Z
 updated_at: 2024-02-16T14:27:33Z
 url: https://github.com/astral-sh/uv/pull/1485
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Add troubleshooting section to benchmarks guide
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-16 12:37_
+_@MichaReiser_
 
 ## Summary
 

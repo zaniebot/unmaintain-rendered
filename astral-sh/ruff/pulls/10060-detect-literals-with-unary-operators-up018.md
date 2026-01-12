@@ -13,14 +13,14 @@ head: UP018-fix
 created_at: 2024-02-20T12:01:10Z
 updated_at: 2024-02-21T02:49:54Z
 url: https://github.com/astral-sh/ruff/pull/10060
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Detect literals with unary operators (UP018)
 
 ---
 
-_Pull request opened by @sanxiyn on 2024-02-20 12:01_
+_@sanxiyn_
 
 Fix #10029.
 

@@ -13,14 +13,14 @@ head: charlie/lambda
 created_at: 2025-01-21T03:38:23Z
 updated_at: 2025-01-21T03:40:44Z
 url: https://github.com/astral-sh/uv/pull/10805
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Add invoke instructions to the AWS Lambda guide
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 03:38_
+_@charliermarsh_
 
 ## Summary
 

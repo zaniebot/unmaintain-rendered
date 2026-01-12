@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T12:29:22Z
 updated_at: 2024-05-27T16:40:18Z
 url: https://github.com/astral-sh/uv/issues/3837
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv pip install --python 3.9 does not find correct Python
 
 ---
 
-_Issue opened by @aaltat on 2024-05-26 12:29_
+_@aaltat_
 
 In GitHub actions, I install uv with pip and then run command: `uv pip install wheel --python 3.9`. Before the 0.2.0 release, this used to work fine and uv did discover Python. Now after 0.2.0 release, I see error: `error: No interpreter found for Python 3.9 in all sources` also with the latest 0.2.3 release. If I enable `--verbose` flag in the command, I see this
 

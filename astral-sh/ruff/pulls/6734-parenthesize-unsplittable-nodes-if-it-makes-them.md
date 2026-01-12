@@ -13,14 +13,14 @@ head: parenthesize-unsplittable
 created_at: 2023-08-21T15:22:48Z
 updated_at: 2024-01-16T10:04:14Z
 url: https://github.com/astral-sh/ruff/pull/6734
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Parenthesize unsplittable nodes if it makes them fit
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-21 15:22_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

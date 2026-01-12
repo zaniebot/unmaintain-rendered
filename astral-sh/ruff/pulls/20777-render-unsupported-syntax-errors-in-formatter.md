@@ -14,14 +14,14 @@ head: brent/render-syntax-errors
 created_at: 2025-10-08T22:00:21Z
 updated_at: 2025-10-13T14:11:59Z
 url: https://github.com/astral-sh/ruff/pull/20777
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # Render unsupported syntax errors in formatter tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-08 22:00_
+_@ntBre_
 
 ## Summary
 

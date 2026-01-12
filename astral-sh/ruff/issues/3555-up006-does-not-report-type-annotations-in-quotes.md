@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-16T08:16:48Z
 updated_at: 2023-03-20T15:15:46Z
 url: https://github.com/astral-sh/ruff/issues/3555
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP006 does not report type annotations in quotes
 
 ---
 
-_Issue opened by @roikoren755 on 2023-03-16 08:16_
+_@roikoren755_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

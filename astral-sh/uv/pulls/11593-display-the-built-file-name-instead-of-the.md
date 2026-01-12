@@ -12,14 +12,14 @@ head: jtfm/display-real-filename
 created_at: 2025-02-18T11:04:55Z
 updated_at: 2025-02-20T08:11:18Z
 url: https://github.com/astral-sh/uv/pull/11593
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Display the built file name instead of the canonicalized name in `uv build`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-02-18 11:04_
+_@jtfmumm_
 
 We keep the raw filename (prior to parsing/normalization) on the `BuildMessage` so we can display it.
 

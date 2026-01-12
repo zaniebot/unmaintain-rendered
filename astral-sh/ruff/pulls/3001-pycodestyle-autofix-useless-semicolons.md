@@ -13,14 +13,14 @@ head: autofix-useless-semicolon
 created_at: 2023-02-17T23:34:10Z
 updated_at: 2023-02-18T00:07:56Z
 url: https://github.com/astral-sh/ruff/pull/3001
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`pycodestyle`] autofix useless semicolons
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-17 23:34_
+_@sbrugman_
 
 _No description provided._
 

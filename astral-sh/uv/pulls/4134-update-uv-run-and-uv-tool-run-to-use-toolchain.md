@@ -13,14 +13,14 @@ head: zb/toolchain-iiii
 created_at: 2024-06-07T15:48:07Z
 updated_at: 2024-06-07T19:29:01Z
 url: https://github.com/astral-sh/uv/pull/4134
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Update `uv run` and `uv tool run` to use `Toolchain::find`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 15:48_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/4121
 

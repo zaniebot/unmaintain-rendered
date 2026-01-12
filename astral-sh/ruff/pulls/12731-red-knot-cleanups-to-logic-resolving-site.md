@@ -13,14 +13,14 @@ head: alex/venvs
 created_at: 2024-08-07T14:08:45Z
 updated_at: 2024-08-07T14:48:17Z
 url: https://github.com/astral-sh/ruff/pull/12731
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Cleanups to logic resolving `site-packages` from a venv path
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-07 14:08_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-21T20:05:19Z
 updated_at: 2023-06-22T19:15:07Z
 url: https://github.com/astral-sh/ruff/issues/5269
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Major performance degradation when cache is enabled on 0.0.274
 
 ---
 
-_Issue opened by @denik on 2023-06-21 20:05_
+_@denik_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

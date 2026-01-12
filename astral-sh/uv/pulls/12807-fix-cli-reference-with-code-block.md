@@ -13,14 +13,14 @@ head: konsti/fix-publish-index-doc
 created_at: 2025-04-10T13:24:27Z
 updated_at: 2025-04-10T15:59:42Z
 url: https://github.com/astral-sh/uv/pull/12807
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Fix CLI reference with code block
 
 ---
 
-_Pull request opened by @konstin on 2025-04-10 13:24_
+_@konstin_
 
 Due to https://github.com/clap-rs/clap/issues/5900, clap folds docstring code blocks in a way that breaks the rendering of the `uv publish --index` option to html. As a workaround, `verbatim_doc_comment` prevents this. 
 

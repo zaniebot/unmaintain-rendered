@@ -14,14 +14,14 @@ head: zb/tool-receipt-format
 created_at: 2024-06-28T21:27:31Z
 updated_at: 2024-06-29T03:34:16Z
 url: https://github.com/astral-sh/uv/pull/4637
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Use `toml_edit` for pretty tool receipt formatting
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 21:27_
+_@zanieb_
 
 I started doing this because I wanted more control over the document but this ends up being useful for https://github.com/astral-sh/uv/pull/4638
 

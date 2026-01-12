@@ -12,14 +12,14 @@ head: charlie/name
 created_at: 2024-01-07T15:13:52Z
 updated_at: 2024-01-07T15:48:30Z
 url: https://github.com/astral-sh/ruff/pull/9421
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove `Name` allocations from lexer
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-07 15:13_
+_@charliermarsh_
 
 I don't expect this to make a difference in the parser, since we still perform the same allocation in the parser now rather than the lexer, but am still curious to see the benchmarks.
 

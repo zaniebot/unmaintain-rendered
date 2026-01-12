@@ -13,14 +13,14 @@ head: feat/21889-ble001
 created_at: 2025-12-18T18:40:38Z
 updated_at: 2026-01-09T22:25:31Z
 url: https://github.com/astral-sh/ruff/pull/22057
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [flake8-blind-except] Allowed exception logging with functions other than ``critical``, ``error`` and ``exception`` (BLE001)
 
 ---
 
-_Pull request opened by @lubaskinc0de on 2025-12-18 18:40_
+_@lubaskinc0de_
 
 ## Summary
 Fix issue #21889 by checking that the logging method is one of the ``debug``, ``info``, ``warning``, ``error``, ``exception``, ``critical``, ``log`` methods that support ``exc_info`` passing. Also fixed the behavior in which ``exc_info`` was considered passed only when it was equal to the literal ``True``, now the ``Truthiness`` of the expression is checked (we will leave additional checks to type checkers)

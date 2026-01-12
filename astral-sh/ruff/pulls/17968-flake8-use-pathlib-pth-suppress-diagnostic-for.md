@@ -14,14 +14,14 @@ head: fix-PTH116
 created_at: 2025-05-08T21:32:25Z
 updated_at: 2025-05-12T20:23:20Z
 url: https://github.com/astral-sh/ruff/pull/17968
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [`flake8-use-pathlib`] `PTH*` suppress diagnostic for all `os.*` functions that have the `dir_fd` parameter
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-08 21:32_
+_@LaBatata101_
 
 
 <!--

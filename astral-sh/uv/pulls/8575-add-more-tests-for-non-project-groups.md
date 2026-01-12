@@ -13,14 +13,14 @@ head: charlie/dep-groups
 created_at: 2024-10-25T19:00:38Z
 updated_at: 2024-10-25T19:08:31Z
 url: https://github.com/astral-sh/uv/pull/8575
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Add more tests for non-`[project]` groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-25 19:00_
+_@charliermarsh_
 
 _No description provided._
 

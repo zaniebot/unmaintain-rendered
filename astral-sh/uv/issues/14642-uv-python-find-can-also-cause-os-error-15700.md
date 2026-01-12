@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T23:04:37Z
 updated_at: 2025-07-15T23:25:46Z
 url: https://github.com/astral-sh/uv/issues/14642
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # `uv python find` can also cause `os error 15700`
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-15 23:04_
+_@MeGaGiGaGon_
 
 ### Summary
 

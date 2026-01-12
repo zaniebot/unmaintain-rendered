@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-02T18:57:13Z
 updated_at: 2025-06-05T09:53:20Z
 url: https://github.com/astral-sh/uv/issues/13788
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Monorepo support with import-based dependency inference and custom build targets
 
 ---
 
-_Issue opened by @jperezr21 on 2025-06-02 18:57_
+_@jperezr21_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T20:41:23Z
 updated_at: 2024-08-23T05:33:36Z
 url: https://github.com/astral-sh/ruff/issues/13038
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Catch `hypothesis.errors.InvalidArgument` due to multiple `@given` decorators
 
 ---
 
-_Issue opened by @petermattia on 2024-08-21 20:41_
+_@petermattia_
 
 List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 - "hypothesis"

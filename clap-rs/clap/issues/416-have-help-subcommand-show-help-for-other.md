@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-04T18:14:34Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/416
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Have `help` subcommand show help for other subcommands
 
 ---
 
-_Issue opened by @crumblingstatue on 2016-02-04 18:14_
+_@crumblingstatue_
 
 Right now, the auto generated help subcommand seems to ignore trailing arguments, even if
 they are names of other subcommands.

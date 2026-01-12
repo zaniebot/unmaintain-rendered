@@ -13,14 +13,14 @@ head: charlie/dist-db
 created_at: 2024-03-27T23:55:28Z
 updated_at: 2024-03-28T00:06:26Z
 url: https://github.com/astral-sh/uv/pull/2700
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Make tags non-required for fetching wheel metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 23:55_
+_@charliermarsh_
 
 ## Summary
 

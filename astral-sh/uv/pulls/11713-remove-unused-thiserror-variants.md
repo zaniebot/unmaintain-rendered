@@ -13,14 +13,14 @@ head: charlie/p-4
 created_at: 2025-02-22T17:32:54Z
 updated_at: 2025-02-22T22:12:24Z
 url: https://github.com/astral-sh/uv/pull/11713
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:57Z
 ```
 
 # Remove unused `thiserror` variants
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 17:32_
+_@charliermarsh_
 
 ## Summary
 

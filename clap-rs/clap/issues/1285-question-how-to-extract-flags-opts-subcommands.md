@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-06-03T12:41:00Z
 updated_at: 2020-04-11T16:43:25Z
 url: https://github.com/clap-rs/clap/issues/1285
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Question: how to extract {flags, opts, subcommands, ...}
 
 ---
 
-_Issue opened by @yoshuawuyts on 2018-06-03 12:41_
+_@yoshuawuyts_
 
 Heya :wave:,
 

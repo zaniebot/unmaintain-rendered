@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-08T12:15:39Z
 updated_at: 2021-12-09T15:56:23Z
 url: https://github.com/clap-rs/clap/issues/1569
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # using a vulnerable rust-yaml version in clap v2
 
 ---
 
-_Issue opened by @Licenser on 2019-10-08 12:15_
+_@Licenser_
 
 clap depends on a version of rust-yaml that has a vulnerability - it would be nice to update to a newer version: https://rustsec.org/advisories/RUSTSEC-2018-0006
 

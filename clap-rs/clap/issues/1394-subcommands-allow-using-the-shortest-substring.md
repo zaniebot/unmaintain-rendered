@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-12-08T19:11:41Z
 updated_at: 2020-02-01T19:15:50Z
 url: https://github.com/clap-rs/clap/issues/1394
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Subcommands: allow using the shortest substring matching
 
 ---
 
-_Issue opened by @ghost on 2018-12-08 19:11_
+_@ghost_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

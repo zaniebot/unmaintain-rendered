@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-02T04:34:55Z
 updated_at: 2024-07-02T07:18:53Z
 url: https://github.com/astral-sh/uv/issues/4721
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Consider including executables like `pip` in the venv.
 
 ---
 
-_Issue opened by @dimaqq on 2024-07-02 04:34_
+_@dimaqq_
 
 Python's venv installs useful commands/binaries/scripts, in addition to `python` in the virtual env 
 

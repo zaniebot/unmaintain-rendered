@@ -11,14 +11,14 @@ head: feature/R1732-consider-using-with
 created_at: 2024-04-23T12:04:33Z
 updated_at: 2024-04-23T17:50:00Z
 url: https://github.com/astral-sh/ruff/pull/11104
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [pylint] implement `consider-using-with` (R1732)
 
 ---
 
-_Pull request opened by @TomerBin on 2024-04-23 12:04_
+_@TomerBin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

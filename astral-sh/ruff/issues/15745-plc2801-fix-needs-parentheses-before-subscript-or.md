@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-25T23:11:47Z
 updated_at: 2025-02-04T09:54:02Z
 url: https://github.com/astral-sh/ruff/issues/15745
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLC2801 fix needs parentheses before subscript or attribute access
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-25 23:11_
+_@dscorbett_
 
 ### Description
 

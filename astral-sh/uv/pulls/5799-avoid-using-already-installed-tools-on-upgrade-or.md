@@ -14,14 +14,14 @@ head: charlie/up
 created_at: 2024-08-05T19:01:20Z
 updated_at: 2024-08-05T20:48:37Z
 url: https://github.com/astral-sh/uv/pull/5799
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Avoid using already-installed tools on `--upgrade` or `--reinstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 19:01_
+_@charliermarsh_
 
 ## Summary
 

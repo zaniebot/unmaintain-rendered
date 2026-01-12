@@ -13,14 +13,14 @@ head: konsti/3-7-block-everywhere
 created_at: 2024-09-10T18:31:51Z
 updated_at: 2024-09-10T20:15:43Z
 url: https://github.com/astral-sh/uv/pull/7266
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Block Python <3.7 not only on linux
 
 ---
 
-_Pull request opened by @konstin on 2024-09-10 18:31_
+_@konstin_
 
 There's no reason for this check to be limited to linux.
 

@@ -14,14 +14,14 @@ head: zb/header-level
 created_at: 2025-07-02T13:51:18Z
 updated_at: 2025-07-02T14:01:25Z
 url: https://github.com/astral-sh/ruff/pull/19089
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # Fix header levels in generated settings reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 13:51_
+_@zanieb_
 
 The headers were one level too deep for child items, and the top-level `rules` header was way off.
 

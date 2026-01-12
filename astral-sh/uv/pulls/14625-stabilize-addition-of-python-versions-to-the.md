@@ -13,14 +13,14 @@ head: zb/stable-registry
 created_at: 2025-07-15T14:21:06Z
 updated_at: 2025-07-16T19:09:48Z
 url: https://github.com/astral-sh/uv/pull/14625
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Stabilize addition of Python versions to the Windows registry
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 14:21_
+_@zanieb_
 
 Following #14614 this is non-fatal and has an opt-out so it should be safe to stabilize.
 

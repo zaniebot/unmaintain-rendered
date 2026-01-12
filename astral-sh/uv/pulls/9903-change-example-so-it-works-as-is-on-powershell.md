@@ -13,14 +13,14 @@ head: docs-windows-example-update
 created_at: 2024-12-15T02:58:23Z
 updated_at: 2024-12-15T17:19:53Z
 url: https://github.com/astral-sh/uv/pull/9903
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # change example so it works as is on powershell and cmd
 
 ---
 
-_Pull request opened by @jimkutter on 2024-12-15 02:58_
+_@jimkutter_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-22T07:20:19Z
 updated_at: 2022-04-22T12:15:58Z
 url: https://github.com/clap-rs/clap/issues/3647
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # arg!: parsing problem of whether Arg or Value is required
 
 ---
 
-_Issue opened by @Yogaflre on 2022-04-22 07:20_
+_@Yogaflre_
 
 ### Please complete the following tasks
 

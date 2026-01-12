@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T05:10:14Z
 updated_at: 2024-12-26T15:57:16Z
 url: https://github.com/astral-sh/uv/issues/9596
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Wrong platform tag? Or is test.pypi.org confused? Or is my system weird?
 
 ---
 
-_Issue opened by @dimaqq on 2024-12-03 05:10_
+_@dimaqq_
 
 I've upgraded my old project to uv, and here's what I get when I `uv build` it:
 

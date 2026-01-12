@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-09T13:48:37Z
 updated_at: 2026-01-09T21:28:37Z
 url: https://github.com/astral-sh/ty/issues/2415
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Flaky(?) `import from` completions in the playground when there are statements below
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-09 13:48_
+_@AlexWaygood_
 
 Consider the following video. `dataclasses` is never suggested as an import at the `from datacl<CURSOR>` location, and at the location `from dataclasses import data<CURSOR>`, the `dataclass` completion suggestion keeps flickering(?) on and off, so fast that I can never actually accept it.
 

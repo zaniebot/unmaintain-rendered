@@ -13,14 +13,14 @@ head: micha/check-paths
 created_at: 2025-02-25T16:43:21Z
 updated_at: 2025-03-03T13:10:25Z
 url: https://github.com/astral-sh/ruff/pull/16375
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Add support for `knot check <paths>`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-25 16:43_
+_@MichaReiser_
 
 ## Summary
 

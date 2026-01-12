@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T21:04:11Z
 updated_at: 2025-10-06T10:49:26Z
 url: https://github.com/astral-sh/ruff/issues/13431
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Consider analyze-graph for packages and producing graph?
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-09-20 21:04_
+_@NeilGirdhar_
 
 My [Graph-Imports](https://github.com/NeilGirdhar/graph_imports/tree/main) package has been a useful tool in my development.  Now that Ruff has `ruff analyze graph`, it could be extended to supplant my tool if there's a desire.  Suggestions:
 

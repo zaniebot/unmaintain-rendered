@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T10:31:22Z
 updated_at: 2023-08-16T07:11:22Z
 url: https://github.com/astral-sh/ruff/issues/6476
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # formatter: still fails to format certain f-string comments
 
 ---
 
-_Issue opened by @davidszotten on 2023-08-10 10:31_
+_@davidszotten_
 
 scratch.py
 ```

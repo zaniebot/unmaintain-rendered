@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T10:37:03Z
 updated_at: 2025-02-27T13:10:33Z
 url: https://github.com/astral-sh/uv/issues/11827
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Using workspace for a library with included example dir
 
 ---
 
-_Issue opened by @pohlt on 2025-02-27 10:37_
+_@pohlt_
 
 ### Question
 

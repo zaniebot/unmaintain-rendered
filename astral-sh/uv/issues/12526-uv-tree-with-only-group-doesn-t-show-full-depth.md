@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T09:10:50Z
 updated_at: 2025-03-30T18:48:49Z
 url: https://github.com/astral-sh/uv/issues/12526
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv tree with --only-group doesn't show full depth
 
 ---
 
-_Issue opened by @khaume on 2025-03-28 09:10_
+_@khaume_
 
 ### Summary
 

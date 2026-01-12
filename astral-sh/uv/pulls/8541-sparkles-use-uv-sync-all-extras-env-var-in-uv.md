@@ -11,14 +11,14 @@ head: sync-all-extras-config
 created_at: 2024-10-24T20:16:54Z
 updated_at: 2025-04-29T19:46:43Z
 url: https://github.com/astral-sh/uv/pull/8541
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # :sparkles: use UV_SYNC_ALL_EXTRAS env var in uv sync command
 
 ---
 
-_Pull request opened by @danielgafni on 2024-10-24 20:16_
+_@danielgafni_
 
 ## Summary
 

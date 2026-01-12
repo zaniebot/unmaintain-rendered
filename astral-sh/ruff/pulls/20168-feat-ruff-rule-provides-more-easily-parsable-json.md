@@ -13,14 +13,14 @@ head: feat/better-rule-as-json
 created_at: 2025-08-30T16:01:24Z
 updated_at: 2025-10-20T07:33:13Z
 url: https://github.com/astral-sh/ruff/pull/20168
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # feat: 'ruff rule' provides more easily parsable JSON ouput
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-08-30 16:01_
+_@LoicRiegel_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

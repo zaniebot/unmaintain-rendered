@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-11T16:04:41Z
 updated_at: 2021-10-13T22:45:13Z
 url: https://github.com/clap-rs/clap/issues/2847
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Using `help_heading` in one place requires using it on all Flags to get a Unified experience
 
 ---
 
-_Issue opened by @epage on 2021-10-11 16:04_
+_@epage_
 
 ### Please complete the following tasks
 

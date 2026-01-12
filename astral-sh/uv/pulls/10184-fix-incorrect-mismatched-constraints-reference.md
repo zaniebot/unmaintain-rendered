@@ -13,14 +13,14 @@ head: charlie/mis
 created_at: 2024-12-26T23:14:02Z
 updated_at: 2024-12-26T23:25:39Z
 url: https://github.com/astral-sh/uv/pull/10184
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Fix incorrect mismatched constraints reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-26 23:14_
+_@charliermarsh_
 
 _No description provided._
 

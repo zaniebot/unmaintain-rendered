@@ -14,14 +14,14 @@ head: brent/a005-bugfix
 created_at: 2025-02-06T22:50:13Z
 updated_at: 2025-02-07T18:55:59Z
 url: https://github.com/astral-sh/ruff/pull/16006
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-builtins`] Match upstream module name comparison (`A005`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-06 22:50_
+_@ntBre_
 
 See #15951 for the original discussion and reviews. This is just the first half of that PR (reaching parity with `flake8-builtins` without adding any new configuration options) split out for nicer changelog entries.
 

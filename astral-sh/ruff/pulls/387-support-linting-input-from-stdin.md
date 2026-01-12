@@ -12,14 +12,14 @@ head: support-stdin
 created_at: 2022-10-10T13:46:00Z
 updated_at: 2022-10-11T17:28:25Z
 url: https://github.com/astral-sh/ruff/pull/387
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Support linting input from stdin
 
 ---
 
-_Pull request opened by @harupy on 2022-10-10 13:46_
+_@harupy_
 
 Resolve #249
 

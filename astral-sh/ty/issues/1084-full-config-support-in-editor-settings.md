@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T18:27:19Z
 updated_at: 2025-11-14T08:57:38Z
 url: https://github.com/astral-sh/ty/issues/1084
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Full config support in editor settings
 
 ---
 
-_Issue opened by @OliverGuy on 2025-08-21 18:27_
+_@OliverGuy_
 
 ### Summary
 

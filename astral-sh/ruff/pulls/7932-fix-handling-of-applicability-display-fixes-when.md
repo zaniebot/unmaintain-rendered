@@ -12,14 +12,14 @@ head: zanie/fix-display-only-applicability
 created_at: 2023-10-12T22:30:28Z
 updated_at: 2023-10-13T01:33:33Z
 url: https://github.com/astral-sh/ruff/pull/7932
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix handling of `Applicability::Display` fixes when generating summary messages
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-12 22:30_
+_@zanieb_
 
 We were including `Display` fixes in the summary counts for unapplicable fixes resulting in incorrect prompts to the user that a fix could be enabled.
 

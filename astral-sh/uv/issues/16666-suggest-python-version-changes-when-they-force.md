@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T13:53:15Z
 updated_at: 2025-11-10T13:58:55Z
 url: https://github.com/astral-sh/uv/issues/16666
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Suggest python version changes when they force you to select an sdist (and it fails to build)
 
 ---
 
-_Issue opened by @Gankra on 2025-11-10 13:53_
+_@Gankra_
 
 ### Summary
 

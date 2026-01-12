@@ -13,14 +13,14 @@ head: cjm/typo
 created_at: 2024-04-12T00:30:00Z
 updated_at: 2024-04-12T03:23:33Z
 url: https://github.com/astral-sh/ruff/pull/10892
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Fix comment copy/paste typo in newtype_index
 
 ---
 
-_Pull request opened by @carljm on 2024-04-12 00:30_
+_@carljm_
 
 ## Summary
 

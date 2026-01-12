@@ -14,14 +14,14 @@ head: alex/typing-extensions-shadowing
 created_at: 2025-10-06T10:03:42Z
 updated_at: 2025-10-06T11:43:35Z
 url: https://github.com/astral-sh/ruff/pull/20715
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Enforce that `typing_extensions` must come from a stdlib search path
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-06 10:03_
+_@AlexWaygood_
 
 ## Summary
 

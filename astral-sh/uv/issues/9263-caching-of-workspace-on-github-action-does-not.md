@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T03:52:07Z
 updated_at: 2025-12-10T22:35:22Z
 url: https://github.com/astral-sh/uv/issues/9263
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Caching of workspace on Github Action does not work well.
 
 ---
 
-_Issue opened by @higumachan on 2024-11-20 03:52_
+_@higumachan_
 
 When creating a workspace with multiple sub project, the cache for subdirectories does not work as expected.
 

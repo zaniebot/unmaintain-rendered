@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T21:32:04Z
 updated_at: 2024-08-28T16:49:46Z
 url: https://github.com/astral-sh/uv/issues/4219
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add .gitignore with * as contents to .uv
 
 ---
 
-_Issue opened by @njzjz on 2024-06-10 21:32_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

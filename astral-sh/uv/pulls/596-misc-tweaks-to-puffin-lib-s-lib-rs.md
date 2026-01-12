@@ -13,14 +13,14 @@ head: charlie/tweak
 created_at: 2023-12-09T03:28:28Z
 updated_at: 2023-12-09T03:37:48Z
 url: https://github.com/astral-sh/uv/pull/596
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Misc. tweaks to puffin-lib's `lib.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 03:28_
+_@charliermarsh_
 
 _No description provided._
 

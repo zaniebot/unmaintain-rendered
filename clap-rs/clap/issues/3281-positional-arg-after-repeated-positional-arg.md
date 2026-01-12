@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-11T18:06:02Z
 updated_at: 2022-01-12T16:43:39Z
 url: https://github.com/clap-rs/clap/issues/3281
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Positional arg after repeated positional arg - prefer compiler error to runtime error
 
 ---
 
-_Issue opened by @nipunn1313 on 2022-01-11 18:06_
+_@nipunn1313_
 
 ### Please complete the following tasks
 

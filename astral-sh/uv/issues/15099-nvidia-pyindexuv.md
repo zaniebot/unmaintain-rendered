@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T05:29:00Z
 updated_at: 2025-08-07T07:48:55Z
 url: https://github.com/astral-sh/uv/issues/15099
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # 提议把nvidia-pyindex纳入UV！
 
 ---
 
-_Issue opened by @classronin on 2025-08-06 05:29_
+_@classronin_
 
 ### Summary
 

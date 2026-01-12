@@ -12,14 +12,14 @@ head: charlie/quoted
 created_at: 2023-06-21T01:21:28Z
 updated_at: 2023-06-21T01:53:36Z
 url: https://github.com/astral-sh/ruff/pull/5234
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid erroneous RUF013 violations for quoted annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 01:21_
+_@charliermarsh_
 
 ## Summary
 

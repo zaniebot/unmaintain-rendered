@@ -14,14 +14,14 @@ head: alex/tuple-subclass-tests
 created_at: 2025-08-07T11:53:52Z
 updated_at: 2025-08-07T13:12:31Z
 url: https://github.com/astral-sh/ruff/pull/19803
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Add failing tests for tuple subclasses
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-07 11:53_
+_@AlexWaygood_
 
 ## Summary
 

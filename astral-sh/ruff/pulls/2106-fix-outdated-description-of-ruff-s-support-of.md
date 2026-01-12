@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-23T12:28:15Z
 updated_at: 2023-01-23T17:29:49Z
 url: https://github.com/astral-sh/ruff/pull/2106
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix outdated description of ruff's support of isort settings
 
 ---
 
-_Pull request opened by @tmke8 on 2023-01-23 12:28_
+_@tmke8_
 
 Ruff supports more than `known-first-party`, `known-third-party`, `extra-standard-library`, and `src` nowadays.
 

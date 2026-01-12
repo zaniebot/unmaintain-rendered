@@ -12,14 +12,14 @@ head: zb/all-extra
 created_at: 2024-02-15T21:21:10Z
 updated_at: 2024-02-16T05:41:55Z
 url: https://github.com/astral-sh/uv/pull/1352
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add scenario for "all" extras
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 21:21_
+_@zanieb_
 
 Demonstrates #1342 
 

@@ -13,14 +13,14 @@ head: feature/build-backend-module-name
 created_at: 2025-03-01T14:05:38Z
 updated_at: 2025-03-07T14:20:00Z
 url: https://github.com/astral-sh/uv/pull/11884
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Allow overriding module name for uv build backend
 
 ---
 
-_Pull request opened by @csachs on 2025-03-01 14:05_
+_@csachs_
 
 Thank you for uv, it has game-changer capabilities in the field of Python package and environment maangement!
 

@@ -14,14 +14,14 @@ head: charlie/comment
 created_at: 2023-09-20T23:40:15Z
 updated_at: 2023-09-21T13:32:19Z
 url: https://github.com/astral-sh/ruff/pull/7556
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix instability in trailing clause body comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-20 23:40_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T00:16:11Z
 updated_at: 2025-08-21T19:57:51Z
 url: https://github.com/astral-sh/ty/issues/1056
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # disallow external use of underscore-prefixed instance attributes
 
 ---
 
-_Issue opened by @carljm on 2025-08-20 00:16_
+_@carljm_
 
 https://discuss.python.org/t/should-variance-inference-ignore-underscore-prefixed-attributes/102978
 

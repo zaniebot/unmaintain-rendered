@@ -13,14 +13,14 @@ head: dhruv/kernel-spec
 created_at: 2024-08-14T03:26:47Z
 updated_at: 2024-08-14T07:06:12Z
 url: https://github.com/astral-sh/ruff/pull/12875
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fallback to kernelspec to check if it's a Python notebook
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-14 03:26_
+_@dhruvmanila_
 
 ## Summary
 

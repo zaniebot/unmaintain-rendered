@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-31T14:08:06Z
 updated_at: 2025-07-12T02:19:22Z
 url: https://github.com/astral-sh/uv/issues/5653
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv should respect uv.lock in the workspace root when invoking pip install -target in a subproject
 
 ---
 
-_Issue opened by @jpambrun-vida on 2024-07-31 14:08_
+_@jpambrun-vida_
 
 I have a worspace with a virtual top level project. uv sync correctly install and create an `uv.lock` file.
 

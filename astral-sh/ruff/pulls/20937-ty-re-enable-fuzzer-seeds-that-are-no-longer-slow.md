@@ -14,14 +14,14 @@ head: alex/fast-fuzzer
 created_at: 2025-10-17T11:23:16Z
 updated_at: 2025-10-17T11:40:22Z
 url: https://github.com/astral-sh/ruff/pull/20937
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Re-enable fuzzer seeds that are no longer slow
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-17 11:23_
+_@AlexWaygood_
 
 ## Summary
 

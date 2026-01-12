@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-11T15:55:57Z
 updated_at: 2025-05-12T20:39:06Z
 url: https://github.com/astral-sh/ty/issues/318
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support Python executable paths in `--python`
 
 ---
 
-_Issue opened by @zanieb on 2025-05-11 15:55_
+_@zanieb_
 
 As mentioned in https://github.com/astral-sh/ty/issues/193
 

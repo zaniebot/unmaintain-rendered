@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T04:48:45Z
 updated_at: 2023-01-18T05:22:23Z
 url: https://github.com/astral-sh/ruff/issues/1947
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Should SIM105 `UseContextlibSuppress` exempt try blocks with unreachable end?
 
 ---
 
-_Issue opened by @andersk on 2023-01-18 04:48_
+_@andersk_
 
 This code violates SIM105 (Use `contextlib.suppress(OSError)` instead of try-except-pass):
 

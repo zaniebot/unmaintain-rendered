@@ -14,14 +14,14 @@ head: micha/root-multiple-paths
 created_at: 2025-06-24T12:19:18Z
 updated_at: 2025-06-24T12:52:38Z
 url: https://github.com/astral-sh/ruff/pull/18913
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Change `environment.root` to accept multiple paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-24 12:19_
+_@MichaReiser_
 
 ## Summary
 Change `environment.root` to accept multiple paths to allow e.g. `root = ["./app", "./tests"]`.

@@ -13,14 +13,14 @@ head: charlie/backend
 created_at: 2023-12-04T01:18:20Z
 updated_at: 2023-12-04T10:13:43Z
 url: https://github.com/astral-sh/uv/pull/530
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Respect `requires` for non-`build-backend` PEP 517 builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 01:18_
+_@charliermarsh_
 
 ## Summary
 

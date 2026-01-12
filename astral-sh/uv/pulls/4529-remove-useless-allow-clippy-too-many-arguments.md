@@ -13,14 +13,14 @@ head: konsti/remove-useless-clippy-too-many-arguments
 created_at: 2024-06-25T19:02:51Z
 updated_at: 2024-06-25T19:10:00Z
 url: https://github.com/astral-sh/uv/pull/4529
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Remove useless `#[allow(clippy::too_many_arguments)]`
 
 ---
 
-_Pull request opened by @konstin on 2024-06-25 19:02_
+_@konstin_
 
 I went through all `#[allow(clippy::too_many_arguments)]` and removed the useless ones.
 

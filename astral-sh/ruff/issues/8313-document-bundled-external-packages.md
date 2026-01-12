@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-28T20:32:59Z
 updated_at: 2023-10-30T23:30:12Z
 url: https://github.com/astral-sh/ruff/issues/8313
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Document bundled external packages
 
 ---
 
-_Issue opened by @stefan6419846 on 2023-10-28 20:32_
+_@stefan6419846_
 
 *ruff* seems to bundle quite a lot of external dependencies/packages in its binary distributions (looking at https://github.com/astral-sh/ruff/network/dependencies and the `Cargo.lock` entries, over 200?) There is no clear overview of all corresponding inclusions and their licenses.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T15:19:53Z
 updated_at: 2024-08-28T15:31:36Z
 url: https://github.com/astral-sh/uv/issues/6756
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Duplicate code found in `mkdocs` template file
 
 ---
 
-_Issue opened by @Joaopeuko on 2024-08-28 15:19_
+_@Joaopeuko_
 
 Duplicate code found in `mkdocs` template file
 

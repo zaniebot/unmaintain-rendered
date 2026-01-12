@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-21T17:31:05Z
 updated_at: 2025-02-24T21:05:33Z
 url: https://github.com/astral-sh/uv/issues/11700
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Switching extras uninstalls required dependency
 
 ---
 
-_Issue opened by @ElliottKasoar on 2025-02-21 17:31_
+_@ElliottKasoar_
 
 ### Summary
 

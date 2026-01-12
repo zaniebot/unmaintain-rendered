@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-02T22:02:19Z
 updated_at: 2020-05-03T07:27:28Z
 url: https://github.com/clap-rs/clap/issues/1897
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Generating via derive leaves in different state than via into_app()
 
 ---
 
-_Issue opened by @alerque on 2020-05-02 22:02_
+_@alerque_
 
 Experimenting with the current Git HEAD and using `#[derive(Clap)]`, I'm getting different results that I expect. The docs are still a bit sparse on these interfaces so there may be something in transition, but for the sake of people like me who will be trying to port from StructOpt I'm raising this issue so there are no surprises.
 

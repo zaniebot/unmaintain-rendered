@@ -13,14 +13,14 @@ head: fix-cpython-errors
 created_at: 2023-06-14T15:22:22Z
 updated_at: 2023-06-15T11:47:48Z
 url: https://github.com/astral-sh/ruff/pull/5089
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix a number of formatter errors from the cpython repository
 
 ---
 
-_Pull request opened by @konstin on 2023-06-14 15:22_
+_@konstin_
 
 ## Summary
 

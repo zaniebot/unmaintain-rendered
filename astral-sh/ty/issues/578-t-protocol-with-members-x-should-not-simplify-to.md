@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T18:04:14Z
 updated_at: 2025-06-04T19:39:16Z
 url: https://github.com/astral-sh/ty/issues/578
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `T & <protocol with members 'x'>` should not simplify to `T` if `T.x` is possibly unbound
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-06-03 18:04_
+_@AlexWaygood_
 
 ### Summary
 

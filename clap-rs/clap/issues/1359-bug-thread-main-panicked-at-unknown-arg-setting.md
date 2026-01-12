@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-10-10T18:20:52Z
 updated_at: 2020-04-26T11:36:33Z
 url: https://github.com/clap-rs/clap/issues/1359
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [bug] thread 'main' panicked at 'Unknown Arg setting 'hide_default_value' in YAML file for 'host'
 
 ---
 
-_Issue opened by @JianbaoTao on 2018-10-10 18:20_
+_@JianbaoTao_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

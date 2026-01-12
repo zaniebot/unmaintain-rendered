@@ -14,14 +14,14 @@ head: dhruv/overload-without-implementation
 created_at: 2025-04-28T14:08:02Z
 updated_at: 2025-04-30T14:24:23Z
 url: https://github.com/astral-sh/ruff/pull/17681
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Check overloads without an implementation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-28 14:08_
+_@dhruvmanila_
 
 ## Summary
 

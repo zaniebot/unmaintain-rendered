@@ -13,14 +13,14 @@ head: renovate-sync
 created_at: 2024-04-03T11:17:17Z
 updated_at: 2024-04-03T14:23:38Z
 url: https://github.com/astral-sh/uv/pull/2802
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Improve renovate config
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-03 11:17_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T13:37:45Z
 updated_at: 2023-06-13T06:43:07Z
 url: https://github.com/astral-sh/ruff/issues/4470
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Make A001 warns when method shadows a builtin (or create a new rule for this)?
 
 ---
 
-_Issue opened by @duongdominhchau on 2023-05-17 13:37_
+_@duongdominhchau_
 
 Hi, first of all, thank you for building this tool, saved me time integrating tens of similar tools into the project.
 

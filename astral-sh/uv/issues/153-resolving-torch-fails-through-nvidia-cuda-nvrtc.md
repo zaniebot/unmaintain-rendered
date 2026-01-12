@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T10:51:41Z
 updated_at: 2023-10-23T01:07:46Z
 url: https://github.com/astral-sh/uv/issues/153
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Resolving torch fails through nvidia-cuda-nvrtc-cu12 with 500 Internal Server Error
 
 ---
 
-_Issue opened by @konstin on 2023-10-20 10:51_
+_@konstin_
 
 ```
 $ cargo run --bin puffin -- pip-compile -v requirements_torch.txt

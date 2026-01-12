@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-10T06:12:11Z
 updated_at: 2025-07-10T06:12:11Z
 url: https://github.com/astral-sh/ruff/issues/19250
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Implement a robust docstring parser
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-10 06:12_
+_@dhruvmanila_
 
 Currently, we have two docstring parser which are specifically implemented for different purposes:
 1. ty: https://github.com/astral-sh/ruff/blob/05d0daf50f52d6ea358ba5d11315eb7581851965/crates/ty_ide/src/docstring.rs

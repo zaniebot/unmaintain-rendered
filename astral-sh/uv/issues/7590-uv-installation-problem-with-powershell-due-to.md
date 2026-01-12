@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T16:17:17Z
 updated_at: 2024-09-20T16:35:52Z
 url: https://github.com/astral-sh/uv/issues/7590
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # UV installation problem with powershell due to detected malware
 
 ---
 
-_Issue opened by @djethino on 2024-09-20 16:17_
+_@djethino_
 
 Hi, big problem to install it on windows via powershell :/
 

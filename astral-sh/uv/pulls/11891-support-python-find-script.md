@@ -13,14 +13,14 @@ head: python-find-script
 created_at: 2025-03-02T12:55:39Z
 updated_at: 2025-03-21T06:33:19Z
 url: https://github.com/astral-sh/uv/pull/11891
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Support `python find --script`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-02 12:55_
+_@InSyncWithFoo_
 
 ## Summary
 

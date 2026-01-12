@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T13:45:39Z
 updated_at: 2024-06-28T13:55:37Z
 url: https://github.com/astral-sh/uv/issues/4616
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # uv compile fails to find some packages when using --python-platform
 
 ---
 
-_Issue opened by @jcugat on 2024-06-28 13:45_
+_@jcugat_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

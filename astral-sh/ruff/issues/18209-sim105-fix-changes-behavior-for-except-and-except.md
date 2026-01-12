@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-19T23:59:26Z
 updated_at: 2025-06-23T14:01:59Z
 url: https://github.com/astral-sh/ruff/issues/18209
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM105 fix changes behavior for `except ():` and `except:`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-19 23:59_
+_@dscorbett_
 
 ### Summary
 

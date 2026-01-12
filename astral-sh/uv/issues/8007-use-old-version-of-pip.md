@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T15:58:33Z
 updated_at: 2024-10-10T21:03:32Z
 url: https://github.com/astral-sh/uv/issues/8007
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Use old version of pip
 
 ---
 
-_Issue opened by @JhonatanRian on 2024-10-08 15:58_
+_@JhonatanRian_
 
 Is it possible to configure uv to use an old version of pip?
 

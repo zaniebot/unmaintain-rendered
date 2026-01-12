@@ -14,14 +14,14 @@ head: Add-SIM105-fix
 created_at: 2023-04-08T05:55:00Z
 updated_at: 2023-04-09T22:59:10Z
 url: https://github.com/astral-sh/ruff/pull/3915
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-simplify`] Add autofix for `contextlib.suppress` (`SIM105`)
 
 ---
 
-_Pull request opened by @leiserfg on 2023-04-08 05:55_
+_@leiserfg_
 
 _No description provided._
 

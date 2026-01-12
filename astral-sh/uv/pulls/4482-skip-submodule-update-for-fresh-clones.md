@@ -13,14 +13,14 @@ head: charlie/sub
 created_at: 2024-06-24T19:08:25Z
 updated_at: 2024-06-24T21:09:15Z
 url: https://github.com/astral-sh/uv/pull/4482
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Skip submodule update for fresh clones
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 19:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/flat-index
 created_at: 2024-01-15T15:55:16Z
 updated_at: 2024-01-15T16:05:02Z
 url: https://github.com/astral-sh/uv/pull/930
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Share flat index across resolutions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 15:55_
+_@charliermarsh_
 
 ## Summary
 

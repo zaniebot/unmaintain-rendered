@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-09T06:37:09Z
 updated_at: 2025-09-09T06:48:35Z
 url: https://github.com/astral-sh/ty/issues/1153
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # self type in Unknown in methods
 
 ---
 
-_Issue opened by @LoicRiegel on 2025-09-09 06:37_
+_@LoicRiegel_
 
 ### Summary
 

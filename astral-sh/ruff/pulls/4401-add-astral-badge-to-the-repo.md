@@ -12,14 +12,14 @@ head: charlie/badge
 created_at: 2023-05-12T19:05:21Z
 updated_at: 2023-05-12T19:31:42Z
 url: https://github.com/astral-sh/ruff/pull/4401
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add Astral badge to the repo
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-12 19:05_
+_@charliermarsh_
 
 _No description provided._
 

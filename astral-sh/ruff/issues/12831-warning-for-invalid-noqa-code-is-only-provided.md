@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T04:55:37Z
 updated_at: 2025-02-16T19:58:19Z
 url: https://github.com/astral-sh/ruff/issues/12831
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Warning for invalid `noqa` code is only provided when related rules are selected
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-12 04:55_
+_@dhruvmanila_
 
 It seems that the warning is only provided when a rule from the `LintSource::Noqa` is enabled which is unexpected (I think?):
 

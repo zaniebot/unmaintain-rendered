@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-06T11:46:36Z
 updated_at: 2023-12-13T03:12:39Z
 url: https://github.com/astral-sh/ruff/issues/5559
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `TCH` setting to autofix with conversion to string
 
 ---
 
-_Issue opened by @smackesey on 2023-07-06 11:46_
+_@smackesey_
 
 Currently the `TCH` (`flake8-type-checking`) rules require annotations to be stored as strings (i.e. not evaluated). Annotations are stored a strings if:
 

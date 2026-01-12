@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T07:30:05Z
 updated_at: 2025-04-01T07:44:39Z
 url: https://github.com/astral-sh/ruff/issues/17079
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # flake8-django: Ensure either `related_name` for each FK-based field or `default_related_name` per model is set
 
 ---
 
-_Issue opened by @GitRon on 2025-03-31 07:30_
+_@GitRon_
 
 ### Summary
 

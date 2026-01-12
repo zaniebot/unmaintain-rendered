@@ -12,14 +12,14 @@ head: micha/exclude-rust-toolchain
 created_at: 2025-05-07T16:51:58Z
 updated_at: 2025-05-07T17:49:05Z
 url: https://github.com/astral-sh/ty/pull/249
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Exclude rust-toolchain.toml
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 16:51_
+_@MichaReiser_
 
 ## Summary
 The `rust-toolchain.toml` specifies the rust toolchain version that we use for development. 

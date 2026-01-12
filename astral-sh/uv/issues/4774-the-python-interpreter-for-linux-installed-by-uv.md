@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T14:41:09Z
 updated_at: 2024-07-03T15:58:06Z
 url: https://github.com/astral-sh/uv/issues/4774
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # The python interpreter for linux installed by `uv toolchain` is debug built.
 
 ---
 
-_Issue opened by @Di-Is on 2024-07-03 14:41_
+_@Di-Is_
 
 The python interpreter for linux installed by `uv toolchain` seems to be built in debug mode.
 From a performance standpoint, it is better to use optimized binaries like pgo+lto instead.

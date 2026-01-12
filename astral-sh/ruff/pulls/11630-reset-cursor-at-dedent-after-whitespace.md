@@ -14,14 +14,14 @@ head: dhruv/dedent-after-whitespace
 created_at: 2024-05-31T06:04:56Z
 updated_at: 2024-05-31T11:04:12Z
 url: https://github.com/astral-sh/ruff/pull/11630
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Reset cursor at dedent after whitespace
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-31 06:04_
+_@dhruvmanila_
 
 ## Summary
 

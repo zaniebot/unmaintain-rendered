@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T21:25:55Z
 updated_at: 2025-07-07T13:01:11Z
 url: https://github.com/astral-sh/ruff/issues/19078
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Feature: Support iSort's import Multi Line Output Mode 2 - Hanging Indent
 
 ---
 
-_Issue opened by @Bengt on 2025-07-01 21:25_
+_@Bengt_
 
 ### Summary
 

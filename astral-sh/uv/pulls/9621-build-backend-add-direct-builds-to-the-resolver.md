@@ -13,14 +13,14 @@ head: konsti/build-backend-resolver-direct-build2
 created_at: 2024-12-03T21:44:05Z
 updated_at: 2024-12-04T15:57:19Z
 url: https://github.com/astral-sh/uv/pull/9621
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Build backend: Add direct builds to the resolver and installer
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 21:44_
+_@konstin_
 
 This is like #9556, but at the level of all other builds, including the resolver and installer. Going through PEP 517 to build a package is slow, so when building a package with the uv build backend, we can call into the uv build backend directly instead: No temporary virtual env, no temp venv sync, no python subprocess calls, no uv subprocess calls. 
 

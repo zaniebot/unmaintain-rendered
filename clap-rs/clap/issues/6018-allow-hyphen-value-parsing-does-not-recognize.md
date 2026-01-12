@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-27T15:12:25Z
 updated_at: 2025-05-27T17:00:47Z
 url: https://github.com/clap-rs/clap/issues/6018
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `allow_hyphen_value` parsing does not recognize attached short argument
 
 ---
 
-_Issue opened by @euclio on 2025-05-27 15:12_
+_@euclio_
 
 ### Please complete the following tasks
 

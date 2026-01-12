@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-03T15:39:52Z
 updated_at: 2024-02-29T16:22:40Z
 url: https://github.com/astral-sh/uv/issues/311
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Track and report the sources of requirements
 
 ---
 
-_Issue opened by @zanieb on 2023-11-03 15:39_
+_@zanieb_
 
 i.e. if I provide multiple requirement files I want to know which one is responsible for each incompatible requirement
 

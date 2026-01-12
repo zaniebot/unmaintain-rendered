@@ -12,14 +12,14 @@ head: remove-unused-once-cell-dep
 created_at: 2024-07-06T14:57:24Z
 updated_at: 2024-08-12T07:52:30Z
 url: https://github.com/astral-sh/ruff/pull/12217
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove unused OnceCell dependency
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-06 14:57_
+_@MichaReiser_
 
 _No description provided._
 

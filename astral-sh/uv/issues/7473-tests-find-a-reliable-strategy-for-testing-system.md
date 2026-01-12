@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T17:16:41Z
 updated_at: 2024-09-17T17:16:41Z
 url: https://github.com/astral-sh/uv/issues/7473
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # tests: find a reliable strategy for testing system and managed interpreters
 
 ---
 
-_Issue opened by @lucab on 2024-09-17 17:16_
+_@lucab_
 
 Followup from https://github.com/astral-sh/uv/pull/7451.
 

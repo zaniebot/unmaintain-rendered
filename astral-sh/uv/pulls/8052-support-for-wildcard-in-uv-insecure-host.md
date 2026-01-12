@@ -13,14 +13,14 @@ head: more-insecure-proxy
 created_at: 2024-10-09T18:20:36Z
 updated_at: 2024-10-12T12:55:26Z
 url: https://github.com/astral-sh/uv/pull/8052
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Support for wildcard in UV_INSECURE_HOST
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-10-09 18:20_
+_@fasterthanlime_
 
 Allow '*' as a value to match all hosts, and provide `reqwest_blocking_get` for uv tests, so that they also respect UV_INSECURE_HOST (since they respect `ALL_PROXY`).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T12:13:08Z
 updated_at: 2025-07-16T12:37:41Z
 url: https://github.com/astral-sh/uv/issues/14648
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # `uv pip install` of ssh dependency only prompts to enter the passkey in verbose mode
 
 ---
 
-_Issue opened by @bqback on 2025-07-16 12:13_
+_@bqback_
 
 ### Summary
 

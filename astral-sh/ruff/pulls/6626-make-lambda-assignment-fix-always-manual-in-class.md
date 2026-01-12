@@ -14,14 +14,14 @@ head: charlie/lambda
 created_at: 2023-08-16T17:41:20Z
 updated_at: 2023-08-17T01:24:49Z
 url: https://github.com/astral-sh/ruff/pull/6626
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Make lambda-assignment fix always-manual in class bodies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 17:41_
+_@charliermarsh_
 
 ## Summary
 

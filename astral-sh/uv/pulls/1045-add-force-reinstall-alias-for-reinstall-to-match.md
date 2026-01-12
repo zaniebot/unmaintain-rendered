@@ -13,14 +13,14 @@ head: zb/force-reinstall
 created_at: 2024-01-22T20:22:55Z
 updated_at: 2024-01-23T04:59:44Z
 url: https://github.com/astral-sh/uv/pull/1045
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Add `--force-reinstall` alias for `--reinstall` to match pip interface
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 20:22_
+_@zanieb_
 
 Tested with `cargo run -- pip install pip-tools --force-reinstall`.
 

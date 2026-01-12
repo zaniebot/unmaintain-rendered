@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-11-19T22:42:04Z
 updated_at: 2024-11-19T22:52:43Z
 url: https://github.com/astral-sh/uv/pull/9256
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Add dedicated warning for empty stdin
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-19 22:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-02-01T04:48:43Z
 updated_at: 2024-02-01T08:43:10Z
 url: https://github.com/astral-sh/uv/pull/1219
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Accommodate minute-level filters in Insta
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-01 04:48_
+_@charliermarsh_
 
 I don't know why `compile_editable` took over a minute in this case, but seems like it did? Hard to test this fix.
 

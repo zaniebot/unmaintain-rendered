@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T16:19:57Z
 updated_at: 2024-12-23T09:29:48Z
 url: https://github.com/astral-sh/ruff/issues/10277
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `--fix --unsafe-fixes` that converts lambda to function (rule E731) removes underscores from numbers.
 
 ---
 
-_Issue opened by @dwreeves on 2024-03-07 16:19_
+_@dwreeves_
 
 Minimal reproduction:
 

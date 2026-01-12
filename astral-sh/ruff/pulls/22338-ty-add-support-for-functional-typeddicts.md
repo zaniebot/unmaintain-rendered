@@ -11,16 +11,16 @@ draft: true
 base: charlie/functional-namedtuple
 head: charlie/functional-typeddict
 created_at: 2026-01-02T16:39:51Z
-updated_at: 2026-01-02T20:24:51Z
+updated_at: 2026-01-12T13:46:27Z
 url: https://github.com/astral-sh/ruff/pull/22338
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Add support for functional TypedDicts
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-02 16:39_
+_@charliermarsh_
 
 ## Summary
 

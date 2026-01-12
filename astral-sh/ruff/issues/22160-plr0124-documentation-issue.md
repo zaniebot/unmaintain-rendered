@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T11:12:53Z
 updated_at: 2025-12-26T08:51:24Z
 url: https://github.com/astral-sh/ruff/issues/22160
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # PLR0124 Documentation Issue
 
 ---
 
-_Issue opened by @bruno-brant on 2025-12-23 11:12_
+_@bruno-brant_
 
 ### Summary
 

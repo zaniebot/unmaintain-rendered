@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-06T12:36:27Z
 updated_at: 2023-09-06T14:02:15Z
 url: https://github.com/astral-sh/ruff/issues/7188
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule or configuration for disabling D101 for TypedDicts
 
 ---
 
-_Issue opened by @rogier-stegeman on 2023-09-06 12:36_
+_@rogier-stegeman_
 
 While I want to enforce docstrings in normal public classes, not everyone in the team is onboard with requiring it for `TypedDict`s. As such I can't enable the rule, at the expense of not checking public classes either. Often, `TypedDict`s are just a slightly narrower specification of a `dict` type alias, which don't require docstrings. 
 

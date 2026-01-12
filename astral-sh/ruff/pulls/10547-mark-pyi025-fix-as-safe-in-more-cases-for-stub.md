@@ -13,14 +13,14 @@ head: safe-AbstractSet-rename
 created_at: 2024-03-24T14:53:41Z
 updated_at: 2024-03-24T16:11:49Z
 url: https://github.com/astral-sh/ruff/pull/10547
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Mark PYI025 fix as safe in more cases for stub files
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-24 14:53_
+_@AlexWaygood_
 
 ## Summary
 

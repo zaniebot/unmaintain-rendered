@@ -13,14 +13,14 @@ head: charlie/unpack
 created_at: 2024-11-09T20:30:40Z
 updated_at: 2024-11-09T20:49:20Z
 url: https://github.com/astral-sh/ruff/pull/14234
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Avoid applying PEP 646 rewrites in invalid contexts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 20:30_
+_@charliermarsh_
 
 ## Summary
 

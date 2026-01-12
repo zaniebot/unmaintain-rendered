@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-20T11:28:57Z
 updated_at: 2025-07-20T15:59:49Z
 url: https://github.com/astral-sh/ty/issues/855
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider removing `infer_expression_type` query
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-20 11:28_
+_@MichaReiser_
 
 The original motivation why we introduced the `infer_expression_type` was because we wanted to avoid that ty ever infers the same expression twice and that this is important for performance. https://github.com/astral-sh/ruff/pull/19436 shows that this might not be the case (and it's a very naive approach at removing the query). Most benchmarks are neutral with the exception of sympy (11% regresssion).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T09:49:48Z
 updated_at: 2025-01-01T10:58:50Z
 url: https://github.com/astral-sh/uv/issues/1465
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Question: Will it also replace `pipenv`?
 
 ---
 
-_Issue opened by @TheRealBecks on 2024-02-16 09:49_
+_@TheRealBecks_
 
 Have you already heard about [pipenv](https://github.com/pypa/pipenv)? I saw that you talking about replacing several package managers and virtualization managers, but I didn't see you mentioning `pipenv`.
 

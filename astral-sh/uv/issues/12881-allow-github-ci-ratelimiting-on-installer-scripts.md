@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T14:26:37Z
 updated_at: 2025-04-17T23:32:57Z
 url: https://github.com/astral-sh/uv/issues/12881
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # allow github ci ratelimiting on installer scripts to be managed with UV_GITHUB_TOKEN
 
 ---
 
-_Issue opened by @JeremieDoctrine on 2025-04-14 14:26_
+_@JeremieDoctrine_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: exclude-newer-docs
 created_at: 2024-08-29T20:40:08Z
 updated_at: 2024-08-29T20:50:25Z
 url: https://github.com/astral-sh/uv/pull/6831
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Add docs for inline exclude newer
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-08-29 20:40_
+_@hauntsaninja_
 
 See https://github.com/astral-sh/uv/pull/6562
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T00:45:32Z
 updated_at: 2023-01-30T02:16:20Z
 url: https://github.com/astral-sh/ruff/issues/2334
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Another TRY201 false positive
 
 ---
 
-_Issue opened by @LefterisJP on 2023-01-30 00:45_
+_@LefterisJP_
 
 This is about a TRY201 false positive and unlike https://github.com/charliermarsh/ruff/issues/2164 I think it's a bug.
 

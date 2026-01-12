@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-20T06:55:27Z
 updated_at: 2024-08-20T15:03:34Z
 url: https://github.com/astral-sh/uv/issues/6245
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `uv pip` inconsistencies with win32 platform
 
 ---
 
-_Issue opened by @schlamar on 2024-08-20 06:55_
+_@schlamar_
 
 Follow up of #6198
 

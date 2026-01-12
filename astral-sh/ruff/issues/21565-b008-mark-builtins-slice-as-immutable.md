@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T17:49:27Z
 updated_at: 2025-12-08T19:00:44Z
 url: https://github.com/astral-sh/ruff/issues/21565
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B008: mark builtins.slice() as immutable
 
 ---
 
-_Issue opened by @anabelle2001 on 2025-11-21 17:49_
+_@anabelle2001_
 
 # Example
 ```py

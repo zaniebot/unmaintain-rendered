@@ -12,14 +12,14 @@ head: charlie/fix-relative
 created_at: 2023-04-19T18:12:16Z
 updated_at: 2023-04-19T19:05:32Z
 url: https://github.com/astral-sh/ruff/pull/4027
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use module path resolver for relative autofix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 18:12_
+_@charliermarsh_
 
 We have a new method that takes a relative import level, module name, and caller path, to produce the fully-qualified, absolute path for a given import. So we might as well use it in the relative import autofixer, which today re-implements all of that logic on its own.
 

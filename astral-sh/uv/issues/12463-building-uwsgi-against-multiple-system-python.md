@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T12:28:20Z
 updated_at: 2025-03-25T13:23:39Z
 url: https://github.com/astral-sh/uv/issues/12463
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Building uwsgi against multiple system Python versions corrupts it
 
 ---
 
-_Issue opened by @andersk on 2025-03-25 12:28_
+_@andersk_
 
 ### Summary
 

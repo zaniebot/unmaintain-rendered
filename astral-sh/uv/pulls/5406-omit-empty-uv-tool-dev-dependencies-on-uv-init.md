@@ -13,14 +13,14 @@ head: remove-dev-deps
 created_at: 2024-07-24T12:50:42Z
 updated_at: 2024-07-24T14:56:10Z
 url: https://github.com/astral-sh/uv/pull/5406
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Omit empty uv.tool.dev-dependencies on `uv init`
 
 ---
 
-_Pull request opened by @manzt on 2024-07-24 12:50_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

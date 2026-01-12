@@ -13,14 +13,14 @@ head: charlie/json
 created_at: 2023-09-14T00:52:49Z
 updated_at: 2023-09-14T18:15:41Z
 url: https://github.com/astral-sh/ruff/pull/7374
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Allow `NURSERY` in JSON Schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 00:52_
+_@charliermarsh_
 
 ## Summary
 

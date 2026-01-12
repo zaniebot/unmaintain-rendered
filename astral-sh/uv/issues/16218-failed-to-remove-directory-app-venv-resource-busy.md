@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T01:00:09Z
 updated_at: 2025-10-23T20:08:54Z
 url: https://github.com/astral-sh/uv/issues/16218
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # failed to remove directory `/app/.venv`: Resource busy
 
 ---
 
-_Issue opened by @toryvan on 2025-10-10 01:00_
+_@toryvan_
 
 ### Summary
 

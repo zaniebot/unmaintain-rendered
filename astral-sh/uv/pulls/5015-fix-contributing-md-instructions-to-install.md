@@ -13,14 +13,14 @@ head: fix-contributing-instructions
 created_at: 2024-07-12T15:48:40Z
 updated_at: 2024-07-13T08:47:15Z
 url: https://github.com/astral-sh/uv/pull/5015
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Fix `CONTRIBUTING.md` instructions to install multiple Python versions
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-12 15:48_
+_@silvanocerza_
 
 ## Summary
 

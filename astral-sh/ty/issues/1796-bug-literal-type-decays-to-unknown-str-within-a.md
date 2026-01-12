@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-07T17:15:53Z
 updated_at: 2025-12-07T19:12:19Z
 url: https://github.com/astral-sh/ty/issues/1796
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # BUG: `Literal` type decays to `Unknown | str` within a listcomp
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-12-07 17:15_
+_@neutrinoceros_
 
 ### Summary
 

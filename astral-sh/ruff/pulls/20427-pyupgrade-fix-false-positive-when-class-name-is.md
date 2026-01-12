@@ -14,14 +14,14 @@ head: fix-20422
 created_at: 2025-09-15T23:44:07Z
 updated_at: 2025-09-18T14:12:38Z
 url: https://github.com/astral-sh/ruff/pull/20427
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [`pyupgrade`] Fix false positive when class name is shadowed by local variable (`UP008`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-15 23:44_
+_@danparizher_
 
 ## Summary
 

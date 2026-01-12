@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T09:26:55Z
 updated_at: 2024-09-28T14:20:27Z
 url: https://github.com/astral-sh/ruff/issues/13532
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Expand PGH003 / create another rule to only allow `# pyright: ignore[diagnosticRuleName]` comments
 
 ---
 
-_Issue opened by @kkom on 2024-09-27 09:26_
+_@kkom_
 
 [blanket-type-ignore](https://docs.astral.sh/ruff/rules/blanket-type-ignore/#blanket-type-ignore-pgh003) bans blanket `# type: ignore` comments, however that's not entirely helpful for Pyright users.
 

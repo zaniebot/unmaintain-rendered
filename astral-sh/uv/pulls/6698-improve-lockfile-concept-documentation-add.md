@@ -13,14 +13,14 @@ head: zb/lockfile-docs
 created_at: 2024-08-27T16:01:42Z
 updated_at: 2024-08-27T16:20:55Z
 url: https://github.com/astral-sh/uv/pull/6698
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Improve lockfile concept documentation, add coverage for upgrades
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 16:01_
+_@zanieb_
 
 _No description provided._
 

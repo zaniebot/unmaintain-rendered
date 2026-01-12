@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T15:28:23Z
 updated_at: 2024-08-28T18:06:08Z
 url: https://github.com/astral-sh/uv/issues/6525
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # uv run doesn't work without __init__.py
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-08-23 15:28_
+_@AndreuCodina_
 
 The `__init__.py` file is optional, but if you download the repository https://github.com/astral-sh/uv-fastapi-example (a fresh copy, don't re-use the repository) and remove the `app/__init__.py` file, when you run:
 

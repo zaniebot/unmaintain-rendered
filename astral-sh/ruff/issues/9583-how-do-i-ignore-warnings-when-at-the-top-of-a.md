@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T18:58:57Z
 updated_at: 2024-06-01T23:38:08Z
 url: https://github.com/astral-sh/ruff/issues/9583
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How do I ignore warnings when at the top of a module file?
 
 ---
 
-_Issue opened by @red8888 on 2024-01-19 18:58_
+_@red8888_
 
 I asked the same question in the [flake8-docstrings](https://github.com/PyCQA/flake8-docstrings/issues/72) repo, but I have since switched to ruff so curious if this is possible.
 

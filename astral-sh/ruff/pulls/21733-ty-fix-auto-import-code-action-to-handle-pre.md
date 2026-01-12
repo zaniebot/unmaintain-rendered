@@ -14,14 +14,14 @@ head: ag/auto-import-action-import-exists
 created_at: 2025-12-01T16:07:44Z
 updated_at: 2025-12-01T19:20:49Z
 url: https://github.com/astral-sh/ruff/pull/21733
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix auto-import code action to handle pre-existing import
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-01 16:07_
+_@BurntSushi_
 
 Previously, the code action to do auto-import on a pre-existing symbol
 assumed that the auto-importer would always generate an import

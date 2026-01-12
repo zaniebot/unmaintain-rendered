@@ -15,14 +15,14 @@ head: add-PLR1730-PLR1731
 created_at: 2024-02-15T15:32:50Z
 updated_at: 2024-04-11T14:54:07Z
 url: https://github.com/astral-sh/ruff/pull/10002
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Implement `if-stmt-min-max` (`PLR1730`, `PLR1731`)
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-02-15 15:32_
+_@tibor-reiss_
 
 Add rule [consider-using-min-builtin (R1730)](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-min-builtin.html) and [consider-using-max-builtin (R1731)](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-max-builtin.html)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-24T14:37:43Z
 updated_at: 2025-01-03T14:54:26Z
 url: https://github.com/astral-sh/uv/issues/9396
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # `--locked` does not always report an error even when the lockfile needs to be regenerated
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-24 14:37_
+_@DetachHead_
 
 # environment
 - uv: tested on 0.5.2 and 0.5.4

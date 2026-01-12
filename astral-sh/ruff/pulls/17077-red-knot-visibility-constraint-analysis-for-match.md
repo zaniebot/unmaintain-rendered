@@ -13,14 +13,14 @@ head: match-case-visibility
 created_at: 2025-03-31T03:42:04Z
 updated_at: 2025-04-03T11:15:34Z
 url: https://github.com/astral-sh/ruff/pull/17077
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] visibility_constraint analysis for match cases
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-31 03:42_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

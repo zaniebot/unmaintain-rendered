@@ -14,14 +14,14 @@ head: zb/renovate-compile
 created_at: 2025-02-03T22:50:41Z
 updated_at: 2025-09-12T13:47:11Z
 url: https://github.com/astral-sh/uv/pull/11204
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Add docs for `uv pip compile` and renovate
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-03 22:50_
+_@zanieb_
 
 Support landed upstream
 

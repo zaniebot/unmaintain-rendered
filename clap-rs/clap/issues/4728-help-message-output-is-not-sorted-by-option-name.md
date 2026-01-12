@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T11:25:02Z
 updated_at: 2023-06-19T14:35:44Z
 url: https://github.com/clap-rs/clap/issues/4728
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Help message output is not sorted by option name
 
 ---
 
-_Issue opened by @ghost on 2023-02-24 11:25_
+_@ghost_
 
 ### Please complete the following tasks
 

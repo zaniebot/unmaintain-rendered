@@ -14,14 +14,14 @@ head: order_map
 created_at: 2025-12-08T22:46:35Z
 updated_at: 2025-12-10T03:08:05Z
 url: https://github.com/astral-sh/ruff/pull/21854
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] bump dependencies to pull in Salsa support for `ordermap`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-08 22:46_
+_@oconnor663_
 
 As part of an earlier version of https://github.com/astral-sh/ruff/pull/21784, I added upstream `salsa` and `get_size2` support for `ordermap`, but that ended up not being needed in the current version of that PR. However, @ibraheemdev has mentioned that we might like to switch to `ordermap` across the board once the `salsa` support was there. So I'm separating out these changes into this separate PR, and I'm expanding them to entirely remove `indexmap` as a dependency of `ty_python_semantic`. Do we like these changes?
 

@@ -13,14 +13,14 @@ head: charlie/support-direct-url
 created_at: 2023-11-06T19:21:38Z
 updated_at: 2023-11-07T14:11:29Z
 url: https://github.com/astral-sh/uv/pull/345
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Respect direct URLs in puffin installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 19:21_
+_@charliermarsh_
 
 We now write the `direct_url.json` when installing, and _skip_ installing if we find a package installed via the direct URL that the user is requesting.
 

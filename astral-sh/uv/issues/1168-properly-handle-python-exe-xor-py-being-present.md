@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-29T12:07:52Z
 updated_at: 2024-02-22T07:47:35Z
 url: https://github.com/astral-sh/uv/issues/1168
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Properly handle `python.exe` xor `py` being present on windows
 
 ---
 
-_Issue opened by @konstin on 2024-01-29 12:07_
+_@konstin_
 
 We currently assume `py`, the python launcher on windows, is always present. We should test without it and allow only `python.exe` and show good error messages when both are missing.
 

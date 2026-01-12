@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T16:16:04Z
 updated_at: 2024-03-13T00:05:08Z
 url: https://github.com/astral-sh/uv/issues/2205
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Installing packages from multiple indexes fails if the desired versions are not found from the first index where the package is available.
 
 ---
 
-_Issue opened by @korhojoa on 2024-03-05 16:16_
+_@korhojoa_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/box-error
 created_at: 2023-08-31T22:17:03Z
 updated_at: 2023-09-13T09:46:07Z
 url: https://github.com/astral-sh/ruff/pull/7035
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add a `NotebookError` type to avoid returning `Diagnostics` on error
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-31 22:17_
+_@charliermarsh_
 
 ## Summary
 

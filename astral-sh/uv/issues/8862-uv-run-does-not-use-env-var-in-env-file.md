@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T11:45:17Z
 updated_at: 2025-12-02T10:43:36Z
 url: https://github.com/astral-sh/uv/issues/8862
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # uv run does not use env-var in .env-file
 
 ---
 
-_Issue opened by @woutervh on 2024-11-06 11:45_
+_@woutervh_
 
 uv --version
 uv 0.4.30 (61ed2a236 2024-11-04)

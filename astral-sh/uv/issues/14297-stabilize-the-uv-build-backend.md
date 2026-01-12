@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T20:43:26Z
 updated_at: 2025-07-03T17:28:07Z
 url: https://github.com/astral-sh/uv/issues/14297
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Stabilize the uv build backend
 
 ---
 
-_Issue opened by @zanieb on 2025-06-26 20:43_
+_@zanieb_
 
 There are no known blockers for this.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T19:03:13Z
 updated_at: 2025-12-12T12:52:49Z
 url: https://github.com/astral-sh/ty/issues/1784
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Stabilize rename
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-05 19:03_
+_@MichaReiser_
 
 I'm not aware of any issue that ty renames too much or the wrong thing. All known issues are about ty missing references
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T16:07:11Z
 updated_at: 2024-11-27T17:36:13Z
 url: https://github.com/astral-sh/ruff/issues/14637
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Disable TC001, TC002, TC003 by default ?
 
 ---
 
-_Issue opened by @RomainBrault on 2024-11-27 16:07_
+_@RomainBrault_
 
 It breaks runtime type checking.
 

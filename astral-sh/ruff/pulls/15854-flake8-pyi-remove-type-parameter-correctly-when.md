@@ -15,14 +15,14 @@ head: PYI019-2
 created_at: 2025-01-31T16:16:23Z
 updated_at: 2025-01-31T16:29:58Z
 url: https://github.com/astral-sh/ruff/pull/15854
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pyi`] Remove type parameter correctly when it is the last (`PYI019`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-31 16:16_
+_@InSyncWithFoo_
 
 ## Summary
 

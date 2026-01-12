@@ -14,14 +14,14 @@ head: fix-formatter-default-indent
 created_at: 2023-09-21T15:29:30Z
 updated_at: 2023-09-21T15:49:22Z
 url: https://github.com/astral-sh/ruff/pull/7576
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix the default indent style to tab
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-21 15:29_
+_@MichaReiser_
 
 ## Summary
 

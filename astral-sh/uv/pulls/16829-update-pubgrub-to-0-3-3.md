@@ -13,14 +13,14 @@ head: konsti/pubgrub-0.3.3
 created_at: 2025-11-24T11:58:09Z
 updated_at: 2025-11-28T13:51:25Z
 url: https://github.com/astral-sh/uv/pull/16829
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Update pubgrub to 0.3.3
 
 ---
 
-_Pull request opened by @konstin on 2025-11-24 11:58_
+_@konstin_
 
 Maintenance update.
 

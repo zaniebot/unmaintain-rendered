@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-24T20:41:32Z
 updated_at: 2024-09-24T21:41:15Z
 url: https://github.com/clap-rs/clap/issues/5748
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Error messages / `ContextKind::InvalidArg` should show the flag used instead of always using `long`
 
 ---
 
-_Issue opened by @mamekoro on 2024-09-24 20:41_
+_@mamekoro_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2025-08-11T20:12:12Z
 updated_at: 2025-08-11T21:14:30Z
 url: https://github.com/astral-sh/uv/pull/15225
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Include build settings in cache key for registry source distribution lookups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-11 20:12_
+_@charliermarsh_
 
 ## Summary
 

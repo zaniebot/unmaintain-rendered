@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T14:39:02Z
 updated_at: 2025-03-20T22:46:49Z
 url: https://github.com/astral-sh/uv/issues/11183
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Remember enabled groups for `uv sync`
 
 ---
 
-_Issue opened by @noamraph on 2025-02-03 14:39_
+_@noamraph_
 
 ### Summary
 

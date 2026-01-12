@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-28T15:33:45Z
 updated_at: 2022-05-09T14:34:23Z
 url: https://github.com/clap-rs/clap/issues/3586
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `arg!(--long-arg "foo")` doesn't behave in expected way
 
 ---
 
-_Issue opened by @petrochenkov on 2022-03-28 15:33_
+_@petrochenkov_
 
 ### Please complete the following tasks
 

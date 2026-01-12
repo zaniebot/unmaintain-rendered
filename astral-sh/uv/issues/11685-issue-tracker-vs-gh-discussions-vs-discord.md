@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T04:21:43Z
 updated_at: 2025-02-21T05:26:52Z
 url: https://github.com/astral-sh/uv/issues/11685
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Issue tracker vs GH discussions vs Discord
 
 ---
 
-_Issue opened by @rsyring on 2025-02-21 04:21_
+_@rsyring_
 
 ### Summary
 

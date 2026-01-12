@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-11T22:47:38Z
 updated_at: 2023-01-14T01:48:56Z
 url: https://github.com/astral-sh/ruff/issues/1793
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # C408 fixer should respect indentation level
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 22:47_
+_@spaceone_
 
 ```
 $ ruff --isolated  --select C408 foo.py

@@ -13,14 +13,14 @@ head: zb/bootstrap-python
 created_at: 2024-01-25T19:48:05Z
 updated_at: 2024-01-26T18:12:49Z
 url: https://github.com/astral-sh/uv/pull/1105
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Add bootstrapping and isolation of development Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 19:48_
+_@zanieb_
 
 Replaces https://github.com/astral-sh/puffin/pull/1068 and #1070 which were more complicated than I wanted.
 

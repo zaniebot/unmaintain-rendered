@@ -13,14 +13,14 @@ head: parentheses_unless_breaks
 created_at: 2023-06-19T07:31:29Z
 updated_at: 2023-06-21T19:35:45Z
 url: https://github.com/astral-sh/ruff/pull/5175
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Special `ExprTuple` formatting option for `for`-loops
 
 ---
 
-_Pull request opened by @konstin on 2023-06-19 07:31_
+_@konstin_
 
 ## Motivation
 

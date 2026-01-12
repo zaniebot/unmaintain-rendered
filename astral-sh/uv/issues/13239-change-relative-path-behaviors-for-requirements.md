@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T17:36:04Z
 updated_at: 2025-10-12T21:16:50Z
 url: https://github.com/astral-sh/uv/issues/13239
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Change relative path behaviors for `requirements` files
 
 ---
 
-_Issue opened by @zanieb on 2025-04-30 17:36_
+_@zanieb_
 
 One part of this is
 

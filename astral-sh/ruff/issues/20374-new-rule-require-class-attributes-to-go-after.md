@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T22:08:55Z
 updated_at: 2025-09-15T12:47:40Z
 url: https://github.com/astral-sh/ruff/issues/20374
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New rule: require class attributes to go after docstring and before all method definitions
 
 ---
 
-_Issue opened by @DeflateAwning on 2025-09-12 22:08_
+_@DeflateAwning_
 
 ### Summary
 

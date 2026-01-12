@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-04-16T06:56:05Z
 updated_at: 2025-04-16T07:02:17Z
 url: https://github.com/astral-sh/uv/pull/12912
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # add shebang reference to scripts
 
 ---
 
-_Pull request opened by @slhck on 2025-04-16 06:56_
+_@slhck_
 
 ## Summary
 

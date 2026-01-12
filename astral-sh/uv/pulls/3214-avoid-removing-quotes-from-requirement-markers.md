@@ -13,14 +13,14 @@ head: stray-quotes-fix
 created_at: 2024-04-23T15:26:59Z
 updated_at: 2024-04-23T18:08:07Z
 url: https://github.com/astral-sh/uv/pull/3214
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Avoid Removing Quotes From Requirement Markers
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-23 15:26_
+_@ibraheemdev_
 
 ## Summary
 

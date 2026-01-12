@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-24T08:55:55Z
 updated_at: 2025-09-26T20:31:28Z
 url: https://github.com/clap-rs/clap/issues/5223
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Default commands (help, version) return errors
 
 ---
 
-_Issue opened by @hugoclrd on 2023-11-24 08:55_
+_@hugoclrd_
 
 ### Please complete the following tasks
 

@@ -15,14 +15,14 @@ head: micha/fix-inconsistent-self-highlighting
 created_at: 2025-10-20T09:20:32Z
 updated_at: 2025-10-20T17:32:50Z
 url: https://github.com/astral-sh/ruff/pull/20986
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Fix inconsistent highlighting of self
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-20 09:20_
+_@MichaReiser_
 
 ## Summary
 

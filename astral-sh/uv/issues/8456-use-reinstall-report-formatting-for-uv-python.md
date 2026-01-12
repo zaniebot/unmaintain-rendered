@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-22T14:21:15Z
 updated_at: 2024-10-23T18:53:35Z
 url: https://github.com/astral-sh/uv/issues/8456
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Use reinstall report formatting for `uv python install --reinstall`
 
 ---
 
-_Issue opened by @zanieb on 2024-10-22 14:21_
+_@zanieb_
 
 e.g. at 
 

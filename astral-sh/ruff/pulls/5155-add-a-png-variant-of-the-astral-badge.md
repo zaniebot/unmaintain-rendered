@@ -12,14 +12,14 @@ head: charlie/png
 created_at: 2023-06-17T03:18:06Z
 updated_at: 2023-06-17T03:44:07Z
 url: https://github.com/astral-sh/ruff/pull/5155
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add a PNG variant of the Astral badge
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-17 03:18_
+_@charliermarsh_
 
 _No description provided._
 

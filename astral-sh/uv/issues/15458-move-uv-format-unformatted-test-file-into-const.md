@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-22T16:26:02Z
 updated_at: 2025-08-25T12:40:21Z
 url: https://github.com/astral-sh/uv/issues/15458
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Move `uv format` unformatted test file into const
 
 ---
 
-_Issue opened by @zanieb on 2025-08-22 16:26_
+_@zanieb_
 
 > There are a lot of duplicated code among these tests (mainly, the same `pyproject.toml`, and the formatted/unformatted code snippets). I preferred to maintain the previous style and copypaste the mock data. I'm not sure what approach do you usually follow here (to extract into constants/fixtures vs always copypaste)
 

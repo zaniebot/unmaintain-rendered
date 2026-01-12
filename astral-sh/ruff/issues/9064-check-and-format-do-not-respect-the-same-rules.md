@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-09T00:50:45Z
 updated_at: 2024-06-18T06:30:00Z
 url: https://github.com/astral-sh/ruff/issues/9064
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `check` and `format` do not respect the same rules
 
 ---
 
-_Issue opened by @aaronmarkey on 2023-12-09 00:50_
+_@aaronmarkey_
 
 I've a simple reproducible issue: Ruff's `check` and `format` commands do not respect the same configuration. 
 

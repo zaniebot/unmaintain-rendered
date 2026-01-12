@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T20:52:12Z
 updated_at: 2026-01-05T17:07:14Z
 url: https://github.com/astral-sh/ty/issues/2308
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Consider more precise return type for dynamic overload calls, if all overload returns share some component
 
 ---
 
-_Issue opened by @Drizzelkun on 2026-01-02 20:52_
+_@Drizzelkun_
 
 ### Question
 

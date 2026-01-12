@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-30T17:30:50Z
 updated_at: 2025-02-12T11:20:58Z
 url: https://github.com/astral-sh/uv/issues/4660
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # [bug] `uv` fails to install older versions of popular packages (`tables`, `numpy`) on windows
 
 ---
 
-_Issue opened by @axel-kah on 2024-06-30 17:30_
+_@axel-kah_
 
 When using latest `uv` ( `0.2.18 (13b0beb56 2024-06-29)`)on windows with an Artifactory mirror (`Enterprise Plus 7.63.14 rev`) and with a newer interpreter  (`3.11`) than the package version supports you currently either get a `BuffError` when trying to fetch an odd looking macos package for some reason, or when forcing the use of wheels, a correct error message which could be improved by stating the reason no usable wheels could be found (interpeter version mismatch).
 

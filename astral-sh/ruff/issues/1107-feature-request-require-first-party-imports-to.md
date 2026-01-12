@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-06T12:23:06Z
 updated_at: 2023-12-04T22:26:14Z
 url: https://github.com/astral-sh/ruff/issues/1107
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Require first-party imports to target highest exporting non-ancestor module
 
 ---
 
-_Issue opened by @smackesey on 2022-12-06 12:23_
+_@smackesey_
 
 A symbol can be defined in one module and re-exported from several others. When importing a symbol from an external typed library, the convention is to import from as close to the root as possible. This is how popular auto-import resolution tools work (see my very similar post in [this pylance discussion](https://github.com/microsoft/pylance-release/discussions/3050#discussioncomment-3197660): 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T17:10:48Z
 updated_at: 2026-01-08T13:03:09Z
 url: https://github.com/astral-sh/ruff/issues/12387
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Split the `publish_wasm` job into a build and publish step
 
 ---
 
-_Issue opened by @MichaReiser on 2024-07-18 17:10_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/12317 added a publishing pipeline for our WASM crate to NPM. We should split that pipeline into two workflows:
 

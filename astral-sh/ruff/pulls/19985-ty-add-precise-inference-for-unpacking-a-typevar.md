@@ -13,14 +13,14 @@ head: alex/unpack-tvar
 created_at: 2025-08-19T09:38:51Z
 updated_at: 2025-08-19T21:30:11Z
 url: https://github.com/astral-sh/ruff/pull/19985
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Add precise inference for unpacking a TypeVar if the TypeVar has an upper bound with a precise tuple spec
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-19 09:38_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/unused-ty-code
 created_at: 2025-08-17T14:52:08Z
 updated_at: 2025-08-17T17:54:25Z
 url: https://github.com/astral-sh/ruff/pull/19949
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Remove unused code
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-17 14:52_
+_@AlexWaygood_
 
 ## Summary
 

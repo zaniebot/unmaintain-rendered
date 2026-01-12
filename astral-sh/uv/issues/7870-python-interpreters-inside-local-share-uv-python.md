@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-02T15:35:02Z
 updated_at: 2025-10-31T03:45:28Z
 url: https://github.com/astral-sh/uv/issues/7870
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Python interpreters inside `/.local/share/uv/python` cannot find brew libraries
 
 ---
 
-_Issue opened by @agustingomes-therapieland on 2024-10-02 15:35_
+_@agustingomes-therapieland_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

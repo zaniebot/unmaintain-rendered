@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-29T22:22:04Z
 updated_at: 2025-04-02T17:43:35Z
 url: https://github.com/astral-sh/ruff/issues/17058
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Differently ordered unions that include `Callable` types are not always considered equivalent 
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-29 22:22_
+_@AlexWaygood_
 
 ### Summary
 

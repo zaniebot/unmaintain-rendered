@@ -14,14 +14,14 @@ head: zb/docs-app-lib-ii
 created_at: 2024-08-27T22:49:42Z
 updated_at: 2024-08-27T23:15:13Z
 url: https://github.com/astral-sh/uv/pull/6726
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Improvements to the application and library documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 22:49_
+_@zanieb_
 
 _No description provided._
 

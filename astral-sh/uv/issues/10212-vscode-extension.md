@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-28T05:55:40Z
 updated_at: 2024-12-28T14:38:34Z
 url: https://github.com/astral-sh/uv/issues/10212
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # vscode extension
 
 ---
 
-_Issue opened by @joamatab on 2024-12-28 05:55_
+_@joamatab_
 
 I love uv! I think it would be great having a VSCode extension, similar to the one for ruff
 

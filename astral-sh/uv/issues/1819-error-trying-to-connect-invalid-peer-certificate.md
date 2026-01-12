@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-21T17:23:09Z
 updated_at: 2025-11-21T09:16:02Z
 url: https://github.com/astral-sh/uv/issues/1819
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # error trying to connect: invalid peer certificate: UnknownIssuer - Even with SSL_CERT_FILE mapped
 
 ---
 
-_Issue opened by @mholt77 on 2024-02-21 17:23_
+_@mholt77_
 
 Hey, I saw https://github.com/astral-sh/uv/issues/1474 should have resulted in uv being able to work via SSL_CERT_FILE, but when running.
 ```

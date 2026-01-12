@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-08-22T23:13:35Z
 updated_at: 2024-08-23T14:05:05Z
 url: https://github.com/astral-sh/uv/pull/6470
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Revert "Cache downloaded wheel when range requests aren't supported"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 23:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T12:45:51Z
 updated_at: 2024-10-23T18:43:28Z
 url: https://github.com/astral-sh/uv/issues/8382
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # uv tree often has no output
 
 ---
 
-_Issue opened by @dimbleby on 2024-10-20 12:45_
+_@dimbleby_
 
 sometimes `uv tree` will decline to say anything
 

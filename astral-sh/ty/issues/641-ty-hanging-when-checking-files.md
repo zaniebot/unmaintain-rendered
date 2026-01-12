@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T09:50:10Z
 updated_at: 2025-06-13T19:50:58Z
 url: https://github.com/astral-sh/ty/issues/641
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # TY hanging when checking files
 
 ---
 
-_Issue opened by @jad-haddad on 2025-06-12 09:50_
+_@jad-haddad_
 
 ### Summary
 

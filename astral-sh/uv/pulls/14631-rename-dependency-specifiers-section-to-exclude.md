@@ -13,14 +13,14 @@ head: zb/dep-spec
 created_at: 2025-07-15T17:31:51Z
 updated_at: 2025-07-15T17:55:59Z
 url: https://github.com/astral-sh/uv/pull/14631
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Rename "Dependency specifiers" section to exclude PEP 508 reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 17:31_
+_@zanieb_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-04T19:48:36Z
 updated_at: 2022-10-28T22:19:59Z
 url: https://github.com/astral-sh/ruff/issues/325
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support selecting and ignoring groups of codes
 
 ---
 
-_Issue opened by @andersk on 2022-10-04 19:48_
+_@andersk_
 
 Flake8 supports options like
 

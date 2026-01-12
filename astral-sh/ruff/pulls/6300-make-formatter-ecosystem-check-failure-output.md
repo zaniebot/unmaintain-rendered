@@ -14,14 +14,14 @@ head: ecosystem_check_failure_output
 created_at: 2023-08-03T08:28:55Z
 updated_at: 2023-08-03T18:23:26Z
 url: https://github.com/astral-sh/ruff/pull/6300
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Make formatter ecosystem check failure output better understandable
 
 ---
 
-_Pull request opened by @konstin on 2023-08-03 08:28_
+_@konstin_
 
 **Summary** Prompted by https://github.com/astral-sh/ruff/pull/6257#issuecomment-1661308410, it tried to make the ecosystem script output on failure better understandable. All log messages are now written to a file, which is printed on error. Running locally progress is still shown.
 

@@ -14,14 +14,14 @@ head: fix-RET504
 created_at: 2025-06-02T14:06:52Z
 updated_at: 2025-06-11T13:42:42Z
 url: https://github.com/astral-sh/ruff/pull/18428
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`flake8-return`] Fix `RET504` autofix generating a syntax error
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-02 14:06_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

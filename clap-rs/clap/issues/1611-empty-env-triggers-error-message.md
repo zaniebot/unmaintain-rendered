@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-12-23T12:22:49Z
 updated_at: 2020-04-27T08:29:13Z
 url: https://github.com/clap-rs/clap/issues/1611
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Empty $ENV triggers error message
 
 ---
 
-_Issue opened by @ensc on 2019-12-23 12:22_
+_@ensc_
 
 ### Rust Version
 

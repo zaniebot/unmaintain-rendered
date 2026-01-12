@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-22T20:54:26Z
 updated_at: 2025-08-05T03:21:29Z
 url: https://github.com/astral-sh/ty/issues/875
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # names bound at some point in a class scope, but not at point of access, fall back to global scope
 
 ---
 
-_Issue opened by @carljm on 2025-07-22 20:54_
+_@carljm_
 
 Python's scoping semantics in class scopes are really quite odd. There's a subtle difference at runtime between these two examples:
 

@@ -13,14 +13,14 @@ head: 4096
 created_at: 2024-06-18T14:48:13Z
 updated_at: 2024-06-18T18:15:51Z
 url: https://github.com/astral-sh/ruff/pull/11927
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # ENH copyright-notice: check in the first 4096 bytes instead of 1024
 
 ---
 
-_Pull request opened by @adrinjalali on 2024-06-18 14:48_
+_@adrinjalali_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

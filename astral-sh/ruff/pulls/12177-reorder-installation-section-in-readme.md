@@ -13,14 +13,14 @@ head: dhruv/reorder
 created_at: 2024-07-04T04:39:57Z
 updated_at: 2024-07-04T08:41:56Z
 url: https://github.com/astral-sh/ruff/pull/12177
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Reorder installation section in README
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-04 04:39_
+_@dhruvmanila_
 
 See https://github.com/astral-sh/ruff/pull/12163#issuecomment-2207016631
 

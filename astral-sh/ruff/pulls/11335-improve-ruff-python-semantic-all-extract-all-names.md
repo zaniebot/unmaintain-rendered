@@ -13,14 +13,14 @@ head: improve-all
 created_at: 2024-05-08T10:40:05Z
 updated_at: 2024-05-08T16:11:43Z
 url: https://github.com/astral-sh/ruff/pull/11335
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Improve `ruff_python_semantic::all::extract_all_names()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-08 10:40_
+_@AlexWaygood_
 
 ## Summary
 

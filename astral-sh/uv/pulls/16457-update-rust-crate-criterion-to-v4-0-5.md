@@ -13,14 +13,14 @@ head: renovate/criterion-4.x-lockfile
 created_at: 2025-10-27T01:47:49Z
 updated_at: 2025-10-27T02:26:20Z
 url: https://github.com/astral-sh/uv/pull/16457
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Update Rust crate criterion to v4.0.5
 
 ---
 
-_Pull request opened by @renovate on 2025-10-27 01:47_
+_@renovate_
 
 This PR contains the following updates:
 

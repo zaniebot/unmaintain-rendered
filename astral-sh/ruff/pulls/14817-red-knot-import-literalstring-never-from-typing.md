@@ -13,14 +13,14 @@ head: david/typing_extensions-imports
 created_at: 2024-12-06T12:50:22Z
 updated_at: 2024-12-06T12:57:53Z
 url: https://github.com/astral-sh/ruff/pull/14817
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Import `LiteralString`/`Never` from `typing_extensions`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-06 12:50_
+_@sharkdp_
 
 ## Summary
 

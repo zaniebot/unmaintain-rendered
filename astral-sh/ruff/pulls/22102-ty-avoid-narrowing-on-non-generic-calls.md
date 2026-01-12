@@ -14,14 +14,14 @@ head: ibraheem/static-call-narrowing
 created_at: 2025-12-20T02:50:10Z
 updated_at: 2025-12-20T16:14:58Z
 url: https://github.com/astral-sh/ruff/pull/22102
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Avoid narrowing on non-generic calls
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-20 02:50_
+_@ibraheemdev_
 
 ## Summary
 

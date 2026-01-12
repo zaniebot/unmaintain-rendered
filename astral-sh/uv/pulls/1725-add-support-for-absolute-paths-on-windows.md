@@ -13,14 +13,14 @@ head: charlie/abs-path
 created_at: 2024-02-20T01:03:51Z
 updated_at: 2024-02-20T01:36:54Z
 url: https://github.com/astral-sh/uv/pull/1725
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Add support for absolute paths on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 01:03_
+_@charliermarsh_
 
 ## Summary
 

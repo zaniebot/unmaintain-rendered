@@ -12,14 +12,14 @@ head: tombstone-element
 created_at: 2023-08-01T16:20:10Z
 updated_at: 2024-01-16T10:03:31Z
 url: https://github.com/astral-sh/ruff/pull/6251
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add Tombstone format element
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-01 16:20_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

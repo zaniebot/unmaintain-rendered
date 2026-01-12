@@ -14,14 +14,14 @@ head: ag/fix-label-details
 created_at: 2025-10-28T15:34:37Z
 updated_at: 2025-10-29T12:50:43Z
 url: https://github.com/astral-sh/ruff/pull/21109
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Render `import <...>` in completions when "label details" isn't supported
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-28 15:34_
+_@BurntSushi_
 
 This fixes a bug where the `import module` part of a completion for
 unimported candidates would be missing. This makes it especially

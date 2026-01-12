@@ -14,14 +14,14 @@ head: ruffisc
 created_at: 2025-12-14T03:22:17Z
 updated_at: 2025-12-17T22:37:01Z
 url: https://github.com/astral-sh/ruff/pull/21972
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # New rule to prevent implicit string concatenation in collections
 
 ---
 
-_Pull request opened by @hauntsaninja on 2025-12-14 03:22_
+_@hauntsaninja_
 
 This is a common footgun, see the example in https://github.com/astral-sh/ruff/issues/13014#issuecomment-3411496519
 

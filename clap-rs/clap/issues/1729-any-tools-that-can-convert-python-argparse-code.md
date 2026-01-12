@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-07T15:03:15Z
 updated_at: 2020-06-30T23:10:28Z
 url: https://github.com/clap-rs/clap/issues/1729
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Any tools that can "convert" python-argparse code to rust-clap code?
 
 ---
 
-_Issue opened by @kaiakz on 2020-03-07 15:03_
+_@kaiakz_
 
 I am rewriting a python project in rust now. Its cmd parser uses `argparse`. 
 I would like to ask if there are any tools that can generate the related `clap` code?

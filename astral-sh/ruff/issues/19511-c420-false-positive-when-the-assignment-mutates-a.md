@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-23T15:10:45Z
 updated_at: 2025-08-08T19:02:31Z
 url: https://github.com/astral-sh/ruff/issues/19511
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # C420 false positive when the assignment mutates a pre-existing object
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-23 15:10_
+_@dscorbett_
 
 ### Summary
 

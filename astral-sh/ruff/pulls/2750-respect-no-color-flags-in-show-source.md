@@ -12,14 +12,14 @@ head: charlie/color
 created_at: 2023-02-10T22:24:32Z
 updated_at: 2023-02-10T22:27:42Z
 url: https://github.com/astral-sh/ruff/pull/2750
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Respect NO_COLOR flags in --show-source
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 22:24_
+_@charliermarsh_
 
 Closes #2745.
 

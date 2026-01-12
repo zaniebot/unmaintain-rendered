@@ -13,14 +13,14 @@ head: PLR1722
 created_at: 2025-02-27T21:50:16Z
 updated_at: 2025-03-03T14:31:20Z
 url: https://github.com/astral-sh/ruff/pull/16424
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [pylint] Fix convert a code keyword argument to a positional argument (PLR1722)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-27 21:50_
+_@VascoSch92_
 
 The PR addresses issue #16396 .
 

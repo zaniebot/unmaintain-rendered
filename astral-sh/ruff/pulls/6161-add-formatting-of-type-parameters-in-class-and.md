@@ -13,14 +13,14 @@ head: zanie/695-format
 created_at: 2023-07-28T19:23:48Z
 updated_at: 2023-08-02T20:45:13Z
 url: https://github.com/astral-sh/ruff/pull/6161
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add formatting of type parameters in class and function definitions
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-28 19:23_
+_@zanieb_
 
 Part of #5062 
 Closes https://github.com/astral-sh/ruff/issues/5931

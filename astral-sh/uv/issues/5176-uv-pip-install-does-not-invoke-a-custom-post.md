@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-18T03:16:21Z
 updated_at: 2024-07-18T03:55:43Z
 url: https://github.com/astral-sh/uv/issues/5176
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv pip install` does not invoke a custom post-installation script
 
 ---
 
-_Issue opened by @rexledesma on 2024-07-18 03:16_
+_@rexledesma_
 
 ## Summary
 Title says it all. See the `setup.py` for [`sdf-cli`](https://pypi.org/project/sdf-cli/0.3.9/#files) or [this StackOverflow post](https://stackoverflow.com/a/36902139) for an implementation of a Python package's post-installation script.

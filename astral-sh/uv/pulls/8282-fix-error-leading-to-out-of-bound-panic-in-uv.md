@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-17T07:02:35Z
 updated_at: 2024-10-17T12:23:06Z
 url: https://github.com/astral-sh/uv/pull/8282
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Fix error leading to out-of-bound panic in `uv-pep508`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-10-17 07:02_
+_@InSyncWithFoo_
 
 Resolves #8281.
 

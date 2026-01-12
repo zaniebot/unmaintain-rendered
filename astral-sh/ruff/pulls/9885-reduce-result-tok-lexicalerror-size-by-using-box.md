@@ -13,14 +13,14 @@ head: reduce-tok-size
 created_at: 2024-02-07T22:16:18Z
 updated_at: 2024-02-08T20:36:23Z
 url: https://github.com/astral-sh/ruff/pull/9885
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Reduce `Result<Tok, LexicalError>` size by using `Box<str>` instead of `String`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-07 22:16_
+_@MichaReiser_
 
 * Reduce the `LexicalError` type by using `Box<str>` over `String`
 * Reduce the `Tok` size by using `Box<str>` over `String`. 

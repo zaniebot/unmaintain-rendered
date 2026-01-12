@@ -14,14 +14,14 @@ head: codeman/19122
 created_at: 2025-07-10T02:05:49Z
 updated_at: 2025-09-05T13:09:10Z
 url: https://github.com/astral-sh/ruff/pull/19249
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # Deprecate lint rules that correspond to syntax errors 
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-10 02:05_
+_@CodeMan62_
 
 ## Summary
 partially closes #19122 

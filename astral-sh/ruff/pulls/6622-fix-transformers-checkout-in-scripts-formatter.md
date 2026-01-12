@@ -13,14 +13,14 @@ head: charlie/transformers
 created_at: 2023-08-16T16:40:47Z
 updated_at: 2023-08-16T17:25:47Z
 url: https://github.com/astral-sh/ruff/pull/6622
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix transformers checkout in scripts/formatter_ecosystem_checks.sh
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 16:40_
+_@charliermarsh_
 
 ## Summary
 

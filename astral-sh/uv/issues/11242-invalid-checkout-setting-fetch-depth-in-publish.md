@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T12:24:03Z
 updated_at: 2025-02-05T16:13:47Z
 url: https://github.com/astral-sh/uv/issues/11242
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Invalid checkout setting ``fetch-depth`` in ``publish-docs`` action
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-02-05 12:24_
+_@FishAlchemist_
 
 ### Summary
 This is actually part of #11148, but I don't know how to fix this issue, so I'm opening an issue to let you know.

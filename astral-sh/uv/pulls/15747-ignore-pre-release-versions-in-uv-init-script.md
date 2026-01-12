@@ -13,14 +13,14 @@ head: david/init-script-no-prerelease
 created_at: 2025-09-09T08:50:55Z
 updated_at: 2025-09-10T19:35:32Z
 url: https://github.com/astral-sh/uv/pull/15747
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Ignore pre-release versions in `uv init --script`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-09 08:50_
+_@sharkdp_
 
 ## Summary
 

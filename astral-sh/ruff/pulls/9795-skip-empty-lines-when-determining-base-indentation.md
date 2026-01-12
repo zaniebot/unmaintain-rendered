@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-02-02T19:16:13Z
 updated_at: 2024-02-02T19:53:55Z
 url: https://github.com/astral-sh/ruff/pull/9795
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Skip empty lines when determining base indentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 19:16_
+_@charliermarsh_
 
 ## Summary
 

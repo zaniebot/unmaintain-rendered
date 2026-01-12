@@ -13,14 +13,14 @@ head: dhruv/server-warn-invalid-settings
 created_at: 2025-02-25T07:59:42Z
 updated_at: 2025-02-27T08:31:47Z
 url: https://github.com/astral-sh/ruff/pull/16361
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Notify users for invalid client settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-25 07:59_
+_@dhruvmanila_
 
 ## Summary
 

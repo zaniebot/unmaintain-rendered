@@ -11,14 +11,14 @@ head: add_og_image
 created_at: 2025-07-25T03:01:25Z
 updated_at: 2025-07-28T13:20:55Z
 url: https://github.com/astral-sh/uv/pull/14882
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # add open graph image on docs page
 
 ---
 
-_Pull request opened by @Fuan200 on 2025-07-25 03:01_
+_@Fuan200_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

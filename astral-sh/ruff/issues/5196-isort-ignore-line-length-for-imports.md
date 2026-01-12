@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-19T23:15:07Z
 updated_at: 2023-06-20T20:50:27Z
 url: https://github.com/astral-sh/ruff/issues/5196
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # isort: ignore line-length for imports
 
 ---
 
-_Issue opened by @Avasam on 2023-06-19 23:15_
+_@Avasam_
 
 I used to be able to do so by configuring a different line-length for isort.
 

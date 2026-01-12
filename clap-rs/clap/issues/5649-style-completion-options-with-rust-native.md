@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-10T00:05:31Z
 updated_at: 2024-09-04T20:08:28Z
 url: https://github.com/clap-rs/clap/issues/5649
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Style completion options with rust-native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 00:05_
+_@epage_
 
 Two halves to this
 

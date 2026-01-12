@@ -13,14 +13,14 @@ head: charlie/call-args
 created_at: 2023-08-02T17:45:09Z
 updated_at: 2023-08-02T18:25:22Z
 url: https://github.com/astral-sh/ruff/pull/6280
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Move `find_keyword` helpers onto `Arguments` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 17:45_
+_@charliermarsh_
 
 ## Summary
 

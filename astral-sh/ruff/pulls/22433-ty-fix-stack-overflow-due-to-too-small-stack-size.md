@@ -15,14 +15,14 @@ head: micha/server-stack-sizze
 created_at: 2026-01-07T09:22:28Z
 updated_at: 2026-01-07T12:55:25Z
 url: https://github.com/astral-sh/ruff/pull/22433
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Fix stack overflow due to too small stack size
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-07 09:22_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/union-optimize
 created_at: 2025-02-18T15:33:31Z
 updated_at: 2025-02-18T16:33:16Z
 url: https://github.com/astral-sh/ruff/pull/16233
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Optimize `UnionType::from_elements()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-18 15:33_
+_@AlexWaygood_
 
 ## Summary
 

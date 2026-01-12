@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T18:13:03Z
 updated_at: 2026-01-06T15:44:33Z
 url: https://github.com/astral-sh/ty/issues/2352
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Markdown code blocks rendering space as HTML code on Docstrings
 
 ---
 
-_Issue opened by @gabriel-abn on 2026-01-05 18:13_
+_@gabriel-abn_
 
 I'm using tabs on my code instead of spaces. Really don't know if this can be a cause.
 

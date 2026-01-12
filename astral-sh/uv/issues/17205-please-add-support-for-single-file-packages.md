@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T10:18:19Z
 updated_at: 2025-12-21T14:21:24Z
 url: https://github.com/astral-sh/uv/issues/17205
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Please add support for single-file packages
 
 ---
 
-_Issue opened by @gottadiveintopython on 2025-12-21 10:18_
+_@gottadiveintopython_
 
 # Sammary
 

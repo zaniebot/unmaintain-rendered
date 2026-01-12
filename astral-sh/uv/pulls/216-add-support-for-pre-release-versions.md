@@ -13,14 +13,14 @@ head: charlie/pre-release
 created_at: 2023-10-29T18:26:07Z
 updated_at: 2023-10-30T13:37:55Z
 url: https://github.com/astral-sh/uv/pull/216
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Add support for pre-release versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 18:26_
+_@charliermarsh_
 
 We now accept a pre-release if (1) all versions are pre-releases, or (2) there was a pre-release marker in the dependency specifiers for a direct dependency.
 

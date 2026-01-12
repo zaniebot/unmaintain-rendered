@@ -14,14 +14,14 @@ head: ag/tweak-diagnostic-preamble
 created_at: 2025-05-09T15:47:50Z
 updated_at: 2025-05-09T16:42:16Z
 url: https://github.com/astral-sh/ruff/pull/17987
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] remove `lint:` prefix from top-level diagnostic preamble
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-09 15:47_
+_@BurntSushi_
 
 This also puts the lint ID into brackets attached to the severity.
 

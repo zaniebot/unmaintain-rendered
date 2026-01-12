@@ -13,14 +13,14 @@ head: C414-fix-sorted
 created_at: 2023-07-14T12:48:49Z
 updated_at: 2023-07-14T13:59:59Z
 url: https://github.com/astral-sh/ruff/pull/5761
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix nested calls to `sorted` with differing arguments
 
 ---
 
-_Pull request opened by @density on 2023-07-14 12:48_
+_@density_
 
 ## Summary
 

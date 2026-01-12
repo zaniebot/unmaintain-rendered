@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T05:20:39Z
 updated_at: 2025-01-30T00:55:14Z
 url: https://github.com/astral-sh/ruff/issues/15629
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # new rule - function decorated with `@contextlib.contextmanager` that does not wrap its `yield` statement in a `try`/`finally` block
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-21 05:20_
+_@DetachHead_
 
 `contextlib.contextmanager` is dangerous because its `__exit__` won't get run if an exception is raised, which is rarely what you want:
 

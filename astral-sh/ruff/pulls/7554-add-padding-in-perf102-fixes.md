@@ -14,14 +14,14 @@ head: charlie/PERF102
 created_at: 2023-09-20T21:17:11Z
 updated_at: 2023-09-20T23:33:55Z
 url: https://github.com/astral-sh/ruff/pull/7554
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add padding in `PERF102` fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-20 21:17_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7097.
 

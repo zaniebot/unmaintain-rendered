@@ -13,14 +13,14 @@ head: konsti/cargo-shear
 created_at: 2024-04-24T11:12:35Z
 updated_at: 2024-04-24T11:18:25Z
 url: https://github.com/astral-sh/uv/pull/3236
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Remove unused dependencies
 
 ---
 
-_Pull request opened by @konstin on 2024-04-24 11:12_
+_@konstin_
 
 `cargo shear --fix` and some manual fixing for tokio and flate2.
 

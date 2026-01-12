@@ -14,14 +14,14 @@ head: fix-default-prerelease
 created_at: 2025-11-12T14:56:44Z
 updated_at: 2025-11-12T18:34:08Z
 url: https://github.com/astral-sh/uv/pull/16706
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Fix handling of `python install --default` for pre-release Python versions
 
 ---
 
-_Pull request opened by @nooscraft on 2025-11-12 14:56_
+_@nooscraft_
 
 ## Summary
 

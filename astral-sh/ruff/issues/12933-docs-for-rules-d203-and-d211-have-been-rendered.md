@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T14:54:26Z
 updated_at: 2024-08-16T15:27:38Z
 url: https://github.com/astral-sh/ruff/issues/12933
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Docs for rules D203 and D211 have been rendered inaccurate by Black formatting
 
 ---
 
-_Issue opened by @veaviticus on 2024-08-16 14:54_
+_@veaviticus_
 
 The docs for rule linting rule D203 fell afoul of last week's black upgrade.
 

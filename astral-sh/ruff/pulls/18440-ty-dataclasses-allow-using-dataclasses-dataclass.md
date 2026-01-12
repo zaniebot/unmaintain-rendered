@@ -13,14 +13,14 @@ head: dataclass
 created_at: 2025-06-03T13:03:59Z
 updated_at: 2025-06-03T18:37:11Z
 url: https://github.com/astral-sh/ruff/pull/18440
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] dataclasses: Allow using dataclasses.dataclass as a function.
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-06-03 13:03_
+_@abhijeetbodas2001_
 
 ## Summary
 

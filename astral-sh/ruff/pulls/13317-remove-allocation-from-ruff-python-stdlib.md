@@ -13,14 +13,14 @@ head: builtins-no-alloc
 created_at: 2024-09-10T18:53:29Z
 updated_at: 2024-09-10T20:34:25Z
 url: https://github.com/astral-sh/ruff/pull/13317
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Remove allocation from `ruff_python_stdlib::builtins::python_builtins`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 18:53_
+_@AlexWaygood_
 
 We only ever iterate through these, so allocating a vec shouldn't really be necessary. It does make the function slightly more complicated, though, so I'm not sure if it's worth it.
 

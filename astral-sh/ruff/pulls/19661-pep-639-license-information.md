@@ -11,14 +11,14 @@ head: PEP639
 created_at: 2025-07-31T12:33:52Z
 updated_at: 2025-08-06T06:19:54Z
 url: https://github.com/astral-sh/ruff/pull/19661
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # PEP 639 license information
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2025-07-31 12:33_
+_@DimitriPapadopoulos_
 
 ## Summary
 

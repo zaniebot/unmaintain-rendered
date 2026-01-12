@@ -13,14 +13,14 @@ head: konsti/unreachable-pub
 created_at: 2025-06-13T16:45:09Z
 updated_at: 2025-06-13T18:04:14Z
 url: https://github.com/astral-sh/uv/pull/14032
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Remove unreachable pub function
 
 ---
 
-_Pull request opened by @konstin on 2025-06-13 16:45_
+_@konstin_
 
 Not sure how this landed on main, but rustc complained.
 

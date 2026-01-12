@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T21:41:52Z
 updated_at: 2025-02-11T00:08:08Z
 url: https://github.com/astral-sh/uv/issues/11407
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Installing x64 Python on aarch64?
 
 ---
 
-_Issue opened by @tyteen4a03 on 2025-02-10 21:41_
+_@tyteen4a03_
 
 ### Question
 

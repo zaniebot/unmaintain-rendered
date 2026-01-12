@@ -13,14 +13,14 @@ head: charlie/args
 created_at: 2023-08-21T14:59:37Z
 updated_at: 2023-08-21T21:20:19Z
 url: https://github.com/astral-sh/ruff/pull/6732
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove parenthesis lexing in RSE102
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 14:59_
+_@charliermarsh_
 
 ## Summary
 

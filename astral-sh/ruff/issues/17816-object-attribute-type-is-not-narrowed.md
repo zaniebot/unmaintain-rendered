@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:30:39Z
 updated_at: 2025-05-03T14:36:58Z
 url: https://github.com/astral-sh/ruff/issues/17816
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Object attribute type is not narrowed
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:30_
+_@charliermarsh_
 
 E.g., here, `request.limit + 1` is marked as: Operator `+` is unsupported between objects of type `Unknown | int | None` and `Literal[1]`
 

@@ -13,14 +13,14 @@ head: charlie/format-check
 created_at: 2023-08-29T16:26:37Z
 updated_at: 2023-08-29T16:46:56Z
 url: https://github.com/astral-sh/ruff/pull/6982
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add a --check flag to the formatter CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-29 16:26_
+_@charliermarsh_
 
 ## Summary
 

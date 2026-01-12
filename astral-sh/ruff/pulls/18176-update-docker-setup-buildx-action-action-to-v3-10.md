@@ -14,14 +14,14 @@ head: renovate/docker-setup-buildx-action-3.x
 created_at: 2025-05-19T05:53:35Z
 updated_at: 2025-05-19T06:27:56Z
 url: https://github.com/astral-sh/ruff/pull/18176
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # Update docker/setup-buildx-action action to v3.10.0
 
 ---
 
-_Pull request opened by @renovate on 2025-05-19 05:53_
+_@renovate_
 
 This PR contains the following updates:
 

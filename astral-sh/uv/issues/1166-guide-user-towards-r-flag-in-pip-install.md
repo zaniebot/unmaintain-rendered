@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T11:58:44Z
 updated_at: 2024-01-30T18:58:46Z
 url: https://github.com/astral-sh/uv/issues/1166
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Guide user towards `-r` flag in `pip install`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-29 11:58_
+_@charliermarsh_
 
 E.g., this error should suggest the right argument:
 

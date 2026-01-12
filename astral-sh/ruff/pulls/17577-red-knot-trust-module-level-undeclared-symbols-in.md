@@ -13,14 +13,14 @@ head: david/trust-undeclared-symbols-in-stubs
 created_at: 2025-04-23T08:17:01Z
 updated_at: 2025-04-23T17:56:26Z
 url: https://github.com/astral-sh/ruff/pull/17577
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Trust module-level undeclared symbols in stubs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-23 08:17_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: add_issue_tracker_links_to_contributing_docs
 created_at: 2023-07-11T13:45:18Z
 updated_at: 2023-07-13T11:06:17Z
 url: https://github.com/astral-sh/ruff/pull/5688
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Link issue tracker in contributing docs
 
 ---
 
-_Pull request opened by @konstin on 2023-07-11 13:45_
+_@konstin_
 
 ## Summary
 

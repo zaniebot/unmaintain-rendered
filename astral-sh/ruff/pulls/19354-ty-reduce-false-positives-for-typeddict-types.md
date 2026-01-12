@@ -14,14 +14,14 @@ head: alex/typeddict-false-positives
 created_at: 2025-07-15T11:29:51Z
 updated_at: 2025-07-15T11:47:22Z
 url: https://github.com/astral-sh/ruff/pull/19354
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Reduce false positives for `TypedDict` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 11:29_
+_@AlexWaygood_
 
 ## Summary
 

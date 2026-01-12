@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T13:14:50Z
 updated_at: 2024-09-02T13:42:48Z
 url: https://github.com/astral-sh/uv/issues/6867
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Dockerfile with a workspace project
 
 ---
 
-_Issue opened by @Afoucaul on 2024-08-30 13:14_
+_@Afoucaul_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

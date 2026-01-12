@@ -12,14 +12,14 @@ head: refactor-clippy-fix
 created_at: 2022-09-02T18:54:01Z
 updated_at: 2022-09-03T07:47:48Z
 url: https://github.com/astral-sh/ruff/pull/88
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # refactor: run `cargo clippy --fix`
 
 ---
 
-_Pull request opened by @TeamTamoad on 2022-09-02 18:54_
+_@TeamTamoad_
 
 Fix the following
 - https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow

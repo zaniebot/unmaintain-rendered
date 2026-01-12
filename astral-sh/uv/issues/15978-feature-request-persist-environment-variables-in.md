@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T10:45:22Z
 updated_at: 2025-09-22T11:19:42Z
 url: https://github.com/astral-sh/uv/issues/15978
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Feature Request: Persist Environment Variables in pyproject.toml for Git Dependencies
 
 ---
 
-_Issue opened by @luigibrb on 2025-09-22 10:45_
+_@luigibrb_
 
 ### Summary
 

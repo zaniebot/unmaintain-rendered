@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-05-29T20:05:46Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1280
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug in argument parsing in zsh when `setopt EXTENDED_GLOB`
 
 ---
 
-_Issue opened by @ghost on 2018-05-29 20:05_
+_@ghost_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

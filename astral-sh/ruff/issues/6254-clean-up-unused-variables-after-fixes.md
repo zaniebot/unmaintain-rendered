@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-01T17:44:18Z
 updated_at: 2023-08-01T21:34:59Z
 url: https://github.com/astral-sh/ruff/issues/6254
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Clean up unused variables after fixes
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-08-01 17:44_
+_@tylerlaprade_
 
 ```python
 x = None

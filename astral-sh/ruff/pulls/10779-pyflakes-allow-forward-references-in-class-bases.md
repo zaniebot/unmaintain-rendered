@@ -14,14 +14,14 @@ head: f821-just-class-bases
 created_at: 2024-04-04T20:43:24Z
 updated_at: 2024-04-07T08:49:26Z
 url: https://github.com/astral-sh/ruff/pull/10779
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pyflakes`] Allow forward references in class bases in stub files (`F821`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-04 20:43_
+_@AlexWaygood_
 
 ## Summary
 

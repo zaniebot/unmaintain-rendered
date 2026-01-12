@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-09T18:25:25Z
 updated_at: 2024-09-16T01:57:48Z
 url: https://github.com/astral-sh/uv/issues/7227
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # `uv build` does not include package contents in wheel when the project name is different from the package
 
 ---
 
-_Issue opened by @albireox on 2024-09-09 18:25_
+_@albireox_
 
 I have a project with the following relevant (?) `pyproject.toml`
 

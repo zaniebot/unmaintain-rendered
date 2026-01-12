@@ -14,14 +14,14 @@ head: s308/allow_string_literals
 created_at: 2025-03-15T20:26:39Z
 updated_at: 2025-03-17T10:29:07Z
 url: https://github.com/astral-sh/ruff/pull/16770
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`flake8-bandit`] Allow raw strings in `suspicious-mark-safe-usage` (`S308`) #16702
 
 ---
 
-_Pull request opened by @mfontanaar on 2025-03-15 20:26_
+_@mfontanaar_
 
 ## Summary
 Stop flagging each invocation of `django.utils.safestring.mark_safe` (also available at, `django.utils.html.mark_safe`) as an error.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T11:59:52Z
 updated_at: 2024-03-10T12:00:29Z
 url: https://github.com/astral-sh/uv/issues/2331
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Set accept-encoding: identity for all compressed downloads 
 
 ---
 
-_Issue opened by @konstin on 2024-03-10 11:59_
+_@konstin_
 
 We should extend #2319 to all downloads of .tar.gz, .zip and .whl files, since they are also compressed already.
 

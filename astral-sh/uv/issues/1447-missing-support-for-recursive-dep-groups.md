@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T07:18:14Z
 updated_at: 2024-02-16T23:48:36Z
 url: https://github.com/astral-sh/uv/issues/1447
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Missing support for recursive dep groups
 
 ---
 
-_Issue opened by @hynek on 2024-02-16 07:18_
+_@hynek_
 
 Given a definition like:
 

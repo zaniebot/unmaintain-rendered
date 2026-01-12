@@ -13,14 +13,14 @@ head: alex/more-uv
 created_at: 2025-10-19T13:11:32Z
 updated_at: 2025-10-20T21:06:50Z
 url: https://github.com/astral-sh/ruff/pull/20968
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Use uv more in CI workflows
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-19 13:11_
+_@AlexWaygood_
 
 ## Summary
 

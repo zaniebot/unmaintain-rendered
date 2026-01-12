@@ -13,14 +13,14 @@ head: alex/namedtuple-properties
 created_at: 2025-08-13T16:03:09Z
 updated_at: 2025-08-14T21:26:05Z
 url: https://github.com/astral-sh/ruff/pull/19899
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Synthesize read-only properties for all declared members on `NamedTuple` classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 16:03_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: gankra/implort2
 created_at: 2025-09-18T19:20:17Z
 updated_at: 2025-11-12T14:00:24Z
 url: https://github.com/astral-sh/ruff/pull/20474
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Implement additional implicit re-exports idiom for `__init__.pyi`
 
 ---
 
-_Pull request opened by @Gankra on 2025-09-18 19:20_
+_@Gankra_
 
 Relative imports like `from . import submodule` in `__init.pyi__` are pervasively used to define `mypackage.submodule` and should be regarded as intentional (if not intentional, you can use `from mypackage import submodule` to opt out).
 

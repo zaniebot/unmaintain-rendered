@@ -12,14 +12,14 @@ head: zb/release
 created_at: 2025-05-06T13:18:48Z
 updated_at: 2025-07-08T10:38:04Z
 url: https://github.com/astral-sh/ty/pull/59
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add release script
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-06 13:18_
+_@zanieb_
 
 I tested this locally for a5.
 

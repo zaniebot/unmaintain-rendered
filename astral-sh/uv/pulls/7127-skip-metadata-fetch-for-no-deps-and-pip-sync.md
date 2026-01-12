@@ -13,14 +13,14 @@ head: charlie/sync-skip
 created_at: 2024-09-06T15:50:33Z
 updated_at: 2024-09-07T01:26:30Z
 url: https://github.com/astral-sh/uv/pull/7127
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Skip metadata fetch for `--no-deps` and `pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-06 15:50_
+_@charliermarsh_
 
 ## Summary
 

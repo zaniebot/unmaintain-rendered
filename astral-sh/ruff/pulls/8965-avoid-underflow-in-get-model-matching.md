@@ -13,14 +13,14 @@ head: charlie/foo
 created_at: 2023-12-02T13:51:52Z
 updated_at: 2023-12-02T14:04:34Z
 url: https://github.com/astral-sh/ruff/pull/8965
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid underflow in `get_model` matching
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-02 13:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8962.
 

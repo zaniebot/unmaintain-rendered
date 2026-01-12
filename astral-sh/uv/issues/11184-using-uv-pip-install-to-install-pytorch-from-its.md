@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T16:04:30Z
 updated_at: 2025-07-03T18:28:59Z
 url: https://github.com/astral-sh/uv/issues/11184
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Using `uv pip install` to install pytorch from its source code fails, while `pip install` works.
 
 ---
 
-_Issue opened by @xulongwu4 on 2025-02-03 16:04_
+_@xulongwu4_
 
 ### Summary
 

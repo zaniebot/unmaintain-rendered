@@ -13,14 +13,14 @@ head: dependabot/cargo/proc-macro2-1.0.69
 created_at: 2023-10-09T08:30:56Z
 updated_at: 2023-10-09T11:44:22Z
 url: https://github.com/astral-sh/ruff/pull/7864
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump proc-macro2 from 1.0.67 to 1.0.69
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-09 08:30_
+_@dependabot_
 
 Bumps [proc-macro2](https://github.com/dtolnay/proc-macro2) from 1.0.67 to 1.0.69.
 <details>

@@ -14,14 +14,14 @@ head: pyflakes-tests
 created_at: 2025-08-18T21:11:12Z
 updated_at: 2025-12-10T17:59:20Z
 url: https://github.com/astral-sh/ruff/pull/19977
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # Replace `pyflakes` hand-crafted tests with inline snapshots
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-08-18 21:11_
+_@dylwil3_
 
 This PR makes an incremental improvement on the maintainability of our `pyflakes` test fixtures by replacing hundreds of hand-written tests of the form
 

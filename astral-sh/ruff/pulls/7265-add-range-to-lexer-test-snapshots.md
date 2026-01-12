@@ -13,14 +13,14 @@ head: dhruv/lexer-test-2
 created_at: 2023-09-11T08:18:43Z
 updated_at: 2023-09-11T19:22:06Z
 url: https://github.com/astral-sh/ruff/pull/7265
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add range to lexer test snapshots
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-11 08:18_
+_@dhruvmanila_
 
 ## Summary
 

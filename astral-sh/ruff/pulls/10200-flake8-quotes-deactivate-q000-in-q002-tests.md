@@ -12,14 +12,14 @@ head: rc-deactivate-q000
 created_at: 2024-03-02T17:46:15Z
 updated_at: 2024-03-16T16:56:53Z
 url: https://github.com/astral-sh/ruff/pull/10200
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`flake8-quotes`] Deactivate `Q000` in `Q002`-tests
 
 ---
 
-_Pull request opened by @robincaloudis on 2024-03-02 17:46_
+_@robincaloudis_
 
 ## Summary
 

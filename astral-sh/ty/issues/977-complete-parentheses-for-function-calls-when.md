@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-13T14:41:20Z
 updated_at: 2026-01-09T15:24:05Z
 url: https://github.com/astral-sh/ty/issues/977
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Complete parentheses for function calls when selecting a function completion
 
 ---
 
-_Issue opened by @tamimbook on 2025-08-13 14:41_
+_@tamimbook_
 
 ### Question
 

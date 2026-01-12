@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T20:46:54Z
 updated_at: 2025-05-21T20:57:31Z
 url: https://github.com/astral-sh/ty/issues/479
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Spurious possibly-unbound-attribute
 
 ---
 
-_Issue opened by @danielhollas on 2025-05-21 20:46_
+_@danielhollas_
 
 ### Summary
 

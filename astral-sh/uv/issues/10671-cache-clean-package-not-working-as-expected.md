@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T09:29:31Z
 updated_at: 2025-01-16T17:44:09Z
 url: https://github.com/astral-sh/uv/issues/10671
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # cache clean package not working as expected
 
 ---
 
-_Issue opened by @davidszotten on 2025-01-16 09:29_
+_@davidszotten_
 
 using `--no-cache` seems to skip some stuff that isn't removed with `cache clean <package>`?
 

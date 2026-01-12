@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T07:19:38Z
 updated_at: 2025-09-26T07:22:15Z
 url: https://github.com/astral-sh/ty/issues/1259
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # dataclass: Non-default argument after default argument
 
 ---
 
-_Issue opened by @rayansostenes on 2025-09-26 07:19_
+_@rayansostenes_
 
 ### Summary
 

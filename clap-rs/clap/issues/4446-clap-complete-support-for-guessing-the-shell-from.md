@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-03T07:45:28Z
 updated_at: 2022-11-03T14:06:18Z
 url: https://github.com/clap-rs/clap/issues/4446
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [clap_complete] support for guessing the shell from the environment.
 
 ---
 
-_Issue opened by @tmccombs on 2022-11-03 07:45_
+_@tmccombs_
 
 ### Please complete the following tasks
 

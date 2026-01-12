@@ -13,14 +13,14 @@ head: fix-15199-invalid-unpacking
 created_at: 2025-03-06T10:31:13Z
 updated_at: 2025-03-09T03:57:51Z
 url: https://github.com/astral-sh/ruff/pull/16530
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] avoid inferring types if unpacking fails
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-06 10:31_
+_@mtshiba_
 
 ## Summary
 

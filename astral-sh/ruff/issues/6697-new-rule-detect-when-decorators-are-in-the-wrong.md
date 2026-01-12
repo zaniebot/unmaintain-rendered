@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-20T03:36:46Z
 updated_at: 2025-01-27T14:24:02Z
 url: https://github.com/astral-sh/ruff/issues/6697
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # new rule - detect when decorators are in the wrong order
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-20 03:36_
+_@DetachHead_
 
 some examples:
 ```py

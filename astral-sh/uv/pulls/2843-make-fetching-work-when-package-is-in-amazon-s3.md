@@ -11,14 +11,14 @@ head: amazon-s3-fetching
 created_at: 2024-04-05T22:21:05Z
 updated_at: 2024-05-08T14:54:11Z
 url: https://github.com/astral-sh/uv/pull/2843
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Make fetching work when package is in Amazon S3
 
 ---
 
-_Pull request opened by @torarvid on 2024-04-05 22:21_
+_@torarvid_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

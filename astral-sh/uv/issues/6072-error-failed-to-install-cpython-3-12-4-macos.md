@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T23:18:17Z
 updated_at: 2025-08-28T10:23:33Z
 url: https://github.com/astral-sh/uv/issues/6072
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # error: Failed to install cpython-3.12.4-macos-aarch64-none: Request failed after 3 retries
 
 ---
 
-_Issue opened by @pdpark on 2024-08-13 23:18_
+_@pdpark_
 
 Comand: `uv python install` 
 Output: `error: Failed to install cpython-3.12.4-macos-aarch64-none: Request failed after 3 retries`

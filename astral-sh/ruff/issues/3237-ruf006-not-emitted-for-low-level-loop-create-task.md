@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-26T10:15:15Z
 updated_at: 2023-09-21T04:37:39Z
 url: https://github.com/astral-sh/ruff/issues/3237
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RUF006 not emitted for low-level `loop.create_task`
 
 ---
 
-_Issue opened by @layday on 2023-02-26 10:15_
+_@layday_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

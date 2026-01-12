@@ -12,14 +12,14 @@ head: rename-misnamed-pylint-messages
 created_at: 2023-02-03T22:41:11Z
 updated_at: 2023-02-04T08:03:59Z
 url: https://github.com/astral-sh/ruff/pull/2559
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Rename the misnamed pylint messages
 
 ---
 
-_Pull request opened by @Pierre-Sassoulas on 2023-02-03 22:41_
+_@Pierre-Sassoulas_
 
 The name was wrong for three messages:
 

@@ -12,14 +12,14 @@ head: renovate/windows-result-0.x-lockfile
 created_at: 2025-03-24T02:17:31Z
 updated_at: 2025-03-24T13:20:06Z
 url: https://github.com/astral-sh/uv/pull/12420
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Update Rust crate windows-result to v0.3.2 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-03-24 02:17_
+_@renovate_
 
 This PR contains the following updates:
 

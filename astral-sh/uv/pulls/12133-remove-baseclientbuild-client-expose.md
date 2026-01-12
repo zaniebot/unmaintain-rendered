@@ -13,14 +13,14 @@ head: work/fix-12127
 created_at: 2025-03-12T10:11:37Z
 updated_at: 2025-03-12T10:43:22Z
 url: https://github.com/astral-sh/uv/pull/12133
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # remove `BaseClientBuild::client`, expose `ExtraMiddleware`
 
 ---
 
-_Pull request opened by @gzm55 on 2025-03-12 10:11_
+_@gzm55_
 
 close #12127 
 

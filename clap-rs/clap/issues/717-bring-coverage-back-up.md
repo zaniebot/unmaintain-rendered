@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-29T15:13:25Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/717
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Bring coverage back up
 
 ---
 
-_Issue opened by @kbknapp on 2016-10-29 15:13_
+_@kbknapp_
 
 Coverage (via coveralls.io) has fallen by the wayside, we need to bring it back up!
 

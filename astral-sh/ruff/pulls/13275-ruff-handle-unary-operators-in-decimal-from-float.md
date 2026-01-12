@@ -13,14 +13,14 @@ head: decimal
 created_at: 2024-09-07T05:18:45Z
 updated_at: 2024-09-13T14:07:20Z
 url: https://github.com/astral-sh/ruff/pull/13275
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`ruff`] Handle unary operators in `decimal-from-float-literal (RUF032)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-09-07 05:18_
+_@dylwil3_
 
 This PR ensures that the suggested "stringified" float passed to `decimal.Decimal` does not contain more than one unary operator, and that the rule ignores floats with the invalid unary operators `~` and `not`. For example, 
 
@@ -50,6 +50,12 @@ _Comment by @github-actions[bot] on 2024-09-07 05:31_
 
 
 
+
+---
+
+_@AlexWaygood approved on 2024-09-07 13:23_
+
+Thanks! I pushed a commit to reduce the amount of cloning of AST nodes, which can be quite expensive. I also made a few other small simplifications -- let me know if you have any questions about the changes I pushed!
 
 ---
 

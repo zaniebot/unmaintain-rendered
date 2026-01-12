@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-09T15:38:17Z
 updated_at: 2023-12-09T18:15:30Z
 url: https://github.com/astral-sh/ruff/issues/9066
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add an autofix for `E251` 
 
 ---
 
-_Issue opened by @Skylion007 on 2023-12-09 15:38_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

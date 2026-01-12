@@ -12,14 +12,14 @@ head: charlie/kebab
 created_at: 2025-04-28T13:27:37Z
 updated_at: 2025-05-05T11:46:58Z
 url: https://github.com/astral-sh/uv/pull/13176
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Use `upload-time` rather than `upload_time` in `uv.lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-28 13:27_
+_@charliermarsh_
 
 ## Summary
 

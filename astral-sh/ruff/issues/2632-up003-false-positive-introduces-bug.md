@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T19:00:36Z
 updated_at: 2023-02-08T17:18:38Z
 url: https://github.com/astral-sh/ruff/issues/2632
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP003 false-positive introduces bug
 
 ---
 
-_Issue opened by @spaceone on 2023-02-07 19:00_
+_@spaceone_
 
 ```python
 arg = 1   # any type, not string

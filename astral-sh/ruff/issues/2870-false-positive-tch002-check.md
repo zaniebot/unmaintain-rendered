@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-13T21:23:58Z
 updated_at: 2023-02-13T21:43:31Z
 url: https://github.com/astral-sh/ruff/issues/2870
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive TCH002 check
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-02-13 21:23_
+_@Olegt0rr_
 
 Since I import `cast` and use it in the code - `TCH002` rule stop working...
 

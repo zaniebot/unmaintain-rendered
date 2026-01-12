@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-02T10:58:43Z
 updated_at: 2025-06-09T00:10:21Z
 url: https://github.com/astral-sh/ty/issues/564
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Docs: list of externally defined variables respected by ty is out of date
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-06-02 10:58_
+_@AlexWaygood_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T03:03:07Z
 updated_at: 2025-07-22T13:20:11Z
 url: https://github.com/astral-sh/uv/issues/12163
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # uv pip install does not conform to PEP-721
 
 ---
 
-_Issue opened by @calebbrown on 2025-03-14 03:03_
+_@calebbrown_
 
 ### Summary
 

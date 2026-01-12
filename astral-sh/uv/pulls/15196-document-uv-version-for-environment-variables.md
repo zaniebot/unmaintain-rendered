@@ -13,14 +13,14 @@ head: envvar-versioning
 created_at: 2025-08-10T01:53:55Z
 updated_at: 2025-10-08T17:42:22Z
 url: https://github.com/astral-sh/uv/pull/15196
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # document uv version for environment variables
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-10 01:53_
+_@samypr100_
 
 ## Summary
 

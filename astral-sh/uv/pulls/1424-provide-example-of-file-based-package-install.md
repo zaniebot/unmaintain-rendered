@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-16T04:17:50Z
 updated_at: 2024-03-22T21:24:57Z
 url: https://github.com/astral-sh/uv/pull/1424
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Provide example of file based package install.
 
 ---
 
-_Pull request opened by @dylanbstorey on 2024-02-16 04:17_
+_@dylanbstorey_
 
 Added example to install packages from a file w/o editable mode.
 

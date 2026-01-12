@@ -13,14 +13,14 @@ head: up007-assoc
 created_at: 2023-11-10T23:50:11Z
 updated_at: 2023-11-11T00:15:21Z
 url: https://github.com/astral-sh/ruff/pull/8610
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix unnecessary parentheses in UP007 fix
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-11-10 23:50_
+_@hauntsaninja_
 
 Fixes #8609
 

@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-06-20T17:12:08Z
 updated_at: 2023-06-20T18:17:43Z
 url: https://github.com/astral-sh/ruff/pull/5219
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Support parenthesized expressions when splitting compound assertions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 17:12_
+_@charliermarsh_
 
 ## Summary
 

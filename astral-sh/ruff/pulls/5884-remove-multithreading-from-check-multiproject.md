@@ -12,14 +12,14 @@ head: remove-task-pool-from-multi-project
 created_at: 2023-07-19T14:30:04Z
 updated_at: 2023-07-19T16:43:39Z
 url: https://github.com/astral-sh/ruff/pull/5884
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove multithreading from check multiproject
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-19 14:30_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

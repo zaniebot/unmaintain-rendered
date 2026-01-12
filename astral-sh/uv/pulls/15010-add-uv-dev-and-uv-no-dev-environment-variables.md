@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2025-08-01T02:10:16Z
 updated_at: 2025-08-08T14:33:45Z
 url: https://github.com/astral-sh/uv/pull/15010
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Add `UV_DEV` and `UV_NO_DEV` environment variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-01 02:10_
+_@charliermarsh_
 
 ## Summary
 

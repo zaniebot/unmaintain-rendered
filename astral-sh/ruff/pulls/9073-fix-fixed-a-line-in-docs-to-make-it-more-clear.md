@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-09T18:26:15Z
 updated_at: 2023-12-09T19:52:57Z
 url: https://github.com/astral-sh/ruff/pull/9073
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix: Fixed a line in docs to make it more clear
 
 ---
 
-_Pull request opened by @Sai-Suraj-27 on 2023-12-09 18:26_
+_@Sai-Suraj-27_
 
 ## Summary
 I was using `ruff` on one of my repo's and found this small error. I think the sentence can be made more clear.

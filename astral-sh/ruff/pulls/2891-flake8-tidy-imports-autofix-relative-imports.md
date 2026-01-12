@@ -13,14 +13,14 @@ head: tidy-imports-relative-autofix
 created_at: 2023-02-14T08:55:38Z
 updated_at: 2023-02-15T21:54:24Z
 url: https://github.com/astral-sh/ruff/pull/2891
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-tidy-imports`] autofix relative imports
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-14 08:55_
+_@sbrugman_
 
 Previous fix was bugged. This one is only fixing when the `module_path` is present, making it far more robust.
 

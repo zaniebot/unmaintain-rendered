@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-04T20:09:01Z
 updated_at: 2026-01-04T22:34:56Z
 url: https://github.com/astral-sh/ty/issues/2321
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # improve diagnostic for `typing.cast` to TypeVar in parameter default
 
 ---
 
-_Issue opened by @JasonGrace2282 on 2026-01-04 20:09_
+_@JasonGrace2282_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/all
 created_at: 2023-06-06T00:38:49Z
 updated_at: 2023-06-06T01:16:50Z
 url: https://github.com/astral-sh/ruff/pull/4885
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Respect shadowed exports in `__all__` 
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 00:38_
+_@charliermarsh_
 
 ## Summary
 

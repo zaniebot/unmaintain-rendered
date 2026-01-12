@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-26T09:17:35Z
 updated_at: 2023-08-04T02:57:59Z
 url: https://github.com/astral-sh/ruff/issues/6089
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Detect unintentional infinite loop
 
 ---
 
-_Issue opened by @berzi on 2023-07-26 09:17_
+_@berzi_
 
 Consider the following code:
 ```python

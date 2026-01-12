@@ -14,14 +14,14 @@ head: charlie/win
 created_at: 2024-03-07T18:40:07Z
 updated_at: 2024-03-07T20:57:37Z
 url: https://github.com/astral-sh/uv/pull/2284
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Use reparse points to detect Windows installer shims
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 18:40_
+_@charliermarsh_
 
 ## Summary
 

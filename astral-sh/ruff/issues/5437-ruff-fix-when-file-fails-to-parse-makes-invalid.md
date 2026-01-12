@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-29T11:00:56Z
 updated_at: 2023-06-29T16:32:44Z
 url: https://github.com/astral-sh/ruff/issues/5437
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # ruff --fix when file fails to parse makes invalid file edits. i.e RUFF100 removes valid noqas.
 
 ---
 
-_Issue opened by @BaxHugh on 2023-06-29 11:00_
+_@BaxHugh_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

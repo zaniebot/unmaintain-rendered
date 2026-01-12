@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T00:29:52Z
 updated_at: 2025-12-16T19:36:36Z
 url: https://github.com/astral-sh/ruff/issues/21037
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST002: catch Union with Annotated
 
 ---
 
-_Issue opened by @wilt-vetrec on 2025-10-23 00:29_
+_@wilt-vetrec_
 
 ### Summary
 

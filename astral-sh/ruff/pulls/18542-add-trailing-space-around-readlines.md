@@ -14,14 +14,14 @@ head: charlie/read
 created_at: 2025-06-08T01:25:58Z
 updated_at: 2025-06-08T22:25:09Z
 url: https://github.com/astral-sh/ruff/pull/18542
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Add trailing space around `readlines`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-08 01:25_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/17683.
 

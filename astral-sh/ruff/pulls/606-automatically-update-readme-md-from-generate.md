@@ -12,14 +12,14 @@ head: charlie/auto-write
 created_at: 2022-11-05T19:33:43Z
 updated_at: 2022-11-05T19:41:30Z
 url: https://github.com/astral-sh/ruff/pull/606
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Automatically update README.md from generate_rules_table.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-05 19:33_
+_@charliermarsh_
 
 Resolves #601.
 

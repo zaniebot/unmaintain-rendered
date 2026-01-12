@@ -13,14 +13,14 @@ head: feature/test-snapshot-diff
 created_at: 2025-08-03T22:23:40Z
 updated_at: 2025-08-22T17:53:31Z
 url: https://github.com/astral-sh/ruff/pull/19715
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # Add testing helper to compare stable vs preview snapshots
 
 ---
 
-_Pull request opened by @vivster7 on 2025-08-03 22:23_
+_@vivster7_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

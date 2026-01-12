@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T10:34:26Z
 updated_at: 2024-11-11T19:12:26Z
 url: https://github.com/astral-sh/uv/issues/8860
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # uv not using cache when called from Tox/Nox in container
 
 ---
 
-_Issue opened by @FCamborda on 2024-11-06 10:34_
+_@FCamborda_
 
 Hi,
 

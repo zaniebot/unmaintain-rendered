@@ -13,14 +13,14 @@ head: zb/two-incompat
 created_at: 2024-01-10T05:22:15Z
 updated_at: 2024-01-10T20:36:55Z
 url: https://github.com/astral-sh/uv/pull/866
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Improve formatting of incompatible terms when there are two items
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 05:22_
+_@zanieb_
 
 _No description provided._
 

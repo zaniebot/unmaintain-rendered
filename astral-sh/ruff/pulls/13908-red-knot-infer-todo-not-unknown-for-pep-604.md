@@ -13,14 +13,14 @@ head: alex/pep604-todo
 created_at: 2024-10-24T12:38:05Z
 updated_at: 2024-10-28T12:44:04Z
 url: https://github.com/astral-sh/ruff/pull/13908
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Infer `Todo`, not `Unknown`, for PEP-604 unions in annotations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-24 12:38_
+_@AlexWaygood_
 
 ## Summary
 

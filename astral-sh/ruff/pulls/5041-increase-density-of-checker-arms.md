@@ -13,14 +13,14 @@ head: charlie/dense
 created_at: 2023-06-13T01:00:22Z
 updated_at: 2023-06-13T01:24:19Z
 url: https://github.com/astral-sh/ruff/pull/5041
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Increase density of `Checker` arms
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 01:00_
+_@charliermarsh_
 
 _No description provided._
 

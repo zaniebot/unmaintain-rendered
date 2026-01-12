@@ -14,14 +14,14 @@ head: micha/fix-url-mismatch
 created_at: 2025-08-01T15:15:47Z
 updated_at: 2025-08-04T12:17:18Z
 url: https://github.com/astral-sh/ruff/pull/19689
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Fix workspace diagnostics being recomputed
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-01 15:15_
+_@MichaReiser_
 
 ## Summary
 

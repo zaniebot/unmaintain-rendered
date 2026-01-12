@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T12:06:32Z
 updated_at: 2025-11-06T00:49:45Z
 url: https://github.com/astral-sh/ruff/issues/20862
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # OptionalVersionedTextDocumentIdentifier in TextDocumentEdit should include the version.
 
 ---
 
-_Issue opened by @pyscripter on 2025-10-14 12:06_
+_@pyscripter_
 
 ### Summary
 

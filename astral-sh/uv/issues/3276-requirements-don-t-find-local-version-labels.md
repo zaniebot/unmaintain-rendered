@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-26T12:20:29Z
 updated_at: 2024-05-01T04:55:56Z
 url: https://github.com/astral-sh/uv/issues/3276
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `==` requirements don't find local version labels
 
 ---
 
-_Issue opened by @yorickvP on 2024-04-26 12:20_
+_@yorickvP_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

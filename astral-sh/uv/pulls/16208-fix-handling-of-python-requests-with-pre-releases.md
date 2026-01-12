@@ -13,14 +13,14 @@ head: zb/python-pre
 created_at: 2025-10-09T15:30:12Z
 updated_at: 2025-10-09T17:38:39Z
 url: https://github.com/astral-sh/uv/pull/16208
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Fix handling of Python requests with pre-releases in ranges
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-09 15:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16175
 

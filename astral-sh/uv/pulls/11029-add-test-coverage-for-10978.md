@@ -13,14 +13,14 @@ head: zb/fix-interp
 created_at: 2025-01-28T18:29:23Z
 updated_at: 2025-01-28T19:15:17Z
 url: https://github.com/astral-sh/uv/pull/11029
-synced_at: 2026-01-10T11:45:24Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Add test coverage for #10978
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 18:29_
+_@zanieb_
 
 _No description provided._
 

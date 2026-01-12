@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-08T00:54:17Z
 updated_at: 2025-12-11T12:21:42Z
 url: https://github.com/astral-sh/ruff/issues/21835
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Update ruff_linter to use optimized version of parenthesized_ranges
 
 ---
 
-_Issue opened by @denyszhak on 2025-12-08 00:54_
+_@denyszhak_
 
 PR #21738 for Issue #21510 added optimized version for `parenthesized_range`. Now we can replace usage of the old `parenthesized_range` with a new one that relies on `Tokens.`
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T09:25:14Z
 updated_at: 2024-04-12T18:48:04Z
 url: https://github.com/astral-sh/uv/issues/3012
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # normalize_path breaks relative python interpreters
 
 ---
 
-_Issue opened by @konstin on 2024-04-12 09:25_
+_@konstin_
 
 `-p`/`--python` with relative paths is broken due to using `normalize_path`, which changes the path rather than just normalizing it.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-07T02:08:41Z
 updated_at: 2025-03-03T09:00:00Z
 url: https://github.com/astral-sh/ruff/issues/12723
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Upgrade ESLint to version 9
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-07 02:08_
+_@dhruvmanila_
 
 Now that typescript-eslint v8 is released (https://typescript-eslint.io/blog/announcing-typescript-eslint-v8) with full support for ESLint v9, we should remove the Renovate constraint and upgrade the dependency:
 

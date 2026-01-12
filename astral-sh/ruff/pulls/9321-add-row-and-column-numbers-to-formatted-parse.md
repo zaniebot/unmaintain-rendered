@@ -14,14 +14,14 @@ head: charlie/display-parse-error
 created_at: 2023-12-30T19:50:54Z
 updated_at: 2023-12-31T12:10:47Z
 url: https://github.com/astral-sh/ruff/pull/9321
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add row and column numbers to formatted parse errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-30 19:50_
+_@charliermarsh_
 
 ## Summary
 

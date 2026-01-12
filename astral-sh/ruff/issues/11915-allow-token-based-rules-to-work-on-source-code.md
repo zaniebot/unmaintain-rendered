@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T04:50:27Z
 updated_at: 2024-07-02T08:57:48Z
 url: https://github.com/astral-sh/ruff/issues/11915
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Allow token-based rules to work on source code with syntax errors
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-18 04:50_
+_@dhruvmanila_
 
 Currently, the rules which work with the tokens doesn't emit diagnostics after the location of the first syntax error. For example:
 

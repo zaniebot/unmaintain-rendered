@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-07T14:46:27Z
 updated_at: 2022-02-07T14:51:23Z
 url: https://github.com/clap-rs/clap/issues/3412
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive ArgGroup errors when arguments take values
 
 ---
 
-_Issue opened by @malthesr on 2022-02-07 14:46_
+_@malthesr_
 
 ### Please complete the following tasks
 

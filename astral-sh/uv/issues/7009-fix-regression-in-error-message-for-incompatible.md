@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T12:21:47Z
 updated_at: 2024-09-04T13:37:52Z
 url: https://github.com/astral-sh/uv/issues/7009
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # fix regression in error message for incompatible dependencies in some cases
 
 ---
 
-_Issue opened by @BurntSushi on 2024-09-04 12:21_
+_@BurntSushi_
 
 To reproduce, create a `pyproject.toml` with these contents:
 

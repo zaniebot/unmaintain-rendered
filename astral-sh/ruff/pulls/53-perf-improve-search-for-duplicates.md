@@ -12,14 +12,14 @@ head: dd/avoid-clone
 created_at: 2022-08-31T08:02:34Z
 updated_at: 2022-08-31T12:26:24Z
 url: https://github.com/astral-sh/ruff/pull/53
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # perf: Improve search for duplicates
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-08-31 08:02_
+_@Stranger6667_
 
 Hi!
 

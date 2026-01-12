@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-20T02:22:47Z
 updated_at: 2024-04-20T03:20:39Z
 url: https://github.com/astral-sh/uv/issues/3156
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Cannot install flash-attn —`ModuleNotFoundError: No module named 'packaging'`
 
 ---
 
-_Issue opened by @adrianlyjak on 2024-04-20 02:22_
+_@adrianlyjak_
 
 I cannot install flash-attn due to an error from not finding `packaging`
 

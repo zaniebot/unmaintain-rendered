@@ -13,14 +13,14 @@ head: micha/revert-decorator-change
 created_at: 2025-12-24T16:14:08Z
 updated_at: 2025-12-24T16:27:23Z
 url: https://github.com/astral-sh/ruff/pull/22176
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # Revert "[ty] Fix completion in decorator without class or function definition"
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-24 16:14_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/sync-err
 created_at: 2024-11-13T22:24:11Z
 updated_at: 2024-11-13T22:36:57Z
 url: https://github.com/astral-sh/uv/pull/9101
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Add missing `Download` variants to diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-13 22:24_
+_@charliermarsh_
 
 _No description provided._
 

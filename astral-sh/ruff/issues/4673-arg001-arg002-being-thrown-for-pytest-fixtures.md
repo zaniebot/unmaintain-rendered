@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-26T19:50:26Z
 updated_at: 2023-11-01T14:17:13Z
 url: https://github.com/astral-sh/ruff/issues/4673
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `ARG001`/`ARG002` being thrown for `pytest` fixtures
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-26 19:50_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

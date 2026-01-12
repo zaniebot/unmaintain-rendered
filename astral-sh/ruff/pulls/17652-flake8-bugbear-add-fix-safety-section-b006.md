@@ -13,14 +13,14 @@ head: doc_fix_safety_for_mutable_argument_default
 created_at: 2025-04-27T09:14:25Z
 updated_at: 2025-05-28T20:27:14Z
 url: https://github.com/astral-sh/ruff/pull/17652
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`flake8-bugbear `] Add fix safety section (`B006`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-27 09:14_
+_@Kalmaegi_
 
 ## Summary
 

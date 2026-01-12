@@ -12,14 +12,14 @@ head: dependabot/github_actions/artifacts-8204c6933e
 created_at: 2024-02-23T19:46:01Z
 updated_at: 2024-02-23T20:03:30Z
 url: https://github.com/astral-sh/uv/pull/1937
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Bump the artifacts group with 2 updates
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-23 19:46_
+_@dependabot_
 
 Bumps the artifacts group with 2 updates: [actions/upload-artifact](https://github.com/actions/upload-artifact) and [actions/download-artifact](https://github.com/actions/download-artifact).
 

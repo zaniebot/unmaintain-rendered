@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T12:28:36Z
 updated_at: 2026-01-06T00:36:17Z
 url: https://github.com/astral-sh/ruff/issues/17091
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `PLW1510`: `subprocess.run` without explicit `check` argument: Mark fix as manual
 
 ---
 
-_Issue opened by @stdedos on 2025-03-31 12:28_
+_@stdedos_
 
 ### Summary
 

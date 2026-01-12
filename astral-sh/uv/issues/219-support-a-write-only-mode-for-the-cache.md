@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-29T18:54:26Z
 updated_at: 2023-12-10T01:56:44Z
 url: https://github.com/astral-sh/uv/issues/219
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support a write-only mode for the cache
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-29 18:54_
+_@charliermarsh_
 
 Useful to, e.g., refresh dependencies and ignore any HTTP caching semantics.
 

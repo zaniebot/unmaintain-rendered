@@ -12,14 +12,14 @@ head: Show_rule_codes_on_autofix_failure
 created_at: 2023-05-04T10:24:32Z
 updated_at: 2023-05-04T13:25:08Z
 url: https://github.com/astral-sh/ruff/pull/4220
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Show rule codes on autofix failure
 
 ---
 
-_Pull request opened by @konstin on 2023-05-04 10:24_
+_@konstin_
 
 I need this to debug the `--select ALL` autofix failures, e.g. this made it easy to identify the problem with bokeh (#4221).
 

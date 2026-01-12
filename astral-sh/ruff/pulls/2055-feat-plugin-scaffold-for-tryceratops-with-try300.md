@@ -12,14 +12,14 @@ head: feat-tryceratops
 created_at: 2023-01-21T11:49:54Z
 updated_at: 2023-01-21T16:25:10Z
 url: https://github.com/astral-sh/ruff/pull/2055
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: plugin scaffold for tryceratops with TRY300
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-21 11:49_
+_@sbrugman_
 
 Renamed to TRY to avoid conflicts, as proposed in https://github.com/guilatrova/tryceratops/pull/55
 

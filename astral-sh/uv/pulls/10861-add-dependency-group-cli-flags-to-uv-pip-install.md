@@ -12,14 +12,14 @@ head: gankra/depgroups
 created_at: 2025-01-22T14:55:18Z
 updated_at: 2025-01-31T15:51:15Z
 url: https://github.com/astral-sh/uv/pull/10861
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Add dependency-group cli flags to `uv pip install` and `uv pip compile` (`--group`, `--no-group`, `--only-group`, `--all-groups`)
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-22 14:55_
+_@Gankra_
 
 Ultimately this is a lot of settings plumbing and a couple minor pieces of Actual Logic (which are so simple I have to assume there's something missing, but maybe not!).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-27T16:33:27Z
 updated_at: 2023-11-29T04:21:09Z
 url: https://github.com/astral-sh/ruff/issues/8858
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Config file discovery incorrectly includes parent config
 
 ---
 
-_Issue opened by @bersbersbers on 2023-11-27 16:33_
+_@bersbersbers_
 
 [The docs](https://docs.astral.sh/ruff/configuration/#config-file-discovery) read:
 > "any parent configuration files are ignored"

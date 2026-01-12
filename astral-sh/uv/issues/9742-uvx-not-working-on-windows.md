@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-09T16:55:35Z
 updated_at: 2024-12-10T15:40:55Z
 url: https://github.com/astral-sh/uv/issues/9742
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # uvx not working on windows
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-12-09 16:55_
+_@pythonweb2_
 
 In the past two versions (0.5.6 and 0.5.7), I have been getting this error message when trying to use uvx:
 

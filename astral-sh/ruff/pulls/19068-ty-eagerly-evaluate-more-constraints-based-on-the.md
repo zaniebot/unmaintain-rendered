@@ -13,14 +13,14 @@ head: alex/more-eager-constraints
 created_at: 2025-07-01T09:20:45Z
 updated_at: 2025-07-01T10:17:47Z
 url: https://github.com/astral-sh/ruff/pull/19068
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Eagerly evaluate more constraints based on the raw AST
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-01 09:20_
+_@AlexWaygood_
 
 In particular, `while 1:` is a [surprisingly common idiom](https://grep.app/search?f.lang=Python&case=true&q=while+1%3A) (due to the fact that the `bool` type was a surprisingly late addition to Python); and also, the truthiness of float literals and complex literals is actually easier to determine from the raw AST than the evaluated type
 

@@ -13,14 +13,14 @@ head: adjust-close-handles
 created_at: 2024-08-29T04:38:37Z
 updated_at: 2024-08-30T13:55:51Z
 url: https://github.com/astral-sh/uv/pull/6792
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # fix: adjust trampoline close_handles invalid to be safer
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-29 04:38_
+_@samypr100_
 
 ## Summary
 

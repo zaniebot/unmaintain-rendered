@@ -14,14 +14,14 @@ head: alex/ruf027-3
 created_at: 2024-08-23T12:28:11Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/13076
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`ruff`] Reduce false positives for `missing-fstring-syntax` (`RUF027`) by analyzing references to the binding when the string is assigned to a variable
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-23 12:28_
+_@AlexWaygood_
 
 ## Summary
 

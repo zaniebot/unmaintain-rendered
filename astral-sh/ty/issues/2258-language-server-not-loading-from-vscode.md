@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T14:58:47Z
 updated_at: 2025-12-29T15:26:20Z
 url: https://github.com/astral-sh/ty/issues/2258
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Language Server not loading from VSCode
 
 ---
 
-_Issue opened by @gszzzzzz on 2025-12-29 14:58_
+_@gszzzzzz_
 
 ### Summary
 

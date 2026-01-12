@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-09-01T18:51:19Z
 updated_at: 2021-12-13T18:25:45Z
 url: https://github.com/clap-rs/clap/issues/2122
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Optional positional arguments that get skipped if corresponding validation fails
 
 ---
 
-_Issue opened by @ducaale on 2020-09-01 18:51_
+_@ducaale_
 
 ### Describe your use case
 

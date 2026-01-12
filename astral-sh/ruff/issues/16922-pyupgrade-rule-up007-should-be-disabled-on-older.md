@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T22:49:53Z
 updated_at: 2025-03-29T02:07:32Z
 url: https://github.com/astral-sh/ruff/issues/16922
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PyUpgrade rule UP007 should be disabled on older Pythons
 
 ---
 
-_Issue opened by @cameron-simpson on 2025-03-22 22:49_
+_@cameron-simpson_
 
 ### Summary
 

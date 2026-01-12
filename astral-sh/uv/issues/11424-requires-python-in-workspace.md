@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T17:25:43Z
 updated_at: 2025-02-14T14:16:17Z
 url: https://github.com/astral-sh/uv/issues/11424
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # `requires-python` in workspace
 
 ---
 
-_Issue opened by @T-256 on 2025-02-11 17:25_
+_@T-256_
 
 ### Question
 

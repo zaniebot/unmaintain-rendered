@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T10:55:56Z
 updated_at: 2024-12-12T06:57:52Z
 url: https://github.com/astral-sh/uv/issues/9165
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # [FEATURE REQUEST] User-level management of index credentials via uv
 
 ---
 
-_Issue opened by @tunayokumus on 2024-11-16 10:55_
+_@tunayokumus_
 
 I read the documentation on providing credentials for private registries. (https://docs.astral.sh/uv/configuration/indexes/#providing-credentials).
 

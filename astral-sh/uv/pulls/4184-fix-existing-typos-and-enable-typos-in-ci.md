@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-06-10T01:41:28Z
 updated_at: 2024-06-10T02:51:38Z
 url: https://github.com/astral-sh/uv/pull/4184
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Fix existing typos and enable `typos` in CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 01:41_
+_@charliermarsh_
 
 _No description provided._
 

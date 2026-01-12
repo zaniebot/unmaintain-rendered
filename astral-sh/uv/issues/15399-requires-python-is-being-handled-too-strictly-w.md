@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T00:34:47Z
 updated_at: 2025-08-21T00:49:14Z
 url: https://github.com/astral-sh/uv/issues/15399
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # `requires-python` is being handled too strictly w/ extras
 
 ---
 
-_Issue opened by @KTibow on 2025-08-21 00:34_
+_@KTibow_
 
 ### Summary
 

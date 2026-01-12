@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-24T23:48:43Z
 updated_at: 2025-12-25T09:09:40Z
 url: https://github.com/astral-sh/ruff/issues/22186
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # This bad python code is passed as ok
 
 ---
 
-_Issue opened by @Alexey-T on 2025-12-24 23:48_
+_@Alexey-T_
 
 ### Summary
 

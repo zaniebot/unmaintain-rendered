@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-06-30T21:24:35Z
 updated_at: 2025-07-01T22:25:02Z
 url: https://github.com/astral-sh/ruff/pull/19056
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [`flake8-datetimez`] Make `DTZ901` example error out-of-the-box
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-30 21:24_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

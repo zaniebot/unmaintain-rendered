@@ -13,14 +13,14 @@ head: charlie/fix-applicability
 created_at: 2023-11-06T14:32:05Z
 updated_at: 2023-11-06T14:48:10Z
 url: https://github.com/astral-sh/ruff/pull/8514
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add a `Fix` constructor that takes `Applicability` as an argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 14:32_
+_@charliermarsh_
 
 ## Summary
 

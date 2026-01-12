@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2025-02-14T01:53:40Z
 updated_at: 2025-02-14T16:17:28Z
 url: https://github.com/astral-sh/uv/pull/11500
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Use a 'minor' version field (`revision`) in the lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-14 01:53_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T10:05:56Z
 updated_at: 2024-12-26T15:59:06Z
 url: https://github.com/astral-sh/uv/issues/9672
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Question: Is there a toml config for out-dir option of build command
 
 ---
 
-_Issue opened by @dmurat on 2024-12-06 10:05_
+_@dmurat_
 
 I can adjust the output directory of the build with the `--out-dir` CLI option. However, I would like to specify this in `pyproject.toml`. Is there a configuration option to do this?
 

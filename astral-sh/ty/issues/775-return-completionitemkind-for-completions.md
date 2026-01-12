@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T06:26:35Z
 updated_at: 2025-10-03T12:19:28Z
 url: https://github.com/astral-sh/ty/issues/775
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Return CompletionItemKind for completions
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-07-08 06:26_
+_@JaRoSchm_
 
 Hi, most language servers also return the kind (function, module, variable, ...) for each suggested completion, which is used by many editors to display small icons next to each item. If I understand the specification correctly, this is the [completionItemKind](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItemKind) of each [completionItem](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItem). I think this would be a good addition to ty too.
 

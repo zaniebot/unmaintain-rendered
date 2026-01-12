@@ -13,14 +13,14 @@ head: shaygan/self-binding
 created_at: 2025-09-12T16:31:31Z
 updated_at: 2025-09-17T19:10:22Z
 url: https://github.com/astral-sh/ruff/pull/20366
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] Bind Self typevar to method context
 
 ---
 
-_Pull request opened by @Glyphack on 2025-09-12 16:31_
+_@Glyphack_
 
 Fixes: https://github.com/astral-sh/ty/issues/1173
 

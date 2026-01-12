@@ -13,14 +13,14 @@ head: metaclass-improvements
 created_at: 2024-04-06T21:33:24Z
 updated_at: 2024-04-06T23:15:50Z
 url: https://github.com/astral-sh/ruff/pull/10807
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`flake8-pyi`] Various improvements to PYI034
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-06 21:33_
+_@AlexWaygood_
 
 ## Summary
 

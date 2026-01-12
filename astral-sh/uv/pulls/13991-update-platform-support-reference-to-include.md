@@ -13,14 +13,14 @@ head: zb/python-impl
 created_at: 2025-06-12T13:27:45Z
 updated_at: 2025-06-12T15:14:44Z
 url: https://github.com/astral-sh/uv/pull/13991
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Update platform support reference to include Python implementation list
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-12 13:27_
+_@zanieb_
 
 _No description provided._
 

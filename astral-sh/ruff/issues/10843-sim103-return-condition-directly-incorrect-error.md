@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-09T02:25:53Z
 updated_at: 2024-04-10T04:29:44Z
 url: https://github.com/astral-sh/ruff/issues/10843
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # SIM103 return condition directly incorrect error message
 
 ---
 
-_Issue opened by @IronCore864 on 2024-04-09 02:25_
+_@IronCore864_
 
 I have searched SIM103 in the open issues and didn't find anything related, so creating this one.
 

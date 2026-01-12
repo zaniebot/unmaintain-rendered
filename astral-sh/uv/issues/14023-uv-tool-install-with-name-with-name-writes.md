@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T13:30:03Z
 updated_at: 2025-06-13T14:02:28Z
 url: https://github.com/astral-sh/uv/issues/14023
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # `uv tool install --with <name> --with <name>` writes duplicate requirements to the receipt
 
 ---
 
-_Issue opened by @zanieb on 2025-06-13 13:30_
+_@zanieb_
 
 ### Summary
 

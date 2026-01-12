@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T16:53:54Z
 updated_at: 2024-12-20T20:48:59Z
 url: https://github.com/astral-sh/uv/issues/10061
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Package name changes: dot converts to hyphen
 
 ---
 
-_Issue opened by @MrNaif2018 on 2024-12-20 16:53_
+_@MrNaif2018_
 
 Hi! I know it might be due to package normalization rules, because I know for example underscores should be converted to hyphens
 But this case is a bit new, so I wanted to ask:

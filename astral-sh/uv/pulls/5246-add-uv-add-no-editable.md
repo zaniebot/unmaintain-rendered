@@ -14,14 +14,14 @@ head: editable
 created_at: 2024-07-20T12:37:19Z
 updated_at: 2024-07-22T18:42:45Z
 url: https://github.com/astral-sh/uv/pull/5246
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Add `uv add --no-editable`
 
 ---
 
-_Pull request opened by @j178 on 2024-07-20 12:37_
+_@j178_
 
 ## Summary
 
@@ -51,6 +51,12 @@ dev-dependencies = []
 [tool.uv.sources]
 pkg-a = { workspace = true, editable = false }
 ```
+
+---
+
+_@charliermarsh approved on 2024-07-20 13:11_
+
+Thanks!
 
 ---
 

@@ -13,14 +13,14 @@ head: renovate/unicode-width-0.x-lockfile
 created_at: 2025-06-16T01:40:58Z
 updated_at: 2025-06-16T02:04:47Z
 url: https://github.com/astral-sh/uv/pull/14054
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Update Rust crate unicode-width to v0.2.1
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 01:40_
+_@renovate_
 
 This PR contains the following updates:
 

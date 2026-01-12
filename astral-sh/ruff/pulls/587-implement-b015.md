@@ -12,14 +12,14 @@ head: B015
 created_at: 2022-11-04T16:25:09Z
 updated_at: 2022-11-06T00:20:41Z
 url: https://github.com/astral-sh/ruff/pull/587
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement B015
 
 ---
 
-_Pull request opened by @harupy on 2022-11-04 16:25_
+_@harupy_
 
 #389 
 

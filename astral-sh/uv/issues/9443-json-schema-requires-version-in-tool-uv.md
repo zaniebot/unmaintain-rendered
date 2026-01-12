@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T15:10:19Z
 updated_at: 2024-11-27T13:26:05Z
 url: https://github.com/astral-sh/uv/issues/9443
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # JSON schema requires `version` in `tool.uv.dependency-metadata`
 
 ---
 
-_Issue opened by @zeevro on 2024-11-26 15:10_
+_@zeevro_
 
 ```
 $ uvx --from validate-pyproject[all,store] validate-pyproject pyproject.toml -vv

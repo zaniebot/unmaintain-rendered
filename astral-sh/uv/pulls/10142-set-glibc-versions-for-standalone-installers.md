@@ -13,14 +13,14 @@ head: charlie/glibc
 created_at: 2024-12-24T13:16:20Z
 updated_at: 2024-12-24T13:35:30Z
 url: https://github.com/astral-sh/uv/pull/10142
-synced_at: 2026-01-10T11:44:36Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Set glibc versions for standalone installers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 13:16_
+_@charliermarsh_
 
 ## Summary
 

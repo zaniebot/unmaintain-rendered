@@ -11,14 +11,14 @@ head: B901-yield-subexpr
 created_at: 2024-12-22T20:37:16Z
 updated_at: 2024-12-22T21:56:33Z
 url: https://github.com/astral-sh/ruff/pull/15101
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # B901 catches yields in subexprs and more sensitive B901
 
 ---
 
-_Pull request opened by @guptaarnav on 2024-12-22 20:37_
+_@guptaarnav_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

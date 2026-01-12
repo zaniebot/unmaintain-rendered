@@ -14,14 +14,14 @@ head: fix-19511
 created_at: 2025-07-23T17:10:57Z
 updated_at: 2025-08-08T19:05:34Z
 url: https://github.com/astral-sh/ruff/pull/19513
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [`flake8-comprehensions`] Fix false positive for `C420` with attribute, subscript, or slice assignment targets
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-23 17:10_
+_@danparizher_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/hexdump
 created_at: 2024-02-17T02:48:23Z
 updated_at: 2024-02-17T04:17:36Z
 url: https://github.com/astral-sh/uv/pull/1564
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Allow non-nested archives for `hexdump` and others
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 02:48_
+_@charliermarsh_
 
 ## Summary#1562 
 

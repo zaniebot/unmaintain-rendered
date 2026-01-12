@@ -12,14 +12,14 @@ head: fix-syntax-error
 created_at: 2023-02-05T09:53:47Z
 updated_at: 2023-02-05T12:11:47Z
 url: https://github.com/astral-sh/ruff/pull/2575
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix: fix syntax error in Python test COM81
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-05 09:53_
+_@spaceone_
 
 Fixes: d3041587a
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T14:29:41Z
 updated_at: 2025-05-19T15:37:01Z
 url: https://github.com/astral-sh/ty/issues/451
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Cannot resolve imported module <module_name> for all external modules
 
 ---
 
-_Issue opened by @rikkarth on 2025-05-19 14:29_
+_@rikkarth_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T22:57:15Z
 updated_at: 2025-08-15T23:23:17Z
 url: https://github.com/astral-sh/uv/issues/15320
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Should pyproject.toml conflicts be less strict?
 
 ---
 
-_Issue opened by @alexrockhill on 2025-08-15 22:57_
+_@alexrockhill_
 
 ### Question
 

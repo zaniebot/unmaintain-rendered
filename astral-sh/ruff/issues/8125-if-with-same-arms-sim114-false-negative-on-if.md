@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-23T06:47:44Z
 updated_at: 2026-01-10T09:44:50Z
 url: https://github.com/astral-sh/ruff/issues/8125
-synced_at: 2026-01-10T12:06:06Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `if-with-same-arms` (`SIM114`) false negative on `if` statements that raise or return
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-23 06:47_
+_@DetachHead_
 
 ```py
 # no error

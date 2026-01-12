@@ -14,14 +14,14 @@ head: micha/handle-ctrl-c-print-diagnostics
 created_at: 2025-12-19T13:58:08Z
 updated_at: 2025-12-23T17:04:01Z
 url: https://github.com/astral-sh/ruff/pull/22083
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Abort printing diagnostics when pressing Ctrl+C
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 13:58_
+_@MichaReiser_
 
 ## Summary
 

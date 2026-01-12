@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-10-24T20:42:30Z
 updated_at: 2024-10-24T23:17:51Z
 url: https://github.com/astral-sh/uv/pull/8543
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Add `tool.uv.sources` to the "Settings" reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-24 20:42_
+_@charliermarsh_
 
 ## Summary
 

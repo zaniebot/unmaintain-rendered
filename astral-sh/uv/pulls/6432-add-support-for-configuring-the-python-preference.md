@@ -14,14 +14,14 @@ head: zb/python-preference-env
 created_at: 2024-08-22T13:25:54Z
 updated_at: 2024-08-23T14:13:20Z
 url: https://github.com/astral-sh/uv/pull/6432
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Add support for configuring the `python-preference` with `UV_PYTHON_PREFERENCE`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 13:25_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/6406
 

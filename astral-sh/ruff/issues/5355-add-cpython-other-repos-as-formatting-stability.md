@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-25T11:27:58Z
 updated_at: 2023-07-25T09:50:14Z
 url: https://github.com/astral-sh/ruff/issues/5355
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add cpython & other repos as formatting stability check to CI
 
 ---
 
-_Issue opened by @konstin on 2023-06-25 11:27_
+_@konstin_
 
 We have a script that formats cpython twice and checks that the formatting stays the same, that we only output valid syntax and that we don't panic due to some input. I want to integrate this script into CI to avoid regressions. This also needs documentation on how to run the check locally.
 

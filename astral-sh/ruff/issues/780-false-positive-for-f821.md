@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T22:40:20Z
 updated_at: 2022-11-26T15:12:08Z
 url: https://github.com/astral-sh/ruff/issues/780
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # False positive for F821
 
 ---
 
-_Issue opened by @olliemath on 2022-11-16 22:40_
+_@olliemath_
 
 It seems that using `dict` as a parameter name in a function (which I'd consider bad style) breaks ruff's parsing in unexpected ways. In particular the following gives `6:31: F821 Undefined name 'name'`, when it shouldn't. 
 

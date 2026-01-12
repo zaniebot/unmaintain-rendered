@@ -14,14 +14,14 @@ head: add-FURB116
 created_at: 2024-04-14T01:58:24Z
 updated_at: 2024-04-26T01:19:14Z
 url: https://github.com/astral-sh/ruff/pull/10921
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`refurb`] Implement `fstring-number-format` (`FURB116`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-04-14 01:58_
+_@diceroll123_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T17:59:13Z
 updated_at: 2024-05-21T18:27:19Z
 url: https://github.com/astral-sh/uv/issues/3712
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv generated venv doesn't install pip on windows
 
 ---
 
-_Issue opened by @jadeidev on 2024-05-21 17:59_
+_@jadeidev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

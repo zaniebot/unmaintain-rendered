@@ -13,14 +13,14 @@ head: caching-docs-clarification
 created_at: 2025-03-02T17:09:07Z
 updated_at: 2025-03-03T02:54:49Z
 url: https://github.com/astral-sh/uv/pull/11895
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Docs: Clarify that setting cache-keys overrides defaults
 
 ---
 
-_Pull request opened by @alexjball on 2025-03-02 17:09_
+_@alexjball_
 
 ## Summary
 

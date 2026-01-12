@@ -14,14 +14,14 @@ head: alex/paramspec-false-positive
 created_at: 2025-06-02T12:40:20Z
 updated_at: 2025-06-11T10:47:54Z
 url: https://github.com/astral-sh/ruff/pull/18426
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Fix false positives for legacy `ParamSpec`s inside `Callable` type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-02 12:40_
+_@AlexWaygood_
 
 ## Summary
 

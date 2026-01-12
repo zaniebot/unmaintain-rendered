@@ -14,14 +14,14 @@ head: charlie/index-api-uv-pin
 created_at: 2024-09-27T19:45:05Z
 updated_at: 2024-10-15T23:22:46Z
 url: https://github.com/astral-sh/uv/pull/7747
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Pin named indexes in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-27 19:45_
+_@charliermarsh_
 
 ## Summary
 

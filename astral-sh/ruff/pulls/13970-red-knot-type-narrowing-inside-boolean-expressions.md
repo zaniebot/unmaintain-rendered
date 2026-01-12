@@ -13,14 +13,14 @@ head: tomer/boolean-operations-type-narrowing
 created_at: 2024-10-28T21:29:04Z
 updated_at: 2024-10-29T08:22:32Z
 url: https://github.com/astral-sh/ruff/pull/13970
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Type narrowing inside boolean expressions 
 
 ---
 
-_Pull request opened by @TomerBin on 2024-10-28 21:29_
+_@TomerBin_
 
 ## Summary
 

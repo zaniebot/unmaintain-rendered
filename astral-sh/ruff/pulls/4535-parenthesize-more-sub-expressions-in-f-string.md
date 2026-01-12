@@ -13,14 +13,14 @@ head: charlie/paren
 created_at: 2023-05-19T19:33:40Z
 updated_at: 2023-05-19T20:07:14Z
 url: https://github.com/astral-sh/ruff/pull/4535
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Parenthesize more sub-expressions in f-string conversion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-19 19:33_
+_@charliermarsh_
 
 ## Summary
 

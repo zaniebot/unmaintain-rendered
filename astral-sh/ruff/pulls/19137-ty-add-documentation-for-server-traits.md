@@ -14,14 +14,14 @@ head: dhruv/server-trait-doc
 created_at: 2025-07-04T03:51:02Z
 updated_at: 2025-07-09T12:40:20Z
 url: https://github.com/astral-sh/ruff/pull/19137
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Add documentation for server traits
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-04 03:51_
+_@dhruvmanila_
 
 This PR adds some basic documentation for the traits in the server implementation.
 

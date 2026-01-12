@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T23:11:25Z
 updated_at: 2025-05-08T23:28:17Z
 url: https://github.com/astral-sh/ty/issues/285
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Different type error output in fastapi
 
 ---
 
-_Issue opened by @alphavector on 2025-05-08 23:11_
+_@alphavector_
 
 ### Summary
 

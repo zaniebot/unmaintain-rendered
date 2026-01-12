@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T16:28:01Z
 updated_at: 2023-06-28T03:24:53Z
 url: https://github.com/astral-sh/ruff/issues/5395
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `--show-source` code frames should respect Jupyter cells
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-27 16:28_
+_@charliermarsh_
 
 I have two cells, one containing two imports, and another containing a function definition.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T16:18:09Z
 updated_at: 2025-09-19T16:18:28Z
 url: https://github.com/astral-sh/uv/issues/15951
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Behavior of `uv run` with no `pyproject.toml`
 
 ---
 
-_Issue opened by @albertotb on 2025-09-19 16:18_
+_@albertotb_
 
 ### Question
 

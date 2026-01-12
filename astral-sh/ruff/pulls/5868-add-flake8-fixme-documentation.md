@@ -13,14 +13,14 @@ head: fixme-docs
 created_at: 2023-07-18T17:31:23Z
 updated_at: 2023-07-20T11:10:18Z
 url: https://github.com/astral-sh/ruff/pull/5868
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add `flake8-fixme` documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-18 17:31_
+_@tjkuson_
 
 ## Summary
 

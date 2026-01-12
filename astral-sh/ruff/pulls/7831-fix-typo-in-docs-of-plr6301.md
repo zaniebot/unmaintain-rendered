@@ -13,14 +13,14 @@ head: plr6301-docs-typo
 created_at: 2023-10-05T20:37:44Z
 updated_at: 2023-10-05T21:51:42Z
 url: https://github.com/astral-sh/ruff/pull/7831
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix typo in docs of PLR6301
 
 ---
 
-_Pull request opened by @timobrembeck on 2023-10-05 20:37_
+_@timobrembeck_
 
 ## Summary
 The example code for [PLR6301 (no-self-use)](https://docs.astral.sh/ruff/rules/no-self-use/#example) contains f-strings without placeholder expressions, which is discouraged according to [F541 (f-string-missing-placeholders)](https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/).

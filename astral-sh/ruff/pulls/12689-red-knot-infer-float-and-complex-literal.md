@@ -13,14 +13,14 @@ head: dhruv/infer-float-complex
 created_at: 2024-08-05T12:13:53Z
 updated_at: 2024-08-06T06:33:26Z
 url: https://github.com/astral-sh/ruff/pull/12689
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Infer float and complex literal expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-05 12:13_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T15:46:45Z
 updated_at: 2025-03-14T15:50:34Z
 url: https://github.com/astral-sh/ruff/issues/16752
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F841 does not have branch analysis
 
 ---
 
-_Issue opened by @sk- on 2025-03-14 15:46_
+_@sk-_
 
 ### Summary
 

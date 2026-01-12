@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-25T03:37:16Z
 updated_at: 2025-11-26T16:35:51Z
 url: https://github.com/astral-sh/uv/issues/16841
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # `uv` tried to use wheels which don't exist
 
 ---
 
-_Issue opened by @harshil21 on 2025-11-25 03:37_
+_@harshil21_
 
 ### Summary
 

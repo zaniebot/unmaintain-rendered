@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-07-12T09:53:46Z
 updated_at: 2022-04-29T13:42:25Z
 url: https://github.com/clap-rs/clap/issues/1318
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # How to generate completion scripts?
 
 ---
 
-_Issue opened by @chevdor on 2018-07-12 09:53_
+_@chevdor_
 
 I am not seeing any where where the completion script is actually generated:
 - I don´t see the 'completions' feature that I have seen in some old issues

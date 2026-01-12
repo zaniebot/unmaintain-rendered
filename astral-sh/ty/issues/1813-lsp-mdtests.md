@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-08T22:46:57Z
 updated_at: 2026-01-09T03:28:41Z
 url: https://github.com/astral-sh/ty/issues/1813
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # LSP mdtests?
 
 ---
 
-_Issue opened by @Gankra on 2025-12-08 22:46_
+_@Gankra_
 
 ### Summary
 

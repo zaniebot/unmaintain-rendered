@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T10:21:09Z
 updated_at: 2024-03-08T16:02:33Z
 url: https://github.com/astral-sh/uv/issues/2009
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Use Metadata 2.2+ for source distributions
 
 ---
 
-_Issue opened by @konstin on 2024-02-27 10:21_
+_@konstin_
 
 When a source distribution contains a PKG-INFO file at the top level with `Metadata-Version: 2.2` or `Metadata-Version: 2.3` and neither `Dynamic: Requires-Dist` nor `Dynamic: Provides-Extra`, we can use the information in PKG-INFO as reliable metadata without calling any PEP 517 hooks or even setting up the build env. While the PEP has been accepted for some time, this is now supported by at pypi (https://github.com/pypi/warehouse/pull/13606).
 

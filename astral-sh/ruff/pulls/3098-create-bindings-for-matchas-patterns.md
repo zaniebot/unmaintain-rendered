@@ -12,14 +12,14 @@ head: charlie/bind
 created_at: 2023-02-21T21:48:26Z
 updated_at: 2023-02-21T22:04:11Z
 url: https://github.com/astral-sh/ruff/pull/3098
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Create bindings for `MatchAs` patterns
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 21:48_
+_@charliermarsh_
 
 Closes #3096.
 

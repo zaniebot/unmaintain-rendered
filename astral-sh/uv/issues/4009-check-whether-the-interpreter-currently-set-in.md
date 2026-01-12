@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T02:36:50Z
 updated_at: 2024-11-09T00:09:01Z
 url: https://github.com/astral-sh/uv/issues/4009
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Check whether the interpreter currently set in `PATH` is associated with a virtual environment
 
 ---
 
-_Issue opened by @dpoznik on 2024-06-04 02:36_
+_@dpoznik_
 
 This issue is forked from #3951.
 

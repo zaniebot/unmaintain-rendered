@@ -13,14 +13,14 @@ head: jtfm/fix-docs
 created_at: 2025-05-23T05:45:32Z
 updated_at: 2025-05-23T07:04:52Z
 url: https://github.com/astral-sh/uv/pull/13611
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Remove misleading line in pin documentation
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-23 05:45_
+_@jtfmumm_
 
 The documentation did not reflect #12921.
 

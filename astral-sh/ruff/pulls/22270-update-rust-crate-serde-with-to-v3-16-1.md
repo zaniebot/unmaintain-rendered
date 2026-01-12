@@ -13,14 +13,14 @@ head: renovate/serde_with-3.x-lockfile
 created_at: 2025-12-29T16:14:44Z
 updated_at: 2025-12-29T16:48:12Z
 url: https://github.com/astral-sh/ruff/pull/22270
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update Rust crate serde_with to v3.16.1
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:14_
+_@renovate_
 
 This PR contains the following updates:
 

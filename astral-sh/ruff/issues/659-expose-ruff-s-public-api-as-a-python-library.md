@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-08T14:36:51Z
 updated_at: 2025-09-22T18:46:15Z
 url: https://github.com/astral-sh/ruff/issues/659
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Expose Ruff's public API as a Python library
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-08 14:36_
+_@charliermarsh_
 
 See: #593
 

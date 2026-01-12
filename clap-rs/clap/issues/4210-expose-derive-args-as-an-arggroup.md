@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-13T14:38:39Z
 updated_at: 2022-09-13T14:39:09Z
 url: https://github.com/clap-rs/clap/issues/4210
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Expose `#[derive(Args)]` as an `ArgGroup`
 
 ---
 
-_Issue opened by @epage on 2022-09-13 14:38_
+_@epage_
 
 ### Please complete the following tasks
 

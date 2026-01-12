@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T16:02:49Z
 updated_at: 2024-02-23T22:34:33Z
 url: https://github.com/astral-sh/uv/issues/1126
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Windows trampoline that works on stable rust
 
 ---
 
-_Issue opened by @konstin on 2024-01-26 16:02_
+_@konstin_
 
 Our current windows launcher require nightly rust and a lot of unsafe just to avoid panics. Puffin on the other hand works on stable rust and doesn't use any unsafe. It would be great to have a stable rust mostly-safe trampoline, even if the resulting binaries are slightly larger.
 

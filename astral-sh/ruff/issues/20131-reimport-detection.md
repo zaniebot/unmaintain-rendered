@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-28T10:58:02Z
 updated_at: 2025-08-28T13:08:32Z
 url: https://github.com/astral-sh/ruff/issues/20131
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Reimport detection
 
 ---
 
-_Issue opened by @spaceby on 2025-08-28 10:58_
+_@spaceby_
 
 ### Summary
 

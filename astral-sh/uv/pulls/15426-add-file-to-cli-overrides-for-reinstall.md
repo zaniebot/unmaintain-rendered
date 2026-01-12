@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-08-21T18:44:55Z
 updated_at: 2025-08-21T19:03:04Z
 url: https://github.com/astral-sh/uv/pull/15426
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Add file-to-CLI overrides for reinstall configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-21 18:44_
+_@charliermarsh_
 
 ## Summary
 

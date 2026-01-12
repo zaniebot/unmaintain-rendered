@@ -14,14 +14,14 @@ head: david/legacy-typevar-meta-type
 created_at: 2025-06-04T07:41:30Z
 updated_at: 2025-06-04T11:07:12Z
 url: https://github.com/astral-sh/ruff/pull/18453
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Add meta-type tests for legacy TypeVars
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-04 07:41_
+_@sharkdp_
 
 ## Summary
 

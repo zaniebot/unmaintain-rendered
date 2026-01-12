@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T15:18:27Z
 updated_at: 2025-09-10T17:07:14Z
 url: https://github.com/astral-sh/ruff/issues/20335
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule: check for executable flag in scripts
 
 ---
 
-_Issue opened by @spaceone on 2025-09-10 15:18_
+_@spaceone_
 
 ### Summary
 

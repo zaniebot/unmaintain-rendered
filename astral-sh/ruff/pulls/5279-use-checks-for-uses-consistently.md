@@ -13,14 +13,14 @@ head: charlie/usage
 created_at: 2023-06-22T01:37:22Z
 updated_at: 2023-06-22T02:15:11Z
 url: https://github.com/astral-sh/ruff/pull/5279
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use 'Checks for uses' consistently
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 01:37_
+_@charliermarsh_
 
 _No description provided._
 

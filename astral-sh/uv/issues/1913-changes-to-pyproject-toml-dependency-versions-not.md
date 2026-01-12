@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T13:45:01Z
 updated_at: 2024-09-10T01:46:11Z
 url: https://github.com/astral-sh/uv/issues/1913
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Changes to pyproject.toml dependency versions not updated on install
 
 ---
 
-_Issue opened by @RonNabuurs on 2024-02-23 13:45_
+_@RonNabuurs_
 
 Say I have the following `pyproject.toml`
 

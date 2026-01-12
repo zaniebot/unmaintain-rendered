@@ -13,14 +13,14 @@ head: autofix-relative-imports
 created_at: 2023-02-10T20:22:39Z
 updated_at: 2023-02-11T15:01:45Z
 url: https://github.com/astral-sh/ruff/pull/2739
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # autofix relative imports (TID252)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-10 20:22_
+_@sbrugman_
 
 autofix relative imports (TID252)
 

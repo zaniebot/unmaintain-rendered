@@ -13,14 +13,14 @@ head: charlie/tag
 created_at: 2023-06-21T04:06:08Z
 updated_at: 2023-06-21T17:36:55Z
 url: https://github.com/astral-sh/ruff/pull/5240
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Ensure release tagging has access to repo clone
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 04:06_
+_@charliermarsh_
 
 ## Summary
 

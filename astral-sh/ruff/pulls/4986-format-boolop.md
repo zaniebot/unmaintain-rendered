@@ -14,14 +14,14 @@ head: format-bool-op
 created_at: 2023-06-09T16:10:45Z
 updated_at: 2023-06-21T09:40:53Z
 url: https://github.com/astral-sh/ruff/pull/4986
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format BoolOp
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-09 16:10_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

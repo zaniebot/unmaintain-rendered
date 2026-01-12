@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T15:53:20Z
 updated_at: 2023-05-08T22:26:11Z
 url: https://github.com/astral-sh/ruff/issues/1480
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Nest cache entries under package version subdirectories
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-30 15:53_
+_@charliermarsh_
 
 Right now, the package version is included in the cache key. But we should just use it to create a subdirectory for each version. This would let us automatically clean up old cache entries.
 

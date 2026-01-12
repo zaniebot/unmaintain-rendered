@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T02:44:49Z
 updated_at: 2024-05-20T06:05:46Z
 url: https://github.com/astral-sh/ruff/issues/7000
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule PT019 Treats Unused Mocks as Fixtures when prefixed with underscores
 
 ---
 
-_Issue opened by @max-muoto on 2023-08-30 02:44_
+_@max-muoto_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T23:35:29Z
 updated_at: 2025-05-12T01:44:55Z
 url: https://github.com/astral-sh/uv/issues/8313
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Suggestion on mistyped `uv python` command suggests `uv pip`
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-10-17 23:35_
+_@adamtheturtle_
 
 I typed:
 

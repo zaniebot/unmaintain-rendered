@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-06-20T22:51:04Z
 updated_at: 2023-06-21T00:56:51Z
 url: https://github.com/astral-sh/ruff/pull/5229
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid `.unwrap()` on cache access
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 22:51_
+_@charliermarsh_
 
 ## Summary
 

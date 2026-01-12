@@ -14,14 +14,14 @@ head: charlie/err-msg
 created_at: 2024-07-09T05:22:26Z
 updated_at: 2024-07-09T05:29:56Z
 url: https://github.com/astral-sh/uv/pull/4913
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Avoid debug error for `uv run` with unknown Python version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 05:22_
+_@charliermarsh_
 
 ## Summary
 

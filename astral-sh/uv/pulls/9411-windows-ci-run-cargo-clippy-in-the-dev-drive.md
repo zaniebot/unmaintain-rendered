@@ -13,14 +13,14 @@ head: clippy
 created_at: 2024-11-25T08:22:08Z
 updated_at: 2025-03-18T07:53:12Z
 url: https://github.com/astral-sh/uv/pull/9411
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # windows ci: Run `cargo clippy` in the dev drive workspace to reuse the cache
 
 ---
 
-_Pull request opened by @j178 on 2024-11-25 08:22_
+_@j178_
 
 ## Summary
 

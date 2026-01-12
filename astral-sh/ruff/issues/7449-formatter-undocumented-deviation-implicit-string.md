@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-17T06:01:54Z
 updated_at: 2023-09-27T15:59:14Z
 url: https://github.com/astral-sh/ruff/issues/7449
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: implicit string concatenation
 
 ---
 
-_Issue opened by @m-richards on 2023-09-17 06:01_
+_@m-richards_
 
 Just sharing another deviation, this time to do with implicit string concatenation (all with line-length=88):
 ```python

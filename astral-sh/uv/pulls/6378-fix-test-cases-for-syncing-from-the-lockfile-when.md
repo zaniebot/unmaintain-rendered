@@ -13,14 +13,14 @@ head: zb/lock-auth-test
 created_at: 2024-08-21T21:30:02Z
 updated_at: 2024-08-23T14:34:16Z
 url: https://github.com/astral-sh/uv/pull/6378
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Fix test cases for syncing from the lockfile when credentials are required
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 21:30_
+_@zanieb_
 
 _No description provided._
 

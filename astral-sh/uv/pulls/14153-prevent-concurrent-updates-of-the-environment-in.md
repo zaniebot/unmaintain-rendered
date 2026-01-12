@@ -12,14 +12,14 @@ head: jack/run_locking
 created_at: 2025-06-20T14:07:02Z
 updated_at: 2025-06-21T01:11:51Z
 url: https://github.com/astral-sh/uv/pull/14153
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Prevent concurrent updates of the environment in `uv run`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-20 14:07_
+_@oconnor663_
 
 This is very similar to the locking added for `uv sync`, `uv add`, and `uv remove` in https://github.com/astral-sh/uv/pull/13869. Improving our (f)locking in general is tracked in
 https://github.com/astral-sh/uv/issues/13883.

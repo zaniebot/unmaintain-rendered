@@ -15,14 +15,14 @@ head: micha/fix-stale-diagnostics
 created_at: 2025-08-01T20:33:41Z
 updated_at: 2025-08-04T10:19:19Z
 url: https://github.com/astral-sh/ruff/pull/19697
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Always refresh diagnostics after a watched files change
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-01 20:33_
+_@MichaReiser_
 
 ## Summary
 

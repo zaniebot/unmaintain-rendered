@@ -13,14 +13,14 @@ head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
 updated_at: 2026-01-03T12:52:30Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
 
 ---
 
-_Pull request opened by @Bnyro on 2025-12-26 11:15_
+_@Bnyro_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

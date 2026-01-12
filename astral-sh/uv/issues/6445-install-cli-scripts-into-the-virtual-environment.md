@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T16:11:05Z
 updated_at: 2024-08-22T22:30:59Z
 url: https://github.com/astral-sh/uv/issues/6445
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # install cli scripts into the virtual environment
 
 ---
 
-_Issue opened by @natelandau on 2024-08-22 16:11_
+_@natelandau_
 
 Platform and UV information: `uv 0.3.1 (Homebrew 2024-08-21)` running on `MacOS Sonoma 14.1.2`
 

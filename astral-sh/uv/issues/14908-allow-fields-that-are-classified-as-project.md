@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T21:07:34Z
 updated_at: 2025-07-25T21:08:03Z
 url: https://github.com/astral-sh/uv/issues/14908
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Allow fields that are classified as "project metadata" in `uv.toml` files in projects
 
 ---
 
-_Issue opened by @zanieb on 2025-07-25 21:07_
+_@zanieb_
 
 It's unclear if we should do this, but this issue is for discussion.
 

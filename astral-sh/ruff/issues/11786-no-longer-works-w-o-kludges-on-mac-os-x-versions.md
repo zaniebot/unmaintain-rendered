@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T22:26:53Z
 updated_at: 2024-06-07T21:13:33Z
 url: https://github.com/astral-sh/ruff/issues/11786
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # No longer works w/o kludges on Mac OS X versions (<10.12) which are still supported by official Python
 
 ---
 
-_Issue opened by @TurtleWilly on 2024-06-06 22:26_
+_@TurtleWilly_
 
 ```
 $ ./ruff --help

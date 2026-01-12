@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T07:07:24Z
 updated_at: 2025-11-21T06:56:29Z
 url: https://github.com/astral-sh/ruff/issues/21507
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Why doesn't I001 allow multiple imports from the same package on one line?
 
 ---
 
-_Issue opened by @llamafilm on 2025-11-18 07:07_
+_@llamafilm_
 
 ### Question
 

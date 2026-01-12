@@ -12,14 +12,14 @@ head: charlie/color
 created_at: 2023-02-08T00:08:50Z
 updated_at: 2023-02-08T00:12:19Z
 url: https://github.com/astral-sh/ruff/pull/2647
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add color to fixable error asterisk
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 00:08_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: unicode-width
 created_at: 2023-03-24T14:52:14Z
 updated_at: 2023-03-27T10:35:08Z
 url: https://github.com/astral-sh/ruff/pull/3714
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use unicode-width to determine line-length instead of character count
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-24 14:52_
+_@MichaReiser_
 
 This PR changes the logic testing if a line exceeds the configured `line-width` to use the unicode-width rather than character count. 
 

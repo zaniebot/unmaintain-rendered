@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T19:27:54Z
 updated_at: 2026-01-12T12:37:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T13:00:02Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Dependency Dashboard
 
 ---
 
-_Issue opened by @renovate on 2024-03-25 19:27_
+_@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/uv).
 

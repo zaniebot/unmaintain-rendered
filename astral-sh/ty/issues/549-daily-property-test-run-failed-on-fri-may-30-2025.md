@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T12:05:15Z
 updated_at: 2025-05-30T15:49:21Z
 url: https://github.com/astral-sh/ty/issues/549
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Daily property test run failed on Fri May 30 2025
 
 ---
 
-_Issue opened by @github-actions on 2025-05-30 12:05_
+_@github-actions_
 
 Run listed here: https://github.com/astral-sh/ty/actions/runs/15346325092
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T11:27:48Z
 updated_at: 2025-08-28T03:44:21Z
 url: https://github.com/astral-sh/ruff/issues/12565
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Recognize variable references in pandas Dataframe.query (don't trigger F841)
 
 ---
 
-_Issue opened by @astrowonk on 2024-07-29 11:27_
+_@astrowonk_
 
 This is essentially the same as this open [pylint issue](https://github.com/pylint-dev/pylint/issues/3903).
 

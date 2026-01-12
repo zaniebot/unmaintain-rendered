@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-23T00:15:17Z
 updated_at: 2024-03-23T00:44:56Z
 url: https://github.com/astral-sh/uv/issues/2631
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # uv pip compile `--no-header` flag should delete existing headers for feature parity with pip-compile
 
 ---
 
-_Issue opened by @danielstrizhevsky on 2024-03-23 00:15_
+_@danielstrizhevsky_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

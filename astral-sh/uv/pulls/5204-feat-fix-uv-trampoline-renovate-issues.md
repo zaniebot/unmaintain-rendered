@@ -12,14 +12,14 @@ head: trampoline-renovate
 created_at: 2024-07-19T01:12:36Z
 updated_at: 2024-07-25T05:19:14Z
 url: https://github.com/astral-sh/uv/pull/5204
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # feat: fix uv-trampoline renovate issues
 
 ---
 
-_Pull request opened by @samypr100 on 2024-07-19 01:12_
+_@samypr100_
 
 ## Summary
 

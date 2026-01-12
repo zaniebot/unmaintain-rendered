@@ -13,14 +13,14 @@ head: alex/comp-docs
 created_at: 2024-12-02T13:26:25Z
 updated_at: 2024-12-02T13:36:18Z
 url: https://github.com/astral-sh/ruff/pull/14729
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Improve error messages and docs for `flake8-comprehensions` rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-02 13:26_
+_@AlexWaygood_
 
 ## Summary
 

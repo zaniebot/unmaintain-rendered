@@ -14,14 +14,14 @@ head: alex/delete-statement
 created_at: 2025-11-29T22:50:34Z
 updated_at: 2025-11-30T14:42:08Z
 url: https://github.com/astral-sh/ruff/pull/21699
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Don't introduce invalid syntax when autofixing override-of-final-method
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-29 22:50_
+_@AlexWaygood_
 
 ## Summary
 

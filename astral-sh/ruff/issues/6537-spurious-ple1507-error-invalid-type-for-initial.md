@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-13T17:10:16Z
 updated_at: 2023-08-13T19:52:11Z
 url: https://github.com/astral-sh/ruff/issues/6537
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Spurious PLE1507 error: Invalid type for initial `os.getenv` argument
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-08-13 17:10_
+_@DimitriPapadopoulos_
 
 * A minimal code snippet that reproduces the bug:
    ```py

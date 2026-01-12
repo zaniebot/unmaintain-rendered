@@ -13,14 +13,14 @@ head: charlie/oid
 created_at: 2025-01-21T01:59:09Z
 updated_at: 2025-01-21T14:15:14Z
 url: https://github.com/astral-sh/uv/pull/10802
-synced_at: 2026-01-10T11:45:11Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Deduplicate `GitSha` and `GitOid` types
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 01:59_
+_@charliermarsh_
 
 ## Summary
 

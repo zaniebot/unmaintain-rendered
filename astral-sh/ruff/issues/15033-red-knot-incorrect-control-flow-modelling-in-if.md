@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-17T09:55:59Z
 updated_at: 2025-01-05T18:35:30Z
 url: https://github.com/astral-sh/ruff/issues/15033
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Incorrect control flow modelling in if-elif chains
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-17 09:55_
+_@sharkdp_
 
 We currently infer a type of `Literal[1, 2, 4]` in the following example, but `1` is not a possible value of `x`. And `3` *is* a possible value for `x`.
 

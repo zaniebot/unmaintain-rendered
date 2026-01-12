@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T23:21:51Z
 updated_at: 2025-01-09T22:39:02Z
 url: https://github.com/astral-sh/uv/issues/10418
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Add meta titles and descriptions to guides
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-08 23:21_
+_@charliermarsh_
 
 We should probably do this everywhere, but the guides would be a good start.
 

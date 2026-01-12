@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-17T17:56:29Z
 updated_at: 2024-03-17T21:42:50Z
 url: https://github.com/astral-sh/ruff/issues/10439
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # --fix should not delete lines which are marked with pylint disable or pyright ignore
 
 ---
 
-_Issue opened by @mavwolverine on 2024-03-17 17:56_
+_@mavwolverine_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

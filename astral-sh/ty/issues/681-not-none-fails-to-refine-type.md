@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T17:42:43Z
 updated_at: 2025-06-18T18:40:17Z
 url: https://github.com/astral-sh/ty/issues/681
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # "not_none" fails to refine type
 
 ---
 
-_Issue opened by @adamh-oai on 2025-06-18 17:42_
+_@adamh-oai_
 
 ### Summary
 

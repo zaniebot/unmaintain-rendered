@@ -13,14 +13,14 @@ head: micha/slow-files
 created_at: 2025-10-13T06:57:09Z
 updated_at: 2025-10-13T07:15:56Z
 url: https://github.com/astral-sh/ruff/pull/20836
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Log files that are slow to type check
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-13 06:57_
+_@MichaReiser_
 
 ## Summary
 

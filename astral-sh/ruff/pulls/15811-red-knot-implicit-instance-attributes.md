@@ -13,14 +13,14 @@ head: david/implicit-instance-attributes
 created_at: 2025-01-29T16:04:21Z
 updated_at: 2025-02-03T19:40:59Z
 url: https://github.com/astral-sh/ruff/pull/15811
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Implicit instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-29 16:04_
+_@sharkdp_
 
 ## Summary
 

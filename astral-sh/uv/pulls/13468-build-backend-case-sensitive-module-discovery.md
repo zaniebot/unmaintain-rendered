@@ -13,14 +13,14 @@ head: konsti/build-backend-path-casing
 created_at: 2025-05-15T13:59:52Z
 updated_at: 2025-05-19T06:03:09Z
 url: https://github.com/astral-sh/uv/pull/13468
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 #  Build backend: Case sensitive module discovery
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 13:59_
+_@konstin_
 
 We may run on case-sensitive file systems (Linux, generally) or on case-insensitive file systems (Windows, generally), while modules in Python may be lower or upper case. For robustness over filesystem casing, we require an explicit module name for modules with upper case letters.
 

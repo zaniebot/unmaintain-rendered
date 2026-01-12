@@ -13,14 +13,14 @@ head: cjm/red-knot/type-eval
 created_at: 2024-04-26T02:47:29Z
 updated_at: 2024-04-26T20:05:55Z
 url: https://github.com/astral-sh/ruff/pull/11157
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # [red-knot] implement eval_symbol for from-import and class-def
 
 ---
 
-_Pull request opened by @carljm on 2024-04-26 02:47_
+_@carljm_
 
 This PR demonstrates resolving an import from one module to a class type from another module!
 

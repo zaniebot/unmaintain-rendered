@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-17T04:40:00Z
 updated_at: 2023-04-17T15:05:31Z
 url: https://github.com/clap-rs/clap/issues/4838
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Please provide an argument to make the derive automatically generate a test
 
 ---
 
-_Issue opened by @joshtriplett on 2023-04-17 04:40_
+_@joshtriplett_
 
 ### Please complete the following tasks
 

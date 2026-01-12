@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-27T10:50:44Z
 updated_at: 2023-08-27T15:27:09Z
 url: https://github.com/astral-sh/ruff/issues/6914
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Panicked at 'assertion failed: start.raw <= end.raw'
 
 ---
 
-_Issue opened by @qarmin on 2023-08-27 10:50_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

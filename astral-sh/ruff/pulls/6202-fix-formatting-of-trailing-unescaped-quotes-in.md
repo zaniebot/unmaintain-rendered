@@ -13,14 +13,14 @@ head: fix_raw_tripled_quoted_string
 created_at: 2023-07-31T16:25:09Z
 updated_at: 2023-07-31T17:25:17Z
 url: https://github.com/astral-sh/ruff/pull/6202
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix formatting of trailing unescaped quotes in raw triple quoted strings
 
 ---
 
-_Pull request opened by @konstin on 2023-07-31 16:25_
+_@konstin_
 
 **Summary** This prevents us from turning `r'''\""'''` into `r"""\"""""`, which is invalid syntax.
 

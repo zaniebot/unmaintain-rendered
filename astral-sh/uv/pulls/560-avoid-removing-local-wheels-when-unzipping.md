@@ -13,14 +13,14 @@ head: charlie/separate
 created_at: 2023-12-05T03:43:08Z
 updated_at: 2023-12-05T17:50:09Z
 url: https://github.com/astral-sh/uv/pull/560
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Avoid removing local wheels when unzipping
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 03:43_
+_@charliermarsh_
 
 ## Summary
 

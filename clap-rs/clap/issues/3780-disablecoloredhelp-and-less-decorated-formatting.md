@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-02T01:30:07Z
 updated_at: 2022-06-02T22:35:33Z
 url: https://github.com/clap-rs/clap/issues/3780
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # DisableColoredHelp and less decorated formatting in general from a user side
 
 ---
 
-_Issue opened by @pacak on 2022-06-02 01:30_
+_@pacak_
 
 ### Please complete the following tasks
 

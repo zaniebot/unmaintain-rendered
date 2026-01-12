@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T03:55:22Z
 updated_at: 2025-04-01T20:20:53Z
 url: https://github.com/astral-sh/uv/issues/12476
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Reproducibility for isolated build environments via exclude newer?
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-03-26 03:55_
+_@hauntsaninja_
 
 I am a big fan of `--exclude-newer`. In many situations, it can give you 90% of the reproducibility you want for 10% of the UX overhead.
 

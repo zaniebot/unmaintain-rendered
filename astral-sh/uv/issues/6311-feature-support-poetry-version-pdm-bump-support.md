@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T08:34:00Z
 updated_at: 2024-08-21T12:39:47Z
 url: https://github.com/astral-sh/uv/issues/6311
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # feature: support poetry version/pdm bump support
 
 ---
 
-_Issue opened by @toppk on 2024-08-21 08:34_
+_@toppk_
 
 It would be nice if `uv` had native capability to update version information in pyproject.toml.
 

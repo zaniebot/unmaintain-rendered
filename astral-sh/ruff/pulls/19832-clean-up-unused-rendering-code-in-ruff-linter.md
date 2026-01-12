@@ -13,14 +13,14 @@ head: brent/cleanup-unused-code
 created_at: 2025-08-08T17:49:26Z
 updated_at: 2025-08-09T18:20:50Z
 url: https://github.com/astral-sh/ruff/pull/19832
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # Clean up unused rendering code in `ruff_linter`
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-08 17:49_
+_@ntBre_
 
 ## Summary
 

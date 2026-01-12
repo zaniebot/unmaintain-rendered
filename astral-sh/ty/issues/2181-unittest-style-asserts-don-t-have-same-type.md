@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T09:19:31Z
 updated_at: 2025-12-23T13:40:09Z
 url: https://github.com/astral-sh/ty/issues/2181
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # unittest style asserts don't have same type narrowing behaviour as normal asserts
 
 ---
 
-_Issue opened by @joe-pierce on 2025-12-23 09:19_
+_@joe-pierce_
 
 ### Summary
 

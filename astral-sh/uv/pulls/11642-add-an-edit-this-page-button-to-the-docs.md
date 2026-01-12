@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-02-19T21:30:59Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11642
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Add an "edit this page" button to the docs
 
 ---
 
-_Pull request opened by @mgoin on 2025-02-19 21:30_
+_@mgoin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

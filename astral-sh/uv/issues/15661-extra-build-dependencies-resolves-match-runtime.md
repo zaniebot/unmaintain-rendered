@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T13:26:58Z
 updated_at: 2025-09-04T12:34:54Z
 url: https://github.com/astral-sh/uv/issues/15661
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # extra-build-dependencies resolves match-runtime requirement even when not needed
 
 ---
 
-_Issue opened by @befelix on 2025-09-03 13:26_
+_@befelix_
 
 ### Summary
 

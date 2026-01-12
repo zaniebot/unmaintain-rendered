@@ -14,14 +14,14 @@ head: dhruv/formatter-tokens
 created_at: 2024-05-23T13:18:57Z
 updated_at: 2024-05-31T04:54:04Z
 url: https://github.com/astral-sh/ruff/pull/11515
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Replace `lex_starts_at` with `Tokens` in the formatter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-23 13:18_
+_@dhruvmanila_
 
 ## Summary
 

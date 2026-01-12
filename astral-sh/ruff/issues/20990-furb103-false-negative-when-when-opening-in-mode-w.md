@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-20T11:53:21Z
 updated_at: 2025-10-21T06:59:19Z
 url: https://github.com/astral-sh/ruff/issues/20990
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB103 false negative when when opening in mode "w+"
 
 ---
 
-_Issue opened by @berland on 2025-10-20 11:53_
+_@berland_
 
 ### Summary
 

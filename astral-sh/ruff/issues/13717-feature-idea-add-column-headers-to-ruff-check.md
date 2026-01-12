@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-11T16:25:52Z
 updated_at: 2025-01-02T12:42:09Z
 url: https://github.com/astral-sh/ruff/issues/13717
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Feature Idea] Add column headers to `ruff check --statistics`, to avoid ambiguity
 
 ---
 
-_Issue opened by @NFeruchBCG on 2024-10-11 16:25_
+_@NFeruchBCG_
 
 This is a question that can be easily answered, but ideally wouldn't have to be asked if there were column headers.
 

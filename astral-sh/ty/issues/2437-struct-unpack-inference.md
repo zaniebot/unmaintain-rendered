@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T22:44:38Z
 updated_at: 2026-01-12T06:35:06Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Struct unpack inference
 
 ---
 
-_Issue opened by @sakgoyal on 2026-01-10 22:44_
+_@sakgoyal_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-29T15:43:38Z
 updated_at: 2025-09-12T14:50:02Z
 url: https://github.com/astral-sh/ruff/issues/19027
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Improve detection of redundant parenthesis
 
 ---
 
-_Issue opened by @robsdedude on 2025-06-29 15:43_
+_@robsdedude_
 
 ### Summary
 

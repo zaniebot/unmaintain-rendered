@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-25T01:23:16Z
 updated_at: 2024-11-26T16:35:12Z
 url: https://github.com/astral-sh/ruff/issues/13507
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Idea: warn when a re-exported name is imported
 
 ---
 
-_Issue opened by @dimaqq on 2024-09-25 01:23_
+_@dimaqq_
 
 Consider a library like this:
 

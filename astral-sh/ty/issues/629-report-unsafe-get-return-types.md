@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T00:58:26Z
 updated_at: 2025-11-18T16:10:30Z
 url: https://github.com/astral-sh/ty/issues/629
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # report unsafe `__get__` return types
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-06-11 00:58_
+_@KotlinIsland_
 
 ### Summary
 

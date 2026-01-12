@@ -14,14 +14,14 @@ head: charlie/t
 created_at: 2025-12-05T03:09:03Z
 updated_at: 2025-12-09T11:07:04Z
 url: https://github.com/astral-sh/ruff/pull/21803
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Allow `tuple[Any, ...]` to assign to `tuple[int, *tuple[int, ...]]`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-05 03:09_
+_@charliermarsh_
 
 ## Summary
 

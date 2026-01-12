@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T11:05:24Z
 updated_at: 2023-02-28T16:59:04Z
 url: https://github.com/astral-sh/ruff/issues/3271
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] SIM300 Yoda condition (Ruff 0.0.253)
 
 ---
 
-_Issue opened by @akx on 2023-02-28 11:05_
+_@akx_
 
 ```bash
 $ cat sim300bug.py

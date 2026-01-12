@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T20:52:43Z
 updated_at: 2024-04-18T22:55:17Z
 url: https://github.com/astral-sh/ruff/issues/11016
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLE0307 triggers on `__str__` that always raises an exception
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-04-18 20:52_
+_@ThiefMaster_
 
 ```py
 class PasswordHash:

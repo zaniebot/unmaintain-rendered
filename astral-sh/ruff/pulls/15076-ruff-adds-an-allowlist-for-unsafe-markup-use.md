@@ -13,14 +13,14 @@ head: feat/markup-whitelist-calls
 created_at: 2024-12-20T08:25:21Z
 updated_at: 2024-12-20T09:37:41Z
 url: https://github.com/astral-sh/ruff/pull/15076
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Adds an allowlist for `unsafe-markup-use` (`RUF035`)
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-20 08:25_
+_@Daverball_
 
 Closes: #14523
 

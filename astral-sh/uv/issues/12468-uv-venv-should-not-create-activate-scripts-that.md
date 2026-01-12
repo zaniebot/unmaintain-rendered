@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T18:15:47Z
 updated_at: 2025-03-25T18:56:59Z
 url: https://github.com/astral-sh/uv/issues/12468
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # uv venv should not create activate scripts that do not match current platform
 
 ---
 
-_Issue opened by @gaborbernat on 2025-03-25 18:15_
+_@gaborbernat_
 
 ### Summary
 

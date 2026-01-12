@@ -12,14 +12,14 @@ head: remove-autofix-mode
 created_at: 2023-05-05T09:51:20Z
 updated_at: 2023-05-10T07:06:17Z
 url: https://github.com/astral-sh/ruff/pull/4239
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Always generate fixes
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-05 09:51_
+_@MichaReiser_
 
 This PR removes `autofx` and instead always generates the fixes. This allows us to rely on `fix.is_empty` (or `fix.is_some` after #4198) to determine whether a violation is fixable. 
 

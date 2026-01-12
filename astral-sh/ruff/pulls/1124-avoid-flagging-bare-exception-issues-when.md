@@ -12,14 +12,14 @@ head: charlie/raise
 created_at: 2022-12-07T15:36:02Z
 updated_at: 2022-12-07T15:37:10Z
 url: https://github.com/astral-sh/ruff/pull/1124
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid flagging bare exception issues when exception is re-raised
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-07 15:36_
+_@charliermarsh_
 
 Closes: #1119.
 

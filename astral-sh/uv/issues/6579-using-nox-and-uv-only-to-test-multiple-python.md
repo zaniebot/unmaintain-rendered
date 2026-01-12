@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T12:10:24Z
 updated_at: 2025-01-07T20:11:39Z
 url: https://github.com/astral-sh/uv/issues/6579
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # using nox and uv only to test multiple python versions
 
 ---
 
-_Issue opened by @bartdorlandt on 2024-08-24 12:10_
+_@bartdorlandt_
 
 Hi, 
 I'm struggling to use a pure uv only environment that can use nox for multiple python versions...

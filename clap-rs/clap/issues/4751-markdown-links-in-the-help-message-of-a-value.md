@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-09T08:04:48Z
 updated_at: 2023-04-20T20:53:03Z
 url: https://github.com/clap-rs/clap/issues/4751
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Markdown links in the help message of a value enum causes ZSH completion to error
 
 ---
 
-_Issue opened by @KSXGitHub on 2023-03-09 08:04_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

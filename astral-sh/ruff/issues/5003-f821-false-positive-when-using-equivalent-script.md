@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T12:02:11Z
 updated_at: 2024-03-29T23:48:43Z
 url: https://github.com/astral-sh/ruff/issues/5003
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F821 False Positive when using equivalent script characters
 
 ---
 
-_Issue opened by @TizzySaurus on 2023-06-10 12:02_
+_@TizzySaurus_
 
 Bug: Ruff incorrectly treats characters from other scripts as different, resulting in a F821 undefined name.
 This is possibly related to #942.

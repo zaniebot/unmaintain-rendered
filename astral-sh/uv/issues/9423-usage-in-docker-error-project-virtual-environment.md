@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T17:04:22Z
 updated_at: 2025-07-23T09:53:42Z
 url: https://github.com/astral-sh/uv/issues/9423
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Usage in docker: `error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
 
 ---
 
-_Issue opened by @ben-xD on 2024-11-25 17:04_
+_@ben-xD_
 
 Thanks for the detailed docker docs! I'm trying to use uv in docker compose for local development. Trying to bind mount my application code **and** an anonymous volume for `app/.venv`. This is similar to the approach shown in [docs with `docker run`](https://docs.astral.sh/uv/guides/integration/docker/#mounting-the-project-with-docker-run) which aims to avoid overwriting host vs docker container venv files, and keep them separate. 
 

@@ -13,14 +13,14 @@ head: ag/fetch-python-tmpdir
 created_at: 2024-04-24T14:44:32Z
 updated_at: 2024-04-24T14:56:04Z
 url: https://github.com/astral-sh/uv/pull/3240
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # uv-toolchain: use colocated temporary directory
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-04-24 14:44_
+_@BurntSushi_
 
 Previously, this would use the "system" temporary directory.
 Because we rename the resulting directory to its final destination,

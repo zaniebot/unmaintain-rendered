@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T18:04:06Z
 updated_at: 2025-03-11T14:54:44Z
 url: https://github.com/astral-sh/uv/issues/11862
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # can't publish to private pypiserver
 
 ---
 
-_Issue opened by @jmrouet on 2025-02-28 18:04_
+_@jmrouet_
 
 ### Summary
 

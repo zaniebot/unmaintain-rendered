@@ -13,14 +13,14 @@ head: charlie/progress
 created_at: 2024-11-20T17:18:50Z
 updated_at: 2024-11-20T17:29:58Z
 url: https://github.com/astral-sh/uv/pull/9284
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Add a progress bar to `uv tree --outdated` and `uv pip list --outdated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 17:18_
+_@charliermarsh_
 
 ## Summary
 

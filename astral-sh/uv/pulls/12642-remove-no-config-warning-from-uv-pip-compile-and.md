@@ -13,14 +13,14 @@ head: no-config
 created_at: 2025-04-03T03:44:42Z
 updated_at: 2025-04-03T17:25:21Z
 url: https://github.com/astral-sh/uv/pull/12642
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Remove `--no-config` warning from `uv pip compile` and `uv pip sync`
 
 ---
 
-_Pull request opened by @j178 on 2025-04-03 03:44_
+_@j178_
 
 uv has a global `--no-config` option, which indeed has an effect.
 

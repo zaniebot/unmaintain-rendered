@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-06-01T14:38:19Z
 updated_at: 2020-06-01T14:44:46Z
 url: https://github.com/clap-rs/clap/issues/1959
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Wrong repository, sorry
 
 ---
 
-_Issue opened by @Oxyriser on 2020-06-01 14:38_
+_@Oxyriser_
 
 _No description provided._
 

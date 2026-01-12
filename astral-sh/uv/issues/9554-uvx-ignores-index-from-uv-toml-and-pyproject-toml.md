@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T14:42:15Z
 updated_at: 2025-04-01T19:00:53Z
 url: https://github.com/astral-sh/uv/issues/9554
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # uvx ignores index from uv.toml and pyproject.toml
 
 ---
 
-_Issue opened by @zdxerr on 2024-12-01 14:42_
+_@zdxerr_
 
 If I run a tool with uvx it does not automatically discover the uv.toml file in the cwd. I have to run it like `uvx --config-file uv.toml ruff check`.
 

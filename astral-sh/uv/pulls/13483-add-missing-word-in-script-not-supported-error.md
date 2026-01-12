@@ -13,14 +13,14 @@ head: andrewpollack/add-like-to-error-messages
 created_at: 2025-05-16T04:48:52Z
 updated_at: 2025-05-19T06:06:32Z
 url: https://github.com/astral-sh/uv/pull/13483
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Add missing word in “script not supported” error
 
 ---
 
-_Pull request opened by @andrewpollack on 2025-05-16 04:48_
+_@andrewpollack_
 
 Love this tooling! Small adjustment to help on error messaging 🙏 
 

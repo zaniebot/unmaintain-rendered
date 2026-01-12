@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-19T17:18:11Z
 updated_at: 2023-06-19T17:19:33Z
 url: https://github.com/clap-rs/clap/issues/4974
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Deprecate and remove `Parser::update_from`?
 
 ---
 
-_Issue opened by @epage on 2023-06-19 17:18_
+_@epage_
 
 `Parser::update_from` and related functions were introduced into the derive API in clap v3 (ie they didn't exist in structopt).  They required a lot of work to get the basic semantics down for 3.0.0 (#2212, #2605) and since have continued to have issues for it (#4501, #4617, see also #3924).
 

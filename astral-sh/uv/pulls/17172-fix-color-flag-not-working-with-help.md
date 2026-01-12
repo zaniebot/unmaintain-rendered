@@ -12,14 +12,14 @@ head: fix-color-help
 created_at: 2025-12-18T11:46:53Z
 updated_at: 2025-12-18T13:03:16Z
 url: https://github.com/astral-sh/uv/pull/17172
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Fix --color flag not working with --help
 
 ---
 
-_Pull request opened by @okhsunrog on 2025-12-18 11:46_
+_@okhsunrog_
 
 The` --color=always` flag was not being honored when used with `--help` because clap exits immediately on` --help` before the global color choice was set via `anstream::ColorChoice::write_global()`.
 

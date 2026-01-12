@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-14T11:23:31Z
 updated_at: 2023-09-15T14:46:04Z
 url: https://github.com/astral-sh/ruff/issues/7388
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Some `E` rules are ignored unless explicitly included in `select`
 
 ---
 
-_Issue opened by @figchutney on 2023-09-14 11:23_
+_@figchutney_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

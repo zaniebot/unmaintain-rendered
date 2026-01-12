@@ -12,14 +12,14 @@ head: charlie/base
 created_at: 2023-07-02T23:28:50Z
 updated_at: 2023-07-03T00:27:58Z
 url: https://github.com/astral-sh/ruff/pull/5466
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Include BaseException in B017 rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-02 23:28_
+_@charliermarsh_
 
 Closes #5462.
 

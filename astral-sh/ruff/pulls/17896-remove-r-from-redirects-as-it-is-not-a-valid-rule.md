@@ -11,14 +11,14 @@ head: r-valid-at-runtime
 created_at: 2025-05-06T19:13:46Z
 updated_at: 2025-06-20T06:41:43Z
 url: https://github.com/astral-sh/ruff/pull/17896
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Remove R from redirects, as it is not a valid rule
 
 ---
 
-_Pull request opened by @VanOvermeire on 2025-05-06 19:13_
+_@VanOvermeire_
 
 ## Summary
 

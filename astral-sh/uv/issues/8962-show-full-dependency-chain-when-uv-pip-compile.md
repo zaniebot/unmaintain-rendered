@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T01:09:40Z
 updated_at: 2024-11-15T00:09:25Z
 url: https://github.com/astral-sh/uv/issues/8962
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Show full dependency chain when `uv pip compile` encounters an error running setup.py
 
 ---
 
-_Issue opened by @alex on 2024-11-09 01:09_
+_@alex_
 
 When using `--resolution=lowest` (or `lowest-direct`), it's sadly not uncommon to hit errors running `setup.py` from _very_ old versions of things.
 

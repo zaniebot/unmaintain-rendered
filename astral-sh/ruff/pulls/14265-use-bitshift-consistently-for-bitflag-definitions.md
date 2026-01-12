@@ -13,14 +13,14 @@ head: bitflags-bitshift
 created_at: 2024-11-11T10:07:32Z
 updated_at: 2024-11-11T10:29:52Z
 url: https://github.com/astral-sh/ruff/pull/14265
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use bitshift consistently for bitflag definitions
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-11 10:07_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

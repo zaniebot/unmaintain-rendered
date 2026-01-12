@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T11:14:03Z
 updated_at: 2024-12-27T14:36:27Z
 url: https://github.com/astral-sh/uv/issues/9966
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # How to use uv with alembic?
 
 ---
 
-_Issue opened by @raibann on 2024-12-17 11:14_
+_@raibann_
 
 <img width="407" alt="Image" src="https://github.com/user-attachments/assets/0a9abe3f-c6fe-4e65-890e-d043fdcb71d1" />
 it not work how ever put it in package or project it still not work

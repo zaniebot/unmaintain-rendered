@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-17T13:47:27Z
 updated_at: 2023-03-17T15:32:28Z
 url: https://github.com/astral-sh/ruff/issues/3577
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # New Setting Request: Adjust the quotes in the problem from [`] to [']
 
 ---
 
-_Issue opened by @andyluooo on 2023-03-17 13:47_
+_@andyluooo_
 
 I'd like to know if I can adjust the quotations showing in the problems from \` \` (backquote) to ' ' or " " (single/ double quote) through configurations. For instance, I desire the {name} showed in the problem to be 'name' (just like flake8) or "name" instead of \`name\`. Ruff does help me a lot but it really bother me by this stuff since I simply don't like the backquote.  I would appreciate it if you could provide a new setting option to solve this. BTW I'm currently using the Ruff VSCode extention. Thanks. 
 

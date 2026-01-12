@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T15:12:00Z
 updated_at: 2025-08-12T02:30:08Z
 url: https://github.com/astral-sh/uv/issues/15222
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # uv run behavior with optional dependencies
 
 ---
 
-_Issue opened by @andythomas on 2025-08-11 15:12_
+_@andythomas_
 
 ### Summary
 

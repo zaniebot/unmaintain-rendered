@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T01:48:18Z
 updated_at: 2024-12-06T19:21:39Z
 url: https://github.com/astral-sh/uv/issues/9666
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Noticeable lag with uv-created virtual environments during first interpreter session
 
 ---
 
-_Issue opened by @ketozhang on 2024-12-06 01:48_
+_@ketozhang_
 
 Using uv for quite a while, I've been noticing a significant lag that only happens the first time you run the interpreter after creating the virtual environment with uv. This lag is more apparent with larger environments. I do not find this as noticeable in venv-created virtual environments.
 

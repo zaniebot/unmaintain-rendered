@@ -14,14 +14,14 @@ head: david/fix-1463
 created_at: 2025-10-31T14:26:54Z
 updated_at: 2025-10-31T15:14:58Z
 url: https://github.com/astral-sh/ruff/pull/21164
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Do not promote literals in contravariant position
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-31 14:26_
+_@sharkdp_
 
 ## Summary
 

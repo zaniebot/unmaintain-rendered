@@ -13,14 +13,14 @@ head: konsti/remove-if-if
 created_at: 2025-04-15T08:54:26Z
 updated_at: 2025-04-15T09:16:01Z
 url: https://github.com/astral-sh/uv/pull/12892
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Remove `if if`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-15 08:54_
+_@konstin_
 
 Artifact from a clippy fix.
 

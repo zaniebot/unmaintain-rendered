@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T15:54:00Z
 updated_at: 2024-09-14T19:59:08Z
 url: https://github.com/astral-sh/uv/issues/7365
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Add support for remaining file extension aliases
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-13 15:54_
+_@charliermarsh_
 
 See: https://github.com/pypa/pip/blob/111eed14b6e9fba7c78a5ec2b7594812d17b5d2b/src/pip/_internal/utils/filetypes.py#L8.
 

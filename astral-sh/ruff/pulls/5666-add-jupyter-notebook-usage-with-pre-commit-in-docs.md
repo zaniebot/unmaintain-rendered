@@ -13,14 +13,14 @@ head: dhruv/pre-commit-docs
 created_at: 2023-07-10T19:09:54Z
 updated_at: 2023-07-10T19:39:10Z
 url: https://github.com/astral-sh/ruff/pull/5666
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add Jupyter Notebook usage with `pre-commit` in docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-10 19:09_
+_@dhruvmanila_
 
 Similar to https://github.com/astral-sh/ruff-pre-commit/pull/45
 

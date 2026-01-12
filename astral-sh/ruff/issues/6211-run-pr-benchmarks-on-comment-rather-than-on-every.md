@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-31T20:37:17Z
 updated_at: 2023-11-06T05:52:54Z
 url: https://github.com/astral-sh/ruff/issues/6211
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Run PR benchmarks on comment, rather than on every PR
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-31 20:37_
+_@charliermarsh_
 
 The benchmarks that run on each pull request are useful, but they're somewhat noisy and require a release build, which means we spend a lot of GitHub Action worker-time running the benchmarks, even for PRs that very-confidently won't affect performance.
 

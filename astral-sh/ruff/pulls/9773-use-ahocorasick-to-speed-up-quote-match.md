@@ -13,14 +13,14 @@ head: charlie/str
 created_at: 2024-02-02T03:10:59Z
 updated_at: 2024-02-02T14:57:40Z
 url: https://github.com/astral-sh/ruff/pull/9773
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use `AhoCorasick` to speed up quote match
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 03:10_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

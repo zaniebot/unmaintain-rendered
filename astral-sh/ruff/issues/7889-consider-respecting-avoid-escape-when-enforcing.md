@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T09:23:22Z
 updated_at: 2024-10-23T20:14:28Z
 url: https://github.com/astral-sh/ruff/issues/7889
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider respecting `avoid-escape` when enforcing other `flake8-quotes` rules
 
 ---
 
-_Issue opened by @BT-rmartin on 2023-10-10 09:23_
+_@BT-rmartin_
 
 My Ruff version is 0.0.292
 My configuration of Ruff is 

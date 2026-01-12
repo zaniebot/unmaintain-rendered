@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-20T11:56:02Z
 updated_at: 2023-02-20T15:08:17Z
 url: https://github.com/astral-sh/ruff/issues/3055
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET505 False Positive
 
 ---
 
-_Issue opened by @jasonwashburn on 2023-02-20 11:56_
+_@jasonwashburn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

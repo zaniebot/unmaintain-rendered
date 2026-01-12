@@ -14,14 +14,14 @@ head: zb/introduction-index
 created_at: 2024-07-31T20:38:36Z
 updated_at: 2024-08-16T23:00:07Z
 url: https://github.com/astral-sh/uv/pull/5672
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Move introduction to the "Getting started" section index
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 20:38_
+_@zanieb_
 
 We have an index for nearly every section. Should we have one for "Getting started"? Should it be this page?
 

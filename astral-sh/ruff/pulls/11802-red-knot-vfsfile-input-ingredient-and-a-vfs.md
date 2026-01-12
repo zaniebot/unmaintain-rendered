@@ -13,14 +13,14 @@ head: salsa-files-vfs
 created_at: 2024-06-08T15:22:33Z
 updated_at: 2024-06-12T15:50:55Z
 url: https://github.com/astral-sh/ruff/pull/11802
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # red-knot: `VfsFile` input ingredient and a `Vfs`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-08 15:22_
+_@MichaReiser_
 
 This PR adds the foundation for red-knots salsa integration. It starts by defining a virtual filesystem that is Salsa's view of the files on disk (metadata only for now, I'll add support for content in the next PR).
 

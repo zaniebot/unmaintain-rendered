@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T18:42:29Z
 updated_at: 2024-11-05T13:28:04Z
 url: https://github.com/astral-sh/uv/issues/8813
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # uv picks old versions when using unbound dependencies
 
 ---
 
-_Issue opened by @olzhasar-reef on 2024-11-04 18:42_
+_@olzhasar-reef_
 
 We are currently migrating our projects to `uv` from `pdm` and we are facing weird version resolution issues when specifying dependencies without lower bounds.
 Consider the following minimal `pyproject.toml`:

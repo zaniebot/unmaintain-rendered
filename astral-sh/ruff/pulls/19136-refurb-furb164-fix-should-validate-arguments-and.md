@@ -14,14 +14,14 @@ head: fix-19076
 created_at: 2025-07-04T03:12:59Z
 updated_at: 2025-07-16T15:51:41Z
 url: https://github.com/astral-sh/ruff/pull/19136
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [`refurb`] `FURB164` fix should validate arguments and should usually be marked unsafe
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-04 03:12_
+_@danparizher_
 
 ## Summary
 

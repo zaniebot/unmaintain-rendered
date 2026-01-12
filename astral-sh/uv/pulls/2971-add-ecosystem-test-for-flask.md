@@ -13,14 +13,14 @@ head: zb/ecosystem-test-flask
 created_at: 2024-04-10T16:41:47Z
 updated_at: 2024-04-10T16:51:41Z
 url: https://github.com/astral-sh/uv/pull/2971
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Add ecosystem test for flask
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 16:41_
+_@zanieb_
 
 Alternative to:
 

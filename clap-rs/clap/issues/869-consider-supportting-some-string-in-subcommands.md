@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-22T14:12:07Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/869
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Consider supportting ("some-string") in subcommands in clap_app!
 
 ---
 
-_Issue opened by @malbarbo on 2017-02-22 14:12_
+_@malbarbo_
 
 This would be a complement to https://github.com/kbknapp/clap-rs/pull/776
 

@@ -12,14 +12,14 @@ head: rust-1.79
 created_at: 2024-07-03T02:25:37Z
 updated_at: 2024-07-25T05:19:16Z
 url: https://github.com/astral-sh/uv/pull/4754
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Upgrade to Rust 1.79
 
 ---
 
-_Pull request opened by @samypr100 on 2024-07-03 02:25_
+_@samypr100_
 
 ## Summary
 

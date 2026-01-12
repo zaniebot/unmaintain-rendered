@@ -14,14 +14,14 @@ head: formatter-cache
 created_at: 2023-10-20T05:45:51Z
 updated_at: 2023-10-23T09:03:14Z
 url: https://github.com/astral-sh/ruff/pull/8089
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add caching to formatter
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-20 05:45_
+_@MichaReiser_
 
 ## Summary
 

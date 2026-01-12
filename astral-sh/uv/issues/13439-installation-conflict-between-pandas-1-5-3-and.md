@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T02:01:25Z
 updated_at: 2025-05-14T18:40:06Z
 url: https://github.com/astral-sh/uv/issues/13439
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Installation Conflict Between pandas==1.5.3 and numpy==1.20.3 in Python 3.9 Environment
 
 ---
 
-_Issue opened by @huajason on 2025-05-14 02:01_
+_@huajason_
 
 ### Summary
 

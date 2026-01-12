@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-28T17:31:09Z
 updated_at: 2025-02-06T10:14:24Z
 url: https://github.com/astral-sh/uv/issues/10214
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # uv does not work with meson-python editable installs
 
 ---
 
-_Issue opened by @lucascolley on 2024-12-28 17:31_
+_@lucascolley_
 
 As per https://github.com/astral-sh/uv/pull/7857#issuecomment-2564382110, breaking the discussion from there out into a new issue.
 

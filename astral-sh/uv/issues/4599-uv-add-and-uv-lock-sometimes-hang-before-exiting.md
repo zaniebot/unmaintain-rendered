@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T18:33:04Z
 updated_at: 2024-07-04T00:05:45Z
 url: https://github.com/astral-sh/uv/issues/4599
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv add` and `uv lock` sometimes hang before exiting
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-27 18:33_
+_@ibraheemdev_
 
 I can reproduce this on my machine running `uv cache clean && uv venv && uv add jupyter`. I've also noticed this with `uv lock`.
 

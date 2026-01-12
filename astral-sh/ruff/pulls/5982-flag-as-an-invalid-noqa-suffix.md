@@ -13,14 +13,14 @@ head: charlie/suffix
 created_at: 2023-07-22T14:02:30Z
 updated_at: 2023-07-22T14:33:12Z
 url: https://github.com/astral-sh/ruff/pull/5982
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Flag `[` as an invalid noqa suffix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-22 14:02_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5960.
 

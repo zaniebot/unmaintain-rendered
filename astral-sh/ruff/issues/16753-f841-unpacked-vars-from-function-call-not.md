@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T16:01:41Z
 updated_at: 2025-03-14T17:15:04Z
 url: https://github.com/astral-sh/ruff/issues/16753
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F841 unpacked vars from function call not reported as unused
 
 ---
 
-_Issue opened by @sk- on 2025-03-14 16:01_
+_@sk-_
 
 ### Summary
 

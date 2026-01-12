@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T15:46:44Z
 updated_at: 2023-11-02T04:36:54Z
 url: https://github.com/astral-sh/ruff/issues/8406
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PLE1307: false positive
 
 ---
 
-_Issue opened by @spaceone on 2023-11-01 15:46_
+_@spaceone_
 
 PLE1307: false positive:
 ```python

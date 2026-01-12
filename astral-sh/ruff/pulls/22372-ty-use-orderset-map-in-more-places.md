@@ -13,14 +13,14 @@ head: micha/ordered-set
 created_at: 2026-01-04T18:54:34Z
 updated_at: 2026-01-04T19:34:29Z
 url: https://github.com/astral-sh/ruff/pull/22372
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Use `OrderSet/Map` in more places
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-04 18:54_
+_@MichaReiser_
 
 Just curious if any of this helps with our non-determinism
 

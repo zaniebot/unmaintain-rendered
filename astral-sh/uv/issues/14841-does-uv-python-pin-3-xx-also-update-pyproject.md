@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T11:54:44Z
 updated_at: 2025-08-14T23:18:48Z
 url: https://github.com/astral-sh/uv/issues/14841
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Does `uv python pin 3.xx` also update pyproject.toml and uv.lock?
 
 ---
 
-_Issue opened by @adityashukzy on 2025-07-23 11:54_
+_@adityashukzy_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: fix-20519
 created_at: 2025-09-22T22:19:16Z
 updated_at: 2025-10-07T21:05:34Z
 url: https://github.com/astral-sh/ruff/pull/20525
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`ruff`] Suppress diagnostic for f-string interpolations with debug text (`RUF010`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-22 22:19_
+_@danparizher_
 
 ## Summary
 

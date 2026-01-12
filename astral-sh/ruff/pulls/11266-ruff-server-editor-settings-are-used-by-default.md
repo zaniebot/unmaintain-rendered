@@ -14,14 +14,14 @@ head: jane/server/merge-fallback-settings
 created_at: 2024-05-03T17:35:09Z
 updated_at: 2024-05-04T17:52:02Z
 url: https://github.com/astral-sh/ruff/pull/11266
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server`: Editor settings are used by default if no file-based configuration exists
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-03 17:35_
+_@snowsignal_
 
 ## Summary
 

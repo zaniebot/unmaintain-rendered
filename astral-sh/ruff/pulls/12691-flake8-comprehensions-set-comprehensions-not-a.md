@@ -13,14 +13,14 @@ head: c419-set-comprehension
 created_at: 2024-08-05T16:34:35Z
 updated_at: 2024-08-06T02:49:07Z
 url: https://github.com/astral-sh/ruff/pull/12691
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [flake8-comprehensions] Set comprehensions not a violation for `sum` in `unnecessary-comprehension-in-call` (`C419`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-05 16:34_
+_@dylwil3_
 
 ## Summary
 

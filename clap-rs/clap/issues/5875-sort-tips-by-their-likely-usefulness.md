@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T02:34:19Z
 updated_at: 2025-01-09T15:22:05Z
 url: https://github.com/clap-rs/clap/issues/5875
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Sort tips by their likely usefulness
 
 ---
 
-_Issue opened by @nazar-pc on 2025-01-09 02:34_
+_@nazar-pc_
 
 ### Please complete the following tasks
 

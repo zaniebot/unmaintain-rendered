@@ -13,14 +13,14 @@ head: renovate/classnames-2.x-lockfile
 created_at: 2024-03-26T08:44:18Z
 updated_at: 2024-03-26T09:01:36Z
 url: https://github.com/astral-sh/ruff/pull/10603
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update dependency classnames to v2.5.1
 
 ---
 
-_Pull request opened by @renovate on 2024-03-26 08:44_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

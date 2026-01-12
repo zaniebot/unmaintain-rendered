@@ -13,14 +13,14 @@ head: charlie/arena-2
 created_at: 2024-11-26T19:25:34Z
 updated_at: 2024-11-26T20:05:42Z
 url: https://github.com/astral-sh/uv/pull/9448
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Migrate to PubGrub's arena for package names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-26 19:25_
+_@charliermarsh_
 
 ## Summary
 

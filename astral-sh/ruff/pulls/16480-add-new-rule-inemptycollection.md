@@ -13,14 +13,14 @@ head: add-rule-in-empty-collection
 created_at: 2025-03-03T19:11:59Z
 updated_at: 2025-05-07T08:31:29Z
 url: https://github.com/astral-sh/ruff/pull/16480
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Add new rule InEmptyCollection
 
 ---
 
-_Pull request opened by @naslundx on 2025-03-03 19:11_
+_@naslundx_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

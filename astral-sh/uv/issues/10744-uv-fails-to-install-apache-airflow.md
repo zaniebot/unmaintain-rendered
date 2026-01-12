@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-18T22:09:30Z
 updated_at: 2025-01-18T22:24:58Z
 url: https://github.com/astral-sh/uv/issues/10744
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv fails to install apache airflow
 
 ---
 
-_Issue opened by @gmolau on 2025-01-18 22:09_
+_@gmolau_
 
 Fresh uv install, fresh venv, trying to add the first dependency, fails:
 

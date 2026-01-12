@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-17T22:25:04Z
 updated_at: 2023-11-18T21:10:23Z
 url: https://github.com/astral-sh/ruff/issues/8748
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter undocumented deviation: Trailing comma added after kwargs
 
 ---
 
-_Issue opened by @henribru on 2023-11-17 22:25_
+_@henribru_
 
 [Black:](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADhAGNdAD2IimZxl1N_WlbvK5V9KEd00teEET9osIZigniJF5fr_T7GfCbcGUBQhUU3aA1epEd495EVTT5WLbOM4upLfhfjwWg9Cp0Mh8h9sbfEEDGcq8Z-myt2zvNgeXO5vo1Vmkx7AAAAoJ0uR6yEDA8AAX_iAQAAABOYidOxxGf7AgAAAAAEWVo=)
 ```

@@ -13,14 +13,14 @@ head: charlie/split
 created_at: 2023-11-17T18:46:20Z
 updated_at: 2023-11-17T18:53:54Z
 url: https://github.com/astral-sh/uv/pull/446
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Split resolver inputs into manifest and options
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 18:46_
+_@charliermarsh_
 
 ## Summary
 

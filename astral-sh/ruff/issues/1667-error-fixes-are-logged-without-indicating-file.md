@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T18:25:43Z
 updated_at: 2025-03-19T04:16:38Z
 url: https://github.com/astral-sh/ruff/issues/1667
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Error fixes are logged without indicating file names
 
 ---
 
-_Issue opened by @devend711 on 2023-01-05 18:25_
+_@devend711_
 
 Example output from running `ruff` via a git pre-commit hook:
 

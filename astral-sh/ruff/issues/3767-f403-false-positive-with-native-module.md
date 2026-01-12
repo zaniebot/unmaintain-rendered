@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-28T12:34:50Z
 updated_at: 2023-08-28T14:33:25Z
 url: https://github.com/astral-sh/ruff/issues/3767
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F403 false positive with native module
 
 ---
 
-_Issue opened by @konstin on 2023-03-28 12:34_
+_@konstin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

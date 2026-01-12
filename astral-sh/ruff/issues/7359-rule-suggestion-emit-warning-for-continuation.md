@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-13T18:13:49Z
 updated_at: 2023-09-19T03:43:03Z
 url: https://github.com/astral-sh/ruff/issues/7359
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule suggestion: Emit warning for continuation characters in multi-line strings
 
 ---
 
-_Issue opened by @dosisod on 2023-09-13 18:13_
+_@dosisod_
 
 I recently came across the following bug/surprising behavior, and it doesn't seem to be picked up by Ruff, Black, Flake8, etc (to my knowledge). Basically, if you use a continuation character in a multi-line string, the continuation character will merge the 2 lines. This probably isn't what most people intended, they probably meant to include them verbatim. This is similar to W605 (invalid escape sequence), except that this is perfectly valid, just not what most people expect.
 

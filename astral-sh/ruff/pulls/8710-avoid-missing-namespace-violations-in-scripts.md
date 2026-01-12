@@ -13,14 +13,14 @@ head: charlie/scripts
 created_at: 2023-11-16T02:23:32Z
 updated_at: 2023-11-16T22:21:35Z
 url: https://github.com/astral-sh/ruff/pull/8710
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid missing namespace violations in scripts with shebangs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-16 02:23_
+_@charliermarsh_
 
 ## Summary
 

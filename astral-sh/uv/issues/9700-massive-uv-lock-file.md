@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-07T00:41:07Z
 updated_at: 2024-12-07T03:07:31Z
 url: https://github.com/astral-sh/uv/issues/9700
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Massive `uv.lock` file
 
 ---
 
-_Issue opened by @NellyWhads on 2024-12-07 00:41_
+_@NellyWhads_
 
 Is it safe to clean up duplicate lines in the `uv.lock` file? Can this be done as part of the `lock` procedure? In my lock file's resolution-markers section, have lines repeated thousands of times.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-17T00:32:20Z
 updated_at: 2022-06-17T12:27:33Z
 url: https://github.com/clap-rs/clap/issues/3847
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # A feature to make assertions unconditional
 
 ---
 
-_Issue opened by @stepancheg on 2022-06-17 00:32_
+_@stepancheg_
 
 ### Please complete the following tasks
 

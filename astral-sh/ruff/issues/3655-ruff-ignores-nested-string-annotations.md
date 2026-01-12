@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-21T20:24:44Z
 updated_at: 2023-03-26T01:56:11Z
 url: https://github.com/astral-sh/ruff/issues/3655
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff ignores nested string annotations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-21 20:24_
+_@charliermarsh_
 
 Mypy respects the use of `Path` here:
 

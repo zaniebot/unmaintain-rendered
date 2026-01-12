@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-28T17:13:29Z
 updated_at: 2024-11-29T16:39:24Z
 url: https://github.com/astral-sh/uv/issues/9508
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # `constraint-dependencies` not respected outside of pyproject.toml
 
 ---
 
-_Issue opened by @cdb39 on 2024-11-28 17:13_
+_@cdb39_
 
 `constraint-dependencies` specified in either a project uv.toml, or a user-level uv.toml are ignored, regardless of anything present in the pyproject.toml.  I'm using uv version 0.5.5.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T05:52:18Z
 updated_at: 2025-10-09T12:15:37Z
 url: https://github.com/astral-sh/uv/issues/16197
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # uv downloads unstripped binaries
 
 ---
 
-_Issue opened by @oech3 on 2025-10-09 05:52_
+_@oech3_
 
 ### Summary
 

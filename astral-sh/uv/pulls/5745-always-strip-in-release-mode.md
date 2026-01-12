@@ -13,14 +13,14 @@ head: konsti/strip-properly
 created_at: 2024-08-03T10:39:10Z
 updated_at: 2024-08-03T13:42:47Z
 url: https://github.com/astral-sh/uv/pull/5745
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Always strip in release mode
 
 ---
 
-_Pull request opened by @konstin on 2024-08-03 10:39_
+_@konstin_
 
 Decreases linux release wheel size by 2MB.
 

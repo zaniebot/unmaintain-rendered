@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-05T10:22:21Z
 updated_at: 2025-01-07T19:28:33Z
 url: https://github.com/astral-sh/uv/issues/9658
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # UV Workspaces examples
 
 ---
 
-_Issue opened by @kevinsimper on 2024-12-05 10:22_
+_@kevinsimper_
 
 Would it be possible to have examples of how to use UV?
 Or will links to other examples be the preferred?

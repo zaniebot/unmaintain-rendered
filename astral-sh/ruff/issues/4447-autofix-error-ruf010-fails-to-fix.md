@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-16T08:34:43Z
 updated_at: 2023-05-16T12:23:43Z
 url: https://github.com/astral-sh/ruff/issues/4447
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error]: `RUF010` fails to fix
 
 ---
 
-_Issue opened by @Saransh-cpp on 2023-05-16 08:34_
+_@Saransh-cpp_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

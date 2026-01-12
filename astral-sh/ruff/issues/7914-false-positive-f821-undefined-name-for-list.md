@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-11T09:28:18Z
 updated_at: 2023-10-11T13:33:17Z
 url: https://github.com/astral-sh/ruff/issues/7914
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False positive F821 (Undefined name) for list comprehension in Annotated[]
 
 ---
 
-_Issue opened by @guillaume-alliander on 2023-10-11 09:28_
+_@guillaume-alliander_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

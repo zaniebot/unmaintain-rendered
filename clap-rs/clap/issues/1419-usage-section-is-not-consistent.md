@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-02-19T18:56:19Z
 updated_at: 2021-02-14T12:48:05Z
 url: https://github.com/clap-rs/clap/issues/1419
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # usage section is not consistent
 
 ---
 
-_Issue opened by @samuela on 2019-02-19 18:56_
+_@samuela_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

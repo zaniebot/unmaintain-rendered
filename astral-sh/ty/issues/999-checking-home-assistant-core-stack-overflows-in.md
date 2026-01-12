@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T11:40:13Z
 updated_at: 2025-08-22T16:22:11Z
 url: https://github.com/astral-sh/ty/issues/999
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Checking home-assistant-core stack overflows in `find_legacy_typevars`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-15 11:40_
+_@MichaReiser_
 
 ### Summary
 

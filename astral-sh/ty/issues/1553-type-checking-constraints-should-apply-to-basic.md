@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T13:33:31Z
 updated_at: 2025-11-18T16:10:41Z
 url: https://github.com/astral-sh/ty/issues/1553
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `TYPE_CHECKING` constraints should apply to basic blocks, not scopes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-14 13:33_
+_@AlexWaygood_
 
 We currently track whether an entire scope is enclosed inside an `if TYPE_CHECKING` block. But there are certain semantics that it would be useful to apply to `TYPE_CHECKING` blocks where tracking this at the scope level is not sufficiently fine-grained. For example, if your code supports Python 3.9, we allow this type alias (it doesn't really matter that it uses the PEP-604 syntax, since it will never be executed at runtime, and the intent is clear):
 

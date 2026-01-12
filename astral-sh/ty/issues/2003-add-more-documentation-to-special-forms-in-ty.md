@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T12:25:40Z
 updated_at: 2025-12-17T19:56:03Z
 url: https://github.com/astral-sh/ty/issues/2003
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add more documentation to special forms in `ty_extensions.pyi` stub
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-17 12:25_
+_@AlexWaygood_
 
 It's easy for users to jump to these definitions in the stub file from inlay hints. It will be even easier to jump to these definitions if something like https://github.com/astral-sh/ty/issues/1575 is implemented.
 

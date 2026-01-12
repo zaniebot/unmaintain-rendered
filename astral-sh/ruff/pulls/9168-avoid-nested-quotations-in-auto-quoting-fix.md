@@ -13,14 +13,14 @@ head: charlie/unique
 created_at: 2023-12-17T12:46:06Z
 updated_at: 2023-12-17T13:04:49Z
 url: https://github.com/astral-sh/ruff/pull/9168
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid nested quotations in auto-quoting fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-17 12:46_
+_@charliermarsh_
 
 ## Summary
 

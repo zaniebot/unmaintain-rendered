@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T23:38:53Z
 updated_at: 2025-12-18T23:41:33Z
 url: https://github.com/astral-sh/ty/issues/2094
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # type inferring doesn't take looping into accounts, inaccurately narrows to `Literal`
 
 ---
 
-_Issue opened by @paw-lu on 2025-12-18 23:38_
+_@paw-lu_
 
 ### Summary
 

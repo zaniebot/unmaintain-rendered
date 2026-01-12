@@ -12,14 +12,14 @@ head: fix-replace-whitespace
 created_at: 2023-05-04T16:41:27Z
 updated_at: 2023-05-08T14:53:28Z
 url: https://github.com/astral-sh/ruff/pull/4226
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix replace_whitespace() tabulation to space
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-04 16:41_
+_@JonathanPlasse_
 
 In some case too much spaces were added.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T12:21:15Z
 updated_at: 2025-05-30T00:20:17Z
 url: https://github.com/astral-sh/ty/issues/538
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # invalid-return-type error message is too weak for wrong return type
 
 ---
 
-_Issue opened by @konstin on 2025-05-28 12:21_
+_@konstin_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: PLE1003
 created_at: 2024-03-02T02:04:14Z
 updated_at: 2024-03-28T17:53:43Z
 url: https://github.com/astral-sh/ruff/pull/10193
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pylint`] Implement `bad-super-call` (`PLE1003`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2024-03-02 02:04_
+_@chanman3388_
 
 ## Summary
 

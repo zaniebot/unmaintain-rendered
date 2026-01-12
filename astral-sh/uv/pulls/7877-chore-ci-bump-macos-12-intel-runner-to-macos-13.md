@@ -13,14 +13,14 @@ head: avoid-using-macos-12-in-ci
 created_at: 2024-10-02T18:40:52Z
 updated_at: 2024-10-11T02:37:23Z
 url: https://github.com/astral-sh/uv/pull/7877
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # chore(ci): bump macos-12 intel runner to macos-13 intel runner
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-02 18:40_
+_@samypr100_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-03-03T02:51:11Z
 updated_at: 2025-03-03T15:13:57Z
 url: https://github.com/astral-sh/uv/pull/11910
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:03Z
 ```
 
 # Avoid string allocation when enumerating tool names
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-03 02:51_
+_@charliermarsh_
 
 ## Summary
 

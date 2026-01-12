@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T09:47:40Z
 updated_at: 2024-10-28T23:01:08Z
 url: https://github.com/astral-sh/uv/issues/8414
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # UV editable install in offline mode not working with Hatchling installed (system-wide)
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-10-21 09:47_
+_@ion-elgreco_
 
 I am on the latest UV, trying to install a package as editable:
 

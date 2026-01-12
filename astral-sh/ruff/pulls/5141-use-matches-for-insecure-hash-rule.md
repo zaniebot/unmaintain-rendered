@@ -12,14 +12,14 @@ head: charlie/insecure-hash
 created_at: 2023-06-16T04:11:54Z
 updated_at: 2023-06-16T04:42:32Z
 url: https://github.com/astral-sh/ruff/pull/5141
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `matches!` for insecure hash rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 04:11_
+_@charliermarsh_
 
 _No description provided._
 

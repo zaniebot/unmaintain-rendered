@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-09T17:56:43Z
 updated_at: 2025-04-15T11:32:23Z
 url: https://github.com/astral-sh/ruff/issues/17322
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Consider further optimising visibility constraints applied to `*`-import definitions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-09 17:56_
+_@AlexWaygood_
 
 https://github.com/astral-sh/ruff/pull/17317 reclaimed much of the performance regression from https://github.com/astral-sh/ruff/pull/17286, but it appears as though we have still lost a fair bit of performance over the last two days, much of it due to work on `*` imports. Here's an annotated graph of how the Codspeed [`red_knot_check_file[cold]`](https://codspeed.io/astral-sh/ruff/benchmarks/crates/ruff_benchmark/benches/red_knot.rs::check_file::benchmark_cold::red_knot_check_file%5Bcold%5D) benchmark has changed over the last two days:
 

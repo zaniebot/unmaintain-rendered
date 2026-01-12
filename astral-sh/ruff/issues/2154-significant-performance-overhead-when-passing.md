@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T14:00:38Z
 updated_at: 2023-01-26T07:35:49Z
 url: https://github.com/astral-sh/ruff/issues/2154
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Significant performance overhead when passing files and using multiple `per-file-ignores`
 
 ---
 
-_Issue opened by @mkniewallner on 2023-01-25 14:00_
+_@mkniewallner_
 
 When defining multiple `per-file-ignores` while explicitly passing files for `ruff` to run on (which is most commonly done when using `ruff` through `pre-commit`), this creates a significant performance overhead.
 

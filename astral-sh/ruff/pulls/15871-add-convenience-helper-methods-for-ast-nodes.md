@@ -13,14 +13,14 @@ head: alex/annotation-method
 created_at: 2025-02-01T15:25:17Z
 updated_at: 2025-02-01T17:26:04Z
 url: https://github.com/astral-sh/ruff/pull/15871
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add convenience helper methods for AST nodes representing function parameters
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-01 15:25_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: ibraheem/uv-tree
 created_at: 2024-07-01T21:16:05Z
 updated_at: 2024-07-08T18:07:49Z
 url: https://github.com/astral-sh/uv/pull/4708
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Implement `uv tree`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 21:16_
+_@ibraheemdev_
 
 ## Summary
 

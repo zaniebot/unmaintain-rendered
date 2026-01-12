@@ -14,14 +14,14 @@ head: SIM300-CONSTANT-CASE-false-positives
 created_at: 2023-12-16T19:22:54Z
 updated_at: 2023-12-20T20:33:30Z
 url: https://github.com/astral-sh/ruff/pull/9164
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # SIM300: CONSTANT_CASE variables are improperly flagged for yoda violation
 
 ---
 
-_Pull request opened by @asafamr-mm on 2023-12-16 19:22_
+_@asafamr-mm_
 
 ## Summary
 
@@ -286,6 +286,176 @@ _Comment by @github-actions[bot] on 2023-12-16 19:37_
 </details>
 
 
+
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:00_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:100 on 2023-12-16 21:00_
+
+I'd probably add an associated method on `ConstantLikelihood`, like:
+
+```rust
+impl ConstantLikelihood {
+  fn from_expression(expr: &Expr) -> Self { ... }
+}
+```
+
+It helps with discoverability, since this is kind of a constructor.
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:01_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:107 on 2023-12-16 21:01_
+
+I think we should consider omitting lists and dictionaries, _or_ at the very least they should be added under preview mode to avoid new violations.
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:03_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:107 on 2023-12-16 21:03_
+
+Ahh, I guess the use of `list` was actually the motivating issue here. So, alternatively, can we try gating this whole change under `preview`, to avoid disruption for folks on stable?
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:03_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:142 on 2023-12-16 21:03_
+
+Nice.
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:04_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:103 on 2023-12-16 21:04_
+
+Entirely personal style but I'd probably just put this in the `match` with all the cases rather than adding an early return. I just find it a bit clearer.
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:05_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:88 on 2023-12-16 21:05_
+
+Nit: make these rustdocs? Like:
+
+```rust
+/// The expression is unlikely to be a constant (e.g., `foo` or `foo(bar)`).
+Unlikely = 0
+/// The expression is likely to be a constant (e.g., `FOO`).
+Probably = 1,
+...
+```
+
+---
+
+_@charliermarsh reviewed on 2023-12-16 21:05_
+
+I think it's a great change!
+
+---
+
+_@asafamr-mm reviewed on 2023-12-17 08:28_
+
+---
+
+_Review comment by @asafamr-mm on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:103 on 2023-12-17 08:28_
+
+Feel free to correct me, I'm here to learn 🙂 
+Would you say this is idiomatic: https://github.com/astral-sh/ruff/blob/7879f9e921c3a67f1b89c290e591bb01799b5479/crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs#L98-L100
+(trying to DRY this invocation from multiple patterns)
+
+---
+
+_@asafamr-mm reviewed on 2023-12-17 08:29_
+
+---
+
+_Review comment by @asafamr-mm on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:107 on 2023-12-17 08:29_
+
+moved lists and dicts to preview
+
+---
+
+_@asafamr-mm reviewed on 2023-12-17 08:32_
+
+---
+
+_Review comment by @asafamr-mm on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:100 on 2023-12-17 08:32_
+
+like this? 
+https://github.com/astral-sh/ruff/blob/7879f9e921c3a67f1b89c290e591bb01799b5479/crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs#L96-L143
+
+---
+
+_@asafamr-mm reviewed on 2023-12-17 08:33_
+
+---
+
+_Review comment by @asafamr-mm on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:88 on 2023-12-17 08:33_
+
+done. feel free to correct my English there...
+
+---
+
+_@charliermarsh approved on 2023-12-20 17:34_
+
+This is excellent, thank you!
+
+---
+
+_@charliermarsh reviewed on 2023-12-20 17:34_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:103 on 2023-12-20 17:34_
+
+Yeah, I think what you have here with the `match` is a nice approach.
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:100 on 2023-12-20 17:35_
+
+Yup, exactly!
+
+---
+
+_@charliermarsh reviewed on 2023-12-20 17:35_
+
+---
+
+_@charliermarsh reviewed on 2023-12-20 17:35_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs`:100 on 2023-12-20 17:35_
+
+If we didn't need `preview`, we could also do...
+
+```rust
+impl From<&Expr> for ConstantLikelihood {
+  ...
+}
+```
+
+That would enable us to do things like `expr.into()`.
 
 
 ---

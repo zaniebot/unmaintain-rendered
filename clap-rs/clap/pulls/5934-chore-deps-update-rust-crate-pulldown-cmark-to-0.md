@@ -12,14 +12,14 @@ head: renovate/pulldown-cmark-0.x
 created_at: 2025-03-01T02:07:12Z
 updated_at: 2025-03-03T17:01:17Z
 url: https://github.com/clap-rs/clap/pull/5934
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Update Rust crate pulldown-cmark to 0.13.0
 
 ---
 
-_Pull request opened by @renovate on 2025-03-01 02:07_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T21:28:58Z
 updated_at: 2025-09-29T21:57:58Z
 url: https://github.com/astral-sh/ruff/issues/20639
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # D102: RUF100 ping-pong
 
 ---
 
-_Issue opened by @smurfix on 2025-09-29 21:28_
+_@smurfix_
 
 ### Summary
 

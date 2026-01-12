@@ -13,14 +13,14 @@ head: charlie/dup
 created_at: 2024-10-24T20:50:18Z
 updated_at: 2024-10-24T21:10:02Z
 url: https://github.com/astral-sh/uv/pull/8545
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Avoid duplicate `[tool.uv]` header in TOML examples
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-24 20:50_
+_@charliermarsh_
 
 ## Summary
 

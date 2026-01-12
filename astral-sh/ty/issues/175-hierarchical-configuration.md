@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:06:50Z
 updated_at: 2025-12-31T15:25:59Z
 url: https://github.com/astral-sh/ty/issues/175
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Hierarchical configuration
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:06_
+_@MichaReiser_
 
 To be decided
 

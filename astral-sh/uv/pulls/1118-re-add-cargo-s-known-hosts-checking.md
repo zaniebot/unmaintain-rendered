@@ -12,14 +12,14 @@ head: charlie/known
 created_at: 2024-01-26T03:17:36Z
 updated_at: 2024-01-26T03:29:37Z
 url: https://github.com/astral-sh/uv/pull/1118
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Re-add Cargo's known hosts checking
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 03:17_
+_@charliermarsh_
 
 ## Summary
 

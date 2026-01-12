@@ -12,14 +12,14 @@ head: charlie/avoid
 created_at: 2022-12-26T00:52:39Z
 updated_at: 2022-12-26T00:52:43Z
 url: https://github.com/astral-sh/ruff/pull/1377
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid double-extending past the end when showing source
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-26 00:52_
+_@charliermarsh_
 
 Resolves #1370.
 

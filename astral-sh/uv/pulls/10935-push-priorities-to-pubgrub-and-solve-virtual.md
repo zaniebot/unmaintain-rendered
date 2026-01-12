@@ -13,14 +13,14 @@ head: konsti/sync-priorities
 created_at: 2025-01-24T13:25:30Z
 updated_at: 2025-03-10T22:52:11Z
 url: https://github.com/astral-sh/uv/pull/10935
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Push priorities to pubgrub and solve virtual package with the strongest constraints first
 
 ---
 
-_Pull request opened by @konstin on 2025-01-24 13:25_
+_@konstin_
 
 We were updating package priorities in without syncing them with pubgrub, so uv and pubgrub were getting out of sync. Surprisingly, this didn't cause any apparent differences in resolution, I expected this would change at least our ecosystem cases. It's potentially breaking through any time we change something in either uv or pubgrub.
 

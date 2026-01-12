@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T02:41:42Z
 updated_at: 2024-10-03T17:02:15Z
 url: https://github.com/astral-sh/uv/issues/7800
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Empty project: Unable to install solace-pubsubplus - No solution found when resolving dependencies
 
 ---
 
-_Issue opened by @Ekko-nelson on 2024-09-30 02:41_
+_@Ekko-nelson_
 
 * A minimal code snippet that reproduces the bug.
 

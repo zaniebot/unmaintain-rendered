@@ -11,14 +11,14 @@ head: fix-RUF056
 created_at: 2025-06-22T13:46:37Z
 updated_at: 2025-06-24T06:12:15Z
 url: https://github.com/astral-sh/ruff/pull/18861
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`ruff`] Fix `RUF056` false negative on shadowed bindings
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-22 13:46_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dependabot/cargo/pyproject-toml-0.8.1
 created_at: 2023-11-13T08:09:01Z
 updated_at: 2023-11-13T15:04:13Z
 url: https://github.com/astral-sh/ruff/pull/8648
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump pyproject-toml from 0.8.0 to 0.8.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-13 08:09_
+_@dependabot_
 
 Bumps [pyproject-toml](https://github.com/PyO3/pyproject-toml-rs) from 0.8.0 to 0.8.1.
 <details>

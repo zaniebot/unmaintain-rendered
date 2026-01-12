@@ -13,14 +13,14 @@ head: ups/tool-install-additional-exes
 created_at: 2024-09-20T17:04:46Z
 updated_at: 2025-07-30T19:50:46Z
 url: https://github.com/astral-sh/uv/pull/7592
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Support installing additional executables in `uv tool install`
 
 ---
 
-_Pull request opened by @lucab on 2024-09-20 17:04_
+_@lucab_
 
 This enhances `uv tool install` in order to allow installing executables from multiple packages in a single call.
 

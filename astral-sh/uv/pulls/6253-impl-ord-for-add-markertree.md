@@ -12,14 +12,14 @@ head: konsti/impl-ord-for-add-marker-tree
 created_at: 2024-08-20T14:57:41Z
 updated_at: 2024-08-20T17:11:59Z
 url: https://github.com/astral-sh/uv/pull/6253
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Impl `Ord` for ADD `MarkerTree`
 
 ---
 
-_Pull request opened by @konstin on 2024-08-20 14:57_
+_@konstin_
 
 The ADD `MarkerTree` was including the non-deterministic, unstable `NodeId` in its `Ord` implementation since switching algebraic decision diagrams. By replacing this with a correct `Ord` implementation, we fix #6249.
 

@@ -13,14 +13,14 @@ head: docs-file-level-noqa
 created_at: 2023-10-30T20:43:20Z
 updated_at: 2023-11-07T18:18:18Z
 url: https://github.com/astral-sh/ruff/pull/8366
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update docs related to file level error suppression
 
 ---
 
-_Pull request opened by @doolio on 2023-10-30 20:43_
+_@doolio_
 
 Fixes: #8364
 

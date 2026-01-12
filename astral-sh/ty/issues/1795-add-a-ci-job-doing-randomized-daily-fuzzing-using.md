@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-07T15:39:00Z
 updated_at: 2025-12-08T17:44:58Z
 url: https://github.com/astral-sh/ty/issues/1795
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add a CI job doing randomized daily fuzzing using the py-fuzzer script
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-07 15:39_
+_@AlexWaygood_
 
 We currently have a CI job that runs the py-fuzzer script on every ty PR: https://github.com/astral-sh/ruff/blob/285d6410d3dcc0567fee1d72bc46bfe3008af36b/.github/workflows/ci.yaml#L653-L680. However, this CI job always runs ty on the same 1,000 fuzzer seeds each time. It compares the PR branch against `main`, and checks that ty does not introduce any _new_ panics on the first 1,000 seeds compared to the `main` branch.
 

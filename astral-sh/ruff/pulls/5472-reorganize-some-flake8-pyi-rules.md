@@ -13,14 +13,14 @@ head: charlie/pyi
 created_at: 2023-07-03T04:31:11Z
 updated_at: 2023-07-03T05:03:17Z
 url: https://github.com/astral-sh/ruff/pull/5472
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Reorganize some `flake8-pyi` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 04:31_
+_@charliermarsh_
 
 _No description provided._
 

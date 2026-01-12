@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T16:44:42Z
 updated_at: 2023-04-20T17:08:45Z
 url: https://github.com/clap-rs/clap/issues/4849
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clippy almost swap triggering on clap subcommand and Parser
 
 ---
 
-_Issue opened by @kristian1108 on 2023-04-20 16:44_
+_@kristian1108_
 
 ### Please complete the following tasks
 

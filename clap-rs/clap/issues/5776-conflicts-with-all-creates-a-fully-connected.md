@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T10:52:44Z
 updated_at: 2024-10-14T13:16:37Z
 url: https://github.com/clap-rs/clap/issues/5776
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # conflicts_with_all creates a fully connected conflict network instead of pair-wise conflicts
 
 ---
 
-_Issue opened by @nwalfield on 2024-10-14 10:52_
+_@nwalfield_
 
 ### Please complete the following tasks
 

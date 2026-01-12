@@ -14,14 +14,14 @@ head: invalid/truncate-wide-literals
 created_at: 2025-10-16T19:46:35Z
 updated_at: 2025-10-17T11:50:58Z
 url: https://github.com/astral-sh/ruff/pull/20928
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Truncate Literal type display in some situations
 
 ---
 
-_Pull request opened by @InvalidPathException on 2025-10-16 19:46_
+_@InvalidPathException_
 
 ## Summary
 

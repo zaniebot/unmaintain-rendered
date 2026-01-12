@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T12:09:23Z
 updated_at: 2024-10-21T21:39:31Z
 url: https://github.com/astral-sh/uv/issues/6861
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Enable GitHub Discussions
 
 ---
 
-_Issue opened by @dbohdan on 2024-08-30 12:09_
+_@dbohdan_
 
 Could you enable GitHub Discussions like you have [for Ruff](https://github.com/astral-sh/ruff/discussions)?
 

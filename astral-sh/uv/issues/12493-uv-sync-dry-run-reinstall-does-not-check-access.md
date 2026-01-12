@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T17:36:14Z
 updated_at: 2025-04-03T01:12:47Z
 url: https://github.com/astral-sh/uv/issues/12493
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # `uv sync --dry-run --reinstall` does not check access to indexes
 
 ---
 
-_Issue opened by @LewisGaul on 2025-03-26 17:36_
+_@LewisGaul_
 
 ### Summary
 

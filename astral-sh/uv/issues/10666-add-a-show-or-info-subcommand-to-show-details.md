@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T03:50:35Z
 updated_at: 2025-08-04T23:53:58Z
 url: https://github.com/astral-sh/uv/issues/10666
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # (🎁) add a `show` or `info` subcommand to show details about a package, both locally and on pypi (including extras)
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-01-16 03:50_
+_@KotlinIsland_
 
 `uv pip show` is buried within `uv pip`, and it doesn't show information for a package that isn't installed
 

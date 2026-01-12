@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T01:47:39Z
 updated_at: 2025-01-06T22:53:15Z
 url: https://github.com/astral-sh/uv/issues/7529
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Can't create virtual environment on ARMv7 Linux Musl
 
 ---
 
-_Issue opened by @patrick-5546 on 2024-09-19 01:47_
+_@patrick-5546_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

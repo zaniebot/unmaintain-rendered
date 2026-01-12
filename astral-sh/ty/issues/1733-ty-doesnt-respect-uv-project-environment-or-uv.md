@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-02T21:57:22Z
 updated_at: 2026-01-09T19:19:29Z
 url: https://github.com/astral-sh/ty/issues/1733
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty doesnt respect UV_PROJECT_ENVIRONMENT or `uv run`, leading it to incorrectly claim `unresolved-import`
 
 ---
 
-_Issue opened by @brycedrennan on 2025-12-02 21:57_
+_@brycedrennan_
 
 In a docker image, when `UV_PROJECT_ENVIRONMENT=/usr/local`, `ty` cannot resolve third-party imports even though `uv run python` can import them just fine.
 

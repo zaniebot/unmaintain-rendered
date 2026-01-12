@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T20:27:46Z
 updated_at: 2026-01-09T11:16:24Z
 url: https://github.com/astral-sh/ty/issues/2150
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Docstrings for reexported functions do not fall back to implementation definition
 
 ---
 
-_Issue opened by @Jammf on 2025-12-21 20:27_
+_@Jammf_
 
 ### Summary
 

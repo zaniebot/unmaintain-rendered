@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-29T21:04:15Z
 updated_at: 2025-09-10T14:22:45Z
 url: https://github.com/astral-sh/ruff/issues/17724
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # detect code duplication
 
 ---
 
-_Issue opened by @ctcjab on 2025-04-29 21:04_
+_@ctcjab_
 
 ### Summary
 

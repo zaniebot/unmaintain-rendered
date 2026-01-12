@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-27T21:36:17Z
 updated_at: 2025-05-04T21:01:47Z
 url: https://github.com/clap-rs/clap/issues/5980
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_complete: directories in bash are always followed by spaces
 
 ---
 
-_Issue opened by @mernen on 2025-04-27 21:36_
+_@mernen_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-28T07:49:59Z
 updated_at: 2024-07-29T13:45:14Z
 url: https://github.com/clap-rs/clap/issues/5604
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Group Relation Bug
 
 ---
 
-_Issue opened by @gipsyh on 2024-07-28 07:49_
+_@gipsyh_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2026-01-09T19:19:26Z
 updated_at: 2026-01-09T19:28:16Z
 url: https://github.com/astral-sh/ty/pull/2423
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add `language: golang` to actionlint pre-commit hook
 
 ---
 
-_Pull request opened by @mschoettle on 2026-01-09 19:19_
+_@mschoettle_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

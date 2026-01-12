@@ -13,14 +13,14 @@ head: upgrade-salsa
 created_at: 2024-08-06T07:25:54Z
 updated_at: 2025-11-21T20:38:03Z
 url: https://github.com/astral-sh/ruff/pull/12711
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-06 07:25_
+_@MichaReiser_
 
 ## Summary
 

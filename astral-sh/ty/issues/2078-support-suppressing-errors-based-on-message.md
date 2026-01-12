@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T16:16:52Z
 updated_at: 2025-12-18T18:02:25Z
 url: https://github.com/astral-sh/ty/issues/2078
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support suppressing errors based on message
 
 ---
 
-_Issue opened by @duncanmmacleod on 2025-12-18 16:16_
+_@duncanmmacleod_
 
 ### Question
 

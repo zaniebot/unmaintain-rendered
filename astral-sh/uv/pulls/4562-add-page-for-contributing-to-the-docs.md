@@ -14,14 +14,14 @@ head: zb/docs-mdbook
 created_at: 2024-06-26T18:40:48Z
 updated_at: 2024-06-27T12:28:00Z
 url: https://github.com/astral-sh/uv/pull/4562
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Add page for contributing to the docs
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-26 18:40_
+_@zanieb_
 
 _No description provided._
 

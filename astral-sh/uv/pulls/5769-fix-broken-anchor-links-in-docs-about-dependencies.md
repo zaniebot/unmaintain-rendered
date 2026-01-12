@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-04T21:19:26Z
 updated_at: 2024-08-05T00:42:49Z
 url: https://github.com/astral-sh/uv/pull/5769
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:07:00Z
 ```
 
 # Fix broken anchor links in docs about dependencies
 
 ---
 
-_Pull request opened by @Delgan on 2024-08-04 21:19_
+_@Delgan_
 
 ## Summary
 

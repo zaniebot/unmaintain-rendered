@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-13T18:31:02Z
 updated_at: 2025-10-29T20:50:07Z
 url: https://github.com/astral-sh/ty/issues/366
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # panic: expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
 
 ---
 
-_Issue opened by @jelle-openai on 2025-05-13 18:31_
+_@jelle-openai_
 
 ### Summary
 

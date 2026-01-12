@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-26T10:19:05Z
 updated_at: 2024-04-03T07:53:08Z
 url: https://github.com/astral-sh/uv/issues/2668
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Prompt not showed correctly.
 
 ---
 
-_Issue opened by @hodeinavarro on 2024-03-26 10:19_
+_@hodeinavarro_
 
 **Description**
 When using `--prompt` the given text it is not showed on the terminal, but the environment directory name instead.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T00:11:07Z
 updated_at: 2025-01-25T17:44:39Z
 url: https://github.com/astral-sh/uv/issues/10950
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Inconsistent C/C++ Extension Build Behavior
 
 ---
 
-_Issue opened by @austin2118ace on 2025-01-25 00:11_
+_@austin2118ace_
 
 ### Summary
 

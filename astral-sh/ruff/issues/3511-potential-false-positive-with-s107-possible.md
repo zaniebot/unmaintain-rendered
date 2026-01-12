@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-14T14:17:57Z
 updated_at: 2023-05-11T02:54:29Z
 url: https://github.com/astral-sh/ruff/issues/3511
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # potential false positive with  `S107 Possible hardcoded password`
 
 ---
 
-_Issue opened by @Borda on 2023-03-14 14:17_
+_@Borda_
 
 Hello, we were interested in enabling `S` (https://beta.ruff.rs/docs/rules/#flake8-bandit-s)
  check (https://beta.ruff.rs/docs/rules/#flake8-bandit-s) for our codebase https://github.com/Lightning-AI/metrics/pull/1616, but it seems it raises concerns about some simple hashes of `S107 Possible hardcoded password`, but `flake8-bandit` does not see them as issue so yeqa reoves them...

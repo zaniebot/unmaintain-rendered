@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-13T10:56:37Z
 updated_at: 2024-06-28T09:10:21Z
 url: https://github.com/astral-sh/ruff/issues/9972
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How are we supposed to document constructors and how does this affect the class documentation?
 
 ---
 
-_Issue opened by @nbro10 on 2024-02-13 10:56_
+_@nbro10_
 
 This is my first time trying ruff. I'm interested in `ruff` mostly because I'm interested in rust. Our codebases aren't so big that using ruff would lead to a significant improvement in development efficiency, so we could also stick with PyLint, flake8, black and isort, in case ruff does not satisfy our usual needs. Anyway, I have a few questions, all related to docstrings.
 

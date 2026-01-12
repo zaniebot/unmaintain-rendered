@@ -13,14 +13,14 @@ head: zb/tip-docker
 created_at: 2024-08-26T19:38:53Z
 updated_at: 2024-08-26T20:14:49Z
 url: https://github.com/astral-sh/uv/pull/6650
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Add tip to use intermediate layers
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-26 19:38_
+_@zanieb_
 
 _No description provided._
 

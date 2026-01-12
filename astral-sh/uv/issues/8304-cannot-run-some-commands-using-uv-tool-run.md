@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T19:36:37Z
 updated_at: 2024-10-17T21:41:26Z
 url: https://github.com/astral-sh/uv/issues/8304
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Cannot run some commands using `uv tool run`
 
 ---
 
-_Issue opened by @laclouis5 on 2024-10-17 19:36_
+_@laclouis5_
 
 Platform: macOS
 UV version: uv 0.4.23 (Homebrew 2024-10-17)

@@ -13,14 +13,14 @@ head: charlie/toml
 created_at: 2023-07-07T03:06:37Z
 updated_at: 2023-07-08T15:05:07Z
 url: https://github.com/astral-sh/ruff/pull/5578
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Only run pyproject.toml lint rules when enabled
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-07 03:06_
+_@charliermarsh_
 
 ## Summary
 

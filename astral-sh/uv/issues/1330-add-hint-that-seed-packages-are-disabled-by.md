@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T19:53:29Z
 updated_at: 2024-07-01T21:36:14Z
 url: https://github.com/astral-sh/uv/issues/1330
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Add hint that seed packages are disabled by default in `uv venv`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-15 19:53_
+_@zanieb_
 
 `uv venv` will not install seed packages like `pip` by default.
 

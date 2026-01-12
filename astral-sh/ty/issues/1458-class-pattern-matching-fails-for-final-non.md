@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T18:07:36Z
 updated_at: 2025-10-30T20:44:53Z
 url: https://github.com/astral-sh/ty/issues/1458
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Class pattern matching fails for final non-bivariant classes
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-30 18:07_
+_@MeGaGiGaGon_
 
 ### Summary
 

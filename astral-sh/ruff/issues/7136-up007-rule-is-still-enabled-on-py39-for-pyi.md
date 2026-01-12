@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-04T21:41:24Z
 updated_at: 2023-09-08T11:49:48Z
 url: https://github.com/astral-sh/ruff/issues/7136
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # UP007: rule is still enabled on py39 for pyi
 
 ---
 
-_Issue opened by @adifelice-godaddy on 2023-09-04 21:41_
+_@adifelice-godaddy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

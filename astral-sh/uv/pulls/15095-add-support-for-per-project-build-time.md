@@ -13,14 +13,14 @@ head: charlie/env-var
 created_at: 2025-08-05T23:13:25Z
 updated_at: 2025-08-06T23:01:57Z
 url: https://github.com/astral-sh/uv/pull/15095
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Add support for per-project build-time environment variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-05 23:13_
+_@charliermarsh_
 
 ## Summary
 

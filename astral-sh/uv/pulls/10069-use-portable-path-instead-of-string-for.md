@@ -13,14 +13,14 @@ head: charlie/port
 created_at: 2024-12-21T00:15:19Z
 updated_at: 2024-12-21T00:28:38Z
 url: https://github.com/astral-sh/uv/pull/10069
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Use portable path instead of string for subdirectory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 00:15_
+_@charliermarsh_
 
 ## Summary
 

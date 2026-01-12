@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-19T17:45:49Z
 updated_at: 2025-11-10T12:26:43Z
 url: https://github.com/astral-sh/ruff/issues/7526
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # UP035: No violations when importing an entire module and using deprecated/moved class/method
 
 ---
 
-_Issue opened by @einarwar on 2023-09-19 17:45_
+_@einarwar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

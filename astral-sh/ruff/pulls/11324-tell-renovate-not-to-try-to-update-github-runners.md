@@ -13,14 +13,14 @@ head: renovate-macos
 created_at: 2024-05-07T15:47:17Z
 updated_at: 2024-05-07T16:02:36Z
 url: https://github.com/astral-sh/ruff/pull/11324
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Tell renovate not to try to update GitHub runners
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-07 15:47_
+_@AlexWaygood_
 
 ## Summary
 

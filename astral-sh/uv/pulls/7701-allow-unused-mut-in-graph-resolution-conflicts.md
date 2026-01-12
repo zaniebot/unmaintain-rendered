@@ -12,14 +12,14 @@ head: allow-mut-graph-res-conflicting-distributions
 created_at: 2024-09-26T09:11:32Z
 updated_at: 2024-09-26T09:17:43Z
 url: https://github.com/astral-sh/uv/pull/7701
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Allow unused mut in graph resolution conflicts
 
 ---
 
-_Pull request opened by @lfn3 on 2024-09-26 09:11_
+_@lfn3_
 
 ## Summary
 

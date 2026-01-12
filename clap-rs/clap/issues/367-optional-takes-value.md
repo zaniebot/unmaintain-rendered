@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-12-20T20:17:38Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/367
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # optional `takes_value`
 
 ---
 
-_Issue opened by @lipanski on 2015-12-20 20:17_
+_@lipanski_
 
 hello!
 

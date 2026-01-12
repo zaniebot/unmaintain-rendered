@@ -14,14 +14,14 @@ head: brent/static-diagnostic-name
 created_at: 2025-05-13T21:05:10Z
 updated_at: 2025-05-14T20:26:30Z
 url: https://github.com/astral-sh/ruff/pull/18079
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # Use static diagnostic names and cache `Rule`s
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-13 21:05_
+_@ntBre_
 
 This PR is stacked on https://github.com/astral-sh/ruff/pull/18074 and uses the
 separation between `CacheMessage` and the other diagnostic types added there to

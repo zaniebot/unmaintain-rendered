@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T16:03:21Z
 updated_at: 2025-07-09T20:56:25Z
 url: https://github.com/astral-sh/uv/issues/14244
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Is --prerelease=allow supposed to cause packages to be upgraded?
 
 ---
 
-_Issue opened by @DavidQChuang on 2025-06-24 16:03_
+_@DavidQChuang_
 
 ### Question
 

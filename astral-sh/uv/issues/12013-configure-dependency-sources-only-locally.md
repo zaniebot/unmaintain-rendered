@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T18:06:30Z
 updated_at: 2025-03-06T19:14:40Z
 url: https://github.com/astral-sh/uv/issues/12013
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Configure dependency sources only locally
 
 ---
 
-_Issue opened by @shfattig on 2025-03-06 18:06_
+_@shfattig_
 
 ### Summary
 

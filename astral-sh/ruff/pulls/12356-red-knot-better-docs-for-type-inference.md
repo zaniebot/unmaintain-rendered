@@ -13,14 +13,14 @@ head: cjm/infer-docs
 created_at: 2024-07-17T03:04:46Z
 updated_at: 2024-07-17T20:37:00Z
 url: https://github.com/astral-sh/ruff/pull/12356
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] better docs for type inference
 
 ---
 
-_Pull request opened by @carljm on 2024-07-17 03:04_
+_@carljm_
 
 Add some docs for how type inference works.
 

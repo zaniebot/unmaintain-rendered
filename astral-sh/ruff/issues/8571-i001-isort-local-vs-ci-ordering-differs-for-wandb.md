@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T22:11:14Z
 updated_at: 2023-11-09T07:20:48Z
 url: https://github.com/astral-sh/ruff/issues/8571
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # I001 (isort) local vs CI ordering differs for wandb
 
 ---
 
-_Issue opened by @StuartMesham on 2023-11-08 22:11_
+_@StuartMesham_
 
 # Summary
 

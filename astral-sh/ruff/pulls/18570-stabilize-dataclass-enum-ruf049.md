@@ -13,14 +13,14 @@ head: dylan/stabilize-ruf049
 created_at: 2025-06-08T19:24:32Z
 updated_at: 2025-06-12T13:18:58Z
 url: https://github.com/astral-sh/ruff/pull/18570
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `dataclass-enum` (`RUF049`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:24_
+_@dylwil3_
 
 _No description provided._
 

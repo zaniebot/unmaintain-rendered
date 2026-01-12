@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T21:52:09Z
 updated_at: 2025-07-31T14:00:40Z
 url: https://github.com/astral-sh/uv/issues/14963
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Recommended way to use a workspace containing dependent subpackages with AWS Lambda
 
 ---
 
-_Issue opened by @bradenkinard-sh on 2025-07-29 21:52_
+_@bradenkinard-sh_
 
 ### Question
 

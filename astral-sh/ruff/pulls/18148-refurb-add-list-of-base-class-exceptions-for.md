@@ -14,14 +14,14 @@ head: feat/13307-furb180-configure-exceptions
 created_at: 2025-05-17T11:06:12Z
 updated_at: 2025-06-13T21:23:55Z
 url: https://github.com/astral-sh/ruff/pull/18148
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [`refurb`] add list of base class exceptions for `FURB180`
 
 ---
 
-_Pull request opened by @robsdedude on 2025-05-17 11:06_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

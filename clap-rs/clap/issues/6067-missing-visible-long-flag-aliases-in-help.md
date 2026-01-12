@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-07-09T21:47:44Z
 updated_at: 2025-07-30T02:16:25Z
 url: https://github.com/clap-rs/clap/issues/6067
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Missing visible long flag aliases in help
 
 ---
 
-_Issue opened by @GilShoshan94 on 2025-07-09 21:47_
+_@GilShoshan94_
 
 I just found something strange, in this function `sc_spec_vals` for the aliases of the Command, I see we have 3 types:
 - **aliases** -> and we show them in the help with `.get_visible_aliases()`

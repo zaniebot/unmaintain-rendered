@@ -13,14 +13,14 @@ head: charlie/lambda-fix
 created_at: 2023-11-11T23:22:02Z
 updated_at: 2023-11-11T23:34:03Z
 url: https://github.com/astral-sh/ruff/pull/8621
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Implement autofix for `unnecessary-lambda` (`PLW0108`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-11 23:22_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8618.
 

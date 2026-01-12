@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T08:26:53Z
 updated_at: 2025-01-28T10:45:24Z
 url: https://github.com/astral-sh/uv/issues/11014
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Use already activated venv
 
 ---
 
-_Issue opened by @khamaileon on 2025-01-28 08:26_
+_@khamaileon_
 
 ### Question
 

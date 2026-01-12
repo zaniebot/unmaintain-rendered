@@ -15,14 +15,14 @@ head: impl-redefined-slots-in-subclass-W0244
 created_at: 2024-01-25T10:25:23Z
 updated_at: 2025-01-17T15:54:16Z
 url: https://github.com/astral-sh/ruff/pull/9640
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Implement `redefined-slots-in-subclass` (`W0244`)
 
 ---
 
-_Pull request opened by @tsugumi-sys on 2024-01-25 10:25_
+_@tsugumi-sys_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

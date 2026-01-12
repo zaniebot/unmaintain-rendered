@@ -12,14 +12,14 @@ head: henryiii/ci/cibw
 created_at: 2023-03-17T01:26:24Z
 updated_at: 2023-03-17T02:34:57Z
 url: https://github.com/astral-sh/ruff/pull/3567
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci(check_ecosystem): add cibuildwheel
 
 ---
 
-_Pull request opened by @henryiii on 2023-03-17 01:26_
+_@henryiii_
 
 Adding cibuildwheel to the ecosystem check. Referenced in https://github.com/charliermarsh/ruff/pull/3390#issuecomment-1472791231
 

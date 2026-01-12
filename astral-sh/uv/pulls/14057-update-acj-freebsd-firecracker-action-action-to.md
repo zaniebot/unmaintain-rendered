@@ -13,14 +13,14 @@ head: renovate/acj-freebsd-firecracker-action-0.x
 created_at: 2025-06-16T01:42:57Z
 updated_at: 2025-06-19T10:53:53Z
 url: https://github.com/astral-sh/uv/pull/14057
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Update acj/freebsd-firecracker-action action to v0.5.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 01:42_
+_@renovate_
 
 This PR contains the following updates:
 

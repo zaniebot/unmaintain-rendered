@@ -13,14 +13,14 @@ head: docs/fix-safety-useless-import-alias
 created_at: 2025-05-02T22:41:51Z
 updated_at: 2025-05-11T16:01:27Z
 url: https://github.com/astral-sh/ruff/pull/17802
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`pylint`] add fix safety section (`PLC0414`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-02 22:41_
+_@yunchipang_
 
 This PR adds a fix safety section in comment for rule `PLC0414`.
 

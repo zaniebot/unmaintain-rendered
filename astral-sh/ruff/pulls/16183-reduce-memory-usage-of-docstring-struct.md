@@ -14,14 +14,14 @@ head: alex/smaller-docstring
 created_at: 2025-02-16T13:43:53Z
 updated_at: 2025-02-16T15:51:53Z
 url: https://github.com/astral-sh/ruff/pull/16183
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Reduce memory usage of `Docstring` struct
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-16 13:43_
+_@AlexWaygood_
 
 ## Summary
 

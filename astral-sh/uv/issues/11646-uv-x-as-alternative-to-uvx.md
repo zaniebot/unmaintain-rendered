@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T22:43:08Z
 updated_at: 2025-11-20T14:25:42Z
 url: https://github.com/astral-sh/uv/issues/11646
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # `uv x` as alternative to `uvx`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-19 22:43_
+_@chrisrodrigue_
 
 ## Proposal 
 

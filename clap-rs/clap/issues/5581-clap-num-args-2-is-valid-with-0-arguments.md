@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T18:13:27Z
 updated_at: 2024-07-15T14:45:07Z
 url: https://github.com/clap-rs/clap/issues/5581
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `#[clap(num_args = 2..)]` is valid with 0 arguments
 
 ---
 
-_Issue opened by @Rignchen on 2024-07-14 18:13_
+_@Rignchen_
 
 ### Please complete the following tasks
 

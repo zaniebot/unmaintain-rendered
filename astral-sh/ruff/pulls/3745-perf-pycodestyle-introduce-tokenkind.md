@@ -12,14 +12,14 @@ head: token-kind
 created_at: 2023-03-26T18:30:43Z
 updated_at: 2023-03-28T09:22:41Z
 url: https://github.com/astral-sh/ruff/pull/3745
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # perf(pycodestyle): Introduce TokenKind
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-26 18:30_
+_@MichaReiser_
 
 This PR introduces a new `TokenKind` enum that only represents the token's kind without the parsed data (big int literal, string...). This is useful when you want a small and copyable representation over storing a reference to `Tok`. 
 

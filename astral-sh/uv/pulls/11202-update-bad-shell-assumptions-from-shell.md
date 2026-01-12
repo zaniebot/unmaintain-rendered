@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-02-03T22:35:18Z
 updated_at: 2025-02-05T23:52:24Z
 url: https://github.com/astral-sh/uv/pull/11202
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Update bad shell assumptions from "Shell autocompletion" page
 
 ---
 
-_Pull request opened by @Avasam on 2025-02-03 22:35_
+_@Avasam_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

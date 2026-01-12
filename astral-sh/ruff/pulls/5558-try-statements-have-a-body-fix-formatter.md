@@ -13,14 +13,14 @@ head: try-has-a-body
 created_at: 2023-07-06T10:38:02Z
 updated_at: 2023-07-06T14:07:49Z
 url: https://github.com/astral-sh/ruff/pull/5558
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Try statements have a body: Fix formatter instability
 
 ---
 
-_Pull request opened by @konstin on 2023-07-06 10:38_
+_@konstin_
 
 ## Summary
 

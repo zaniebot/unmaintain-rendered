@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T17:41:48Z
 updated_at: 2025-02-07T07:28:04Z
 url: https://github.com/astral-sh/uv/issues/11253
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # cannot install codecov-cli with uv
 
 ---
 
-_Issue opened by @superlopuh on 2025-02-05 17:41_
+_@superlopuh_
 
 ### Summary
 

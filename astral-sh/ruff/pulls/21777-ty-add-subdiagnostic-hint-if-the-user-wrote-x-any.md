@@ -14,14 +14,14 @@ head: alex/special-form-attr-hint
 created_at: 2025-12-03T17:23:59Z
 updated_at: 2025-12-03T20:42:23Z
 url: https://github.com/astral-sh/ruff/pull/21777
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Add subdiagnostic hint if the user wrote `X = Any` rather than `X: Any`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-03 17:23_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1744
 

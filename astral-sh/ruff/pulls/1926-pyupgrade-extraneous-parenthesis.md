@@ -12,14 +12,14 @@ head: ExtraneousParenthesis
 created_at: 2023-01-17T01:10:53Z
 updated_at: 2023-01-20T05:05:03Z
 url: https://github.com/astral-sh/ruff/pull/1926
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Pyupgrade: Extraneous parenthesis
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-17 01:10_
+_@colin99d_
 
 A part of #827. Leaving this as a draft for visibility.
 

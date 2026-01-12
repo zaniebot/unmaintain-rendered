@@ -13,14 +13,14 @@ head: netrc-warning
 created_at: 2024-10-19T13:47:57Z
 updated_at: 2024-10-23T05:34:47Z
 url: https://github.com/astral-sh/uv/pull/8364
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Log netrc parsing error
 
 ---
 
-_Pull request opened by @j178 on 2024-10-19 13:47_
+_@j178_
 
 ## Summary
 

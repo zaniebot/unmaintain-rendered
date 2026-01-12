@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-26T07:45:41Z
 updated_at: 2024-03-29T04:27:14Z
 url: https://github.com/astral-sh/ruff/issues/10601
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `DTZ007` with F-string format specifier
 
 ---
 
-_Issue opened by @MichaReiser on 2024-03-26 07:45_
+_@MichaReiser_
 
               Don't know if this is the same issue, but there is also a false-positive if the format string is an f-string.
 

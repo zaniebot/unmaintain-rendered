@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-21T16:40:52Z
 updated_at: 2025-04-23T15:47:38Z
 url: https://github.com/astral-sh/ruff/issues/5952
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F811: Check TypeVar defaults and stringised type parameters in bases
 
 ---
 
-_Issue opened by @Gobot1234 on 2023-07-21 16:40_
+_@Gobot1234_
 
 I have code that looks like
 ```py

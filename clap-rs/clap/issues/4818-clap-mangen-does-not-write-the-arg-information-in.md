@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-01T07:22:32Z
 updated_at: 2023-04-05T14:56:09Z
 url: https://github.com/clap-rs/clap/issues/4818
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_mangen does not write the arg information in the subcommand
 
 ---
 
-_Issue opened by @eatradish on 2023-04-01 07:22_
+_@eatradish_
 
 ### Please complete the following tasks
 

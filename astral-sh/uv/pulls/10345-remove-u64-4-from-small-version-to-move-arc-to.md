@@ -13,14 +13,14 @@ head: konsti/opt-small-version-arc
 created_at: 2025-01-07T09:30:14Z
 updated_at: 2025-01-07T14:25:33Z
 url: https://github.com/astral-sh/uv/pull/10345
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Remove `[u64; 4]` from small version to move `Arc` to full version
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 09:30_
+_@konstin_
 
 Ref #10344
 

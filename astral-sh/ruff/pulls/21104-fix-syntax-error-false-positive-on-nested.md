@@ -13,14 +13,14 @@ head: brent/fix-syntax-error-alternations
 created_at: 2025-10-27T21:03:35Z
 updated_at: 2025-10-30T17:40:05Z
 url: https://github.com/astral-sh/ruff/pull/21104
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Fix syntax error false positive on nested alternative patterns
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-27 21:03_
+_@ntBre_
 
 ## Summary
 

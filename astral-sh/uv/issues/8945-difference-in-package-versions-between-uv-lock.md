@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T15:17:20Z
 updated_at: 2024-11-09T02:20:20Z
 url: https://github.com/astral-sh/uv/issues/8945
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Difference in package versions between uv lock and uv pip compile
 
 ---
 
-_Issue opened by @vangelem on 2024-11-08 15:17_
+_@vangelem_
 
 Hello uv team,
 

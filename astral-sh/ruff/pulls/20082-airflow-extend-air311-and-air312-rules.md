@@ -14,14 +14,14 @@ head: extend-AIR-31x-rules
 created_at: 2025-08-25T14:39:06Z
 updated_at: 2025-08-27T18:11:22Z
 url: https://github.com/astral-sh/ruff/pull/20082
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`airflow`] Extend `AIR311` and `AIR312` rules
 
 ---
 
-_Pull request opened by @Lee-W on 2025-08-25 14:39_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

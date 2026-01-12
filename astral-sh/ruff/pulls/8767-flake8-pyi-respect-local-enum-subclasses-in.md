@@ -13,14 +13,14 @@ head: charlie/pyi
 created_at: 2023-11-19T14:25:44Z
 updated_at: 2023-11-19T14:37:22Z
 url: https://github.com/astral-sh/ruff/pull/8767
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`flake8-pyi`] Respect local enum subclasses in `simple-defaults` (`PYI052`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 14:25_
+_@charliermarsh_
 
 We should reuse this approach in other rules, but this is a good start.
 

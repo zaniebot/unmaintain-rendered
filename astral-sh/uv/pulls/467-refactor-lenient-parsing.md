@@ -12,14 +12,14 @@ head: lenient-refactoring
 created_at: 2023-11-20T11:38:50Z
 updated_at: 2023-11-20T15:35:40Z
 url: https://github.com/astral-sh/uv/pull/467
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Refactor lenient parsing
 
 ---
 
-_Pull request opened by @konstin on 2023-11-20 11:38_
+_@konstin_
 
 Deduplicate lenient parsing code between version specifiers and Requirement. Use `warn_once!` since the warnings did show up multiple times in my code. Fix the macro hygiene in `warn_once!`.
 

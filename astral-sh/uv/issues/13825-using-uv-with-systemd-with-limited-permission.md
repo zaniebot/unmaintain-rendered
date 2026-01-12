@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T18:01:54Z
 updated_at: 2025-06-04T17:30:17Z
 url: https://github.com/astral-sh/uv/issues/13825
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Using uv with systemd with limited permission users.
 
 ---
 
-_Issue opened by @mehdipourfar on 2025-06-03 18:01_
+_@mehdipourfar_
 
 ### Question
 

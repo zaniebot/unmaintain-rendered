@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-09T14:35:25Z
 updated_at: 2024-02-09T16:15:00Z
 url: https://github.com/clap-rs/clap/issues/5347
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Consider relaxing the bounds of Send + Sync on TypedValueParser
 
 ---
 
-_Issue opened by @csmclaren on 2024-02-09 14:35_
+_@csmclaren_
 
 ### Please complete the following tasks
 

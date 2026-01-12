@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T14:04:35Z
 updated_at: 2024-04-02T23:36:37Z
 url: https://github.com/astral-sh/uv/issues/2614
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # uv pip compile fails with conflicting urls (sha vs tag) across dependencies
 
 ---
 
-_Issue opened by @fraenkel on 2024-03-22 14:04_
+_@fraenkel_
 
 I am issuing the following `pipenv requirements | uv pip compile --generate-hashes -o requirements.txt -` which fails with:
 ```

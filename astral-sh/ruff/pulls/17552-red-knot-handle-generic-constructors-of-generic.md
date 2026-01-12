@@ -13,14 +13,14 @@ head: dcreager/generic-constructor
 created_at: 2025-04-22T14:01:44Z
 updated_at: 2025-04-23T19:46:55Z
 url: https://github.com/astral-sh/ruff/pull/17552
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Handle generic constructors of generic classes
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-22 14:01_
+_@dcreager_
 
 We now handle generic constructor methods on generic classes correctly:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-15T19:10:22Z
 updated_at: 2025-08-15T19:14:10Z
 url: https://github.com/astral-sh/ty/issues/1014
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Initialization inside a loop
 
 ---
 
-_Issue opened by @MamadouSDiallo on 2025-08-15 19:10_
+_@MamadouSDiallo_
 
 ### Summary
 

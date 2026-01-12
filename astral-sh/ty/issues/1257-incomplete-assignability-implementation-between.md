@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-25T15:54:03Z
 updated_at: 2026-01-09T02:58:46Z
 url: https://github.com/astral-sh/ty/issues/1257
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incomplete assignability implementation between two `Callable` types where one `Callable` type has `*args: Any, **kwargs: Any`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-25 15:54_
+_@AlexWaygood_
 
 ### Summary
 

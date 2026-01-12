@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T06:24:45Z
 updated_at: 2025-01-23T02:19:45Z
 url: https://github.com/astral-sh/uv/issues/10231
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # "Segmentation fault" error occurred after uv@0.5.9 version.
 
 ---
 
-_Issue opened by @ChoSeoHwan on 2024-12-30 06:24_
+_@ChoSeoHwan_
 
 ## Problem
 

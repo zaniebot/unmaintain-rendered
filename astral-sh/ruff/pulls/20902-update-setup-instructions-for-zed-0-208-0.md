@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-15T18:12:38Z
 updated_at: 2025-10-16T07:39:48Z
 url: https://github.com/astral-sh/ruff/pull/20902
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Update setup instructions for Zed 0.208.0+
 
 ---
 
-_Pull request opened by @injust on 2025-10-15 18:12_
+_@injust_
 
 ## Summary
 

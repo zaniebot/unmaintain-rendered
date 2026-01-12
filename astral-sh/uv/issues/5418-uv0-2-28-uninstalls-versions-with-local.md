@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T17:28:57Z
 updated_at: 2024-07-24T19:39:23Z
 url: https://github.com/astral-sh/uv/issues/5418
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv0.2.28` uninstalls versions with local specifiers even though it satisfies the requirements 
 
 ---
 
-_Issue opened by @blueraft on 2024-07-24 17:28_
+_@blueraft_
 
 I am not entirely sure I diagnosed the problem here correctly but here's an MRE.
 

@@ -13,14 +13,14 @@ head: mkl-fft
 created_at: 2023-12-26T16:55:28Z
 updated_at: 2023-12-27T14:42:57Z
 url: https://github.com/astral-sh/uv/pull/732
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Finish install-many with pypi 10k most dependents
 
 ---
 
-_Pull request opened by @konstin on 2023-12-26 16:55_
+_@konstin_
 
 This PR combines three small changes to finish up the install-many testing.
 

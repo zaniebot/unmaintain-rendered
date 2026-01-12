@@ -12,14 +12,14 @@ head: PrintfStringFormatting
 created_at: 2023-01-12T01:30:14Z
 updated_at: 2023-01-21T14:37:22Z
 url: https://github.com/astral-sh/ruff/pull/1803
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Pyupgrade: Printf string formatting
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-12 01:30_
+_@colin99d_
 
 A part of #827. This one is complicated so it will take me some more time. 
 

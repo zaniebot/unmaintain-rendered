@@ -12,14 +12,14 @@ head: de-duplicate-SIM102
 created_at: 2023-01-21T04:15:51Z
 updated_at: 2023-01-21T04:38:53Z
 url: https://github.com/astral-sh/ruff/pull/2050
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # De-duplicate SIM102
 
 ---
 
-_Pull request opened by @harupy on 2023-01-21 04:15_
+_@harupy_
 
 The idea is the same as #1867. Avoids emitting `SIM102` twice for the following code:
 

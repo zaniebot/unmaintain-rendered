@@ -14,14 +14,14 @@ head: zb/resolution
 created_at: 2024-08-06T14:05:22Z
 updated_at: 2024-08-06T17:06:08Z
 url: https://github.com/astral-sh/uv/pull/5813
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Update the resolution concept documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 14:05_
+_@zanieb_
 
 _No description provided._
 

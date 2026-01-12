@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-17T15:51:00Z
 updated_at: 2025-08-14T12:06:22Z
 url: https://github.com/astral-sh/ruff/issues/19403
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PYI016 fix introduces a `TypeError` for `Union[None, None]`
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-17 15:51_
+_@dscorbett_
 
 ### Summary
 

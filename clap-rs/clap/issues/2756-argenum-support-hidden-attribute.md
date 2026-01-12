@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-09-07T12:06:02Z
 updated_at: 2021-09-19T10:29:10Z
 url: https://github.com/clap-rs/clap/issues/2756
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # ArgEnum support `hidden` attribute
 
 ---
 
-_Issue opened by @ModProg on 2021-09-07 12:06_
+_@ModProg_
 
 ### Please complete the following tasks
 

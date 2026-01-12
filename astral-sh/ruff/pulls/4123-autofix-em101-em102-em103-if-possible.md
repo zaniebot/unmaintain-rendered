@@ -12,14 +12,14 @@ head: autofix/flake8-err-msg
 created_at: 2023-04-26T19:08:16Z
 updated_at: 2023-04-28T15:18:06Z
 url: https://github.com/astral-sh/ruff/pull/4123
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Autofix `EM101`, `EM102`, `EM103` if possible
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-26 19:08_
+_@dhruvmanila_
 
 ## Summary
 

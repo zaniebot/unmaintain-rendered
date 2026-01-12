@@ -13,14 +13,14 @@ head: PLR0911
 created_at: 2023-02-04T11:31:17Z
 updated_at: 2023-02-04T21:57:10Z
 url: https://github.com/astral-sh/ruff/pull/2564
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Implement pylint's `too-many-return-statements` rule (`PLR0911`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-02-04 11:31_
+_@chanman3388_
 
 https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/too-many-return-statements.html
 

@@ -13,14 +13,14 @@ head: charlie/FURB105
 created_at: 2023-09-24T18:36:00Z
 updated_at: 2023-09-24T18:53:25Z
 url: https://github.com/astral-sh/ruff/pull/7634
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Refactor FURB105 into explicit cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-24 18:36_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix/stdin-redirection-pip-install
 created_at: 2025-12-19T10:34:44Z
 updated_at: 2025-12-24T13:47:39Z
 url: https://github.com/astral-sh/uv/pull/17188
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Fix dropped support of `-` in pip constraints/overrides/excludes/build_constraints
 
 ---
 
-_Pull request opened by @EndPositive on 2025-12-19 10:34_
+_@EndPositive_
 
 Since #16923, `-` stdin paths are suddenly only supported on the `RequirementsSource::Extensionless`. However, parsing of cli arguments using `from_requirements_txt`, `from_constraints_txt` `from_overrides_txt` would always output a `RequirementsSource::RequirementsTxt`. Resulting in the error:
 

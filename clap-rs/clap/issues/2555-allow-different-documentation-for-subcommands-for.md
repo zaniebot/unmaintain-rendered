@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-06-20T05:36:17Z
 updated_at: 2021-06-20T09:58:35Z
 url: https://github.com/clap-rs/clap/issues/2555
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow different documentation for subcommands for SUBCOMMANDS list and subcommand's help
 
 ---
 
-_Issue opened by @anatawa12 on 2021-06-20 05:36_
+_@anatawa12_
 
 ### Please complete the following tasks
 

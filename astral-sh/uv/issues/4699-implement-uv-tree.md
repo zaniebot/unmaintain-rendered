@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-01T16:57:46Z
 updated_at: 2024-07-08T18:07:49Z
 url: https://github.com/astral-sh/uv/issues/4699
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Implement `uv tree`
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-01 16:57_
+_@ibraheemdev_
 
 Part of the higher-level project APIs, as opposed to `uv pip tree`.
 

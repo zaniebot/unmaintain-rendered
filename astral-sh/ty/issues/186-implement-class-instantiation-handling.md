@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T03:14:10Z
 updated_at: 2025-06-10T23:54:25Z
 url: https://github.com/astral-sh/ty/issues/186
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Implement class instantiation handling
 
 ---
 
-_Issue opened by @mishamsk on 2025-03-05 03:14_
+_@mishamsk_
 
 ## Description
 

@@ -13,14 +13,14 @@ head: brent/refactor-typing-imports
 created_at: 2025-04-10T18:18:56Z
 updated_at: 2025-04-14T15:52:59Z
 url: https://github.com/astral-sh/ruff/pull/17340
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Add `Checker::import_from_typing`
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-10 18:18_
+_@ntBre_
 
 Summary
 --

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T07:54:35Z
 updated_at: 2023-10-11T13:32:55Z
 url: https://github.com/astral-sh/ruff/issues/7234
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Target version support
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 07:54_
+_@MichaReiser_
 
 Adjust the formatting based on the syntax supported by the targeted python versions. 
 

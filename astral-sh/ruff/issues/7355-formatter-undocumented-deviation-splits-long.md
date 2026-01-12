@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-13T16:48:48Z
 updated_at: 2023-09-13T17:15:25Z
 url: https://github.com/astral-sh/ruff/issues/7355
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: splits long conditionals into multiple lines
 
 ---
 
-_Issue opened by @tjkuson on 2023-09-13 16:48_
+_@tjkuson_
 
 Black:
 

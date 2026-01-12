@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T23:51:37Z
 updated_at: 2025-02-19T15:25:05Z
 url: https://github.com/clap-rs/clap/issues/5915
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `hide_long_help(true)` causes help alignment issues
 
 ---
 
-_Issue opened by @wmmc88 on 2025-02-18 23:51_
+_@wmmc88_
 
 ### Please complete the following tasks
 

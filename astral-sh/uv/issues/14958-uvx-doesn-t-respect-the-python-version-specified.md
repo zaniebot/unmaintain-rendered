@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T18:25:42Z
 updated_at: 2025-07-31T02:05:39Z
 url: https://github.com/astral-sh/uv/issues/14958
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # uvx doesn't respect the python version specified in the pyproject.toml
 
 ---
 
-_Issue opened by @jbullion-astra on 2025-07-29 18:25_
+_@jbullion-astra_
 
 ### Summary
 

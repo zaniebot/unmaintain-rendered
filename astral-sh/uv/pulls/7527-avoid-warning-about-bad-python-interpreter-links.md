@@ -13,14 +13,14 @@ head: zb/fix-bad-link-warning
 created_at: 2024-09-19T01:02:26Z
 updated_at: 2024-09-19T11:49:36Z
 url: https://github.com/astral-sh/uv/pull/7527
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Avoid warning about bad Python interpreter links for empty project environment directories
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 01:02_
+_@zanieb_
 
 Someone reported this a while back (will try to find the issue), and I ran into it working on #7522 
 

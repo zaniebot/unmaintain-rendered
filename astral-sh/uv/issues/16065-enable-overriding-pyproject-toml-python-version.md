@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T13:03:49Z
 updated_at: 2025-09-30T05:04:24Z
 url: https://github.com/astral-sh/uv/issues/16065
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Enable overriding `pyproject.toml` python version (and `.python-version`) with `uv python pin`
 
 ---
 
-_Issue opened by @Parskatt on 2025-09-29 13:03_
+_@Parskatt_
 
 ### Summary
 

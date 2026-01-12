@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T22:08:45Z
 updated_at: 2025-02-19T22:58:12Z
 url: https://github.com/astral-sh/ruff/issues/13933
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] model that class/comprehension bodies run immediately
 
 ---
 
-_Issue opened by @carljm on 2024-10-25 22:08_
+_@carljm_
 
 Currently, we have a general strategy for name lookups in enclosing scopes: they use the type as seen from end of the scope where it's defined. For example:
 

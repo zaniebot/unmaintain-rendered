@@ -11,14 +11,14 @@ head: dup-keyargs
 created_at: 2025-05-03T01:28:58Z
 updated_at: 2025-05-14T23:21:49Z
 url: https://github.com/astral-sh/ruff/pull/17804
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [syntax-errors] detect duplicate keyword arguments
 
 ---
 
-_Pull request opened by @eduardorittner on 2025-05-03 01:28_
+_@eduardorittner_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-03-19T17:54:42Z
 updated_at: 2024-03-19T18:07:56Z
 url: https://github.com/astral-sh/ruff/pull/10478
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Avoid failures due to non-deterministic binding ordering
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 17:54_
+_@charliermarsh_
 
 ## Summary
 

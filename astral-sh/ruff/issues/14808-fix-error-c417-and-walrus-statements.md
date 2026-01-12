@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-06T08:14:26Z
 updated_at: 2024-12-07T03:00:35Z
 url: https://github.com/astral-sh/ruff/issues/14808
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Fix error] C417 and walrus statements
 
 ---
 
-_Issue opened by @zeevox on 2024-12-06 08:14_
+_@zeevox_
 
 Applying fixes for rule [C417](https://docs.astral.sh/ruff/rules/unnecessary-map/) introduces a syntax error when the second `map` argument is a walrus assignment operator. 
 

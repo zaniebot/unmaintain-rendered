@@ -13,14 +13,14 @@ head: cjm/c419
 created_at: 2024-04-03T16:33:02Z
 updated_at: 2024-04-04T16:21:31Z
 url: https://github.com/astral-sh/ruff/pull/10759
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [flake8_comprehensions] add sum/min/max to unnecessary comprehension check (C419)
 
 ---
 
-_Pull request opened by @carljm on 2024-04-03 16:33_
+_@carljm_
 
 Fixes #3259 
 

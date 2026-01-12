@@ -12,14 +12,14 @@ head: main
 created_at: 2024-11-10T16:23:07Z
 updated_at: 2025-06-03T19:32:47Z
 url: https://github.com/astral-sh/ruff/pull/14245
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-logging`] Implement check for `logging.exception()`  outside of exception handler (`LOG004`)
 
 ---
 
-_Pull request opened by @JCWasmx86 on 2024-11-10 16:23_
+_@JCWasmx86_
 
 Relates to #7248
 

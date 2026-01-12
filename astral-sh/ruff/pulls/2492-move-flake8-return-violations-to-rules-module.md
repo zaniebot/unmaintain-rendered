@@ -12,14 +12,14 @@ head: move-flake8-return-violations
 created_at: 2023-02-02T19:44:31Z
 updated_at: 2023-02-02T20:13:50Z
 url: https://github.com/astral-sh/ruff/pull/2492
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-return violations to rules module
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 19:44_
+_@akx_
 
 _No description provided._
 

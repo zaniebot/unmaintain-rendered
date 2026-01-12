@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T09:53:08Z
 updated_at: 2024-05-31T23:20:54Z
 url: https://github.com/astral-sh/ruff/issues/11633
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Feature request: implementation for pylint E0401 import-error
 
 ---
 
-_Issue opened by @boringplay on 2024-05-31 09:53_
+_@boringplay_
 
 Does ruff support `pylint E0401 import-error` rule? Or is there any alternative?
 

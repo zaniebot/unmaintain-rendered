@@ -12,14 +12,14 @@ head: fix-docs-build
 created_at: 2023-04-25T15:58:49Z
 updated_at: 2023-04-26T12:17:04Z
 url: https://github.com/astral-sh/ruff/pull/4097
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix docs failure
 
 ---
 
-_Pull request opened by @calumy on 2023-04-25 15:58_
+_@calumy_
 
 The mkdocs workflow for v0.0.263 failed with the error:
 

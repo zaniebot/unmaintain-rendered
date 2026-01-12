@@ -13,14 +13,14 @@ head: charlie/lxml
 created_at: 2024-11-27T18:28:14Z
 updated_at: 2024-11-27T18:44:30Z
 url: https://github.com/astral-sh/uv/pull/9481
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Remove `lxml` from lock test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-27 18:28_
+_@charliermarsh_
 
 ## Summary
 

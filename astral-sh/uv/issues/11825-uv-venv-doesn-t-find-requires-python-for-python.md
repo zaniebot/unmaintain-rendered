@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T07:53:55Z
 updated_at: 2025-03-04T23:29:41Z
 url: https://github.com/astral-sh/uv/issues/11825
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # uv venv doesn't find requires-python for python interpreter with an upper limit
 
 ---
 
-_Issue opened by @toppk on 2025-02-27 07:53_
+_@toppk_
 
 ### Summary
 

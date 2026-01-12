@@ -13,14 +13,14 @@ head: zb/mre-link
 created_at: 2025-01-28T23:41:56Z
 updated_at: 2025-01-29T05:09:06Z
 url: https://github.com/astral-sh/uv/pull/11045
-synced_at: 2026-01-10T11:45:25Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Link to our MRE documentation in the issue template
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 23:41_
+_@zanieb_
 
 _No description provided._
 

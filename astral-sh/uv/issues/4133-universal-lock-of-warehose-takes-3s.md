@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T15:41:13Z
 updated_at: 2024-06-17T14:30:00Z
 url: https://github.com/astral-sh/uv/issues/4133
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Universal lock of warehose takes 3s
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 15:41_
+_@konstin_
 
 ```
 $ hyperfine --warmup 1 --prepare "rm -f uv.lock" "uv lock"

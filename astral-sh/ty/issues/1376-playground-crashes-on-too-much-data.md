@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-17T04:45:24Z
 updated_at: 2025-10-17T07:15:35Z
 url: https://github.com/astral-sh/ty/issues/1376
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Playground crashes on too much data
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-17 04:45_
+_@MeGaGiGaGon_
 
 ### Summary
 

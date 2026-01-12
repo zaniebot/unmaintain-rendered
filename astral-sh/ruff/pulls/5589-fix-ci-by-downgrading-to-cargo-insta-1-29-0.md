@@ -13,14 +13,14 @@ head: fail_tests
 created_at: 2023-07-07T10:06:55Z
 updated_at: 2023-07-08T15:09:37Z
 url: https://github.com/astral-sh/ruff/pull/5589
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix CI by downgrading to cargo insta 1.29.0
 
 ---
 
-_Pull request opened by @konstin on 2023-07-07 10:06_
+_@konstin_
 
 Since the (implicit) update to cargo-insta 1.30, CI would pass even when the tests failed. This downgrades to cargo insta 1.29.0 and CI fails again when it should (which i can't show here, because CI needs to pass to merge this PR). I've improved the unreferenced snapshot handling in the process
 

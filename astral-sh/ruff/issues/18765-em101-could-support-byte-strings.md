@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T18:23:07Z
 updated_at: 2025-06-25T14:53:57Z
 url: https://github.com/astral-sh/ruff/issues/18765
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # EM101 could support byte strings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 18:23_
+_@MeGaGiGaGon_
 
 ### Summary
 

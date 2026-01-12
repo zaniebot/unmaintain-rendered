@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-26T20:07:53Z
 updated_at: 2024-02-26T20:40:38Z
 url: https://github.com/astral-sh/uv/issues/1989
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv fails to resolve package if published in non normalized format
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-26 20:07_
+_@gaborbernat_
 
 Assume a package is published as `magic.demo.hera`. If you do `uv pip install magic.com` this correctly, redirects to `https://m.com/artifactory/api/pypi/magic-pypi/simple/magic-demo-hera/"`. However, if the page then contains packages in the form of:
 

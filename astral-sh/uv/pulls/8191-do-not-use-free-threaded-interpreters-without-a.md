@@ -13,14 +13,14 @@ head: zb/fix-freethread
 created_at: 2024-10-14T22:09:56Z
 updated_at: 2024-10-14T22:48:33Z
 url: https://github.com/astral-sh/uv/pull/8191
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Do not use free-threaded interpreters without a free-threaded request
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-14 22:09_
+_@zanieb_
 
 As mentioned in https://github.com/astral-sh/uv/issues/8189
 

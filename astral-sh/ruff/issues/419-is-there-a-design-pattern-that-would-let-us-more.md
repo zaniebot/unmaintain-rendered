@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-13T13:31:02Z
 updated_at: 2023-01-07T20:53:29Z
 url: https://github.com/astral-sh/ruff/issues/419
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Is there a design pattern that would let us more closely couple `CheckKind` and `CheckCode`?
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-13 13:31_
+_@charliermarsh_
 
 Right now, we have matches in each implementation that create bidirectional links between `CheckKind` and `CheckCode`. But there's nothing enforcing this behavior, and it's really tedious to implement.
 

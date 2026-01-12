@@ -13,14 +13,14 @@ head: charlie/look
 created_at: 2024-04-22T17:07:48Z
 updated_at: 2024-04-22T17:18:01Z
 url: https://github.com/astral-sh/uv/pull/3191
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Restrict observed requirements to direct when `--no-deps` is specified
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-22 17:07_
+_@charliermarsh_
 
 
 ## Summary

@@ -13,14 +13,14 @@ head: alex/assert-narrowing
 created_at: 2025-04-29T10:53:13Z
 updated_at: 2025-04-30T15:28:08Z
 url: https://github.com/astral-sh/ruff/pull/17702
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Fix control flow for `assert` statements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 10:53_
+_@AlexWaygood_
 
 ## Summary
 

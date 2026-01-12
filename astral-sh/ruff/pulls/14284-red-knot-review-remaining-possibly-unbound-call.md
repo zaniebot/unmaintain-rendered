@@ -13,14 +13,14 @@ head: david/review-possibly_unbound-cases
 created_at: 2024-11-11T15:39:43Z
 updated_at: 2024-11-11T19:48:51Z
 url: https://github.com/astral-sh/ruff/pull/14284
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Review remaining 'possibly unbound' call sites
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-11 15:39_
+_@sharkdp_
 
 ## Summary
 

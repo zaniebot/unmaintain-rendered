@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-10-20T16:36:02Z
 updated_at: 2024-10-20T16:48:05Z
 url: https://github.com/astral-sh/uv/pull/8386
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Modify cache versioning to support backwards compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 16:36_
+_@charliermarsh_
 
 ## Summary
 

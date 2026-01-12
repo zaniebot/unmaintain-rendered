@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T23:37:45Z
 updated_at: 2025-07-11T23:37:45Z
 url: https://github.com/astral-sh/uv/issues/14572
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # A integrated way to setup uv jupyter kernels
 
 ---
 
-_Issue opened by @lucasew on 2025-07-11 23:37_
+_@lucasew_
 
 ### Summary
 

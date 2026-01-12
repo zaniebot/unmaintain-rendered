@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T09:21:20Z
 updated_at: 2024-09-02T08:46:44Z
 url: https://github.com/astral-sh/uv/issues/6856
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `uv <command> --help` should prioritise options specific to the command
 
 ---
 
-_Issue opened by @shaunhegarty on 2024-08-30 09:21_
+_@shaunhegarty_
 
 This is only a minor annoyance but I keep running into it. 
 

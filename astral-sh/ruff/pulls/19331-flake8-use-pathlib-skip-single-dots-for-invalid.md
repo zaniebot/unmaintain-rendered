@@ -14,14 +14,14 @@ head: invalid-pthlib
 created_at: 2025-07-14T15:37:26Z
 updated_at: 2025-07-15T12:09:24Z
 url: https://github.com/astral-sh/ruff/pull/19331
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [`flake8-use-pathlib`] Skip single dots for `invalid-pathlib-with-suffix` (`PTH210`) on versions >= 3.14
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-14 15:37_
+_@dylwil3_
 
 Skips [invalid-pathlib-with-suffix (PTH210)](https://docs.astral.sh/ruff/rules/invalid-pathlib-with-suffix/#invalid-pathlib-with-suffix-pth210) for `.with_suffix(".")` on Python versions 3.14 and greater, as per [the docs](https://docs.python.org/3.14/library/pathlib.html#pathlib.PurePath.with_suffix).
 

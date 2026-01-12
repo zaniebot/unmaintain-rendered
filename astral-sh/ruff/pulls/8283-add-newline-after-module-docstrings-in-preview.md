@@ -14,14 +14,14 @@ head: module-level-docstrings-get-an-empty-line
 created_at: 2023-10-27T12:58:42Z
 updated_at: 2024-09-17T07:20:08Z
 url: https://github.com/astral-sh/ruff/pull/8283
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add newline after module docstrings in preview style
 
 ---
 
-_Pull request opened by @konstin on 2023-10-27 12:58_
+_@konstin_
 
 Change
 ```python

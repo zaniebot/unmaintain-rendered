@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-27T15:56:30Z
 updated_at: 2024-03-23T16:03:49Z
 url: https://github.com/astral-sh/uv/issues/505
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Override `max-age` response header to 0
 
 ---
 
-_Issue opened by @konstin on 2023-11-27 15:56_
+_@konstin_
 
 See https://github.com/pypa/pip/blob/1273c7a9694686e438e886b6382b7d41f430a25c/src/pip/_internal/index/collector.py#L145-L158, the same reasons apply: Otherwise you can see a version/file on pypi, but it won't work in your local client until 10 min later.
 

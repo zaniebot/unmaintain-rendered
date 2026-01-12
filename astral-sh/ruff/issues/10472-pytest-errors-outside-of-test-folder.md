@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-19T12:53:43Z
 updated_at: 2024-03-19T13:00:23Z
 url: https://github.com/astral-sh/ruff/issues/10472
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Pytest errors outside of test folder
 
 ---
 
-_Issue opened by @kleinicke on 2024-03-19 12:53_
+_@kleinicke_
 
 The ruff pytest rules are currently applied in the complete repo and not only inside the tests. 
 Adding somewhere in the code an assert 0 or assert False, will result in PT015 and the suggestion to replace it with pytest.fail().

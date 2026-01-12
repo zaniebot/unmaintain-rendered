@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-05T23:11:29Z
 updated_at: 2024-01-09T14:58:40Z
 url: https://github.com/astral-sh/uv/issues/811
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Hint that prereleases are available when dependency cannot be satisfied
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 23:11_
+_@zanieb_
 
 e.g. in the following scenario
 

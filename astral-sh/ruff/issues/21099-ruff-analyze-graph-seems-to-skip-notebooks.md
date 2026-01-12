@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T15:39:26Z
 updated_at: 2025-10-31T21:47:02Z
 url: https://github.com/astral-sh/ruff/issues/21099
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff analyze graph` seems to skip notebooks
 
 ---
 
-_Issue opened by @gwdekker on 2025-10-27 15:39_
+_@gwdekker_
 
 ### Summary
 

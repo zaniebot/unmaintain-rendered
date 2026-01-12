@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T18:23:18Z
 updated_at: 2024-04-09T01:12:34Z
 url: https://github.com/astral-sh/uv/issues/2760
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Store unzipped local source distributions in the cache
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-01 18:23_
+_@charliermarsh_
 
 Right now, we sometimes unzip a local source distribution multiple times, instead of storing it in the cache.
 

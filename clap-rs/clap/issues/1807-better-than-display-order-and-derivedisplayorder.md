@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-04-11T14:06:51Z
 updated_at: 2022-09-16T20:29:58Z
 url: https://github.com/clap-rs/clap/issues/1807
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Better than display_order and DeriveDisplayOrder argument positioning
 
 ---
 
-_Issue opened by @I60R on 2020-04-11 14:06_
+_@I60R_
 
 ### Make sure you completed the following tasks
 

@@ -13,14 +13,14 @@ head: fix-final-init-1409
 created_at: 2025-10-31T02:48:53Z
 updated_at: 2025-11-11T20:54:05Z
 url: https://github.com/astral-sh/ruff/pull/21158
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Fix false positive for Final attribute assignment in __init__
 
 ---
 
-_Pull request opened by @saada on 2025-10-31 02:48_
+_@saada_
 
 ## Summary
 

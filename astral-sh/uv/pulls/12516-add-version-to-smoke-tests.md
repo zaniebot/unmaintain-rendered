@@ -13,14 +13,14 @@ head: zb/smoke-version
 created_at: 2025-03-27T20:37:44Z
 updated_at: 2025-03-27T20:45:26Z
 url: https://github.com/astral-sh/uv/pull/12516
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Add `--version` to smoke tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-27 20:37_
+_@zanieb_
 
 _No description provided._
 

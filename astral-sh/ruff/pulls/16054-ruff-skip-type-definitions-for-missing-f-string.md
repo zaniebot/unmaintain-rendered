@@ -15,14 +15,14 @@ head: no-add-fstring-type-def
 created_at: 2025-02-09T16:09:18Z
 updated_at: 2025-02-09T16:16:29Z
 url: https://github.com/astral-sh/ruff/pull/16054
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Skip type definitions for `missing-f-string-syntax` (`RUF027`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-09 16:09_
+_@dylwil3_
 
 As an f-string is never correct in a type definition context, we skip [missing-f-string-syntax (RUF027)](https://docs.astral.sh/ruff/rules/missing-f-string-syntax/#missing-f-string-syntax-ruf027) in this case.
 

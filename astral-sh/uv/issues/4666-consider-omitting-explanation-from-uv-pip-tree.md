@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T20:14:56Z
 updated_at: 2024-07-04T15:53:06Z
 url: https://github.com/astral-sh/uv/issues/4666
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Consider omitting `(*)` explanation from `uv pip tree`?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 20:14_
+_@charliermarsh_
 
 Is this totally necessary? Seems like a lot to include it on every invocation (Cargo does not).
 

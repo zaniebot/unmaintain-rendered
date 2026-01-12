@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T11:05:03Z
 updated_at: 2025-07-21T14:17:07Z
 url: https://github.com/astral-sh/uv/issues/14785
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Since 0.8.0, version_get_fallback_unmanaged_json fails outside of a git checkout
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-07-21 11:05_
+_@musicinmybrain_
 
 ### Summary
 

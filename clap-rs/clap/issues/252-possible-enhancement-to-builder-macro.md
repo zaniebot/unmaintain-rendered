@@ -13,14 +13,14 @@ assignees: []
 created_at: 2015-09-11T18:05:35Z
 updated_at: 2017-01-30T05:14:20Z
 url: https://github.com/clap-rs/clap/issues/252
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Possible enhancement to builder macro
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-11 18:05_
+_@WildCryptoFox_
 
 Hello again. I've been playing with macros for building again!
 

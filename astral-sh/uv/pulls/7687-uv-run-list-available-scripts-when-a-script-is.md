@@ -13,14 +13,14 @@ head: list_available_scripts_and_executables
 created_at: 2024-09-25T15:46:30Z
 updated_at: 2024-10-08T19:36:08Z
 url: https://github.com/astral-sh/uv/pull/7687
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # uv run: List available scripts when a script is not specified
 
 ---
 
-_Pull request opened by @kakkoyun on 2024-09-25 15:46_
+_@kakkoyun_
 
 Signed-off-by: Kemal Akkoyun <kakkoyun@gmail.com>
 ## Summary

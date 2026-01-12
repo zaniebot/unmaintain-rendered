@@ -12,14 +12,14 @@ head: fix/unused_imports
 created_at: 2024-10-28T14:55:44Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/13965
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [pyflakes] Fix check of unused imports
 
 ---
 
-_Pull request opened by @gpilikin on 2024-10-28 14:55_
+_@gpilikin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

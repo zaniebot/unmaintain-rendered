@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-12-07T14:02:56Z
 updated_at: 2024-12-07T14:14:27Z
 url: https://github.com/astral-sh/uv/pull/9704
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Eagerly error when parsing `pyproject.toml` requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-07 14:02_
+_@charliermarsh_
 
 ## Summary
 

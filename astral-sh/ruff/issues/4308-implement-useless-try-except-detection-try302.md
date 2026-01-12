@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-09T14:53:32Z
 updated_at: 2023-05-17T01:36:12Z
 url: https://github.com/astral-sh/ruff/issues/4308
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement useless try-except detection (`TRY302`)
 
 ---
 
-_Issue opened by @dorschw on 2023-05-09 14:53_
+_@dorschw_
 
 **Bad code:**
 ```python

@@ -12,14 +12,14 @@ head: clippy-match-same-arms
 created_at: 2022-11-21T19:23:33Z
 updated_at: 2022-11-21T20:59:59Z
 url: https://github.com/astral-sh/ruff/pull/863
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Ignore clippy::match-same-arms (pedantic) in a few places
 
 ---
 
-_Pull request opened by @andersk on 2022-11-21 19:23_
+_@andersk_
 
 “this match arm has an identical body to another arm”
 

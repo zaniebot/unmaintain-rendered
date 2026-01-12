@@ -13,14 +13,14 @@ head: brent/hash-fix
 created_at: 2025-08-05T14:43:11Z
 updated_at: 2025-08-05T14:55:20Z
 url: https://github.com/astral-sh/ruff/pull/19766
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # Use fixed hash width for `ty_server` diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-05 14:43_
+_@ntBre_
 
 Summary
 --

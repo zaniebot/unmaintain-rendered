@@ -12,14 +12,14 @@ head: C400
 created_at: 2022-10-07T15:40:56Z
 updated_at: 2022-10-07T16:16:23Z
 url: https://github.com/astral-sh/ruff/pull/340
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement C400
 
 ---
 
-_Pull request opened by @harupy on 2022-10-07 15:40_
+_@harupy_
 
 #305
 

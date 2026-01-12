@@ -11,14 +11,14 @@ head: bugfix/16288-expand-tilde
 created_at: 2025-12-07T21:56:07Z
 updated_at: 2025-12-08T23:45:44Z
 url: https://github.com/astral-sh/uv/pull/17019
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # expand tilde in cache-dir
 
 ---
 
-_Pull request opened by @Mobocop on 2025-12-07 21:56_
+_@Mobocop_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

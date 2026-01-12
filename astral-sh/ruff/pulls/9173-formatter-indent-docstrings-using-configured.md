@@ -12,14 +12,14 @@ head: indent-docstrings-style
 created_at: 2023-12-18T03:03:53Z
 updated_at: 2024-02-08T14:58:44Z
 url: https://github.com/astral-sh/ruff/pull/9173
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [formatter] Indent docstrings using configured indent_style
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-12-18 03:03_
+_@sciyoshi_
 
 ## Summary
 

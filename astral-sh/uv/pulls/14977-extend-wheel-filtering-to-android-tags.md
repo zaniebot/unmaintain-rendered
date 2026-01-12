@@ -13,14 +13,14 @@ head: charlie/android
 created_at: 2025-07-30T15:03:14Z
 updated_at: 2025-07-30T15:26:45Z
 url: https://github.com/astral-sh/uv/pull/14977
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Extend wheel filtering to Android tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-30 15:03_
+_@charliermarsh_
 
 ## Summary
 

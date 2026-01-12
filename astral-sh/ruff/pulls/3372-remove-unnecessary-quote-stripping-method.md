@@ -12,14 +12,14 @@ head: charlie/quote
 created_at: 2023-03-06T23:21:31Z
 updated_at: 2023-03-06T23:28:22Z
 url: https://github.com/astral-sh/ruff/pull/3372
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove unnecessary quote-stripping method
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 23:21_
+_@charliermarsh_
 
 We already have a variant of this elsewhere.
 

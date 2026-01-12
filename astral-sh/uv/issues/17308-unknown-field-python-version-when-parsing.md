@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T19:14:51Z
 updated_at: 2026-01-05T22:59:22Z
 url: https://github.com/astral-sh/uv/issues/17308
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # unknown field `python-version` when parsing pyproject.toml in non-workspaced subdirectory of a monorepo
 
 ---
 
-_Issue opened by @btakita on 2026-01-02 19:14_
+_@btakita_
 
 ### Summary
 

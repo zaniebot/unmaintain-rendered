@@ -12,14 +12,14 @@ head: charlie/ends-with
 created_at: 2022-11-14T18:06:40Z
 updated_at: 2022-11-14T18:07:28Z
 url: https://github.com/astral-sh/ruff/pull/741
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Allow second line as 'first line' for punctuation
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-14 18:06_
+_@charliermarsh_
 
 Resolves #740.
 

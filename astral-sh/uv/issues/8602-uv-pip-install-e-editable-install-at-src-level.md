@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-27T05:07:38Z
 updated_at: 2024-10-28T00:48:48Z
 url: https://github.com/astral-sh/uv/issues/8602
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # `uv pip install -e .` Editable install at src/ level, not project root
 
 ---
 
-_Issue opened by @mychiffonn on 2024-10-27 05:07_
+_@mychiffonn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

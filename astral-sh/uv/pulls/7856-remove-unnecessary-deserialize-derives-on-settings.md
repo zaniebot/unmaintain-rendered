@@ -12,14 +12,14 @@ head: charlie/ser
 created_at: 2024-10-02T02:22:19Z
 updated_at: 2024-10-02T02:32:38Z
 url: https://github.com/astral-sh/uv/pull/7856
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Remove unnecessary `Deserialize` derives on settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-02 02:22_
+_@charliermarsh_
 
 _No description provided._
 

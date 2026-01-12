@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-25T03:01:27Z
 updated_at: 2025-04-28T21:29:06Z
 url: https://github.com/astral-sh/uv/issues/13096
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Use of random temp paths by `uv build` adds nondeterminism into build environments
 
 ---
 
-_Issue opened by @tabbyrobin on 2025-04-25 03:01_
+_@tabbyrobin_
 
 ### Summary
 

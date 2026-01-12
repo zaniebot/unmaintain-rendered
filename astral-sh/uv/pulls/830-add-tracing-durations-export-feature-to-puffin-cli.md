@@ -12,14 +12,14 @@ head: konsti/tracing-durations-export-main
 created_at: 2024-01-08T10:14:40Z
 updated_at: 2024-01-08T15:20:46Z
 url: https://github.com/astral-sh/uv/pull/830
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Add tracing_durations_export feature to puffin-cli
 
 ---
 
-_Pull request opened by @konstin on 2024-01-08 10:14_
+_@konstin_
 
 The optional `tracing-durations-export` feature allows creating parallelism plots from all puffin-cli commands without affecting production builds.
 

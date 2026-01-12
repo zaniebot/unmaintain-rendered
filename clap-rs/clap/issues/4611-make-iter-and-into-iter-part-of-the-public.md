@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-08T12:02:23Z
 updated_at: 2023-01-09T22:11:14Z
 url: https://github.com/clap-rs/clap/issues/4611
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Make `iter` and `into_iter` part of the public interface in `StyledStr`
 
 ---
 
-_Issue opened by @makspll on 2023-01-08 12:02_
+_@makspll_
 
 ### Please complete the following tasks
 

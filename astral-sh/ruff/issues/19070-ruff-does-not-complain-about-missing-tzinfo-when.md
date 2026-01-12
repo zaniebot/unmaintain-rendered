@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T13:57:02Z
 updated_at: 2025-07-01T14:10:34Z
 url: https://github.com/astral-sh/ruff/issues/19070
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff does not complain about missing tzinfo when using `datetime.datetime.combine`
 
 ---
 
-_Issue opened by @RuurdBijlsma on 2025-07-01 13:57_
+_@RuurdBijlsma_
 
 ### Summary
 

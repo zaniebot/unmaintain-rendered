@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-12T13:12:04Z
 updated_at: 2024-04-13T22:57:22Z
 url: https://github.com/astral-sh/ruff/issues/10907
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLR1730 more aggressive with pylint 3.1.0
 
 ---
 
-_Issue opened by @xrmx on 2024-04-12 13:12_
+_@xrmx_
 
 With the following snippet:
 

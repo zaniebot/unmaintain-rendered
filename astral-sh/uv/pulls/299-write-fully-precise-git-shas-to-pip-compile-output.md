@@ -12,14 +12,14 @@ head: charlie/refresh
 created_at: 2023-11-02T20:05:07Z
 updated_at: 2023-11-03T16:26:59Z
 url: https://github.com/astral-sh/uv/pull/299
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Write fully-precise Git SHAs to `pip-compile` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 20:05_
+_@charliermarsh_
 
 This PR adds a mechanism by which we can ensure that we _always_ try to refresh Git dependencies when resolving; further, we now write the fully resolved SHA to the "lockfile". However, nothing in the code _assumes_ we do this, so the installer will remain agnostic to this behavior.
 

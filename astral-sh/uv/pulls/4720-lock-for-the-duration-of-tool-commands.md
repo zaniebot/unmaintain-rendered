@@ -14,14 +14,14 @@ head: zb/tool-lock
 created_at: 2024-07-02T02:43:03Z
 updated_at: 2024-07-10T16:16:15Z
 url: https://github.com/astral-sh/uv/pull/4720
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Lock for the duration of tool commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 02:43_
+_@zanieb_
 
 Feedback from https://github.com/astral-sh/uv/pull/4501#discussion_r1655391958
 

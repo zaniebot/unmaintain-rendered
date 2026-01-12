@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-05T09:43:25Z
 updated_at: 2025-12-18T20:45:40Z
 url: https://github.com/astral-sh/uv/issues/7074
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Feature request: show install time for each package
 
 ---
 
-_Issue opened by @Afoucaul on 2024-09-05 09:43_
+_@Afoucaul_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

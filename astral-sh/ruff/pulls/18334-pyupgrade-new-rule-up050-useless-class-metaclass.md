@@ -14,14 +14,14 @@ head: feat/useless-class-metaclass-type
 created_at: 2025-05-27T16:09:44Z
 updated_at: 2025-05-28T07:44:00Z
 url: https://github.com/astral-sh/ruff/pull/18334
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [`pyupgrade`]: new rule UP050 (`useless-class-metaclass-type`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-05-27 16:09_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

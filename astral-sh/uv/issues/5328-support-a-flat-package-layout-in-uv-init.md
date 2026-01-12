@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T03:38:27Z
 updated_at: 2024-12-26T18:51:57Z
 url: https://github.com/astral-sh/uv/issues/5328
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Support a "flat" package layout in `uv init`
 
 ---
 
-_Issue opened by @mgaitan on 2024-07-23 03:38_
+_@mgaitan_
 
 `uv init mypackage` currently generates a "src" layout:
 

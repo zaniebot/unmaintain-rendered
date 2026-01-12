@@ -14,14 +14,14 @@ head: charlie/build-info
 created_at: 2025-08-14T20:38:49Z
 updated_at: 2025-08-15T15:15:56Z
 url: https://github.com/astral-sh/uv/pull/15289
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Reject already-installed wheels built with outdated settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-14 20:38_
+_@charliermarsh_
 
 ## Summary
 

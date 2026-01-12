@@ -14,14 +14,14 @@ head: alex/primer-bump
 created_at: 2025-08-18T11:38:59Z
 updated_at: 2025-08-18T12:33:17Z
 url: https://github.com/astral-sh/ruff/pull/19967
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # Upgrade mypy_primer pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-18 11:38_
+_@AlexWaygood_
 
 ## Summary
 

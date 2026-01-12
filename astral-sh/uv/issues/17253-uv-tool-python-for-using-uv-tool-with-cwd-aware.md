@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T15:54:57Z
 updated_at: 2026-01-12T10:01:22Z
 url: https://github.com/astral-sh/uv/issues/17253
-synced_at: 2026-01-12T11:01:24Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # `UV_TOOL_PYTHON` for using `uv tool` with CWD-aware version managers
 
 ---
 
-_Issue opened by @jklaiho on 2025-12-29 15:54_
+_@jklaiho_
 
 ### Summary
 

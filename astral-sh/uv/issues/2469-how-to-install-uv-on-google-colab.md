@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T02:12:44Z
 updated_at: 2024-06-29T07:57:31Z
 url: https://github.com/astral-sh/uv/issues/2469
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # How to install uv on google colab
 
 ---
 
-_Issue opened by @raybellwaves on 2024-03-15 02:12_
+_@raybellwaves_
 
 Firstly, excellent project! Thanks a lot for taking the time to build this and open source it!
 

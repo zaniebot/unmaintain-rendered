@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-29T16:03:05Z
 updated_at: 2025-12-02T07:49:09Z
 url: https://github.com/astral-sh/ty/issues/1679
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Show suggested fixes when rendering diagnostics on the CLI
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 16:03_
+_@AlexWaygood_
 
 For example, we now offer an IDE autofix for this snippet that will correct `"naem"` to `"name"`:
 

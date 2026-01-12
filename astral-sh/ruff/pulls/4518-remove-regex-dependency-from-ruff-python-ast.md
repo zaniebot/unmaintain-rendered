@@ -12,14 +12,14 @@ head: fix-unused-dependencies
 created_at: 2023-05-19T06:30:12Z
 updated_at: 2023-05-19T07:02:23Z
 url: https://github.com/astral-sh/ruff/pull/4518
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove `regex` dependency from `ruff_python_ast`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-19 06:30_
+_@MichaReiser_
 
 I removed the summary from the `udeps` step because it didn't work when `cargo udeps` failed and it truncated the error message from the job output. 
 

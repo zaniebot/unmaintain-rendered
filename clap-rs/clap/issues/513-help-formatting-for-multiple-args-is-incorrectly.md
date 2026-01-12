@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-28T18:47:57Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/513
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help Formatting for Multiple Args is Incorrectly Indented
 
 ---
 
-_Issue opened by @mitsuhiko on 2016-05-28 18:47_
+_@mitsuhiko_
 
 Example:
 

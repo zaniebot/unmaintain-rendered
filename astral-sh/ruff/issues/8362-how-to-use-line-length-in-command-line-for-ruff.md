@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-30T17:49:52Z
 updated_at: 2023-11-02T01:39:53Z
 url: https://github.com/astral-sh/ruff/issues/8362
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # How to use line-length in command line for ruff format?
 
 ---
 
-_Issue opened by @alanwilter on 2023-10-30 17:49_
+_@alanwilter_
 
 Plain simple, I want to use ruff format and I don't have any toml configuration.
 

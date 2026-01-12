@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-28T19:26:14Z
 updated_at: 2024-12-03T04:41:48Z
 url: https://github.com/astral-sh/ruff/issues/14662
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Import aliases configured for ICN001 can cause syntax errors
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-28 19:26_
+_@dscorbett_
 
 Ruff 0.8.0 does not validate the aliases in [`lint.flake8-import-conventions.extend-aliases`](https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_extend-aliases) for [`unconventional-import-alias` (ICN001)](https://docs.astral.sh/ruff/rules/unconventional-import-alias/).
 

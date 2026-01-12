@@ -13,14 +13,14 @@ head: konsti/remove-trailing-newlines
 created_at: 2024-10-18T09:45:18Z
 updated_at: 2024-10-18T15:17:43Z
 url: https://github.com/astral-sh/uv/pull/8322
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Remove trailing newlines in error messages
 
 ---
 
-_Pull request opened by @konstin on 2024-10-18 09:45_
+_@konstin_
 
 Sometimes, multiline errors bring their own trailing newlines, which double with our trailing newlines. We need to trim those.
 

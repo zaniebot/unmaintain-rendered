@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-24T17:39:38Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/269
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Re-run benchmark
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-24 17:39_
+_@charliermarsh_
 
 A lot of the existing tools got slower when I updated the benchmark most recently, but I suspect that was "wrong". Need to re-run.
 

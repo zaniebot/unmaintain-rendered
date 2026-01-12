@@ -12,14 +12,14 @@ head: text-report-commit-message
 created_at: 2022-12-31T08:56:16Z
 updated_at: 2022-12-31T12:57:20Z
 url: https://github.com/astral-sh/ruff/pull/1505
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Include fix commit message when showing violations together with source
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-31 08:56_
+_@squiddy_
 
 This change doesn't have a lot of impact right now, as in many cases the commit message is similar to the error message itself. However, it is more actionable and makes it more obvious in what places we can improve.
 

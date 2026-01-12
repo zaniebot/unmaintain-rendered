@@ -13,14 +13,14 @@ head: charlie/dep-editable
 created_at: 2024-05-13T23:58:00Z
 updated_at: 2024-05-14T00:03:55Z
 url: https://github.com/astral-sh/uv/pull/3563
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Avoid attempting to build editables when fetching metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 23:58_
+_@charliermarsh_
 
 ## Summary
 

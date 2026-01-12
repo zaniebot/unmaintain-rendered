@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-10T22:15:08Z
 updated_at: 2025-12-31T18:54:59Z
 url: https://github.com/astral-sh/ruff/issues/14900
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLC0206 diagnostic location is confusing
 
 ---
 
-_Issue opened by @oz123 on 2024-12-10 22:15_
+_@oz123_
 
 First it tells me no to use:
 ```

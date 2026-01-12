@@ -13,14 +13,14 @@ head: alex/filter-builtins
 created_at: 2025-11-05T20:16:22Z
 updated_at: 2025-11-05T20:19:51Z
 url: https://github.com/astral-sh/ruff/pull/21288
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Filter `TypeVar`/`ParamSpec`/`TypeVarTuple` definitions out of the builtins fallback
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-05 20:16_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1483
 

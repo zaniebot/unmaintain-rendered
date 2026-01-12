@@ -13,14 +13,14 @@ head: zb/pip-wip
 created_at: 2025-03-21T21:15:19Z
 updated_at: 2025-07-03T01:05:05Z
 url: https://github.com/astral-sh/uv/pull/12382
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Add a migration guide from pip to uv projects
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 21:15_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/uv/blob/zb/pip-wip/docs/guides/migration/pip-to-project.md)
 

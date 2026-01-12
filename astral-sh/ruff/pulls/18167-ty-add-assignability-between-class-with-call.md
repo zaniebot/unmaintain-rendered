@@ -12,14 +12,14 @@ head: call-as-attribute-fix
 created_at: 2025-05-19T01:31:42Z
 updated_at: 2025-05-23T03:16:54Z
 url: https://github.com/astral-sh/ruff/pull/18167
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Add assignability between class with `__call__` class attribute and callable
 
 ---
 
-_Pull request opened by @med1844 on 2025-05-19 01:31_
+_@med1844_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

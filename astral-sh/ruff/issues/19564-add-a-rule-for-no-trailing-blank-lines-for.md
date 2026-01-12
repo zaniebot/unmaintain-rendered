@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-25T20:04:11Z
 updated_at: 2025-07-29T21:55:11Z
 url: https://github.com/astral-sh/ruff/issues/19564
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add a rule for no-trailing-blank-lines for docstrings
 
 ---
 
-_Issue opened by @chazmo03 on 2025-07-25 20:04_
+_@chazmo03_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T18:02:26Z
 updated_at: 2024-10-09T21:01:49Z
 url: https://github.com/astral-sh/uv/issues/8051
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # managed installations - incompatible with the project's Python requirement `>=3.13`
 
 ---
 
-_Issue opened by @masiarek on 2024-10-09 18:02_
+_@masiarek_
 
 This is most likely my mac set-up issue - not a bug - but maybe you could guide me how to fix it?
 I tried Python 3.12 as well - the same symptom...

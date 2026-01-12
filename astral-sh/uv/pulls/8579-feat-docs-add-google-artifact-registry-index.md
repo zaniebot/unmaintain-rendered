@@ -13,14 +13,14 @@ head: feat/add-google-artifact-registry-documentation
 created_at: 2024-10-25T22:21:45Z
 updated_at: 2024-10-30T08:31:20Z
 url: https://github.com/astral-sh/uv/pull/8579
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # feat(docs): add Google Artifact Registry index instructions
 
 ---
 
-_Pull request opened by @stegayet on 2024-10-25 22:21_
+_@stegayet_
 
 ## Summary
 

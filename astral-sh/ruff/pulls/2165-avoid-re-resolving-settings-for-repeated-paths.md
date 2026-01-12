@@ -12,14 +12,14 @@ head: charlie/skip
 created_at: 2023-01-25T18:34:35Z
 updated_at: 2023-01-25T18:38:35Z
 url: https://github.com/astral-sh/ruff/pull/2165
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid re-resolving settings for repeated paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 18:34_
+_@charliermarsh_
 
 After this change:
 

@@ -13,14 +13,14 @@ head: renovate/parking_lot-0.x-lockfile
 created_at: 2024-05-27T00:12:30Z
 updated_at: 2024-05-27T00:33:07Z
 url: https://github.com/astral-sh/ruff/pull/11555
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update Rust crate parking_lot to v0.12.3
 
 ---
 
-_Pull request opened by @renovate on 2024-05-27 00:12_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

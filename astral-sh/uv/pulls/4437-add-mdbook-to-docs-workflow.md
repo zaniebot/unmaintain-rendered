@@ -13,14 +13,14 @@ head: zb/mdbook
 created_at: 2024-06-21T16:27:49Z
 updated_at: 2024-06-21T16:33:56Z
 url: https://github.com/astral-sh/uv/pull/4437
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Add mdbook to docs workflow
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-21 16:27_
+_@zanieb_
 
 Based on https://github.com/rust-lang/mdBook/wiki/Automated-Deployment%3A-GitHub-Actions
 

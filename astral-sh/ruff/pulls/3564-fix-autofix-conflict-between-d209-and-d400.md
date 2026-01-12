@@ -12,14 +12,14 @@ head: fix-d209-d400-conflict
 created_at: 2023-03-16T22:15:48Z
 updated_at: 2023-03-17T06:26:04Z
 url: https://github.com/astral-sh/ruff/pull/3564
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix autofix conflict between `D209` and `D400`
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-16 22:15_
+_@JonathanPlasse_
 
 - Closes #3538
 - The snapshot of the first commit was generated with #3557. Without #3557, there is no change to the snapshot, so I opened a PR for this.

@@ -13,14 +13,14 @@ head: charlie/debug-build
 created_at: 2024-09-07T14:25:04Z
 updated_at: 2024-09-07T14:32:26Z
 url: https://github.com/astral-sh/uv/pull/7169
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Add build isolation logging to build operations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-07 14:25_
+_@charliermarsh_
 
 ## Summary
 

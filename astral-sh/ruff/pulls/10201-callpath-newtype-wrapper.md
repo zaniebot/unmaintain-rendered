@@ -13,14 +13,14 @@ head: call-path-new-type
 created_at: 2024-03-02T18:07:17Z
 updated_at: 2024-03-03T15:54:25Z
 url: https://github.com/astral-sh/ruff/pull/10201
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # CallPath newtype wrapper
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-02 18:07_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dcreager/rework-bindings
 created_at: 2025-02-21T15:30:21Z
 updated_at: 2025-02-28T18:37:01Z
 url: https://github.com/astral-sh/ruff/pull/16306
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Use arena-allocated association lists for narrowing constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-21 15:30_
+_@dcreager_
 
 This PR adds an implementation of [association lists](https://en.wikipedia.org/wiki/Association_list), and uses them to replace the previous `BitSet`/`SmallVec` representation for narrowing constraints.
 

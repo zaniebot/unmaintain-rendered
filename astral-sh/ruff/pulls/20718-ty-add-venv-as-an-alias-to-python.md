@@ -14,14 +14,14 @@ head: alex/python-option-aliases
 created_at: 2025-10-06T11:21:39Z
 updated_at: 2025-10-06T12:03:07Z
 url: https://github.com/astral-sh/ruff/pull/20718
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Add `--venv` as an alias to `--python`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-06 11:21_
+_@AlexWaygood_
 
 ## Summary
 

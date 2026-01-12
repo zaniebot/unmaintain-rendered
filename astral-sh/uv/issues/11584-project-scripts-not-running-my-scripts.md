@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T20:57:52Z
 updated_at: 2025-02-24T00:07:39Z
 url: https://github.com/astral-sh/uv/issues/11584
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # project.scripts not running my scripts
 
 ---
 
-_Issue opened by @sh1man on 2025-02-17 20:57_
+_@sh1man_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: jack/test_buckets_in_tmp
 created_at: 2025-06-26T18:11:29Z
 updated_at: 2025-06-26T21:56:21Z
 url: https://github.com/astral-sh/uv/pull/14290
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # default the test buckets dir to the canonicalized temp dir
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-26 18:11_
+_@oconnor663_
 
 Previously we were using the XDG data dir to avoid symlinks, but there's no particular guarantee that that's not going to be a symlink too. Using the (canonicalized) temp dir by default is also slightly nicer for a couple reasons: It's sometimes faster (an in-memory tempfs on e.g. Arch), and it makes overriding `$TMPDIR` or `%TMP%` sufficient to control where tests put temp files, without needing to override `UV_INTERNAL__TEST_DIR` too.
 

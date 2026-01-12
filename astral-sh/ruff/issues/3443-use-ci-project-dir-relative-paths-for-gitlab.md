@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T16:06:33Z
 updated_at: 2023-03-13T03:03:39Z
 url: https://github.com/astral-sh/ruff/issues/3443
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Use `CI_PROJECT_DIR`-relative paths for GitLab annotations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-10 16:06_
+_@charliermarsh_
 
 At least for Gitlab [`path` should be relative](https://docs.gitlab.com/ee/ci/testing/code_quality.html#implement-a-custom-tool) to the `CI_PROJECT_DIR` location. With this implementation links in widgets are broken.
 

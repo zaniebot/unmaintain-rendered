@@ -12,14 +12,14 @@ head: charlie/bind
 created_at: 2023-07-18T02:10:50Z
 updated_at: 2023-07-19T00:57:03Z
 url: https://github.com/astral-sh/ruff/pull/5852
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move unused deletion tracking to deferred analysis
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-18 02:10_
+_@charliermarsh_
 
 ## Summary
 

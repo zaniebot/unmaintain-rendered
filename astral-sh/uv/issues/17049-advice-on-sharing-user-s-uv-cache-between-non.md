@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T17:16:34Z
 updated_at: 2025-12-11T16:53:08Z
 url: https://github.com/astral-sh/uv/issues/17049
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Advice on sharing user's uv cache between non-docker and docker
 
 ---
 
-_Issue opened by @rzuckerm on 2025-12-09 17:16_
+_@rzuckerm_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T19:04:06Z
 updated_at: 2025-04-10T03:52:34Z
 url: https://github.com/astral-sh/uv/issues/12298
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Please support (and respect) --link-mode in `uv python install`
 
 ---
 
-_Issue opened by @nbelakovski on 2025-03-18 19:04_
+_@nbelakovski_
 
 ### Summary
 

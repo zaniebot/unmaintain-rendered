@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-26T19:32:41Z
 updated_at: 2025-09-05T21:12:50Z
 url: https://github.com/astral-sh/uv/issues/14917
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Pull in upstream patches for nushell activation script
 
 ---
 
-_Issue opened by @zanieb on 2025-07-26 19:32_
+_@zanieb_
 
 > Thanks IIRC uv used to upstream from the virtualenv one that also got fixed: https://github.com/pypa/virtualenv/commit/5e875b3b89ff5b7c11c6e7b6cdcd688009e1a620
 

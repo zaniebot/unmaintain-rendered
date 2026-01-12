@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-24T14:19:32Z
 updated_at: 2025-07-28T21:03:24Z
 url: https://github.com/astral-sh/ruff/issues/19531
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PERF401 false positive when a target variable is global or nonlocal
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-24 14:19_
+_@dscorbett_
 
 ### Summary
 

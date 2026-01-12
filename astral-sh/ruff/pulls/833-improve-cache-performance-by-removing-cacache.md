@@ -12,14 +12,14 @@ head: charlie/cache-speed
 created_at: 2022-11-20T17:36:52Z
 updated_at: 2022-11-20T18:36:34Z
 url: https://github.com/astral-sh/ruff/pull/833
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve cache performance by removing `cacache` dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-20 17:36_
+_@charliermarsh_
 
 In the CPython benchmark (with `--no-cache`), this brings performance down to ~70-72ms, from ~92ms -- so something like a 20% speedup.
 

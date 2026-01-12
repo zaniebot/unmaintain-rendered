@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-22T09:49:17Z
 updated_at: 2025-10-24T20:14:19Z
 url: https://github.com/astral-sh/ty/issues/1408
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Bidirectional inference does not consider parameter types of constructors
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-22 09:49_
+_@sharkdp_
 
 Consider:
 ```py

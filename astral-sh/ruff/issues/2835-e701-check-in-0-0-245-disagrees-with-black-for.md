@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T23:35:00Z
 updated_at: 2023-02-12T23:56:44Z
 url: https://github.com/astral-sh/ruff/issues/2835
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E701 check in 0.0.245 disagrees with black for .pyi files
 
 ---
 
-_Issue opened by @alex on 2023-02-12 23:35_
+_@alex_
 
 In `.pyi` files, everything is stubbed out like:
 

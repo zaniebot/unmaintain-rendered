@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-10T05:53:39Z
 updated_at: 2025-08-12T17:52:19Z
 url: https://github.com/clap-rs/clap/issues/6100
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `name` ignored in usage, showing the binary file name
 
 ---
 
-_Issue opened by @winksaville on 2025-08-10 05:53_
+_@winksaville_
 
 ### Please complete the following tasks
 

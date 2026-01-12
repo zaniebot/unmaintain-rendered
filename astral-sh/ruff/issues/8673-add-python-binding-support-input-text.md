@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-14T09:55:53Z
 updated_at: 2023-11-20T07:29:15Z
 url: https://github.com/astral-sh/ruff/issues/8673
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add python binding / support input text
 
 ---
 
-_Issue opened by @ArthurZucker on 2023-11-14 09:55_
+_@ArthurZucker_
 
 Hey! 🤗 `transformers` core maintainer here, great work everyone! 🔥 
 

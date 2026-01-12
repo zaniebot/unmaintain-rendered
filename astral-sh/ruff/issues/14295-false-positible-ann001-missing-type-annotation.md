@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T10:46:44Z
 updated_at: 2024-11-12T11:54:44Z
 url: https://github.com/astral-sh/ruff/issues/14295
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positible ANN001 Missing type annotation for function argument `self`
 
 ---
 
-_Issue opened by @ssbarnea on 2024-11-12 10:46_
+_@ssbarnea_
 
 Current version of ruff (0.7.3) does provide a false-positive message about types for `self`.
 

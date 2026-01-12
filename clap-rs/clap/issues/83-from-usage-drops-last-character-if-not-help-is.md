@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-29T01:54:58Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/83
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # from_usage drops last character if not help is present
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-29 01:54_
+_@kbknapp_
 
 ``` rust
 let m = App::new("app").arg(Arg::from_usage("--reqs"))

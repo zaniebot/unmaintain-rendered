@@ -13,14 +13,14 @@ head: alex/rename-ruff-vendored
 created_at: 2024-10-01T10:21:08Z
 updated_at: 2024-10-01T15:17:01Z
 url: https://github.com/astral-sh/ruff/pull/13586
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Rename the `ruff_vendored` crate to `red_knot_vendored`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-01 10:21_
+_@AlexWaygood_
 
 ## Summary
 

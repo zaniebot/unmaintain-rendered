@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T15:33:50Z
 updated_at: 2024-03-12T07:36:39Z
 url: https://github.com/astral-sh/uv/issues/2358
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Resolver panics due to missing key in inverse
 
 ---
 
-_Issue opened by @david-pl on 2024-03-11 15:33_
+_@david-pl_
 
 I have a requirements.txt with the following contents (somewhat shortened):
 

@@ -13,14 +13,14 @@ head: ci-upload-download-artifact
 created_at: 2024-02-23T20:11:13Z
 updated_at: 2024-02-23T20:36:29Z
 url: https://github.com/astral-sh/ruff/pull/10104
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Upgrade upload/download artifact actions in CI.yaml workflow
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 20:11_
+_@MichaReiser_
 
 ## Summary
 

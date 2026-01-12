@@ -13,14 +13,14 @@ head: konsti/add-airflow-test-case
 created_at: 2024-04-26T14:07:19Z
 updated_at: 2024-04-26T14:17:10Z
 url: https://github.com/astral-sh/uv/pull/3278
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Add apache airflow test case
 
 ---
 
-_Pull request opened by @konstin on 2024-04-26 14:07_
+_@konstin_
 
 I like using airflow as a complex resolution test case. The second requirement is the missing bound to enforce a successful resolution.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-09T08:56:33Z
 updated_at: 2025-09-10T00:30:54Z
 url: https://github.com/astral-sh/ty/issues/1154
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # right hand of operator incorrectly takes precedence
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-09 08:56_
+_@KotlinIsland_
 
 ### Summary
 

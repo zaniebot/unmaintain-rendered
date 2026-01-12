@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T18:48:33Z
 updated_at: 2023-11-16T14:57:34Z
 url: https://github.com/astral-sh/ruff/issues/8682
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add suggestion or fix for FA102 (future-required-type-annotation)
 
 ---
 
-_Issue opened by @RunDevelopment on 2023-11-14 18:48_
+_@RunDevelopment_
 
 The rule [FA102](https://docs.astral.sh/ruff/rules/future-required-type-annotation/) (future-required-type-annotation) is very useful when writing code in a code base that support python <3.10. The only issue with this rule is that it only *tells* you that a `from __future__ import annotations` is required, it doesn't have any way of applying the suggested fix.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T02:49:40Z
 updated_at: 2024-08-20T10:09:05Z
 url: https://github.com/astral-sh/ruff/issues/1619
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive with F401 (imported but unused) for type comments
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-04 02:49_
+_@sbdchd_
 
 minimal example ([of some project code](https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/kodiak/pull_request.py#L76-L76)):
 ```python

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T20:44:56Z
 updated_at: 2025-11-14T21:13:58Z
 url: https://github.com/astral-sh/ty/issues/1357
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Literal promotion is not performed for generic calls
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-14 20:44_
+_@ibraheemdev_
 
 For example, on main:
 ```py

@@ -13,14 +13,14 @@ head: konsti/fix-yanked-test
 created_at: 2025-05-23T18:35:13Z
 updated_at: 2025-05-23T18:46:53Z
 url: https://github.com/astral-sh/uv/pull/13623
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Fix tests due to yanked configargparse
 
 ---
 
-_Pull request opened by @konstin on 2025-05-23 18:35_
+_@konstin_
 
 The release of configargparse locked in the tests was yanked, we fix this by updating the snapshots.
 

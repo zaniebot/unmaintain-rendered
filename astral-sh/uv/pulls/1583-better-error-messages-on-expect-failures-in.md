@@ -12,14 +12,14 @@ head: resolution-expect
 created_at: 2024-02-17T11:50:43Z
 updated_at: 2024-02-17T18:51:32Z
 url: https://github.com/astral-sh/uv/pull/1583
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Better error messages on expect failures in resolver
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-02-17 11:50_
+_@hauntsaninja_
 
 I ran into some (tricky to reproduce) panics while using uv, would be useful to have a better error message to track down the source of the problem
 

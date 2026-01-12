@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-08T04:22:13Z
 updated_at: 2018-08-02T03:29:56Z
 url: https://github.com/clap-rs/clap/issues/735
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # End of options marker: `--`
 
 ---
 
-_Issue opened by @jdub on 2016-11-08 04:22_
+_@jdub_
 
 I can't seem to find anything in the documentation or other issues about the end of options terminator, `--`.
 

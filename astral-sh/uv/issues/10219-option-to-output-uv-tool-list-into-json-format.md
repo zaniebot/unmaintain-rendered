@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-29T13:59:44Z
 updated_at: 2025-02-04T16:19:13Z
 url: https://github.com/astral-sh/uv/issues/10219
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Option to output `uv tool list` into JSON format
 
 ---
 
-_Issue opened by @Coruscant11 on 2024-12-29 13:59_
+_@Coruscant11_
 
 Hello 🙂 
 

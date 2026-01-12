@@ -11,14 +11,14 @@ head: main
 created_at: 2025-06-26T01:13:58Z
 updated_at: 2025-06-27T17:46:11Z
 url: https://github.com/astral-sh/uv/pull/14265
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # updated installation instruction - added usage of wget
 
 ---
 
-_Pull request opened by @sahasrara62 on 2025-06-26 01:13_
+_@sahasrara62_
 
 
 ## Summary

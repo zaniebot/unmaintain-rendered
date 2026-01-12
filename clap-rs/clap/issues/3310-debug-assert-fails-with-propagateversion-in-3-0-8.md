@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-18T20:07:53Z
 updated_at: 2022-01-18T21:03:30Z
 url: https://github.com/clap-rs/clap/issues/3310
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # debug_assert fails with PropagateVersion in 3.0.8/3.0.9, but get_matches does not
 
 ---
 
-_Issue opened by @Roguelazer on 2022-01-18 20:07_
+_@Roguelazer_
 
 ### Please complete the following tasks
 

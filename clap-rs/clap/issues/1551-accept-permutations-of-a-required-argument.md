@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-09-26T04:14:40Z
 updated_at: 2020-02-02T05:27:29Z
 url: https://github.com/clap-rs/clap/issues/1551
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Accept permutations of a required argument
 
 ---
 
-_Issue opened by @Matelasse on 2019-09-26 04:14_
+_@Matelasse_
 
 ### Bug or Feature Request Summary
 I have this example use case, in my program I will be accepting 120 arguments, but no more. Ideally, I would want Clap's intelligent suggestions around them, but I don't want to type an array of 120 items, instead I want to type the 6 characters and get all their permutations generated for me. To clarify, an example program needs to accept `abcdef` passed in any order. These are fine: `./program --req abcdef | ./program --req bacdef`, but this is not fine `./program --req abcdefg` (Note that this feature request is exclusively for TOML Clap) 

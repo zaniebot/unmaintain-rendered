@@ -12,14 +12,14 @@ head: generate-rules-links
 created_at: 2022-12-07T14:29:53Z
 updated_at: 2022-12-07T15:04:24Z
 url: https://github.com/astral-sh/ruff/pull/1121
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Auto-generate the rules table of contents
 
 ---
 
-_Pull request opened by @phillipuniverse on 2022-12-07 14:29_
+_@phillipuniverse_
 
 Follow-up to https://github.com/charliermarsh/ruff/pull/1109#discussion_r1041740034
 

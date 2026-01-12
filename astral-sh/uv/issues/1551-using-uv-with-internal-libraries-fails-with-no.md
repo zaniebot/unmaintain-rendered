@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T23:09:35Z
 updated_at: 2025-04-16T01:46:11Z
 url: https://github.com/astral-sh/uv/issues/1551
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Using uv with internal libraries fails with `No module named 'pip'`
 
 ---
 
-_Issue opened by @wsantos on 2024-02-16 23:09_
+_@wsantos_
 
 We are trying to implement UV in our pip line bot we are getting this error for one of out libraries:
 

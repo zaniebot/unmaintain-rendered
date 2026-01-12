@@ -13,14 +13,14 @@ head: fix_platform_machine_macos
 created_at: 2024-04-25T18:12:23Z
 updated_at: 2024-04-25T18:17:30Z
 url: https://github.com/astral-sh/uv/pull/3267
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # fix platform_machine for macos arm
 
 ---
 
-_Pull request opened by @Czaki on 2024-04-25 18:12_
+_@Czaki_
 
 ## Summary
 

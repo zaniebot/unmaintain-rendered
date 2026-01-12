@@ -13,14 +13,14 @@ head: dcreager/default-typevars
 created_at: 2025-05-08T16:15:44Z
 updated_at: 2025-05-09T00:19:17Z
 url: https://github.com/astral-sh/ruff/pull/17956
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Handle typevars that have other typevars as a default
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-08 16:15_
+_@dcreager_
 
 It's possible for a typevar to list another typevar as its default value:
 

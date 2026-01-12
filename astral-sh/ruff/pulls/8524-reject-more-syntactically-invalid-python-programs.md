@@ -13,14 +13,14 @@ head: ag/fix-6895
 created_at: 2023-11-06T19:15:53Z
 updated_at: 2023-11-07T12:16:07Z
 url: https://github.com/astral-sh/ruff/pull/8524
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Reject more syntactically invalid Python programs
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-06 19:15_
+_@BurntSushi_
 
 ## Summary
 

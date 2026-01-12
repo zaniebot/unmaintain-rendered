@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-21T16:57:25Z
 updated_at: 2023-04-05T22:02:34Z
 url: https://github.com/astral-sh/ruff/issues/3652
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLW2901 ignore when using cast
 
 ---
 
-_Issue opened by @LefterisJP on 2023-03-21 16:57_
+_@LefterisJP_
 
 ```
 ruff 0.0.257

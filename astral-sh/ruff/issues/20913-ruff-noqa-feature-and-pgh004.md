@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T08:44:32Z
 updated_at: 2025-12-06T14:56:33Z
 url: https://github.com/astral-sh/ruff/issues/20913
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff noqa feature and PGH004
 
 ---
 
-_Issue opened by @Morgadoooo on 2025-10-16 08:44_
+_@Morgadoooo_
 
 ### Question
 

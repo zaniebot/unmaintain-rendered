@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T17:59:31Z
 updated_at: 2025-05-12T08:24:00Z
 url: https://github.com/astral-sh/ruff/issues/17794
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Lint the `__all__` variable for validity
 
 ---
 
-_Issue opened by @hwittenborn on 2025-05-02 17:59_
+_@hwittenborn_
 
 ### Summary
 

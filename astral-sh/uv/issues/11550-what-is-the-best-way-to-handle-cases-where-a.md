@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T05:31:52Z
 updated_at: 2025-03-10T00:25:33Z
 url: https://github.com/astral-sh/uv/issues/11550
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # What is the best way to handle cases where a Python package internally assumes that pip is the installer?
 
 ---
 
-_Issue opened by @devon-research on 2025-02-16 05:31_
+_@devon-research_
 
 ### TL;DR Version
 

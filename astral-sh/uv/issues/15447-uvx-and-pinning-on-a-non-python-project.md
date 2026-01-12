@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:56:06Z
 updated_at: 2025-08-22T08:57:54Z
 url: https://github.com/astral-sh/uv/issues/15447
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # uvx and pinning on a non-python project
 
 ---
 
-_Issue opened by @stdedos on 2025-08-22 06:56_
+_@stdedos_
 
 ### Question
 

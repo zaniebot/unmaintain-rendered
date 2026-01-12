@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-21T15:24:24Z
 updated_at: 2023-03-21T18:54:41Z
 url: https://github.com/astral-sh/ruff/issues/3649
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Disable options specifically for .pyi files
 
 ---
 
-_Issue opened by @PedroPerpetua on 2023-03-21 15:24_
+_@PedroPerpetua_
 
 Currently I'm having an issue in my project where I have a `./typing` folder that contains only stubs (`.pyi` files) alongside my project folders, in a structure similar to this:
 ```

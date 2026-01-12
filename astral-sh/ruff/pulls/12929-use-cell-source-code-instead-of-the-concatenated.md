@@ -13,14 +13,14 @@ head: dhruv/fix-all-bug
 created_at: 2024-08-16T13:44:39Z
 updated_at: 2024-08-16T14:20:14Z
 url: https://github.com/astral-sh/ruff/pull/12929
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use cell source code instead of the concatenated one
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-16 13:44_
+_@dhruvmanila_
 
 ## Summary
 

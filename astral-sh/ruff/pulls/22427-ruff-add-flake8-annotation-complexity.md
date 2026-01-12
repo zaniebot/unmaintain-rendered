@@ -12,14 +12,14 @@ head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
 updated_at: 2026-01-08T21:22:45Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
 
 ---
 
-_Pull request opened by @danjones1618 on 2026-01-06 22:57_
+_@danjones1618_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

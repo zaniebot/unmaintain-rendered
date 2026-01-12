@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T18:35:02Z
 updated_at: 2023-09-13T07:37:12Z
 url: https://github.com/astral-sh/ruff/issues/7312
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: pre-commit support
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-12 18:35_
+_@MichaReiser_
 
 _No description provided._
 

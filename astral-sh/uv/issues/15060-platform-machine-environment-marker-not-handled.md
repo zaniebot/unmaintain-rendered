@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T14:28:52Z
 updated_at: 2026-01-03T22:11:17Z
 url: https://github.com/astral-sh/uv/issues/15060
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # `platform_machine` environment marker not handled correctly
 
 ---
 
-_Issue opened by @ghost on 2025-08-04 14:28_
+_@ghost_
 
 ### Summary
 

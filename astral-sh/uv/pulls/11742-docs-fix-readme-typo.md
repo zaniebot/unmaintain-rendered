@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-02-24T11:05:41Z
 updated_at: 2025-02-24T13:39:54Z
 url: https://github.com/astral-sh/uv/pull/11742
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # [Docs] fix readme typo
 
 ---
 
-_Pull request opened by @luarss on 2025-02-24 11:05_
+_@luarss_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

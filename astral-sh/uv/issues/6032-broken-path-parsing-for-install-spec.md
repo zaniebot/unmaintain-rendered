@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T11:27:36Z
 updated_at: 2024-09-30T16:38:39Z
 url: https://github.com/astral-sh/uv/issues/6032
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Broken path parsing for install spec
 
 ---
 
-_Issue opened by @flying-sheep on 2024-08-12 11:27_
+_@flying-sheep_
 
 ```console
 $ uv --version

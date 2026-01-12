@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-16T23:11:04Z
 updated_at: 2024-06-21T19:16:36Z
 url: https://github.com/clap-rs/clap/issues/5536
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # value_parser un-nests Option<Option<Foo>> multiple times
 
 ---
 
-_Issue opened by @mwlon on 2024-06-16 23:11_
+_@mwlon_
 
 ### Please complete the following tasks
 

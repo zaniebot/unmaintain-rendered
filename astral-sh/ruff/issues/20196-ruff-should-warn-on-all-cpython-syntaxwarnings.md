@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T15:27:29Z
 updated_at: 2025-09-02T13:49:37Z
 url: https://github.com/astral-sh/ruff/issues/20196
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff should warn on all CPython SyntaxWarnings
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-09-01 15:27_
+_@JelleZijlstra_
 
 ### Summary
 

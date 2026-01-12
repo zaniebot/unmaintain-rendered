@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T13:28:10Z
 updated_at: 2025-12-31T10:53:42Z
 url: https://github.com/astral-sh/ruff/issues/21639
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Detecting CRAP code
 
 ---
 
-_Issue opened by @ashrub-holvi on 2025-11-26 13:28_
+_@ashrub-holvi_
 
 ### Summary
 

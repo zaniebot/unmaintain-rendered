@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T04:51:25Z
 updated_at: 2024-10-15T08:49:54Z
 url: https://github.com/astral-sh/ruff/issues/13755
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Checking file with rule FIX001 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-10-15 04:51_
+_@qarmin_
 
 ruff 0.6.9+947 (04b636cba 2024-10-14)
 ```

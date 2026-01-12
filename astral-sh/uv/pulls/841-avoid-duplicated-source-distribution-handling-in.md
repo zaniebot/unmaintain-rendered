@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2024-01-08T21:04:25Z
 updated_at: 2024-01-08T21:19:56Z
 url: https://github.com/astral-sh/uv/pull/841
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Avoid duplicated source distribution handling in url
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 21:04_
+_@charliermarsh_
 
 ## Summary
 

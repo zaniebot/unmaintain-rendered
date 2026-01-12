@@ -13,14 +13,14 @@ head: unknown-typevar-constraints
 created_at: 2025-11-27T15:53:10Z
 updated_at: 2025-12-05T03:52:14Z
 url: https://github.com/astral-sh/ruff/pull/21663
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] fix panic when instantiating a type variable with invalid constraints
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-27 15:53_
+_@mtshiba_
 
 ## Summary
 

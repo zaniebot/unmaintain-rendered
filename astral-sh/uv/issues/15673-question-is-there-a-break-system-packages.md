@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T07:56:21Z
 updated_at: 2025-09-06T02:41:51Z
 url: https://github.com/astral-sh/uv/issues/15673
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Question: Is there a `--break-system-packages` equivalent to install in the system environemnt inside a Docker?
 
 ---
 
-_Issue opened by @turbotimon on 2025-09-04 07:56_
+_@turbotimon_
 
 ### Question
 

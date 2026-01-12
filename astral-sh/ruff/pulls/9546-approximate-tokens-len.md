@@ -13,14 +13,14 @@ head: approximate-tokens-len
 created_at: 2024-01-16T08:11:45Z
 updated_at: 2024-01-19T16:39:38Z
 url: https://github.com/astral-sh/ruff/pull/9546
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Approximate tokens len
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-16 08:11_
+_@MichaReiser_
 
 ## Summary
 

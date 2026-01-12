@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-21T15:37:54Z
 updated_at: 2025-05-07T14:22:33Z
 url: https://github.com/clap-rs/clap/issues/4498
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `Default`-able arguments are "missing" when encountering unknown flag with `ignore_errors`
 
 ---
 
-_Issue opened by @MarijnS95 on 2022-11-21 15:37_
+_@MarijnS95_
 
 When parsing unknown flags into a struct that has `ignore_errors(true)`, `clap` fails with `"The following required argument was not provided: bar"` upon encountering an unrecognized flag, whereas `bar` is a `bool` flag that should default to `false`.
 

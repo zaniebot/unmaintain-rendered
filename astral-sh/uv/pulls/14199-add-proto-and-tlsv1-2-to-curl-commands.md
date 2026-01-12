@@ -13,14 +13,14 @@ head: main
 created_at: 2025-06-22T11:21:55Z
 updated_at: 2025-06-27T17:59:08Z
 url: https://github.com/astral-sh/uv/pull/14199
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Add proto and tlsv1.2 to curl commands
 
 ---
 
-_Pull request opened by @pstoeckle on 2025-06-22 11:21_
+_@pstoeckle_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

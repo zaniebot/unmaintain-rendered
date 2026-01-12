@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-21T01:54:45Z
 updated_at: 2025-04-29T15:36:24Z
 url: https://github.com/clap-rs/clap/issues/5850
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Integrate initial OSS-Fuzz support
 
 ---
 
-_Issue opened by @initializedd on 2024-12-21 01:54_
+_@initializedd_
 
 ### Please complete the following tasks
 

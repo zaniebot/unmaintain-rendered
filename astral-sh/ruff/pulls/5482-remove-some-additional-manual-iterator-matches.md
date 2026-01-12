@@ -14,14 +14,14 @@ head: charlie/matches
 created_at: 2023-07-03T16:19:38Z
 updated_at: 2023-07-03T16:49:02Z
 url: https://github.com/astral-sh/ruff/pull/5482
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove some additional manual iterator matches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 16:19_
+_@charliermarsh_
 
 ## Summary
 

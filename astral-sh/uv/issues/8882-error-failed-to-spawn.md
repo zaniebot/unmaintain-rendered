@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T08:31:07Z
 updated_at: 2024-11-07T13:42:20Z
 url: https://github.com/astral-sh/uv/issues/8882
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # error: Failed to spawn
 
 ---
 
-_Issue opened by @xplosionmind on 2024-11-07 08:31_
+_@xplosionmind_
 
 Hi! I am trying to start a Django app, but I am having problems.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-29T13:10:10Z
 updated_at: 2025-09-29T13:24:34Z
 url: https://github.com/astral-sh/ty/issues/1275
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Missing-Argument Rule Does Not Support Collection Unpacking Notation for Function Parameters
 
 ---
 
-_Issue opened by @aleexharris on 2025-09-29 13:10_
+_@aleexharris_
 
 ### Summary
 

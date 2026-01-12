@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T22:21:20Z
 updated_at: 2025-05-11T02:55:59Z
 url: https://github.com/astral-sh/uv/issues/13383
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # `uv pip install -r pylock.toml ...` chokes when dependencies are present.
 
 ---
 
-_Issue opened by @jsirois on 2025-05-10 22:21_
+_@jsirois_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-20T15:21:26Z
 updated_at: 2023-11-25T17:43:35Z
 url: https://github.com/astral-sh/ruff/issues/8788
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Inline error/violation suppression doesn't work with existing comments
 
 ---
 
-_Issue opened by @dAnjou on 2023-11-20 15:21_
+_@dAnjou_
 
 Hi,
 

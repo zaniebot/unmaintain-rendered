@@ -13,14 +13,14 @@ head: fix-type-doc
 created_at: 2023-06-14T15:09:19Z
 updated_at: 2023-06-15T13:12:22Z
 url: https://github.com/astral-sh/ruff/pull/5088
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # update tutorial doc typo
 
 ---
 
-_Pull request opened by @Taybou on 2023-06-14 15:09_
+_@Taybou_
 
 _No description provided._
 

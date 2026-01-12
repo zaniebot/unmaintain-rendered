@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T05:04:08Z
 updated_at: 2024-05-24T16:18:50Z
 url: https://github.com/astral-sh/uv/issues/3784
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv pip venv discovery broken for some relative paths
 
 ---
 
-_Issue opened by @bulletmark on 2024-05-23 05:04_
+_@bulletmark_
 
 I am using:
 ```

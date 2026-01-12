@@ -13,14 +13,14 @@ head: 15963-fix-diagnostic-for-pure-instance-variables-access-from-class
 created_at: 2025-02-08T04:31:32Z
 updated_at: 2025-02-27T01:25:56Z
 url: https://github.com/astral-sh/ruff/pull/16036
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Add diagnostic for class-object access to pure instance variables
 
 ---
 
-_Pull request opened by @mishamsk on 2025-02-08 04:31_
+_@mishamsk_
 
 ## Summary
 

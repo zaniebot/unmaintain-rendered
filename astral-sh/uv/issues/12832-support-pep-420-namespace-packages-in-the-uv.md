@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T09:54:33Z
 updated_at: 2025-06-13T15:03:53Z
 url: https://github.com/astral-sh/uv/issues/12832
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Support PEP 420 Namespace Packages in the uv build backend
 
 ---
 
-_Issue opened by @konstin on 2025-04-11 09:54_
+_@konstin_
 
 PEP 420 allow multiple packages to use a share top-level namespace. Roughly speaking, there could be a package `foo.core` (normalized to `foo-core`) that contains `foo/core/__init__.py`, while package `foo.bar-plugin` (normalized to `foo-bar-plugin`) that contains `foo/bar_plugin/__init__.py`. Neither contains a `foo/__init__.py`, and installing them makes them share the `import foo.` prefix (and the `foo` site packages directory).
 

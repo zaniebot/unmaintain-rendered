@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T10:23:01Z
 updated_at: 2025-09-24T14:36:53Z
 url: https://github.com/astral-sh/ty/issues/1244
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] Panic when specifying self referential Type Variable.
 
 ---
 
-_Issue opened by @sakosha on 2025-09-24 10:23_
+_@sakosha_
 
 I tried using `typing.Self` as a TypeVar but got errors from mypy: `error: Self type is only allowed in annotations within class definition`
 

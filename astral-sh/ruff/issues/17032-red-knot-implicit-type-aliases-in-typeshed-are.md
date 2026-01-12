@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T08:49:02Z
 updated_at: 2025-04-23T17:31:16Z
 url: https://github.com/astral-sh/ruff/issues/17032
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Implicit type aliases in typeshed are widened as `Unknown | T`
 
 ---
 
-_Issue opened by @cake-monotone on 2025-03-28 08:49_
+_@cake-monotone_
 
 Some implicit type aliases in `typeshed` are not annotated using `TypeAlias`, such as:
 

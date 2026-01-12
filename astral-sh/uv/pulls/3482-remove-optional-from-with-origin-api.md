@@ -13,14 +13,14 @@ head: charlie/opt
 created_at: 2024-05-09T05:25:54Z
 updated_at: 2024-05-09T13:40:52Z
 url: https://github.com/astral-sh/uv/pull/3482
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Remove `Optional` from `with_origin` API
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 05:25_
+_@charliermarsh_
 
 _No description provided._
 

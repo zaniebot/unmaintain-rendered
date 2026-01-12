@@ -13,14 +13,14 @@ head: refactor/options-metadata
 created_at: 2023-03-10T08:33:04Z
 updated_at: 2023-03-11T09:03:58Z
 url: https://github.com/astral-sh/ruff/pull/3433
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor: Replace `Vec` in options metadata with static array
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-10 08:33_
+_@MichaReiser_
 
 This refactor replaces the usages of a `Vec` inside `get_available_options` with a static array slice. I used this refactor as an exercise to familiarize myself with options.
 

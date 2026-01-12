@@ -13,14 +13,14 @@ head: charlie/cache-dir
 created_at: 2024-01-12T03:41:15Z
 updated_at: 2024-01-12T09:01:31Z
 url: https://github.com/astral-sh/uv/pull/893
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Add `into_cached_dist` to `LocalWheel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 03:41_
+_@charliermarsh_
 
 Simplifies `unzip_wheel` a bit and avoids unnecessarily cloning in the common case.
 

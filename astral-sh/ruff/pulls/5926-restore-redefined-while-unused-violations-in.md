@@ -13,14 +13,14 @@ head: charlie/class
 created_at: 2023-07-20T15:57:13Z
 updated_at: 2023-07-20T16:28:38Z
 url: https://github.com/astral-sh/ruff/pull/5926
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Restore `redefined-while-unused` violations in classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-20 15:57_
+_@charliermarsh_
 
 ## Summary
 

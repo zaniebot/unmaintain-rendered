@@ -13,14 +13,14 @@ head: charlie/redirects
 created_at: 2024-01-13T20:34:23Z
 updated_at: 2024-01-13T20:36:03Z
 url: https://github.com/astral-sh/uv/pull/908
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Use `DashMap` for redirects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-13 20:34_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/line-ranges
 created_at: 2024-10-26T15:55:16Z
 updated_at: 2024-10-28T08:08:40Z
 url: https://github.com/astral-sh/ruff/pull/13938
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Extract `LineIndex` independent methods from `Locator`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-26 15:55_
+_@MichaReiser_
 
 ## Summary
 

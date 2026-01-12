@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-10T09:48:31Z
 updated_at: 2024-09-10T12:44:46Z
 url: https://github.com/astral-sh/uv/issues/7249
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # `uv.lock` generated with `extra` as a string, but `uv sync` expects a sequence
 
 ---
 
-_Issue opened by @StrawIII on 2024-09-10 09:48_
+_@StrawIII_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

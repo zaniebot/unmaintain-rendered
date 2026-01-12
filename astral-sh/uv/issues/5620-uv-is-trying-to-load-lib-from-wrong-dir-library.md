@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T17:47:25Z
 updated_at: 2024-07-30T17:57:12Z
 url: https://github.com/astral-sh/uv/issues/5620
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv is trying to load lib from wrong dir `Library not loaded: /opt/homebrew/opt/xz/lib/liblzma.5.dylib`
 
 ---
 
-_Issue opened by @mdragoss on 2024-07-30 17:47_
+_@mdragoss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

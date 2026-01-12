@@ -13,14 +13,14 @@ head: cjm/commentfix
 created_at: 2025-02-18T20:48:40Z
 updated_at: 2025-02-18T20:53:32Z
 url: https://github.com/astral-sh/ruff/pull/16242
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] update TODO comment in mdtest
 
 ---
 
-_Pull request opened by @carljm on 2025-02-18 20:48_
+_@carljm_
 
 This comment gave wrong/misleading info about the reason for the wrong output, just updating it to be correct to avoid confusing our future selves.
 

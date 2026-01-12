@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-14T16:59:51Z
 updated_at: 2024-11-06T12:32:24Z
 url: https://github.com/astral-sh/ruff/issues/9132
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ruff format --check` outputs "files left unchanged", which is slightly confusing
 
 ---
 
-_Issue opened by @johnthagen on 2023-12-14 16:59_
+_@johnthagen_
 
 This is pretty minor, but when you run:
 

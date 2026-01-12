@@ -13,14 +13,14 @@ head: david/fix-1342
 created_at: 2025-10-13T11:15:54Z
 updated_at: 2025-10-13T11:47:23Z
 url: https://github.com/astral-sh/ruff/pull/20841
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Do not consider function-like property for `Callable` type relations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-13 11:15_
+_@sharkdp_
 
 ## Summary
 

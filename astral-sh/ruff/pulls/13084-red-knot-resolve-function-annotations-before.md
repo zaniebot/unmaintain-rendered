@@ -13,14 +13,14 @@ head: red-knot-fn-type-same
 created_at: 2024-08-23T19:10:31Z
 updated_at: 2024-08-27T23:45:27Z
 url: https://github.com/astral-sh/ruff/pull/13084
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Resolve function annotations before adding function symbol
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-23 19:10_
+_@dylwil3_
 
 This PR has the `SemanticIndexBuilder` visit function definition annotations before adding the function symbol/name to the builder.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T16:03:05Z
 updated_at: 2024-07-09T07:52:14Z
 url: https://github.com/astral-sh/ruff/issues/11907
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot]: Normalize paths stored in `Vfs`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-17 16:03_
+_@MichaReiser_
 
 I'm not entirely sure where the normalization should happen, but I ran into the following bug:
 

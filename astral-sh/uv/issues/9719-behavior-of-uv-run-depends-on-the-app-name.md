@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-08T14:41:05Z
 updated_at: 2025-01-27T23:04:28Z
 url: https://github.com/astral-sh/uv/issues/9719
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Behavior of `uv run` depends on the app name
 
 ---
 
-_Issue opened by @fepegar on 2024-12-08 14:41_
+_@fepegar_
 
 Hello and thanks for this amazing project!
 

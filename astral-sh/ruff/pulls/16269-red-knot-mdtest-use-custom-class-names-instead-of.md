@@ -14,14 +14,14 @@ head: david/opaque-type-names
 created_at: 2025-02-20T11:25:23Z
 updated_at: 2025-02-20T12:25:56Z
 url: https://github.com/astral-sh/ruff/pull/16269
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] MDTest: Use custom class names instead of builtins
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-20 11:25_
+_@sharkdp_
 
 ## Summary
 

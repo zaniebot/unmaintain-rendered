@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-17T15:50:13Z
 updated_at: 2022-11-08T04:28:01Z
 url: https://github.com/clap-rs/clap/issues/4395
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Implement a partial parse method for Command
 
 ---
 
-_Issue opened by @0xForerunner on 2022-10-17 15:50_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

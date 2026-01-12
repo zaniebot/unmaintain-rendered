@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T18:03:35Z
 updated_at: 2025-10-17T09:57:02Z
 url: https://github.com/astral-sh/uv/issues/16300
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # uv publish logs indicate asset being uploaded even though it is being correctly skipped
 
 ---
 
-_Issue opened by @wevonosky on 2025-10-14 18:03_
+_@wevonosky_
 
 ### Summary
 

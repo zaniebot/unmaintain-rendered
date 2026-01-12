@@ -12,14 +12,14 @@ head: feat/error-on-non-existent-extra-from-lock
 created_at: 2025-02-11T20:51:18Z
 updated_at: 2025-02-12T17:32:17Z
 url: https://github.com/astral-sh/uv/pull/11426
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # feat: error on non-existent extra from lock file
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-02-11 20:51_
+_@mkniewallner_
 
 ## Summary
 

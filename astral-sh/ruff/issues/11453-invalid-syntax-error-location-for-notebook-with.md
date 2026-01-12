@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-16T23:52:17Z
 updated_at: 2025-03-04T17:00:32Z
 url: https://github.com/astral-sh/ruff/issues/11453
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Invalid syntax error location for Notebook with `ruff format`
 
 ---
 
-_Issue opened by @david-waterworth on 2024-05-16 23:52_
+_@david-waterworth_
 
 I'm getting the error `error: Failed to parse notebooks/tickets v2.ipynb:1:1:5: Invalid decimal integer literal` when I run `ruff format .` on a project (previously I was using whatever the default vscode formatter is). 
 

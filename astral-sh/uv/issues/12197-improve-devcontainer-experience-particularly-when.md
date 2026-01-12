@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T21:06:14Z
 updated_at: 2025-09-16T20:30:45Z
 url: https://github.com/astral-sh/uv/issues/12197
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Improve devcontainer experience, particularly when switching from pip to uv.
 
 ---
 
-_Issue opened by @jtkiley on 2025-03-15 21:06_
+_@jtkiley_
 
 ### Summary
 

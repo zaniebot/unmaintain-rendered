@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-09-18T06:49:37Z
 updated_at: 2024-09-19T06:01:45Z
 url: https://github.com/astral-sh/uv/pull/7486
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # document improvement: `settings.md/override-dependencies`
 
 ---
 
-_Pull request opened by @YouJiacheng on 2024-09-18 06:49_
+_@YouJiacheng_
 
 ## Summary
 Improve the description of override-dependencies based on the statement in `concepts/resolution.md`: "As with constraints, overrides do not add a dependency on the package and only take effect if the package is requested in a direct or transitive dependency."

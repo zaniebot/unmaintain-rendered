@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-27T14:41:04Z
 updated_at: 2024-11-27T15:50:51Z
 url: https://github.com/astral-sh/uv/issues/9470
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Is it possible to run workspace only dependencies command?
 
 ---
 
-_Issue opened by @bepuca on 2024-11-27 14:41_
+_@bepuca_
 
 I am working with workspaces and they work great.
 

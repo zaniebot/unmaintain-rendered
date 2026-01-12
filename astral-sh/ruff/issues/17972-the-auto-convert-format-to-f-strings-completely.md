@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T22:17:07Z
 updated_at: 2025-05-09T06:09:25Z
 url: https://github.com/astral-sh/ruff/issues/17972
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # The auto-convert `.format()` to f-strings completely misses some `.format()` statements
 
 ---
 
-_Issue opened by @john-science on 2025-05-08 22:17_
+_@john-science_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-21T06:49:56Z
 updated_at: 2022-06-21T15:31:14Z
 url: https://github.com/clap-rs/clap/issues/3859
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Defining `Arg` with `value_parser!` before positional args does not take value
 
 ---
 
-_Issue opened by @lopopolo on 2022-06-21 06:49_
+_@lopopolo_
 
 ### Please complete the following tasks
 

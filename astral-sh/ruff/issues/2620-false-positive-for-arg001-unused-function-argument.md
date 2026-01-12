@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T08:42:16Z
 updated_at: 2023-02-08T00:25:26Z
 url: https://github.com/astral-sh/ruff/issues/2620
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive for `ARG001`; unused function argument
 
 ---
 
-_Issue opened by @dycw on 2023-02-07 08:42_
+_@dycw_
 
 * A minimal code snippet that reproduces the bug.
 

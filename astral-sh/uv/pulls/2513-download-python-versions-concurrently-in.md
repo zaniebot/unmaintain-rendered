@@ -13,14 +13,14 @@ head: zb/install-conc
 created_at: 2024-03-18T16:02:37Z
 updated_at: 2024-03-20T00:27:52Z
 url: https://github.com/astral-sh/uv/pull/2513
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Download Python versions concurrently in bootstrapping script
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-18 16:02_
+_@zanieb_
 
 _No description provided._
 

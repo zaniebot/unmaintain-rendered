@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T15:15:35Z
 updated_at: 2024-11-04T12:31:01Z
 url: https://github.com/astral-sh/uv/issues/8662
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Tests are timing out locally
 
 ---
 
-_Issue opened by @konstin on 2024-10-29 15:15_
+_@konstin_
 
 On my machine, `cargo nextest run --cargo-profile fast-build --failure-output immediate-final --no-fail-fast` is timing out regularly. I assume that's because we added tests that do a lot more downloading.
 

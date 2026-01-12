@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T09:17:04Z
 updated_at: 2025-07-25T14:18:29Z
 url: https://github.com/astral-sh/ty/issues/888
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # fails to resolve tuple unpacking
 
 ---
 
-_Issue opened by @jc-louis on 2025-07-25 09:17_
+_@jc-louis_
 
 ### Summary
 

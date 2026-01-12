@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-22T02:17:22Z
 updated_at: 2024-09-22T02:29:12Z
 url: https://github.com/astral-sh/ruff/issues/13444
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # document what the `analyze` command does
 
 ---
 
-_Issue opened by @DetachHead on 2024-09-22 02:17_
+_@DetachHead_
 
 it's mentioned in the changelog for the 0.6.7 release, and [here](https://docs.astral.sh/ruff/settings/#analyze), but i can't find any documentation explaining what the command actually does
 

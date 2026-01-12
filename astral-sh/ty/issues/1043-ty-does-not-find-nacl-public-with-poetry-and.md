@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T12:48:08Z
 updated_at: 2025-08-19T13:46:33Z
 url: https://github.com/astral-sh/ty/issues/1043
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty does not find nacl.public with poetry and python 3.13
 
 ---
 
-_Issue opened by @erdnaxeli on 2025-08-18 12:48_
+_@erdnaxeli_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T22:45:59Z
 updated_at: 2025-04-01T20:39:27Z
 url: https://github.com/astral-sh/uv/issues/9257
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # UV workspace docker build?
 
 ---
 
-_Issue opened by @ejiang-eog on 2024-11-19 22:45_
+_@ejiang-eog_
 
 # I want to build a docker image only for a project in the workspace, but it is saying error. Where should i run the dockerfile and how should i build it?
 <!--

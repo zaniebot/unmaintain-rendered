@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T14:51:37Z
 updated_at: 2024-03-29T23:08:29Z
 url: https://github.com/astral-sh/ruff/issues/942
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 triggers when using non-ASCII characters
 
 ---
 
-_Issue opened by @trag1c on 2022-11-28 14:51_
+_@trag1c_
 
 ```py
 from time import time_ns

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T17:00:39Z
 updated_at: 2023-09-14T20:02:53Z
 url: https://github.com/astral-sh/ruff/issues/3744
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # nbqa + isort produces false positive
 
 ---
 
-_Issue opened by @patrick-kidger on 2023-03-26 17:00_
+_@patrick-kidger_
 
 Given a `ipynb` notebook cell containing only imports:
 ```

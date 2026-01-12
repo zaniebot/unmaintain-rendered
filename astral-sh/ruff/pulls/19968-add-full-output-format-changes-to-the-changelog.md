@@ -13,14 +13,14 @@ head: brent/update-changelog
 created_at: 2025-08-18T13:06:36Z
 updated_at: 2025-08-18T15:46:17Z
 url: https://github.com/astral-sh/ruff/pull/19968
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # Add `full` output format changes to the changelog
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-18 13:06_
+_@ntBre_
 
 Summary
 --

@@ -13,14 +13,14 @@ head: micha/file-status-durability
 created_at: 2024-11-01T08:52:59Z
 updated_at: 2024-11-01T15:44:32Z
 url: https://github.com/astral-sh/ruff/pull/14034
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Give non-existent files a durability of at least Medium
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-01 08:52_
+_@MichaReiser_
 
 ## Summary
 

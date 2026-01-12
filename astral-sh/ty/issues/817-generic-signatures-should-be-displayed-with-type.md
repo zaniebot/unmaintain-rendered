@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-12T01:14:15Z
 updated_at: 2025-08-05T23:35:10Z
 url: https://github.com/astral-sh/ty/issues/817
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Generic signatures should be displayed with type parameters
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-12 01:14_
+_@InSyncWithFoo_
 
 Currently this is how a generic function is displayed:
 

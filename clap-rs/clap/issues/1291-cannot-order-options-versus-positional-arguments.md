@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-06-08T21:32:54Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1291
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cannot order options versus positional arguments
 
 ---
 
-_Issue opened by @gcp on 2018-06-08 21:32_
+_@gcp_
 
 ### Affected Version of clap
 

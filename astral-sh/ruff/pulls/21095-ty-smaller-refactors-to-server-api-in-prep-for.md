@@ -15,14 +15,14 @@ head: micha/lsp-notebooks-phase1
 created_at: 2025-10-27T12:28:08Z
 updated_at: 2025-10-31T20:38:46Z
 url: https://github.com/astral-sh/ruff/pull/21095
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Smaller refactors to server API in prep for notebook support
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-27 12:28_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-12T12:35:56Z
 updated_at: 2024-01-12T19:12:55Z
 url: https://github.com/astral-sh/ruff/issues/9491
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive in 0.1.12 PD002 with pyvista inplace
 
 ---
 
-_Issue opened by @tarrox on 2024-01-12 12:35_
+_@tarrox_
 
 Problem:
 Pyvista supports to change meshes inplace, which triggers the PD002 rule for pandas.

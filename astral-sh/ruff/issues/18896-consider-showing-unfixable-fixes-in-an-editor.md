@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T14:48:16Z
 updated_at: 2025-06-23T14:54:43Z
 url: https://github.com/astral-sh/ruff/issues/18896
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider showing `unfixable` fixes in an editor context
 
 ---
 
-_Issue opened by @ntBre on 2025-06-23 14:48_
+_@ntBre_
 
 Currently, marking a rule as [unfixable](https://docs.astral.sh/ruff/settings/#lint_unfixable) will also suppress code actions in an editor. Do we want this to be the case, or should `unfixable` rules just be marked `DisplayOnly`? It looks like the LSP also filters out `DisplayOnly` fixes, so this might require additional changes there:
 

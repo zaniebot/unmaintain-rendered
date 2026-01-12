@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-26T09:31:37Z
 updated_at: 2025-08-26T12:54:48Z
 url: https://github.com/astral-sh/ty/issues/1097
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # unresolved-attribute error for Django model DoesNotExist exception
 
 ---
 
-_Issue opened by @maver1ck on 2025-08-26 09:31_
+_@maver1ck_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-08T13:46:46Z
 updated_at: 2024-07-09T12:47:49Z
 url: https://github.com/astral-sh/uv/issues/832
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # venv and pip-compile subcommands should respect `requires-python`
 
 ---
 
-_Issue opened by @konstin on 2024-01-08 13:46_
+_@konstin_
 
 Running `puffin venv` in a directory with a pyproject.toml in it (or in any parent) with e.g.
 ```toml

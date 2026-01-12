@@ -14,14 +14,14 @@ head: ag/rank-module-names-higher
 created_at: 2026-01-08T20:09:08Z
 updated_at: 2026-01-09T15:11:39Z
 url: https://github.com/astral-sh/ruff/pull/22465
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Rank top-level module symbols above most other symbols
 
 ---
 
-_Pull request opened by @BurntSushi on 2026-01-08 20:09_
+_@BurntSushi_
 
 This makes it so, e.g., `os<CURSOR>` will suggest the top-level stdlib
 `os` module even if there is an `os` symbol elsewhere in your project.

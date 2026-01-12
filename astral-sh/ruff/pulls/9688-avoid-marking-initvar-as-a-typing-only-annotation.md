@@ -13,14 +13,14 @@ head: charlie/init-var
 created_at: 2024-01-29T20:36:16Z
 updated_at: 2024-01-29T21:27:21Z
 url: https://github.com/astral-sh/ruff/pull/9688
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Avoid marking `InitVar` as a typing-only annotation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 20:36_
+_@charliermarsh_
 
 ## Summary
 

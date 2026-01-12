@@ -12,14 +12,14 @@ head: renovate/clap-cargo-0.x
 created_at: 2025-02-01T00:23:17Z
 updated_at: 2025-02-01T12:55:12Z
 url: https://github.com/clap-rs/clap/pull/5898
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Update Rust crate clap-cargo to 0.15.0
 
 ---
 
-_Pull request opened by @renovate on 2025-02-01 00:23_
+_@renovate_
 
 This PR contains the following updates:
 

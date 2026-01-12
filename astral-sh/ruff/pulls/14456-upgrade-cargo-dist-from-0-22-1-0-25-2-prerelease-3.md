@@ -13,14 +13,14 @@ head: zb/cargo-dist
 created_at: 2024-11-19T13:56:18Z
 updated_at: 2024-11-19T15:10:27Z
 url: https://github.com/astral-sh/ruff/pull/14456
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Upgrade cargo-dist from 0.22.1 => 0.25.2-prerelease.3
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 13:56_
+_@zanieb_
 
 Needed to prevent updater failures when doing https://github.com/astral-sh/ruff/issues/13927
 

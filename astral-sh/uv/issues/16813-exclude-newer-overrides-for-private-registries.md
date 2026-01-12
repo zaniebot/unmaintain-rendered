@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T21:27:02Z
 updated_at: 2025-12-16T20:09:52Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # exclude-newer: overrides for private registries
 
 ---
 
-_Issue opened by @acdha on 2025-11-21 21:27_
+_@acdha_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T10:18:59Z
 updated_at: 2024-03-03T23:47:53Z
 url: https://github.com/astral-sh/uv/issues/1473
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # environment variable references in requirements files are not resolved
 
 ---
 
-_Issue opened by @detlefla on 2024-02-16 10:18_
+_@detlefla_
 
 If a requirements file contains a line `-r ${OTHERPKG}/requirements/dev.in`, pip-compile tries to replace `${OTHERPKG}` with the contents of an environment variable OTHERPKG. uv, however, uses the string literally and fails to find the location of the file to be included.
 

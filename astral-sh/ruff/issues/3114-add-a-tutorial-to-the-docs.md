@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T05:03:46Z
 updated_at: 2023-02-28T20:39:12Z
 url: https://github.com/astral-sh/ruff/issues/3114
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add a tutorial to the docs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-22 05:03_
+_@charliermarsh_
 
 I think we should have a section that walks through setting up Ruff, in a way that's linear rather than encyclopedic.
 

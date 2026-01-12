@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-27T07:58:29Z
 updated_at: 2023-12-27T16:59:06Z
 url: https://github.com/clap-rs/clap/issues/5271
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Improve panic! message when short names collide
 
 ---
 
-_Issue opened by @szabgab on 2023-12-27 07:58_
+_@szabgab_
 
 ### Please complete the following tasks
 

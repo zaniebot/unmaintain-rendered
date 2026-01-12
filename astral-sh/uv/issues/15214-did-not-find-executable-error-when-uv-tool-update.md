@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T01:36:49Z
 updated_at: 2025-08-11T04:43:28Z
 url: https://github.com/astral-sh/uv/issues/15214
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # 'did not find executable' error when `uv tool update` after `uv python upgrade`
 
 ---
 
-_Issue opened by @karofsky on 2025-08-11 01:36_
+_@karofsky_
 
 ### Summary
 

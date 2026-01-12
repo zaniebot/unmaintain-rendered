@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2023-02-08T16:58:23Z
 updated_at: 2023-02-08T17:18:38Z
 url: https://github.com/astral-sh/ruff/pull/2663
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Avoid false-positive in chained type calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 16:58_
+_@charliermarsh_
 
 Closes #2632.
 

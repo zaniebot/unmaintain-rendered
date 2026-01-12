@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-05T15:37:27Z
 updated_at: 2023-04-20T03:33:14Z
 url: https://github.com/astral-sh/ruff/issues/1064
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Allow --watch to automatically fix when combined with --fix
 
 ---
 
-_Issue opened by @phillipuniverse on 2022-12-05 15:37_
+_@phillipuniverse_
 
 Running the following:
 

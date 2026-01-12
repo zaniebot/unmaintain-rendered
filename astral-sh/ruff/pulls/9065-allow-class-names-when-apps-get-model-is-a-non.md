@@ -12,14 +12,14 @@ head: charlie/N806
 created_at: 2023-12-09T03:51:48Z
 updated_at: 2023-12-14T17:41:58Z
 url: https://github.com/astral-sh/ruff/pull/9065
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow class names when `apps.get_model` is a non-string
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 03:51_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/7675#issuecomment-1848206022
 

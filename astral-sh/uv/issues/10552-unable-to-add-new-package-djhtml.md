@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T02:06:18Z
 updated_at: 2025-01-13T02:39:16Z
 url: https://github.com/astral-sh/uv/issues/10552
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Unable to add new package `djhtml`
 
 ---
 
-_Issue opened by @wgordon17 on 2025-01-13 02:06_
+_@wgordon17_
 
 ```
 $ uv version

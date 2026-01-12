@@ -12,14 +12,14 @@ head: fix-flake8-fixme-architecture
 created_at: 2023-06-02T11:47:30Z
 updated_at: 2023-06-02T16:01:23Z
 url: https://github.com/astral-sh/ruff/pull/4807
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix flake8-fixme architecture
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-06-02 11:47_
+_@JonathanPlasse_
 
 - #3747 depends on this to work.
 <!--

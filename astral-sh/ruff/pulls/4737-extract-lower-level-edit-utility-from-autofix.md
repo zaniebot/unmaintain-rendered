@@ -12,14 +12,14 @@ head: charlie/codegen
 created_at: 2023-05-30T22:13:02Z
 updated_at: 2023-05-31T17:13:47Z
 url: https://github.com/astral-sh/ruff/pull/4737
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Extract lower-level edit utility from autofix module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 22:13_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

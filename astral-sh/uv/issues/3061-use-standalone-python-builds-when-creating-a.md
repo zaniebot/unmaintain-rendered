@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T11:19:36Z
 updated_at: 2024-04-19T14:11:57Z
 url: https://github.com/astral-sh/uv/issues/3061
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Use standalone Python builds when creating a virtual environment
 
 ---
 
-_Issue opened by @pfmoore on 2024-04-16 11:19_
+_@pfmoore_
 
 When trying to reproduce an issue on a Python version that I don't have installed, it would be useful to be able to create a virtual environment for that version *without* needing to install a system copy of the Python version first. Other tools like hatch and PDM use the [Python standalone builds](https://github.com/indygreg/python-build-standalone) project for this. Clearly I could download the appropriate interpreter, unpack it, and run `uv venv --python /path/to/unpacked/build`, but that would mean manually managing the unpacked version.
 

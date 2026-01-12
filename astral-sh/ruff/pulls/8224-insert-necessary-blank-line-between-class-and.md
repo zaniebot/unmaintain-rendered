@@ -14,14 +14,14 @@ head: charlie/blank
 created_at: 2023-10-25T18:58:42Z
 updated_at: 2023-10-26T00:32:01Z
 url: https://github.com/astral-sh/ruff/pull/8224
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Insert necessary blank line between class and leading comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-25 18:58_
+_@charliermarsh_
 
 ## Summary
 

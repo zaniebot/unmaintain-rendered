@@ -12,14 +12,14 @@ head: zb/storage
 created_at: 2025-06-11T20:42:04Z
 updated_at: 2025-08-27T15:04:27Z
 url: https://github.com/astral-sh/uv/pull/13976
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Add a "storage" reference document
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-11 20:42_
+_@zanieb_
 
 We're getting questions about this. It seems best to consolidate this information?
 

@@ -12,14 +12,14 @@ head: bugfix/quote-annotation
 created_at: 2024-11-26T16:19:03Z
 updated_at: 2024-11-27T13:49:01Z
 url: https://github.com/astral-sh/ruff/pull/14614
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-type-checking`] Fixes `quote_type_expression`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-26 16:19_
+_@Daverball_
 
 Fixes: #14538
 Fixes: #14554

@@ -13,14 +13,14 @@ head: alex/metaclass-spelling
 created_at: 2025-03-09T12:27:09Z
 updated_at: 2025-03-09T12:30:34Z
 url: https://github.com/astral-sh/ruff/pull/16576
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Consistent spelling of "metaclass" and "meta-type"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-09 12:27_
+_@AlexWaygood_
 
 ## Summary
 

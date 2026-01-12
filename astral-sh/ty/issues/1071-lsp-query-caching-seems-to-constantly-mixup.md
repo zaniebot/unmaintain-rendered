@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T23:05:54Z
 updated_at: 2025-08-21T20:36:42Z
 url: https://github.com/astral-sh/ty/issues/1071
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # lsp query caching seems to constantly mixup functions with identical signatures
 
 ---
 
-_Issue opened by @Gankra on 2025-08-20 23:05_
+_@Gankra_
 
 LSP functionality associated with looking up a function's signature is seemingly cached based on the raw type signature of a function. This affects goto-* on keyword arguments and docstrings for signature_help (notably *not* docstrings for hovering the function name!).
 

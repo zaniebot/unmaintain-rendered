@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-02T21:34:36Z
 updated_at: 2024-01-26T14:46:55Z
 url: https://github.com/astral-sh/ruff/issues/9368
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Fuzzer fails to build memchr
 
 ---
 
-_Issue opened by @zanieb on 2024-01-02 21:34_
+_@zanieb_
 
 See https://github.com/astral-sh/ruff/actions/runs/7390478731/job/20105487965
 

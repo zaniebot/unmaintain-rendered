@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T23:05:36Z
 updated_at: 2025-12-19T12:07:21Z
 url: https://github.com/astral-sh/ty/issues/1587
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # pair of mutually recursive generic `Protocol` definitions
 
 ---
 
-_Issue opened by @gertvdijk on 2025-11-18 23:05_
+_@gertvdijk_
 
 I've got a small Python typing showcase (currently using mypy) up at https://github.com/gertvdijk/mypy-sibling-generics-demo. Was wondering how `ty` would handle/show this, tried it out, but sadly it triggers `ty` to panic (tested at [this current latest commit](https://github.com/gertvdijk/mypy-sibling-generics-demo/commit/18e84d223ffb2dfdd53e5ee362db47101e15a9f5)). It told me to create this bug report, so here I am. 😄 
 

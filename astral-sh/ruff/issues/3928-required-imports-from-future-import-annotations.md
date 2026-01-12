@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-10T20:12:28Z
 updated_at: 2023-04-12T02:31:22Z
 url: https://github.com/astral-sh/ruff/issues/3928
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `required-imports  = ["from __future__ import annotations"]` reports missing import in `pyi` files
 
 ---
 
-_Issue opened by @bryanforbes on 2023-04-10 20:12_
+_@bryanforbes_
 
 Ruff version: 0.0.261
 

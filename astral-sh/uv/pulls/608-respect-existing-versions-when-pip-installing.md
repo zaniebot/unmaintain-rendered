@@ -12,14 +12,14 @@ head: charlie/pip-install-preferences
 created_at: 2023-12-11T19:50:05Z
 updated_at: 2023-12-12T17:22:49Z
 url: https://github.com/astral-sh/uv/pull/608
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Respect existing versions when pip-installing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-11 19:50_
+_@charliermarsh_
 
 ## Summary
 

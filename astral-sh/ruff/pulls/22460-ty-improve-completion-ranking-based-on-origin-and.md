@@ -14,14 +14,14 @@ head: ag/ranking-improvements
 created_at: 2026-01-08T16:07:42Z
 updated_at: 2026-01-09T19:14:09Z
 url: https://github.com/astral-sh/ruff/pull/22460
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Improve completion ranking based on origin and exact match
 
 ---
 
-_Pull request opened by @BurntSushi on 2026-01-08 16:07_
+_@BurntSushi_
 
 This PR does some refactoring to completions and improves ranking based
 on the origin of the symbol and whether there is an exact match.

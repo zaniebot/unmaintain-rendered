@@ -13,14 +13,14 @@ head: dhruv/format-match-case
 created_at: 2023-08-05T04:22:22Z
 updated_at: 2023-08-11T13:50:26Z
 url: https://github.com/astral-sh/ruff/pull/6360
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add formatting for `MatchCase`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-05 04:22_
+_@dhruvmanila_
 
 ## Summary
 

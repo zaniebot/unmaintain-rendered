@@ -11,14 +11,14 @@ head: feat-4-to-2-spaces-indents
 created_at: 2025-09-23T19:04:29Z
 updated_at: 2025-09-24T08:31:53Z
 url: https://github.com/astral-sh/uv/pull/16006
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Switch default indentation to 2 spaces in `pyproject.toml`
 
 ---
 
-_Pull request opened by @browniebroke on 2025-09-23 19:04_
+_@browniebroke_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

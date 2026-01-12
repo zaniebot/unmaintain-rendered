@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T12:38:38Z
 updated_at: 2024-07-12T12:56:54Z
 url: https://github.com/astral-sh/ruff/issues/12288
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RUF012 false positive with annotations set as strings
 
 ---
 
-_Issue opened by @ZeeD on 2024-07-11 12:38_
+_@ZeeD_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

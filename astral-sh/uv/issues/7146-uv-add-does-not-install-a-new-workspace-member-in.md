@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T22:55:29Z
 updated_at: 2024-09-07T00:13:20Z
 url: https://github.com/astral-sh/uv/issues/7146
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv add` does not install a new workspace member in an editable workspace (appears to mistakenly put it in a `.venv` and miss the active conda env)
 
 ---
 
-_Issue opened by @lmmx on 2024-09-06 22:55_
+_@lmmx_
 
 I encountered this on the 25th of August and reported it, but didn't catch Charlie's reply asking for further details on Discord. I said that if it happened again I'd open a bug ticket, so here I am :-)
 

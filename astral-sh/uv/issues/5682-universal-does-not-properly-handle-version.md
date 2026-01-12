@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-01T04:43:53Z
 updated_at: 2024-08-01T18:57:47Z
 url: https://github.com/astral-sh/uv/issues/5682
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # --universal does not properly handle version differences on different platforms 
 
 ---
 
-_Issue opened by @gokay05 on 2024-08-01 04:43_
+_@gokay05_
 
 I am using uv 0.2.32 to compile a requirements file, which I use to sync other devices. Some of the other devices are on other platforms, so I am using the --universal flag. However, it doesnt seem like the universal flag checks versions so even though I can compile without issues, I cannot install on the other end.
 

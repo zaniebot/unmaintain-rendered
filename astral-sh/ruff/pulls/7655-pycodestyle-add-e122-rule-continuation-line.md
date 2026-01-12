@@ -11,14 +11,14 @@ head: add_E122
 created_at: 2023-09-25T13:31:22Z
 updated_at: 2023-11-08T13:10:05Z
 url: https://github.com/astral-sh/ruff/pull/7655
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`pycodestyle`] Add E122 rule ("continuation line missing indentation or outdented")
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-09-25 13:31_
+_@hoel-bagard_
 
 ## Summary
 

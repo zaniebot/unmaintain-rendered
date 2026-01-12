@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-29T01:37:05Z
 updated_at: 2023-05-29T02:53:21Z
 url: https://github.com/astral-sh/ruff/issues/4699
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP035 - option to disable for types that aren't collections
 
 ---
 
-_Issue opened by @DetachHead on 2023-05-29 01:37_
+_@DetachHead_
 
 there are several types in `collections.abc` that make no sense being there like `Callable`, `Awaitable`, `Coroutine`, so i think they should instead be imported from `typing`.
 

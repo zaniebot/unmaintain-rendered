@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T11:42:29Z
 updated_at: 2024-07-15T08:53:07Z
 url: https://github.com/astral-sh/ruff/issues/12271
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SyntaxError is unable to return code on Linux
 
 ---
 
-_Issue opened by @WutingjiaX on 2024-07-10 11:42_
+_@WutingjiaX_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

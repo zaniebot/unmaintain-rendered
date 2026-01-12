@@ -14,14 +14,14 @@ head: alex/reveal-type-range
 created_at: 2025-05-09T13:04:48Z
 updated_at: 2025-05-09T13:15:40Z
 url: https://github.com/astral-sh/ruff/pull/17980
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Change range of `revealed-type` diagnostic to be the range of the argument passed in, not the whole call
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-09 13:04_
+_@AlexWaygood_
 
 ## Summary
 

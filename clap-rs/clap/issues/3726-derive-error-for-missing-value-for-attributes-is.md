@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-13T07:12:27Z
 updated_at: 2022-08-11T17:02:06Z
 url: https://github.com/clap-rs/clap/issues/3726
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # derive error for missing `= value` for attributes is confusing
 
 ---
 
-_Issue opened by @ravenexp on 2022-05-13 07:12_
+_@ravenexp_
 
 ### Please complete the following tasks
 

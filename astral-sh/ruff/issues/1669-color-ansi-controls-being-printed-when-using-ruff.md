@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T21:07:58Z
 updated_at: 2023-01-05T21:54:45Z
 url: https://github.com/astral-sh/ruff/issues/1669
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # color ANSI controls being printed when using ruff on a GitBash console on windows
 
 ---
 
-_Issue opened by @joaompinto on 2023-01-05 21:07_
+_@joaompinto_
 
 The problem only happens when running GitBash within a vscode terminal window, on a regular GitBash window the ANSI emulation works as expected.
 

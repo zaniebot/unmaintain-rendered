@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T09:16:04Z
 updated_at: 2026-01-08T18:55:36Z
 url: https://github.com/astral-sh/ty/issues/1851
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Cannot solve generics involving PEP 695 type aliases
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-11 09:16_
+_@sharkdp_
 
 We currently do not support generic PEP 695 aliases in the solver:
 

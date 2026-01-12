@@ -13,14 +13,14 @@ head: charlie/preview
 created_at: 2024-08-23T18:23:15Z
 updated_at: 2024-08-23T22:12:09Z
 url: https://github.com/astral-sh/uv/pull/6536
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Remove `--preview` from tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-23 18:23_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/6532.
 

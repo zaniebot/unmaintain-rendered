@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T04:33:17Z
 updated_at: 2024-08-23T05:14:28Z
 url: https://github.com/astral-sh/uv/issues/6406
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # For Docker environments, a UV_PYTHON_DOWNLOADS env variable would be useful
 
 ---
 
-_Issue opened by @hynek on 2024-08-22 04:33_
+_@hynek_
 
 I'm aware of the [python-downloads option](https://docs.astral.sh/uv/#disabling-automatic-python-downloads), but in Docker builds, it's not always 100% clear what user runs what and when when, so it would be really nice if I could set `UV_PYTHON_DOWNLOADS=only-system` or `UV_NO_PYTHON_DOWNLOADS=1` once in my base image and not think about it anymore.
 

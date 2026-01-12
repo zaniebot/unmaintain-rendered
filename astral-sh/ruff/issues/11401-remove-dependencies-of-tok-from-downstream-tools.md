@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T09:28:45Z
 updated_at: 2024-05-31T07:15:16Z
 url: https://github.com/astral-sh/ruff/issues/11401
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ☂️ Remove dependencies of `Tok` from downstream tools
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-13 09:28_
+_@dhruvmanila_
 
 This issue is to keep track of all the tasks required to remove the `Tok` dependency from the downstream tools (linter and formatter).
 

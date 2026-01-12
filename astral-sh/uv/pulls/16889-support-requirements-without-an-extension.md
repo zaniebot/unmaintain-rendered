@@ -13,14 +13,14 @@ head: charlie/extentionless
 created_at: 2025-11-28T22:50:18Z
 updated_at: 2025-12-02T14:04:20Z
 url: https://github.com/astral-sh/uv/pull/16889
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Support requirements without an extension
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 22:50_
+_@charliermarsh_
 
 ## Summary
 

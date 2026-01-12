@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T09:42:23Z
 updated_at: 2024-08-23T02:04:58Z
 url: https://github.com/astral-sh/uv/issues/6417
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv cache prune` causes self update to fail
 
 ---
 
-_Issue opened by @weihenglim on 2024-08-22 09:42_
+_@weihenglim_
 
 On Windows, running `uv cache prune` removes `uv-receipt.json` from the cache, which leads to `uv` being unable to self update:
  ```cmd

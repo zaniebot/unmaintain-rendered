@@ -14,14 +14,14 @@ head: alex/assignability
 created_at: 2025-06-02T14:50:55Z
 updated_at: 2025-06-11T10:51:15Z
 url: https://github.com/astral-sh/ruff/pull/18430
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Unify `Type::is_subtype_of()` and `Type::is_assignable_to()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-02 14:50_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T00:47:33Z
 updated_at: 2024-10-16T00:53:20Z
 url: https://github.com/astral-sh/uv/issues/8236
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # `.tar.gz` build fails due to `tool.uv.sources`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-16 00:47_
+_@charliermarsh_
 
 Yup, I am fighting that behaviour right now in the Airflow repo: https://github.com/apache/airflow/pull/43056
 

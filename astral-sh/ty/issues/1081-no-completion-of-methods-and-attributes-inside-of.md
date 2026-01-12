@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-08-21T11:43:12Z
 updated_at: 2025-10-23T08:02:54Z
 url: https://github.com/astral-sh/ty/issues/1081
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # No completion of methods and attributes inside of class definition
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-08-21 11:43_
+_@JaRoSchm_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-14T15:28:38Z
 updated_at: 2024-12-15T13:44:09Z
 url: https://github.com/astral-sh/uv/issues/9895
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # selected python version is not preserved on uv sync
 
 ---
 
-_Issue opened by @mhechthz on 2024-12-14 15:28_
+_@mhechthz_
 
 I just started to check for uv as an alternative.
 

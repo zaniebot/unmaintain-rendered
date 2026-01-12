@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T10:12:32Z
 updated_at: 2025-06-23T12:30:31Z
 url: https://github.com/astral-sh/ruff/issues/18887
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # doc(analyze): unknown variant `dependents`, expected `Dependencies` or `Dependents`
 
 ---
 
-_Issue opened by @chirizxc on 2025-06-23 10:12_
+_@chirizxc_
 
 ### Summary
 doc - https://docs.astral.sh/ruff/settings/#analyze_direction

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-20T14:14:23Z
 updated_at: 2021-10-20T14:56:00Z
 url: https://github.com/clap-rs/clap/issues/2917
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Clap does not compile
 
 ---
 
-_Issue opened by @ghost on 2021-10-20 14:14_
+_@ghost_
 
 ### Please complete the following tasks
 

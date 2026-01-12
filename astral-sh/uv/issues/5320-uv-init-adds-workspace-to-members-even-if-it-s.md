@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-23T00:14:13Z
 updated_at: 2024-07-23T00:25:21Z
 url: https://github.com/astral-sh/uv/issues/5320
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` adds workspace to `members` even if it's already covered
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-23 00:14_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/5317#discussion_r1687260409
 

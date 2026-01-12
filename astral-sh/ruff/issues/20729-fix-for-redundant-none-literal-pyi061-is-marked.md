@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-06T22:46:55Z
 updated_at: 2025-10-07T00:20:50Z
 url: https://github.com/astral-sh/ruff/issues/20729
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fix for redundant-none-literal (PYI061) is marked as safe but should not be
 
 ---
 
-_Issue opened by @user27182 on 2025-10-06 22:46_
+_@user27182_
 
 ### Summary
 

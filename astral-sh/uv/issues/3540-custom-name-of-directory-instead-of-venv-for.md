@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T10:29:26Z
 updated_at: 2024-05-13T16:15:00Z
 url: https://github.com/astral-sh/uv/issues/3540
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Custom name of directory instead of ".venv" for multiple envs inside the same project
 
 ---
 
-_Issue opened by @detrin on 2024-05-13 10:29_
+_@detrin_
 
 I would like to create multiple environments with a custom name instead of the default ".venv" directory name. I can't find it in the README.md. Is this option available? 
 

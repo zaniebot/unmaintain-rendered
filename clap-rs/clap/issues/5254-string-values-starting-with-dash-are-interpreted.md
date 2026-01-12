@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-09T17:40:29Z
 updated_at: 2023-12-13T11:29:36Z
 url: https://github.com/clap-rs/clap/issues/5254
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # string values starting with dash are interpreted as flags
 
 ---
 
-_Issue opened by @andrewbanchich on 2023-12-09 17:40_
+_@andrewbanchich_
 
 ### Please complete the following tasks
 

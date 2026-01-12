@@ -13,14 +13,14 @@ head: charlie/w-crate
 created_at: 2024-07-20T01:58:18Z
 updated_at: 2024-07-20T02:15:33Z
 url: https://github.com/astral-sh/uv/pull/5236
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Move workspace abstractions to `uv-workspace` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-20 01:58_
+_@charliermarsh_
 
 ## Summary
 

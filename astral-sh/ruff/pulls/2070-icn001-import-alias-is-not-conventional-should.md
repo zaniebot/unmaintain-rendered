@@ -12,14 +12,14 @@ head: ICN001-check-from-imports
 created_at: 2023-01-21T19:43:26Z
 updated_at: 2023-01-21T22:00:52Z
 url: https://github.com/astral-sh/ruff/pull/2070
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # ICN001 import-alias-is-not-conventional should check "from" imports
 
 ---
 
-_Pull request opened by @Zeddicus414 on 2023-01-21 19:43_
+_@Zeddicus414_
 
 See https://github.com/charliermarsh/ruff/issues/2047
 

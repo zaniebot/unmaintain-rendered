@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-30T22:38:20Z
 updated_at: 2025-10-04T11:40:38Z
 url: https://github.com/astral-sh/ty/issues/1290
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Playground errors and crashes if you start a file name with vendored:
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-30 22:38_
+_@MeGaGiGaGon_
 
 ### Summary
 

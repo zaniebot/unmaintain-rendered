@@ -14,14 +14,14 @@ head: Replace_with_
 created_at: 2023-08-04T07:37:16Z
 updated_at: 2023-08-04T08:49:00Z
 url: https://github.com/astral-sh/ruff/pull/6330
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Replace `Formatter<PyFormatContext<'_>>` with `PyFormatter`
 
 ---
 
-_Pull request opened by @konstin on 2023-08-04 07:37_
+_@konstin_
 
 This is a refactoring to use the type alias in more places. In the process, I had to fix and run generate.py. There are no functional changes.
 

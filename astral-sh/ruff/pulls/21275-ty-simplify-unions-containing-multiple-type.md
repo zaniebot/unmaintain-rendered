@@ -14,14 +14,14 @@ head: ibraheem/typevar-unions
 created_at: 2025-11-04T17:21:25Z
 updated_at: 2025-11-05T15:03:21Z
 url: https://github.com/astral-sh/ruff/pull/21275
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Simplify unions containing multiple type variables during inference
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-04 17:21_
+_@ibraheemdev_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/mod
 created_at: 2025-02-09T01:57:13Z
 updated_at: 2025-02-09T02:30:51Z
 url: https://github.com/astral-sh/uv/pull/11346
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Allow sync and update environment methods to take modifications
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-09 01:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/indoc-2.0.4
 created_at: 2023-09-18T08:44:02Z
 updated_at: 2023-09-18T09:29:51Z
 url: https://github.com/astral-sh/ruff/pull/7483
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump indoc from 2.0.3 to 2.0.4
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-18 08:44_
+_@dependabot_
 
 Bumps [indoc](https://github.com/dtolnay/indoc) from 2.0.3 to 2.0.4.
 <details>

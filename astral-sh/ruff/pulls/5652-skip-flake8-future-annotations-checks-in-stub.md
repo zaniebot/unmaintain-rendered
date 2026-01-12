@@ -12,14 +12,14 @@ head: charlie/future
 created_at: 2023-07-10T14:34:59Z
 updated_at: 2023-07-10T15:12:57Z
 url: https://github.com/astral-sh/ruff/pull/5652
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Skip flake8-future-annotations checks in stub files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 14:34_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5649.
 

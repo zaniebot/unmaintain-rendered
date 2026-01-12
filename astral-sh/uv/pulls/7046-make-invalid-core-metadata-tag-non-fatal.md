@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2024-09-04T20:37:04Z
 updated_at: 2024-09-04T20:44:52Z
 url: https://github.com/astral-sh/uv/pull/7046
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:39Z
 ```
 
 # Make invalid core-metadata tag non-fatal
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 20:37_
+_@charliermarsh_
 
 ## Summary
 

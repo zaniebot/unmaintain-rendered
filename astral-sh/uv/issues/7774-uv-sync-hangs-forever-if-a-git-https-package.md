@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-29T01:51:57Z
 updated_at: 2024-09-29T16:49:45Z
 url: https://github.com/astral-sh/uv/issues/7774
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # `uv sync` hangs forever if a git+https package requires authentication
 
 ---
 
-_Issue opened by @command-tab on 2024-09-29 01:51_
+_@command-tab_
 
 **Problem**
 

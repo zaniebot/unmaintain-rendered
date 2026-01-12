@@ -12,14 +12,14 @@ head: charlie/fixes
 created_at: 2022-10-17T21:01:46Z
 updated_at: 2022-10-17T21:01:51Z
 url: https://github.com/astral-sh/ruff/pull/449
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Break up autofix/fixes.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-17 21:01_
+_@charliermarsh_
 
 _No description provided._
 

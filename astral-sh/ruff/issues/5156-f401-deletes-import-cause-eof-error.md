@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-17T06:38:08Z
 updated_at: 2023-06-19T04:09:03Z
 url: https://github.com/astral-sh/ruff/issues/5156
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F401 Deletes import, cause EOF error
 
 ---
 
-_Issue opened by @jasikpark on 2023-06-17 06:38_
+_@jasikpark_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

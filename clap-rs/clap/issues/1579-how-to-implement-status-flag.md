@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-23T16:13:09Z
 updated_at: 2019-10-25T08:52:42Z
 url: https://github.com/clap-rs/clap/issues/1579
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # How to implement status flag?
 
 ---
 
-_Issue opened by @hanusek on 2019-10-23 16:13_
+_@hanusek_
 
 Hello, I'm implementing my daemon.
 I would like have a status flag ( daemon status : **running** / **not running**) and other any else args.

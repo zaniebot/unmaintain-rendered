@@ -13,14 +13,14 @@ head: zanie/unused-external
 created_at: 2023-10-24T16:48:00Z
 updated_at: 2023-10-24T17:38:44Z
 url: https://github.com/astral-sh/ruff/pull/8171
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add `external` option to `unused-noqa` documentation
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 16:48_
+_@zanieb_
 
 _No description provided._
 

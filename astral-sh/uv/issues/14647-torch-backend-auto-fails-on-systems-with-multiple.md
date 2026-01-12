@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T10:29:36Z
 updated_at: 2025-11-02T21:21:45Z
 url: https://github.com/astral-sh/uv/issues/14647
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # `--torch-backend=auto` fails on systems with multiple GPUs and without `/proc/driver/nvidia/version`
 
 ---
 
-_Issue opened by @coezbek on 2025-07-16 10:29_
+_@coezbek_
 
 ### Summary
 

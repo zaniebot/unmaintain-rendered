@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-03T03:04:25Z
 updated_at: 2026-01-07T09:34:54Z
 url: https://github.com/astral-sh/ruff/issues/22350
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [Panic] - Error Encountered
 
 ---
 
-_Issue opened by @orrdjoshua on 2026-01-03 03:04_
+_@orrdjoshua_
 
 Got this error:
 

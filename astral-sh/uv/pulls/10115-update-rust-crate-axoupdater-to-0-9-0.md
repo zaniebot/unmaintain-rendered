@@ -13,14 +13,14 @@ head: renovate/axoupdater-0.x
 created_at: 2024-12-23T01:31:14Z
 updated_at: 2024-12-24T13:09:16Z
 url: https://github.com/astral-sh/uv/pull/10115
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Update Rust crate axoupdater to 0.9.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-23 01:31_
+_@renovate_
 
 This PR contains the following updates:
 

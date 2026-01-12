@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-04-27T02:18:22Z
 updated_at: 2024-04-27T02:28:01Z
 url: https://github.com/astral-sh/uv/pull/3285
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Fix documentation on `--cache-dir` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-27 02:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zb/nextest
 created_at: 2024-01-10T21:17:05Z
 updated_at: 2024-01-11T20:25:50Z
 url: https://github.com/astral-sh/uv/pull/875
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Use `nextest` test runner in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 21:17_
+_@zanieb_
 
 Optimizes our test suite in CI:
 

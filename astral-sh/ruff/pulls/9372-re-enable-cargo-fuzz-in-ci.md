@@ -13,14 +13,14 @@ head: charlie/fuzz
 created_at: 2024-01-03T00:07:20Z
 updated_at: 2024-01-03T00:45:38Z
 url: https://github.com/astral-sh/ruff/pull/9372
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Re-enable cargo fuzz in CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 00:07_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/9368
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T02:51:24Z
 updated_at: 2025-01-31T18:28:22Z
 url: https://github.com/astral-sh/uv/issues/11124
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Easily see installed packages when using uv run
 
 ---
 
-_Issue opened by @jayqi on 2025-01-31 02:51_
+_@jayqi_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/interp-request
 created_at: 2024-04-25T17:46:14Z
 updated_at: 2024-04-30T17:49:47Z
 url: https://github.com/astral-sh/uv/pull/3265
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Merge `uv-toolchain` and `uv-interpreter`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-25 17:46_
+_@zanieb_
 
 Moves all of `uv-toolchain` into `uv-interpreter`. We may split these out in the future, but the refactoring I want to do for interpreter discovery is easier if I don't have to deal with entanglement. Includes some restructuring of `uv-interpreter`.
 

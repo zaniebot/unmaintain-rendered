@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T14:32:06Z
 updated_at: 2023-09-01T07:39:16Z
 url: https://github.com/astral-sh/ruff/issues/6772
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Exclude pragma comments from measured line width
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-22 14:32_
+_@MichaReiser_
 
 Exclude trailing expression end-of-line comments to be included in the measured line width (`type: `, `pyright:` `pylint:`, `noqa`, but NOT `nocoverage` because it is a trailing clause comment that isn't sensitive about its positioning
 

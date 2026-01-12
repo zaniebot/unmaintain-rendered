@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T12:47:31Z
 updated_at: 2025-11-08T16:27:25Z
 url: https://github.com/astral-sh/uv/issues/16613
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # uv reports false dependency conflict for pywin32; sys_platform == 'win32' on Linux with private PyPI
 
 ---
 
-_Issue opened by @FlyingHeNanman on 2025-11-06 12:47_
+_@FlyingHeNanman_
 
 ### **Title**
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T17:41:25Z
 updated_at: 2025-01-25T16:22:11Z
 url: https://github.com/astral-sh/uv/issues/10037
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Add `pip` alias for `uv pip` to virtual environments
 
 ---
 
-_Issue opened by @mosmuell on 2024-12-19 17:41_
+_@mosmuell_
 
 Hello,
 

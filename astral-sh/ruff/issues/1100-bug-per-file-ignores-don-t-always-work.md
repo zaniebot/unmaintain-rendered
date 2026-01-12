@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-06T03:11:51Z
 updated_at: 2022-12-06T04:42:27Z
 url: https://github.com/astral-sh/ruff/issues/1100
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] per-file-ignores don't always work
 
 ---
 
-_Issue opened by @smackesey on 2022-12-06 03:11_
+_@smackesey_
 
 We have this in our config:
 

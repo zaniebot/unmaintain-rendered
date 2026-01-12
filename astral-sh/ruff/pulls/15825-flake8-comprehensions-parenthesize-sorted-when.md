@@ -14,14 +14,14 @@ head: sorted-call
 created_at: 2025-01-30T05:09:06Z
 updated_at: 2025-01-30T13:10:57Z
 url: https://github.com/astral-sh/ruff/pull/15825
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-comprehensions`] Parenthesize `sorted` when needed for `unnecessary-call-around-sorted` (`C413`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-30 05:09_
+_@dylwil3_
 
 If there is any `ParenthesizedWhitespace` (in the sense of LibCST) after the function name `sorted` and before the arguments, then we must wrap `sorted` with parentheses after removing the surrounding function.
 

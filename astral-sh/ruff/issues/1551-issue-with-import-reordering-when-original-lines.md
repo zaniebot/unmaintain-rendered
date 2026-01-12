@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-02T10:53:36Z
 updated_at: 2023-01-02T21:24:42Z
 url: https://github.com/astral-sh/ruff/issues/1551
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # issue with import reordering when original lines have noqa comments. 
 
 ---
 
-_Issue opened by @ghuls on 2023-01-02 10:53_
+_@ghuls_
 
 ruff combines import lines with and without noqa comments
 

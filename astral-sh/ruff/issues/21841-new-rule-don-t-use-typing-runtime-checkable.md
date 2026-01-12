@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-08T08:03:43Z
 updated_at: 2025-12-08T18:37:00Z
 url: https://github.com/astral-sh/ruff/issues/21841
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # new rule: don't use `typing.runtime_checkable`
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-12-08 08:03_
+_@KotlinIsland_
 
 ### Summary
 

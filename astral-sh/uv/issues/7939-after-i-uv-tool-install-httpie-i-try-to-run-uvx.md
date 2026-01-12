@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-05T11:52:07Z
 updated_at: 2025-12-05T08:16:57Z
 url: https://github.com/astral-sh/uv/issues/7939
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # after I   uv tool  install   httpie  , I  try  to  run  "uvx   http  google.com "  ,but   happen  unexpected    error* 
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-10-05 11:52_
+_@Super1Windcloud_
 
  # win11  uv@latest  
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-23T15:36:19Z
 updated_at: 2024-02-14T14:09:22Z
 url: https://github.com/astral-sh/ruff/issues/8147
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruff fails with memory allocation of X bytes failed
 
 ---
 
-_Issue opened by @harpener on 2023-10-23 15:36_
+_@harpener_
 
 Hi guys,
 

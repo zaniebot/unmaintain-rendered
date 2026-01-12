@@ -13,14 +13,14 @@ head: jtfm/display-safe-url-followup
 created_at: 2025-05-27T14:54:32Z
 updated_at: 2025-05-28T10:36:20Z
 url: https://github.com/astral-sh/uv/pull/13683
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Make `DisplaySafeUrlRef` Copy and other minor PR follow-ups
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-27 14:54_
+_@jtfmumm_
 
 This PR implements a few review follow-ups from #13560. In particular, it
 * Makes `DisplaySafeUrlRef` implement `Copy` so that it can be passed by value.

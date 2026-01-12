@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T16:45:34Z
 updated_at: 2025-03-20T21:48:50Z
 url: https://github.com/astral-sh/ruff/issues/16874
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Incorrect SyntaxError for `*` in strings in annotations (e.g. `Annotated`, `Literal`)
 
 ---
 
-_Issue opened by @rg936672 on 2025-03-20 16:45_
+_@rg936672_
 
 ### Summary
 

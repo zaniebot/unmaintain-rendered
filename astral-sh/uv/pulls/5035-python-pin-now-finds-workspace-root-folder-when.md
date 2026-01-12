@@ -11,14 +11,14 @@ head: python-pin-workspace-subfolder
 created_at: 2024-07-13T09:23:07Z
 updated_at: 2024-09-16T22:21:48Z
 url: https://github.com/astral-sh/uv/pull/5035
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # `python pin` now finds workspace root folder when called in subfolder
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-13 09:23_
+_@silvanocerza_
 
 ## Summary
 

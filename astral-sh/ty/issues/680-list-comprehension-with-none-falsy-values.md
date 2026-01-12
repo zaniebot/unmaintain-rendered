@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T14:44:54Z
 updated_at: 2025-06-25T09:30:29Z
 url: https://github.com/astral-sh/ty/issues/680
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # list comprehension with None (falsy) values filtered by condition
 
 ---
 
-_Issue opened by @pawamoy on 2025-06-18 14:44_
+_@pawamoy_
 
 ### Summary
 

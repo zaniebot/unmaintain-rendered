@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T19:20:25Z
 updated_at: 2023-06-12T18:43:08Z
 url: https://github.com/astral-sh/ruff/issues/2409
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # new rule: unnecessary brackets in class definition
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 19:20_
+_@spaceone_
 
 ```
 class Foo():

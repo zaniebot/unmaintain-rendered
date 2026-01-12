@@ -13,14 +13,14 @@ head: charlie/formatter-iv
 created_at: 2023-02-13T23:37:30Z
 updated_at: 2023-02-15T03:54:10Z
 url: https://github.com/astral-sh/ruff/pull/2875
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove dependency on `ruff_rowan`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 23:37_
+_@charliermarsh_
 
 This PR removes the dependency on `ruff_rowan` (i.e., Rome's fork of rust-analyzer's `rowan`), and in turn, trims out a lot of code in `ruff_formatter` that isn't necessary (or isn't _yet_ necessary) to power the autoformatter.
 

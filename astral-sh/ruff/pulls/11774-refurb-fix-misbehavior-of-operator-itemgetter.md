@@ -13,14 +13,14 @@ head: fix-issue-#11714
 created_at: 2024-06-06T09:57:59Z
 updated_at: 2024-06-07T11:45:07Z
 url: https://github.com/astral-sh/ruff/pull/11774
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`refurb`] Fix misbehavior of `operator.itemgetter` when getter param is a tuple
 
 ---
 
-_Pull request opened by @Embers-of-the-Fire on 2024-06-06 09:57_
+_@Embers-of-the-Fire_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

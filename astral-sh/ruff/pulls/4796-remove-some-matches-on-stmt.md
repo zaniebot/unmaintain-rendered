@@ -13,14 +13,14 @@ head: charlie/is_stmt
 created_at: 2023-06-02T04:24:50Z
 updated_at: 2023-06-02T04:57:29Z
 url: https://github.com/astral-sh/ruff/pull/4796
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove some matches on `Stmt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-02 04:24_
+_@charliermarsh_
 
 _No description provided._
 

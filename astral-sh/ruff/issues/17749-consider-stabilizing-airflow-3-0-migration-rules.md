@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T21:07:41Z
 updated_at: 2025-09-08T16:10:39Z
 url: https://github.com/astral-sh/ruff/issues/17749
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider stabilizing Airflow 3.0 migration rules
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-30 21:07_
+_@dhruvmanila_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-05-13T07:16:34Z
 updated_at: 2022-05-13T11:59:05Z
 url: https://github.com/clap-rs/clap/issues/3727
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Relax version of `os_str_bytes`
 
 ---
 
-_Issue opened by @jerome-pouiller on 2022-05-13 07:16_
+_@jerome-pouiller_
 
 `os_str_bytes` 6.0 now depends on Rust 1.52.
 

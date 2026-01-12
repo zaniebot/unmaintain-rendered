@@ -13,14 +13,14 @@ head: jane/settings/display-improvements
 created_at: 2024-01-11T09:20:59Z
 updated_at: 2024-01-12T19:36:12Z
 url: https://github.com/astral-sh/ruff/pull/9464
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # `--show-settings` displays active settings in a far more readable format
 
 ---
 
-_Pull request opened by @snowsignal on 2024-01-11 09:20_
+_@snowsignal_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: micha/structured-diagnostics
 created_at: 2024-11-06T10:38:44Z
 updated_at: 2024-11-06T11:31:06Z
 url: https://github.com/astral-sh/ruff/pull/14129
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # micha/structured diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-06 10:38_
+_@MichaReiser_
 
 ## Summary
 

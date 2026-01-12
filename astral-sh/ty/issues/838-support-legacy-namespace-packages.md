@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T10:38:38Z
 updated_at: 2025-10-17T03:16:39Z
 url: https://github.com/astral-sh/ty/issues/838
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support legacy namespace packages
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-17 10:38_
+_@MichaReiser_
 
 Add support for legacy namespace packages of the form `__import__("pkgutil").extend_path(__path__, __name__)` as is used by airflow.
 

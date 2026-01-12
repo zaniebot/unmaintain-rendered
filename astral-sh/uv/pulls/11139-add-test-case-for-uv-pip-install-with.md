@@ -13,14 +13,14 @@ head: zb/test-install-inc
 created_at: 2025-01-31T18:47:15Z
 updated_at: 2025-01-31T20:54:48Z
 url: https://github.com/astral-sh/uv/pull/11139
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Add test case for `uv pip install` with incompatible virtual environment Python version
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-31 18:47_
+_@zanieb_
 
 Test case for https://github.com/astral-sh/uv/issues/11138
 

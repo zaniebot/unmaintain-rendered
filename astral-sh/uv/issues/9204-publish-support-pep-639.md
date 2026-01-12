@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-18T16:08:39Z
 updated_at: 2024-12-06T19:06:24Z
 url: https://github.com/astral-sh/uv/issues/9204
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Publish: Support PEP 639
 
 ---
 
-_Issue opened by @konstin on 2024-11-18 16:08_
+_@konstin_
 
 Currently, we don't upload license file(s) metadata. We need to wait for a conclusion on https://github.com/pypi/warehouse/issues/17105 and then add the correct field to the upload metadata.
 

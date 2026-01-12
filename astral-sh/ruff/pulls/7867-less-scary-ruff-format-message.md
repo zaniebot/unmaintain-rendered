@@ -13,14 +13,14 @@ head: stablize-ruff-format-a-little
 created_at: 2023-10-09T12:23:36Z
 updated_at: 2023-10-11T11:55:21Z
 url: https://github.com/astral-sh/ruff/pull/7867
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Less scary `ruff format` message
 
 ---
 
-_Pull request opened by @konstin on 2023-10-09 12:23_
+_@konstin_
 
 The ruff formatter has stabilized a good bit since when we added the original message "intended only for experimentation" message. It's time for a less scary message to indicate it is much closer to stable usage than it used to be.
 

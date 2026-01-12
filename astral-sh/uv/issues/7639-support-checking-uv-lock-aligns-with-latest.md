@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-23T13:49:30Z
 updated_at: 2025-12-06T00:15:36Z
 url: https://github.com/astral-sh/uv/issues/7639
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Support checking `uv.lock` aligns with latest changes to `pyproject.toml`
 
 ---
 
-_Issue opened by @butterlyn on 2024-09-23 13:49_
+_@butterlyn_
 
 Request for a feature to check that no (relevant) changes to `pyproject.toml` have been made since `uv.lock` was last updated.
 For reference, this is implemented in Poetry via the command `poetry check --lock` (previously under `poetry lock --check`).

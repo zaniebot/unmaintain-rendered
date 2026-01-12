@@ -13,14 +13,14 @@ head: charlie/rec
 created_at: 2024-02-26T20:38:25Z
 updated_at: 2024-02-26T20:44:26Z
 url: https://github.com/astral-sh/uv/pull/1990
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Support recursive extras in direct `pyproject.toml` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-26 20:38_
+_@charliermarsh_
 
 ## Summary
 

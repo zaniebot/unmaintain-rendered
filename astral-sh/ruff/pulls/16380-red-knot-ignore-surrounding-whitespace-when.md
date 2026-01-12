@@ -14,14 +14,14 @@ head: alex/mdtest-html-whitespace
 created_at: 2025-02-25T18:50:19Z
 updated_at: 2025-02-27T13:30:45Z
 url: https://github.com/astral-sh/ruff/pull/16380
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Ignore surrounding whitespace when looking for `<!-- snapshot-diagnostics -->` directives in mdtests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-25 18:50_
+_@AlexWaygood_
 
 ## Summary
 

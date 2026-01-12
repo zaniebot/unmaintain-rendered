@@ -13,14 +13,14 @@ head: charlie/tests
 created_at: 2023-06-22T01:36:41Z
 updated_at: 2023-06-22T02:17:33Z
 url: https://github.com/astral-sh/ruff/pull/5278
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use `mod tests` consistently
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 01:36_
+_@charliermarsh_
 
 As per the Rust documentation.
 

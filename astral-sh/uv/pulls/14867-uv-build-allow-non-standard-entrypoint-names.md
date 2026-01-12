@@ -14,14 +14,14 @@ head: konsti/allow-non-compliant-entrypoints
 created_at: 2025-07-24T09:26:15Z
 updated_at: 2025-07-24T12:12:37Z
 url: https://github.com/astral-sh/uv/pull/14867
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # uv_build: Allow non-standard entrypoint names
 
 ---
 
-_Pull request opened by @konstin on 2025-07-24 09:26_
+_@konstin_
 
 It seems that non-standard entrypoints are still widely used, downgrading the error to a tracing warning.
 

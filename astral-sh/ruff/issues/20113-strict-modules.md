@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-27T13:53:08Z
 updated_at: 2025-08-27T14:18:21Z
 url: https://github.com/astral-sh/ruff/issues/20113
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # strict modules
 
 ---
 
-_Issue opened by @ctcjab on 2025-08-27 13:53_
+_@ctcjab_
 
 ### Summary
 

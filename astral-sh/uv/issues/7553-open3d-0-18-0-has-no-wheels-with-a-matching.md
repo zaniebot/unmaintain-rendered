@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T16:19:06Z
 updated_at: 2024-11-26T14:51:33Z
 url: https://github.com/astral-sh/uv/issues/7553
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # open3d==0.18.0 has no wheels with a matching Python implementation tag
 
 ---
 
-_Issue opened by @zhou13 on 2024-09-19 16:19_
+_@zhou13_
 
 ## A minimal code snippet that reproduces the bug:
 ```bash

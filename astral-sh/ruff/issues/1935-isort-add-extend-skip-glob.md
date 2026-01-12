@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-17T16:43:47Z
 updated_at: 2023-01-17T18:25:58Z
 url: https://github.com/astral-sh/ruff/issues/1935
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Isort add extend_skip_glob
 
 ---
 
-_Issue opened by @nstarman on 2023-01-17 16:43_
+_@nstarman_
 
 I'm testing if we (astropy) can switch our `isort` to ruff's but we have an ``extend_skip_glob`` which I don't think is supported by ruff. Is there an alternative, or can ``extend_skip_glob`` be added? Thanks.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T08:22:53Z
 updated_at: 2025-03-21T08:33:33Z
 url: https://github.com/astral-sh/uv/issues/12358
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # how can i see all the vens like conda env list?
 
 ---
 
-_Issue opened by @DDD71 on 2025-03-21 08:22_
+_@DDD71_
 
 ### Question
 

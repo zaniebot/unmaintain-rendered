@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-26T17:05:23Z
 updated_at: 2026-01-08T13:40:35Z
 url: https://github.com/astral-sh/ty/issues/2230
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add / document support for Claude Code LSP integration
 
 ---
 
-_Issue opened by @adamtheturtle on 2025-12-26 17:05_
+_@adamtheturtle_
 
 I see `pyright-lsp` on https://code.claude.com/docs/en/plugins-reference#lsp-servers and would be happy for Claude to use ty.
 

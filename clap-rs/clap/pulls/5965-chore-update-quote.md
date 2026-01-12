@@ -12,14 +12,14 @@ head: fix-quote
 created_at: 2025-04-02T00:51:43Z
 updated_at: 2025-04-02T07:27:39Z
 url: https://github.com/clap-rs/clap/pull/5965
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # (chore) update quote
 
 ---
 
-_Pull request opened by @thinh2 on 2025-04-02 00:51_
+_@thinh2_
 
 <!--
 Thanks for helping out!

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-09T14:38:36Z
 updated_at: 2023-06-30T16:50:57Z
 url: https://github.com/clap-rs/clap/issues/3008
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [modular] User-driven validation
 
 ---
 
-_Issue opened by @epage on 2021-11-09 14:38_
+_@epage_
 
 ### Please complete the following tasks
 

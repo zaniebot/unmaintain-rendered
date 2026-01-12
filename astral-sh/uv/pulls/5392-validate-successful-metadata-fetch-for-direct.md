@@ -13,14 +13,14 @@ head: charlie/off
 created_at: 2024-07-24T02:23:30Z
 updated_at: 2024-08-23T15:55:30Z
 url: https://github.com/astral-sh/uv/pull/5392
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Validate successful metadata fetch for direct dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 02:23_
+_@charliermarsh_
 
 ## Summary
 

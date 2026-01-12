@@ -13,14 +13,14 @@ head: format-async-for
 created_at: 2023-07-16T14:44:37Z
 updated_at: 2023-07-17T14:51:20Z
 url: https://github.com/astral-sh/ruff/pull/5808
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `AsyncFor`
 
 ---
 
-_Pull request opened by @lkh42t on 2023-07-16 14:44_
+_@lkh42t_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

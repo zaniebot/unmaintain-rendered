@@ -13,14 +13,14 @@ head: SLF001
 created_at: 2025-02-14T01:43:10Z
 updated_at: 2025-02-23T11:36:42Z
 url: https://github.com/astral-sh/ruff/pull/16149
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-self`] Ignore attribute accesses on instance-like variables (`SLF001`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-14 01:43_
+_@InSyncWithFoo_
 
 ## Summary
 

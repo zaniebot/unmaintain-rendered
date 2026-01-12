@@ -12,14 +12,14 @@ head: charlie/release
 created_at: 2023-05-15T15:30:01Z
 updated_at: 2023-05-15T16:04:22Z
 url: https://github.com/astral-sh/ruff/pull/4441
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Revert change to re-run release on tag update
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-15 15:30_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-24T04:56:16Z
 updated_at: 2025-01-19T16:43:58Z
 url: https://github.com/astral-sh/ruff/issues/14563
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to increase converge iter times
 
 ---
 
-_Issue opened by @yanyongyu on 2024-11-24 04:56_
+_@yanyongyu_
 
 I'm trying to migrate to ruff to lint and format generated codes. But, i have encountered infinity loop error when using `ruff check --fix`. rule codes `F401, F811, I001`.
 

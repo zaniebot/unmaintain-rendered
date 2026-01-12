@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-13T16:05:44Z
 updated_at: 2025-12-01T20:26:56Z
 url: https://github.com/astral-sh/ruff/issues/21431
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PTH fixes should be unsafe when they change return types
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-13 16:05_
+_@dscorbett_
 
 ### Summary
 

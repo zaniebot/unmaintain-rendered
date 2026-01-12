@@ -14,14 +14,14 @@ head: main
 created_at: 2025-02-02T14:05:38Z
 updated_at: 2025-02-03T18:26:03Z
 url: https://github.com/astral-sh/ruff/pull/15877
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-comprehensions`] Unnecessary `list` comprehension (rewrite as a `set` comprehension) (`C403`) - Handle extraneous parentheses around list comprehension
 
 ---
 
-_Pull request opened by @jbramley on 2025-02-02 14:05_
+_@jbramley_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

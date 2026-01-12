@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T11:12:00Z
 updated_at: 2025-08-22T17:38:47Z
 url: https://github.com/astral-sh/ruff/issues/15473
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # BLE001 false positive
 
 ---
 
-_Issue opened by @joostlek on 2025-01-14 11:12_
+_@joostlek_
 
 So I just found out that if we log the exception, we can remove the BLE001. Awesome!
 

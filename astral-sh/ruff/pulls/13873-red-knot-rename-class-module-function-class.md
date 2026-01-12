@@ -13,14 +13,14 @@ head: david/rename-type-variants
 created_at: 2024-10-22T06:53:43Z
 updated_at: 2024-10-22T20:10:55Z
 url: https://github.com/astral-sh/ruff/pull/13873
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] rename {Class,Module,Function} => {Class,Module,Function}Literal
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-22 06:53_
+_@sharkdp_
 
 ## Summary
 

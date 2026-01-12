@@ -14,14 +14,14 @@ head: charlie/ord
 created_at: 2024-07-09T04:55:26Z
 updated_at: 2024-07-09T16:16:04Z
 url: https://github.com/astral-sh/uv/pull/4912
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Filter out markers based on Python requirement
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 04:55_
+_@charliermarsh_
 
 ## Summary
 

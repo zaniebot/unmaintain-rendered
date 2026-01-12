@@ -13,14 +13,14 @@ head: david/fix-member-lookup
 created_at: 2025-04-15T11:15:08Z
 updated_at: 2025-04-15T11:28:52Z
 url: https://github.com/astral-sh/ruff/pull/17407
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Minor 'member_lookup_with_policy' fix
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-15 11:15_
+_@sharkdp_
 
 ## Summary
 

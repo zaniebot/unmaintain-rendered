@@ -13,14 +13,14 @@ head: konsti/rust-1.92
 created_at: 2026-01-05T10:54:03Z
 updated_at: 2026-01-05T11:11:44Z
 url: https://github.com/astral-sh/uv/pull/17324
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Fix some Rust 1.92 clippy lints
 
 ---
 
-_Pull request opened by @konstin on 2026-01-05 10:54_
+_@konstin_
 
 Saw this as a build failure in a CI job.
 

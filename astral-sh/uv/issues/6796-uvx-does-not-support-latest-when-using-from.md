@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T08:13:13Z
 updated_at: 2024-08-30T13:00:18Z
 url: https://github.com/astral-sh/uv/issues/6796
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Uvx does not support @latest when using --from
 
 ---
 
-_Issue opened by @RomainBrault on 2024-08-29 08:13_
+_@RomainBrault_
 
 I was expecting the following to work but it doesnt.
 

@@ -13,14 +13,14 @@ head: cjm/findlegacycycle
 created_at: 2025-08-28T02:42:03Z
 updated_at: 2025-08-28T16:55:10Z
 url: https://github.com/astral-sh/ruff/pull/20124
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] add cycle detection for find_legacy_typevars
 
 ---
 
-_Pull request opened by @carljm on 2025-08-28 02:42_
+_@carljm_
 
 ## Summary
 

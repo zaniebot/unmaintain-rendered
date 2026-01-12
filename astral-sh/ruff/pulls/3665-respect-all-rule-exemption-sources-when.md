@@ -12,14 +12,14 @@ head: charlie/exempt
 created_at: 2023-03-22T04:08:30Z
 updated_at: 2023-03-23T17:37:00Z
 url: https://github.com/astral-sh/ruff/pull/3665
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Respect all rule-exemption sources when suppressing parser errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-22 04:08_
+_@charliermarsh_
 
 ## Summary
 

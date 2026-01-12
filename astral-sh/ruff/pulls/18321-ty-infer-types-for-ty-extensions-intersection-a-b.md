@@ -13,14 +13,14 @@ head: david/fix-366
 created_at: 2025-05-26T14:59:09Z
 updated_at: 2025-05-26T15:08:54Z
 url: https://github.com/astral-sh/ruff/pull/18321
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Infer types for ty_extensions.Intersection[A, B] tuple expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-26 14:59_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T20:09:25Z
 updated_at: 2024-04-16T07:36:57Z
 url: https://github.com/astral-sh/uv/issues/2639
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Duplicate package in requirements
 
 ---
 
-_Issue opened by @dmwyatt on 2024-03-24 20:09_
+_@dmwyatt_
 
 ```
 # requirements.in

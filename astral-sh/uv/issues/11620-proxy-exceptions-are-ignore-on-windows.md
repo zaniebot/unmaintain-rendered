@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T15:03:00Z
 updated_at: 2025-02-19T18:19:01Z
 url: https://github.com/astral-sh/uv/issues/11620
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # proxy exceptions are ignore on Windows
 
 ---
 
-_Issue opened by @Fizcko on 2025-02-19 15:03_
+_@Fizcko_
 
 ### Summary
 

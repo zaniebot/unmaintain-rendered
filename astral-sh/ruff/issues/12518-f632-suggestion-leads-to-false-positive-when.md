@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T23:50:32Z
 updated_at: 2024-07-29T16:46:42Z
 url: https://github.com/astral-sh/ruff/issues/12518
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F632 suggestion leads to false positive when comparing False == 0
 
 ---
 
-_Issue opened by @GalexyN on 2024-07-25 23:50_
+_@GalexyN_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

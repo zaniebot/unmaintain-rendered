@@ -13,14 +13,14 @@ head: micha/no-type-check
 created_at: 2024-12-23T10:51:15Z
 updated_at: 2024-12-30T09:43:31Z
 url: https://github.com/astral-sh/ruff/pull/15122
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # `@no_type_check` support
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-23 10:51_
+_@MichaReiser_
 
 ## Summary
 

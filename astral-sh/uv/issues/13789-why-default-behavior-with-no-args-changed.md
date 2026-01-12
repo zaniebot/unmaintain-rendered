@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T19:26:44Z
 updated_at: 2025-06-02T21:30:54Z
 url: https://github.com/astral-sh/uv/issues/13789
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Why default behavior with no args changed?
 
 ---
 
-_Issue opened by @KuRRe8 on 2025-06-02 19:26_
+_@KuRRe8_
 
 ### Question
 

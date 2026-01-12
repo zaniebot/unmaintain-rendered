@@ -13,14 +13,14 @@ head: zb/instrument-fetch
 created_at: 2024-04-23T13:55:10Z
 updated_at: 2024-04-23T14:23:22Z
 url: https://github.com/astral-sh/uv/pull/3207
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Improve tracing for keyring provider
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-23 13:55_
+_@zanieb_
 
 _No description provided._
 

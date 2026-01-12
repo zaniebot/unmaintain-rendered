@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-11T17:08:54Z
 updated_at: 2025-01-13T20:21:20Z
 url: https://github.com/astral-sh/uv/issues/10520
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # expose package resolution information
 
 ---
 
-_Issue opened by @rmehri01 on 2025-01-11 17:08_
+_@rmehri01_
 
 Hey, first just wanted to say thanks, uv is a really great tool!
 

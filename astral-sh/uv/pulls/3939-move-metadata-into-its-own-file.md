@@ -13,14 +13,14 @@ head: konsti/move-archive-into-its-own-file
 created_at: 2024-05-31T12:46:55Z
 updated_at: 2024-05-31T13:24:11Z
 url: https://github.com/astral-sh/uv/pull/3939
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Move metadata into its own file
 
 ---
 
-_Pull request opened by @konstin on 2024-05-31 12:46_
+_@konstin_
 
 Move `Metadata`, `MetadataLoweringError` and `ArchiveMetadata` into their own file `metadata.rs` in `uv-distribution`, moving it out from `lib.rs`. No functional changes.
 

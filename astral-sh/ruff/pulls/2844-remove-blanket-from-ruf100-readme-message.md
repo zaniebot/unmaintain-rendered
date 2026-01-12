@@ -12,14 +12,14 @@ head: docs/ruf100-message
 created_at: 2023-02-13T07:27:14Z
 updated_at: 2023-02-13T17:10:53Z
 url: https://github.com/astral-sh/ruff/pull/2844
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove "blanket" from RUF100 README message
 
 ---
 
-_Pull request opened by @scop on 2023-02-13 07:27_
+_@scop_
 
 It's not just about blanket noqa's, but other kinds, too.
 

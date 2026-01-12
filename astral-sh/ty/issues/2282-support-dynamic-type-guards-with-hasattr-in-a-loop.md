@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T23:32:44Z
 updated_at: 2026-01-06T01:59:58Z
 url: https://github.com/astral-sh/ty/issues/2282
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support dynamic type guards with `hasattr` in a loop
 
 ---
 
-_Issue opened by @phistep on 2025-12-30 23:32_
+_@phistep_
 
 ### Summary
 

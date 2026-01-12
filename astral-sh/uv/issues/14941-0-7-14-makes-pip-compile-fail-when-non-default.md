@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T13:34:05Z
 updated_at: 2025-07-31T21:00:02Z
 url: https://github.com/astral-sh/uv/issues/14941
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # 0.7.14 makes `pip compile` fail when non-default index doesn't contain package.
 
 ---
 
-_Issue opened by @claudeviool on 2025-07-28 13:34_
+_@claudeviool_
 
 ### Summary
 

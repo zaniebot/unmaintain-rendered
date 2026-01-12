@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-03T18:20:10Z
 updated_at: 2024-08-03T23:37:41Z
 url: https://github.com/astral-sh/uv/issues/5754
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Incorrect default value for python-preference in ``docs/reference/settings.md``
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-08-03 18:20_
+_@FishAlchemist_
 
 According to  https://github.com/astral-sh/uv/pull/5637 , the default value in the document should be changed to "``only-managed``" because the managed behavior requires ``--preview``. However, if the document is intended for post-stabilization behavior (without ``--preview``), it should also be changed to "``managed``" instead of using a removed value.
 I'm not sure which one should be changed to so I won't create a PR for it

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-28T16:47:05Z
 updated_at: 2024-06-28T20:15:29Z
 url: https://github.com/astral-sh/uv/issues/4629
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv add` hangs with circular dependencies in the lock file.
 
 ---
 
-_Issue opened by @blueraft on 2024-06-28 16:47_
+_@blueraft_
 
 Originally posted in #4599 
 

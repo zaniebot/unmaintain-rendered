@@ -13,14 +13,14 @@ head: ups/warn-script-without-build-system
 created_at: 2024-09-16T10:02:24Z
 updated_at: 2024-09-16T15:57:32Z
 url: https://github.com/astral-sh/uv/pull/7420
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Warn when trying to `uv sync` a package without build configuration
 
 ---
 
-_Pull request opened by @lucab on 2024-09-16 10:02_
+_@lucab_
 
 This enhances `uv sync` logic in order to detect and warn if it is trying to operate on a packaged project with entrypoints.
 

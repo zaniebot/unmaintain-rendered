@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-14T14:55:47Z
 updated_at: 2024-08-09T06:46:33Z
 url: https://github.com/astral-sh/ruff/issues/10926
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Glob pattern for isort `sections` or `force-to-top`
 
 ---
 
-_Issue opened by @serjflint on 2024-04-14 14:55_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

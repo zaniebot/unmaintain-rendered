@@ -12,14 +12,14 @@ head: charlie/bugbear
 created_at: 2022-11-25T23:29:00Z
 updated_at: 2022-11-25T23:29:54Z
 url: https://github.com/astral-sh/ruff/pull/907
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement B023 (function uses loop variable)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-25 23:29_
+_@charliermarsh_
 
 See: #389.
 

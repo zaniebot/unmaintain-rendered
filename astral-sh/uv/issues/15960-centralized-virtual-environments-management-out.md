@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T15:06:37Z
 updated_at: 2025-09-20T16:17:16Z
 url: https://github.com/astral-sh/uv/issues/15960
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # centralized virtual environments management out of project like poetry
 
 ---
 
-_Issue opened by @duroey on 2025-09-20 15:06_
+_@duroey_
 
 ### Summary
 

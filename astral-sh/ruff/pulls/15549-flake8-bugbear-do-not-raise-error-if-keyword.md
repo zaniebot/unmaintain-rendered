@@ -13,14 +13,14 @@ head: b903_suggestion
 created_at: 2025-01-17T11:40:17Z
 updated_at: 2025-01-17T11:48:55Z
 url: https://github.com/astral-sh/ruff/pull/15549
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-bugbear`] Do not raise error if keyword argument is present and target-python version is less or equals than 3.9 (`B903`)
 
 ---
 
-_Pull request opened by @guillaumeLepape on 2025-01-17 11:40_
+_@guillaumeLepape_
 
 \[`flake8-bugbear`\] Do not raise error if keyword argument is present and target-python version is less or equals than 3.9 (`B903`)
 

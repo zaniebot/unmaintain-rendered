@@ -13,14 +13,14 @@ head: zb/read-sh
 created_at: 2024-02-16T05:14:15Z
 updated_at: 2024-02-20T10:57:28Z
 url: https://github.com/astral-sh/uv/pull/1433
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Read from `/bin/sh` if `/bin/ls` cannot be found when determing libc path
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-16 05:14_
+_@zanieb_
 
 I'm not sure if we should just switch to _always_ reading from sh instead? I don't love that all these errors are strings and I if `/bin/ls` exists but can't be parsed we still won't try `/bin/sh`. We may want to address these things in the future.
 

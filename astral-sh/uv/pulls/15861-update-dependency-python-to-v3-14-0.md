@@ -12,14 +12,14 @@ head: renovate/python-3.x
 created_at: 2025-09-15T02:52:00Z
 updated_at: 2025-10-07T16:14:46Z
 url: https://github.com/astral-sh/uv/pull/15861
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Update dependency python to v3.14.0
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 02:52_
+_@renovate_
 
 This PR contains the following updates:
 

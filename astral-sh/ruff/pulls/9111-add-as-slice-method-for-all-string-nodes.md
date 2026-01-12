@@ -13,14 +13,14 @@ head: dhruv/as-slice
 created_at: 2023-12-13T03:00:54Z
 updated_at: 2023-12-13T06:41:35Z
 url: https://github.com/astral-sh/ruff/pull/9111
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add `as_slice` method for all string nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-13 03:00_
+_@dhruvmanila_
 
 This PR adds a `as_slice` method to all the string nodes which returns all the parts of the nodes as a slice. This will be useful in the next PR to split the string formatting to use this method to extract the _single node_ or _implicitly concanated nodes_.
 

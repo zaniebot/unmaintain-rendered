@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T14:57:44Z
 updated_at: 2024-05-24T07:20:41Z
 url: https://github.com/astral-sh/ruff/issues/11516
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server`: duplicate code actions
 
 ---
 
-_Issue opened by @ravibrock on 2024-05-23 14:57_
+_@ravibrock_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

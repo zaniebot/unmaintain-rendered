@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-01T17:03:22Z
 updated_at: 2025-11-04T16:02:52Z
 url: https://github.com/astral-sh/ruff/issues/21186
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB157 misses `decimal.Decimal("_-1")`
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-01 17:03_
+_@dscorbett_
 
 ### Summary
 

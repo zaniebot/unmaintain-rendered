@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-04-07T22:27:32Z
 updated_at: 2025-04-10T08:13:22Z
 url: https://github.com/astral-sh/uv/pull/12732
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Add lockfile note about PEP 751
 
 ---
 
-_Pull request opened by @ollytheninja on 2025-04-07 22:27_
+_@ollytheninja_
 
 ## Summary
 

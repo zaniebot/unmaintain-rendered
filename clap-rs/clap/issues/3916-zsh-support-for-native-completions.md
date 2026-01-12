@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-07-13T14:15:44Z
 updated_at: 2025-03-28T14:05:11Z
 url: https://github.com/clap-rs/clap/issues/3916
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # zsh support for native completions
 
 ---
 
-_Issue opened by @epage on 2022-07-13 14:15_
+_@epage_
 
 See #3166 for more context
 

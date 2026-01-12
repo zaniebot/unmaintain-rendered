@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-07T14:25:47Z
 updated_at: 2024-09-07T15:29:38Z
 url: https://github.com/astral-sh/ruff/issues/13279
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # unfixable = ["F401"] only works with ruff.toml [lint] but not with pyproject.toml [tool.lint.ruff]
 
 ---
 
-_Issue opened by @tendermonster on 2024-09-07 14:25_
+_@tendermonster_
 
 Since recently, for some reason, ignoring of F401 does not work over pyproject.toml. 
 Probably, other settings set using [tool.ruff.lint] don't work either. Don't really understand why. 

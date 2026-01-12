@@ -13,14 +13,14 @@ head: charlie/colon
 created_at: 2024-03-14T17:37:24Z
 updated_at: 2024-03-14T17:47:17Z
 url: https://github.com/astral-sh/uv/pull/2461
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Avoid panicking on cannot-be-a-base URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-14 17:37_
+_@charliermarsh_
 
 `path_segments_mut` returns an `Err` for cannot-be-a-base URLs. These won't be valid when we try to fetch them anyway, but we need to avoid a panic.
 

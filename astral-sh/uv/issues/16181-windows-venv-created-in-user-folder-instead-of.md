@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T11:08:03Z
 updated_at: 2025-10-10T18:58:06Z
 url: https://github.com/astral-sh/uv/issues/16181
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # [Windows] .venv created in user folder instead of project folder with certain path
 
 ---
 
-_Issue opened by @AlphaMoonbaseBerlin on 2025-10-08 11:08_
+_@AlphaMoonbaseBerlin_
 
 ### Summary
 

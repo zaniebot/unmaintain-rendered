@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-25T21:16:27Z
 updated_at: 2024-06-25T23:49:44Z
 url: https://github.com/astral-sh/uv/issues/4532
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv pip install` fails to read metadata when running on Docker container due to failure to parse egg version
 
 ---
 
-_Issue opened by @kzvezdarov on 2024-06-25 21:16_
+_@kzvezdarov_
 
 I'm using `uv` to provision a JupyterHub image with some additional packages. Up to `0.2.8`, my build worked fine, but starting with `0.2.9`, `uv pip install` fails with the following error:
 

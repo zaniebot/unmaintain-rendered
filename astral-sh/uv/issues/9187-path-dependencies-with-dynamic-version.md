@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T03:36:30Z
 updated_at: 2024-11-18T04:00:53Z
 url: https://github.com/astral-sh/uv/issues/9187
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # path-dependencies with dynamic `version` incorrectly cached
 
 ---
 
-_Issue opened by @acarapetis on 2024-11-18 03:36_
+_@acarapetis_
 
 I have a repo structured something like
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-12T04:48:27Z
 updated_at: 2025-03-02T16:40:29Z
 url: https://github.com/astral-sh/ruff/issues/8627
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add option to remove elements from default exclusion
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 04:48_
+_@ofek_
 
 https://docs.astral.sh/ruff/settings/#exclude
 

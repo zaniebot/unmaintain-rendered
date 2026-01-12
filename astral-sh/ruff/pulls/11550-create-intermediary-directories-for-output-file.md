@@ -13,14 +13,14 @@ head: charlie/excludes
 created_at: 2024-05-26T23:19:26Z
 updated_at: 2024-05-26T23:33:01Z
 url: https://github.com/astral-sh/ruff/pull/11550
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Create intermediary directories for `--output-file`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-26 23:19_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/11549.
 

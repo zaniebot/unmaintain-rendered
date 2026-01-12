@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-02T10:56:16Z
 updated_at: 2024-01-05T09:34:06Z
 url: https://github.com/astral-sh/ruff/issues/9354
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Question] A status page for all implemented plugins and rules?
 
 ---
 
-_Issue opened by @mikaelarguedas on 2024-01-02 10:56_
+_@mikaelarguedas_
 
 Hey there :wave:
 

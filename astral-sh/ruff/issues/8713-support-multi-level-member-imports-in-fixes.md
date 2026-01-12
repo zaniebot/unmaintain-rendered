@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T04:14:27Z
 updated_at: 2023-12-01T01:58:35Z
 url: https://github.com/astral-sh/ruff/issues/8713
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Support multi-level member imports in fixes
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-16 04:14_
+_@charliermarsh_
 
 ```
 ruff  *.py --select TRIO115 --no-cache --fix --unsafe-fixes --preview --isolated

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T21:05:30Z
 updated_at: 2025-04-15T14:19:55Z
 url: https://github.com/astral-sh/uv/issues/12788
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # `uv pip install` fails on GH pull-request SHA
 
 ---
 
-_Issue opened by @bewing on 2025-04-09 21:05_
+_@bewing_
 
 ### Summary
 

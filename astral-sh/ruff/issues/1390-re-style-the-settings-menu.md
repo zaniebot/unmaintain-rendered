@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T19:06:10Z
 updated_at: 2022-12-29T18:03:56Z
 url: https://github.com/astral-sh/ruff/issues/1390
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Re-style the settings menu
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-26 19:06_
+_@charliermarsh_
 
 _No description provided._
 

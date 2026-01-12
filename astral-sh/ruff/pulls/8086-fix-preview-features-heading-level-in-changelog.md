@@ -13,14 +13,14 @@ head: dhruv/changelog
 created_at: 2023-10-20T04:02:44Z
 updated_at: 2023-10-20T04:27:25Z
 url: https://github.com/astral-sh/ruff/pull/8086
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix "Preview features" heading level in CHANGELOG
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-20 04:02_
+_@dhruvmanila_
 
 _No description provided._
 

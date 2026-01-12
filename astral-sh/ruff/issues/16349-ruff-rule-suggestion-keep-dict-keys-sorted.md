@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-24T16:34:50Z
 updated_at: 2025-02-24T16:54:38Z
 url: https://github.com/astral-sh/ruff/issues/16349
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff rule suggestion: keep dict keys sorted
 
 ---
 
-_Issue opened by @kwist-sgr on 2025-02-24 16:34_
+_@kwist-sgr_
 
 ### Description
 

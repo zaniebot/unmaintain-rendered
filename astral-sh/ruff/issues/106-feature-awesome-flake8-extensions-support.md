@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-05T14:44:58Z
 updated_at: 2025-01-16T17:01:36Z
 url: https://github.com/astral-sh/ruff/issues/106
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # (feature) awesome flake8 extensions support
 
 ---
 
-_Issue opened by @kierun on 2022-09-05 14:44_
+_@kierun_
 
 There's a lot of [awesome flake8 extensions](https://github.com/DmytroLitvinov/awesome-flake8-extensions)… Is there a plan to support those?
 

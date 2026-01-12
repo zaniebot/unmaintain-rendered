@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-11T20:11:59Z
 updated_at: 2024-10-24T14:33:08Z
 url: https://github.com/astral-sh/ruff/issues/13329
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [BUG] `ruff` does not correctly lint positional only arguments
 
 ---
 
-_Issue opened by @yarnabrina on 2024-09-11 20:11_
+_@yarnabrina_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

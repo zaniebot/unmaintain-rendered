@@ -14,14 +14,14 @@ head: zb/reinstall-satisfies
 created_at: 2024-06-25T01:17:34Z
 updated_at: 2024-06-25T21:12:52Z
 url: https://github.com/astral-sh/uv/pull/4502
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Update `project::update_environment` to respect reinstall options
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 01:17_
+_@zanieb_
 
 While working on https://github.com/astral-sh/uv/pull/4492 I noticed that `--reinstall-package` was not actually respected by `update_environment`, it exited early due to satisfied requirements.
 

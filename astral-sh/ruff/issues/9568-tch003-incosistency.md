@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-17T19:13:35Z
 updated_at: 2024-01-17T20:10:44Z
 url: https://github.com/astral-sh/ruff/issues/9568
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # TCH003 incosistency
 
 ---
 
-_Issue opened by @LefterisJP on 2024-01-17 19:13_
+_@LefterisJP_
 
 This is a bit of a weird error/question concerning TCH003.
 

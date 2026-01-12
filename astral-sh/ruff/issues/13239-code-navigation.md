@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-04T08:19:21Z
 updated_at: 2024-09-04T09:07:31Z
 url: https://github.com/astral-sh/ruff/issues/13239
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Code navigation
 
 ---
 
-_Issue opened by @maidamai0 on 2024-09-04 08:19_
+_@maidamai0_
 
 Hi, Thanks for your great work.
 However, it seesm `code navigation` function is missing now in `ruff`

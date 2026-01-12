@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T17:51:06Z
 updated_at: 2023-07-08T19:05:45Z
 url: https://github.com/astral-sh/ruff/issues/5621
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Linter panic] IPykernel Debugger Module
 
 ---
 
-_Issue opened by @blink1073 on 2023-07-08 17:51_
+_@blink1073_
 
 
 * A minimal code snippet that reproduces the bug.

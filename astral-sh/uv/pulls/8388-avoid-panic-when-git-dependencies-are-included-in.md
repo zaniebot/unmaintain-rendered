@@ -13,14 +13,14 @@ head: charlie/prec
 created_at: 2024-10-20T17:44:31Z
 updated_at: 2024-10-20T18:42:22Z
 url: https://github.com/astral-sh/uv/pull/8388
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Avoid panic when Git dependencies are included in fork markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 17:44_
+_@charliermarsh_
 
 ## Summary
 

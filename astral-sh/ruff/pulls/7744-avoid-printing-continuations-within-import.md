@@ -12,14 +12,14 @@ head: charlie/continuation
 created_at: 2023-10-01T18:22:51Z
 updated_at: 2023-10-02T13:51:08Z
 url: https://github.com/astral-sh/ruff/pull/7744
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid printing continuations within import identifiers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 18:22_
+_@charliermarsh_
 
 ## Summary
 

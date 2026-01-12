@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T13:47:59Z
 updated_at: 2025-09-02T14:04:26Z
 url: https://github.com/astral-sh/uv/issues/15627
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # uv venv includes system dependencies in fresh environment
 
 ---
 
-_Issue opened by @xOctave on 2025-09-02 13:47_
+_@xOctave_
 
 ### Summary
 

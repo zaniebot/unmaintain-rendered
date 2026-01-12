@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T15:50:18Z
 updated_at: 2025-04-04T12:57:36Z
 url: https://github.com/astral-sh/uv/issues/12656
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # How to migrate from a setup.py based project?
 
 ---
 
-_Issue opened by @phaabe on 2025-04-03 15:50_
+_@phaabe_
 
 ### Question
 

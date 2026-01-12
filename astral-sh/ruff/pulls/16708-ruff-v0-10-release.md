@@ -13,14 +13,14 @@ head: micha/ruff-0.10-changelog
 created_at: 2025-03-13T13:40:15Z
 updated_at: 2025-03-13T17:53:13Z
 url: https://github.com/astral-sh/ruff/pull/16708
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Ruff v0.10 Release
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-13 13:40_
+_@MichaReiser_
 
 _No description provided._
 

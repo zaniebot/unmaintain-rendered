@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T16:57:41Z
 updated_at: 2025-01-30T13:11:59Z
 url: https://github.com/astral-sh/ruff/issues/15789
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # C413 fix is wrong when a newline appears between `sorted` and the opening parenthesis
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-28 16:57_
+_@dscorbett_
 
 ### Description
 

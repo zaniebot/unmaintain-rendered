@@ -12,14 +12,14 @@ head: charlie/precedence
 created_at: 2023-02-12T04:16:52Z
 updated_at: 2023-02-12T04:30:17Z
 url: https://github.com/astral-sh/ruff/pull/2798
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Refactor generator to use Astor-derived precedence levels
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 04:16_
+_@charliermarsh_
 
 _No description provided._
 

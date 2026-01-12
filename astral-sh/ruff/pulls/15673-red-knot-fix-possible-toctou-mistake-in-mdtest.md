@@ -13,14 +13,14 @@ head: david/mdtest-runner-catch-cargo-test-error
 created_at: 2025-01-22T15:19:42Z
 updated_at: 2025-01-22T15:26:05Z
 url: https://github.com/astral-sh/ruff/pull/15673
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Fix possible TOCTOU mistake in mdtest runner
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-22 15:19_
+_@sharkdp_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:52:27Z
 updated_at: 2024-02-17T04:17:37Z
 url: https://github.com/astral-sh/uv/issues/1376
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # uv pip install hexdump==3.3 fails: The top level of the archive must only contain a list directory
 
 ---
 
-_Issue opened by @robin-nitrokey on 2024-02-15 22:52_
+_@robin-nitrokey_
 
 I cannot install the `hexdump` package with `uv pip install`:
 

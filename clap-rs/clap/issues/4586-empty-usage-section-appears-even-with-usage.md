@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-29T16:12:19Z
 updated_at: 2022-12-29T16:54:26Z
 url: https://github.com/clap-rs/clap/issues/4586
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Empty "Usage: " section appears even with usage feature flag disabled
 
 ---
 
-_Issue opened by @mgunyho on 2022-12-29 16:12_
+_@mgunyho_
 
 ### Please complete the following tasks
 

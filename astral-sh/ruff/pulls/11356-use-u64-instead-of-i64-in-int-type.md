@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-05-10T01:18:06Z
 updated_at: 2024-05-10T13:44:54Z
 url: https://github.com/astral-sh/ruff/pull/11356
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Use `u64` instead of `i64` in Int type
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-10 01:18_
+_@charliermarsh_
 
 ## Summary
 

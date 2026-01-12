@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T13:48:59Z
 updated_at: 2025-11-30T00:55:37Z
 url: https://github.com/astral-sh/ty/issues/1665
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # diagnostic-fix: rename `List` to `list` on `unresolved-reference`
 
 ---
 
-_Issue opened by @Gankra on 2025-11-28 13:48_
+_@Gankra_
 
 Ditto for `Tuple` => `tuple`.
 

@@ -14,14 +14,14 @@ head: brent/gitlab
 created_at: 2025-08-27T16:43:15Z
 updated_at: 2025-08-28T12:56:35Z
 url: https://github.com/astral-sh/ruff/pull/20117
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # Move GitLab output rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-27 16:43_
+_@ntBre_
 
 ## Summary
 

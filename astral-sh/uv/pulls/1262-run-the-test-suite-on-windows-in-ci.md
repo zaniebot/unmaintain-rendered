@@ -13,14 +13,14 @@ head: konsti/cargo-test-in-windows-ci
 created_at: 2024-02-06T22:04:55Z
 updated_at: 2024-02-08T21:09:56Z
 url: https://github.com/astral-sh/uv/pull/1262
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Run the test suite on windows in CI
 
 ---
 
-_Pull request opened by @konstin on 2024-02-06 22:04_
+_@konstin_
 
 Run `cargo test` on windows in CI, pulling the switch on tier 1 windows support.
 

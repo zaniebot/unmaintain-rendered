@@ -14,14 +14,14 @@ head: brent/single-starred-assignment-target
 created_at: 2025-03-27T20:55:45Z
 updated_at: 2025-03-29T16:35:49Z
 url: https://github.com/astral-sh/ruff/pull/17024
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Single starred assignment target
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-27 20:55_
+_@ntBre_
 
 Summary
 --

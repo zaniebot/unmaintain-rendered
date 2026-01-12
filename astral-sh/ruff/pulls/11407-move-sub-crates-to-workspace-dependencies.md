@@ -13,14 +13,14 @@ head: charlie/ws
 created_at: 2024-05-13T14:22:08Z
 updated_at: 2024-05-13T14:45:23Z
 url: https://github.com/astral-sh/ruff/pull/11407
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Move sub-crates to workspace dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 14:22_
+_@charliermarsh_
 
 ## Summary
 

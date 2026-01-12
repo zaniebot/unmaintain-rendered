@@ -11,14 +11,14 @@ head: formatter/remove-regex-dependency
 created_at: 2025-12-06T21:49:25Z
 updated_at: 2025-12-08T13:00:35Z
 url: https://github.com/astral-sh/ruff/pull/21827
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # Remove `regex` dependency from `ruff_python_formatter`
 
 ---
 
-_Pull request opened by @magic-akari on 2025-12-06 21:49_
+_@magic-akari_
 
 ## Summary
 

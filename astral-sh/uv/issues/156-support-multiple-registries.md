@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T15:04:15Z
 updated_at: 2023-10-23T03:18:32Z
 url: https://github.com/astral-sh/uv/issues/156
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support multiple registries
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-20 15:04_
+_@charliermarsh_
 
 How does this work with `pip`? Do you need to check every package in every registry?
 

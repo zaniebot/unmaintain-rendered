@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-10T18:46:54Z
 updated_at: 2022-05-10T20:18:05Z
 url: https://github.com/clap-rs/clap/issues/3717
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Deprecated `arg_enum` depends on removed `_clap_count_exprs`
 
 ---
 
-_Issue opened by @bgilbert on 2022-05-10 18:46_
+_@bgilbert_
 
 ### Please complete the following tasks
 

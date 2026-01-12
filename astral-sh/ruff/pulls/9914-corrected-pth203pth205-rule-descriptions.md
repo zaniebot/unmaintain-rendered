@@ -13,14 +13,14 @@ head: correct-duplicated-pth-examples
 created_at: 2024-02-09T20:20:41Z
 updated_at: 2024-02-09T20:47:08Z
 url: https://github.com/astral-sh/ruff/pull/9914
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Corrected PTH203–PTH205 rule descriptions
 
 ---
 
-_Pull request opened by @trag1c on 2024-02-09 20:20_
+_@trag1c_
 
 ## Summary
 Closes #9898.

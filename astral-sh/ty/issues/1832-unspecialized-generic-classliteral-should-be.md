@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-10T01:46:59Z
 updated_at: 2025-12-10T16:18:10Z
 url: https://github.com/astral-sh/ty/issues/1832
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # unspecialized generic ClassLiteral should be assignable to default-specialized GenericAlias
 
 ---
 
-_Issue opened by @carljm on 2025-12-10 01:46_
+_@carljm_
 
 With a final generic class `P`, we don't currently allow the class `P` itself to be assignable to the type `type[P]`:
 

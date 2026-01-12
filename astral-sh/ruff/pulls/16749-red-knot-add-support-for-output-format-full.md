@@ -13,14 +13,14 @@ head: ag/concise-diagnostics
 created_at: 2025-03-14T15:01:07Z
 updated_at: 2025-03-14T18:46:19Z
 url: https://github.com/astral-sh/ruff/pull/16749
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] add support for `--output-format={full,concise}`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-03-14 15:01_
+_@BurntSushi_
 
 This does pretty much what it says on the tin.
 

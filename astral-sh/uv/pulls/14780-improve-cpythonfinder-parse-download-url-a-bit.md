@@ -13,14 +13,14 @@ head: refactor
 created_at: 2025-07-21T06:16:01Z
 updated_at: 2025-07-22T04:18:29Z
 url: https://github.com/astral-sh/uv/pull/14780
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:24Z
 ```
 
 # Improve `CPythonFinder._parse_download_url` a bit
 
 ---
 
-_Pull request opened by @j178 on 2025-07-21 06:16_
+_@j178_
 
 ## Summary
 

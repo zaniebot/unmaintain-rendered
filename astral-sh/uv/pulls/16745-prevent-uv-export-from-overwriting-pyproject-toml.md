@@ -13,14 +13,14 @@ head: prevent-export-overwrite
 created_at: 2025-11-15T08:25:00Z
 updated_at: 2025-11-21T02:37:36Z
 url: https://github.com/astral-sh/uv/pull/16745
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Prevent `uv export` from overwriting `pyproject.toml`
 
 ---
 
-_Pull request opened by @terror on 2025-11-15 08:25_
+_@terror_
 
 Currently, it's possible for `uv export` to overwrite someones `pyproject.toml`. This diff simply rejects project files passed in with `-o`, so we avoid doing that.
 

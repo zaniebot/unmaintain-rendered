@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T21:23:20Z
 updated_at: 2025-12-17T21:26:59Z
 url: https://github.com/astral-sh/ty/issues/2040
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # iter and next builtins return Unknown types
 
 ---
 
-_Issue opened by @gracepetryk on 2025-12-17 21:23_
+_@gracepetryk_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: feature/red-knot-no-ignore-hidden
 created_at: 2025-04-27T15:04:27Z
 updated_at: 2025-04-28T06:21:12Z
 url: https://github.com/astral-sh/ruff/pull/17655
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Don't ignore hidden files by default
 
 ---
 
-_Pull request opened by @thejchap on 2025-04-27 15:04_
+_@thejchap_
 
 ## Summary
 #17626

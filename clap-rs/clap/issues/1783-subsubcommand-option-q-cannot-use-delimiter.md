@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-04T13:02:28Z
 updated_at: 2020-04-05T02:33:15Z
 url: https://github.com/clap-rs/clap/issues/1783
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # subsubcommand  option q cannot use delimiter
 
 ---
 
-_Issue opened by @inevity on 2020-04-04 13:02_
+_@inevity_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

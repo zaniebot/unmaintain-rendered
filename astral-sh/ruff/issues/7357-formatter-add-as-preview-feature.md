@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-13T17:31:49Z
 updated_at: 2023-09-25T09:33:00Z
 url: https://github.com/astral-sh/ruff/issues/7357
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Add as preview feature
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-13 17:31_
+_@MichaReiser_
 
 Add the formatter as a preview-only feature instead of hiding it. 
 

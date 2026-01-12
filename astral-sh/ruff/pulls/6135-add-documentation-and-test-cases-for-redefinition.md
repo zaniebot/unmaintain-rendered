@@ -13,14 +13,14 @@ head: charlie/redefine
 created_at: 2023-07-27T21:27:44Z
 updated_at: 2023-07-28T00:22:28Z
 url: https://github.com/astral-sh/ruff/pull/6135
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add documentation and test cases for redefinition
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-27 21:27_
+_@charliermarsh_
 
 _No description provided._
 

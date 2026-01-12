@@ -11,14 +11,14 @@ head: cells-on-document-close
 created_at: 2024-06-14T01:50:34Z
 updated_at: 2024-06-14T18:12:12Z
 url: https://github.com/astral-sh/ruff/pull/11867
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Avoid close cells on `notebookDocument/didClose`
 
 ---
 
-_Pull request opened by @T-256 on 2024-06-14 01:50_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

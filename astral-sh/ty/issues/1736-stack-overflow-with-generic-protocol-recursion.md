@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-03T08:08:25Z
 updated_at: 2025-12-09T17:05:20Z
 url: https://github.com/astral-sh/ty/issues/1736
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Stack overflow with generic-protocol recursion
 
 ---
 
-_Issue opened by @correctmost on 2025-12-03 08:08_
+_@correctmost_
 
 ### Summary
 

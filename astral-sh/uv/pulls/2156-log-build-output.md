@@ -12,14 +12,14 @@ head: konsti/log-build-output
 created_at: 2024-03-04T14:46:04Z
 updated_at: 2024-09-03T01:25:02Z
 url: https://github.com/astral-sh/uv/pull/2156
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Log build output
 
 ---
 
-_Pull request opened by @konstin on 2024-03-04 14:46_
+_@konstin_
 
 Show source distribution build output in debug (`-v`) logging.
 

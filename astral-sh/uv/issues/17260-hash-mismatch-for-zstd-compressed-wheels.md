@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T05:07:55Z
 updated_at: 2025-12-30T16:23:25Z
 url: https://github.com/astral-sh/uv/issues/17260
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Hash mismatch for zstd-compressed wheels (regression in 0.9.20)
 
 ---
 
-_Issue opened by @coltonevansid on 2025-12-30 05:07_
+_@coltonevansid_
 
 ### Summary
 

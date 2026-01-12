@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T04:31:18Z
 updated_at: 2025-05-03T15:38:34Z
 url: https://github.com/astral-sh/ruff/issues/17806
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Should there be a generic docstring formatting checker
 
 ---
 
-_Issue opened by @kivicode on 2025-05-03 04:31_
+_@kivicode_
 
 ### Question
 

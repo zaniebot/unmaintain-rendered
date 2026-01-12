@@ -13,14 +13,14 @@ head: charlie/int
 created_at: 2024-07-26T14:58:26Z
 updated_at: 2024-07-26T15:58:00Z
 url: https://github.com/astral-sh/ruff/pull/12534
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use colon rather than dot formatting for integer-only types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 14:58_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-28T02:42:35Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/759
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # App name with spaces in for clap_app!
 
 ---
 
-_Issue opened by @alexreg on 2016-11-28 02:42_
+_@alexreg_
 
 Currently the `clap_app!` macro doesn't accept an app name with spaces in it. It might be better to take a string expression before the `=>` token.
 

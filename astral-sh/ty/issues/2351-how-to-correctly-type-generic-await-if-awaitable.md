@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T17:30:21Z
 updated_at: 2026-01-06T09:48:25Z
 url: https://github.com/astral-sh/ty/issues/2351
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # How to correctly type generic await_if_awaitable
 
 ---
 
-_Issue opened by @ThomasPinna on 2026-01-05 17:30_
+_@ThomasPinna_
 
 ### Question
 

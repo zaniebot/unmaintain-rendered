@@ -11,14 +11,14 @@ head: searchpathlen
 created_at: 2025-10-16T06:42:27Z
 updated_at: 2025-10-16T07:58:20Z
 url: https://github.com/astral-sh/ruff/pull/20911
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Avoid printing out entire search path if long
 
 ---
 
-_Pull request opened by @hauntsaninja on 2025-10-16 06:42_
+_@hauntsaninja_
 
 We have environments with a thousand entries in our search path.
 This overwhelms ty output

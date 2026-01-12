@@ -13,14 +13,14 @@ head: red-knot-dependencies
 created_at: 2024-04-26T08:58:32Z
 updated_at: 2024-04-27T16:15:41Z
 url: https://github.com/astral-sh/ruff/pull/11161
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # [red-knot] Resolve and check dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-26 08:58_
+_@MichaReiser_
 
 ## Summary
 

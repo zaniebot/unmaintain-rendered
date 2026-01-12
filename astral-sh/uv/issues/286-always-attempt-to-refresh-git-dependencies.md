@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T03:19:17Z
 updated_at: 2023-11-03T16:26:59Z
 url: https://github.com/astral-sh/uv/issues/286
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Always attempt to refresh Git dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-02 03:19_
+_@charliermarsh_
 
 _No description provided._
 

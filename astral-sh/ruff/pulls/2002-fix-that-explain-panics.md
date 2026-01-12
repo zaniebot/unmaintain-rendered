@@ -12,14 +12,14 @@ head: fix-explain-panic
 created_at: 2023-01-19T16:59:18Z
 updated_at: 2023-01-19T17:58:55Z
 url: https://github.com/astral-sh/ruff/pull/2002
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix that --explain panics
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-19 16:59_
+_@not-my-profile_
 
 This commit fixes a bug accidentally introduced in 6cf770a6924e6c2b00f53a52492bdffe80015552,
 which resulted every `ruff --explain <code>` invocation to fail with:

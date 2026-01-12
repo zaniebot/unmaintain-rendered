@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T06:29:58Z
 updated_at: 2025-01-27T00:29:30Z
 url: https://github.com/astral-sh/ruff/issues/15710
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Request: Document which linter rules affect the formatter
 
 ---
 
-_Issue opened by @Phrogz on 2025-01-24 06:29_
+_@Phrogz_
 
 ### Description
 

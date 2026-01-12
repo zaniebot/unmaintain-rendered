@@ -14,14 +14,14 @@ head: konsti/global-allow-insecure-host
 created_at: 2024-10-22T19:27:47Z
 updated_at: 2024-10-28T19:46:43Z
 url: https://github.com/astral-sh/uv/pull/8476
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Make `--allow-insecure-host` a global option
 
 ---
 
-_Pull request opened by @konstin on 2024-10-22 19:27_
+_@konstin_
 
 Not verifying the certificates of certain hosts should be supported for all kinds of HTTPS connections, so we're making it a global option, just like native tls. This fixes the remaining places using a client but were not configuring allow insecure host.
 

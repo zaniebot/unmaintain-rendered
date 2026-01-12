@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T19:51:31Z
 updated_at: 2024-02-16T21:30:55Z
 url: https://github.com/astral-sh/uv/issues/1536
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # can't resolve types-pytz==2021.1
 
 ---
 
-_Issue opened by @raylu on 2024-02-16 19:51_
+_@raylu_
 
 with this requirements.in
 ```

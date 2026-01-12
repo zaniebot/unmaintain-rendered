@@ -12,14 +12,14 @@ head: charlie/wasm-pack
 created_at: 2022-12-28T17:27:31Z
 updated_at: 2022-12-28T17:55:27Z
 url: https://github.com/astral-sh/ruff/pull/1427
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Turn off wasm-pack tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-28 17:27_
+_@charliermarsh_
 
 See: #1425. We need to make these more stable before turning them back on.
 

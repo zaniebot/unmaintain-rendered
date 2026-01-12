@@ -14,14 +14,14 @@ head: doc501
 created_at: 2024-07-21T18:05:05Z
 updated_at: 2024-07-21T19:52:29Z
 url: https://github.com/astral-sh/ruff/pull/12435
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Fix `DOC501` panic #12428
 
 ---
 
-_Pull request opened by @augustelalande on 2024-07-21 18:05_
+_@augustelalande_
 
 ## Summary
 

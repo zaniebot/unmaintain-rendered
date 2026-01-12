@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-21T04:04:43Z
 updated_at: 2025-09-22T12:31:53Z
 url: https://github.com/astral-sh/ty/issues/1225
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # don't display TypeVar scope when its definition is also being displayed
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-21 04:04_
+_@KotlinIsland_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T08:59:03Z
 updated_at: 2024-02-16T16:52:27Z
 url: https://github.com/astral-sh/uv/issues/1456
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv venv` does not find Framework python3 on Mac OS
 
 ---
 
-_Issue opened by @arsatiki on 2024-02-16 08:59_
+_@arsatiki_
 
 I did some speed tests on `uv`. At some point, `uv venv` could not find the `python3` executable anymore. I have tried to reproduce the steps below but it is possible something is missing.
 

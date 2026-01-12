@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T09:24:23Z
 updated_at: 2024-10-16T09:23:03Z
 url: https://github.com/astral-sh/uv/issues/8040
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # add `[tool.pyright]` section when `uv init`
 
 ---
 
-_Issue opened by @bnjox on 2024-10-09 09:24_
+_@bnjox_
 
 can we add this block when we do `uv init` 
 ```toml

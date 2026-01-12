@@ -13,14 +13,14 @@ head: dhruv/unterminated-string-range
 created_at: 2024-06-25T03:19:07Z
 updated_at: 2024-06-25T08:25:50Z
 url: https://github.com/astral-sh/ruff/pull/12017
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Do not include newline for unterminated string range
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-25 03:19_
+_@dhruvmanila_
 
 ## Summary
 

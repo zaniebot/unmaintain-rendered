@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-09T05:12:17Z
 updated_at: 2025-08-21T20:56:25Z
 url: https://github.com/astral-sh/uv/issues/15188
-synced_at: 2026-01-10T11:10:29Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Large test regression with system Python installation over `PYTHON-BIN` changes
 
 ---
 
-_Issue opened by @mgorny on 2025-08-09 05:12_
+_@mgorny_
 
 ### Summary
 

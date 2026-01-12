@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-29T13:13:03Z
 updated_at: 2025-12-29T13:13:24Z
 url: https://github.com/astral-sh/uv/issues/17250
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Bump `taiki-e/install-action` to a version that supports `nextest` 0.9.115
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-29 13:13_
+_@EliteTK_
 
 ### Summary
 

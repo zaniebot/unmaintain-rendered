@@ -12,14 +12,14 @@ head: error-remove
 created_at: 2025-03-08T05:08:19Z
 updated_at: 2025-03-10T21:42:06Z
 url: https://github.com/clap-rs/clap/pull/5941
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(builder): Add `clap::Error::remove` and a test
 
 ---
 
-_Pull request opened by @ilyagr on 2025-03-08 05:08_
+_@ilyagr_
 
 #5935
 

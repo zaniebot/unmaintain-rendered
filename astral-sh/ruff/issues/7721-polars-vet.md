@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-30T12:21:35Z
 updated_at: 2025-10-07T11:04:26Z
 url: https://github.com/astral-sh/ruff/issues/7721
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # polars vet?
 
 ---
 
-_Issue opened by @MarcoGorelli on 2023-09-30 12:21_
+_@MarcoGorelli_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

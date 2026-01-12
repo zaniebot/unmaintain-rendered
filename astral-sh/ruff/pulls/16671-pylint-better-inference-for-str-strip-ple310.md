@@ -13,14 +13,14 @@ head: micha/pylint-str-strip-non-literals
 created_at: 2025-03-12T12:15:53Z
 updated_at: 2025-03-13T08:37:05Z
 url: https://github.com/astral-sh/ruff/pull/16671
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pylint`] Better inference for `str.strip` (`PLE310`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 12:15_
+_@MichaReiser_
 
 ## Summary
 This PR stabilizes the behavior introduced in https://github.com/astral-sh/ruff/pull/15985

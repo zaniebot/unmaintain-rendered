@@ -13,14 +13,14 @@ head: ag/add-arch-bootstrap
 created_at: 2024-01-26T20:08:23Z
 updated_at: 2024-01-26T21:56:42Z
 url: https://github.com/astral-sh/uv/pull/1137
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # bootstrap: add 'libxcrypt-compat' to pacman install command
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-26 20:08_
+_@BurntSushi_
 
 This is apparently necessary to permit Python 3.8.12 to run. Namely, it
 needs to link to libcrypt.so.1, and without libxcrypt-compat, that

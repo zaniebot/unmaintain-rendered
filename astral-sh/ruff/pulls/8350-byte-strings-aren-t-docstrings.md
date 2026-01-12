@@ -13,14 +13,14 @@ head: byte-strings-arent-docstrings
 created_at: 2023-10-30T09:27:01Z
 updated_at: 2023-10-30T09:58:35Z
 url: https://github.com/astral-sh/ruff/pull/8350
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Byte strings aren't docstrings
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 09:27_
+_@konstin_
 
 We previously incorrectly treated byte strings in docstring position as docstrings because black does so (https://github.com/astral-sh/ruff/pull/8283#discussion_r1375682931, https://github.com/psf/black/issues/4002), even CPython doesn't recognize them:
 

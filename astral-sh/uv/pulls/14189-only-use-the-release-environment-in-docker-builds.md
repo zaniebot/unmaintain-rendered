@@ -13,14 +13,14 @@ head: zb/needs-release
 created_at: 2025-06-21T13:48:09Z
 updated_at: 2025-06-21T14:36:08Z
 url: https://github.com/astral-sh/uv/pull/14189
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Only use the `release` environment in Docker builds on push
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 13:48_
+_@zanieb_
 
 This drastically reduces the `release` deployment noise, e.g., as seen in https://github.com/astral-sh/uv/pull/14165
 

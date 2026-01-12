@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T09:06:23Z
 updated_at: 2025-10-27T15:23:38Z
 url: https://github.com/astral-sh/ruff/issues/20839
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # F401: false positive causes NameError
 
 ---
 
-_Issue opened by @spaceone on 2025-10-13 09:06_
+_@spaceone_
 
 ### Summary
 

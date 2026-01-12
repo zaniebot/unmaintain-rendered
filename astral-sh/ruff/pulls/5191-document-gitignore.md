@@ -12,14 +12,14 @@ head: document_gitignore
 created_at: 2023-06-19T18:51:58Z
 updated_at: 2023-06-20T06:07:32Z
 url: https://github.com/astral-sh/ruff/pull/5191
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Document gitignore
 
 ---
 
-_Pull request opened by @konstin on 2023-06-19 18:51_
+_@konstin_
 
 This docs-only change adds explanations to all custom .gitignore entries
 

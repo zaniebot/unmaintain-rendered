@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-23T16:36:12Z
 updated_at: 2021-10-23T20:57:11Z
 url: https://github.com/clap-rs/clap/issues/2934
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `enum` with variant field `name: T` unexpectedly imposes `&mut T: PartialEq<&str>` in 3.0.0-beta.5
 
 ---
 
-_Issue opened by @ErichDonGubler on 2021-10-23 16:36_
+_@ErichDonGubler_
 
 ### Please complete the following tasks
 

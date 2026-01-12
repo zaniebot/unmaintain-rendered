@@ -14,14 +14,14 @@ head: fix-can-omit-optional-parentheses-f-strings
 created_at: 2023-12-14T04:46:06Z
 updated_at: 2023-12-14T04:58:19Z
 url: https://github.com/astral-sh/ruff/pull/9124
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix `can_omit_optional_parentheses` for expressions with a right most fstring
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-14 04:46_
+_@MichaReiser_
 
 ## Summary
 

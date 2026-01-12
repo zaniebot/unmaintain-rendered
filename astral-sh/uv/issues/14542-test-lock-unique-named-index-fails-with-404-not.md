@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T15:05:53Z
 updated_at: 2025-07-16T14:20:27Z
 url: https://github.com/astral-sh/uv/issues/14542
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Test `lock_unique_named_index` fails with 404 Not Found
 
 ---
 
-_Issue opened by @zanieb on 2025-07-10 15:05_
+_@zanieb_
 
 ```
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

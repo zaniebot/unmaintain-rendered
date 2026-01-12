@@ -12,14 +12,14 @@ head: autofix/ann204
 created_at: 2023-03-20T18:35:32Z
 updated_at: 2023-03-20T23:19:28Z
 url: https://github.com/astral-sh/ruff/pull/3633
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add autofix for ANN204
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-20 18:35_
+_@JonathanPlasse_
 
 - Related to #1640.
 - Add autofix only for simple cases, incomplete cases would be adding `typing.Iterator` for `__iter__`.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T14:56:58Z
 updated_at: 2025-10-15T00:43:32Z
 url: https://github.com/astral-sh/uv/issues/16283
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Duplicate uv cache directories created: `.uv_cache` and `.uv-cache`
 
 ---
 
-_Issue opened by @ruziniuuuuu on 2025-10-13 14:56_
+_@ruziniuuuuu_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-17T18:36:08Z
 updated_at: 2024-11-22T19:34:41Z
 url: https://github.com/astral-sh/ruff/issues/13383
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DOC501 doesn't trigger if a custom exception imported from another module is raised
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-09-17 18:36_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

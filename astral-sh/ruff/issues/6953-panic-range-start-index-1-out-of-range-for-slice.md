@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T20:00:35Z
 updated_at: 2023-08-28T21:03:20Z
 url: https://github.com/astral-sh/ruff/issues/6953
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Panic "'range start index 1 out of range for slice of length 0'"
 
 ---
 
-_Issue opened by @qarmin on 2023-08-28 20:00_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

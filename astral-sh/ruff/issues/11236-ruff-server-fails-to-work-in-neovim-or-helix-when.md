@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T03:35:20Z
 updated_at: 2024-05-22T20:50:59Z
 url: https://github.com/astral-sh/ruff/issues/11236
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` fails to work in Neovim or Helix when outside of a workspace
 
 ---
 
-_Issue opened by @snowsignal on 2024-05-02 03:35_
+_@snowsignal_
 
 By 'workspace', I mean a working directory that has a `pyproject.toml`/`ruff.toml` configuration file. When `hx` is used outside of a workspace, the server simply does not work with any opened files. None of the functions the server provides work as expected.
 

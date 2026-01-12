@@ -13,14 +13,14 @@ head: brent/diagnostic-cleanup
 created_at: 2025-07-07T14:24:10Z
 updated_at: 2025-07-08T13:54:21Z
 url: https://github.com/astral-sh/ruff/pull/19179
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Rename `Diagnostic::syntax_error` methods, separate `Ord` implementation
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-07 14:24_
+_@ntBre_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T04:58:24Z
 updated_at: 2025-11-06T11:33:29Z
 url: https://github.com/astral-sh/ruff/issues/21277
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Missing syntax coloring for class types
 
 ---
 
-_Issue opened by @songyang-dev on 2025-11-05 04:58_
+_@songyang-dev_
 
 ### Summary
 

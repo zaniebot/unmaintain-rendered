@@ -12,14 +12,14 @@ head: ecosystem_checker_local_caching
 created_at: 2023-05-02T14:22:20Z
 updated_at: 2023-05-11T15:36:46Z
 url: https://github.com/astral-sh/ruff/pull/4192
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ecosystem CI: Allow storing checkouts locally
 
 ---
 
-_Pull request opened by @konstin on 2023-05-02 14:22_
+_@konstin_
 
 This adds a `--checkouts` options to (re)use a local directory instead of checkouts into a tempdir
 

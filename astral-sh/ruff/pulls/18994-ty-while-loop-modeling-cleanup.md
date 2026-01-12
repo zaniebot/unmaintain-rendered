@@ -13,14 +13,14 @@ head: david/while-loop-cleanup
 created_at: 2025-06-27T19:24:52Z
 updated_at: 2025-06-30T09:38:27Z
 url: https://github.com/astral-sh/ruff/pull/18994
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] While loop modeling cleanup
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-27 19:24_
+_@sharkdp_
 
 ## Summary
 

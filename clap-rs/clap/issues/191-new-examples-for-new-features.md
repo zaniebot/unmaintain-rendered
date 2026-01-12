@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-08-25T13:07:36Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/191
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # New examples for new features
 
 ---
 
-_Issue opened by @Vinatorul on 2015-08-25 13:07_
+_@Vinatorul_
 
 We are missing examples for:
 - [x] AppSettings using

@@ -12,14 +12,14 @@ head: charlie/type-parameter
 created_at: 2023-08-02T00:39:54Z
 updated_at: 2023-08-02T14:28:56Z
 url: https://github.com/astral-sh/ruff/pull/6261
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add a `TypeParams` node to the AST
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 00:39_
+_@charliermarsh_
 
 ## Summary
 

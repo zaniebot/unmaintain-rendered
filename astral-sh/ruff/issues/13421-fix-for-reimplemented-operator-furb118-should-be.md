@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-20T15:54:14Z
 updated_at: 2024-10-03T21:39:24Z
 url: https://github.com/astral-sh/ruff/issues/13421
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Fix for `reimplemented-operator` (FURB118) should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2024-09-20 15:54_
+_@dscorbett_
 
 The fix for [`reimplemented-operator` (FURB118)](https://docs.astral.sh/ruff/rules/reimplemented-operator/) should be marked unsafe because the code could rely on the parameter names. Compare [`unnecessary-lambda` (PLW0108)](https://docs.astral.sh/ruff/rules/unnecessary-lambda/), whose fix is already marked unsafe for that reason. There are some cases where it can be proved that the function is never called with keyword arguments so the fix is safe, but in general that is not possible.
 

@@ -12,14 +12,14 @@ head: charlie/tags
 created_at: 2023-10-06T03:24:22Z
 updated_at: 2023-10-06T03:24:39Z
 url: https://github.com/astral-sh/uv/pull/18
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Separate platform tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 03:24_
+_@charliermarsh_
 
 _No description provided._
 

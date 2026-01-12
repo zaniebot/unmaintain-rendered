@@ -13,14 +13,14 @@ head: charlie/insertion
 created_at: 2023-05-17T20:44:53Z
 updated_at: 2023-05-17T21:33:08Z
 url: https://github.com/astral-sh/ruff/pull/4478
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move `Insertion` into its own module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-17 20:44_
+_@charliermarsh_
 
 ## Summary
 

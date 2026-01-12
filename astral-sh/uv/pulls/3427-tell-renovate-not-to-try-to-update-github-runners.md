@@ -13,14 +13,14 @@ head: renovate-github-runners
 created_at: 2024-05-07T15:59:02Z
 updated_at: 2024-05-07T16:10:28Z
 url: https://github.com/astral-sh/uv/pull/3427
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Tell renovate not to try to update GitHub runners
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-07 15:59_
+_@AlexWaygood_
 
 ## Summary
 

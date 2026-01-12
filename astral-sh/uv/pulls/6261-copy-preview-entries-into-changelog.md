@@ -13,14 +13,14 @@ head: charlie/change
 created_at: 2024-08-20T16:51:40Z
 updated_at: 2024-08-20T17:05:39Z
 url: https://github.com/astral-sh/uv/pull/6261
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Copy PREVIEW entries into CHANGELOG
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 16:51_
+_@charliermarsh_
 
 Optional change.
 

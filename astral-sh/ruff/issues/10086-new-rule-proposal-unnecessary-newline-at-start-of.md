@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T23:26:11Z
 updated_at: 2024-05-22T02:53:51Z
 url: https://github.com/astral-sh/ruff/issues/10086
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # New rule proposal: unnecessary-newline-at-start-of-file
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2024-02-22 23:26_
+_@CharlesPerrotMinot_
 
 Hi,
 

@@ -13,14 +13,14 @@ head: install-concurrency
 created_at: 2024-05-17T20:49:34Z
 updated_at: 2024-05-18T03:12:37Z
 url: https://github.com/astral-sh/uv/pull/3646
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add `UV_CONCURRENT_INSTALLS` variable in favor of `RAYON_NUM_THREADS`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-17 20:49_
+_@ibraheemdev_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-05-14T18:43:48Z
 updated_at: 2024-05-14T20:41:17Z
 url: https://github.com/astral-sh/uv/pull/3586
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Split extra validation from graph construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 18:43_
+_@charliermarsh_
 
 ## Summary
 

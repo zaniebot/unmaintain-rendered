@@ -13,14 +13,14 @@ head: charlie/many
 created_at: 2024-04-24T00:12:51Z
 updated_at: 2024-04-24T11:53:26Z
 url: https://github.com/astral-sh/uv/pull/3229
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Add alternate manylinux targets to `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-24 00:12_
+_@charliermarsh_
 
 ## Summary
 

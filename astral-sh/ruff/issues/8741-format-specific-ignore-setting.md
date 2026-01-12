@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-17T15:32:30Z
 updated_at: 2024-07-16T13:32:25Z
 url: https://github.com/astral-sh/ruff/issues/8741
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # format-specific `ignore` setting
 
 ---
 
-_Issue opened by @dga-nagra on 2023-11-17 15:32_
+_@dga-nagra_
 
 Hi,
 

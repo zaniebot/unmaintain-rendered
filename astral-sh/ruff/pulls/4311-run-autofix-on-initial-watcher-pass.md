@@ -12,14 +12,14 @@ head: charlie/initial-fix
 created_at: 2023-05-09T16:25:04Z
 updated_at: 2023-05-09T17:01:02Z
 url: https://github.com/astral-sh/ruff/pull/4311
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Run autofix on initial watcher pass
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 16:25_
+_@charliermarsh_
 
 I think this must've been an oversight -- we weren't passing `autofix` to the initial execution, only to subsequent executions.
 

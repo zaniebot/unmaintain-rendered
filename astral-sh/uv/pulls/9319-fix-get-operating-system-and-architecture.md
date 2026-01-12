@@ -12,14 +12,14 @@ head: fix_interpreter_info
 created_at: 2024-11-21T14:23:37Z
 updated_at: 2024-11-22T23:23:24Z
 url: https://github.com/astral-sh/uv/pull/9319
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Fix get_operating_system_and_architecture
 
 ---
 
-_Pull request opened by @jooon on 2024-11-21 14:23_
+_@jooon_
 
 _get_glibc_version() can after #9005 return either (0, 0) if glibc
 string is missing or (-1, -1) if the string can't be parsed. There was

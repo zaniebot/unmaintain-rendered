@@ -13,14 +13,14 @@ head: pgh004-bug
 created_at: 2024-04-23T17:05:00Z
 updated_at: 2024-04-25T19:41:27Z
 url: https://github.com/astral-sh/ruff/pull/11108
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`pygrep_hooks`] Fix `blanket-noqa` panic when last line has noqa with no newline (`PGH004`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-23 17:05_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

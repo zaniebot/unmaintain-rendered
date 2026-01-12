@@ -12,14 +12,14 @@ head: charlie/bytes
 created_at: 2023-12-12T14:55:25Z
 updated_at: 2023-12-12T15:01:04Z
 url: https://github.com/astral-sh/uv/pull/617
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Avoid unicode decoding in name normalization
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 14:55_
+_@charliermarsh_
 
 _No description provided._
 

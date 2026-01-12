@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T19:01:16Z
 updated_at: 2024-01-20T00:59:48Z
 url: https://github.com/astral-sh/ruff/issues/9584
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # false positive on PLC2801 "unnecessary dunder... for __setattr__"
 
 ---
 
-_Issue opened by @dimbleby on 2024-01-19 19:01_
+_@dimbleby_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

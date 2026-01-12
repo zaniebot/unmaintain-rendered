@@ -13,14 +13,14 @@ head: move-parenthesized-tuple-util
 created_at: 2024-01-15T15:43:04Z
 updated_at: 2024-01-15T16:10:56Z
 url: https://github.com/astral-sh/ruff/pull/9533
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Move `is_tuple_parenthesized` from the formatter to `ruff_python_ast`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-15 15:43_
+_@AlexWaygood_
 
 This allows it to be used in the linter as well as the formatter. It will be useful in #9474
 

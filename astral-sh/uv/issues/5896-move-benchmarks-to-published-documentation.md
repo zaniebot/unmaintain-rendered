@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-07T23:08:28Z
 updated_at: 2024-08-07T23:17:32Z
 url: https://github.com/astral-sh/uv/issues/5896
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Move benchmarks to published documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-08-07 23:08_
+_@zanieb_
 
 I'm not sure we _need_ this, but we should at least have a page in the Reference section for benchmarks. It could link to the repository, but it'd be nice to separate "running the benchmarks" (`BENCHMARKS.md`) from the "benchmark results" (`docs/reference/benchmarks.md`)?
 

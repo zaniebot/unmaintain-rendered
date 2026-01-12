@@ -12,14 +12,14 @@ head: charlie/prec
 created_at: 2023-01-22T04:12:46Z
 updated_at: 2023-01-22T04:21:39Z
 url: https://github.com/astral-sh/ruff/pull/2080
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Improve generator precedence operations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-22 04:12_
+_@charliermarsh_
 
 _No description provided._
 

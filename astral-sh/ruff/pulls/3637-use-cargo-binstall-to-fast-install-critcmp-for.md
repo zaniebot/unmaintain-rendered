@@ -13,14 +13,14 @@ head: add-cache-to-benchmark-compare
 created_at: 2023-03-20T23:17:55Z
 updated_at: 2023-03-21T14:06:17Z
 url: https://github.com/astral-sh/ruff/pull/3637
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use cargo-binstall to fast install critcmp for benchmark-compare
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-20 23:17_
+_@JonathanPlasse_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-08T23:08:22Z
 updated_at: 2025-01-08T23:46:27Z
 url: https://github.com/astral-sh/uv/issues/10417
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # `uv pip install -r requirements.txt` Fails to Parse Requirements
 
 ---
 
-_Issue opened by @merajhashemi on 2025-01-08 23:08_
+_@merajhashemi_
 
 Running `uv pip install -r requirements.txt` fails with a parsing error, while` pip install -r requirements.txt` works without issues.
 

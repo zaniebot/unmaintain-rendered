@@ -13,14 +13,14 @@ head: add-line-number-to-mdtest-lang-panic
 created_at: 2025-03-21T22:04:22Z
 updated_at: 2025-03-22T12:21:19Z
 url: https://github.com/astral-sh/ruff/pull/16906
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Add line number to mdtest panic message about language tag mismatch
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-21 22:04_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: fix/18533-up008-fix-safe-unless-comment-exists
 created_at: 2025-06-15T11:45:54Z
 updated_at: 2025-06-30T13:45:38Z
 url: https://github.com/astral-sh/ruff/pull/18683
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pyupgrade`] Mark `UP008` fix safe if no comments in range
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-15 11:45_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

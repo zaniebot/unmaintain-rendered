@@ -13,14 +13,14 @@ head: zb/dirs
 created_at: 2025-07-25T16:11:12Z
 updated_at: 2025-07-25T16:23:06Z
 url: https://github.com/astral-sh/uv/pull/14898
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Bump `dirs` to `6.0.0` to update `windows-sys` versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 16:11_
+_@zanieb_
 
 See https://codeberg.org/dirs/dirs-rs#6
 

@@ -14,14 +14,14 @@ head: tuple_is_parenthesized
 created_at: 2024-01-22T13:14:03Z
 updated_at: 2024-02-26T15:46:22Z
 url: https://github.com/astral-sh/ruff/pull/9614
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add `parenthesized` flag to `ExprTuple` and `ExprGenerator`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-22 13:14_
+_@MichaReiser_
 
 ## Summary
 

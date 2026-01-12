@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-13T12:32:46Z
 updated_at: 2025-06-16T19:02:31Z
 url: https://github.com/astral-sh/ruff/issues/18660
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW0128 skips assignment targets in square brackets and after asterisks
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-13 12:32_
+_@dscorbett_
 
 ### Summary
 

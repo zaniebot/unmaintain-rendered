@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-14T13:39:57Z
 updated_at: 2024-02-14T13:39:57Z
 url: https://github.com/astral-sh/ruff/issues/9985
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `unsorted-imports` (`I001`) - does not detect duplicated imports when one of the imports is inside a `TYPE_CHECKING` block
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-14 13:39_
+_@DetachHead_
 
 ```py
 from collections.abc import Iterable

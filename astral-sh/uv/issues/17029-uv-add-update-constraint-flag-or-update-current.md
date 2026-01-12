@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T10:52:51Z
 updated_at: 2025-12-13T03:04:42Z
 url: https://github.com/astral-sh/uv/issues/17029
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # uv add --update-constraint flag or update current upgrade flag
 
 ---
 
-_Issue opened by @ThomasLamalle on 2025-12-08 10:52_
+_@ThomasLamalle_
 
 ### Summary
 

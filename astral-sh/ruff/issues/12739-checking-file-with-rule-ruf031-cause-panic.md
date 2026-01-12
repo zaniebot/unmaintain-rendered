@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T05:10:35Z
 updated_at: 2024-08-08T11:18:04Z
 url: https://github.com/astral-sh/ruff/issues/12739
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Checking file with rule RUF031 cause panic (probably only in debug build)
 
 ---
 
-_Issue opened by @qarmin on 2024-08-08 05:10_
+_@qarmin_
 
 ruff 0.5.6+445 (a631d600a 2024-08-07)
 ```

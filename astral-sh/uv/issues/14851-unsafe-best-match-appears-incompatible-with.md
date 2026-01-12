@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T17:39:56Z
 updated_at: 2025-08-05T08:19:31Z
 url: https://github.com/astral-sh/uv/issues/14851
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # unsafe-best-match appears incompatible with github-dependencies and to ignore if-necessary-or-explicit
 
 ---
 
-_Issue opened by @SoundDesignerToBe on 2025-07-23 17:39_
+_@SoundDesignerToBe_
 
 ### Question
 

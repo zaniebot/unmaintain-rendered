@@ -14,14 +14,14 @@ head: david/fix-1293
 created_at: 2025-10-01T13:16:35Z
 updated_at: 2025-10-01T13:51:56Z
 url: https://github.com/astral-sh/ruff/pull/20669
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Enums: allow multiple aliases to point to the same member
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-01 13:16_
+_@sharkdp_
 
 ## Summary
 

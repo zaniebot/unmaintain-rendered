@@ -12,14 +12,14 @@ head: install-venv
 created_at: 2025-05-20T18:03:20Z
 updated_at: 2025-05-21T19:56:07Z
 url: https://github.com/astral-sh/ty/pull/464
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add ToC and troubleshooting guidance to detailed README
 
 ---
 
-_Pull request opened by @brainwane on 2025-05-20 18:03_
+_@brainwane_
 
 ## Summary
 

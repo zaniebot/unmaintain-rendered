@@ -13,14 +13,14 @@ head: charlie/reval
 created_at: 2024-01-23T21:16:49Z
 updated_at: 2024-01-23T21:22:22Z
 url: https://github.com/astral-sh/uv/pull/1069
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Avoid revalidating immutable HTTP responses
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 21:16_
+_@charliermarsh_
 
 ## Summary
 

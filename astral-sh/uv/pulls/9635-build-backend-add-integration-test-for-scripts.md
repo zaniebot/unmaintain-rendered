@@ -13,14 +13,14 @@ head: konsti/build-backend-add-scripts-tests
 created_at: 2024-12-04T10:28:40Z
 updated_at: 2024-12-04T10:57:09Z
 url: https://github.com/astral-sh/uv/pull/9635
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Build backend: Add integration test for scripts
 
 ---
 
-_Pull request opened by @konstin on 2024-12-04 10:28_
+_@konstin_
 
 Scripts (`project.scripts` and `project.gui-scripts`) are already supported, but did not have an integration test.
 

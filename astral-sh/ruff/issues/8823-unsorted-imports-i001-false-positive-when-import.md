@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-23T07:05:13Z
 updated_at: 2023-12-07T03:56:24Z
 url: https://github.com/astral-sh/ruff/issues/8823
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `unsorted-imports` (`I001`) false positive when `import __future__` is below `from __future__` import
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-23 07:05_
+_@DetachHead_
 
 ```py
 from __future__ import annotations  # I001: Import block is un-sorted or un-formatted

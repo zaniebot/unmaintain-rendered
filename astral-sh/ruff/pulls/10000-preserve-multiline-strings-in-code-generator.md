@@ -12,14 +12,14 @@ head: codegen-multiline-string
 created_at: 2024-02-15T14:38:57Z
 updated_at: 2024-04-06T16:45:09Z
 url: https://github.com/astral-sh/ruff/pull/10000
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Preserve multiline strings in code generator
 
 ---
 
-_Pull request opened by @sanxiyn on 2024-02-15 14:38_
+_@sanxiyn_
 
 This is a draft PR for #7799 posted for discussion. Minimally tested with `cargo dev round-trip`.
 

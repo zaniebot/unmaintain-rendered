@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-04-12T22:34:40Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/932
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Document macro usage of arg groups
 
 ---
 
-_Issue opened by @TedDriggs on 2017-04-12 22:34_
+_@TedDriggs_
 
 ### Rust Version
 

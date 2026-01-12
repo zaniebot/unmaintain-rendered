@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T19:37:38Z
 updated_at: 2025-09-17T21:16:12Z
 url: https://github.com/astral-sh/uv/issues/15918
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Weird behaviour when running concurrent `uv run --script` with different python versions
 
 ---
 
-_Issue opened by @mohammedgqudah on 2025-09-17 19:37_
+_@mohammedgqudah_
 
 ### Summary
 

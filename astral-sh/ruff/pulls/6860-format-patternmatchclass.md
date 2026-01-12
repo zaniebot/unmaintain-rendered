@@ -13,14 +13,14 @@ head: format-pattern-match-class
 created_at: 2023-08-24T20:28:08Z
 updated_at: 2023-08-25T20:44:56Z
 url: https://github.com/astral-sh/ruff/pull/6860
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchClass`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-24 20:28_
+_@LaBatata101_
 
 ## Summary
 Closes #6642

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T18:27:22Z
 updated_at: 2024-02-21T18:31:56Z
 url: https://github.com/astral-sh/uv/issues/1823
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Unable to resolve dependencies located in codeartifact passed through --extra-index-url
 
 ---
 
-_Issue opened by @zyd14 on 2024-02-21 18:27_
+_@zyd14_
 
 uv version: 0.1.6
 Platform: Mac M1 (Apple Silicone)

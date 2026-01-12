@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-02T14:33:18Z
 updated_at: 2024-10-02T14:33:19Z
 url: https://github.com/clap-rs/clap/issues/5764
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Figure out long term role of `ValueHint`
 
 ---
 
-_Issue opened by @epage on 2024-10-02 14:33_
+_@epage_
 
 `ValueHint` works well for ahead-of-time generated completions as it tells the generator what shell behavior to opt-in to.
 

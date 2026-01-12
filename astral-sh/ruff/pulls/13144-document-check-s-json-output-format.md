@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-29T00:55:42Z
 updated_at: 2024-09-18T08:17:31Z
 url: https://github.com/astral-sh/ruff/pull/13144
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Document `check`'s JSON output format
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-08-29 00:55_
+_@InSyncWithFoo_
 
 Sources:
 

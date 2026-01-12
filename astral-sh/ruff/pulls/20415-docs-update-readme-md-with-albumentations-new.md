@@ -13,14 +13,14 @@ head: docs/update-readme-whos-using-ruff
 created_at: 2025-09-15T12:53:20Z
 updated_at: 2025-09-15T13:59:43Z
 url: https://github.com/astral-sh/ruff/pull/20415
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [docs] Update README.md with Albumentations new repository URL
 
 ---
 
-_Pull request opened by @salahelfarissi on 2025-09-15 12:53_
+_@salahelfarissi_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: excludes-command-add
 created_at: 2025-05-23T14:31:31Z
 updated_at: 2025-06-18T18:47:04Z
 url: https://github.com/astral-sh/uv/pull/13618
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # add `excluded-dependencies` support
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-05-23 14:31_
+_@CodeMan62_
 
 ## Summary
 Fixes #12616 

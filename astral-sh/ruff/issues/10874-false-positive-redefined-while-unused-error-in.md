@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-11T09:44:15Z
 updated_at: 2024-12-03T12:51:51Z
 url: https://github.com/astral-sh/ruff/issues/10874
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False-positive "redefined while unused" error in stub files for constants in class scopes with the same name as module constants
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-04-11 09:44_
+_@AlexWaygood_
 
 Ruff currently emits a false positive F811 on the following stub file:
 

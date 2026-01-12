@@ -12,14 +12,14 @@ head: charlie/model
 created_at: 2023-05-21T19:36:07Z
 updated_at: 2023-05-22T02:50:37Z
 url: https://github.com/astral-sh/ruff/pull/4565
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Rename ruff_python_semantic's `Context` struct to `SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-21 19:36_
+_@charliermarsh_
 
 ## Summary
 

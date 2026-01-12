@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T23:06:31Z
 updated_at: 2025-06-06T17:15:50Z
 url: https://github.com/astral-sh/ruff/issues/13273
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # FA100 issue: Ruff doesnt suggest adding `from __future__ import annotations`
 
 ---
 
-_Issue opened by @HappyCthulhu on 2024-09-06 23:06_
+_@HappyCthulhu_
 
 ### Search keywords 
 "TCH rules", "move under TYPE_CHECKING", "FA100"

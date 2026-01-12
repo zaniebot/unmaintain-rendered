@@ -13,14 +13,14 @@ head: charlie/poetry
 created_at: 2024-02-20T02:45:29Z
 updated_at: 2024-02-20T03:08:50Z
 url: https://github.com/astral-sh/uv/pull/1730
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Improve Poetry warning
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 02:45_
+_@charliermarsh_
 
 Good feedback from: https://github.com/astral-sh/uv/pull/1650#discussion_r1495140531
 

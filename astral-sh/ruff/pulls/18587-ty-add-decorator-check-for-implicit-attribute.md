@@ -14,14 +14,14 @@ head: check_assignments_in_classmethods
 created_at: 2025-06-09T02:54:18Z
 updated_at: 2025-06-26T03:52:31Z
 url: https://github.com/astral-sh/ruff/pull/18587
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Add decorator check for implicit attribute assignments
 
 ---
 
-_Pull request opened by @med1844 on 2025-06-09 02:54_
+_@med1844_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

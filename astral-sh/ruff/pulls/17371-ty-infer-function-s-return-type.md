@@ -13,14 +13,14 @@ head: infer-return-type
 created_at: 2025-04-13T05:48:17Z
 updated_at: 2025-12-31T03:33:48Z
 url: https://github.com/astral-sh/ruff/pull/17371
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [ty] infer function's return type
 
 ---
 
-_Pull request opened by @mtshiba on 2025-04-13 05:48_
+_@mtshiba_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/choco
 created_at: 2024-03-04T23:18:28Z
 updated_at: 2024-03-05T00:37:08Z
 url: https://github.com/astral-sh/uv/pull/2185
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Add system install test for choco
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 23:18_
+_@charliermarsh_
 
 Test installing Python via `choco`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T23:17:29Z
 updated_at: 2024-11-07T14:49:30Z
 url: https://github.com/astral-sh/uv/issues/3149
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add "package depth" to prioritization
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-19 23:17_
+_@charliermarsh_
 
 After "directly pinned packages", pip breaks ties based on package depth: https://github.com/pypa/pip/blob/ef78c129b1a966dbbbdb8ebfffc43723e89110d1/src/pip/_internal/resolution/resolvelib/provider.py#L120. We don't have a straightforward measurement for this right now, so it's not included in the heuristics. (Instead, we track "the order in which we visit packages", which isn't the same thing.)
 

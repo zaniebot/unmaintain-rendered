@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-25T05:56:08Z
 updated_at: 2025-05-30T04:00:47Z
 url: https://github.com/astral-sh/uv/issues/13641
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Allow names to be written for editable requirements
 
 ---
 
-_Issue opened by @delfick on 2025-05-25 05:56_
+_@delfick_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-07T07:31:36Z
 updated_at: 2025-04-07T19:52:08Z
 url: https://github.com/astral-sh/ruff/issues/17267
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [playground] Better default example
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-07 07:31_
+_@MichaReiser_
 
 The default script in red knot's playground is: `import os`. 
 

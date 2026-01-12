@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-12T01:54:16Z
 updated_at: 2024-09-18T06:37:43Z
 url: https://github.com/astral-sh/uv/issues/7320
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Minor: `uv tool install` should be able to modify which Python a tool uses.
 
 ---
 
-_Issue opened by @ilyagr on 2024-09-12 01:54_
+_@ilyagr_
 
 This is loosely related to #6297 (**Update** and/or https://github.com/astral-sh/uv/issues/7287). I have `poetry` installed with the default option, which meant that it used Homebrew python. I wanted to switch to managed python.
 

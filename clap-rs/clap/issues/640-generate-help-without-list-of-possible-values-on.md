@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-29T08:12:49Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/640
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Generate help without list of possible values on a per-argument basis
 
 ---
 
-_Issue opened by @vks on 2016-08-29 08:12_
+_@vks_
 
 It would be nice if the generated list of possible values could be optional, since sometimes it is redundant to the help itself.
 

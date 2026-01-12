@@ -13,14 +13,14 @@ head: zb/requires-python-zero
 created_at: 2024-12-17T03:27:49Z
 updated_at: 2024-12-17T14:56:58Z
 url: https://github.com/astral-sh/uv/pull/9952
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Omit trailing zeros on Python requirements inferred from versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 03:27_
+_@zanieb_
 
 In a message like
 

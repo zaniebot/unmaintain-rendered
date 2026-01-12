@@ -13,14 +13,14 @@ head: ibraheem/current-thread
 created_at: 2024-07-09T18:39:03Z
 updated_at: 2024-07-09T22:21:18Z
 url: https://github.com/astral-sh/uv/pull/4934
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Switch to Current-Thread Tokio Runtime
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-09 18:39_
+_@ibraheemdev_
 
 ## Summary
 

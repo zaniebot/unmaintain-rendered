@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-19T06:24:18Z
 updated_at: 2025-12-19T08:06:48Z
 url: https://github.com/astral-sh/ty/issues/2101
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Ty confuses class name and locally defined methods, emitting false-positive `invalid-type-form`
 
 ---
 
-_Issue opened by @konn on 2025-12-19 06:24_
+_@konn_
 
 ### Summary
 

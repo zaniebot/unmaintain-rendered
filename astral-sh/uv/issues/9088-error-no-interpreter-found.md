@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T16:01:39Z
 updated_at: 2025-04-16T03:52:34Z
 url: https://github.com/astral-sh/uv/issues/9088
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # error: No interpreter found -- 
 
 ---
 
-_Issue opened by @EdmundsEcho on 2024-11-13 16:01_
+_@EdmundsEcho_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/pref
 created_at: 2024-06-03T19:23:30Z
 updated_at: 2024-06-04T19:37:06Z
 url: https://github.com/astral-sh/uv/pull/3995
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Bias towards local directories for bare editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 19:23_
+_@charliermarsh_
 
 ## Summary
 

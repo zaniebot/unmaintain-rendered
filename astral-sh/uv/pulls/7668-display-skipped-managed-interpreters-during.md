@@ -13,14 +13,14 @@ head: zb/discovery-managed-skip
 created_at: 2024-09-24T18:43:23Z
 updated_at: 2024-09-24T19:41:44Z
 url: https://github.com/astral-sh/uv/pull/7668
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Display skipped managed interpreters during Python discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 18:43_
+_@zanieb_
 
 e.g.
 

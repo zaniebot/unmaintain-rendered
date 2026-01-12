@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T19:56:56Z
 updated_at: 2026-01-09T13:21:49Z
 url: https://github.com/astral-sh/uv/issues/17364
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Allow relative paths (to the cwd) in UV_PYTHON_BIN_DIR and UV_TOOL_BIN_DIR
 
 ---
 
-_Issue opened by @benjyw on 2026-01-08 19:56_
+_@benjyw_
 
 ### Summary
 

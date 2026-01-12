@@ -13,14 +13,14 @@ head: test_for_5605
 created_at: 2023-07-14T09:12:36Z
 updated_at: 2023-07-14T09:55:06Z
 url: https://github.com/astral-sh/ruff/pull/5759
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add Regression test for #5605, where formatting `x[:,]` failed.
 
 ---
 
-_Pull request opened by @konstin on 2023-07-14 09:12_
+_@konstin_
 
 #5605 has been fixed, i added the failing example from the issue as a regression test.
 

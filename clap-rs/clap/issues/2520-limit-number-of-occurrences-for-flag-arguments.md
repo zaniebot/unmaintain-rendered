@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-06-03T15:43:24Z
 updated_at: 2021-06-17T18:54:25Z
 url: https://github.com/clap-rs/clap/issues/2520
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Limit number of occurrences for flag arguments
 
 ---
 
-_Issue opened by @reynoldsbd on 2021-06-03 15:43_
+_@reynoldsbd_
 
 ### Please complete the following tasks
 

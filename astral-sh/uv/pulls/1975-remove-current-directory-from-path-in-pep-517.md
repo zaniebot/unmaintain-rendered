@@ -13,14 +13,14 @@ head: charlie/cwd
 created_at: 2024-02-26T01:02:29Z
 updated_at: 2024-02-26T01:14:15Z
 url: https://github.com/astral-sh/uv/pull/1975
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Remove current directory from PATH in PEP 517 hooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-26 01:02_
+_@charliermarsh_
 
 ## Summary
 

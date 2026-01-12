@@ -13,14 +13,14 @@ head: konsti/exit-status-code-windows
 created_at: 2025-07-03T12:23:15Z
 updated_at: 2025-07-03T13:18:30Z
 url: https://github.com/astral-sh/uv/pull/14439
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Make "exit code" -> "exit status" a default filter
 
 ---
 
-_Pull request opened by @konstin on 2025-07-03 12:23_
+_@konstin_
 
 Remove some test boilerplate.
 

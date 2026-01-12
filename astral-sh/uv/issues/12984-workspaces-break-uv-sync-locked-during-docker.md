@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T03:19:59Z
 updated_at: 2025-04-20T14:27:20Z
 url: https://github.com/astral-sh/uv/issues/12984
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Workspaces Break `uv sync --locked` During Docker Build
 
 ---
 
-_Issue opened by @Samk13 on 2025-04-20 03:19_
+_@Samk13_
 
 ### Summary
 

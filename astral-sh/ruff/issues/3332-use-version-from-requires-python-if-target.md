@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-04T02:16:15Z
 updated_at: 2023-03-04T16:07:57Z
 url: https://github.com/astral-sh/ruff/issues/3332
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Use version from  `requires-python` if `target-version` is undefined
 
 ---
 
-_Issue opened by @WhyNotHugo on 2023-03-04 02:16_
+_@WhyNotHugo_
 
 If `target-version` is undefined, use the minimal `target-version` from [PEP-621](https://peps.python.org/pep-0621/#requires-python).
 

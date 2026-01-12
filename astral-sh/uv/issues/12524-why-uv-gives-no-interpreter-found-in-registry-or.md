@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T04:31:18Z
 updated_at: 2025-04-01T19:39:39Z
 url: https://github.com/astral-sh/uv/issues/12524
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Why uv gives "No interpreter found in registry or search path" when running `uv venv --python-preference only-system`?
 
 ---
 
-_Issue opened by @buptsad on 2025-03-28 04:31_
+_@buptsad_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/is
 created_at: 2024-06-03T23:32:51Z
 updated_at: 2024-06-04T19:17:37Z
 url: https://github.com/astral-sh/uv/pull/4003
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Avoid 'are incompatible' for singular bounded versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 23:32_
+_@charliermarsh_
 
 ## Summary
 

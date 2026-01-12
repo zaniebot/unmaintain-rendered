@@ -14,14 +14,14 @@ head: david/ty_python_semantic-let-chains
 created_at: 2025-10-20T07:45:39Z
 updated_at: 2025-10-20T17:01:39Z
 url: https://github.com/astral-sh/ruff/pull/20985
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Refactor: Use `let`-chains in a few places
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-20 07:45_
+_@sharkdp_
 
 ## Summary
 

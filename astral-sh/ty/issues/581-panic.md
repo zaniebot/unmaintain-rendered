@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-04T08:31:16Z
 updated_at: 2025-06-04T08:38:03Z
 url: https://github.com/astral-sh/ty/issues/581
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic]
 
 ---
 
-_Issue opened by @rindlow on 2025-06-04 08:31_
+_@rindlow_
 
 Hi, I was testing ty when it panicked:
 

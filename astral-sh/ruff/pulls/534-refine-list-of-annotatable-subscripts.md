@@ -12,14 +12,14 @@ head: charlie/typing-module
 created_at: 2022-11-01T20:35:11Z
 updated_at: 2022-11-01T20:36:06Z
 url: https://github.com/astral-sh/ruff/pull/534
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Refine list of annotatable subscripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-01 20:35_
+_@charliermarsh_
 
 Relevant: #490.
 

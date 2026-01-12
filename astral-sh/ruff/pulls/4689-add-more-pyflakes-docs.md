@@ -13,14 +13,14 @@ head: F6-rules
 created_at: 2023-05-27T22:00:48Z
 updated_at: 2023-05-29T15:34:32Z
 url: https://github.com/astral-sh/ruff/pull/4689
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add more Pyflakes docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-27 22:00_
+_@tjkuson_
 
 ## Summary
 

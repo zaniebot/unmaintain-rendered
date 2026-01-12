@@ -14,14 +14,14 @@ head: david/mdtest-parser-rewrite
 created_at: 2025-02-04T11:23:25Z
 updated_at: 2025-02-04T13:57:04Z
 url: https://github.com/astral-sh/ruff/pull/15926
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Hand-written MDTest parser
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-04 11:23_
+_@sharkdp_
 
 ## Summary
 

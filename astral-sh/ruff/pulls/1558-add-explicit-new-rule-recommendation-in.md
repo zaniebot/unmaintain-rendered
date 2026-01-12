@@ -12,14 +12,14 @@ head: charlie/contributing
 created_at: 2023-01-02T18:50:08Z
 updated_at: 2023-01-02T18:50:12Z
 url: https://github.com/astral-sh/ruff/pull/1558
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add explicit new-rule recommendation in CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-02 18:50_
+_@charliermarsh_
 
 _No description provided._
 

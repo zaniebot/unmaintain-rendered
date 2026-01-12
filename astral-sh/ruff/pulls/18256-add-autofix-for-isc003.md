@@ -13,14 +13,14 @@ head: isc003
 created_at: 2025-05-22T16:23:47Z
 updated_at: 2025-05-28T07:30:52Z
 url: https://github.com/astral-sh/ruff/pull/18256
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Add Autofix for ISC003
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-22 16:23_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

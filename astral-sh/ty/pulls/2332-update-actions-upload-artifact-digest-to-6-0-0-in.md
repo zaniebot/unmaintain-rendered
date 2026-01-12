@@ -13,14 +13,14 @@ head: renovate/actions-upload-artifact-digest
 created_at: 2026-01-05T01:15:41Z
 updated_at: 2026-01-05T07:53:08Z
 url: https://github.com/astral-sh/ty/pull/2332
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update actions/upload-artifact digest to 6.0.0 in release workflow
 
 ---
 
-_Pull request opened by @renovate on 2026-01-05 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T13:34:41Z
 updated_at: 2024-06-06T19:09:46Z
 url: https://github.com/astral-sh/uv/issues/3983
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Locking in a workspace should lock the entire workspace
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-03 13:34_
+_@charliermarsh_
 
 If you run `uv lock` in a workspace, we should lock the entire workspace, creating a single shared lockfile.
 

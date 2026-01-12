@@ -13,14 +13,14 @@ head: dhruv/str-unicode
 created_at: 2023-09-06T07:11:19Z
 updated_at: 2023-09-06T07:47:29Z
 url: https://github.com/astral-sh/ruff/pull/7180
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Move `ExprConstant::kind` to `StringConstant::unicode`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-06 07:11_
+_@dhruvmanila_
 
 ## Summary
 

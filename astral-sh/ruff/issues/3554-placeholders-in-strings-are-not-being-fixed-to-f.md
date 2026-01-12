@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-16T06:57:45Z
 updated_at: 2023-03-16T15:20:10Z
 url: https://github.com/astral-sh/ruff/issues/3554
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # placeholders in strings are not being fixed to f-strings
 
 ---
 
-_Issue opened by @globau on 2023-03-16 06:57_
+_@globau_
 
 Using `ruff 0.0.256`, given
 

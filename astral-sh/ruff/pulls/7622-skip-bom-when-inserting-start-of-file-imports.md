@@ -12,14 +12,14 @@ head: charlie/BOM
 created_at: 2023-09-23T19:26:23Z
 updated_at: 2023-09-23T19:43:00Z
 url: https://github.com/astral-sh/ruff/pull/7622
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Skip BOM when inserting start-of-file imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-23 19:26_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/7455#issuecomment-1732387485.
 

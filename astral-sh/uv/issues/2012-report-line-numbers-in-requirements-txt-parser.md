@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T12:33:06Z
 updated_at: 2024-03-01T21:50:13Z
 url: https://github.com/astral-sh/uv/issues/2012
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Report line numbers in requirements.txt parser
 
 ---
 
-_Issue opened by @konstin on 2024-02-27 12:33_
+_@konstin_
 
 Currently, we only report offsets for errors in the requirements.txt parser. We should instead report line numbers and columns. Example:
 

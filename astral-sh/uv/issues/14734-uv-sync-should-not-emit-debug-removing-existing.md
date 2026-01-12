@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-18T17:14:43Z
 updated_at: 2025-09-16T18:39:10Z
 url: https://github.com/astral-sh/uv/issues/14734
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # `uv sync` should not emit "DEBUG Removing existing directory due to `--clear`" message
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 17:14_
+_@zanieb_
 
 This message is confusing in `uv sync`, because... `--clear` isn't provided, that's jut the default `uv sync` behavior.
 

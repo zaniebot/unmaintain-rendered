@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-06T09:22:34Z
 updated_at: 2023-09-03T03:41:25Z
 url: https://github.com/astral-sh/ruff/issues/4899
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F504: Carriage return prevents expression extraction
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-06 09:22_
+_@addisoncrump_
 
 In Python, a standalone carriage return character (0xd or `\r`) is considered whitespace. One could easily argue that this is quite problematic, given that carriage returns can potentially be used to hide parts of source code. That said, it does trigger a failure in F504 (`\r` replaced literally):
 

@@ -13,14 +13,14 @@ head: no-possibly-wrong-divide-by-zero-error
 created_at: 2024-10-17T17:06:11Z
 updated_at: 2024-10-17T18:40:28Z
 url: https://github.com/astral-sh/ruff/pull/13799
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] don't emit divide-by-zero error if we can't be sure
 
 ---
 
-_Pull request opened by @carljm on 2024-10-17 17:06_
+_@carljm_
 
 If the LHS is just `int` or `float` type, that type includes custom subclasses which can arbitrarily override division behavior, so we shouldn't emit a divide-by-zero error in those cases.
 

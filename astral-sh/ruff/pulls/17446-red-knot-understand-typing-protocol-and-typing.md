@@ -13,14 +13,14 @@ head: alex/typing-extensions-protocol
 created_at: 2025-04-17T11:54:41Z
 updated_at: 2025-04-17T20:54:25Z
 url: https://github.com/astral-sh/ruff/pull/17446
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Understand `typing.Protocol` and `typing_extensions.Protocol` as equivalent
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-17 11:54_
+_@AlexWaygood_
 
 ## Summary
 

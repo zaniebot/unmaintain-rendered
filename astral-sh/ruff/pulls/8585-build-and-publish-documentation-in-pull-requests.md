@@ -12,14 +12,14 @@ head: zanie/docs-pr
 created_at: 2023-11-09T16:50:29Z
 updated_at: 2024-03-12T18:41:00Z
 url: https://github.com/astral-sh/ruff/pull/8585
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Build and publish documentation in pull requests
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-09 16:50_
+_@zanieb_
 
 _No description provided._
 

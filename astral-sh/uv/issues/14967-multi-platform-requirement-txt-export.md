@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T09:25:12Z
 updated_at: 2025-07-31T02:03:13Z
 url: https://github.com/astral-sh/uv/issues/14967
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Multi-platform requirement.txt export
 
 ---
 
-_Issue opened by @LatreviousYI on 2025-07-30 09:25_
+_@LatreviousYI_
 
 ### Question
 

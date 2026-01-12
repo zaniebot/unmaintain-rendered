@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-18T16:22:23Z
 updated_at: 2024-11-18T17:35:21Z
 url: https://github.com/astral-sh/ruff/issues/9573
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Reharmonize `TCH*` rules with flake8-type-checking
 
 ---
 
-_Issue opened by @Daverball on 2024-01-18 16:22_
+_@Daverball_
 
 There recently have been a whole bunch of contributions to flake8-type-checking made by yours truly which greatly decreased the rate of false positives/negatives and added new rules, as well as better support for SQLAlchemy.
 

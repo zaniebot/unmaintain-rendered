@@ -14,14 +14,14 @@ head: PLE1310
 created_at: 2025-02-06T01:38:21Z
 updated_at: 2025-02-07T20:35:02Z
 url: https://github.com/astral-sh/ruff/pull/15984
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pylint`] Do not report calls when object type and argument type mismatch, remove custom escape handling logic (`PLE1310`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-06 01:38_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/iterative-fix
 created_at: 2022-11-22T21:03:20Z
 updated_at: 2022-11-22T21:37:53Z
 url: https://github.com/astral-sh/ruff/pull/875
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Apply autofixes iteratively until code is stabilized
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-22 21:03_
+_@charliermarsh_
 
 Resolves #868, #866, #660.
 

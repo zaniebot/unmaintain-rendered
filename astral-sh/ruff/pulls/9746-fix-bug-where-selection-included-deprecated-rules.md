@@ -13,14 +13,14 @@ head: zb/fix-preview-deprecated
 created_at: 2024-01-31T17:22:18Z
 updated_at: 2024-02-01T14:45:09Z
 url: https://github.com/astral-sh/ruff/pull/9746
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix bug where selection included deprecated rules during preview
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-31 17:22_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/ruff/pull/9714 which is being abandoned for now because we need to invest more into our redirection infrastructure before it is feasible.
 

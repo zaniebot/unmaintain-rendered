@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-13T20:45:14Z
 updated_at: 2024-10-11T01:42:48Z
 url: https://github.com/astral-sh/ruff/issues/11415
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add default linter rules
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-05-13 20:45_
+_@AndreuCodina_
 
 In my company we have lots of microservices and nanoservices, and a Python project prototype I maintain to guide how Python projects must be developed and updated.
 It's a common complaint not to have default rules in our `pyproject.toml` files, and instead have "magic letters" just because "I chose them".

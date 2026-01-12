@@ -12,14 +12,14 @@ head: charlie/trait
 created_at: 2023-02-19T20:16:31Z
 updated_at: 2023-02-19T20:19:36Z
 url: https://github.com/astral-sh/ruff/pull/3041
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove unused `AsFormat` trait for `Option<T>`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-19 20:16_
+_@charliermarsh_
 
 We should re-add this, but it's currently unused and doesn't compile under 1.66.0.
 

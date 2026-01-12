@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T22:27:41Z
 updated_at: 2024-07-29T14:00:13Z
 url: https://github.com/astral-sh/uv/issues/5461
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # A build backend flag for `uv init`
 
 ---
 
-_Issue opened by @konstin on 2024-07-25 22:27_
+_@konstin_
 
 The default build backend, setuptools, is somewhat archaic and has undesirable behaviors, such as creating an `.egg-info` directory. We should add an `--build-backend` flag to `uv init` which some popular choices, such as hatch and flit.
 

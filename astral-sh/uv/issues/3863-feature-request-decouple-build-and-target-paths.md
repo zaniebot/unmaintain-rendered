@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-27T12:18:18Z
 updated_at: 2024-07-29T00:10:13Z
 url: https://github.com/astral-sh/uv/issues/3863
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Feature request: decouple "build" and "target" paths in `install_wheel` API
 
 ---
 
-_Issue opened by @aochagavia on 2024-05-27 12:18_
+_@aochagavia_
 
 This is a feature request to modify the API of `install_wheel_rs::linker::install_wheel`. I'd love to hear whether you consider it to be within the scope of uv (in which case I might submit a PR) or out of scope (in which case I'll be using a workaround).
 

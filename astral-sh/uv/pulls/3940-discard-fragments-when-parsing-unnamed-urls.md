@@ -14,14 +14,14 @@ head: charlie/egg
 created_at: 2024-05-31T13:20:32Z
 updated_at: 2024-05-31T13:54:17Z
 url: https://github.com/astral-sh/uv/pull/3940
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Discard fragments when parsing unnamed URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-31 13:20_
+_@charliermarsh_
 
 ## Summary
 

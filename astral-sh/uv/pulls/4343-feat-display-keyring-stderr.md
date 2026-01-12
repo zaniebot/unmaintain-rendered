@@ -13,14 +13,14 @@ head: keyring-stderr
 created_at: 2024-06-16T18:02:47Z
 updated_at: 2024-06-17T23:48:21Z
 url: https://github.com/astral-sh/uv/pull/4343
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # feat: display keyring stderr
 
 ---
 
-_Pull request opened by @samypr100 on 2024-06-16 18:02_
+_@samypr100_
 
 ## Summary
 

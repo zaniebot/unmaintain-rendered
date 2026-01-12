@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T15:29:29Z
 updated_at: 2024-05-15T19:07:30Z
 url: https://github.com/astral-sh/uv/issues/3351
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: propagate full set of artifacts for each distribution
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 15:29_
+_@BurntSushi_
 
 At present, our resolver does not deal with cross platform concerns. Instead, it assumes there is a single fixed set of marker values for the current environment, and makes decisions based on those. Even more, the structure of the code itself is oriented around this assumption.
 

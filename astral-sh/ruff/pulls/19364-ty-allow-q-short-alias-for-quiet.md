@@ -14,14 +14,14 @@ head: zb/allow-short
 created_at: 2025-07-15T16:44:29Z
 updated_at: 2025-07-15T17:00:09Z
 url: https://github.com/astral-sh/ruff/pull/19364
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Allow `-q` short alias for `--quiet`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 16:44_
+_@zanieb_
 
 _No description provided._
 

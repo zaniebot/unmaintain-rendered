@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T12:14:15Z
 updated_at: 2025-09-17T02:41:07Z
 url: https://github.com/astral-sh/uv/issues/8085
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv sync: support `--system` to not install dependencies into venv
 
 ---
 
-_Issue opened by @jgehrcke on 2024-10-10 12:14_
+_@jgehrcke_
 
 `uv sync` is documented with
 

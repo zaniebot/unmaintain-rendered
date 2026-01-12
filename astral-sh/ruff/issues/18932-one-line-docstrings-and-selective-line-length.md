@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T05:57:35Z
 updated_at: 2025-07-07T12:50:48Z
 url: https://github.com/astral-sh/ruff/issues/18932
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # one-line docstrings and selective line-length fixing
 
 ---
 
-_Issue opened by @ALPA-Industry-and-Technology on 2025-06-25 05:57_
+_@ALPA-Industry-and-Technology_
 
 ### Question
 

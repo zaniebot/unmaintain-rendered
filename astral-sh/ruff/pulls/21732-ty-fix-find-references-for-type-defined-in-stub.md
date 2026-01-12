@@ -14,14 +14,14 @@ head: micha/fix-references-for-type-defined-in-stub
 created_at: 2025-12-01T15:04:13Z
 updated_at: 2025-12-01T16:53:47Z
 url: https://github.com/astral-sh/ruff/pull/21732
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix find references for type defined in stub
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-01 15:04_
+_@MichaReiser_
 
 ## Summary
 

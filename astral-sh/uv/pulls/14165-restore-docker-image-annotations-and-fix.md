@@ -13,14 +13,14 @@ head: zb/annotate-attest
 created_at: 2025-06-20T17:40:28Z
 updated_at: 2025-06-21T14:01:22Z
 url: https://github.com/astral-sh/uv/pull/14165
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Restore Docker image annotations and fix attestations
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-20 17:40_
+_@zanieb_
 
 More follow-up to #13459 
 

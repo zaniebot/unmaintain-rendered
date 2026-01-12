@@ -13,14 +13,14 @@ head: fix(#19757)/ISC003-autofix-produces-incorrect-code
 created_at: 2025-08-06T08:21:34Z
 updated_at: 2025-10-21T07:25:08Z
 url: https://github.com/astral-sh/ruff/pull/19778
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # Fix(#19757)/isc003 autofix produces incorrect code
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-06 08:21_
+_@mikeleppane_
 
 
 ## Summary

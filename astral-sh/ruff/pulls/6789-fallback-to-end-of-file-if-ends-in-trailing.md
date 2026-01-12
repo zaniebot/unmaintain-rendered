@@ -14,14 +14,14 @@ head: charlie/eof
 created_at: 2023-08-22T18:43:09Z
 updated_at: 2023-08-22T19:19:51Z
 url: https://github.com/astral-sh/ruff/pull/6789
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fallback to end-of-file if ends in trailing continuation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 18:43_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

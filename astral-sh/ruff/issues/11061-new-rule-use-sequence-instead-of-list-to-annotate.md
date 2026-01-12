@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-21T00:10:22Z
 updated_at: 2024-05-04T15:15:54Z
 url: https://github.com/astral-sh/ruff/issues/11061
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # New Rule: Use `Sequence` instead of `list` to annotate arguments
 
 ---
 
-_Issue opened by @jd-solanki on 2024-04-21 00:10_
+_@jd-solanki_
 
 Hi 👋🏻 
 

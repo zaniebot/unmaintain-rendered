@@ -13,14 +13,14 @@ head: charlie/com
 created_at: 2023-02-01T17:49:59Z
 updated_at: 2023-02-01T17:56:11Z
 url: https://github.com/astral-sh/ruff/pull/2450
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Trigger, but don't fix, SIM rules if comments are present
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-01 17:49_
+_@charliermarsh_
 
 We already have this behavior for SIM103. Lets just make it consistent.
 

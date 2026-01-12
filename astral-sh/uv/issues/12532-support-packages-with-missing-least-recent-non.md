@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T14:40:18Z
 updated_at: 2025-03-28T15:01:11Z
 url: https://github.com/astral-sh/uv/issues/12532
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Support packages with missing least-recent non-EOL macOS build on PyPI
 
 ---
 
-_Issue opened by @itymchyshyn-sc on 2025-03-28 14:40_
+_@itymchyshyn-sc_
 
 ### Summary
 

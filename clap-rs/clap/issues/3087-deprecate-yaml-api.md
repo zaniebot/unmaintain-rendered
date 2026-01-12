@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-12-08T17:08:15Z
 updated_at: 2022-01-21T15:50:47Z
 url: https://github.com/clap-rs/clap/issues/3087
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Deprecate Yaml API
 
 ---
 
-_Issue opened by @epage on 2021-12-08 17:08_
+_@epage_
 
 The YAML API is used for:
 - Fast iteration by changing the CLI without re-compiling

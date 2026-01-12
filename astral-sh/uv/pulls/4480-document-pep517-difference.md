@@ -13,14 +13,14 @@ head: pep517-differnce
 created_at: 2024-06-24T17:54:13Z
 updated_at: 2024-06-25T10:33:05Z
 url: https://github.com/astral-sh/uv/pull/4480
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Document PEP517 difference
 
 ---
 
-_Pull request opened by @covracer on 2024-06-24 17:54_
+_@covracer_
 
 ## Summary
 PEP 517 build isolation https://github.com/astral-sh/uv/pull/843 has not yet been mentioned in the PIP compatibility documentation. Add a section for it.

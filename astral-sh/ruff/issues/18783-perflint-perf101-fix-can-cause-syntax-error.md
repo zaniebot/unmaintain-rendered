@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T06:55:01Z
 updated_at: 2025-06-23T11:51:47Z
 url: https://github.com/astral-sh/ruff/issues/18783
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Perflint] PERF101 fix can cause syntax error
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 06:55_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-15T21:11:22Z
 updated_at: 2024-02-15T21:40:10Z
 url: https://github.com/astral-sh/uv/issues/1346
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv venv`: macOS, Neither `python` nor `python3` are in `PATH`. Is Python installed?
 
 ---
 
-_Issue opened by @Mikcl on 2024-02-15 21:11_
+_@Mikcl_
 
 After install `uv` using the macOS installation option, 
 

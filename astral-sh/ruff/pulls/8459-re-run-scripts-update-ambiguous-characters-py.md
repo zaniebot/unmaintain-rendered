@@ -13,14 +13,14 @@ head: charlie/script
 created_at: 2023-11-03T04:34:01Z
 updated_at: 2023-11-03T04:57:29Z
 url: https://github.com/astral-sh/ruff/pull/8459
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Re-run `scripts/update_ambiguous_characters.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 04:34_
+_@charliermarsh_
 
 These weren't formatted consistently, and when I re-ran, the formatting changed a bit, so I'm editing the script to keep that file constant.
 

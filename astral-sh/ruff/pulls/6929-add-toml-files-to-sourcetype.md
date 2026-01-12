@@ -13,14 +13,14 @@ head: charlie/toml
 created_at: 2023-08-28T01:57:04Z
 updated_at: 2023-08-28T15:02:03Z
 url: https://github.com/astral-sh/ruff/pull/6929
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add TOML files to `SourceType`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 01:57_
+_@charliermarsh_
 
 ## Summary
 

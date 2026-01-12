@@ -12,14 +12,14 @@ head: alex/multi-valued-tuples
 created_at: 2025-08-01T17:16:45Z
 updated_at: 2025-08-05T14:31:56Z
 url: https://github.com/astral-sh/ruff/pull/19694
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Do not treat tuple types as ever being single-valued
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-01 17:16_
+_@AlexWaygood_
 
 ## Summary
 

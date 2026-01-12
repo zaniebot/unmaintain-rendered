@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T21:48:43Z
 updated_at: 2024-07-03T16:35:12Z
 url: https://github.com/astral-sh/uv/issues/4742
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool run` should use already-installed tool (if possible)
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-02 21:48_
+_@charliermarsh_
 
 _No description provided._
 

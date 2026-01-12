@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T14:32:15Z
 updated_at: 2024-09-21T05:25:29Z
 url: https://github.com/astral-sh/uv/issues/7586
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # tool_install_python_requests test failure
 
 ---
 
-_Issue opened by @mgorny on 2024-09-20 14:32_
+_@mgorny_
 
 On top of 8259600ca6a5d278f3aa7825f5346a8dc7a851c3, Gentoo Linux amd64:
 

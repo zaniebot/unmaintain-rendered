@@ -13,14 +13,14 @@ head: charlie/layer
 created_at: 2024-05-08T02:03:10Z
 updated_at: 2024-05-08T21:24:25Z
 url: https://github.com/astral-sh/uv/pull/3447
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Use environment layering for `uv run --with`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 02:03_
+_@charliermarsh_
 
 ## Summary
 

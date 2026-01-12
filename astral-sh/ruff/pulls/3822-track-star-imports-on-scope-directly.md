@@ -12,14 +12,14 @@ head: charlie/stars
 created_at: 2023-03-30T18:19:52Z
 updated_at: 2023-03-31T15:20:00Z
 url: https://github.com/astral-sh/ruff/pull/3822
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Track star imports on `Scope` directly
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-30 18:19_
+_@charliermarsh_
 
 ## Summary
 

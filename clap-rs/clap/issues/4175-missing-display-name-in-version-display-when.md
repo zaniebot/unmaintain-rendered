@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-02T13:57:38Z
 updated_at: 2022-09-02T20:26:19Z
 url: https://github.com/clap-rs/clap/issues/4175
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Missing `display_name` in version display when using `multicall`
 
 ---
 
-_Issue opened by @trou on 2022-09-02 13:57_
+_@trou_
 
 ### Please complete the following tasks
 

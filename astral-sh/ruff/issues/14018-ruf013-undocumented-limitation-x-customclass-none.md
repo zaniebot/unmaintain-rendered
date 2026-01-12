@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-10-31T13:26:21Z
 updated_at: 2024-11-06T04:58:40Z
 url: https://github.com/astral-sh/ruff/issues/14018
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF013 undocumented limitation `x: CustomClass = None` is not caught
 
 ---
 
-_Issue opened by @jond01 on 2024-10-31 13:26_
+_@jond01_
 
 It seems like the following should be caught or at least be added to the [documented limitations](https://docs.astral.sh/ruff/rules/implicit-optional/#limitations):
 

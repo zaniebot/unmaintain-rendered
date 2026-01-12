@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-11T15:01:45Z
 updated_at: 2025-11-16T08:32:43Z
 url: https://github.com/astral-sh/ruff/issues/21381
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Preview rule FURB103 reformats multiline strings
 
 ---
 
-_Issue opened by @henryiii on 2025-11-11 15:01_
+_@henryiii_
 
 ### Summary
 

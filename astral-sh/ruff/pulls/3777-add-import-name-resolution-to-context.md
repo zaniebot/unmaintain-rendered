@@ -12,14 +12,14 @@ head: charlie/resolve-binding
 created_at: 2023-03-28T16:49:52Z
 updated_at: 2023-03-30T06:32:04Z
 url: https://github.com/astral-sh/ruff/pull/3777
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add import name resolution to `Context`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 16:49_
+_@charliermarsh_
 
 ## Summary
 

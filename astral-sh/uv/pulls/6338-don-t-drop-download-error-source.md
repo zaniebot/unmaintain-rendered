@@ -13,14 +13,14 @@ head: konsti/dont-drop-error-source
 created_at: 2024-08-21T15:07:57Z
 updated_at: 2024-08-21T18:15:58Z
 url: https://github.com/astral-sh/uv/pull/6338
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Don't drop download error source
 
 ---
 
-_Pull request opened by @konstin on 2024-08-21 15:07_
+_@konstin_
 
 Part of #6331
 

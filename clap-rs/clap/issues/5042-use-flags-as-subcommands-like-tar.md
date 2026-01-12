@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-23T15:47:27Z
 updated_at: 2023-07-30T01:48:03Z
 url: https://github.com/clap-rs/clap/issues/5042
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Use flags as subcommands (like `tar`)
 
 ---
 
-_Issue opened by @nickeb96 on 2023-07-23 15:47_
+_@nickeb96_
 
 ### Please complete the following tasks
 

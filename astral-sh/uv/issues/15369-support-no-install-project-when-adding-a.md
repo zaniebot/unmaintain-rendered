@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T02:58:36Z
 updated_at: 2025-08-19T14:32:57Z
 url: https://github.com/astral-sh/uv/issues/15369
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Support `--no-install-project` when adding a dependency to a project with `uv add`
 
 ---
 
-_Issue opened by @BaoNguyen6742 on 2025-08-19 02:58_
+_@BaoNguyen6742_
 
 ### Summary
 

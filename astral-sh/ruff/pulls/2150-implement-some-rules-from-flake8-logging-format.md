@@ -12,14 +12,14 @@ head: feat/implement-flake8-logging-format
 created_at: 2023-01-25T08:33:56Z
 updated_at: 2023-01-26T18:02:44Z
 url: https://github.com/astral-sh/ruff/pull/2150
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement some rules from `flake8-logging-format`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-01-25 08:33_
+_@edgarrmondragon_
 
 https://github.com/charliermarsh/ruff/issues/1850
 

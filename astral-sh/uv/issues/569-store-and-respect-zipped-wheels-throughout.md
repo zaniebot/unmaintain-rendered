@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T18:17:12Z
 updated_at: 2024-02-02T20:18:54Z
 url: https://github.com/astral-sh/uv/issues/569
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Store and respect zipped wheels throughout caching pipeline
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-05 18:17_
+_@charliermarsh_
 
 If we download a bunch of wheels, then fail while unzipping them, we should be left with some subset of zipped wheels in the cache. If we then re-run the command, we _should_ just unzip those zipped wheels rather than re-downloading them.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T13:21:10Z
 updated_at: 2025-12-11T13:21:10Z
 url: https://github.com/astral-sh/uv/issues/17084
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Add `uv tool info` (and maybe `uv tool search`)
 
 ---
 
-_Issue opened by @martimlobao on 2025-12-11 13:21_
+_@martimlobao_
 
 ### Summary
 

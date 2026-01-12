@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-22T19:58:54Z
 updated_at: 2024-05-23T23:03:08Z
 url: https://github.com/astral-sh/uv/issues/3765
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # VIRTUAL_ENV no longer used, giving "No Python default installation found in virtual environments" error
 
 ---
 
-_Issue opened by @thundergolfer on 2024-05-22 19:58_
+_@thundergolfer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

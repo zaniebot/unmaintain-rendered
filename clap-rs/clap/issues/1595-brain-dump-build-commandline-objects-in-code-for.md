@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-11-08T16:04:21Z
 updated_at: 2019-11-27T13:21:02Z
 url: https://github.com/clap-rs/clap/issues/1595
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # [brain-dump]: Build commandline objects in code, for testing
 
 ---
 
-_Issue opened by @matthiasbeyer on 2019-11-08 16:04_
+_@matthiasbeyer_
 
 **Disclaimer**: This is just a brain-dump, I have not looked at other comments/issues/prs whatsoever, so feel free to close this and call me a moron if this already exists or is not possible, ... I'm just dumping my brain here.
 

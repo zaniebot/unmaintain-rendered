@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T15:19:14Z
 updated_at: 2025-02-07T15:35:05Z
 url: https://github.com/astral-sh/uv/issues/11317
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # How to update `uv` managed Python version for applications?
 
 ---
 
-_Issue opened by @laenan8466 on 2025-02-07 15:19_
+_@laenan8466_
 
 ### Question
 

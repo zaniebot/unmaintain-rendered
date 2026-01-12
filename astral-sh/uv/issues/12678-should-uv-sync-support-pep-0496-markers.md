@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-04T18:48:19Z
 updated_at: 2025-04-08T01:51:50Z
 url: https://github.com/astral-sh/uv/issues/12678
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Should `uv sync` support pep-0496 markers?
 
 ---
 
-_Issue opened by @zaphar on 2025-04-04 18:48_
+_@zaphar_
 
 ### Summary
 

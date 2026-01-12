@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-07T06:27:56Z
 updated_at: 2023-09-14T19:45:06Z
 url: https://github.com/astral-sh/ruff/issues/5580
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive for PERF402 when using `.append()` on non-list objects
 
 ---
 
-_Issue opened by @dosisod on 2023-07-07 06:27_
+_@dosisod_
 
 The following code emits an error despite it not being a list (or list-like):
 

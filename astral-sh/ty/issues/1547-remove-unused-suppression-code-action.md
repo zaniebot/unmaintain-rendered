@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T09:24:37Z
 updated_at: 2025-11-29T15:02:24Z
 url: https://github.com/astral-sh/ty/issues/1547
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Remove unused suppression code action
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 09:24_
+_@MichaReiser_
 
 Editor code action to automatically remove an unused suppression
 

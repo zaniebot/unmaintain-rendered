@@ -12,14 +12,14 @@ head: nopestream-categories
 created_at: 2023-07-07T11:33:37Z
 updated_at: 2023-07-10T13:54:11Z
 url: https://github.com/astral-sh/ruff/pull/5591
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Rework upstream categories so we can `all_rules()`
 
 ---
 
-_Pull request opened by @akx on 2023-07-07 11:33_
+_@akx_
 
 ## Summary
 

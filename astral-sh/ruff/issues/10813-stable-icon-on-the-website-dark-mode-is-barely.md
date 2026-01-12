@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-07T13:58:17Z
 updated_at: 2025-07-09T23:11:43Z
 url: https://github.com/astral-sh/ruff/issues/10813
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Stable icon on the website (dark mode) is barely visible
 
 ---
 
-_Issue opened by @Werni2A on 2024-04-07 13:58_
+_@Werni2A_
 
 In dark mode the 'stable' icon looks as if the rule were not fully implemented, because it's icon is rendered so lightly. See the screenshots for comparison. Looks like there is some kind of transparency issue.
 

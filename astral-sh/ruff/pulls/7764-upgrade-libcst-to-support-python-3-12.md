@@ -13,14 +13,14 @@ head: charlie/libcst
 created_at: 2023-10-02T14:57:08Z
 updated_at: 2023-10-02T16:14:36Z
 url: https://github.com/astral-sh/ruff/pull/7764
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Upgrade LibCST to support Python 3.12
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-02 14:57_
+_@charliermarsh_
 
 ## Summary
 

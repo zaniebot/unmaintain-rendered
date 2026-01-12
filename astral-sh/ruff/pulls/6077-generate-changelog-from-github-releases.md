@@ -12,14 +12,14 @@ head: changelog
 created_at: 2023-07-25T19:19:23Z
 updated_at: 2023-10-06T14:18:12Z
 url: https://github.com/astral-sh/ruff/pull/6077
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Generate changelog from GitHub releases
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-25 19:19_
+_@zanieb_
 
 Not a commitment to doing this, but exploring the option of using a `CHANGELOG` file.
 

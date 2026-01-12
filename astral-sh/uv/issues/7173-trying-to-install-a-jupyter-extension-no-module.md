@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T17:33:11Z
 updated_at: 2024-09-14T00:36:47Z
 url: https://github.com/astral-sh/uv/issues/7173
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # trying to install a jupyter extension no module pip found
 
 ---
 
-_Issue opened by @thunder-007 on 2024-09-07 17:33_
+_@thunder-007_
 
 steps to reproduce 
 ```

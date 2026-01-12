@@ -14,14 +14,14 @@ head: alex/classvar-assignment-code
 created_at: 2025-08-29T17:16:45Z
 updated_at: 2025-08-29T18:15:32Z
 url: https://github.com/astral-sh/ruff/pull/20156
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Use `invalid-assignment` error code for invalid assignments to `ClassVar`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-29 17:16_
+_@AlexWaygood_
 
 ## Summary
 

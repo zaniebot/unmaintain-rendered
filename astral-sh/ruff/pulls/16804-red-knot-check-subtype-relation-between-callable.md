@@ -13,14 +13,14 @@ head: dhruv/callable-subtype
 created_at: 2025-03-17T14:22:21Z
 updated_at: 2025-03-24T15:23:56Z
 url: https://github.com/astral-sh/ruff/pull/16804
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Check subtype relation between callable types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-17 14:22_
+_@dhruvmanila_
 
 ## Summary
 

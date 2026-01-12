@@ -14,14 +14,14 @@ head: ag/new-diagnostics-everywhere
 created_at: 2025-04-22T14:56:49Z
 updated_at: 2025-04-23T18:21:56Z
 url: https://github.com/astral-sh/ruff/pull/17554
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] move everything to new diagnostics API
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-22 14:56_
+_@BurntSushi_
 
 This removes the last vestiges of the old diagnostics system. So everything in Red Knot should now have easy access to attaching sub-diagnostics, extra annotations and so on.
 

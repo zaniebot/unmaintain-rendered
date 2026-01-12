@@ -13,14 +13,14 @@ head: brent/breaking-changes
 created_at: 2025-03-13T17:28:21Z
 updated_at: 2025-03-13T17:42:37Z
 url: https://github.com/astral-sh/ruff/pull/16714
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Update BREAKING_CHANGES.md
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-13 17:28_
+_@ntBre_
 
 I copied the Breaking Changes section from the changelog and added the RUF035 entry at the end to avoid reference the Remapped Rules section.
 

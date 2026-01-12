@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-09T14:18:10Z
 updated_at: 2024-05-09T15:26:51Z
 url: https://github.com/astral-sh/uv/issues/3484
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Error when installing old release: 'python_requires' must be a string containing valid version specifiers
 
 ---
 
-_Issue opened by @detrin on 2024-05-09 14:18_
+_@detrin_
 
 I am using MacOS. When I try to install this old release it fails for python 3.12, 3.11 and 3.10. However when using `python3.10 -m venv` it does work. So I suspect `uv` doesn't support old version specifiers yet. This is not first time that it happened to me. 
 ```

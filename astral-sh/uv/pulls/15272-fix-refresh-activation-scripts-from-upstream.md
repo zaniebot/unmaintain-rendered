@@ -13,14 +13,14 @@ head: activations-scripts-from-upstream-virtualenv
 created_at: 2025-08-14T08:53:59Z
 updated_at: 2025-09-05T21:19:18Z
 url: https://github.com/astral-sh/uv/pull/15272
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # fix: refresh activation scripts from upstream virtualenv
 
 ---
 
-_Pull request opened by @2bndy5 on 2025-08-14 08:53_
+_@2bndy5_
 
 ## Summary
 This refreshes the venv activation scripts from upstream `virtualenv` project.

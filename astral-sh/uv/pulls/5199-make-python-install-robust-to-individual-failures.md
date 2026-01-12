@@ -14,14 +14,14 @@ head: charlie/x
 created_at: 2024-07-19T00:28:29Z
 updated_at: 2024-07-19T00:31:55Z
 url: https://github.com/astral-sh/uv/pull/5199
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Make Python install robust to individual failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 00:28_
+_@charliermarsh_
 
 ## Summary
 

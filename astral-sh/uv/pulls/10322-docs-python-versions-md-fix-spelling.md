@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-01-06T07:29:09Z
 updated_at: 2025-01-06T12:03:01Z
 url: https://github.com/astral-sh/uv/pull/10322
-synced_at: 2026-01-10T11:44:42Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # docs(python-versions.md): fix spelling
 
 ---
 
-_Pull request opened by @vladdoster on 2025-01-06 07:29_
+_@vladdoster_
 
 ## Summary
 

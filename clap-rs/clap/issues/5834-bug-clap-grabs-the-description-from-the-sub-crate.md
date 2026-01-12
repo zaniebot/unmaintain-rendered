@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T09:18:04Z
 updated_at: 2024-12-02T16:00:54Z
 url: https://github.com/clap-rs/clap/issues/5834
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [Bug]: Clap grabs the description from the sub crate in the workspace instead of the main crate the sub crate is being compiled into
 
 ---
 
-_Issue opened by @lexi-the-cute on 2024-12-02 09:18_
+_@lexi-the-cute_
 
 ### Please complete the following tasks
 

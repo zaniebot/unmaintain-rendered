@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T16:26:36Z
 updated_at: 2024-07-26T15:48:20Z
 url: https://github.com/astral-sh/ruff/issues/12421
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # UP031: fix for `"%.2X" % 1` generates broken code
 
 ---
 
-_Issue opened by @radoering on 2024-07-20 16:26_
+_@radoering_
 
 I know fixing UP031 is unsafe, but in this case we can do better:
 

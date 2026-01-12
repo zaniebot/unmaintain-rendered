@@ -11,14 +11,14 @@ head: fix-incomplete-snapshots
 created_at: 2023-03-16T10:43:08Z
 updated_at: 2023-04-30T19:48:05Z
 url: https://github.com/astral-sh/ruff/pull/3557
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix snapshots missing iterations
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-16 10:43_
+_@JonathanPlasse_
 
 Until now the snapshots only  contained the first iteration of diagnostics.
 This PR adds the diagnostics from the other iterations.

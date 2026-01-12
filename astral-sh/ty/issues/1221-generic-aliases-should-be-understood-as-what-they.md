@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-20T15:18:45Z
 updated_at: 2025-11-18T16:10:38Z
 url: https://github.com/astral-sh/ty/issues/1221
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # generic aliases should be understood as what they are aliases to
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 15:18_
+_@KotlinIsland_
 
 ### Summary
 

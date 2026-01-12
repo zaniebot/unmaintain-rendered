@@ -12,14 +12,14 @@ head: fix-dynamic-powershell-completion
 created_at: 2025-10-29T22:28:54Z
 updated_at: 2025-10-29T22:35:38Z
 url: https://github.com/clap-rs/clap/pull/6166
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix(clap_complete): improve powershell registration script
 
 ---
 
-_Pull request opened by @fabalchemy on 2025-10-29 22:28_
+_@fabalchemy_
 
 <!--
 Thanks for helping out!

@@ -12,14 +12,14 @@ head: charlie/fold
 created_at: 2023-05-20T16:34:23Z
 updated_at: 2023-05-20T17:08:27Z
 url: https://github.com/astral-sh/ruff/pull/4546
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore `#region` code folding marks in eradicate rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-20 16:34_
+_@charliermarsh_
 
 Closes #4538.
 

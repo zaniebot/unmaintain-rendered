@@ -13,14 +13,14 @@ head: charlie/error
 created_at: 2023-11-20T23:04:22Z
 updated_at: 2023-11-20T23:08:55Z
 url: https://github.com/astral-sh/uv/pull/470
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Refactor distribution types to return `Result`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-20 23:04_
+_@charliermarsh_
 
 ## Summary
 

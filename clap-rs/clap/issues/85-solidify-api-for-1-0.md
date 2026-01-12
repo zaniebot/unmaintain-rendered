@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-29T03:43:12Z
 updated_at: 2015-07-15T03:56:06Z
 url: https://github.com/clap-rs/clap/issues/85
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Solidify API for 1.0
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-29 03:43_
+_@kbknapp_
 
 Current API is quite verbose, I'm considering using common short names to save some key strokes and cut back on the the verbosity. Things such as `value` -> `val`, etc. There are also several method names which have several synonyms that would fit. Once this is stabilized I will start considering a 1.0 release (along with a Rust 1.0).
 

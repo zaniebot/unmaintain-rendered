@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-31T11:28:53Z
 updated_at: 2023-09-09T14:04:51Z
 url: https://github.com/astral-sh/ruff/issues/7018
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add `extend-ignore-names` for `flake8-self`
 
 ---
 
-_Issue opened by @jaap3 on 2023-08-31 11:28_
+_@jaap3_
 
 The [default](https://beta.ruff.rs/docs/settings/#flake8-self-ignore-names) for `ignore-names` is `["_make", "_asdict", "_replace", "_fields", "_field_defaults", "_name_", "_value_"]`.
 

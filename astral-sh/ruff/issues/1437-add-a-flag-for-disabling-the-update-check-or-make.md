@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-29T09:23:01Z
 updated_at: 2022-12-30T09:16:50Z
 url: https://github.com/astral-sh/ruff/issues/1437
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add a flag for disabling the update check or make it opt-in
 
 ---
 
-_Issue opened by @stinos on 2022-12-29 09:23_
+_@stinos_
 
 Something like `--no-update-check`. It's fairly uncommon for a commanline tool to have an update check, let alone one which is activated depending on log level and cannot be disabled (or I'm missing something, also possible). Alternative: don't do the update check by default but on demand only.
 

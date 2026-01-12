@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-16T18:24:36Z
 updated_at: 2023-03-16T20:47:15Z
 url: https://github.com/clap-rs/clap/issues/4763
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Use of ArgAction::Set instead of ArgAction::SetTrue gives confusing runtime error
 
 ---
 
-_Issue opened by @kornelski on 2023-03-16 18:24_
+_@kornelski_
 
 ### Please complete the following tasks
 

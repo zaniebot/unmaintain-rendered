@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-28T21:17:24Z
 updated_at: 2024-10-30T07:51:56Z
 url: https://github.com/astral-sh/ruff/issues/13969
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [django] New rule: Check that enums do not have a `do_not_call_in_templates` member
 
 ---
 
-_Issue opened by @Kakadus on 2024-10-28 21:17_
+_@Kakadus_
 
 In django templates, if a template variable is callable, the template system will try calling it. To disable that, one can define a truthy `do_not_call_in_templates` attribute on the callable [[ref. django docs]](https://docs.djangoproject.com/en/5.1/ref/templates/api/#variables-and-lookups). 
 

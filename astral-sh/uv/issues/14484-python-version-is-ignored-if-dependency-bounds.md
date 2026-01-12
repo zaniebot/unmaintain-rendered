@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T11:52:15Z
 updated_at: 2025-07-17T09:27:16Z
 url: https://github.com/astral-sh/uv/issues/14484
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Python version is ignored if dependency bounds are not specified
 
 ---
 
-_Issue opened by @tpoliaw on 2025-07-07 11:52_
+_@tpoliaw_
 
 ### Summary
 

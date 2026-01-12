@@ -14,14 +14,14 @@ head: ww/more-cow
 created_at: 2026-01-05T21:11:14Z
 updated_at: 2026-01-05T22:57:37Z
 url: https://github.com/astral-sh/uv/pull/17330
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Use Cow<str> for deserialization everywhere
 
 ---
 
-_Pull request opened by @woodruffw on 2026-01-05 21:11_
+_@woodruffw_
 
 ## Summary
 

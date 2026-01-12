@@ -15,14 +15,14 @@ head: micha/remove-soft-line-conditional-content
 created_at: 2024-11-20T14:32:54Z
 updated_at: 2024-11-22T12:01:24Z
 url: https://github.com/astral-sh/ruff/pull/14489
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix unnecessary space around power op in overlong f-string expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-20 14:32_
+_@MichaReiser_
 
 ## Summary
 

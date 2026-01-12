@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-19T00:58:49Z
 updated_at: 2023-01-16T03:03:37Z
 url: https://github.com/astral-sh/ruff/issues/813
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Replacing black and blue?
 
 ---
 
-_Issue opened by @warsaw on 2022-11-19 00:58_
+_@warsaw_
 
 Do you have thoughts about `ruff` eventually subsuming and replacing `black` or [blue](https://blue.readthedocs.io/en/latest/)?  I'm one of the maintainers of `blue` (because we have different opinions about a few things), and it's been pretty difficult to both keep our monkey patching of black up to date, and rely on flake8's `pyproject.toml` support across multiple different major versions of `flake8`.
 

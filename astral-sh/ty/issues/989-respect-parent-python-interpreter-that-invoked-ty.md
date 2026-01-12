@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-14T16:28:07Z
 updated_at: 2025-11-06T14:27:51Z
 url: https://github.com/astral-sh/ty/issues/989
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Respect parent Python interpreter that invoked ty as a candidate Python env
 
 ---
 
-_Issue opened by @carljm on 2025-08-14 16:28_
+_@carljm_
 
 This would make e.g. `uvx --with Foo ty check script_using_Foo_library.py` work as a one-liner. Today it doesn't work. uv creates an ephemeral env with Foo installed, and then invokes ty's Python shim from that env, but ty doesn't care about that. uv doesn't set `VIRTUAL_ENV`, and the ephemeral env isn't located anywhere ty's searching will find it, so ty never finds the env it was invoked from.
 

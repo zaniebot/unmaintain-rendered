@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-25T13:44:16Z
 updated_at: 2023-10-25T14:42:07Z
 url: https://github.com/astral-sh/ruff/issues/8217
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Docs: README.md `tool.ruff.lint` fault
 
 ---
 
-_Issue opened by @thernstig on 2023-10-25 13:44_
+_@thernstig_
 
 ```toml
 [tool.ruff.lint]

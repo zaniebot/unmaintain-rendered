@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T01:59:23Z
 updated_at: 2024-09-04T02:32:27Z
 url: https://github.com/astral-sh/uv/issues/6992
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Options for improving build isolation
 
 ---
 
-_Issue opened by @dakinggg on 2024-09-04 01:59_
+_@dakinggg_
 
 As I'm sure you know, build isolation is a real pain for packages with a requirement that packages are built with the same version of another package as will be used at runtime. This is very common in the pytorch ecosystem, and makes supporting multiple pytorch versions much more difficult. I'm sure there are many possible ways to improve the situation, but one thing I would like is to be able to specify in my pyproject.toml that one of my dependencies should be installed without build isolation. So I could make package A, that depends on package B, always install package B without build isolation. Wondering if something like this is a feature you would consider.
 

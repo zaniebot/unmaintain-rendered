@@ -13,14 +13,14 @@ head: zb/readme-pypi
 created_at: 2024-11-08T00:15:16Z
 updated_at: 2024-11-08T23:06:42Z
 url: https://github.com/astral-sh/uv/pull/8906
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Move "from PyPI" install message to above the relevant code block
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 00:15_
+_@zanieb_
 
 A minor follow-up to https://github.com/astral-sh/uv/pull/8853
 

@@ -12,14 +12,14 @@ head: ag/decouple-cached-client
 created_at: 2024-01-25T16:34:36Z
 updated_at: 2024-02-16T21:37:46Z
 url: https://github.com/astral-sh/uv/pull/1098
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # puffin-client: decouple serde from cached client
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-25 16:34_
+_@BurntSushi_
 
 The motivation for this change is that I'd like to use something that
 *isn't* Serde to manage serialization of cached data. Simultaneously,

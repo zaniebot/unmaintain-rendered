@@ -13,14 +13,14 @@ head: zb/docs-ii-publish-release
 created_at: 2025-06-30T22:33:31Z
 updated_at: 2025-07-01T19:14:19Z
 url: https://github.com/astral-sh/ty/pull/731
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Publish documentation on release
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-30 22:33_
+_@zanieb_
 
 Extends #730, separated so we can test publishing the documentation manually before doing so on release.
 

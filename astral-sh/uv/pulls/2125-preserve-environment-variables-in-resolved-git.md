@@ -13,14 +13,14 @@ head: charlie/env
 created_at: 2024-03-02T01:28:01Z
 updated_at: 2024-03-02T01:38:35Z
 url: https://github.com/astral-sh/uv/pull/2125
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Preserve environment variables in resolved Git dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-02 01:28_
+_@charliermarsh_
 
 ## Summary
 

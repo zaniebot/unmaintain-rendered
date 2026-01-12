@@ -11,14 +11,14 @@ head: consistent-md-code-blk-indentation
 created_at: 2023-11-07T09:14:10Z
 updated_at: 2023-11-07T18:17:49Z
 url: https://github.com/astral-sh/ruff/pull/8536
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # docs: Apply consistent md code block indentation
 
 ---
 
-_Pull request opened by @doolio on 2023-11-07 09:14_
+_@doolio_
 
 Note, I did not adjust the auto-generated text code blocks in configuration.md as I presumed any changes would be overwritten. To apply the same style for those blocks I presume it would have to be applied from where those blocks are generated. But I was unsure where that was.
 

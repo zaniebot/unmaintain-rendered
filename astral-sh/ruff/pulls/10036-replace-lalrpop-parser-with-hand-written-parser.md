@@ -14,14 +14,14 @@ head: dhruv/parser
 created_at: 2024-02-19T04:13:35Z
 updated_at: 2024-04-18T19:48:00Z
 url: https://github.com/astral-sh/ruff/pull/10036
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Replace LALRPOP parser with hand-written parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-19 04:13_
+_@dhruvmanila_
 
 (Supersedes #9152, authored by @LaBatata101)
 

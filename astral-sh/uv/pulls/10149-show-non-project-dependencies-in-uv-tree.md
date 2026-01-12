@@ -13,14 +13,14 @@ head: charlie/tree
 created_at: 2024-12-24T23:22:37Z
 updated_at: 2024-12-24T23:35:00Z
 url: https://github.com/astral-sh/uv/pull/10149
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Show non-project dependencies in `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 23:22_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T19:05:46Z
 updated_at: 2025-07-28T23:10:35Z
 url: https://github.com/astral-sh/uv/issues/12173
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # `venv` module does not work on when invoked via a symlink to a `uv`-installed Python
 
 ---
 
-_Issue opened by @pganssle on 2025-03-14 19:05_
+_@pganssle_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-12T22:20:45Z
 updated_at: 2023-04-13T20:11:37Z
 url: https://github.com/astral-sh/ruff/issues/3952
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False negative: `ARG002` is not triggered for methods decorated with `typing_extensions.override`
 
 ---
 
-_Issue opened by @bryanforbes on 2023-04-12 22:20_
+_@bryanforbes_
 
 Ruff version: 0.0.261
 

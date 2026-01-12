@@ -13,14 +13,14 @@ head: charlie/manifest
 created_at: 2024-04-08T19:14:21Z
 updated_at: 2024-04-08T19:33:00Z
 url: https://github.com/astral-sh/uv/pull/2909
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Add a layer of indirection to the local path-based wheel cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 19:14_
+_@charliermarsh_
 
 ## Summary
 

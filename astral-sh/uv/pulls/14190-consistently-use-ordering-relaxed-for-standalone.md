@@ -13,14 +13,14 @@ head: consistent-mem-ordering
 created_at: 2025-06-21T15:14:30Z
 updated_at: 2025-06-24T19:30:53Z
 url: https://github.com/astral-sh/uv/pull/14190
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Consistently use `Ordering::Relaxed` for standalone atomic use cases
 
 ---
 
-_Pull request opened by @christeefy on 2025-06-21 15:14_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

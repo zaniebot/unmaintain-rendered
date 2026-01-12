@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-17T09:12:53Z
 updated_at: 2023-02-17T12:49:05Z
 url: https://github.com/astral-sh/ruff/issues/2980
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Trying to suppress a specific error across entire file suppresses all errors
 
 ---
 
-_Issue opened by @michaelhball on 2023-02-17 09:12_
+_@michaelhball_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T20:52:29Z
 updated_at: 2023-07-04T19:23:07Z
 url: https://github.com/astral-sh/ruff/issues/5495
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff rule does not describe multiple rules
 
 ---
 
-_Issue opened by @rotu on 2023-07-03 20:52_
+_@rotu_
 
 version = 0.0.272
 

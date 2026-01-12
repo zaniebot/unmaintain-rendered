@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-21T04:07:45Z
 updated_at: 2024-04-21T10:04:51Z
 url: https://github.com/astral-sh/ruff/issues/11064
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [UP006/7] The `target-version` configuration is not applied to `*.pyi`
 
 ---
 
-_Issue opened by @lumina37 on 2024-04-21 04:07_
+_@lumina37_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-25T15:39:36Z
 updated_at: 2024-07-31T12:34:31Z
 url: https://github.com/astral-sh/ruff/issues/12513
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F401 creates infinite loop in preview mode when autofixing an unused first-party submodule import in an `__init__.py` file that has an `__all__` definition
 
 ---
 
-_Issue opened by @rshanker779 on 2024-07-25 15:39_
+_@rshanker779_
 
 When having an `__init__` file with an `__all__` and an import that does not appear in `__all__`, an inifinte loop occurs as ruff tries to add the import to `__all__`. Full recreation details are below
 

@@ -13,14 +13,14 @@ head: zb/external-venv
 created_at: 2024-06-13T18:11:24Z
 updated_at: 2024-06-13T21:43:32Z
 url: https://github.com/astral-sh/uv/pull/4314
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Suggest correct command to create a virtual environment when encountering externally managed interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-13 18:11_
+_@zanieb_
 
 _No description provided._
 

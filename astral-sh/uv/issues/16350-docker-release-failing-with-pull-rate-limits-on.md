@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T21:39:50Z
 updated_at: 2025-10-21T21:38:05Z
 url: https://github.com/astral-sh/uv/issues/16350
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Docker release failing with pull rate limits on image annotations
 
 ---
 
-_Issue opened by @zanieb on 2025-10-17 21:39_
+_@zanieb_
 
 ```
 ERROR: httpReadSeeker: failed open: unexpected status from GET request to https://registry-1.docker.io/v2/astral/uv/manifests/sha256:000e0cdb4c17f349a358c60f9226209349a05d3c19815941ec47e44a60b22748: 429 Too Many Requests

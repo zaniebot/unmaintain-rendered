@@ -13,14 +13,14 @@ head: zb/interpreter-missing-error
 created_at: 2024-06-27T13:41:09Z
 updated_at: 2024-06-27T18:23:09Z
 url: https://github.com/astral-sh/uv/pull/4587
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Include environment preferences in the toolchain not found errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 13:41_
+_@zanieb_
 
 This regressed as part of #4416 
 

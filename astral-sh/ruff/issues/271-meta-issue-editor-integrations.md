@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-28T18:04:34Z
 updated_at: 2023-02-12T16:25:31Z
 url: https://github.com/astral-sh/ruff/issues/271
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Meta issue: editor integrations
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-28 18:04_
+_@charliermarsh_
 
 Creating a parent issue to track and document the state of ruff's editor integrations.
 

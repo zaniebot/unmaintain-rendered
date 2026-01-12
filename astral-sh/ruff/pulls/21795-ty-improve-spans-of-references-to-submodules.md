@@ -13,14 +13,14 @@ head: gankra/fix-span
 created_at: 2025-12-04T17:05:34Z
 updated_at: 2025-12-05T18:03:29Z
 url: https://github.com/astral-sh/ruff/pull/21795
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Improve spans of references to submodules imported in an `__init__.py`
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-04 17:05_
+_@Gankra_
 
 Good ol' `DefinitionKind::ImportFromSubmodule`
 

@@ -14,14 +14,14 @@ head: dhruv/while-stmt
 created_at: 2024-04-07T15:48:05Z
 updated_at: 2024-04-09T14:25:24Z
 url: https://github.com/astral-sh/ruff/pull/10817
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `while` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 15:48_
+_@dhruvmanila_
 
 ## Summary
 

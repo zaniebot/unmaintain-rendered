@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T08:18:13Z
 updated_at: 2024-11-13T15:01:17Z
 url: https://github.com/astral-sh/ruff/issues/14307
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics on generic type alias
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-13 08:18_
+_@sharkdp_
 
 Red knot currently panics when encountering [PEP-695 generic type aliases](https://peps.python.org/pep-0695/#generic-type-aliases):
 ```py

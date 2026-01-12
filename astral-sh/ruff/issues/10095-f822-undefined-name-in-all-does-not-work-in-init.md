@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-23T12:55:50Z
 updated_at: 2024-05-30T03:15:07Z
 url: https://github.com/astral-sh/ruff/issues/10095
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F822 Undefined name in `__all__` does not work in `__init__.py`
 
 ---
 
-_Issue opened by @ilius on 2024-02-23 12:55_
+_@ilius_
 
 If you have `__all__` in a module, and it contains one or more names that are undefined in that module, `ruff` will tell you about it:
 

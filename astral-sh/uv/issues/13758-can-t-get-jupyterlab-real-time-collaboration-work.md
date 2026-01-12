@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T03:29:32Z
 updated_at: 2025-06-01T03:50:41Z
 url: https://github.com/astral-sh/uv/issues/13758
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Can't get JupyterLab Real-Time collaboration work inside uv environment
 
 ---
 
-_Issue opened by @2gn on 2025-06-01 03:29_
+_@2gn_
 
 ### Question
 

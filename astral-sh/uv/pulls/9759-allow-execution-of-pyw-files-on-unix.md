@@ -13,14 +13,14 @@ head: zb/pyw-unix
 created_at: 2024-12-10T00:56:42Z
 updated_at: 2024-12-10T02:52:05Z
 url: https://github.com/astral-sh/uv/pull/9759
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Allow execution of pyw files on Unix
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 00:56_
+_@zanieb_
 
 I don't see any real reason to forbid executing these in a cross-platform way
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-27T18:04:08Z
 updated_at: 2023-05-27T19:17:04Z
 url: https://github.com/astral-sh/ruff/issues/4684
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Not linting code layout/whitespaces
 
 ---
 
-_Issue opened by @piotr-rarus on 2023-05-27 18:04_
+_@piotr-rarus_
 
 Hello folks,
 consider following crap code:

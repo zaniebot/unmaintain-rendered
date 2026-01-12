@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T00:54:00Z
 updated_at: 2025-12-20T03:50:58Z
 url: https://github.com/astral-sh/uv/issues/1404
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Use settings from the pip configuration file (`pip.conf`)
 
 ---
 
-_Issue opened by @msharp9 on 2024-02-16 00:54_
+_@msharp9_
 
 Pip allows a user to set configuration settings inside a `pip.conf`, usually stored at `~/.config/pip/pip.conf`.  For example, setting a default index-url. uv seems to ignore these settings completely.  
 

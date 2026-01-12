@@ -13,14 +13,14 @@ head: charlie/fresh
 created_at: 2024-01-26T03:39:09Z
 updated_at: 2024-01-26T03:48:17Z
 url: https://github.com/astral-sh/uv/pull/1119
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Remove refresh checks from the install plan
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 03:39_
+_@charliermarsh_
 
 ## Summary
 

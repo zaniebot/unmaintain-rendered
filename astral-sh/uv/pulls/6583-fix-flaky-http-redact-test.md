@@ -13,14 +13,14 @@ head: charlie/htttp
 created_at: 2024-08-24T13:42:21Z
 updated_at: 2024-08-24T13:49:30Z
 url: https://github.com/astral-sh/uv/pull/6583
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Fix flaky HTTP redact test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 13:42_
+_@charliermarsh_
 
 _No description provided._
 

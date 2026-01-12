@@ -11,14 +11,14 @@ head: main
 created_at: 2025-08-10T10:15:17Z
 updated_at: 2025-08-11T02:31:57Z
 url: https://github.com/astral-sh/uv/pull/15198
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Fix: update smoke-test get command failed count method
 
 ---
 
-_Pull request opened by @zhangbo2012 on 2025-08-10 10:15_
+_@zhangbo2012_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T16:35:49Z
 updated_at: 2024-07-28T00:52:28Z
 url: https://github.com/astral-sh/uv/issues/2087
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Option for the Windows installer to setup to a specific dir
 
 ---
 
-_Issue opened by @gozdal on 2024-02-29 16:35_
+_@gozdal_
 
 When working with `uv 0.1.12` installer in our CI env I had to use `CARGO_HOME` env var to direct the installer to a directory of my choosing with something like:
 ```powershell

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T05:13:40Z
 updated_at: 2025-02-26T05:13:40Z
 url: https://github.com/astral-sh/ruff/issues/16388
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Consider removing the `--preview` flag from `ruff server`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-26 05:13_
+_@dhruvmanila_
 
 Currently, the behavior of `ruff server --preview` is to turn on preview mode for both the linter and the formatter.
 

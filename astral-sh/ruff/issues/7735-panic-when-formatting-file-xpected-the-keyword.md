@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-01T06:54:03Z
 updated_at: 2023-10-04T07:55:03Z
 url: https://github.com/astral-sh/ruff/issues/7735
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Panic when formatting file `xpected the keyword token Def but found the token SimpleToken { kind: At, range: 46..47 } instead`
 
 ---
 
-_Issue opened by @qarmin on 2023-10-01 06:54_
+_@qarmin_
 
 Ruff 0.0.291 (latest changes from main branch)
 ```

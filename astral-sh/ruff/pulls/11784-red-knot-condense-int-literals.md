@@ -13,14 +13,14 @@ head: cjm/2unionliterals
 created_at: 2024-06-06T21:34:00Z
 updated_at: 2024-06-06T22:30:41Z
 url: https://github.com/astral-sh/ruff/pull/11784
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] condense int literals
 
 ---
 
-_Pull request opened by @carljm on 2024-06-06 21:34_
+_@carljm_
 
 Display `(Literal[1] | Literal[2])` as `Literal[1, 2]`, and `(Literal[1] | Literal[2] | OtherType)` as `(Literal[1, 2] | OtherType)`.
 

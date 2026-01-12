@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T20:22:43Z
 updated_at: 2025-11-10T12:45:03Z
 url: https://github.com/astral-sh/ruff/issues/21305
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Support and lints for `lazy` imports in Python 3.15+
 
 ---
 
-_Issue opened by @dylwil3 on 2025-11-06 20:22_
+_@dylwil3_
 
 A long ways off, but creating this tracking issue to add ideas as they arise.
 

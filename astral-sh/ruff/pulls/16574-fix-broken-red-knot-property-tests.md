@@ -15,14 +15,14 @@ head: alex/fix-property-tests
 created_at: 2025-03-09T10:35:08Z
 updated_at: 2025-03-09T17:40:11Z
 url: https://github.com/astral-sh/ruff/pull/16574
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Fix broken red-knot property tests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-09 10:35_
+_@AlexWaygood_
 
 ## Summary
 

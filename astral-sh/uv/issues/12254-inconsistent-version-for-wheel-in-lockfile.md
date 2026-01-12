@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-17T23:52:52Z
 updated_at: 2025-03-20T15:24:44Z
 url: https://github.com/astral-sh/uv/issues/12254
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Inconsistent version for wheel in lockfile updated by Dependabot
 
 ---
 
-_Issue opened by @zanieb on 2025-03-17 23:52_
+_@zanieb_
 
 Dependabot recently launched support for updating versions in `uv.lock` files (see https://github.com/dependabot/dependabot-core/issues/10478). However, the latest version of Dependabot:
 

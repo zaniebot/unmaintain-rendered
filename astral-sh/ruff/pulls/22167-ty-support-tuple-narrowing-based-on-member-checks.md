@@ -13,14 +13,14 @@ head: charlie/nar
 created_at: 2025-12-23T23:09:27Z
 updated_at: 2025-12-24T01:17:18Z
 url: https://github.com/astral-sh/ruff/pull/22167
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Support tuple narrowing based on member checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-23 23:09_
+_@charliermarsh_
 
 ## Summary
 

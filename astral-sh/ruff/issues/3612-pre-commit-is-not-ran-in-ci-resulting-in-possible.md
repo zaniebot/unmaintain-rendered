@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-19T19:36:40Z
 updated_at: 2023-03-24T21:20:15Z
 url: https://github.com/astral-sh/ruff/issues/3612
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # pre-commit is not ran in ci, resulting in possible commits that don't pass pre-commit
 
 ---
 
-_Issue opened by @onerandomusername on 2023-03-19 19:36_
+_@onerandomusername_
 
 continuation of #3604 #3603
 https://github.com/charliermarsh/ruff/blob/main/.github/workflows/ci.yaml doesn't contain an action to run pre-commit, so it only happens locally, and doesn't seem to be validated in ci.

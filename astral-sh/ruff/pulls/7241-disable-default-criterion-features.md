@@ -13,14 +13,14 @@ head: remove-default-criterion-features
 created_at: 2023-09-08T09:52:38Z
 updated_at: 2023-09-08T10:09:36Z
 url: https://github.com/astral-sh/ruff/pull/7241
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Disable default criterion features
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-08 09:52_
+_@MichaReiser_
 
 
 ## Summary

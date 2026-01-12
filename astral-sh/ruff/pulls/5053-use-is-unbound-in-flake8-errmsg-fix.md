@@ -13,14 +13,14 @@ head: charlie/binding
 created_at: 2023-06-13T16:12:41Z
 updated_at: 2023-06-13T16:46:58Z
 url: https://github.com/astral-sh/ruff/pull/5053
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `.is_unbound()` in flake8-errmsg fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 16:12_
+_@charliermarsh_
 
 ## Summary
 

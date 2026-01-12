@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T20:59:51Z
 updated_at: 2024-09-20T18:49:10Z
 url: https://github.com/astral-sh/uv/issues/7518
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Feature Request: `uv run --with-source`
 
 ---
 
-_Issue opened by @ahal on 2024-09-18 20:59_
+_@ahal_
 
 This would be the opposite of the `--no-sources` flag, where we would temporarily resolve dependencies using a source that is *not* defined in `pyproject.toml`.
 

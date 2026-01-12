@@ -14,14 +14,14 @@ head: extend-AIR302
 created_at: 2024-12-16T09:49:25Z
 updated_at: 2024-12-18T00:07:17Z
 url: https://github.com/astral-sh/ruff/pull/15015
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # feat(AIR302): extend the following rules
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-16 09:49_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

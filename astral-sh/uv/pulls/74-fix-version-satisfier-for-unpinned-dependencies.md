@@ -12,14 +12,14 @@ head: charlie/comp
 created_at: 2023-10-09T03:59:01Z
 updated_at: 2023-10-09T15:48:41Z
 url: https://github.com/astral-sh/uv/pull/74
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Fix version satisfier for unpinned dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-09 03:59_
+_@charliermarsh_
 
 _No description provided._
 

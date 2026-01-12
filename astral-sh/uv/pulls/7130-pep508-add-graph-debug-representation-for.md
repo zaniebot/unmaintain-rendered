@@ -12,14 +12,14 @@ head: ag/marker-tree-debug-graph
 created_at: 2024-09-06T17:07:51Z
 updated_at: 2024-09-09T20:12:12Z
 url: https://github.com/astral-sh/uv/pull/7130
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # pep508: add graph debug representation for `MarkerTree`
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-06 17:07_
+_@BurntSushi_
 
 This PR revives #6129, but is less bold:
 

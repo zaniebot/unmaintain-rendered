@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-06-17T10:34:19Z
 updated_at: 2025-06-17T18:29:11Z
 url: https://github.com/astral-sh/ruff/pull/18718
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Use updated pre-commit id
 
 ---
 
-_Pull request opened by @mashehu on 2025-06-17 10:34_
+_@mashehu_
 
 ## Summary
 

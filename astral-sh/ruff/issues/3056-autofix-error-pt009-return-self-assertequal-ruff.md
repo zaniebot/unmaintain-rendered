@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T12:22:34Z
 updated_at: 2023-02-22T13:56:59Z
 url: https://github.com/astral-sh/ruff/issues/3056
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] [PT009] return self.assertEqual (ruff 0.0.247)
 
 ---
 
-_Issue opened by @jonathansp on 2023-02-20 12:22_
+_@jonathansp_
 
 Although `return self.assertEqual(True, False)` is not common usage, ruff shouldn't fail. The resulting file seems to be `return assert True == False`, which I don't understand what is wrong with `assertEqual`.
 

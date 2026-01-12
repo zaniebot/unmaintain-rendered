@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-07T08:20:46Z
 updated_at: 2024-11-07T12:53:13Z
 url: https://github.com/astral-sh/uv/issues/8880
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Add support for updating dependencies in project
 
 ---
 
-_Issue opened by @diachkow on 2024-11-07 08:20_
+_@diachkow_
 
 I am looking for something similar to the [`poetry update`](https://python-poetry.org/docs/cli/#update) command that is able to update the listed dependencies to the maximum possible version that meets the requirements from the `pyproject.toml` file.
 

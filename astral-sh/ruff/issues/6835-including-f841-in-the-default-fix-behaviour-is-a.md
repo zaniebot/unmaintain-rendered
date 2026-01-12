@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T04:23:03Z
 updated_at: 2023-08-24T21:32:18Z
 url: https://github.com/astral-sh/ruff/issues/6835
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Including F841 in the default --fix behaviour is a gigantic footgun
 
 ---
 
-_Issue opened by @ssokolow on 2023-08-24 04:23_
+_@ssokolow_
 
 I have a habit of writing my code from the top down and saving part-way through to trigger things like MyPy at a time when they won't be distracting. After installing Ruff and integrating it into my Vim+ALE-based setup that triggers everything (including autofix/autoformat) on save (thank you, rustfmt, for bringing my habits into the 21st century), I started getting confusing errors.
 

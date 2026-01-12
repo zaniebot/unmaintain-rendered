@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T05:46:05Z
 updated_at: 2025-01-04T02:42:19Z
 url: https://github.com/astral-sh/uv/issues/9655
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Rye (with uv) succeeds but uv (standalone) fails to install pytorch aarch64
 
 ---
 
-_Issue opened by @niowniow on 2024-12-05 05:46_
+_@niowniow_
 
 ## Issue
 Given the following pyproject.toml and python 3,11., I can install torch==2.5.1. on aarch64 with GPU support when I run `rye sync` but not when I run `uv sync`. 

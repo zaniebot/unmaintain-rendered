@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T20:13:40Z
 updated_at: 2024-07-10T21:10:22Z
 url: https://github.com/astral-sh/uv/issues/4069
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # error: invalid command 'bdist_wheel'
 
 ---
 
-_Issue opened by @adminy on 2024-06-05 20:13_
+_@adminy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

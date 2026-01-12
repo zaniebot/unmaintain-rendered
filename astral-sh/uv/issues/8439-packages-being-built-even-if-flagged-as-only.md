@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T08:15:41Z
 updated_at: 2025-02-25T14:39:47Z
 url: https://github.com/astral-sh/uv/issues/8439
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Packages being built even if flagged as "only-binary"
 
 ---
 
-_Issue opened by @arnaldojvg on 2024-10-22 08:15_
+_@arnaldojvg_
 
 I have this minimal pyproject.toml
 

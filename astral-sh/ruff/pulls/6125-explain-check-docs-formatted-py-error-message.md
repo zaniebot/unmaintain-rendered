@@ -13,14 +13,14 @@ head: Explain_check_docs_formatted.py_errors
 created_at: 2023-07-27T12:14:25Z
 updated_at: 2023-07-27T13:53:53Z
 url: https://github.com/astral-sh/ruff/pull/6125
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Explain check_docs_formatted.py error message
 
 ---
 
-_Pull request opened by @konstin on 2023-07-27 12:14_
+_@konstin_
 
 ## Summary
 

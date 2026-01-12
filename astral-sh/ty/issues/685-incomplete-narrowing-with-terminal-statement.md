@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T22:08:27Z
 updated_at: 2025-12-11T19:51:43Z
 url: https://github.com/astral-sh/ty/issues/685
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incomplete narrowing with terminal statement inside nested `if`s
 
 ---
 
-_Issue opened by @abhijeetbodas2001 on 2025-06-19 22:08_
+_@abhijeetbodas2001_
 
 ### Summary
 

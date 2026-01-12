@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-20T19:53:54Z
 updated_at: 2024-08-20T21:34:06Z
 url: https://github.com/astral-sh/ruff/issues/13017
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ruff self update (like uv self update)
 
 ---
 
-_Issue opened by @gertcuykens on 2024-08-20 19:53_
+_@gertcuykens_
 
  Can `ruff self update` be implemented please to be consistent with `uv self update` ?
 

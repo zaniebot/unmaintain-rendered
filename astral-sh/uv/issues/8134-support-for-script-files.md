@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T23:00:02Z
 updated_at: 2024-12-09T18:58:04Z
 url: https://github.com/astral-sh/uv/issues/8134
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # Support for script-files
 
 ---
 
-_Issue opened by @petrprikryl on 2024-10-11 23:00_
+_@petrprikryl_
 
 Hi, are there any plans for `script-files` support like in [setuptools `tool.setuptools.script-files`](
 https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration)? E.g. for shell scripts.

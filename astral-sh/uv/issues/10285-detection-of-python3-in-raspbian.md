@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-03T13:07:16Z
 updated_at: 2025-01-03T13:34:11Z
 url: https://github.com/astral-sh/uv/issues/10285
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Detection of Python3 in Raspbian
 
 ---
 
-_Issue opened by @VictorGob on 2025-01-03 13:07_
+_@VictorGob_
 
 Hi!
 

@@ -13,14 +13,14 @@ head: commit-info-nogit
 created_at: 2025-05-21T07:43:31Z
 updated_at: 2025-05-21T19:59:53Z
 url: https://github.com/astral-sh/uv/pull/13566
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Fix version json tests to work outside git checkout
 
 ---
 
-_Pull request opened by @mgorny on 2025-05-21 07:43_
+_@mgorny_
 
 ## Summary
 

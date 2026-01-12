@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-25T15:46:29Z
 updated_at: 2021-09-04T09:34:16Z
 url: https://github.com/clap-rs/clap/issues/2736
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `clap_app!` documentation example is not accurate.
 
 ---
 
-_Issue opened by @Shaddy on 2021-08-25 15:46_
+_@Shaddy_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: alex/neg-literal-crash
 created_at: 2025-06-07T15:21:51Z
 updated_at: 2025-06-11T10:48:09Z
 url: https://github.com/astral-sh/ruff/pull/18536
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Fix panic when pulling types for `UnaryOp` expressions inside `Literal` slices
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-07 15:21_
+_@AlexWaygood_
 
 ## Summary
 

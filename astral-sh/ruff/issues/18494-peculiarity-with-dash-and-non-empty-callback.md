@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T12:56:11Z
 updated_at: 2025-07-24T12:02:39Z
 url: https://github.com/astral-sh/ruff/issues/18494
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Peculiarity with Dash and non-empty callback function argument: ANN01
 
 ---
 
-_Issue opened by @mmarras on 2025-06-06 12:56_
+_@mmarras_
 
 ### Summary
 

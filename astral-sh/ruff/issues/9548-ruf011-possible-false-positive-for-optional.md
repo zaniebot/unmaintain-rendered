@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T08:31:26Z
 updated_at: 2024-01-16T20:02:43Z
 url: https://github.com/astral-sh/ruff/issues/9548
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `RUF011` possible false positive for optional unwrapping in dict comprehension
 
 ---
 
-_Issue opened by @farmio on 2024-01-16 08:31_
+_@farmio_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

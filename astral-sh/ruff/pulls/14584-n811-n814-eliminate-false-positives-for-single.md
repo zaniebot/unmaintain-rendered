@@ -13,14 +13,14 @@ head: AVK/ConstantImportedAsNonConstant
 created_at: 2024-11-25T15:01:45Z
 updated_at: 2024-11-27T20:36:44Z
 url: https://github.com/astral-sh/ruff/pull/14584
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # N811 & N814: eliminate false positives for single-letter names
 
 ---
 
-_Pull request opened by @snowdrop4 on 2024-11-25 15:01_
+_@snowdrop4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

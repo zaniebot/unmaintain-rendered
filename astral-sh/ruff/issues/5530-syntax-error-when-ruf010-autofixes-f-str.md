@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-05T11:26:28Z
 updated_at: 2023-07-05T19:22:24Z
 url: https://github.com/astral-sh/ruff/issues/5530
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Syntax error when `RUF010` autofixes `f"{str({})}"`
 
 ---
 
-_Issue opened by @harupy on 2023-07-05 11:26_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

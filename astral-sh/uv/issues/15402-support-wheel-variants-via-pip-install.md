@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T08:17:58Z
 updated_at: 2025-08-21T09:06:34Z
 url: https://github.com/astral-sh/uv/issues/15402
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Support wheel-variants via pip install
 
 ---
 
-_Issue opened by @peacefulotter on 2025-08-21 08:17_
+_@peacefulotter_
 
 Hi, 
 

@@ -13,14 +13,14 @@ head: micha/remove-ast-dependencies-from-type
 created_at: 2024-11-04T08:58:32Z
 updated_at: 2024-11-05T15:54:41Z
 url: https://github.com/astral-sh/ruff/pull/14087
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Remove AST-node dependency from `FunctionType` and `ClassType`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-04 08:58_
+_@MichaReiser_
 
 ## Summary
 

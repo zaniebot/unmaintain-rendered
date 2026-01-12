@@ -13,14 +13,14 @@ head: alex/optimize-subtyping
 created_at: 2025-06-07T09:11:46Z
 updated_at: 2025-06-12T10:52:51Z
 url: https://github.com/astral-sh/ruff/pull/18530
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] Optimize `Type::has_relation_to()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-07 09:11_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dhruv/refactor-compare-op
 created_at: 2024-04-21T07:12:44Z
 updated_at: 2024-04-21T15:55:16Z
 url: https://github.com/astral-sh/ruff/pull/11068
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Use `CmpOp` parameter in compare expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-21 07:12_
+_@dhruvmanila_
 
 ## Summary
 

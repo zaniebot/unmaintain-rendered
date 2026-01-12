@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T20:23:24Z
 updated_at: 2024-03-08T21:00:40Z
 url: https://github.com/astral-sh/uv/issues/2306
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Show users a custom message when `wheel` is not installed
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-08 20:23_
+_@charliermarsh_
 
 _No description provided._
 

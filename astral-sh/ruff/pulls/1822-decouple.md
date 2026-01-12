@@ -12,14 +12,14 @@ head: decouple
 created_at: 2023-01-12T17:24:40Z
 updated_at: 2023-01-12T19:07:42Z
 url: https://github.com/astral-sh/ruff/pull/1822
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Decouple
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-12 17:24_
+_@not-my-profile_
 
 The first two commits from #1816 so that they can be merged before the maturin packaging situation is resolved.
 

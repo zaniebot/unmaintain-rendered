@@ -12,14 +12,14 @@ head: charlie/x
 created_at: 2023-12-14T19:31:18Z
 updated_at: 2023-12-14T19:45:32Z
 url: https://github.com/astral-sh/uv/pull/652
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Remove additional metadata call in `source_dist.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-14 19:31_
+_@charliermarsh_
 
 _No description provided._
 

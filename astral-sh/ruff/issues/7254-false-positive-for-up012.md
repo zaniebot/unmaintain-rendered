@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-10T05:58:43Z
 updated_at: 2023-09-14T20:08:59Z
 url: https://github.com/astral-sh/ruff/issues/7254
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False positive for UP012?
 
 ---
 
-_Issue opened by @fschulze on 2023-09-10 05:58_
+_@fschulze_
 
 ``"Föö".encode("utf-8")`` triggers the rule, but can't be replaced with ``b"Föö"``. I use this quite often in tests.
 

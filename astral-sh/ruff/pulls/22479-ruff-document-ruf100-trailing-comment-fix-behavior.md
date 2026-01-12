@@ -13,14 +13,14 @@ head: fix/ruff-100-docs-20762
 created_at: 2026-01-09T13:46:57Z
 updated_at: 2026-01-09T17:08:16Z
 url: https://github.com/astral-sh/ruff/pull/22479
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [`ruff`] document `RUF100` trailing comment fix behavior
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-09 13:46_
+_@Jkhall81_
 
 ## Summary
 Ruff's `--fix` for `RUF100` can inadvertently remove trailing comments (e.g., `pylint` or `mypy` suppressions) by interpreting them as descriptions. This PR adds a "Conflict with other linters" section to the rule documentation to clarify this behavior and provide the double-hash (`# noqa # pylint`) workaround.

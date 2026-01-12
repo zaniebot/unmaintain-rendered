@@ -13,14 +13,14 @@ head: renovate/strum
 created_at: 2025-02-17T03:42:45Z
 updated_at: 2025-02-17T07:23:09Z
 url: https://github.com/astral-sh/ruff/pull/16195
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Update Rust crate strum to v0.27.1 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-02-17 03:42_
+_@renovate_
 
 This PR contains the following updates:
 

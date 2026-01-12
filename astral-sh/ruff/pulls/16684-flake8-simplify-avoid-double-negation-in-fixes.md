@@ -13,14 +13,14 @@ head: micha/sim103-fix-improvements
 created_at: 2025-03-12T16:14:23Z
 updated_at: 2025-03-13T07:45:53Z
 url: https://github.com/astral-sh/ruff/pull/16684
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`flake8-simplify`] Avoid double negation in fixes (`SIM103`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 16:14_
+_@MichaReiser_
 
 ## Summary
 

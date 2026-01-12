@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T15:06:27Z
 updated_at: 2025-12-06T11:31:18Z
 url: https://github.com/astral-sh/uv/issues/16760
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # `uv pip install`: option to only install dependencies of a given package (without package itself)
 
 ---
 
-_Issue opened by @paveldikov on 2025-11-17 15:06_
+_@paveldikov_
 
 ### Summary
 

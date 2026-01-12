@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-20T04:31:49Z
 updated_at: 2024-04-20T18:47:29Z
 url: https://github.com/astral-sh/uv/issues/3157
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Windows defender/antivirus software flags version 0.1.35
 
 ---
 
-_Issue opened by @ofek on 2024-04-20 04:31_
+_@ofek_
 
 Windows defender immediately flags it as malware and quarantines/deletes https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?name=Trojan%3AScript%2FWacatac.B!ml&threatid=2147735503
 

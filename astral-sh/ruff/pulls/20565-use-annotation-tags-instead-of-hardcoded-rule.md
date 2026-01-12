@@ -14,14 +14,14 @@ head: fix-20532
 created_at: 2025-09-25T05:39:02Z
 updated_at: 2025-09-26T10:50:08Z
 url: https://github.com/astral-sh/ruff/pull/20565
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # Use `Annotation::tags` instead of hardcoded rule matching in ruff server
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-25 05:39_
+_@danparizher_
 
 ## Summary
 

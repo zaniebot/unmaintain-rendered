@@ -12,14 +12,14 @@ head: doc/fix_bump_beta_example
 created_at: 2025-10-06T04:00:31Z
 updated_at: 2025-10-06T09:16:01Z
 url: https://github.com/astral-sh/uv/pull/16132
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # doc: fix example of bumping beta version without patch bump
 
 ---
 
-_Pull request opened by @khneal on 2025-10-06 04:00_
+_@khneal_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

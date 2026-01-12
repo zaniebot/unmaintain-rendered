@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-03-26T16:29:38Z
 updated_at: 2021-04-06T08:46:51Z
 url: https://github.com/clap-rs/clap/issues/2422
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Path of generated completion
 
 ---
 
-_Issue opened by @dalance on 2021-03-26 16:29_
+_@dalance_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T20:49:00Z
 updated_at: 2025-12-16T22:13:57Z
 url: https://github.com/astral-sh/ruff/issues/22013
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rule idea: flag literal attributes in monkeypatching/mocking APIs
 
 ---
 
-_Issue opened by @woodruffw on 2025-12-16 20:49_
+_@woodruffw_
 
 ### Summary
 

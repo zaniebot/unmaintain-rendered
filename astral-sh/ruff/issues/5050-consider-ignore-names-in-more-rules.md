@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-13T14:43:42Z
 updated_at: 2023-06-14T14:57:10Z
 url: https://github.com/astral-sh/ruff/issues/5050
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Consider ignore-names in more rules
 
 ---
 
-_Issue opened by @Thomasdezeeuw on 2023-06-13 14:43_
+_@Thomasdezeeuw_
 
 Currently Ruff doesn't consider the `ignore-names` flag in all rules, see https://github.com/astral-sh/ruff/pull/5024#discussion_r1227824963.
 

@@ -14,14 +14,14 @@ head: micha/avoid-parenthesizing-return-type-annotations
 created_at: 2024-09-17T13:46:49Z
 updated_at: 2024-09-20T07:23:55Z
 url: https://github.com/astral-sh/ruff/pull/13381
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix parentheses around return type annotations
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-17 13:46_
+_@MichaReiser_
 
 ## Summary
 

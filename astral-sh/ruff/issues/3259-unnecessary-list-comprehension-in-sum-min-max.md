@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T22:05:14Z
 updated_at: 2024-04-03T20:44:34Z
 url: https://github.com/astral-sh/ruff/issues/3259
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Unnecessary list comprehension in `sum`, `min`, `max`
 
 ---
 
-_Issue opened by @janosh on 2023-02-27 22:05_
+_@janosh_
 
 It's not part of PIE802 so maybe this should go somewhere else but I noticed https://github.com/charliermarsh/ruff/pull/3149 doesn't include built-in aggregators like `sum()`, `min()`, `max()`.
 

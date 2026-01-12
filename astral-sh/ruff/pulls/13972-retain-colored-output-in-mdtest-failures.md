@@ -13,14 +13,14 @@ head: charlie/color
 created_at: 2024-10-29T01:12:48Z
 updated_at: 2024-11-12T21:39:43Z
 url: https://github.com/astral-sh/ruff/pull/13972
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Retain colored output in `mdtest` failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 01:12_
+_@charliermarsh_
 
 ## Summary
 

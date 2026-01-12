@@ -12,14 +12,14 @@ head: fix-quotation-style
 created_at: 2023-01-01T14:34:56Z
 updated_at: 2023-01-01T17:57:31Z
 url: https://github.com/astral-sh/ruff/pull/1529
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Do not Change Quotation Style for `SIM118` Autofix
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-01 14:34_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1523
 

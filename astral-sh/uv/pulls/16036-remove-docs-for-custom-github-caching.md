@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-09-26T08:48:21Z
 updated_at: 2025-09-26T12:21:01Z
 url: https://github.com/astral-sh/uv/pull/16036
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Remove docs for custom GitHub caching
 
 ---
 
-_Pull request opened by @eifinger on 2025-09-26 08:48_
+_@eifinger_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

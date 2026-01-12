@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-29T03:05:49Z
 updated_at: 2024-11-07T01:38:09Z
 url: https://github.com/astral-sh/uv/issues/8653
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Conda-pack like feature for venv?
 
 ---
 
-_Issue opened by @zarif98 on 2024-10-29 03:05_
+_@zarif98_
 
 Is it possible to have something like this: https://conda.github.io/conda-pack/ for moving environments around? We have a ton of tools that run our software and it would be nice to be just able to copy/paste an environment when needed.
 

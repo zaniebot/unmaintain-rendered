@@ -13,14 +13,14 @@ head: scripts-uv
 created_at: 2024-08-23T10:42:07Z
 updated_at: 2024-11-26T12:06:32Z
 url: https://github.com/astral-sh/ruff/pull/13074
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Use `uv run` to run the Python-based fuzzer
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-23 10:42_
+_@AlexWaygood_
 
 ## Summary
 

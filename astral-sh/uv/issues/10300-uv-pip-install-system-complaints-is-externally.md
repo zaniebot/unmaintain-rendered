@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-05T00:19:30Z
 updated_at: 2025-02-04T02:13:58Z
 url: https://github.com/astral-sh/uv/issues/10300
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # `uv pip install --system` complaints 'is externally managed'
 
 ---
 
-_Issue opened by @dadaphl on 2025-01-05 00:19_
+_@dadaphl_
 
 Hello, 
 When I try to install a module system wide it tells me that `The Python installation  is managed by uv`. Which is confusing and seems contradictory to me as I'm specifically using `uv` to "manage the installation" in the first place.

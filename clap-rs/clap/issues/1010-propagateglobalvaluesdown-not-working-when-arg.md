@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-07-22T22:44:23Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1010
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # PropagateGlobalValuesDown not working when arg has default value
 
 ---
 
-_Issue opened by @AlexanderThaller on 2017-07-22 22:44_
+_@AlexanderThaller_
 
 Please use the following template to assist with creating an issue and getting a speedy resolution. If an area is not applicable, feel free to delete the area, or mark with `N/A`
 

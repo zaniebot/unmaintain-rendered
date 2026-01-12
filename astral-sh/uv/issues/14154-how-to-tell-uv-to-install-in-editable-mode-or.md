@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T14:17:02Z
 updated_at: 2025-06-20T18:07:46Z
 url: https://github.com/astral-sh/uv/issues/14154
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # How to tell uv to install in editable mode or from index
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-06-20 14:17_
+_@kurt-rhee_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: FURB122
 created_at: 2025-02-05T00:07:50Z
 updated_at: 2025-02-05T17:05:59Z
 url: https://github.com/astral-sh/ruff/pull/15953
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`refurb`] Handle unparenthesized tuples correctly (`FURB122`, `FURB142`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-05 00:07_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: yoda-cond
 created_at: 2023-08-19T14:09:55Z
 updated_at: 2023-08-29T10:44:06Z
 url: https://github.com/astral-sh/ruff/pull/6691
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Extend `repeated-equality-comparison-target` to check for mixed orderings and Yoda conditions.
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-19 14:09_
+_@tjkuson_
 
 ## Summary
 

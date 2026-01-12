@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T16:44:24Z
 updated_at: 2025-01-02T09:00:58Z
 url: https://github.com/astral-sh/ruff/issues/14793
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `RUF046` is doing two things instead of one
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-12-05 16:44_
+_@InSyncWithFoo_
 
 I know that 0.8.2 has just been released and that I did say everything looked fine to me before #14697 was merged, but the more I think about it, the more I find it wrong to handle both `round()` and `int()` in one fell swoop. I probably won't be able to sleep well tonight without first sharing my concerns, so here's the big proposal:
 

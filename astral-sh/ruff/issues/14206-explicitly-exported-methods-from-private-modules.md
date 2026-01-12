@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T15:56:35Z
 updated_at: 2024-11-09T02:49:26Z
 url: https://github.com/astral-sh/ruff/issues/14206
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Explicitly exported methods from private modules are not private
 
 ---
 
-_Issue opened by @gaborbernat on 2024-11-08 15:56_
+_@gaborbernat_
 
 With `ruff` private modules public methods is not considered public? (when it comes to the `D` rules?)
 

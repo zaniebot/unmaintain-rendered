@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-16T10:52:19Z
 updated_at: 2025-10-10T13:02:26Z
 url: https://github.com/astral-sh/ruff/issues/19384
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [docs] DTZ011: Docs confuse `date` with `datetime`
 
 ---
 
-_Issue opened by @srittau on 2025-07-16 10:52_
+_@srittau_
 
 ### Summary
 

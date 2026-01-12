@@ -14,14 +14,14 @@ head: charlie/bare-v
 created_at: 2024-03-20T21:25:58Z
 updated_at: 2024-03-21T04:02:07Z
 url: https://github.com/astral-sh/uv/pull/2577
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Support unnamed requirements directly in pip uninstall
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 21:25_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T14:18:52Z
 updated_at: 2025-11-13T07:25:41Z
 url: https://github.com/astral-sh/ty/issues/643
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Associated literal should narrow type (tagged unions)
 
 ---
 
-_Issue opened by @aslpavel on 2025-06-12 14:18_
+_@aslpavel_
 
 ### Summary
 

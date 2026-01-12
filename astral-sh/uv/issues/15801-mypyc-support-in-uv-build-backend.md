@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T03:25:11Z
 updated_at: 2025-09-12T06:09:20Z
 url: https://github.com/astral-sh/uv/issues/15801
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # `mypyc` support in `uv` build backend
 
 ---
 
-_Issue opened by @jamesbraza on 2025-09-12 03:25_
+_@jamesbraza_
 
 ### Summary
 

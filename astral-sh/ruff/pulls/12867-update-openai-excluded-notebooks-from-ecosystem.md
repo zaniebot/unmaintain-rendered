@@ -13,14 +13,14 @@ head: dhruv/ecosystem-notebooks
 created_at: 2024-08-13T16:33:48Z
 updated_at: 2024-08-14T02:33:27Z
 url: https://github.com/astral-sh/ruff/pull/12867
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update OpenAI excluded notebooks from ecosystem checks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-13 16:33_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/ligs
 created_at: 2025-01-17T19:09:41Z
 updated_at: 2025-01-17T19:21:33Z
 url: https://github.com/astral-sh/uv/pull/10721
-synced_at: 2026-01-10T11:45:06Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Avoid attempting to patch macOS dylib for non-macOS installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 19:09_
+_@charliermarsh_
 
 ## Summary
 

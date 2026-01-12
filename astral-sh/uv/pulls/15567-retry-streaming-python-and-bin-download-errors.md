@@ -13,14 +13,14 @@ head: konsti/retry-on-python-download-stream-error
 created_at: 2025-08-28T09:08:44Z
 updated_at: 2025-08-31T15:07:23Z
 url: https://github.com/astral-sh/uv/pull/15567
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Retry streaming Python and bin download errors
 
 ---
 
-_Pull request opened by @konstin on 2025-08-28 09:08_
+_@konstin_
 
 When there is an error during the streaming download and unpack for Python interpreter and bin installs, we would previously fail, causing a lot of CI flakes on GitHub Actions.
 

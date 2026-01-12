@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T19:15:21Z
 updated_at: 2025-02-03T22:12:40Z
 url: https://github.com/astral-sh/uv/issues/11190
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # uv fails on `uv pip install --all-extras` with a `pyproject.toml`
 
 ---
 
-_Issue opened by @gaspardc-met on 2025-02-03 19:15_
+_@gaspardc-met_
 
 ### Summary
 

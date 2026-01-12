@@ -13,14 +13,14 @@ head: charlie/sub
 created_at: 2024-09-30T02:51:48Z
 updated_at: 2024-09-30T20:51:01Z
 url: https://github.com/astral-sh/ruff/pull/13562
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add some basic subscript type inference
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-30 02:51_
+_@charliermarsh_
 
 ## Summary
 

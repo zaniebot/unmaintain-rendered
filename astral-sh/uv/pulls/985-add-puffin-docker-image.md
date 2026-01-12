@@ -12,14 +12,14 @@ head: charlie/docker
 created_at: 2024-01-19T00:22:38Z
 updated_at: 2024-01-19T01:21:32Z
 url: https://github.com/astral-sh/uv/pull/985
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Add Puffin Docker image
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 00:22_
+_@charliermarsh_
 
 Missing piece for the release.
 

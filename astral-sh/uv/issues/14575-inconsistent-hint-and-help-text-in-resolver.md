@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-12T12:08:15Z
 updated_at: 2025-09-02T18:11:28Z
 url: https://github.com/astral-sh/uv/issues/14575
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Inconsistent `hint` and `help` text in resolver failure
 
 ---
 
-_Issue opened by @charliermarsh on 2025-07-12 12:08_
+_@charliermarsh_
 
 Given:
 

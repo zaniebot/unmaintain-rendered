@@ -14,14 +14,14 @@ head: charlie/circ
 created_at: 2025-01-01T02:55:01Z
 updated_at: 2025-01-01T03:22:44Z
 url: https://github.com/astral-sh/uv/pull/10258
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Detect cyclic dependencies during builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-01 02:55_
+_@charliermarsh_
 
 ## Summary
 

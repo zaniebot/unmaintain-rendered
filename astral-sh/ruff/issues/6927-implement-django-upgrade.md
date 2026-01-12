@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-27T23:21:09Z
 updated_at: 2024-02-06T16:29:04Z
 url: https://github.com/astral-sh/ruff/issues/6927
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Implement `django-upgrade`
 
 ---
 
-_Issue opened by @tjkuson on 2023-08-27 23:21_
+_@tjkuson_
 
 I think [`django-upgrade`](https://github.com/adamchainz/django-upgrade) would be a good complement to the pre-existing Django-related ruff rules.
 

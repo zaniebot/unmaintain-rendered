@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-03-03T21:03:14Z
 updated_at: 2024-03-03T23:53:24Z
 url: https://github.com/astral-sh/ruff/pull/10216
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Accept a PEP 440 version specifier for required-version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 21:03_
+_@charliermarsh_
 
 ## Summary
 

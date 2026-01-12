@@ -13,14 +13,14 @@ head: charlie/literal
 created_at: 2023-07-24T14:58:53Z
 updated_at: 2023-07-24T15:30:06Z
 url: https://github.com/astral-sh/ruff/pull/6032
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid treating `Literal` members as expressions with `__future__`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 14:58_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6030.
 

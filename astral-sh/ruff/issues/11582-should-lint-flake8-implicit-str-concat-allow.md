@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-28T13:08:01Z
 updated_at: 2024-07-26T14:36:36Z
 url: https://github.com/astral-sh/ruff/issues/11582
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Should `[lint.flake8-implicit-str-concat] allow-multiline = false` implicitly disable `ISC003` ?
 
 ---
 
-_Issue opened by @Avasam on 2024-05-28 13:08_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

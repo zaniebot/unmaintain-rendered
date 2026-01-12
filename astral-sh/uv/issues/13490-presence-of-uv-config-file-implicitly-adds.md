@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T13:55:43Z
 updated_at: 2025-06-20T09:10:03Z
 url: https://github.com/astral-sh/uv/issues/13490
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Presence of `UV_CONFIG_FILE` implicitly adds default index
 
 ---
 
-_Issue opened by @eegli on 2025-05-16 13:55_
+_@eegli_
 
 ### Update
 The issue has been pinpointed; [see this comment](https://github.com/astral-sh/uv/issues/13490#issuecomment-2889718521).

@@ -13,14 +13,14 @@ head: charlie/printf
 created_at: 2023-03-18T19:25:03Z
 updated_at: 2023-03-21T04:02:27Z
 url: https://github.com/astral-sh/ruff/pull/3600
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Convert single-argument %-style format calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-18 19:25_
+_@charliermarsh_
 
 ## Summary
 

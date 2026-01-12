@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-03T12:36:07Z
 updated_at: 2024-01-04T05:00:56Z
 url: https://github.com/astral-sh/ruff/issues/9379
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Linter panic: f-string error location miscomputation
 
 ---
 
-_Issue opened by @addisoncrump on 2024-01-03 12:36_
+_@addisoncrump_
 
 Similar to #5004, but occurs outside of the f-string.
 

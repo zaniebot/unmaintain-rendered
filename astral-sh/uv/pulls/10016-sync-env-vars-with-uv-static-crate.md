@@ -13,14 +13,14 @@ head: env-var-sync
 created_at: 2024-12-19T01:22:34Z
 updated_at: 2024-12-19T07:02:06Z
 url: https://github.com/astral-sh/uv/pull/10016
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Sync env vars with uv-static crate 🧹
 
 ---
 
-_Pull request opened by @samypr100 on 2024-12-19 01:22_
+_@samypr100_
 
 ## Summary
 

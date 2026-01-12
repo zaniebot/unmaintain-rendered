@@ -13,14 +13,14 @@ head: fix-trailing-commas
 created_at: 2024-02-16T16:10:47Z
 updated_at: 2024-02-17T07:42:44Z
 url: https://github.com/astral-sh/uv/pull/1507
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Fix trailing commas on `Requires-Python` in HTML indexes 
 
 ---
 
-_Pull request opened by @davidszotten on 2024-02-16 16:10_
+_@davidszotten_
 
 illustration and suggested fix for #1464 
 

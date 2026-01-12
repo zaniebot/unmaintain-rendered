@@ -14,14 +14,14 @@ head: charlie/syslink
 created_at: 2024-05-14T17:47:14Z
 updated_at: 2024-05-14T18:33:45Z
 url: https://github.com/astral-sh/uv/pull/3584
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Create lib64 symlink for 64-bit, non-macOS, POSIX environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 17:47_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-06T04:07:53Z
 updated_at: 2023-11-07T15:30:40Z
 url: https://github.com/astral-sh/ruff/issues/8503
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ARG: Add option to enforce granularity
 
 ---
 
-_Issue opened by @ofek on 2023-11-06 04:07_
+_@ofek_
 
 It would be nice if there was [an option](https://docs.astral.sh/ruff/settings/#flake8-unused-arguments) for the ARG rules that would force ignore comments to apply just to the particular unused arguments. Often I want to take note in the code that one or two are intentionally ignored but the others should definitely not be. When this option exists there should be another rule added that would allow you to actually ignore the entire function/method.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T14:11:00Z
 updated_at: 2025-11-10T16:42:14Z
 url: https://github.com/astral-sh/ty/issues/1514
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Omit inlay hints for function argument names when the input matches it
 
 ---
 
-_Issue opened by @Gankra on 2025-11-10 14:11_
+_@Gankra_
 
 An IMO very nice feature of rust-analyzer is that it omits inlay hints of names when the thing being passed to the name matches:
 

@@ -12,14 +12,14 @@ head: zb/psh
 created_at: 2025-02-19T17:00:30Z
 updated_at: 2025-02-19T18:04:00Z
 url: https://github.com/astral-sh/uv/pull/11627
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Explicitly use `powershell` instead of `pwsh` in GitHub Actions smoke test
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-19 17:00_
+_@zanieb_
 
 _No description provided._
 

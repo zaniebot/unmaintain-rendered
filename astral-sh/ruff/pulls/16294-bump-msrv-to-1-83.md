@@ -13,14 +13,14 @@ head: cjm/bump-msrv
 created_at: 2025-02-21T02:06:55Z
 updated_at: 2025-02-26T14:12:45Z
 url: https://github.com/astral-sh/ruff/pull/16294
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # bump MSRV to 1.83
 
 ---
 
-_Pull request opened by @carljm on 2025-02-21 02:06_
+_@carljm_
 
 According to our new MSRV policy (see https://github.com/astral-sh/ruff/issues/16370 ), bump our MSRV to 1.83 (N - 2), and autofix some new clippy lints.
 

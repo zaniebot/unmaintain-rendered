@@ -13,14 +13,14 @@ head: charlie/300
 created_at: 2023-03-04T21:15:51Z
 updated_at: 2023-03-04T21:30:35Z
 url: https://github.com/astral-sh/ruff/pull/3348
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Treat unary operations on constants as constant-like
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-04 21:15_
+_@charliermarsh_
 
 This applies to both the `yoda-condition` and `magic-value-comparison` rules.
 

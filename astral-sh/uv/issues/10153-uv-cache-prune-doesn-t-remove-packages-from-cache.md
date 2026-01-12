@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-25T08:56:03Z
 updated_at: 2025-05-16T13:19:01Z
 url: https://github.com/astral-sh/uv/issues/10153
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # `uv cache prune` doesn't remove packages from cache for deleted environments
 
 ---
 
-_Issue opened by @neckbosov on 2024-12-25 08:56_
+_@neckbosov_
 
 Steps to reproduce:
 ```bash

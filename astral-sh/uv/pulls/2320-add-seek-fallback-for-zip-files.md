@@ -14,14 +14,14 @@ head: charlie/data-descriptors
 created_at: 2024-03-10T02:26:10Z
 updated_at: 2024-03-10T16:33:52Z
 url: https://github.com/astral-sh/uv/pull/2320
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Add `Seek` fallback for zip files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 02:26_
+_@charliermarsh_
 
 ## Summary
 

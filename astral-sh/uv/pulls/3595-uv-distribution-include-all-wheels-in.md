@@ -12,14 +12,14 @@ head: ag/propagate-wheels
 created_at: 2024-05-14T22:45:10Z
 updated_at: 2024-05-15T19:07:30Z
 url: https://github.com/astral-sh/uv/pull/3595
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # uv-distribution: include all wheels in distribution types
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-14 22:45_
+_@BurntSushi_
 
 Our current flow of data from "simple registry package" to "final
 resolved distribution" goes through a number of types:

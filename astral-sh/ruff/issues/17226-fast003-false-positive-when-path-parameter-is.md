@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-05T23:16:04Z
 updated_at: 2025-08-11T12:29:55Z
 url: https://github.com/astral-sh/ruff/issues/17226
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `FAST003` false positive when path parameter is included inside a `BaseModel` dependency
 
 ---
 
-_Issue opened by @biellSilva on 2025-04-05 23:16_
+_@biellSilva_
 
 ### Summary
 

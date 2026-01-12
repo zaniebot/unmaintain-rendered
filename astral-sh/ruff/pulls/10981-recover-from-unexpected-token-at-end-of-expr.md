@@ -14,14 +14,14 @@ head: dhruv/expr-end-recovery
 created_at: 2024-04-16T18:39:37Z
 updated_at: 2024-04-16T19:01:35Z
 url: https://github.com/astral-sh/ruff/pull/10981
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Recover from unexpected token at end of expr
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-16 18:39_
+_@dhruvmanila_
 
 ## Summary
 

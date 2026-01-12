@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-07T19:42:38Z
 updated_at: 2022-10-07T19:58:44Z
 url: https://github.com/astral-sh/ruff/issues/345
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Unused import messages for `ImportFrom` statements are wonky
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 19:42_
+_@charliermarsh_
 
 Example:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T20:10:20Z
 updated_at: 2025-05-29T18:59:50Z
 url: https://github.com/astral-sh/ruff/issues/15792
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB171 Does not trigger when calling set(...)
 
 ---
 
-_Issue opened by @naslundx on 2025-01-28 20:10_
+_@naslundx_
 
 ### Description
 

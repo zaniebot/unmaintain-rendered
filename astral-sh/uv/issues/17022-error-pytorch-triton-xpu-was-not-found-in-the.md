@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T08:38:17Z
 updated_at: 2025-12-11T01:21:12Z
 url: https://github.com/astral-sh/uv/issues/17022
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # ERROR: pytorch-triton-xpu was not found in the package registry
 
 ---
 
-_Issue opened by @H-E3 on 2025-12-08 08:38_
+_@H-E3_
 
 ### Question
 

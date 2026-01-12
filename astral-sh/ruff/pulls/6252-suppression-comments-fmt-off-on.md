@@ -12,14 +12,14 @@ head: fmt-off-on
 created_at: 2023-08-01T16:20:15Z
 updated_at: 2024-01-16T10:03:29Z
 url: https://github.com/astral-sh/ruff/pull/6252
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Suppression comments: `fmt: off..on`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-01 16:20_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

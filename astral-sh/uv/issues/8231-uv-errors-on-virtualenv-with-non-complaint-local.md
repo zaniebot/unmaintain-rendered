@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T00:01:40Z
 updated_at: 2024-10-17T20:23:03Z
 url: https://github.com/astral-sh/uv/issues/8231
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # uv errors on virtualenv with non-complaint local version in `.dist-info`
 
 ---
 
-_Issue opened by @arrdem on 2024-10-16 00:01_
+_@arrdem_
 
 ```
 (abnormal) ➜  source git:(main) uv --version

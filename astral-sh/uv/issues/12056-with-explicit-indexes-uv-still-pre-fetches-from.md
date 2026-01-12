@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T19:06:28Z
 updated_at: 2025-03-07T19:45:47Z
 url: https://github.com/astral-sh/uv/issues/12056
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # With explicit indexes, uv still pre-fetches from implicit indexes in some cases
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-07 19:06_
+_@charliermarsh_
 
 I noticed that given:
 

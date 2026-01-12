@@ -13,14 +13,14 @@ head: charlie/ed
 created_at: 2024-08-25T14:54:00Z
 updated_at: 2024-08-25T15:01:40Z
 url: https://github.com/astral-sh/uv/pull/6608
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Show `--editable` on the `uv add` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 14:54_
+_@charliermarsh_
 
 ## Summary
 

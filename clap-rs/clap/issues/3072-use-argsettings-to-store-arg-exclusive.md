@@ -15,14 +15,14 @@ assignees: []
 created_at: 2021-12-07T21:50:22Z
 updated_at: 2021-12-09T16:59:53Z
 url: https://github.com/clap-rs/clap/issues/3072
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Use ArgSettings to store `Arg::exclusive`
 
 ---
 
-_Issue opened by @epage on 2021-12-07 21:50_
+_@epage_
 
 Clap: master
 

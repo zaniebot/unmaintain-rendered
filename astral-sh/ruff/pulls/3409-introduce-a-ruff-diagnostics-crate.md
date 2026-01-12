@@ -13,14 +13,14 @@ head: charlie/ruff-diagnostics
 created_at: 2023-03-08T21:03:44Z
 updated_at: 2023-03-09T20:49:00Z
 url: https://github.com/astral-sh/ruff/pull/3409
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Introduce a `ruff_diagnostics` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-08 21:03_
+_@charliermarsh_
 
 ## Summary
 

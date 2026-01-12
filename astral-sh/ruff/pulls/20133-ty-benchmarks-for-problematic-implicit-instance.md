@@ -15,14 +15,14 @@ head: david/add-instance-attribute-benchmarks
 created_at: 2025-08-28T12:33:50Z
 updated_at: 2025-08-28T13:25:27Z
 url: https://github.com/astral-sh/ruff/pull/20133
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Benchmarks for problematic implicit instance attributes cases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-28 12:33_
+_@sharkdp_
 
 ## Summary
 

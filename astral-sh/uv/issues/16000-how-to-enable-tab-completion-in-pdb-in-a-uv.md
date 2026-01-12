@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T03:31:09Z
 updated_at: 2025-09-24T20:33:57Z
 url: https://github.com/astral-sh/uv/issues/16000
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # How to enable tab completion in pdb in a uv environment
 
 ---
 
-_Issue opened by @Zhaoyilunnn on 2025-09-23 03:31_
+_@Zhaoyilunnn_
 
 ### Question
 

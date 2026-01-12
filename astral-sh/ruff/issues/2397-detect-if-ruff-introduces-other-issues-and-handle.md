@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T14:22:12Z
 updated_at: 2024-11-27T04:55:45Z
 url: https://github.com/astral-sh/ruff/issues/2397
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # detect if ruff introduces other issues and handle them/warn about it
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 14:22_
+_@spaceone_
 
 When I initially want to bring a large code base (or even small ones) to use `ruff` as lint tool I have the following workflow:
 I am initially fixing every ruff rule individually by selecting it exclusively.

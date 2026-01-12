@@ -12,14 +12,14 @@ head: zb/rooster-dup
 created_at: 2024-08-21T23:39:07Z
 updated_at: 2024-08-21T23:48:52Z
 url: https://github.com/zanieb/rooster/pull/46
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix duplicate changelog sections when used by multiple labels
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 23:39_
+_@zanieb_
 
 xref https://github.com/astral-sh/uv/pull/6390
 

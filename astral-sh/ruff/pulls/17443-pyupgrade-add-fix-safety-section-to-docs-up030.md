@@ -13,14 +13,14 @@ head: doc_fix_safety_for_format_literals
 created_at: 2025-04-17T08:23:09Z
 updated_at: 2025-04-21T18:14:58Z
 url: https://github.com/astral-sh/ruff/pull/17443
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pyupgrade`] Add fix safety section to docs (`UP030`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-17 08:23_
+_@Kalmaegi_
 
 
 

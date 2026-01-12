@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T17:42:43Z
 updated_at: 2024-03-06T21:51:14Z
 url: https://github.com/astral-sh/uv/issues/2023
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Formalize policy on pip compatibility
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-27 17:42_
+_@MichaReiser_
 
 We should define a formal policy on the pip functionality and workflows we want and don't want to support. This helps us triaging issues and users to understand the scope of `uv pip`. 
 

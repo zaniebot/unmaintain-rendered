@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T07:56:37Z
 updated_at: 2024-12-20T09:05:32Z
 url: https://github.com/astral-sh/ruff/issues/11482
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False positive for list comprehension
 
 ---
 
-_Issue opened by @jontwo on 2024-05-21 07:56_
+_@jontwo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

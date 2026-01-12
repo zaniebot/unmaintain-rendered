@@ -12,14 +12,14 @@ head: charlie/TCH
 created_at: 2023-01-25T21:49:05Z
 updated_at: 2023-01-25T21:52:51Z
 url: https://github.com/astral-sh/ruff/pull/2176
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Actually, rename TYP rules to TCH
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 21:49_
+_@charliermarsh_
 
 This was the original prefix used by the plugin. So, if we're picking something different, we might as well use it over the arbitrary `TYC`.
 

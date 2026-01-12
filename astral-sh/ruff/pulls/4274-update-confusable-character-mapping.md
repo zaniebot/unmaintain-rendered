@@ -12,14 +12,14 @@ head: update-ambiguous-list
 created_at: 2023-05-08T09:57:48Z
 updated_at: 2023-05-08T18:56:10Z
 url: https://github.com/astral-sh/ruff/pull/4274
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update confusable character mapping
 
 ---
 
-_Pull request opened by @akx on 2023-05-08 09:57_
+_@akx_
 
 ... with a script to do it automatically!
 

@@ -12,14 +12,14 @@ head: charlie/boundaries
 created_at: 2023-05-20T20:51:47Z
 updated_at: 2023-05-22T14:58:29Z
 url: https://github.com/astral-sh/ruff/pull/4552
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Make ambiguous-unicode detection sensitive to 'word' context
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-20 20:51_
+_@charliermarsh_
 
 ## Summary
 

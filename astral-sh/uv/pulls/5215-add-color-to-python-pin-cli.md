@@ -14,14 +14,14 @@ head: charlie/pin
 created_at: 2024-07-19T13:03:21Z
 updated_at: 2024-07-19T17:19:30Z
 url: https://github.com/astral-sh/uv/pull/5215
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Add color to `python pin` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 13:03_
+_@charliermarsh_
 
 ## Summary
 

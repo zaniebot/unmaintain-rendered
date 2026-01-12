@@ -13,14 +13,14 @@ head: zb/lock-debug
 created_at: 2024-08-28T21:38:35Z
 updated_at: 2024-09-03T18:14:02Z
 url: https://github.com/astral-sh/uv/pull/6777
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Improve logging for locked file acquisition
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 21:38_
+_@zanieb_
 
 Consistency etc. when debugging a deadlock 
 

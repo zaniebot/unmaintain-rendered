@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T10:28:52Z
 updated_at: 2024-08-26T23:58:18Z
 url: https://github.com/astral-sh/uv/issues/6641
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Cannot solve an environment with platform_system == Emscripten on Linux/OSX
 
 ---
 
-_Issue opened by @maartenbreddels on 2024-08-26 10:28_
+_@maartenbreddels_
 
 Given https://github.com/posit-dev/py-shiny/blob/77a679271ee94a64af597ad1159f6ab6bdeb1b51/pyproject.toml
 The following requirements file should be solvable for `"platform_system == 'Emscripten'"`

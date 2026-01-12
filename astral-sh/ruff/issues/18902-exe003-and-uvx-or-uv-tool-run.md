@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T19:06:20Z
 updated_at: 2025-06-30T13:38:19Z
 url: https://github.com/astral-sh/ruff/issues/18902
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # EXE003 and `uvx`or `uv tool run`
 
 ---
 
-_Issue opened by @jretz on 2025-06-23 19:06_
+_@jretz_
 
 ### Summary
 

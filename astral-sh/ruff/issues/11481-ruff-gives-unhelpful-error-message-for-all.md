@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T02:57:38Z
 updated_at: 2024-06-04T03:56:05Z
 url: https://github.com/astral-sh/ruff/issues/11481
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff gives unhelpful error message for all commands when pyproject.toml is invalid
 
 ---
 
-_Issue opened by @mscheifer on 2024-05-21 02:57_
+_@mscheifer_
 
 When my `pyproject.toml` file is invalid, every `ruff` command gives the same somewhat confusing error message.
 ```shell

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-08T17:33:46Z
 updated_at: 2026-01-09T11:18:38Z
 url: https://github.com/astral-sh/ty/issues/2400
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Hang/OOM on generic function wrapping a method with many overloads
 
 ---
 
-_Issue opened by @jelle-openai on 2026-01-08 17:33_
+_@jelle-openai_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: feat/d2xx-incompatibles
 created_at: 2023-01-27T18:27:09Z
 updated_at: 2023-01-28T05:40:14Z
 url: https://github.com/astral-sh/ruff/pull/2272
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Incompatiblity warning updates
 
 ---
 
-_Pull request opened by @scop on 2023-01-27 18:27_
+_@scop_
 
 See individual commits for details.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-28T10:11:18Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/606
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # does not support yaml with identation of 2 spaces
 
 ---
 
-_Issue opened by @laishulu on 2016-07-28 10:11_
+_@laishulu_
 
 If the yaml file use indent width=2, instead of 4, it will not be parsed correctly.
 

@@ -12,14 +12,14 @@ head: ecosystem-ci
 created_at: 2023-03-07T21:18:54Z
 updated_at: 2023-03-16T22:50:21Z
 url: https://github.com/astral-sh/ruff/pull/3390
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Setup ecosystem CI
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-03-07 21:18_
+_@sciyoshi_
 
 This PR sets up an "ecosystem" check as an optional part of the CI step for pull requests. The primary piece of this is a new script in `scripts/check_ecosystem.py` which takes two ruff binaries as input and compares their outputs against a corpus of open-source code in parallel. I used ruff's `text` reporting format and stdlib's `difflib` (rather than JSON output and jsondiffs) to avoid adding another dependency. There is a new ecosystem-comment workflow to add a comment to the PR (see [this link](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) which explains why it needs to be done as a new workflow for security reasons).
 

@@ -13,14 +13,14 @@ head: bug/retain-trailing-comment-position
 created_at: 2025-03-21T09:52:22Z
 updated_at: 2025-03-22T00:30:54Z
 url: https://github.com/astral-sh/uv/pull/12360
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Retain end-of-line comment position when adding dependency
 
 ---
 
-_Pull request opened by @christeefy on 2025-03-21 09:52_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

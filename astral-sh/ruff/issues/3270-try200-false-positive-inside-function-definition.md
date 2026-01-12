@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T10:59:47Z
 updated_at: 2023-02-28T16:56:30Z
 url: https://github.com/astral-sh/ruff/issues/3270
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TRY200 false positive inside function definition inside except block
 
 ---
 
-_Issue opened by @manueljacob on 2023-02-28 10:59_
+_@manueljacob_
 
 ```python
 def good():

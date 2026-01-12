@@ -13,14 +13,14 @@ head: charlie/negate
 created_at: 2024-08-13T21:31:11Z
 updated_at: 2024-08-14T11:53:56Z
 url: https://github.com/astral-sh/uv/pull/6069
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Avoid double-intersection when forking
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-13 21:31_
+_@charliermarsh_
 
 ## Summary
 

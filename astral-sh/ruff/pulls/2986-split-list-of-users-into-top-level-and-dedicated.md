@@ -13,14 +13,14 @@ head: charlie/users
 created_at: 2023-02-17T13:27:18Z
 updated_at: 2023-02-17T13:36:33Z
 url: https://github.com/astral-sh/ruff/pull/2986
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Split list of users into top-level and dedicated section
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 13:27_
+_@charliermarsh_
 
 _No description provided._
 

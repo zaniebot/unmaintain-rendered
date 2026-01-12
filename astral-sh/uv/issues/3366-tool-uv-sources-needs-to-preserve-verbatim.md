@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-04T02:57:28Z
 updated_at: 2024-05-07T09:00:03Z
 url: https://github.com/astral-sh/uv/issues/3366
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # `tool.uv.sources` needs to preserve verbatim representation
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-04 02:57_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/3263/files#r1589862490
 

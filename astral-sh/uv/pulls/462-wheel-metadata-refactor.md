@@ -12,14 +12,14 @@ head: wheel-metadata-refactor
 created_at: 2023-11-19T19:53:07Z
 updated_at: 2023-11-20T16:26:38Z
 url: https://github.com/astral-sh/uv/pull/462
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Wheel metadata refactor
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 19:53_
+_@konstin_
 
 A consistent cache structure for remote wheel metadata:
 

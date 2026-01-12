@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-19T08:20:33Z
 updated_at: 2024-09-19T09:50:32Z
 url: https://github.com/astral-sh/uv/issues/7536
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Unable to change cache directory
 
 ---
 
-_Issue opened by @ryscu7 on 2024-09-19 08:20_
+_@ryscu7_
 
 Setting a custom cache directory to avoid the hardlink warning doesn't work.
 

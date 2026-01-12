@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-26T09:20:50Z
 updated_at: 2024-11-27T16:46:48Z
 url: https://github.com/astral-sh/ruff/issues/14603
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Lint for closure that do not capture anything ? 
 
 ---
 
-_Issue opened by @Carreau on 2024-11-26 09:20_
+_@Carreau_
 
 Hi,
 

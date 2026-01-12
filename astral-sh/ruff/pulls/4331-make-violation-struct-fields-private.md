@@ -12,14 +12,14 @@ head: charlie/private
 created_at: 2023-05-09T21:37:11Z
 updated_at: 2023-05-09T22:22:42Z
 url: https://github.com/astral-sh/ruff/pull/4331
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Make violation struct fields private
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 21:37_
+_@charliermarsh_
 
 _No description provided._
 

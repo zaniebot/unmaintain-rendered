@@ -14,14 +14,14 @@ head: alex/static-class-method-liskov
 created_at: 2025-11-23T22:13:58Z
 updated_at: 2025-11-24T23:14:09Z
 url: https://github.com/astral-sh/ruff/pull/21598
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Extend Liskov checks to also cover classmethods and staticmethods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-23 22:13_
+_@AlexWaygood_
 
 ## Summary
 

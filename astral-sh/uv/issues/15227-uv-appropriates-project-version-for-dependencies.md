@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-11T21:20:46Z
 updated_at: 2025-08-15T04:14:27Z
 url: https://github.com/astral-sh/uv/issues/15227
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # uv appropriates project version for dependencies when UV_CACHE_DIR is set to a subdirectory of the project
 
 ---
 
-_Issue opened by @mikolak-net on 2025-08-11 21:20_
+_@mikolak-net_
 
 ### Summary
 

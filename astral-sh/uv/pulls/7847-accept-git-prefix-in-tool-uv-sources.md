@@ -13,14 +13,14 @@ head: charlie/git-plus
 created_at: 2024-10-01T15:54:51Z
 updated_at: 2024-10-14T09:13:49Z
 url: https://github.com/astral-sh/uv/pull/7847
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Accept `git+` prefix in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 15:54_
+_@charliermarsh_
 
 ## Summary
 

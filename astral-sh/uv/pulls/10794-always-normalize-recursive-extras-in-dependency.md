@@ -14,14 +14,14 @@ head: charlie/flatten-extras
 created_at: 2025-01-20T22:57:21Z
 updated_at: 2025-01-21T21:08:24Z
 url: https://github.com/astral-sh/uv/pull/10794
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Always normalize recursive extras in dependency metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 22:57_
+_@charliermarsh_
 
 ## Summary
 

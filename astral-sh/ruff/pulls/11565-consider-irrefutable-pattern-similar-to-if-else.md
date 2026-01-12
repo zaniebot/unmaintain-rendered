@@ -13,14 +13,14 @@ head: match-case-catch-all
 created_at: 2024-05-27T10:34:32Z
 updated_at: 2024-05-27T17:55:10Z
 url: https://github.com/astral-sh/ruff/pull/11565
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider irrefutable pattern similar to `if .. else` for `C901`
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-27 10:34_
+_@blueraft_
 
 ## Summary
 

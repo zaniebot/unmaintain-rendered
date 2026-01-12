@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-11T11:57:47Z
 updated_at: 2018-08-02T03:30:20Z
 url: https://github.com/clap-rs/clap/issues/1207
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Non string default parameters
 
 ---
 
-_Issue opened by @jbreitbart on 2018-03-11 11:57_
+_@jbreitbart_
 
 I am not sure if this is a real issue or just me being stupid. I am wondering if it is possible to support non string-default parameters. Currently it seems like I have to do
 

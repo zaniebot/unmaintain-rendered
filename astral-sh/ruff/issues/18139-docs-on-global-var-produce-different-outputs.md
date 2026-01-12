@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-16T17:07:24Z
 updated_at: 2025-05-22T05:55:38Z
 url: https://github.com/astral-sh/ruff/issues/18139
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Docs on global var produce different outputs
 
 ---
 
-_Issue opened by @jm-positron on 2025-05-16 17:07_
+_@jm-positron_
 
 ### Summary
 

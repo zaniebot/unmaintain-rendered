@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T10:00:56Z
 updated_at: 2024-11-20T14:58:16Z
 url: https://github.com/astral-sh/uv/issues/9268
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Python conditional package dependencies for `psycopg[c]` on `==armv7` | `psycopg[binary]` on `!=armv7`
 
 ---
 
-_Issue opened by @zarch on 2024-11-20 10:00_
+_@zarch_
 
 Hi all,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T15:46:23Z
 updated_at: 2025-11-29T15:46:41Z
 url: https://github.com/astral-sh/ty/issues/1676
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add diagnostic warning against shadowing a submodule name in `__init__.py`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:46_
+_@AlexWaygood_
 
 If you do something like this, it significantly increases the likelihood that ty will get confused when resolving the type of the attribute `a.b` when `a` has been imported in another module (should it be resolved to `Literal[42]` or `<module 'a.b'>`?:
 

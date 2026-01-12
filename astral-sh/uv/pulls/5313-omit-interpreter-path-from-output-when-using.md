@@ -14,14 +14,14 @@ head: zb/managed-path
 created_at: 2024-07-22T21:19:42Z
 updated_at: 2024-07-24T15:19:13Z
 url: https://github.com/astral-sh/uv/pull/5313
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Omit interpreter path from output when using managed Python
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 21:19_
+_@zanieb_
 
 Extending https://github.com/astral-sh/uv/pull/5311 to the project API
 

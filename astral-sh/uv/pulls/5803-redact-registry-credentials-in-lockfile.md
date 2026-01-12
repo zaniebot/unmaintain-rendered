@@ -14,14 +14,14 @@ head: charlie/redact
 created_at: 2024-08-05T23:29:17Z
 updated_at: 2024-08-06T02:54:20Z
 url: https://github.com/astral-sh/uv/pull/5803
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Redact registry credentials in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 23:29_
+_@charliermarsh_
 
 ## Summary
 

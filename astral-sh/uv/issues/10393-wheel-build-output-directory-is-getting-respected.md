@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T13:35:28Z
 updated_at: 2025-01-10T12:12:09Z
 url: https://github.com/astral-sh/uv/issues/10393
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # wheel Build output directory is getting respected
 
 ---
 
-_Issue opened by @bakkiaraj on 2025-01-08 13:35_
+_@bakkiaraj_
 
 [tool.hatch.build]
 directory = "buildout"

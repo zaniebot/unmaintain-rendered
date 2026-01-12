@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T07:44:53Z
 updated_at: 2025-05-24T15:08:25Z
 url: https://github.com/astral-sh/uv/issues/13567
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Shell command hashing causes global pip to be used after uv venv activation
 
 ---
 
-_Issue opened by @Ramesh-kumar-S on 2025-05-21 07:44_
+_@Ramesh-kumar-S_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T16:18:18Z
 updated_at: 2025-02-26T18:50:22Z
 url: https://github.com/astral-sh/ruff/issues/16374
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Do not match-case against np.nan
 
 ---
 
-_Issue opened by @RolandSaur on 2025-02-25 16:18_
+_@RolandSaur_
 
 ### Summary
 

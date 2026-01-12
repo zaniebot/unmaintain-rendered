@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T16:36:54Z
 updated_at: 2024-12-15T17:24:53Z
 url: https://github.com/astral-sh/uv/issues/9917
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # uvx CLI scripts ("tools" ?) ignore `--help` argument when using `Fire` or `Typer`
 
 ---
 
-_Issue opened by @pchalasani on 2024-12-15 16:36_
+_@pchalasani_
 
 E.g. in my `langroid-examples` repo, I've enabled some scripts to be runnable as follows:
 

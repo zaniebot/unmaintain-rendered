@@ -12,14 +12,14 @@ head: ctxmg-yield-once
 created_at: 2025-04-07T16:43:43Z
 updated_at: 2025-10-19T18:55:39Z
 url: https://github.com/astral-sh/ruff/pull/17281
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Add Rule to check for singular `yield` in `@contextlib.{async}contextmanager` decorated functions (RUF062)
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-07 16:43_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

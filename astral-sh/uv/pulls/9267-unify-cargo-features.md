@@ -13,14 +13,14 @@ head: konsti/cargo-features
 created_at: 2024-11-20T09:30:20Z
 updated_at: 2024-11-20T15:11:26Z
 url: https://github.com/astral-sh/uv/pull/9267
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Unify cargo features
 
 ---
 
-_Pull request opened by @konstin on 2024-11-20 09:30_
+_@konstin_
 
 When building only a single crate in the workspace to run its tests, we often recompile a lot of other, unrelated crates. Whenever cargo has a different set of crate features, it needs to recompile. By moving some features (non-exhaustive for now) to the workspace level, we always activate them an avoid recompiling.
 

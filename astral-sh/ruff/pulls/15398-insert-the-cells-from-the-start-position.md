@@ -15,14 +15,14 @@ head: dhruv/fix-notebook-update
 created_at: 2025-01-10T12:25:17Z
 updated_at: 2025-01-10T13:20:34Z
 url: https://github.com/astral-sh/ruff/pull/15398
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Insert the cells from the `start` position
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-10 12:25_
+_@dhruvmanila_
 
 ## Summary
 

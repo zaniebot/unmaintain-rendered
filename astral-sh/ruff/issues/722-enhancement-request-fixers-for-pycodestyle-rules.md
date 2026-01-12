@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-13T18:04:37Z
 updated_at: 2022-11-20T03:42:45Z
 url: https://github.com/astral-sh/ruff/issues/722
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Enhancement request - fixers for pycodestyle rules
 
 ---
 
-_Issue opened by @peterjc on 2022-11-13 18:04_
+_@peterjc_
 
 Many of the pycodestyle rules ruff can detect ought to be easy to fix:
 

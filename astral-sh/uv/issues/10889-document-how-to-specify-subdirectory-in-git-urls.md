@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T08:05:19Z
 updated_at: 2025-01-23T13:58:41Z
 url: https://github.com/astral-sh/uv/issues/10889
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Document how to specify subdirectory in git urls
 
 ---
 
-_Issue opened by @mickvangelderen on 2025-01-23 08:05_
+_@mickvangelderen_
 
 ### Summary
 

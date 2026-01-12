@@ -12,14 +12,14 @@ head: update-readme-linters-links
 created_at: 2023-01-21T16:20:32Z
 updated_at: 2023-01-22T18:10:33Z
 url: https://github.com/astral-sh/ruff/pull/2062
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Update linters pypi links to latest version
 
 ---
 
-_Pull request opened by @alonme on 2023-01-21 16:20_
+_@alonme_
 
 I saw that some of the links to the linters PYPI page are not pointing to the latest version - updated those.
 

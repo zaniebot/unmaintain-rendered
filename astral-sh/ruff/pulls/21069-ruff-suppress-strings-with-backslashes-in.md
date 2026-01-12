@@ -13,14 +13,14 @@ head: fix-21033
 created_at: 2025-10-24T22:54:21Z
 updated_at: 2025-10-27T22:25:32Z
 url: https://github.com/astral-sh/ruff/pull/21069
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [`ruff`] Suppress strings with backslashes in interpolations before Python 3.12 (`RUF027`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-24 22:54_
+_@danparizher_
 
 ## Summary
 Fixes #21033 (RUF027) to suppress f-string suggestions for strings containing backslashes in interpolation expressions when targeting Python versions below 3.12, preventing syntax errors.

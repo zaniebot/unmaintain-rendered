@@ -13,14 +13,14 @@ head: nickjj/update-prune-help-value
 created_at: 2025-03-24T15:30:41Z
 updated_at: 2025-03-24T15:45:46Z
 url: https://github.com/astral-sh/uv/pull/12432
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Update `--prune` help arg from `PRUNE` to `PACKAGE`
 
 ---
 
-_Pull request opened by @nickjj on 2025-03-24 15:30_
+_@nickjj_
 
 ## Summary
 

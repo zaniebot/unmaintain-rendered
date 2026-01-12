@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T08:52:06Z
 updated_at: 2025-11-03T02:52:05Z
 url: https://github.com/astral-sh/uv/issues/15732
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # `uv` and caching
 
 ---
 
-_Issue opened by @stdedos on 2025-09-08 08:52_
+_@stdedos_
 
 ### Question
 

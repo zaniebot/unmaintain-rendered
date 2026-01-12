@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-20T13:18:05Z
 updated_at: 2025-08-01T02:18:08Z
 url: https://github.com/astral-sh/ruff/issues/19437
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PTH201 should check all subclasses of `PurePath`
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-20 13:18_
+_@dscorbett_
 
 ### Summary
 

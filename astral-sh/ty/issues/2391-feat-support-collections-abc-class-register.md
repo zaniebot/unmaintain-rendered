@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T04:07:59Z
 updated_at: 2026-01-10T18:54:43Z
 url: https://github.com/astral-sh/ty/issues/2391
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Feat: support `collections.abc.<Class>.register`
 
 ---
 
-_Issue opened by @NickCrews on 2026-01-08 04:07_
+_@NickCrews_
 
 This is related to https://github.com/astral-sh/ty/issues/2390.
 

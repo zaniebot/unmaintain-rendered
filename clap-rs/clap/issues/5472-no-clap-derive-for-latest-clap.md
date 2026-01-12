@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T12:55:12Z
 updated_at: 2024-04-23T14:00:58Z
 url: https://github.com/clap-rs/clap/issues/5472
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # No clap_derive for latest clap
 
 ---
 
-_Issue opened by @Cthutu on 2024-04-23 12:55_
+_@Cthutu_
 
 ### Please complete the following tasks
 

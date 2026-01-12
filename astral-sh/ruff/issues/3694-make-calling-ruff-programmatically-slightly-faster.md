@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-23T20:22:24Z
 updated_at: 2024-02-23T21:44:47Z
 url: https://github.com/astral-sh/ruff/issues/3694
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Make calling ruff programmatically slightly faster
 
 ---
 
-_Issue opened by @samuelcolvin on 2023-03-23 20:22_
+_@samuelcolvin_
 
 (this is low priority, but maybe interesting)
 

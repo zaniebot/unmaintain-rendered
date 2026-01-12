@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-12T22:11:27Z
 updated_at: 2025-10-14T11:16:59Z
 url: https://github.com/astral-sh/ruff/issues/20824
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `isort` single-capital-letter name emits unexpected sorting diagnostic
 
 ---
 
-_Issue opened by @bzoracler on 2025-10-12 22:11_
+_@bzoracler_
 
 ### Summary
 

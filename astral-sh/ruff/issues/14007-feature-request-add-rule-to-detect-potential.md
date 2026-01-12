@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T19:16:40Z
 updated_at: 2025-05-28T08:31:39Z
 url: https://github.com/astral-sh/ruff/issues/14007
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: Add rule to detect potential unintended string iteration
 
 ---
 
-_Issue opened by @l1n on 2024-10-30 19:16_
+_@l1n_
 
 ## Problem Statement
 Python strings being sequences can lead to unintended character-by-character iteration, which is a common source of bugs (https://mail.python.org/pipermail/python-3000/2006-April/000759.html is 2006!). Currently, there's no built-in rule (that I know of) to detect potential cases where a string might be accidentally iterated over instead of being treated as a single value or being split first.

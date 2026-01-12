@@ -14,14 +14,14 @@ head: dhruv/playground-ast
 created_at: 2024-04-25T15:33:07Z
 updated_at: 2024-04-25T16:25:24Z
 url: https://github.com/astral-sh/ruff/pull/11147
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Display the AST even with syntax errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-25 15:33_
+_@dhruvmanila_
 
 ## Summary
 

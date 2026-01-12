@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-02T15:14:35Z
 updated_at: 2025-12-02T19:04:58Z
 url: https://github.com/clap-rs/clap/issues/6191
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Bazel rules_rust clippy aspect fails when clippy::allow_attributes_without_reason rule set to forbid
 
 ---
 
-_Issue opened by @George-Hulme on 2025-12-02 15:14_
+_@George-Hulme_
 
 ### Please complete the following tasks
 

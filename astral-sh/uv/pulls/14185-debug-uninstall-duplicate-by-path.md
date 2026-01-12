@@ -13,14 +13,14 @@ head: zb/debug-uninstall
 created_at: 2025-06-21T12:58:59Z
 updated_at: 2025-07-18T13:16:23Z
 url: https://github.com/astral-sh/uv/pull/14185
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Debug: `uninstall_duplicate_by_path`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 12:58_
+_@zanieb_
 
 Looking at https://github.com/astral-sh/uv/issues/14158
 

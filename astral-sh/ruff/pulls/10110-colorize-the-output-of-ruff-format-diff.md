@@ -13,14 +13,14 @@ head: colorize-format-diff
 created_at: 2024-02-24T13:18:14Z
 updated_at: 2024-03-01T12:34:44Z
 url: https://github.com/astral-sh/ruff/pull/10110
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Colorize the output of ruff format --diff
 
 ---
 
-_Pull request opened by @senadev42 on 2024-02-24 13:18_
+_@senadev42_
 
 ## Summary
 

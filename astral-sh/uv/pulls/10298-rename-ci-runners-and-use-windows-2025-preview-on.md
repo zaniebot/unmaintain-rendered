@@ -13,14 +13,14 @@ head: zb/runners
 created_at: 2025-01-04T22:18:38Z
 updated_at: 2025-01-05T20:29:39Z
 url: https://github.com/astral-sh/uv/pull/10298
-synced_at: 2026-01-10T11:44:41Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Rename CI runners and use Windows 2025 preview on large runners
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-04 22:18_
+_@zanieb_
 
 I'm renaming our runners to be more explicit about their size, architecture, and version.
 

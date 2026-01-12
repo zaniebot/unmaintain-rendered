@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-10-24T10:26:26Z
 updated_at: 2024-10-24T12:58:44Z
 url: https://github.com/astral-sh/uv/pull/8521
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Fix `.netrc` typo in authentication docs
 
 ---
 
-_Pull request opened by @edmorley on 2024-10-24 10:26_
+_@edmorley_
 
 Follow-up to #8511.
 

@@ -14,14 +14,14 @@ head: gankra/strattr
 created_at: 2025-11-22T13:12:23Z
 updated_at: 2025-11-25T13:31:06Z
 url: https://github.com/astral-sh/ruff/pull/21577
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Implement lsp support for string annotations
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-22 13:12_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/1009
 

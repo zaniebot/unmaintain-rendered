@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-20T20:37:24Z
 updated_at: 2025-10-13T07:28:59Z
 url: https://github.com/astral-sh/ty/issues/1067
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Prefer declared attribute on base class over inferred attribute on subclass
 
 ---
 
-_Issue opened by @jankatins on 2025-08-20 20:37_
+_@jankatins_
 
 ### Summary
 

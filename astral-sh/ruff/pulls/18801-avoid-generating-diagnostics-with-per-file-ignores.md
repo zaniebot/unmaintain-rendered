@@ -14,14 +14,14 @@ head: brent/earlier-per-file-ignores
 created_at: 2025-06-19T19:30:37Z
 updated_at: 2025-06-20T17:33:11Z
 url: https://github.com/astral-sh/ruff/pull/18801
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Avoid generating diagnostics with per-file ignores
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-19 19:30_
+_@ntBre_
 
 ## Summary
 

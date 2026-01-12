@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T18:43:46Z
 updated_at: 2025-01-27T20:56:58Z
 url: https://github.com/astral-sh/uv/issues/10996
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # meson-python compiled extensions built twice with `uv sync --no-editable` and dynamic version
 
 ---
 
-_Issue opened by @lgarrison on 2025-01-27 18:43_
+_@lgarrison_
 
 ### Summary
 

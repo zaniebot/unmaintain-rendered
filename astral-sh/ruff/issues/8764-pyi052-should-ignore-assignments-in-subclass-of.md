@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-19T10:24:47Z
 updated_at: 2023-11-19T15:26:11Z
 url: https://github.com/astral-sh/ruff/issues/8764
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PYI052 should ignore assignments in subclass of enum without enum members
 
 ---
 
-_Issue opened by @henribru on 2023-11-19 10:24_
+_@henribru_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

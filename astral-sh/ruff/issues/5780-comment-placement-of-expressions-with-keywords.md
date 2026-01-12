@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-15T15:00:03Z
 updated_at: 2023-09-08T07:25:39Z
 url: https://github.com/astral-sh/ruff/issues/5780
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Comment placement of expressions with keywords
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-15 15:00_
+_@MichaReiser_
 
 We have a few nodes that are separated by a keyword. For example:
 

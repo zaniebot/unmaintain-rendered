@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T20:43:47Z
 updated_at: 2025-12-23T06:26:51Z
 url: https://github.com/astral-sh/ruff/issues/22147
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Linter: [TRY400] unexpected behavior with loguru
 
 ---
 
-_Issue opened by @thisisarko on 2025-12-22 20:43_
+_@thisisarko_
 
 ### Summary
 

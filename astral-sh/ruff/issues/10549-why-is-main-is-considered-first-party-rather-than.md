@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T18:25:32Z
 updated_at: 2024-05-22T03:10:27Z
 url: https://github.com/astral-sh/ruff/issues/10549
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Why is __main__ is considered first-party rather than stdlib ?
 
 ---
 
-_Issue opened by @Avasam on 2024-03-24 18:25_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: david/enum-literals
 created_at: 2025-07-14T13:12:50Z
 updated_at: 2025-07-15T19:31:55Z
 url: https://github.com/astral-sh/ruff/pull/19328
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Enum literal types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-14 13:12_
+_@sharkdp_
 
 ## Summary
 

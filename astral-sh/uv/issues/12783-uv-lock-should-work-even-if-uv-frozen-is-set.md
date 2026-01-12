@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T14:15:19Z
 updated_at: 2025-04-09T14:15:19Z
 url: https://github.com/astral-sh/uv/issues/12783
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # `uv lock` should work even if `UV_FROZEN` is set
 
 ---
 
-_Issue opened by @jacob-bush-shopify on 2025-04-09 14:15_
+_@jacob-bush-shopify_
 
 ### Summary
 

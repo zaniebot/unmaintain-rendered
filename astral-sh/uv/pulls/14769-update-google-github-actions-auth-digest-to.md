@@ -13,14 +13,14 @@ head: renovate/google-github-actions-auth-digest
 created_at: 2025-07-21T00:29:47Z
 updated_at: 2025-07-21T01:24:23Z
 url: https://github.com/astral-sh/uv/pull/14769
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Update google-github-actions/auth digest to 140bb51
 
 ---
 
-_Pull request opened by @renovate on 2025-07-21 00:29_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: fix-20198
 created_at: 2025-09-02T01:18:01Z
 updated_at: 2025-09-03T21:15:25Z
 url: https://github.com/astral-sh/ruff/pull/20201
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`flake8-comprehensions`] Skip `C417` when lambda contains `yield`/`yield from`
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-02 01:18_
+_@danparizher_
 
 ## Summary
 

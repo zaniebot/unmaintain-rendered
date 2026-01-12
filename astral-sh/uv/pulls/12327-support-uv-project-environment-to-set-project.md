@@ -13,14 +13,14 @@ head: support_UV_PROJECT_environment_variable
 created_at: 2025-03-20T04:22:08Z
 updated_at: 2025-03-30T19:12:03Z
 url: https://github.com/astral-sh/uv/pull/12327
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Support `UV_PROJECT` environment to set project directory.
 
 ---
 
-_Pull request opened by @nozomirin on 2025-03-20 04:22_
+_@nozomirin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

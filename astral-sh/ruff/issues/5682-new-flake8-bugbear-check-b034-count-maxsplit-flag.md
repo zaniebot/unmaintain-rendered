@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-11T10:46:38Z
 updated_at: 2023-07-11T13:09:50Z
 url: https://github.com/astral-sh/ruff/issues/5682
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # New flake8-bugbear check B034: count/maxsplit/flag should be passed as keyword parameters
 
 ---
 
-_Issue opened by @jakkdl on 2023-07-11 10:46_
+_@jakkdl_
 
 I added a new check to flake8-bugbear, and it would be great to have it incorporated into ruff as well. Copying from the issue https://github.com/PyCQA/flake8-bugbear/issues/397
 

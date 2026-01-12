@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-01T22:33:26Z
 updated_at: 2024-08-03T06:43:13Z
 url: https://github.com/astral-sh/ruff/issues/8426
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [BUILD] Windows: linking with `x86_64-w64-mingw32-gcc` failed: exit code: 1
 
 ---
 
-_Issue opened by @T-256 on 2023-11-01 22:33_
+_@T-256_
 
 Rust: 1.73
 Ruff: 1.3 (main branch cloned)

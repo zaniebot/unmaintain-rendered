@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T09:26:41Z
 updated_at: 2025-09-08T17:09:15Z
 url: https://github.com/astral-sh/ruff/issues/20225
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add a way to tell N805 that a class definition is a metaclass
 
 ---
 
-_Issue opened by @flying-sheep on 2025-09-04 09:26_
+_@flying-sheep_
 
 ### Summary
 

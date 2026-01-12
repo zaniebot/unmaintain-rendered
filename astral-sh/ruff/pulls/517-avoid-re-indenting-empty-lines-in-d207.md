@@ -12,14 +12,14 @@ head: charlie/D207
 created_at: 2022-10-30T13:41:46Z
 updated_at: 2022-10-30T13:41:55Z
 url: https://github.com/astral-sh/ruff/pull/517
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid re-indenting empty lines in D207
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-30 13:41_
+_@charliermarsh_
 
 Resolves #514.
 

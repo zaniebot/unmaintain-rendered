@@ -13,14 +13,14 @@ head: canonicalize-watch-paths
 created_at: 2024-08-02T15:40:24Z
 updated_at: 2024-08-03T07:38:13Z
 url: https://github.com/astral-sh/ruff/pull/12634
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix file watching on macOS if a module-search path is a symlink
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 15:40_
+_@MichaReiser_
 
 ## Summary
 

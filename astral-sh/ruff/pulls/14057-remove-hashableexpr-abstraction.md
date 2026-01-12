@@ -13,14 +13,14 @@ head: charlie/hash
 created_at: 2024-11-02T20:22:21Z
 updated_at: 2024-11-02T20:43:17Z
 url: https://github.com/astral-sh/ruff/pull/14057
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Remove `HashableExpr` abstraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-02 20:22_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/fix-single-dispatch-method
 created_at: 2024-10-27T08:49:46Z
 updated_at: 2024-10-28T01:02:47Z
 url: https://github.com/astral-sh/ruff/pull/13941
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # TCH003: Fix false positive for `singledispatchmethod`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-27 08:49_
+_@MichaReiser_
 
 ## Summary
 

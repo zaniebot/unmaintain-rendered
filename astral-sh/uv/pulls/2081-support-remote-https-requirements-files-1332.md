@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-29T14:32:36Z
 updated_at: 2024-03-06T06:47:48Z
 url: https://github.com/astral-sh/uv/pull/2081
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Support remote `https://` requirements files (#1332)
 
 ---
 
-_Pull request opened by @jannisko on 2024-02-29 14:32_
+_@jannisko_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-01T14:31:21Z
 updated_at: 2023-11-02T12:49:25Z
 url: https://github.com/astral-sh/ruff/issues/8405
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Feature Request: ICN001 import-alias-is-not-conventional fixer
 
 ---
 
-_Issue opened by @peterjc on 2023-11-01 14:31_
+_@peterjc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

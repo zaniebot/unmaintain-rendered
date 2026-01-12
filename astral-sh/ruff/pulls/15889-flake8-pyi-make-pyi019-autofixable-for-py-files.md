@@ -14,14 +14,14 @@ head: alex/pyi019-non-stub-fix
 created_at: 2025-02-02T23:17:07Z
 updated_at: 2025-02-04T16:43:00Z
 url: https://github.com/astral-sh/ruff/pull/15889
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pyi`] Make `PYI019` autofixable for `.py` files in preview mode as well as stubs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-02 23:17_
+_@AlexWaygood_
 
 (This PR is stacked on top of https://github.com/astral-sh/ruff/pull/15885 and https://github.com/astral-sh/ruff/pull/15888; review those first.)
 

@@ -13,14 +13,14 @@ head: fix/pep8-naming-namedtuple-typeddict
 created_at: 2023-02-06T22:03:51Z
 updated_at: 2023-02-06T22:12:14Z
 url: https://github.com/astral-sh/ruff/pull/2611
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix(pep8-naming): `typing.NamedTuple` and `typing.TypedDict` treatment
 
 ---
 
-_Pull request opened by @scop on 2023-02-06 22:03_
+_@scop_
 
 https://docs.python.org/3/library/typing.html#other-special-directives
 

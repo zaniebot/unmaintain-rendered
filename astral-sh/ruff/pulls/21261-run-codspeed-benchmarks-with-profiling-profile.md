@@ -14,14 +14,14 @@ head: ibraheem/codspeed-profile
 created_at: 2025-11-03T18:37:38Z
 updated_at: 2025-11-04T14:59:42Z
 url: https://github.com/astral-sh/ruff/pull/21261
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Run codspeed benchmarks with `profiling` profile
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-03 18:37_
+_@ibraheemdev_
 
 ## Summary
 

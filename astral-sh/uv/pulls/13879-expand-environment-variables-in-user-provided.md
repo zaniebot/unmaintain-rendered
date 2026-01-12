@@ -12,14 +12,14 @@ head: env-vars-in-index-urls
 created_at: 2025-06-06T04:05:54Z
 updated_at: 2025-06-06T14:11:05Z
 url: https://github.com/astral-sh/uv/pull/13879
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Expand environment variables in user-provided index URLs
 
 ---
 
-_Pull request opened by @msabramo on 2025-06-06 04:05_
+_@msabramo_
 
 Fixes: GH-5734
 

@@ -12,14 +12,14 @@ head: pylint-stabilisations
 created_at: 2024-08-13T12:07:32Z
 updated_at: 2024-08-13T13:41:58Z
 url: https://github.com/astral-sh/ruff/pull/12857
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [Ruff 0.6] Stabilise 9 pylint rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-13 12:07_
+_@AlexWaygood_
 
 ## Summary
 

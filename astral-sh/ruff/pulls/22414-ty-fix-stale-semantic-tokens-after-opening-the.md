@@ -15,14 +15,14 @@ head: micha/fix-stale-semantic-tokens
 created_at: 2026-01-06T09:32:04Z
 updated_at: 2026-01-06T10:52:53Z
 url: https://github.com/astral-sh/ruff/pull/22414
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Fix stale semantic tokens after opening the same document with new content
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-06 09:32_
+_@MichaReiser_
 
 ## Summary
 

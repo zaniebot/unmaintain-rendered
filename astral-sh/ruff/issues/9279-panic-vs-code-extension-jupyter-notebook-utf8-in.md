@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-25T21:32:22Z
 updated_at: 2023-12-26T22:09:07Z
 url: https://github.com/astral-sh/ruff/issues/9279
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Panic] VS Code extension Jupyter notebook UTF8 in doc string
 
 ---
 
-_Issue opened by @rkrueck on 2023-12-25 21:32_
+_@rkrueck_
 
 In Jupyter notebooks with Ruff extension, when using UTF8 lines in doc string (""" ... """) I get:
 Ruff: Lint failed (error: Ruff crashed ...

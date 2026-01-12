@@ -12,14 +12,14 @@ head: konstin/script-to-test-caching-behaviour
 created_at: 2023-12-04T19:32:25Z
 updated_at: 2024-04-29T13:02:03Z
 url: https://github.com/astral-sh/uv/pull/548
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Add script to test http caching behaviour
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 19:32_
+_@konstin_
 
 If we have a correct http caching implementation, this would print `<name>_a` on the first pass and `<name>_b` on the second pass.
 

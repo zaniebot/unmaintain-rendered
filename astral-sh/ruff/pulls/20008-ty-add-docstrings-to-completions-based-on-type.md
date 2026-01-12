@@ -14,14 +14,14 @@ head: gankra/doc-comp
 created_at: 2025-08-20T17:49:00Z
 updated_at: 2025-08-20T21:00:11Z
 url: https://github.com/astral-sh/ruff/pull/20008
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] add docstrings to completions based on type
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-20 17:49_
+_@Gankra_
 
 This is a fairly simple but effective way to add docstrings to like 95% of completions from initial experimentation.
 

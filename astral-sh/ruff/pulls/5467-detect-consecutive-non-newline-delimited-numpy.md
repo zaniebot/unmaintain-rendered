@@ -14,14 +14,14 @@ head: charlie/D410
 created_at: 2023-07-03T00:16:08Z
 updated_at: 2023-07-03T00:50:43Z
 url: https://github.com/astral-sh/ruff/pull/5467
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Detect consecutive, non-newline-delimited NumPy sections
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 00:16_
+_@charliermarsh_
 
 ## Summary
 

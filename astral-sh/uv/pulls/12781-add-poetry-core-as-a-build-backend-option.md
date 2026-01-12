@@ -12,14 +12,14 @@ head: add-poetry-core
 created_at: 2025-04-09T14:02:09Z
 updated_at: 2025-04-29T09:14:51Z
 url: https://github.com/astral-sh/uv/pull/12781
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Add poetry-core as a build backend option
 
 ---
 
-_Pull request opened by @Secrus on 2025-04-09 14:02_
+_@Secrus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

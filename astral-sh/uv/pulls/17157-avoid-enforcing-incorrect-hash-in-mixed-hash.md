@@ -13,14 +13,14 @@ head: charlie/mixed-hash
 created_at: 2025-12-17T02:08:23Z
 updated_at: 2025-12-17T16:02:01Z
 url: https://github.com/astral-sh/uv/pull/17157
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Avoid enforcing incorrect hash in mixed-hash settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 02:08_
+_@charliermarsh_
 
 ## Summary
 

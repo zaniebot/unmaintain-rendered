@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T15:45:09Z
 updated_at: 2023-12-05T20:25:29Z
 url: https://github.com/astral-sh/ruff/issues/9010
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autofix conflict between `PLR1736` and `FURB148`
 
 ---
 
-_Issue opened by @danparizher on 2023-12-05 15:45_
+_@danparizher_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

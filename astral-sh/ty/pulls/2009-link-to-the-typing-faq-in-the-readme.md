@@ -12,14 +12,14 @@ head: zb/typing-faq-readme
 created_at: 2025-12-17T13:49:19Z
 updated_at: 2025-12-17T14:09:25Z
 url: https://github.com/astral-sh/ty/pull/2009
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Link to the typing faq in the README
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-17 13:49_
+_@zanieb_
 
 https://github.com/astral-sh/ty/tree/zb/typing-faq-readme?tab=readme-ov-file#why-is-ty-doing-_____
 

@@ -11,14 +11,14 @@ head: exclude-packages
 created_at: 2025-11-21T17:13:09Z
 updated_at: 2025-11-21T21:49:25Z
 url: https://github.com/astral-sh/uv/pull/16808
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Add `--exclude-packages` to pip compile/install/tool install
 
 ---
 
-_Pull request opened by @terror on 2025-11-21 17:13_
+_@terror_
 
 Part of https://github.com/astral-sh/uv/issues/16771
 

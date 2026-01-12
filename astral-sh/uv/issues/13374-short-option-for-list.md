@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T03:59:35Z
 updated_at: 2025-05-13T15:50:08Z
 url: https://github.com/astral-sh/uv/issues/13374
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # --short option for list
 
 ---
 
-_Issue opened by @w3soul on 2025-05-10 03:59_
+_@w3soul_
 
 ### Summary
 

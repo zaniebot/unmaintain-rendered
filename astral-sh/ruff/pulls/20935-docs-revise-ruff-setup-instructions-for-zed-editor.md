@@ -13,14 +13,14 @@ head: docs/update-zed-editor-support-instructions
 created_at: 2025-10-17T08:44:27Z
 updated_at: 2025-11-06T18:30:05Z
 url: https://github.com/astral-sh/ruff/pull/20935
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # docs: revise Ruff setup instructions for Zed editor
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-10-17 08:44_
+_@LoicRiegel_
 
 ## Summary
 

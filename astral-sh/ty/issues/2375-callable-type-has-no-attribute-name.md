@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T11:50:21Z
 updated_at: 2026-01-07T12:51:55Z
 url: https://github.com/astral-sh/ty/issues/2375
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Callable type has no attribute __name__
 
 ---
 
-_Issue opened by @lervag on 2026-01-07 11:50_
+_@lervag_
 
 ### Summary
 

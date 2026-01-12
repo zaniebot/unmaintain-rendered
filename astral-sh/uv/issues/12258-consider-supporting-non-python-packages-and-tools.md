@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T02:14:36Z
 updated_at: 2025-03-18T02:14:36Z
 url: https://github.com/astral-sh/uv/issues/12258
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Consider supporting non-python packages and tools for dev toolchains
 
 ---
 
-_Issue opened by @strangemonad on 2025-03-18 02:14_
+_@strangemonad_
 
 ### Summary
 

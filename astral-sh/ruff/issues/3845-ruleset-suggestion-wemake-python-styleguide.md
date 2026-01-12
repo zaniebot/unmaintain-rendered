@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-01T10:43:04Z
 updated_at: 2024-12-31T17:50:59Z
 url: https://github.com/astral-sh/ruff/issues/3845
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruleset Suggestion: wemake-python-styleguide
 
 ---
 
-_Issue opened by @kytta on 2023-04-01 10:43_
+_@kytta_
 
 `wemake-python-styleguide` is a Flake8-based style guide that depends on many other Flake8 plugins (AFAICT all implemented by Ruff), but it also ships [lots of custom Flake8 rules](https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/violations/index.html). Is there an interest to implement those? As a bonus, the rule naming format is already Ruff-friendly (three letters, three numbers, sorted into categories)
 

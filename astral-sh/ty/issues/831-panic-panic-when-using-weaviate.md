@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-16T14:59:37Z
 updated_at: 2025-07-16T15:02:11Z
 url: https://github.com/astral-sh/ty/issues/831
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] Panic when using weaviate
 
 ---
 
-_Issue opened by @bartaugust on 2025-07-16 14:59_
+_@bartaugust_
 
 Using 
 from weaviate.collections import Collection

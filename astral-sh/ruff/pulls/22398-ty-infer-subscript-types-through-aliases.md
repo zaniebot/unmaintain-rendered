@@ -14,14 +14,14 @@ head: charlie/sub
 created_at: 2026-01-05T14:37:59Z
 updated_at: 2026-01-05T14:51:29Z
 url: https://github.com/astral-sh/ruff/pull/22398
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Infer subscript types through aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 14:37_
+_@charliermarsh_
 
 ## Summary
 

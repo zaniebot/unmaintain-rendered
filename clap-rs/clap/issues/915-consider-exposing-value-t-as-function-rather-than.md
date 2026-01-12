@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-23T17:23:12Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/915
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Consider exposing value_t as function rather than macro
 
 ---
 
-_Issue opened by @TedDriggs on 2017-03-23 17:23_
+_@TedDriggs_
 
 ### Rust Version
 

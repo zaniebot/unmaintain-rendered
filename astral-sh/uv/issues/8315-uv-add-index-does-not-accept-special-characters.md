@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-18T00:44:44Z
 updated_at: 2024-10-18T17:24:17Z
 url: https://github.com/astral-sh/uv/issues/8315
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `uv add --index` does not accept special characters in the index name
 
 ---
 
-_Issue opened by @vinibrsl on 2024-10-18 00:44_
+_@vinibrsl_
 
 uv throws an error when adding a custom index with a name that includes characters like hyphens or underscores. While the equal sign (=) is understandably restricted as the separator, other characters should be allowed in the index name.
 

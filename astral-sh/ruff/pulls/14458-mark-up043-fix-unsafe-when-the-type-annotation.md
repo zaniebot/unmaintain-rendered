@@ -14,14 +14,14 @@ head: micha/up043-fix-safety
 created_at: 2024-11-19T14:07:02Z
 updated_at: 2024-11-19T14:24:05Z
 url: https://github.com/astral-sh/ruff/pull/14458
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Mark UP043 fix unsafe when the type annotation contains any comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-19 14:07_
+_@MichaReiser_
 
 ## Summary
 

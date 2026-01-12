@@ -13,14 +13,14 @@ head: renovate/black-24.x
 created_at: 2024-08-12T02:02:44Z
 updated_at: 2024-08-12T04:26:29Z
 url: https://github.com/astral-sh/ruff/pull/12827
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update dependency black to v24.8.0
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 02:02_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

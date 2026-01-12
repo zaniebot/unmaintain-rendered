@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T16:09:49Z
 updated_at: 2025-05-15T15:43:38Z
 url: https://github.com/astral-sh/uv/issues/13454
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Unexpected sys.path Behavior When Using uv run python with Editable Install in a Docker Container
 
 ---
 
-_Issue opened by @eycjur on 2025-05-14 16:09_
+_@eycjur_
 
 ### Question
 

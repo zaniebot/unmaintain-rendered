@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T21:35:05Z
 updated_at: 2025-09-09T12:57:28Z
 url: https://github.com/astral-sh/ruff/issues/20011
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `unnecessary-default-type-args (UP043)` isn't triggering on stubs on Python <3.13
 
 ---
 
-_Issue opened by @Avasam on 2025-08-20 21:35_
+_@Avasam_
 
 ### Summary
 

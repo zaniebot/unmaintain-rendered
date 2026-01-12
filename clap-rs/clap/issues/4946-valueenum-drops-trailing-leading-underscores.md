@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-02T08:26:39Z
 updated_at: 2023-06-02T14:07:26Z
 url: https://github.com/clap-rs/clap/issues/4946
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `ValueEnum` drops trailing/leading underscores
 
 ---
 
-_Issue opened by @dhruvkb on 2023-06-02 08:26_
+_@dhruvkb_
 
 ### Please complete the following tasks
 

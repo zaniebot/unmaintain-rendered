@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T20:50:11Z
 updated_at: 2025-02-18T15:18:32Z
 url: https://github.com/astral-sh/uv/issues/9851
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Unable to run `uvx --python [3.9|3.10|3.11|3.12] textual-paint`
 
 ---
 
-_Issue opened by @BioGeek on 2024-12-12 20:50_
+_@BioGeek_
 
 I am unable to get [uvx](https://docs.astral.sh/uv/guides/tools/#running-tools) working with [textual-paint ](https://github.com/1j01/textual-paint).
 

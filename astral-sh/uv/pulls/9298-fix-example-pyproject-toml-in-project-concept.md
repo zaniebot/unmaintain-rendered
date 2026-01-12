@@ -13,14 +13,14 @@ head: fix_project_concept_doc_example
 created_at: 2024-11-21T00:35:13Z
 updated_at: 2024-11-21T00:42:24Z
 url: https://github.com/astral-sh/uv/pull/9298
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Fix example pyproject.toml in project concept documentation
 
 ---
 
-_Pull request opened by @jooon on 2024-11-21 00:35_
+_@jooon_
 
 The snippet out of context looks like a valid minimal pyproject.toml
 which it is not without name and version. The line worked in layout.md

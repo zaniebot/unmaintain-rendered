@@ -12,14 +12,14 @@ head: charlie/convention
 created_at: 2023-07-18T04:13:24Z
 updated_at: 2023-07-19T01:20:23Z
 url: https://github.com/astral-sh/ruff/pull/5853
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move a few more candidate rules to the deferred `Binding`-only pass
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-18 04:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: delete-keep-triv
 created_at: 2024-12-10T04:38:37Z
 updated_at: 2025-12-10T18:01:06Z
 url: https://github.com/astral-sh/ruff/pull/14886
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [WIP] Editing around comments
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-10 04:38_
+_@dylwil3_
 
 This is an attempt to introduce some helper functions for making edits without removing comments. The plan is to implement the new helper functions in a number of different rules, and see if the ecosystem check raises any alarms. If the approach starts to look reasonable, I will break this into separate PRs.
 

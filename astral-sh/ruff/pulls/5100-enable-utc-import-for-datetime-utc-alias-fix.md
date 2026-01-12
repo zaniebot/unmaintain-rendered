@@ -13,14 +13,14 @@ head: charlie/utc
 created_at: 2023-06-14T19:39:30Z
 updated_at: 2023-06-14T21:37:02Z
 url: https://github.com/astral-sh/ruff/pull/5100
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Enable UTC-import for `datetime-utc-alias` fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 19:39_
+_@charliermarsh_
 
 ## Summary
 

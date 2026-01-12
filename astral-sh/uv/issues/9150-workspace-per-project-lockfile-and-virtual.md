@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T14:36:35Z
 updated_at: 2025-12-02T22:50:35Z
 url: https://github.com/astral-sh/uv/issues/9150
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Workspace per project lockfile and virtual environment
 
 ---
 
-_Issue opened by @dudicoco on 2024-11-15 14:36_
+_@dudicoco_
 
 Hi,
 

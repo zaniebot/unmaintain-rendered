@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T00:45:11Z
 updated_at: 2024-12-03T04:52:21Z
 url: https://github.com/astral-sh/ruff/issues/14445
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Fixes on Jupyter notebooks cause panics when fix replaces/deletes multiple cells
 
 ---
 
-_Issue opened by @beskep on 2024-11-19 00:45_
+_@beskep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

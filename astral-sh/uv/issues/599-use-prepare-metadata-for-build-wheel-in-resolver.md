@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-09T04:26:54Z
 updated_at: 2024-01-10T00:07:39Z
 url: https://github.com/astral-sh/uv/issues/599
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Use `prepare_metadata_for_build_wheel` in resolver
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-09 04:26_
+_@charliermarsh_
 
 _No description provided._
 

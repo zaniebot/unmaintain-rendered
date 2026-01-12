@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-04-09T17:19:14Z
 updated_at: 2024-04-09T17:30:03Z
 url: https://github.com/astral-sh/uv/pull/2939
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Store common fields on `BuiltWheelIndex` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 17:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-20T15:12:11Z
 updated_at: 2023-11-03T03:09:52Z
 url: https://github.com/astral-sh/ruff/issues/5208
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Renable black compatibility test
 
 ---
 
-_Issue opened by @Thomasdezeeuw on 2023-06-20 15:12_
+_@Thomasdezeeuw_
 
 This was disabled in https://github.com/astral-sh/ruff/pull/5120 as it wasn't really running for a while. The test itself will likely need to be moved the `ruff` crate as that is where the resource live now.
 

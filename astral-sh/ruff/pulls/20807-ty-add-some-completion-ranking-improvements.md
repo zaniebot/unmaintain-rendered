@@ -14,14 +14,14 @@ head: ag/completion-improvements
 created_at: 2025-10-10T18:32:44Z
 updated_at: 2025-10-15T09:13:05Z
 url: https://github.com/astral-sh/ruff/pull/20807
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Add some completion ranking improvements
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-10 18:32_
+_@BurntSushi_
 
 This PR contains a few improvements for completions:
 

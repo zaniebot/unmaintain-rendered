@@ -13,14 +13,14 @@ head: charlie/lower-compat
 created_at: 2024-08-30T18:27:37Z
 updated_at: 2024-09-02T18:23:43Z
 url: https://github.com/astral-sh/uv/pull/6882
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Use lower-bound semantics for all Python compatibility comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 18:27_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-09-14T01:03:45Z
 updated_at: 2025-09-14T13:10:48Z
 url: https://github.com/astral-sh/uv/pull/15827
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Allow cached environment reuse with `@latest`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-14 01:03_
+_@charliermarsh_
 
 ## Summary
 

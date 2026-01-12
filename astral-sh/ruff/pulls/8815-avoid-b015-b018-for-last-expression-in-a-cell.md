@@ -13,14 +13,14 @@ head: dhruv/notebook-b015-b018
 created_at: 2023-11-21T22:19:15Z
 updated_at: 2023-11-22T15:39:11Z
 url: https://github.com/astral-sh/ruff/pull/8815
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid `B015`,`B018` for last expression in a cell
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-21 22:19_
+_@dhruvmanila_
 
 ## Summary
 

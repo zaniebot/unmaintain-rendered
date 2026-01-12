@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-11T23:24:29Z
 updated_at: 2024-01-12T08:57:28Z
 url: https://github.com/astral-sh/ruff/issues/9478
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Failed to create cache file
 
 ---
 
-_Issue opened by @nick-rackauckas on 2024-01-11 23:24_
+_@nick-rackauckas_
 
 Ever since upgrading to version 0.1.12, seeing this error when trying to run `ruff check`. Works when downgrading to `0.1.11`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T16:23:20Z
 updated_at: 2025-01-10T12:31:40Z
 url: https://github.com/astral-sh/uv/issues/10435
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # uv pip install fails with 403 whereas pip install works
 
 ---
 
-_Issue opened by @kressi on 2025-01-09 16:23_
+_@kressi_
 
 I'm trying to `uv pip install` a project in GitBash and keep getting 403 from our internal PyPI. However, `python -m pip install` is working perfectly fine. I have configured `pip.conf` and `uv.toml` with equivalent settings. Is there anything I'm missing?
 

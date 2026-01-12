@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T19:07:02Z
 updated_at: 2025-04-02T20:46:17Z
 url: https://github.com/astral-sh/uv/issues/12636
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # How do I do the equivalent of `python -u` with `uv run`?
 
 ---
 
-_Issue opened by @nbelakovski on 2025-04-02 19:07_
+_@nbelakovski_
 
 ### Question
 

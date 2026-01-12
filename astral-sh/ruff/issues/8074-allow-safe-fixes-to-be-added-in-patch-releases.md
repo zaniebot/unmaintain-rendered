@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-19T18:58:52Z
 updated_at: 2024-01-30T14:08:41Z
 url: https://github.com/astral-sh/ruff/issues/8074
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Allow safe fixes to be added in patch releases
 
 ---
 
-_Issue opened by @zanieb on 2023-10-19 18:58_
+_@zanieb_
 
 Adding new fixes isn't really a breaking change necessitating a minor version bump, however we have it categorized as such in our [current versioning policy](https://docs.astral.sh/ruff/versioning/#version-changes). Somewhat asymmetrically, we allow unsafe fixes to be added in patch releases. The idea was originally that unsafe fixes required opt-in so it was okay to add them in patch releases. In general, I think new fixes should be allowed in any release.
 

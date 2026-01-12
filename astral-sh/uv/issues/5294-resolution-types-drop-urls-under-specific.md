@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T17:17:32Z
 updated_at: 2024-07-22T22:41:04Z
 url: https://github.com/astral-sh/uv/issues/5294
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `Resolution` types drop urls under specific circumstances
 
 ---
 
-_Issue opened by @konstin on 2024-07-22 17:17_
+_@konstin_
 
 ## Summary
 

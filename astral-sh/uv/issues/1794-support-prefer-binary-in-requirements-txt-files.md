@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T04:44:52Z
 updated_at: 2024-08-13T13:52:51Z
 url: https://github.com/astral-sh/uv/issues/1794
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Support ` --prefer-binary` in `requirements.txt` files
 
 ---
 
-_Issue opened by @stinodego on 2024-02-21 04:44_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

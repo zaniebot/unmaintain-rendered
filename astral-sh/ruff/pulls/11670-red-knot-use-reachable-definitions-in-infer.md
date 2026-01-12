@@ -13,14 +13,14 @@ head: cjm/cfg2
 created_at: 2024-06-01T01:59:03Z
 updated_at: 2024-06-03T23:45:32Z
 url: https://github.com/astral-sh/ruff/pull/11670
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] use reachable definitions in infer_expression_type
 
 ---
 
-_Pull request opened by @carljm on 2024-06-01 01:59_
+_@carljm_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/fstring-elements
 created_at: 2024-05-27T15:48:26Z
 updated_at: 2024-05-27T16:07:22Z
 url: https://github.com/astral-sh/ruff/pull/11570
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update `FStringElements` to deref to a slice
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-27 15:48_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/11400#discussion_r1615600354
 

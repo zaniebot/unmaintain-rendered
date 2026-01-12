@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2025-01-24T14:49:41Z
 updated_at: 2025-01-24T14:53:21Z
 url: https://github.com/astral-sh/ruff/pull/15718
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Use `uv init --lib` in tutorial
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-24 14:49_
+_@charliermarsh_
 
 ## Summary
 

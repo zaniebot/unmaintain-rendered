@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T12:34:18Z
 updated_at: 2024-09-10T13:35:32Z
 url: https://github.com/astral-sh/uv/issues/6642
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Allow setting a target version for `uv self update`
 
 ---
 
-_Issue opened by @hofrob on 2024-08-26 12:34_
+_@hofrob_
 
 # what
 

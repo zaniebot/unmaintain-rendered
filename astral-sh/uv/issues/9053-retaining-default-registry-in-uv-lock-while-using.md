@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T09:46:00Z
 updated_at: 2024-11-12T13:09:53Z
 url: https://github.com/astral-sh/uv/issues/9053
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Retaining Default Registry in `uv.lock` While Using PyPI Mirror
 
 ---
 
-_Issue opened by @liblaf on 2024-11-12 09:46_
+_@liblaf_
 
 I understand that the current behavior is **NOT** a bug but **BY DESIGN**.
 

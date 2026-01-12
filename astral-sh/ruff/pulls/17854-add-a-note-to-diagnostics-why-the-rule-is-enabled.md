@@ -14,14 +14,14 @@ head: micha/diagnostic-lint-source
 created_at: 2025-05-05T12:01:36Z
 updated_at: 2025-05-06T18:29:05Z
 url: https://github.com/astral-sh/ruff/pull/17854
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Add a note to diagnostics why the rule is enabled
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 12:01_
+_@MichaReiser_
 
 ## Summary
 

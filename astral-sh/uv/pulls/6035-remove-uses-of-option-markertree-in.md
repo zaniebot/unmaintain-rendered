@@ -14,14 +14,14 @@ head: ibraheem/option-marker-fix
 created_at: 2024-08-12T13:53:33Z
 updated_at: 2024-08-12T14:31:09Z
 url: https://github.com/astral-sh/uv/pull/6035
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Remove uses of `Option<MarkerTree>` in `ResolutionGraph`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-12 13:53_
+_@ibraheemdev_
 
 ## Summary
 

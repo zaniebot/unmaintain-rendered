@@ -13,14 +13,14 @@ head: ups/tool-install-interp-mismatch
 created_at: 2024-09-17T08:20:55Z
 updated_at: 2024-09-18T06:37:45Z
 url: https://github.com/astral-sh/uv/pull/7451
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # uv-tool/install: ignore existing environments on interpreter mismatch
 
 ---
 
-_Pull request opened by @lucab on 2024-09-17 08:20_
+_@lucab_
 
 This changes `uv tool install` behavior with regards to re-using existing environments.
 In particular, this replaces the existing version-matching logic with a tighter one, enforcing

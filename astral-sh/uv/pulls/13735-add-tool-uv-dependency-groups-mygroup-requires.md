@@ -13,14 +13,14 @@ head: gankra/group-python-real
 created_at: 2025-05-30T17:15:32Z
 updated_at: 2025-06-13T22:10:23Z
 url: https://github.com/astral-sh/uv/pull/13735
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Add `[tool.uv.dependency-groups].mygroup.requires-python`
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-30 17:15_
+_@Gankra_
 
 This requires some more tests and almost certainly some error messages, but, I think this is the implementation?
 

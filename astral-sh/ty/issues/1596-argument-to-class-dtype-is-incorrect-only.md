@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-19T22:38:06Z
 updated_at: 2025-11-28T19:44:23Z
 url: https://github.com/astral-sh/ty/issues/1596
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Argument to class `dtype` is incorrect - only accepting Generic and no TypeVar
 
 ---
 
-_Issue opened by @loicdiridollou on 2025-11-19 22:38_
+_@loicdiridollou_
 
 ### Summary
 

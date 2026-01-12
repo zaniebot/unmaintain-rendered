@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-17T12:45:40Z
 updated_at: 2023-08-17T13:05:29Z
 url: https://github.com/astral-sh/ruff/issues/6650
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Feature request: TCH003 - divide typing-only imports from typing module
 
 ---
 
-_Issue opened by @tlambert03 on 2023-08-17 12:45_
+_@tlambert03_
 
 This may well be seen as too magical/special-cased, but here goes my pitch :)
 

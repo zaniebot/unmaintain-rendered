@@ -13,14 +13,14 @@ head: jane/docs/update-integrations
 created_at: 2024-06-26T22:31:25Z
 updated_at: 2024-07-16T09:53:02Z
 url: https://github.com/astral-sh/ruff/pull/12056
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update Integrations documentation page with `ruff server` explanation and setup guides
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-26 22:31_
+_@snowsignal_
 
 _No description provided._
 

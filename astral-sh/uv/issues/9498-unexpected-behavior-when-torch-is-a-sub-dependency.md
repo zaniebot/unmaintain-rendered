@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T12:28:42Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9498
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Unexpected (?) behavior when torch is a sub dependency
 
 ---
 
-_Issue opened by @EgonFerri on 2024-11-28 12:28_
+_@EgonFerri_
 
 I have this scenario:
 

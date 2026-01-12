@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-14T21:13:19Z
 updated_at: 2024-05-15T03:44:26Z
 url: https://github.com/astral-sh/uv/issues/3593
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # pip compile with local disk package without hard dependency on uv?
 
 ---
 
-_Issue opened by @Nomelas on 2024-05-14 21:13_
+_@Nomelas_
 
 This is my situation, 
 

@@ -14,14 +14,14 @@ head: zb/build-no-output
 created_at: 2024-09-24T21:37:00Z
 updated_at: 2024-09-26T23:39:48Z
 url: https://github.com/astral-sh/uv/pull/7675
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Add `uv build --no-build-logs` to silence the build backend logs
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 21:37_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/7674
 

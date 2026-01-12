@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-02T18:45:21Z
 updated_at: 2022-09-13T20:28:01Z
 url: https://github.com/clap-rs/clap/issues/4178
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # More Resettable builder methods
 
 ---
 
-_Issue opened by @ModProg on 2022-09-02 18:45_
+_@ModProg_
 
 ## Command
 ### Application-wide Settings

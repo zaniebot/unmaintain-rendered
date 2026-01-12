@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T14:32:07Z
 updated_at: 2024-05-01T14:50:20Z
 url: https://github.com/astral-sh/ruff/issues/11232
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLR0133: False Positive
 
 ---
 
-_Issue opened by @colin99d on 2024-05-01 14:32_
+_@colin99d_
 
 * A minimal code snippet that reproduces the bug.
 ```

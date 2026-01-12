@@ -12,14 +12,14 @@ head: error
 created_at: 2025-09-02T16:54:05Z
 updated_at: 2025-09-02T16:59:31Z
 url: https://github.com/clap-rs/clap/pull/6120
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(derive): Match rustc's error style
 
 ---
 
-_Pull request opened by @epage on 2025-09-02 16:54_
+_@epage_
 
 This was missed in #4602
 

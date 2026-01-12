@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-08T15:28:22Z
 updated_at: 2025-10-16T07:45:16Z
 url: https://github.com/astral-sh/uv/issues/16192
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # Show a better error when a uv lockfile is used in `-r`
 
 ---
 
-_Issue opened by @zanieb on 2025-10-08 15:28_
+_@zanieb_
 
 e.g., if you try to use `uv lock --script action.py` then `-r action.py.lock`
 

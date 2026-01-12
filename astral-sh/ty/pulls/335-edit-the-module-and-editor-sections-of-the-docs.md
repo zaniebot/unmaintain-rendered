@@ -13,14 +13,14 @@ head: zb/docs-edit
 created_at: 2025-05-12T21:21:33Z
 updated_at: 2025-05-12T22:40:05Z
 url: https://github.com/astral-sh/ty/pull/335
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Edit the module and editor sections of the docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 21:21_
+_@zanieb_
 
 _No description provided._
 

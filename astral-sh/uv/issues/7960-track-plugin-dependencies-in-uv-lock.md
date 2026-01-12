@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-07T08:30:17Z
 updated_at: 2024-10-08T22:33:37Z
 url: https://github.com/astral-sh/uv/issues/7960
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Track plugin dependencies in uv.lock
 
 ---
 
-_Issue opened by @runfalk on 2024-10-07 08:30_
+_@runfalk_
 
 This issue is similar but not quite the same as https://github.com/astral-sh/uv/issues/7911.
 

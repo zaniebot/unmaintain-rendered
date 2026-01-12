@@ -13,14 +13,14 @@ head: fix-parse-incorrect-indent
 created_at: 2023-09-25T08:35:56Z
 updated_at: 2023-09-25T10:45:45Z
 url: https://github.com/astral-sh/ruff/pull/7638
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Emit `LexError` for dedent to incorrect level
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-25 08:35_
+_@MichaReiser_
 
 ## Summary
 

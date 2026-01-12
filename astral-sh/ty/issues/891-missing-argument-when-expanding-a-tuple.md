@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T13:57:33Z
 updated_at: 2025-07-28T07:35:42Z
 url: https://github.com/astral-sh/ty/issues/891
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # missing-argument when expanding a tuple
 
 ---
 
-_Issue opened by @PetterS on 2025-07-25 13:57_
+_@PetterS_
 
 ### Summary
 

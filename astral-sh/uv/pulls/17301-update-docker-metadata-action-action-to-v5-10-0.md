@@ -13,14 +13,14 @@ head: renovate/docker-metadata-action-5.x
 created_at: 2026-01-02T17:34:41Z
 updated_at: 2026-01-02T18:05:28Z
 url: https://github.com/astral-sh/uv/pull/17301
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:42Z
 ```
 
 # Update docker/metadata-action action to v5.10.0
 
 ---
 
-_Pull request opened by @renovate on 2026-01-02 17:34_
+_@renovate_
 
 This PR contains the following updates:
 

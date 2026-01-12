@@ -13,14 +13,14 @@ head: main
 created_at: 2025-06-13T16:12:14Z
 updated_at: 2025-06-17T17:02:59Z
 url: https://github.com/astral-sh/ruff/pull/18663
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] fix binary expression inference between boolean literals and bool instances
 
 ---
 
-_Pull request opened by @alpaylan on 2025-06-13 16:12_
+_@alpaylan_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

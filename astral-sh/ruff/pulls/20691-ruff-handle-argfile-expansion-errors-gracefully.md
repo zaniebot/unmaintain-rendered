@@ -14,14 +14,14 @@ head: fix-argfile-expansion-error
 created_at: 2025-10-03T12:30:15Z
 updated_at: 2025-10-03T13:42:57Z
 url: https://github.com/astral-sh/ruff/pull/20691
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`ruff`] Handle argfile expansion errors gracefully
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-03 12:30_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

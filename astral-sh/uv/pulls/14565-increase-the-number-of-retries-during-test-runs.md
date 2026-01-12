@@ -13,14 +13,14 @@ head: zb/retries-ci
 created_at: 2025-07-11T12:37:20Z
 updated_at: 2025-07-11T18:59:49Z
 url: https://github.com/astral-sh/uv/pull/14565
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Increase the number of retries during test runs in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-11 12:37_
+_@zanieb_
 
 _No description provided._
 

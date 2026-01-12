@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-15T16:10:42Z
 updated_at: 2023-07-29T14:06:28Z
 url: https://github.com/astral-sh/ruff/issues/5781
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Remove unnecessary walrus operator parentheses
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-15 16:10_
+_@MichaReiser_
 
 Our formatter currently always adds parentheses around the walrus (`a := 5`) operator in for/if/... cases
 

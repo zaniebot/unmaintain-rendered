@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T08:09:51Z
 updated_at: 2025-10-07T16:49:32Z
 url: https://github.com/astral-sh/uv/issues/16148
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # `resolution=lowest[-direct]` reports dependency as missing a lower bound when it actually has one
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-10-07 08:09_
+_@neutrinoceros_
 
 ### Summary
 

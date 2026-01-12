@@ -14,14 +14,14 @@ head: micha/extract-test-helpers
 created_at: 2025-06-07T16:34:05Z
 updated_at: 2025-06-07T16:43:44Z
 url: https://github.com/astral-sh/ruff/pull/18537
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Split CLI tests into multiple files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-07 16:34_
+_@MichaReiser_
 
 ## Summary
 

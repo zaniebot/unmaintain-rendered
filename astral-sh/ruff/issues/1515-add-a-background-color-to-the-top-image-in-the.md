@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T17:20:51Z
 updated_at: 2022-12-31T22:47:33Z
 url: https://github.com/astral-sh/ruff/issues/1515
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add a background color to the top image in the README 
 
 ---
 
-_Issue opened by @obi1kenobi on 2022-12-31 17:20_
+_@obi1kenobi_
 
 The top image in the README is unreadable on dark mode GitHub: its background is transparent, and it gets rendered as black-on-black.
 ![image](https://user-images.githubusercontent.com/2348618/210151069-a715d8b9-7d63-422c-b521-14e87115507b.png)

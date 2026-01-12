@@ -13,14 +13,14 @@ head: dhruv/server-logs
 created_at: 2025-01-03T04:05:32Z
 updated_at: 2025-01-09T04:36:00Z
 url: https://github.com/astral-sh/ruff/pull/15232
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Improve logging system using `logLevel`, avoid trace value
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-03 04:05_
+_@dhruvmanila_
 
 **Changelog:** This PR improves observability in the server by removing the need of using the ["trace" value](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#traceValue) as a means to turn on or off logging. Now, the server logging is solely controlled using the [`logLevel` server setting](https://docs.astral.sh/ruff/editors/settings/#loglevel) which defaults to "info". This avoids the confusion where the user is notified about going through the log messages but there aren't any.
 

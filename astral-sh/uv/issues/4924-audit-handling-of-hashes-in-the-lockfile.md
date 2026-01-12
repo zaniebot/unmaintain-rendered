@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-09T11:26:31Z
 updated_at: 2024-07-17T23:02:55Z
 url: https://github.com/astral-sh/uv/issues/4924
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Audit handling of hashes in the lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 11:26_
+_@konstin_
 
 Audit our handling of hashes. Some hashes are generated. Some are retrieved from registries. Sometimes hashes should not be used (path dependencies) where as sometimes they should (registry dependencies).
 

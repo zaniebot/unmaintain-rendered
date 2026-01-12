@@ -13,14 +13,14 @@ head: zb/bump-p
 created_at: 2024-04-02T22:50:01Z
 updated_at: 2024-04-02T23:12:47Z
 url: https://github.com/astral-sh/uv/pull/2786
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Use `cargo update -p uv` for release instead of `cargo check`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 22:50_
+_@zanieb_
 
 This is faster and accomplishes what we want
 

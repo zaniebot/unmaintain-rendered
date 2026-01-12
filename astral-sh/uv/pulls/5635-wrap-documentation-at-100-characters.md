@@ -14,14 +14,14 @@ head: zb/wrap-docs
 created_at: 2024-07-30T20:52:51Z
 updated_at: 2024-08-01T18:30:04Z
 url: https://github.com/astral-sh/uv/pull/5635
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Wrap documentation at 100 characters
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 20:52_
+_@zanieb_
 
 Basically sick of dealing with mixed formatting here. Going with the number at https://github.com/astral-sh/uv/blob/7c08e61b73d54bb91130041859dcedc74f7a8e0c/.editorconfig#L20
 

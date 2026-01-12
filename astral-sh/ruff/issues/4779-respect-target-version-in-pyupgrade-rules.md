@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-01T07:59:48Z
 updated_at: 2023-06-01T08:12:00Z
 url: https://github.com/astral-sh/ruff/issues/4779
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # respect `target-version` in pyupgrade rules
 
 ---
 
-_Issue opened by @trim21 on 2023-06-01 07:59_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

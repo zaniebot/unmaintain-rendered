@@ -12,14 +12,14 @@ head: charlie/empty
 created_at: 2023-05-16T15:25:33Z
 updated_at: 2023-05-16T16:55:52Z
 url: https://github.com/astral-sh/ruff/pull/4452
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid emitting empty logical lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-16 15:25_
+_@charliermarsh_
 
 ## Summary
 

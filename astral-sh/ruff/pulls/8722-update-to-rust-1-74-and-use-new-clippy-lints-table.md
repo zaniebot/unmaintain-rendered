@@ -13,14 +13,14 @@ head: rust-1.74
 created_at: 2023-11-16T14:54:08Z
 updated_at: 2023-11-16T23:23:22Z
 url: https://github.com/astral-sh/ruff/pull/8722
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update to Rust 1.74 and use new clippy lints table
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 14:54_
+_@konstin_
 
 Update to [Rust 1.74](https://blog.rust-lang.org/2023/11/16/Rust-1.74.0.html) and use the new clippy lints table.
 

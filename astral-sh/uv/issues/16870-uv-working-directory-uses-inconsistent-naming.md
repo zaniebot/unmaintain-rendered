@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T09:41:36Z
 updated_at: 2025-11-30T15:59:06Z
 url: https://github.com/astral-sh/uv/issues/16870
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # UV_WORKING_DIRECTORY uses inconsistent naming
 
 ---
 
-_Issue opened by @asarkar on 2025-11-27 09:41_
+_@asarkar_
 
 ### Summary
 

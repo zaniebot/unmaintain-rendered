@@ -13,14 +13,14 @@ head: charlie/traverse
 created_at: 2023-12-20T20:17:56Z
 updated_at: 2023-12-21T21:16:38Z
 url: https://github.com/astral-sh/ruff/pull/9219
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Make parent non-Optional in traverse_union
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 20:17_
+_@charliermarsh_
 
 ## Summary
 

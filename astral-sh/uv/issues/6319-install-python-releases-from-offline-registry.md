@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T11:40:58Z
 updated_at: 2024-09-03T01:20:03Z
 url: https://github.com/astral-sh/uv/issues/6319
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Install python releases from offline registry
 
 ---
 
-_Issue opened by @DataOps7 on 2024-08-21 11:40_
+_@DataOps7_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

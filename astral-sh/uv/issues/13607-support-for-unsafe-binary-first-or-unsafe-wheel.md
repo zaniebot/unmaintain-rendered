@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T23:29:48Z
 updated_at: 2025-05-23T08:14:49Z
 url: https://github.com/astral-sh/uv/issues/13607
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Support for `unsafe-binary-first` or `unsafe-wheel-first` in `tool.uv.index-strategy`
 
 ---
 
-_Issue opened by @gbdlin on 2025-05-22 23:29_
+_@gbdlin_
 
 ### Summary
 

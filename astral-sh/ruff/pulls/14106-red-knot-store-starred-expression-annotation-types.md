@@ -13,14 +13,14 @@ head: david/store-type-for-starred-expression-annotations
 created_at: 2024-11-05T12:30:47Z
 updated_at: 2024-11-05T19:25:48Z
 url: https://github.com/astral-sh/ruff/pull/14106
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Store starred-expression annotation types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-05 12:30_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: cjm/tuplefix
 created_at: 2025-06-21T18:03:24Z
 updated_at: 2025-06-23T12:47:47Z
 url: https://github.com/astral-sh/ruff/pull/18852
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Fix mixed tuple subtyping
 
 ---
 
-_Pull request opened by @carljm on 2025-06-21 18:03_
+_@carljm_
 
 ## Summary
 

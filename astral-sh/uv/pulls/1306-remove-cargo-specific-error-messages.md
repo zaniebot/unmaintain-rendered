@@ -13,14 +13,14 @@ head: charlie/ssh
 created_at: 2024-02-15T06:00:54Z
 updated_at: 2024-02-15T06:04:23Z
 url: https://github.com/astral-sh/uv/pull/1306
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Remove Cargo-specific error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-15 06:00_
+_@charliermarsh_
 
 We're leveraging Cargo's git implementation, but we left in some Cargo-specific error messages for features we don't yet support.
 

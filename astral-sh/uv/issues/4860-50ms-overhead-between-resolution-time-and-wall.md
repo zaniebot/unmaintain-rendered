@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-07T18:37:32Z
 updated_at: 2024-07-30T15:29:38Z
 url: https://github.com/astral-sh/uv/issues/4860
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # 50ms overhead between resolution time and wall time in `uv lock`
 
 ---
 
-_Issue opened by @konstin on 2024-07-07 18:37_
+_@konstin_
 
 When running `uv lock` on https://github.com/konstin/transformers/blob/9638c4defb18f5358c70f40dd00d65595657dd57/pyproject.toml, i get:
 

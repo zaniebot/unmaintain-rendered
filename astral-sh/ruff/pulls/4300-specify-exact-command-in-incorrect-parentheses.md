@@ -12,14 +12,14 @@ head: charlie/parens
 created_at: 2023-05-09T02:17:11Z
 updated_at: 2023-05-09T02:44:47Z
 url: https://github.com/astral-sh/ruff/pull/4300
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Specify exact command in incorrect parentheses suggestion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 02:17_
+_@charliermarsh_
 
 We now specify whether the parentheses should be added or removed, rather than using a generic message.
 

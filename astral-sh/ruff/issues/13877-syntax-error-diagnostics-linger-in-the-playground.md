@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T11:21:36Z
 updated_at: 2024-10-23T12:30:11Z
 url: https://github.com/astral-sh/ruff/issues/13877
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Syntax error diagnostics linger in the playground
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-10-22 11:21_
+_@dhruvmanila_
 
 It seems like the syntax error diagnostics linger in the playground unless we clear the content.
 

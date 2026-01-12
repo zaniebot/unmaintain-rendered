@@ -12,14 +12,14 @@ head: charlie/ruf100
 created_at: 2022-12-24T19:55:51Z
 updated_at: 2022-12-24T19:55:56Z
 url: https://github.com/astral-sh/ruff/pull/1365
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Annotate RUF100 messages with unmatched, disabled, and unknown codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-24 19:55_
+_@charliermarsh_
 
 Resolves #1364.
 

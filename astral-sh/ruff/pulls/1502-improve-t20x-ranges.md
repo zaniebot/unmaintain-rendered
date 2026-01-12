@@ -12,14 +12,14 @@ head: fix-T20x-range
 created_at: 2022-12-31T08:02:27Z
 updated_at: 2022-12-31T12:41:53Z
 url: https://github.com/astral-sh/ruff/pull/1502
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Improve `T20X` ranges
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 08:02_
+_@harupy_
 
 This PR improves `T20X`'s ranges to make it easier to find violations in arguments.
 

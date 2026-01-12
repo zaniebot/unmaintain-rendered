@@ -12,14 +12,14 @@ head: gankra/unleash-virt
 created_at: 2025-06-17T17:39:58Z
 updated_at: 2025-09-17T15:48:58Z
 url: https://github.com/astral-sh/uv/pull/14113
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Allow `[project]` to be missing from a `pyproject.toml`
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-17 17:39_
+_@Gankra_
 
 Closes #8666 
 Closes https://github.com/astral-sh/uv/issues/6838

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T10:43:15Z
 updated_at: 2024-11-07T19:51:15Z
 url: https://github.com/astral-sh/ruff/issues/13854
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Compare expression inference - Intersection
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-21 10:43_
+_@sharkdp_
 
 As part of #13618, implement inference for compare expressions involving intersection types.
 

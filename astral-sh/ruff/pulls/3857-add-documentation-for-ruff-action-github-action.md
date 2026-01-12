@@ -12,14 +12,14 @@ head: action
 created_at: 2023-04-03T03:56:08Z
 updated_at: 2023-04-04T00:04:52Z
 url: https://github.com/astral-sh/ruff/pull/3857
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add documentation for `ruff-action` (GitHub Action!)
 
 ---
 
-_Pull request opened by @brucearctor on 2023-04-03 03:56_
+_@brucearctor_
 
 Following up from now closed PR:  https://github.com/charliermarsh/ruff/pull/3820
 

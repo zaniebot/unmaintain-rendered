@@ -13,14 +13,14 @@ head: format-expr-generator-exp
 created_at: 2023-07-16T12:53:59Z
 updated_at: 2023-07-19T18:42:26Z
 url: https://github.com/astral-sh/ruff/pull/5804
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format expr generator exp
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-16 12:53_
+_@davidszotten_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/perm
 created_at: 2024-01-19T02:44:25Z
 updated_at: 2024-01-19T05:29:30Z
 url: https://github.com/astral-sh/uv/pull/997
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Set explicit Docker permissions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 02:44_
+_@charliermarsh_
 
 _No description provided._
 

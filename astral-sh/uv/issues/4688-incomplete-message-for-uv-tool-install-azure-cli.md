@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T11:43:13Z
 updated_at: 2024-07-01T16:22:46Z
 url: https://github.com/astral-sh/uv/issues/4688
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Incomplete message for `uv tool install azure-cli --prerelease=allow`
 
 ---
 
-_Issue opened by @konstin on 2024-07-01 11:43_
+_@konstin_
 
 I get the following for `uv tool install azure-cli --prerelease=allow`:
 ```

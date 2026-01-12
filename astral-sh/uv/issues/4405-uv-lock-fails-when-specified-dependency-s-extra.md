@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T22:04:36Z
 updated_at: 2024-06-25T05:48:30Z
 url: https://github.com/astral-sh/uv/issues/4405
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv lock` fails when specified dependency's extra is effectively no-op (since 0.2.12)
 
 ---
 
-_Issue opened by @vrslev on 2024-06-18 22:04_
+_@vrslev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

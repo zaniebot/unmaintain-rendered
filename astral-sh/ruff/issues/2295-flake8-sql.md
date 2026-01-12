@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-28T08:41:39Z
 updated_at: 2024-04-25T20:13:06Z
 url: https://github.com/astral-sh/ruff/issues/2295
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # flake8-sql
 
 ---
 
-_Issue opened by @Mister7F on 2023-01-28 08:41_
+_@Mister7F_
 
 Would it be possible at some point to implement the plugin "flake8-sql" ?
 

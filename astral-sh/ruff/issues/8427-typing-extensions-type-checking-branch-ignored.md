@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T01:12:23Z
 updated_at: 2023-11-09T18:21:04Z
 url: https://github.com/astral-sh/ruff/issues/8427
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `typing_extensions.TYPE_CHECKING` branch ignored and `TCH001` & `TCH002` are raised
 
 ---
 
-_Issue opened by @chaburkland on 2023-11-02 01:12_
+_@chaburkland_
 
 ```python
 # example.py prior to ruff fix

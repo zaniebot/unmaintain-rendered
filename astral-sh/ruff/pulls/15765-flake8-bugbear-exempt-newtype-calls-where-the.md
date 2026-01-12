@@ -13,14 +13,14 @@ head: B008
 created_at: 2025-01-27T07:44:05Z
 updated_at: 2025-01-29T12:35:32Z
 url: https://github.com/astral-sh/ruff/pull/15765
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-bugbear`] Exempt `NewType` calls where the original type is immutable (`B008`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-27 07:44_
+_@InSyncWithFoo_
 
 ## Summary
 

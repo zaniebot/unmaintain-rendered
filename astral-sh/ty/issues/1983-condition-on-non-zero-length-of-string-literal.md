@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T08:20:35Z
 updated_at: 2025-12-17T18:15:59Z
 url: https://github.com/astral-sh/ty/issues/1983
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Condition on non-zero length of string literal doesn't short circuit `and` statements
 
 ---
 
-_Issue opened by @kokes on 2025-12-17 08:20_
+_@kokes_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: patch-7
 created_at: 2025-07-03T00:26:11Z
 updated_at: 2025-07-03T14:15:31Z
 url: https://github.com/astral-sh/ruff/pull/19110
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [`flake8-simplify`] Make example error out-of-the-box (`SIM401`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-03 00:26_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

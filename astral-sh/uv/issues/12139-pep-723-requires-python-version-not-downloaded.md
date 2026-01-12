@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T16:46:01Z
 updated_at: 2025-03-12T16:53:12Z
 url: https://github.com/astral-sh/uv/issues/12139
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # PEP-723 requires-python version not downloaded with uv run
 
 ---
 
-_Issue opened by @jmoudev on 2025-03-12 16:46_
+_@jmoudev_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dont-parenthesize-octal-hex-and-binary-literals
 created_at: 2023-10-24T09:22:36Z
 updated_at: 2023-10-24T14:12:53Z
 url: https://github.com/astral-sh/ruff/pull/8160
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid parenthesizing octal/hex or binary literals in object positions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-24 09:22_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T11:24:08Z
 updated_at: 2024-01-16T20:02:25Z
 url: https://github.com/astral-sh/ruff/issues/8354
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Support parsing IPython escape commands
 
 ---
 
-_Issue opened by @maximlt on 2023-10-30 11:24_
+_@maximlt_
 
 With ruff 0.1.3, running `ruff check test.ipynb` on a notebook whose content is:
 

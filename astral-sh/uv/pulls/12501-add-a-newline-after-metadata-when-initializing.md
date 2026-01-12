@@ -13,14 +13,14 @@ head: add-newline-after-metadata
 created_at: 2025-03-27T01:46:38Z
 updated_at: 2025-03-27T21:44:52Z
 url: https://github.com/astral-sh/uv/pull/12501
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Add a newline after metadata when initializing scripts with other metadata blocks
 
 ---
 
-_Pull request opened by @merlinz01 on 2025-03-27 01:46_
+_@merlinz01_
 
 ## Summary
 

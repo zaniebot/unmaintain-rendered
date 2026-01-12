@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T08:15:50Z
 updated_at: 2024-10-08T13:45:24Z
 url: https://github.com/astral-sh/ruff/issues/12041
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Remove `tab-size` setting
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-26 08:15_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/12006 made using `tab-size` a hard error (Ruff 0.5). We should remove the option in a future minor release (0.6 or 0.7?)
 

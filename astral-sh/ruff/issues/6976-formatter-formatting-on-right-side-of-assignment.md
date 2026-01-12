@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T13:00:58Z
 updated_at: 2023-09-02T08:23:17Z
 url: https://github.com/astral-sh/ruff/issues/6976
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `%` formatting on right side of assignment
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-29 13:00_
+_@MichaReiser_
 
 Black prefers to keep the `%` on the same line as the string and parenthesize the format arguments:
 

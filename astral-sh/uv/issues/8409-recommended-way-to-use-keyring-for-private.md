@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-21T08:43:48Z
 updated_at: 2024-10-21T17:02:54Z
 url: https://github.com/astral-sh/uv/issues/8409
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Recommended way to use keyring for private package index
 
 ---
 
-_Issue opened by @timchap on 2024-10-21 08:43_
+_@timchap_
 
 I know that uv supports keyring in subprocess mode for authenticating to private package indices. However, because the keyring CLI is installed into a Python environment, this creates a bit of a chicken-and-egg problem. In particular, it seems to me that keyring would need to be installed into my system Python for this to work. This is additionally complicated by that fact that with uv python binaries don't get installed to the system path - this means that the installation of keyring into my system Python needs to be managed entirely outside of the uv workflow.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-03T07:10:28Z
 updated_at: 2024-07-17T16:03:37Z
 url: https://github.com/astral-sh/ruff/issues/12164
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule B909 (loop-iterator-mutation) doesn't detect many kinds of list mutation
 
 ---
 
-_Issue opened by @Boon-in-Oz on 2024-07-03 07:10_
+_@Boon-in-Oz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

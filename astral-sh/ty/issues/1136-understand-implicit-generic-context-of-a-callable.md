@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T17:18:02Z
 updated_at: 2026-01-09T13:43:42Z
 url: https://github.com/astral-sh/ty/issues/1136
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # understand implicit generic context of a `Callable` annotation
 
 ---
 
-_Issue opened by @RubenVanEldik on 2025-09-05 17:18_
+_@RubenVanEldik_
 
 ### Summary
 

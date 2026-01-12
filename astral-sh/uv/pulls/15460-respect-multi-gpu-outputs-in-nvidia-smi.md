@@ -13,14 +13,14 @@ head: charlie/multi
 created_at: 2025-08-22T17:27:50Z
 updated_at: 2025-11-02T21:21:45Z
 url: https://github.com/astral-sh/uv/pull/15460
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Respect multi-GPU outputs in nvidia-smi
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-22 17:27_
+_@charliermarsh_
 
 ## Summary
 

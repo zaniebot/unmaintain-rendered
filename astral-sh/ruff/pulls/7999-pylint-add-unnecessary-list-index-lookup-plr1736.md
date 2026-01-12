@@ -14,14 +14,14 @@ head: add-R1736
 created_at: 2023-10-17T01:50:32Z
 updated_at: 2023-12-01T00:34:04Z
 url: https://github.com/astral-sh/ruff/pull/7999
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] - add `unnecessary-list-index-lookup` (`PLR1736`) + autofix
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-17 01:50_
+_@diceroll123_
 
 ## Summary
 

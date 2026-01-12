@@ -13,14 +13,14 @@ head: ignore-eslint-9
 created_at: 2024-04-15T06:38:12Z
 updated_at: 2024-04-15T06:52:44Z
 url: https://github.com/astral-sh/ruff/pull/10946
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Configure Renovate to ignore ESLint 9
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-15 06:38_
+_@MichaReiser_
 
 ## Summary
 

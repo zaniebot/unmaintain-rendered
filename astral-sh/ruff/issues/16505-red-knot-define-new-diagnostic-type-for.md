@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T18:07:52Z
 updated_at: 2025-03-05T13:23:03Z
 url: https://github.com/astral-sh/ruff/issues/16505
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] define new `Diagnostic` type for representing our diagnostic data model in code
 
 ---
 
-_Issue opened by @BurntSushi on 2025-03-04 18:07_
+_@BurntSushi_
 
 For this task, we should:
 

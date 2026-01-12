@@ -13,14 +13,14 @@ head: ruff-0.7-changelog
 created_at: 2024-10-17T15:58:46Z
 updated_at: 2024-10-17T16:30:05Z
 url: https://github.com/astral-sh/ruff/pull/13794
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Changelog for Ruff v0.7
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-17 15:58_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/cancel
 created_at: 2024-01-03T19:23:31Z
 updated_at: 2024-01-03T20:18:28Z
 url: https://github.com/astral-sh/uv/pull/753
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Cancel waiting tasks on resolution error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 19:23_
+_@charliermarsh_
 
 ## Summary
 

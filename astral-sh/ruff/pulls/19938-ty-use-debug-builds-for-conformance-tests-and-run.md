@@ -14,14 +14,14 @@ head: micha/conformance-debug-build
 created_at: 2025-08-16T14:27:44Z
 updated_at: 2025-08-18T07:20:50Z
 url: https://github.com/astral-sh/ruff/pull/19938
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Use debug builds for conformance tests and run them single threaded
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-16 14:27_
+_@MichaReiser_
 
 ## Summary
 

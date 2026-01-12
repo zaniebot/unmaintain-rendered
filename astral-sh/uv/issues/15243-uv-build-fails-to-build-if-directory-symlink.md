@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T16:51:40Z
 updated_at: 2025-12-15T07:48:36Z
 url: https://github.com/astral-sh/uv/issues/15243
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # uv_build fails to build if directory symlink found in package path
 
 ---
 
-_Issue opened by @dusktreader on 2025-08-12 16:51_
+_@dusktreader_
 
 ### Summary
 

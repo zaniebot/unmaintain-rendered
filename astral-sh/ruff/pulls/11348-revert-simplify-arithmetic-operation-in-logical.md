@@ -12,14 +12,14 @@ head: charlie/rev
 created_at: 2024-05-09T01:19:50Z
 updated_at: 2024-05-09T01:51:40Z
 url: https://github.com/astral-sh/ruff/pull/11348
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Revert "Simplify arithmetic operation in logical lines checker (#11346)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 01:19_
+_@charliermarsh_
 
 ## Summary
 

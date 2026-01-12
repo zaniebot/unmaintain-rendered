@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T15:46:51Z
 updated_at: 2025-04-14T15:55:44Z
 url: https://github.com/astral-sh/uv/issues/11482
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # uv accepts `requires-python` with bounds including interpreters it refuses to support.
 
 ---
 
-_Issue opened by @jsirois on 2025-02-13 15:46_
+_@jsirois_
 
 ### Question
 

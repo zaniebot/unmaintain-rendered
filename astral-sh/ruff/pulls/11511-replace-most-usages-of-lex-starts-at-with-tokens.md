@@ -13,14 +13,14 @@ head: dhruv/update-up031
 created_at: 2024-05-23T11:02:12Z
 updated_at: 2024-05-28T07:23:19Z
 url: https://github.com/astral-sh/ruff/pull/11511
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Replace most usages of `lex_starts_at` with `Tokens`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-23 11:02_
+_@dhruvmanila_
 
 ## Summary
 

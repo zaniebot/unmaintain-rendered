@@ -14,14 +14,14 @@ head: zb/patch-no-wheel
 created_at: 2024-02-14T18:01:42Z
 updated_at: 2024-02-14T22:25:08Z
 url: https://github.com/astral-sh/uv/pull/1299
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Patch handling of `exclude_newer` when reporting incompatible wheels
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-14 18:01_
+_@zanieb_
 
 A smaller alternative to https://github.com/astral-sh/puffin/pull/1298 patching the bad behavior in #1293 
 

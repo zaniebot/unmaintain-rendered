@@ -12,14 +12,14 @@ head: charlie/line-length
 created_at: 2022-11-15T17:23:00Z
 updated_at: 2022-11-15T17:23:39Z
 url: https://github.com/astral-sh/ruff/pull/759
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add --line-length command line argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 17:23_
+_@charliermarsh_
 
 Resolves #752.
 

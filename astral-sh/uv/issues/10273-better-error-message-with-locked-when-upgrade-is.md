@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T16:29:08Z
 updated_at: 2025-01-03T17:17:34Z
 url: https://github.com/astral-sh/uv/issues/10273
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Better error message with `--locked` when `upgrade` is requested
 
 ---
 
-_Issue opened by @sayandipdutta on 2025-01-02 16:29_
+_@sayandipdutta_
 
 ## Description:
 Currently, if `upgrade` is requested, `uv lock/sync --locked/--check` fails with the following error:

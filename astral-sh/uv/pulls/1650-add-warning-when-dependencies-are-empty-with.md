@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-18T14:38:11Z
 updated_at: 2024-02-20T02:45:41Z
 url: https://github.com/astral-sh/uv/pull/1650
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Add warning when dependencies are empty with Poetry metadata
 
 ---
 
-_Pull request opened by @yasufumy on 2024-02-18 14:38_
+_@yasufumy_
 
 Resolve #1630 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T02:48:11Z
 updated_at: 2024-02-17T18:53:40Z
 url: https://github.com/astral-sh/uv/issues/1563
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv pip install` gets stuck combining `--resolution=lowest-direct` and `--upgrade` flags
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-17 02:48_
+_@adamtheturtle_
 
 Tested with `uv 0.1.3`.
 

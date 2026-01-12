@@ -12,14 +12,14 @@ head: target-version-from-project-metadata
 created_at: 2023-03-12T19:28:13Z
 updated_at: 2024-07-24T16:50:57Z
 url: https://github.com/astral-sh/ruff/pull/3470
-synced_at: 2026-01-10T21:47:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Infer target-version from project metadata
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-12 19:28_
+_@JonathanPlasse_
 
 - Related to #2039
 

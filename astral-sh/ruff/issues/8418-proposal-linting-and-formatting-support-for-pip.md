@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-01T18:43:58Z
 updated_at: 2023-11-01T22:03:29Z
 url: https://github.com/astral-sh/ruff/issues/8418
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Proposal: linting and formatting support for pip requirements files, `(foo-)requirements.txt`
 
 ---
 
-_Issue opened by @Eutropios on 2023-11-01 18:43_
+_@Eutropios_
 
 After scouring the internet, I have not been able to find very many implementations of a tool that lints or formats pip requirement files. For context, a pip requirements file is a text file that lists your project's dependencies alongside a range of version numbers. This helps to ensure that your project is reproducible for development purposes.<sup>\[[1](#cite-1)\]</sup>
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T15:37:26Z
 updated_at: 2024-08-27T16:01:10Z
 url: https://github.com/clap-rs/clap/issues/5703
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support for `value_parser_if`
 
 ---
 
-_Issue opened by @0xForerunner on 2024-08-27 15:37_
+_@0xForerunner_
 
 ### Clap Version
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-04T09:47:39Z
 updated_at: 2025-12-03T00:56:24Z
 url: https://github.com/astral-sh/uv/issues/7918
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # hardlinking dependencies causes issues when trying to delete a `.venv` via python on Windows
 
 ---
 
-_Issue opened by @linde12 on 2024-10-04 09:47_
+_@linde12_
 
 ## Scenario
 I have a script in a venv (EnvA) that:

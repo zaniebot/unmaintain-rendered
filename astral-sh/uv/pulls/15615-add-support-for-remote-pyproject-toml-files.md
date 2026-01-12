@@ -11,14 +11,14 @@ head: feat/remote-pyproject-toml-support
 created_at: 2025-09-01T04:07:46Z
 updated_at: 2025-09-09T05:54:25Z
 url: https://github.com/astral-sh/uv/pull/15615
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Add support for remote pyproject.toml files
 
 ---
 
-_Pull request opened by @yumeminami on 2025-09-01 04:07_
+_@yumeminami_
 
 ### Summary
 

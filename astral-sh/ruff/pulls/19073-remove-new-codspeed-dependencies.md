@@ -13,14 +13,14 @@ head: brent/codspeed-deps
 created_at: 2025-07-01T16:07:35Z
 updated_at: 2025-07-01T16:20:33Z
 url: https://github.com/astral-sh/ruff/pull/19073
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # Remove new codspeed dependencies
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-01 16:07_
+_@ntBre_
 
 Summary
 --

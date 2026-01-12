@@ -13,14 +13,14 @@ head: charlie/auth
 created_at: 2024-03-14T03:57:19Z
 updated_at: 2024-03-15T16:21:38Z
 url: https://github.com/astral-sh/uv/pull/2449
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Apply from-URL credentials in authentication middleware
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-14 03:57_
+_@charliermarsh_
 
 ## Summary
 

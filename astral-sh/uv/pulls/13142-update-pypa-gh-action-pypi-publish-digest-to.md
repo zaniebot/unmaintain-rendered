@@ -13,14 +13,14 @@ head: renovate/pypa-gh-action-pypi-publish-digest
 created_at: 2025-04-28T00:17:01Z
 updated_at: 2025-04-28T00:31:20Z
 url: https://github.com/astral-sh/uv/pull/13142
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Update pypa/gh-action-pypi-publish digest to db8f07d
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 00:17_
+_@renovate_
 
 This PR contains the following updates:
 

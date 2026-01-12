@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T20:34:52Z
 updated_at: 2025-11-30T16:06:28Z
 url: https://github.com/astral-sh/uv/issues/12729
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Pyodide support?
 
 ---
 
-_Issue opened by @hoodmane on 2025-04-07 20:34_
+_@hoodmane_
 
 I am looking into what it would take to add support for installing Pyodide wheels to uv. Supposing that I contribute it, would uv accept support for:
 * creating Pyodide virtual environments, and

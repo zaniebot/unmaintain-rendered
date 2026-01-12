@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T09:55:05Z
 updated_at: 2025-03-27T13:59:11Z
 url: https://github.com/astral-sh/uv/issues/12509
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # zsh completion does not complete e.g. script file names
 
 ---
 
-_Issue opened by @slhck on 2025-03-27 09:55_
+_@slhck_
 
 ### Summary
 

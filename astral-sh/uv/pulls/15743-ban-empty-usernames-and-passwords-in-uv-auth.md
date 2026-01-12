@@ -13,14 +13,14 @@ head: zb/empty-username-password
 created_at: 2025-09-08T21:09:46Z
 updated_at: 2025-09-09T11:23:34Z
 url: https://github.com/astral-sh/uv/pull/15743
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Ban empty usernames and passwords in `uv auth`
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-08 21:09_
+_@zanieb_
 
 Otherwise, you can get yourself in a weird state?
 

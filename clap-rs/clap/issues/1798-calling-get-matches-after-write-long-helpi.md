@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-04-09T04:23:35Z
 updated_at: 2020-04-27T08:32:18Z
 url: https://github.com/clap-rs/clap/issues/1798
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Calling get_matches() after write_long_helpI() reports Non-unique argument name
 
 ---
 
-_Issue opened by @arucil on 2020-04-09 04:23_
+_@arucil_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

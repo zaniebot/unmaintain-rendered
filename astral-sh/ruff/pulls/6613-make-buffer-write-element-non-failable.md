@@ -14,14 +14,14 @@ head: make-buffer-write-element-non-failable
 created_at: 2023-08-16T11:41:38Z
 updated_at: 2023-08-16T13:14:27Z
 url: https://github.com/astral-sh/ruff/pull/6613
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Make `Buffer::write_element` non-failable
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-16 11:41_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: e275
 created_at: 2023-02-25T13:25:44Z
 updated_at: 2023-02-26T21:36:05Z
 url: https://github.com/astral-sh/ruff/pull/3225
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(E275): add  Missing whitespace after keyword
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-25 13:25_
+_@carlosmiei_
 
 - add https://www.flake8rules.com/rules/E275.html
 

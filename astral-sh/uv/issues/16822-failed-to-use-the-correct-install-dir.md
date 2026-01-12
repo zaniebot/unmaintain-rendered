@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T10:01:07Z
 updated_at: 2025-11-28T08:28:37Z
 url: https://github.com/astral-sh/uv/issues/16822
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Failed to use the correct install dir
 
 ---
 
-_Issue opened by @IdoPort on 2025-11-23 10:01_
+_@IdoPort_
 
 ### Summary
 

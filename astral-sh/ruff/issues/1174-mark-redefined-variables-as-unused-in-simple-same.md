@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-10T04:37:59Z
 updated_at: 2023-06-19T04:16:16Z
 url: https://github.com/astral-sh/ruff/issues/1174
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Mark redefined variables as unused in simple same-branch cases
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-10 04:37_
+_@charliermarsh_
 
 Given this code:
 

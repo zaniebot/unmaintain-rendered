@@ -12,14 +12,14 @@ head: konsti/identical-conda-and-venv
 created_at: 2023-12-18T08:38:28Z
 updated_at: 2023-12-18T08:42:32Z
 url: https://github.com/astral-sh/uv/pull/681
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Allow identical `VIRTUAL_ENV` and `CONDA_PREFIX` env vars
 
 ---
 
-_Pull request opened by @konstin on 2023-12-18 08:38_
+_@konstin_
 
 Port of https://github.com/PyO3/maturin/pull/1879 for https://github.com/PyO3/maturin/issues/1878
 

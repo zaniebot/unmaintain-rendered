@@ -12,14 +12,14 @@ head: 12-13-Fits_expanded_perf_optimisation
 created_at: 2023-12-13T02:52:28Z
 updated_at: 2024-01-16T10:02:45Z
 url: https://github.com/astral-sh/ruff/pull/9110
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fits expanded perf optimisation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-13 02:52_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

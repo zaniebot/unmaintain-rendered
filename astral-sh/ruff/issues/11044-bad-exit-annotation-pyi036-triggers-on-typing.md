@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T14:32:29Z
 updated_at: 2024-04-24T15:48:53Z
 url: https://github.com/astral-sh/ruff/issues/11044
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `bad-exit-annotation` (`PYI036`) triggers on `typing.overload` definitions
 
 ---
 
-_Issue opened by @tjkuson on 2024-04-19 14:32_
+_@tjkuson_
 
 Keywords searched in the issue tracker: PYI036, overload
 

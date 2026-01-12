@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T09:54:11Z
 updated_at: 2025-11-24T04:52:44Z
 url: https://github.com/astral-sh/ty/issues/1324
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type of inherited attribute is lost when using dynamically constructed base class
 
 ---
 
-_Issue opened by @vlashada on 2025-10-08 09:54_
+_@vlashada_
 
 ### Summary
 

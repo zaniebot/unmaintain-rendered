@@ -12,14 +12,14 @@ head: install_suffix_option
 created_at: 2024-09-05T18:57:26Z
 updated_at: 2025-01-22T19:22:48Z
 url: https://github.com/astral-sh/uv/pull/7095
-synced_at: 2026-01-10T11:44:27Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # [WIP] Add a `--suffix` option to `uv tool install`
 
 ---
 
-_Pull request opened by @teofr on 2024-09-05 18:57_
+_@teofr_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

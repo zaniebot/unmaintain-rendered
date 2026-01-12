@@ -13,14 +13,14 @@ head: zb/boostrap
 created_at: 2024-02-15T17:54:59Z
 updated_at: 2024-02-15T18:08:39Z
 url: https://github.com/astral-sh/uv/pull/1317
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Reset the bootstrapped binaries on install
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 17:54_
+_@zanieb_
 
 There was not much benefit to avoiding the new download (and it was broken in some Windows compatibility work) and this ensures there are _only_ the versions we specified
 

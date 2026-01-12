@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-03T09:46:50Z
 updated_at: 2023-02-03T12:39:26Z
 url: https://github.com/astral-sh/ruff/issues/2521
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `SLF001`: False negative when `self`/`cls` not direct ancestor
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-03 09:46_
+_@ngnpope_
 
 Here's some example code:
 ```python

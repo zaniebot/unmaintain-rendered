@@ -13,14 +13,14 @@ head: brent/dont-cache-lint-diagnostics
 created_at: 2025-08-11T17:04:04Z
 updated_at: 2025-08-12T19:28:46Z
 url: https://github.com/astral-sh/ruff/pull/19869
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # Don't cache files with diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-11 17:04_
+_@ntBre_
 
 Summary
 --

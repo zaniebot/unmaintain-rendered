@@ -13,14 +13,14 @@ head: konsti/url-context
 created_at: 2024-10-17T14:25:02Z
 updated_at: 2024-10-17T14:31:24Z
 url: https://github.com/astral-sh/uv/pull/8289
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Add URL context to publish test script
 
 ---
 
-_Pull request opened by @konstin on 2024-10-17 14:25_
+_@konstin_
 
 For #8288
 

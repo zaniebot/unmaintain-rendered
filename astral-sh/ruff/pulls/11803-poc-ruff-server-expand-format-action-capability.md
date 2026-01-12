@@ -12,14 +12,14 @@ head: format-actions
 created_at: 2024-06-08T16:16:01Z
 updated_at: 2024-06-12T10:12:59Z
 url: https://github.com/astral-sh/ruff/pull/11803
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [POC] `ruff server` Expand format action capability
 
 ---
 
-_Pull request opened by @T-256 on 2024-06-08 16:16_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

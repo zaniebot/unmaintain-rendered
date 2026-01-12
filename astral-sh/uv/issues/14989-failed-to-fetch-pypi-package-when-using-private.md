@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T09:42:42Z
 updated_at: 2025-07-31T21:00:03Z
 url: https://github.com/astral-sh/uv/issues/14989
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Failed to fetch pypi package when using private indexes when the package isn't found on the private indexer (404)
 
 ---
 
-_Issue opened by @WilliamStam on 2025-07-31 09:42_
+_@WilliamStam_
 
 ### Summary
 

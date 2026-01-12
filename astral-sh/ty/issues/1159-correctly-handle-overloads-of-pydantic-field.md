@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-09T17:10:29Z
 updated_at: 2025-12-03T19:47:17Z
 url: https://github.com/astral-sh/ty/issues/1159
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Correctly handle overloads of `pydantic.Field`
 
 ---
 
-_Issue opened by @AndreuCodina on 2025-09-09 17:10_
+_@AndreuCodina_
 
 ### Summary
 

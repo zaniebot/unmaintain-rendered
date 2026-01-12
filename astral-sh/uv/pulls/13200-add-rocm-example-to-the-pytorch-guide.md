@@ -13,14 +13,14 @@ head: charlie/rocm
 created_at: 2025-04-29T19:11:43Z
 updated_at: 2025-04-29T19:13:15Z
 url: https://github.com/astral-sh/uv/pull/13200
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Add ROCm example to the PyTorch guide
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-29 19:11_
+_@charliermarsh_
 
 ## Summary
 

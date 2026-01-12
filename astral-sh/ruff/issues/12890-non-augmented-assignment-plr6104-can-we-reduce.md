@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T10:30:08Z
 updated_at: 2025-02-07T16:28:12Z
 url: https://github.com/astral-sh/ruff/issues/12890
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-08-14 10:30_
+_@AlexWaygood_
 
 In #12858, I proposed stabilising `non-augmented-assignment` (`PLR6104`). However, this was reverted in https://github.com/astral-sh/ruff/pull/12884 after concerns were raised that the rule too often gives recommendations that would cause developers to make unsafe changes to their code. This issue is to discuss if there are any ways of improving the rule's heuristics to reduce this problem.
 

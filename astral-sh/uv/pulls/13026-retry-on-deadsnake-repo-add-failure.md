@@ -13,14 +13,14 @@ head: zb/deadsnakes-retry
 created_at: 2025-04-21T21:29:21Z
 updated_at: 2025-04-21T21:59:08Z
 url: https://github.com/astral-sh/uv/pull/13026
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Retry on deadsnake repo add failure
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 21:29_
+_@zanieb_
 
 This has been failing with a 504
 

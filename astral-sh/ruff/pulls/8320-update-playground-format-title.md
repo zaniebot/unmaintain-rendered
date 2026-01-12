@@ -13,14 +13,14 @@ head: dhruv/playground
 created_at: 2023-10-29T04:13:51Z
 updated_at: 2023-10-29T04:18:26Z
 url: https://github.com/astral-sh/ruff/pull/8320
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update playground format title
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-29 04:13_
+_@dhruvmanila_
 
 Rename `Format (alpha)` to `Format (beta)`
 

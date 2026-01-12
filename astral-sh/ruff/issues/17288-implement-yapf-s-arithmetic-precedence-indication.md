@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-07T21:56:42Z
 updated_at: 2025-04-08T06:28:49Z
 url: https://github.com/astral-sh/ruff/issues/17288
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Implement yapf's `ARITHMETIC_PRECEDENCE_INDICATION` for math-heavy codebases
 
 ---
 
-_Issue opened by @ma-sadeghi on 2025-04-07 21:56_
+_@ma-sadeghi_
 
 ### Summary
 

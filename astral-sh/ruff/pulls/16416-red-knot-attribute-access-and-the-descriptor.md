@@ -13,14 +13,14 @@ head: david/descriptor-protocol-pt2
 created_at: 2025-02-27T15:29:03Z
 updated_at: 2025-03-12T10:03:18Z
 url: https://github.com/astral-sh/ruff/pull/16416
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Attribute access and the descriptor protocol
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-27 15:29_
+_@sharkdp_
 
 ## Summary
 

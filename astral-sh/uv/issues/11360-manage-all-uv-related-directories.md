@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T19:05:27Z
 updated_at: 2025-10-10T08:45:47Z
 url: https://github.com/astral-sh/uv/issues/11360
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Manage all uv-related directories
 
 ---
 
-_Issue opened by @Ma-Shell on 2025-02-09 19:05_
+_@Ma-Shell_
 
 ### Summary
 

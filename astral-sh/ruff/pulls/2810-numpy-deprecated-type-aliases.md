@@ -12,14 +12,14 @@ head: numpy-specific-rules
 created_at: 2023-02-12T12:25:57Z
 updated_at: 2023-02-14T23:47:03Z
 url: https://github.com/astral-sh/ruff/pull/2810
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`numpy`] deprecated type aliases
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-12 12:25_
+_@sbrugman_
 
 Closes https://github.com/charliermarsh/ruff/issues/2455
 

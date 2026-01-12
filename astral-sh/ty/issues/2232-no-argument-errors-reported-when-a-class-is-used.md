@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-26T22:55:23Z
 updated_at: 2026-01-04T22:25:09Z
 url: https://github.com/astral-sh/ty/issues/2232
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # No argument errors reported when a class is used as a decorator
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-26 22:55_
+_@MeGaGiGaGon_
 
 ### Summary
 

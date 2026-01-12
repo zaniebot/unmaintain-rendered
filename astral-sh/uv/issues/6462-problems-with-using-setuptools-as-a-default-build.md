@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T21:08:29Z
 updated_at: 2024-08-28T18:09:00Z
 url: https://github.com/astral-sh/uv/issues/6462
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Problems with using `setuptools` as a default build-backend for projects
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 21:08_
+_@zanieb_
 
 This would be a violation of the spec, sort of:
 

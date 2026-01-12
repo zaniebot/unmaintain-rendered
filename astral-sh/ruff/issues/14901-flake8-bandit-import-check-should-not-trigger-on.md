@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T22:30:41Z
 updated_at: 2024-12-16T08:19:59Z
 url: https://github.com/astral-sh/ruff/issues/14901
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # flake8-bandit import check should not trigger on TYPE_CHECKING imports or classes not in defusedxml
 
 ---
 
-_Issue opened by @scy on 2024-12-10 22:30_
+_@scy_
 
 The following code triggers [S408](https://docs.astral.sh/ruff/rules/suspicious-xml-minidom-import/) ("`xml.dom.minidom` is vulnerable to XML attacks"):
 

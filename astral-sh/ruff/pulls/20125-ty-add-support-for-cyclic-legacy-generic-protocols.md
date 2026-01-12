@@ -13,14 +13,14 @@ head: cjm/cycliclegacygenericprotocols
 created_at: 2025-08-28T03:04:14Z
 updated_at: 2025-08-28T16:58:02Z
 url: https://github.com/astral-sh/ruff/pull/20125
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] add support for cyclic legacy generic protocols
 
 ---
 
-_Pull request opened by @carljm on 2025-08-28 03:04_
+_@carljm_
 
 ## Summary
 

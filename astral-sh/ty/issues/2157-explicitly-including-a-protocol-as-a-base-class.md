@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-22T13:08:38Z
 updated_at: 2025-12-22T14:02:32Z
 url: https://github.com/astral-sh/ty/issues/2157
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Explicitly including a protocol as a base class doesn't verify class implementation is actually compatible
 
 ---
 
-_Issue opened by @Ragzouken on 2025-12-22 13:08_
+_@Ragzouken_
 
 ### Summary
 

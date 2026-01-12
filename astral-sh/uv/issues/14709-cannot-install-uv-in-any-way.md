@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T09:58:48Z
 updated_at: 2025-07-23T13:28:40Z
 url: https://github.com/astral-sh/uv/issues/14709
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # cannot install uv in any way
 
 ---
 
-_Issue opened by @kevinnudt12 on 2025-07-18 09:58_
+_@kevinnudt12_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T11:34:12Z
 updated_at: 2025-03-04T17:06:21Z
 url: https://github.com/astral-sh/ruff/issues/16496
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Make `UP028` always fixable again
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-04 11:34_
+_@InSyncWithFoo_
 
 After #16451, [`UP028`](https://docs.astral.sh/ruff/rules/yield-in-for-loop/) is no longer always fixable. However, a different kind of fix can be offered in such cases:
 

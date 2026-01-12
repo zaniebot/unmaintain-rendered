@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-06T10:23:50Z
 updated_at: 2023-02-06T20:45:25Z
 url: https://github.com/astral-sh/ruff/issues/2603
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive F841: typing automatically removed as unused by ``--fix`` when they are not
 
 ---
 
-_Issue opened by @Pierre-Sassoulas on 2023-02-06 10:23_
+_@Pierre-Sassoulas_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-02T19:49:48Z
 updated_at: 2024-05-03T02:10:36Z
 url: https://github.com/astral-sh/ruff/issues/11252
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Consider emitting a warning for the use of continuation characters (except in strings)
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-05-02 19:49_
+_@NeilGirdhar_
 
 The continuation character used outside of strings are no longer necessary as of Python 3.9 thanks to the new PEG parser.  This means that we can always use parentheses.  And parentheses have the advantage of not interfering with comments, and for some people are easier to read.
 

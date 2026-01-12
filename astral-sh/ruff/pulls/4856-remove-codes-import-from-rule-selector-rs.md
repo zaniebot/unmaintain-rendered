@@ -13,14 +13,14 @@ head: charlie/nurse
 created_at: 2023-06-05T02:25:40Z
 updated_at: 2023-06-05T02:55:12Z
 url: https://github.com/astral-sh/ruff/pull/4856
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove codes import from rule_selector.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 02:25_
+_@charliermarsh_
 
 _No description provided._
 

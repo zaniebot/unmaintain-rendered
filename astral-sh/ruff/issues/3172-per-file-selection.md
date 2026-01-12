@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-23T15:42:56Z
 updated_at: 2024-04-10T19:20:24Z
 url: https://github.com/astral-sh/ruff/issues/3172
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Per file selection
 
 ---
 
-_Issue opened by @henryiii on 2023-02-23 15:42_
+_@henryiii_
 
 I'd like a way to activate a rule for a subset of files; basically the inverse of per-file-ignores. In my case, I'd like to activate pydocstyle on the main module, but not tests, examples, docs, benchmarks, support files, setup.py, etc.
 

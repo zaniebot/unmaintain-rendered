@@ -11,14 +11,14 @@ head: main
 created_at: 2025-07-07T19:26:33Z
 updated_at: 2025-07-07T23:16:58Z
 url: https://github.com/astral-sh/uv/pull/14491
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Add detail to settings/environments doc
 
 ---
 
-_Pull request opened by @lewis-wf on 2025-07-07 19:26_
+_@lewis-wf_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T13:56:26Z
 updated_at: 2025-06-12T14:34:40Z
 url: https://github.com/astral-sh/uv/issues/13995
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Store distributions in cache with content addressed keys
 
 ---
 
-_Issue opened by @zanieb on 2025-06-12 13:56_
+_@zanieb_
 
 e.g., in https://github.com/astral-sh/uv/issues/12480#issuecomment-2966772503 we store duplicate cache entries for a wheel across multiple indexes because we do not eagerly compute hashes for all distributions and cannot store them in a content addressed key.
 

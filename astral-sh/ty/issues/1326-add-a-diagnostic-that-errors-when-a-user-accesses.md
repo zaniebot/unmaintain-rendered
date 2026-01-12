@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T16:59:38Z
 updated_at: 2025-10-08T22:18:56Z
 url: https://github.com/astral-sh/ty/issues/1326
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add a diagnostic that errors when a user accesses an instance method off a type[] type
 
 ---
 
-_Issue opened by @carljm on 2025-10-08 16:59_
+_@carljm_
 
 This is unsound, as described in https://github.com/microsoft/pyright/issues/11007
 

@@ -12,14 +12,14 @@ head: patch-01
 created_at: 2023-07-10T18:29:46Z
 updated_at: 2023-07-10T19:05:51Z
 url: https://github.com/astral-sh/ruff/pull/5663
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`flake8-self`] Ignore `_name_` and `_value_`
 
 ---
 
-_Pull request opened by @monosans on 2023-07-10 18:29_
+_@monosans_
 
 ## Summary
 

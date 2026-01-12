@@ -14,14 +14,14 @@ head: fix-avoid-parenthesizing-attribute-chains
 created_at: 2023-12-20T07:51:30Z
 updated_at: 2023-12-20T23:42:26Z
 url: https://github.com/astral-sh/ruff/pull/9209
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix: Avoid parenthesizing subscript targets and values
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-20 07:51_
+_@MichaReiser_
 
 ## Summary
 

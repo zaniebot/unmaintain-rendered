@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-04-13T09:25:52Z
 updated_at: 2021-12-10T02:16:37Z
 url: https://github.com/clap-rs/clap/issues/1246
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # textwrap is confused by ColoredHelp
 
 ---
 
-_Issue opened by @vincentdephily on 2018-04-13 09:25_
+_@vincentdephily_
 
 This presumably depends on #836
 

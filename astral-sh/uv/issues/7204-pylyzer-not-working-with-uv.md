@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T23:23:24Z
 updated_at: 2024-10-11T09:54:36Z
 url: https://github.com/astral-sh/uv/issues/7204
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Pylyzer not working with uv
 
 ---
 
-_Issue opened by @daltunay on 2024-09-08 23:23_
+_@daltunay_
 
 uv version `uv 0.4.7 (a178051e8 2024-09-07)`
 

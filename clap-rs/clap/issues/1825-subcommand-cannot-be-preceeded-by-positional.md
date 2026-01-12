@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-14T23:11:06Z
 updated_at: 2020-04-15T06:17:31Z
 url: https://github.com/clap-rs/clap/issues/1825
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Subcommand cannot be preceeded by positional argument if its value is a prefix of a subcommand
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-14 23:11_
+_@CreepySkeleton_
 
 ### Make sure you completed the following tasks
 

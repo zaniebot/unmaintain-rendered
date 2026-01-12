@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-18T23:38:23Z
 updated_at: 2024-03-20T00:54:06Z
 url: https://github.com/astral-sh/uv/issues/2530
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Package not importable post install without a process restart
 
 ---
 
-_Issue opened by @gaborbernat on 2024-03-18 23:38_
+_@gaborbernat_
 
 So this is a weird one that involves the `editables` project, cc @pfmoore for awareness. Originally reported via https://github.com/tox-dev/tox-uv/issues/41, but created a simpler reproducer here. Consider the following test file (first demonstrating with pip) called `magic.py`
 

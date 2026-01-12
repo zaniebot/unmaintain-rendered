@@ -12,14 +12,14 @@ head: merge-changed-steps
 created_at: 2023-07-20T14:49:30Z
 updated_at: 2023-07-20T21:18:14Z
 url: https://github.com/astral-sh/ruff/pull/5923
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Merge changed steps using `files_yaml`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 14:49_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

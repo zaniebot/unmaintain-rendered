@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-12-26T22:11:47Z
 updated_at: 2025-12-28T15:32:03Z
 url: https://github.com/astral-sh/uv/pull/17242
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Improve wording in `Concepts/Projects/Creating projects` documentation
 
 ---
 
-_Pull request opened by @shamil777 on 2025-12-26 22:11_
+_@shamil777_
 
  
 <!--

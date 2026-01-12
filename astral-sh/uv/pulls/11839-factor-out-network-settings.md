@@ -13,14 +13,14 @@ head: jtfm/refactor-network-settings
 created_at: 2025-02-27T20:21:41Z
 updated_at: 2025-02-28T09:25:33Z
 url: https://github.com/astral-sh/uv/pull/11839
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Factor out network settings
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-02-27 20:21_
+_@jtfmumm_
 
 Three network settings are always passed together (though in random method parameter orders). I'm going to need to add another in the context of upcoming work, so I factored these out into a struct to make changes easier.
 

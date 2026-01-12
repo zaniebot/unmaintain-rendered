@@ -12,14 +12,14 @@ head: charlie/ssl
 created_at: 2024-03-11T02:17:54Z
 updated_at: 2024-03-11T20:02:12Z
 url: https://github.com/astral-sh/uv/pull/2351
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Use `rustls-tls` with manual `SSL_CERT_FILE` implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-11 02:17_
+_@charliermarsh_
 
 ## Summary
 

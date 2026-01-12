@@ -13,14 +13,14 @@ head: dhruv/lexer-move
 created_at: 2024-06-21T05:15:28Z
 updated_at: 2024-06-21T10:23:12Z
 url: https://github.com/astral-sh/ruff/pull/11957
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Move token and error structs into related modules
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-21 05:15_
+_@dhruvmanila_
 
 ## Summary
 

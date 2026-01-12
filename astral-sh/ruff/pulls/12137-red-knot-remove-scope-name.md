@@ -13,14 +13,14 @@ head: remove-scope-name
 created_at: 2024-07-01T12:50:44Z
 updated_at: 2024-07-01T13:55:52Z
 url: https://github.com/astral-sh/ruff/pull/12137
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Remove `Scope::name`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-01 12:50_
+_@MichaReiser_
 
 ## Summary
 

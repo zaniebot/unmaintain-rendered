@@ -13,14 +13,14 @@ head: konsti/refactor-test-python-command
 created_at: 2025-06-17T19:15:47Z
 updated_at: 2025-06-18T13:06:11Z
 url: https://github.com/astral-sh/uv/pull/14117
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Unify test venv `python` command creation
 
 ---
 
-_Pull request opened by @konstin on 2025-06-17 19:15_
+_@konstin_
 
 Refactoring in preparation for https://github.com/astral-sh/uv/pull/14080
 

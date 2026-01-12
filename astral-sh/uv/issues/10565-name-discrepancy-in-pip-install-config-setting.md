@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T14:53:50Z
 updated_at: 2025-03-26T19:23:43Z
 url: https://github.com/astral-sh/uv/issues/10565
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Name discrepancy in pip install --config-setting / --config-settings
 
 ---
 
-_Issue opened by @cpburnz on 2025-01-13 14:53_
+_@cpburnz_
 
 Regular `pip install` has the option `--config-settings` (note that "settings" is plural) to pass settings to the build backend. Under the `uv pip install` "Build options" help section, the option is named `--config-setting` (note that "setting" is singular). After some experienting, uv appears to accept `--config-settings` despite it being undocumented. It would be helpful if the alternative name `--config-settings` in `uv pip install --help` was mentioned for pip compatibility.
 

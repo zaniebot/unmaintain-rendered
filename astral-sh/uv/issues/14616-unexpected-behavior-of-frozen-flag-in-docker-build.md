@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T20:37:49Z
 updated_at: 2025-07-16T19:26:31Z
 url: https://github.com/astral-sh/uv/issues/14616
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Unexpected behavior of `--frozen` flag in docker build?
 
 ---
 
-_Issue opened by @thisisarko on 2025-07-14 20:37_
+_@thisisarko_
 
 ### Project structure:
 

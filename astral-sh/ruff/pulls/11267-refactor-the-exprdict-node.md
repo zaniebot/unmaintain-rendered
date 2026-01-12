@@ -13,14 +13,14 @@ head: refactor-dict-node
 created_at: 2024-05-03T17:44:03Z
 updated_at: 2024-07-01T10:29:46Z
 url: https://github.com/astral-sh/ruff/pull/11267
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Refactor the `ExprDict` node
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-03 17:44_
+_@AlexWaygood_
 
 ## Summary
 

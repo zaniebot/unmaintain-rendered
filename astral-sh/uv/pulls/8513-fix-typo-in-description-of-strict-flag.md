@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2024-10-24T04:44:46Z
 updated_at: 2024-10-24T12:22:08Z
 url: https://github.com/astral-sh/uv/pull/8513
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Fix typo in description of `--strict` flag
 
 ---
 
-_Pull request opened by @AndreyBozhko on 2024-10-24 04:44_
+_@AndreyBozhko_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

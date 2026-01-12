@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T23:12:03Z
 updated_at: 2025-09-07T00:46:04Z
 url: https://github.com/astral-sh/uv/issues/13032
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Include dependencies in `pylock.toml` export
 
 ---
 
-_Issue opened by @charliermarsh on 2025-04-21 23:12_
+_@charliermarsh_
 
 Right now, we omit `dependencies`, which is optional. But it seems useful to include, for auditing purposes. The spec does _not_ define the format, so we can write whatever we want in that field.
 

@@ -14,14 +14,14 @@ head: renovate/rustc-hash-2.x-lockfile
 created_at: 2025-02-10T01:07:08Z
 updated_at: 2025-02-10T02:21:04Z
 url: https://github.com/astral-sh/uv/pull/11369
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Update Rust crate rustc-hash to v2.1.1
 
 ---
 
-_Pull request opened by @renovate on 2025-02-10 01:07_
+_@renovate_
 
 This PR contains the following updates:
 

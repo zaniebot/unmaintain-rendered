@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-02-12T18:08:41Z
 updated_at: 2025-02-12T18:16:05Z
 url: https://github.com/astral-sh/uv/pull/11457
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Update README.md to use WinGet as the default installation method
 
 ---
 
-_Pull request opened by @localden on 2025-02-12 18:08_
+_@localden_
 
 ## Summary
 

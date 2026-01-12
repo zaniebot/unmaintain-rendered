@@ -13,14 +13,14 @@ assignees: []
 created_at: 2026-01-09T21:20:22Z
 updated_at: 2026-01-09T21:29:21Z
 url: https://github.com/astral-sh/ty/issues/2426
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty thinks `Generator[None, None, A]` and `Generator[None, None, B]` are equivalent types on Python <3.13
 
 ---
 
-_Issue opened by @carljm on 2026-01-09 21:20_
+_@carljm_
 
 ```py
 from ty_extensions import is_equivalent_to, is_subtype_of, static_assert

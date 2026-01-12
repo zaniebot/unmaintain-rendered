@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T17:22:15Z
 updated_at: 2025-07-16T19:12:27Z
 url: https://github.com/astral-sh/uv/issues/14666
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # `uv cache prune --ci` removes all useful cache
 
 ---
 
-_Issue opened by @MarthinusBosman on 2025-07-16 17:22_
+_@MarthinusBosman_
 
 ### Summary
 

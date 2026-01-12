@@ -13,14 +13,14 @@ head: simplify-arithmetic
 created_at: 2024-05-08T22:40:20Z
 updated_at: 2024-05-09T01:57:29Z
 url: https://github.com/astral-sh/ruff/pull/11346
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Simplify arithmetic operation in logical lines checker
 
 ---
 
-_Pull request opened by @augustelalande on 2024-05-08 22:40_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

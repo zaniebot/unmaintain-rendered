@@ -13,14 +13,14 @@ head: move-generated-test-check-to-code
 created_at: 2025-02-22T20:44:45Z
 updated_at: 2025-02-25T12:37:15Z
 url: https://github.com/astral-sh/ruff/pull/16320
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Test auto generated codes are up to date
 
 ---
 
-_Pull request opened by @Glyphack on 2025-02-22 20:44_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

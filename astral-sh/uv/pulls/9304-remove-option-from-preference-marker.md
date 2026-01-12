@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-11-21T04:33:40Z
 updated_at: 2024-11-21T14:36:26Z
 url: https://github.com/astral-sh/uv/pull/9304
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Remove `Option` from preference marker
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 04:33_
+_@charliermarsh_
 
 ## Summary
 

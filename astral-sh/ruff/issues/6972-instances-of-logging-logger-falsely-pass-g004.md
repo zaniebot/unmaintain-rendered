@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T11:28:40Z
 updated_at: 2023-08-30T08:12:18Z
 url: https://github.com/astral-sh/ruff/issues/6972
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Instances of logging.Logger falsely pass G004 when imported from another module
 
 ---
 
-_Issue opened by @TimekillerTK on 2023-08-29 11:28_
+_@TimekillerTK_
 
 
 

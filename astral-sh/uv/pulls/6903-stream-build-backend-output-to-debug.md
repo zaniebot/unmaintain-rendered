@@ -13,14 +13,14 @@ head: charlie/build-output
 created_at: 2024-08-31T23:49:04Z
 updated_at: 2024-09-05T11:52:29Z
 url: https://github.com/astral-sh/uv/pull/6903
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Stream build backend output to `debug!`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-31 23:49_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fmt-skip-clause-header
 created_at: 2023-08-15T12:10:30Z
 updated_at: 2023-08-17T06:27:21Z
 url: https://github.com/astral-sh/ruff/pull/6593
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Support `fmt: skip` on compound statements
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-15 12:10_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

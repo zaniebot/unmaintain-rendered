@@ -14,14 +14,14 @@ head: zb/docs-sections
 created_at: 2024-07-31T20:50:51Z
 updated_at: 2024-08-16T23:09:23Z
 url: https://github.com/astral-sh/uv/pull/5674
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Disable collapsible navigation in the documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 20:50_
+_@zanieb_
 
 Removes the collapsible sections in favor of larger font navigation headings. I found the bold to be too distracting from the content itself — it might be okay in the future if the navigation bar is further left.
 

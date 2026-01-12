@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T11:21:54Z
 updated_at: 2024-01-09T12:57:37Z
 url: https://github.com/astral-sh/ruff/issues/6850
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule: prefer `if` over ternary operation evaluating to `None` if cond doesn't hold
 
 ---
 
-_Issue opened by @dorschw on 2023-08-24 11:21_
+_@dorschw_
 
 ### Proposal
 Disallow ternary operations that:

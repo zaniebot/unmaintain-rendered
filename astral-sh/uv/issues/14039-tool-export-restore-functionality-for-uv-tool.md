@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-14T18:31:20Z
 updated_at: 2025-06-18T16:34:14Z
 url: https://github.com/astral-sh/uv/issues/14039
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Tool export/restore functionality for `uv tool`
 
 ---
 
-_Issue opened by @apcamargo on 2025-06-14 18:31_
+_@apcamargo_
 
 ### Summary
 

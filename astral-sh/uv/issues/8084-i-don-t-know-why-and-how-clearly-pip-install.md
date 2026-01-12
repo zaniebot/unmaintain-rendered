@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T11:39:47Z
 updated_at: 2024-10-11T14:47:58Z
 url: https://github.com/astral-sh/uv/issues/8084
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # I don't know why and how ,  clearly `pip  install jittor`  is   normal  
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-10-10 11:39_
+_@Super1Windcloud_
 
 uv@latest ,  WIn11  
 #  I don't know why and how ,  clearly `pip  install jittor`  is   normal 

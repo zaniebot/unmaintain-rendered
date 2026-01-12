@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-08-28T11:20:24Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/638
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # `App::with_defaults` pulls clap's author and version
 
 ---
 
-_Issue opened by @guiniol on 2016-08-28 11:20_
+_@guiniol_
 
 Using the new `App:with_defaults` displays clap's author and version number.
 This is with clap version 2.11.0

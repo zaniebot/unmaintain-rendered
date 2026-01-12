@@ -13,14 +13,14 @@ head: micha/sync-with-items
 created_at: 2024-10-30T13:41:44Z
 updated_at: 2024-10-31T15:10:55Z
 url: https://github.com/astral-sh/ruff/pull/13998
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Handle context managers in (sync) with statements
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-30 13:41_
+_@MichaReiser_
 
 ## Summary
 

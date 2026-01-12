@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T18:38:00Z
 updated_at: 2025-06-20T20:02:10Z
 url: https://github.com/astral-sh/uv/issues/14166
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Uv not failing to install library when library doesn't exist for python version
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-20 18:38_
+_@Ryang20718_
 
 ### Summary
 

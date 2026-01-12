@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T23:08:07Z
 updated_at: 2022-12-05T23:39:17Z
 url: https://github.com/astral-sh/ruff/issues/1086
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # I001: Star import with long comment
 
 ---
 
-_Issue opened by @UnknownPlatypus on 2022-12-05 23:08_
+_@UnknownPlatypus_
 
 A star import with a long comment is formatted into multiple lines which creates invalid python code.
 See the following exemple:

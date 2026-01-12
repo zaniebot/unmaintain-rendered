@@ -13,14 +13,14 @@ head: charlie/sdist
 created_at: 2024-05-18T14:25:32Z
 updated_at: 2024-05-18T16:54:28Z
 url: https://github.com/astral-sh/uv/pull/3649
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add registry source distribution support to lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-18 14:25_
+_@charliermarsh_
 
 ## Summary
 

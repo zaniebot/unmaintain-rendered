@@ -13,14 +13,14 @@ head: ty-annot-legacy
 created_at: 2025-05-31T13:36:20Z
 updated_at: 2025-06-06T01:24:27Z
 url: https://github.com/astral-sh/ruff/pull/18404
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Support type annotation for legacy typing aliases for generic classes
 
 ---
 
-_Pull request opened by @lipefree on 2025-05-31 13:36_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

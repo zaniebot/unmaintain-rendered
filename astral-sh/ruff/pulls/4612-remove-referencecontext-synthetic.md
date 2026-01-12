@@ -12,14 +12,14 @@ head: charlie/synthetic
 created_at: 2023-05-23T20:16:48Z
 updated_at: 2023-05-24T14:57:49Z
 url: https://github.com/astral-sh/ruff/pull/4612
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove `ReferenceContext::Synthetic`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 20:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/lock-target
 created_at: 2024-12-23T22:46:29Z
 updated_at: 2024-12-25T00:26:33Z
 url: https://github.com/astral-sh/uv/pull/10129
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Add a lock target abstraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-23 22:46_
+_@charliermarsh_
 
 ## Summary
 

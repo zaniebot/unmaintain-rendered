@@ -12,14 +12,14 @@ head: fix-s608-with-implicit-concatenation
 created_at: 2025-09-29T12:29:02Z
 updated_at: 2025-11-25T13:24:33Z
 url: https://github.com/astral-sh/ruff/pull/20628
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`flake8-bandit`] Fix false negative with implicit string concatenation (`S608`)
 
 ---
 
-_Pull request opened by @UgoM on 2025-09-29 12:29_
+_@UgoM_
 
 # Disclaimer
 

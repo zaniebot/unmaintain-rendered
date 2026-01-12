@@ -14,14 +14,14 @@ head: dont-expand-alias-by-type-mapping
 created_at: 2025-12-29T11:10:08Z
 updated_at: 2025-12-30T03:03:31Z
 url: https://github.com/astral-sh/ruff/pull/22241
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] don't expand type aliases via type mappings unless necessary
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-29 11:10_
+_@mtshiba_
 
 ## Summary
 

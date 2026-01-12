@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T19:32:08Z
 updated_at: 2025-01-30T18:48:54Z
 url: https://github.com/astral-sh/uv/issues/11079
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Add pytorch documentation section on how to install for Intel GPUs
 
 ---
 
-_Issue opened by @natemcintosh on 2025-01-29 19:32_
+_@natemcintosh_
 
 ### Summary
 

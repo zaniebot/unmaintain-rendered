@@ -12,14 +12,14 @@ head: charlie/latest-prerelease
 created_at: 2023-10-30T14:47:53Z
 updated_at: 2023-10-30T15:21:12Z
 url: https://github.com/astral-sh/uv/pull/232
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Make version selection wheel-vs.-sdist-agnostic
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 14:47_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/231.
 

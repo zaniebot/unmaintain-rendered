@@ -13,14 +13,14 @@ head: zb/install-test
 created_at: 2025-01-23T19:59:04Z
 updated_at: 2025-01-23T21:27:59Z
 url: https://github.com/astral-sh/uv/pull/10912
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Require tests to opt-in to managed Python installation
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 19:59_
+_@zanieb_
 
 First of all, I want to test automatic managed installs (see #10913) and need to set that up. Second of all, some tests were _implicitly_ downloading interpreters instead of using the one from their context — which is unexpected and naughty and very slow.
  

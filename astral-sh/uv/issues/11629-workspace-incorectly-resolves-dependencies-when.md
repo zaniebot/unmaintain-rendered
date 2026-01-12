@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T18:21:19Z
 updated_at: 2025-02-20T15:48:48Z
 url: https://github.com/astral-sh/uv/issues/11629
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # Workspace incorectly resolves dependencies when they are conditionally excluded
 
 ---
 
-_Issue opened by @potiuk on 2025-02-19 18:21_
+_@potiuk_
 
 ### Summary
 

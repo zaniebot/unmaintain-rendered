@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-24T20:26:01Z
 updated_at: 2025-09-25T08:06:36Z
 url: https://github.com/astral-sh/ruff/issues/20560
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff check --show-settings` does not adhere to `.ruff.toml` schema
 
 ---
 
-_Issue opened by @topoinix on 2025-09-24 20:26_
+_@topoinix_
 
 [.ruff.toml.txt](https://github.com/user-attachments/files/22522407/default.ruff.toml.txt)
 [ruff-check-show-settings.txt](https://github.com/user-attachments/files/22522406/ruff-check-show-settings.txt)

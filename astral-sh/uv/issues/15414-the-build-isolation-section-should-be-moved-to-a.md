@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:34:54Z
 updated_at: 2025-08-21T13:35:32Z
 url: https://github.com/astral-sh/uv/issues/15414
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # The "Build isolation" section should be moved to a dedicated location
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:34_
+_@zanieb_
 
 There's a ton of content here (`uv/concepts/projects/config/#build-isolation`). We should probably move it, but I'm not sure where to yet. We'll want to retain a link in the project configuration section regardless. 
 

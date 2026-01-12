@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T13:19:31Z
 updated_at: 2023-10-26T00:32:01Z
 url: https://github.com/astral-sh/ruff/issues/8215
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Format: Blank lines before classes minor inconsistency
 
 ---
 
-_Issue opened by @Paul-Aime on 2023-10-25 13:19_
+_@Paul-Aime_
 
 `ruff format` generally adds two blank lines between a class and a previous commented line.
 But it does not if the class is the first line of code of the file.

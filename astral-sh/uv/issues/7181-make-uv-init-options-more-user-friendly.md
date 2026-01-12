@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T21:05:27Z
 updated_at: 2025-02-06T07:49:22Z
 url: https://github.com/astral-sh/uv/issues/7181
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Make `uv init` options more user-friendly
 
 ---
 
-_Issue opened by @dandavison on 2024-09-07 21:05_
+_@dandavison_
 
 Hi, thanks for `uv`, it's looking great.
 

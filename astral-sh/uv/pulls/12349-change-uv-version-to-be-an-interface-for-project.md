@@ -14,14 +14,14 @@ head: gankra/version
 created_at: 2025-03-20T21:11:18Z
 updated_at: 2025-04-24T17:38:31Z
 url: https://github.com/astral-sh/uv/pull/12349
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # change `uv version` to be an interface for project version reads and edits
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-20 21:11_
+_@Gankra_
 
 This is a reimplementation of #7248 with a new CLI interface.
 

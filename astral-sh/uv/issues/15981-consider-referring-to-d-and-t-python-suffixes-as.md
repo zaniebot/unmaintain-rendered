@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T13:50:03Z
 updated_at: 2025-09-22T13:50:13Z
 url: https://github.com/astral-sh/uv/issues/15981
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Consider referring to `d` and `t` Python suffixes as ABI flags
 
 ---
 
-_Issue opened by @zanieb on 2025-09-22 13:50_
+_@zanieb_
 
 Should we call this "ABI flag," for consistency with e.g. `sys.abiflags`?
 

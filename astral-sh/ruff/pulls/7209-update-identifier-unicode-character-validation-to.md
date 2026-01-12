@@ -12,14 +12,14 @@ head: fix-identifier-validation
 created_at: 2023-09-06T21:08:00Z
 updated_at: 2023-12-01T23:46:14Z
 url: https://github.com/astral-sh/ruff/pull/7209
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update identifier Unicode character validation to match Python spec
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-09-06 21:08_
+_@LaBatata101_
 
 ## Summary
 

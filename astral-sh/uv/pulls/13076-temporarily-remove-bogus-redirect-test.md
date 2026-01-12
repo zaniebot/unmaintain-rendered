@@ -13,14 +13,14 @@ head: charlie/bogus
 created_at: 2025-04-23T21:05:25Z
 updated_at: 2025-04-23T21:18:33Z
 url: https://github.com/astral-sh/uv/pull/13076
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Temporarily remove bogus redirect test
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-23 21:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/faq
 created_at: 2023-10-16T00:34:45Z
 updated_at: 2023-10-16T18:34:56Z
 url: https://github.com/astral-sh/ruff/pull/7969
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update fix safety FAQ to reflect `--unsafe-fixes`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 00:34_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/name
 created_at: 2025-01-15T03:16:32Z
 updated_at: 2025-01-15T03:29:09Z
 url: https://github.com/astral-sh/uv/pull/10625
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Avoid allocating when stripping source distribution extension
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-15 03:16_
+_@charliermarsh_
 
 _No description provided._
 

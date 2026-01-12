@@ -12,14 +12,14 @@ head: renovate/webpki-roots-0.x
 created_at: 2024-04-08T04:24:32Z
 updated_at: 2024-04-08T04:32:45Z
 url: https://github.com/astral-sh/uv/pull/2892
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update Rust crate webpki-roots to 0.26.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 04:24_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

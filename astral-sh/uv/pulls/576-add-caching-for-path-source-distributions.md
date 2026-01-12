@@ -13,14 +13,14 @@ head: charlie/path-deps
 created_at: 2023-12-06T01:29:25Z
 updated_at: 2023-12-06T01:33:53Z
 url: https://github.com/astral-sh/uv/pull/576
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Add caching for path source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-06 01:29_
+_@charliermarsh_
 
 Follows the strategy that we use for other source distributions.
 

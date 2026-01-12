@@ -12,14 +12,14 @@ head: charlie/show-source
 created_at: 2023-05-09T17:03:21Z
 updated_at: 2023-05-09T17:49:01Z
 url: https://github.com/astral-sh/ruff/pull/4317
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move `show_source` onto CLI settings group
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 17:03_
+_@charliermarsh_
 
 Now that we _always_ compute source, we don't need it available as a library setting -- it's only relevant for the printer.
 

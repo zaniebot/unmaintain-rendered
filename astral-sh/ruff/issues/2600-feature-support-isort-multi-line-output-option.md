@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-06T01:41:27Z
 updated_at: 2025-08-04T06:57:23Z
 url: https://github.com/astral-sh/ruff/issues/2600
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature: Support isort multi_line_output option
 
 ---
 
-_Issue opened by @mikelane on 2023-02-06 01:41_
+_@mikelane_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

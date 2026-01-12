@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T17:09:40Z
 updated_at: 2023-10-11T01:07:35Z
 url: https://github.com/astral-sh/ruff/issues/6783
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Requested enhancement] `PIE804` autofix
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-08-22 17:09_
+_@tylerlaprade_
 
 It seems non-breaking to replace
 ```

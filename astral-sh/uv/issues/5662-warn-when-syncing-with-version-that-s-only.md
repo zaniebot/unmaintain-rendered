@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-31T16:09:32Z
 updated_at: 2024-08-01T21:37:15Z
 url: https://github.com/astral-sh/uv/issues/5662
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Warn when syncing with version that's only supported by subset of workspace
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-31 16:09_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/5644#discussion_r1698078820
 

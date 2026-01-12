@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T18:23:00Z
 updated_at: 2025-11-28T08:20:26Z
 url: https://github.com/astral-sh/ty/issues/662
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `TypeVar` bounds do not work with `__class__`
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-16 18:23_
+_@MeGaGiGaGon_
 
 ### Summary
 

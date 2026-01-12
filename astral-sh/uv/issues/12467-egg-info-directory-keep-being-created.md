@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T15:23:37Z
 updated_at: 2025-12-25T09:40:39Z
 url: https://github.com/astral-sh/uv/issues/12467
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # egg-info directory keep being created
 
 ---
 
-_Issue opened by @clement-escolano on 2025-03-25 15:23_
+_@clement-escolano_
 
 ### Question
 

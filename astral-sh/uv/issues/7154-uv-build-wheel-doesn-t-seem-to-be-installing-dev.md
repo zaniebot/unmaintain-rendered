@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T03:19:33Z
 updated_at: 2024-09-07T14:32:26Z
 url: https://github.com/astral-sh/uv/issues/7154
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # uv build --wheel doesn't seem to be installing dev-dependencies
 
 ---
 
-_Issue opened by @alex on 2024-09-07 03:19_
+_@alex_
 
 https://github.com/pyca/cryptography/pull/11558 shows trying to take advantage of `uv build`, however CI doesn't seem happy: https://github.com/pyca/cryptography/actions/runs/10748158349/job/29811544879?pr=11558
 

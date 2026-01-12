@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T17:29:45Z
 updated_at: 2023-11-16T01:53:16Z
 url: https://github.com/astral-sh/ruff/issues/8698
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Missing pyupgrade errors (UP006, UP035)
 
 ---
 
-_Issue opened by @rademacher-p on 2023-11-15 17:29_
+_@rademacher-p_
 
 Hi, I seem to be missing pyupgrade errors for Python 3.11 and Ruff 0.1.5. Reproduce w/ `ruff --isolated --select UP file.py` on a fresh `venv`. This is all from the CLI, no `pyproject.toml`.
 ```

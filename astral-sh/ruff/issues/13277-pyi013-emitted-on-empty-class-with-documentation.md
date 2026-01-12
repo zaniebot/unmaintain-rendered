@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T08:39:42Z
 updated_at: 2024-09-07T14:43:18Z
 url: https://github.com/astral-sh/ruff/issues/13277
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `PYI013` emitted on empty class with documentation
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2024-09-07 08:39_
+_@DimitriPapadopoulos_
 
 When an otherwise empty class contains documentation, ruff identifies it as non-empty and emits PYI013:
 ```console

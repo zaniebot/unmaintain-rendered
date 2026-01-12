@@ -13,14 +13,14 @@ head: brent/ruf043
 created_at: 2025-09-04T20:33:54Z
 updated_at: 2025-09-05T18:01:12Z
 url: https://github.com/astral-sh/ruff/pull/20253
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `pytest-raises-ambiguous-pattern` (`RUF043`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 20:33_
+_@ntBre_
 
 This one has been a bit contentious in the past. It usually uncovers ~700 ecosystem hits. See:
 

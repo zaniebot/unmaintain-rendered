@@ -14,14 +14,14 @@ head: feat/uv-run-env-file
 created_at: 2024-10-16T16:51:21Z
 updated_at: 2024-10-27T20:17:38Z
 url: https://github.com/astral-sh/uv/pull/8263
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Add support for `.env` and custom env files in `uv run`
 
 ---
 
-_Pull request opened by @edugzlez on 2024-10-16 16:51_
+_@edugzlez_
 
 ## Summary
 

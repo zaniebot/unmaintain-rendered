@@ -12,14 +12,14 @@ head: charlie/log
 created_at: 2023-01-31T04:07:20Z
 updated_at: 2023-01-31T04:11:58Z
 url: https://github.com/astral-sh/ruff/pull/2376
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Include per-file ignore matches in debug logging
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 04:07_
+_@charliermarsh_
 
 Example usage (note the `Adding per-file ignores...` line):
 

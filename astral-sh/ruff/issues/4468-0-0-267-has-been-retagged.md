@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-17T09:16:00Z
 updated_at: 2023-05-17T15:27:02Z
 url: https://github.com/astral-sh/ruff/issues/4468
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # 0.0.267 has been retagged
 
 ---
 
-_Issue opened by @dvzrv on 2023-05-17 09:16_
+_@dvzrv_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

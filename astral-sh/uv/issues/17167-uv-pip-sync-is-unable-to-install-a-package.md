@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T07:30:54Z
 updated_at: 2025-12-19T12:42:09Z
 url: https://github.com/astral-sh/uv/issues/17167
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # `uv pip sync` is unable to install a package present in explicit custom index defined in pyproject.toml
 
 ---
 
-_Issue opened by @pstrzelczak on 2025-12-18 07:30_
+_@pstrzelczak_
 
 ### Summary
 

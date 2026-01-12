@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T23:11:44Z
 updated_at: 2025-01-28T23:37:27Z
 url: https://github.com/astral-sh/uv/issues/11044
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Can uv avoid downloading another uv when installing something that depends on uv?
 
 ---
 
-_Issue opened by @cthoyt on 2025-01-28 23:11_
+_@cthoyt_
 
 ### Question
 

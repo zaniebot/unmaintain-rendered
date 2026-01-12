@@ -14,14 +14,14 @@ head: extend-AIR302
 created_at: 2025-01-21T10:52:09Z
 updated_at: 2025-01-23T08:50:01Z
 url: https://github.com/astral-sh/ruff/pull/15633
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`airflow`] Argument `fail_stop` in DAG has been renamed as `fail_fast` (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-21 10:52_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

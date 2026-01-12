@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-28T02:47:34Z
 updated_at: 2022-12-28T12:25:16Z
 url: https://github.com/astral-sh/ruff/issues/1419
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Allow users to select what version of pyupgrade they want to use
 
 ---
 
-_Issue opened by @colin99d on 2022-12-28 02:47_
+_@colin99d_
 
 Pyupgrade allows users to select which version of python to lint until. This functionality will be CRITICAL for anyone who wants to use Ruff, while keeping backwards compatibility. Would love to flesh out implementation fully, and the I can work on it once #827 is complete.
 

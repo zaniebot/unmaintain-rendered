@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-16T15:54:35Z
 updated_at: 2023-08-17T02:07:55Z
 url: https://github.com/astral-sh/ruff/issues/6620
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Autofix breaks code: lambda-assignment in class body
 
 ---
 
-_Issue opened by @Adamantish on 2023-08-16 15:54_
+_@Adamantish_
 
 **Version**: 0.0.284
 **Config**: No config. Just evaluating ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-21T21:31:47Z
 updated_at: 2024-01-03T11:20:46Z
 url: https://github.com/astral-sh/ruff/issues/9237
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # N813 seems too broad in scope
 
 ---
 
-_Issue opened by @Armavica on 2023-12-21 21:31_
+_@Armavica_
 
 Hi, currently N813 is raised even for cases such as
 ``` python

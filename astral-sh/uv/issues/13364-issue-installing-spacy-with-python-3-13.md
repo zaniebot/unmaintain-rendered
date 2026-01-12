@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T10:49:43Z
 updated_at: 2025-05-20T14:18:36Z
 url: https://github.com/astral-sh/uv/issues/13364
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Issue installing Spacy with Python 3.13
 
 ---
 
-_Issue opened by @alelom on 2025-05-09 10:49_
+_@alelom_
 
 ### Summary
 

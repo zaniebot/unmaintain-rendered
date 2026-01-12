@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-21T05:36:23Z
 updated_at: 2025-12-21T08:53:17Z
 url: https://github.com/astral-sh/ty/issues/2141
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # assuming self-reference between function and return identifiers
 
 ---
 
-_Issue opened by @diceroll123 on 2025-12-21 05:36_
+_@diceroll123_
 
 ### Summary
 

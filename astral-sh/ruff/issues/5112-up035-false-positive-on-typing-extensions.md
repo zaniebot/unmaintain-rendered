@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-15T04:11:48Z
 updated_at: 2023-06-22T15:34:46Z
 url: https://github.com/astral-sh/ruff/issues/5112
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `UP035` false positive on `typing_extensions.dataclass_transform` on python 3.11
 
 ---
 
-_Issue opened by @DetachHead on 2023-06-15 04:11_
+_@DetachHead_
 
 ```py
 from typing_extensions import dataclass_transform

@@ -12,14 +12,14 @@ head: dhruv/fixup
 created_at: 2023-06-28T10:18:46Z
 updated_at: 2023-06-28T10:25:06Z
 url: https://github.com/astral-sh/ruff/pull/5414
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # fixup! Consider Jupyter index for code frames (`--show-source`) (#5402)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-28 10:18_
+_@dhruvmanila_
 
 _No description provided._
 

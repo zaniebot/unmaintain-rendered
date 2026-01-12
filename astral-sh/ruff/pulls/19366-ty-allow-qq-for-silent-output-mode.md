@@ -14,14 +14,14 @@ head: zb/silent
 created_at: 2025-07-15T17:00:24Z
 updated_at: 2025-07-15T17:08:22Z
 url: https://github.com/astral-sh/ruff/pull/19366
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Allow `-qq` for silent output mode
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 17:00_
+_@zanieb_
 
 This matches uv's behavior.
 

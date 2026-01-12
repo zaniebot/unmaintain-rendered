@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-08-13T23:17:06Z
 updated_at: 2021-11-04T08:58:15Z
 url: https://github.com/clap-rs/clap/issues/2692
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Make sure positionals have `MultipleOccurrences` set rather than `MultipleValues`
 
 ---
 
-_Issue opened by @pksunkara on 2021-08-13 23:17_
+_@pksunkara_
 
 Currently, positionals use `MultipleValues` during building of the arg and parsing. We need to change that to rely on `MultipleOccurrences`
 

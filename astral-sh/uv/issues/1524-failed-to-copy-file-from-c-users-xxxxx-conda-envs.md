@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T18:45:04Z
 updated_at: 2024-03-07T15:57:34Z
 url: https://github.com/astral-sh/uv/issues/1524
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # failed to copy file from C:\Users\xxxxx\.conda\envs\uv\Lib\venv\scripts\nt\python.exe
 
 ---
 
-_Issue opened by @OliverKleinBST on 2024-02-16 18:45_
+_@OliverKleinBST_
 
 Running
 uv pip compile -o requirements.txt -p 3.9 requirements.in

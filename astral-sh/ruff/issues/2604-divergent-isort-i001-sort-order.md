@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-06T10:46:14Z
 updated_at: 2023-02-06T15:33:37Z
 url: https://github.com/astral-sh/ruff/issues/2604
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Divergent isort I001 sort order
 
 ---
 
-_Issue opened by @moritz89 on 2023-02-06 10:46_
+_@moritz89_
 
 Ruff reports an error with the following code even though the imports were sorted with `isort`.
 

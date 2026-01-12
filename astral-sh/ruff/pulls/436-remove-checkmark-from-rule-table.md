@@ -12,14 +12,14 @@ head: charlie/rules
 created_at: 2022-10-15T15:27:02Z
 updated_at: 2022-10-15T15:28:33Z
 url: https://github.com/astral-sh/ruff/pull/436
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Remove checkmark from rule table
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-15 15:27_
+_@charliermarsh_
 
 _No description provided._
 

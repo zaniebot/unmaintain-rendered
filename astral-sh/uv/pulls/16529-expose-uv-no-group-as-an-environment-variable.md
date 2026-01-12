@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-10-31T01:27:03Z
 updated_at: 2025-10-31T03:34:15Z
 url: https://github.com/astral-sh/uv/pull/16529
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Expose `UV_NO_GROUP` as an environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-31 01:27_
+_@charliermarsh_
 
 ## Summary
 

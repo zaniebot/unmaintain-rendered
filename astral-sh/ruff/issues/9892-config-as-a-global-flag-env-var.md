@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-08T09:49:13Z
 updated_at: 2024-03-04T11:19:42Z
 url: https://github.com/astral-sh/ruff/issues/9892
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `--config` as a global flag/env var
 
 ---
 
-_Issue opened by @abbec on 2024-02-08 09:49_
+_@abbec_
 
 Hi,
 

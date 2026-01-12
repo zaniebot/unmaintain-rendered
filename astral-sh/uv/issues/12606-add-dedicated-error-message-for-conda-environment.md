@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T20:22:52Z
 updated_at: 2025-04-07T23:11:45Z
 url: https://github.com/astral-sh/uv/issues/12606
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Add dedicated error message for conda environment.yml files
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 20:22_
+_@zanieb_
 
 If used via `-r`, we should say we don't support these?
 

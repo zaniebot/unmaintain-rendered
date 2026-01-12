@@ -14,14 +14,14 @@ head: konsti/missing-password-phrasing
 created_at: 2024-10-15T12:11:14Z
 updated_at: 2024-10-15T12:25:25Z
 url: https://github.com/astral-sh/uv/pull/8211
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Publish: Better message for missing password
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 12:11_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: zb/crates-publish
 created_at: 2025-12-03T00:51:45Z
 updated_at: 2025-12-03T01:02:30Z
 url: https://github.com/astral-sh/uv/pull/16945
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Temporarily drop `crates-publish` from the release for 0.9.15 re-run
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-03 00:51_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/16944
 

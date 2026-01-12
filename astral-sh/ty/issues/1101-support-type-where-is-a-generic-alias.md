@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-27T21:05:29Z
 updated_at: 2025-11-24T21:56:44Z
 url: https://github.com/astral-sh/ty/issues/1101
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support `type[...]` where `...` is a generic alias
 
 ---
 
-_Issue opened by @carljm on 2025-08-27 21:05_
+_@carljm_
 
 https://play.ty.dev/1ac81fdc-057b-487a-9910-1d690b4ca673
 

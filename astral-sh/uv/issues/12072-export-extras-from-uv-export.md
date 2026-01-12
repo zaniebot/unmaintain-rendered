@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-09T03:40:02Z
 updated_at: 2025-09-04T14:34:38Z
 url: https://github.com/astral-sh/uv/issues/12072
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Export extras from uv export
 
 ---
 
-_Issue opened by @kuza55 on 2025-03-09 03:40_
+_@kuza55_
 
 ### Summary
 

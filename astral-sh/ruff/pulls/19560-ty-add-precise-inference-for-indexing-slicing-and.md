@@ -13,14 +13,14 @@ head: alex-brent/namedtuples
 created_at: 2025-07-25T17:27:16Z
 updated_at: 2025-08-13T15:20:11Z
 url: https://github.com/astral-sh/ruff/pull/19560
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Add precise inference for indexing, slicing and unpacking `NamedTuple` instances
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-25 17:27_
+_@AlexWaygood_
 
 ## Summary
 

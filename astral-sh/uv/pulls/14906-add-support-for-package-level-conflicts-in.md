@@ -13,14 +13,14 @@ head: zb/package-conflicts
 created_at: 2025-07-25T20:03:10Z
 updated_at: 2025-08-08T12:45:00Z
 url: https://github.com/astral-sh/uv/pull/14906
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Add support for `package`-level conflicts in workspaces
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 20:03_
+_@zanieb_
 
 Revives https://github.com/astral-sh/uv/pull/9130
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-14T19:40:45Z
 updated_at: 2025-04-15T01:37:17Z
 url: https://github.com/astral-sh/ruff/issues/17397
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff check --select I --fix` messes up redundant import aliases
 
 ---
 
-_Issue opened by @pekkaklarck on 2025-04-14 19:40_
+_@pekkaklarck_
 
 ### Summary
 

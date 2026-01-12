@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-23T13:40:16Z
 updated_at: 2023-10-08T14:49:47Z
 url: https://github.com/astral-sh/ruff/issues/7618
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improvements to RUF15
 
 ---
 
-_Issue opened by @hoxbro on 2023-09-23 13:40_
+_@hoxbro_
 
 I have two (small) suggestions for improving [unnecessary-iterable-allocation-for-first-element (RUF015)](https://docs.astral.sh/ruff/rules/unnecessary-iterable-allocation-for-first-element/#unnecessary-iterable-allocation-for-first-element-ruf015)
 

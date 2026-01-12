@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T04:39:07Z
 updated_at: 2024-09-25T17:40:30Z
 url: https://github.com/astral-sh/uv/issues/6297
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # FR: Add support for `uv tool upgrade --python <PYTHON>`
 
 ---
 
-_Issue opened by @weihenglim on 2024-08-21 04:39_
+_@weihenglim_
 
 It would be useful to have a way to reinstall/upgrade all installed tools to the latest Python version. 
 

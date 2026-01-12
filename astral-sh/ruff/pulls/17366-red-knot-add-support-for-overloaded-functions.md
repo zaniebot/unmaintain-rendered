@@ -13,14 +13,14 @@ head: dhruv/overloaded-signature
 created_at: 2025-04-12T04:44:02Z
 updated_at: 2025-04-18T04:27:41Z
 url: https://github.com/astral-sh/ruff/pull/17366
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add support for overloaded functions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-12 04:44_
+_@dhruvmanila_
 
 ## Summary
 

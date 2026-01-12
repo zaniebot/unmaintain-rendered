@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-02T22:09:50Z
 updated_at: 2023-11-28T06:00:39Z
 url: https://github.com/astral-sh/ruff/issues/1567
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature request: Add Length-Sort config to isort
 
 ---
 
-_Issue opened by @einarwar on 2023-01-02 22:09_
+_@einarwar_
 
 Thanks for an awsome library. I am currently trying to replace the old flake8 and isort setup on our repo with ruff.
 

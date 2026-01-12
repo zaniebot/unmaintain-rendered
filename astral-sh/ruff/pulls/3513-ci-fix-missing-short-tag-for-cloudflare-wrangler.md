@@ -12,14 +12,14 @@ head: fix-ci-tags
 created_at: 2023-03-14T15:10:56Z
 updated_at: 2023-03-14T15:25:52Z
 url: https://github.com/astral-sh/ruff/pull/3513
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: fix missing short tag for cloudflare/wrangler-action
 
 ---
 
-_Pull request opened by @XuehaiPan on 2023-03-14 15:10_
+_@XuehaiPan_
 
 Sorry for adding noise here without a deep investigation in #3504. [cloudflare/wrangler-action](https://github.com/cloudflare/wrangler-action) does not have a short tag like `2` or `v2`. Use the full tag in GitHub Actions for cloudflare/wrangler-action.
 

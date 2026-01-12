@@ -13,14 +13,14 @@ head: charlie/url-hash
 created_at: 2024-12-22T13:37:18Z
 updated_at: 2024-12-22T14:07:06Z
 url: https://github.com/astral-sh/uv/pull/10093
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Strip fragment when storing direct URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-22 13:37_
+_@charliermarsh_
 
 ## Summary
 

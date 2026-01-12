@@ -13,14 +13,14 @@ head: dhruv/starred-unpacking-list
 created_at: 2025-05-31T09:20:41Z
 updated_at: 2025-06-03T01:55:09Z
 url: https://github.com/astral-sh/ruff/pull/18401
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # Infer `list[T]` for starred target in unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-31 09:20_
+_@dhruvmanila_
 
 ## Summary
 

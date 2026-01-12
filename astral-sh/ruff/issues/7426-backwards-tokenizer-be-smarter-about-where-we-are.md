@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-15T22:03:00Z
 updated_at: 2023-09-16T18:04:52Z
 url: https://github.com/astral-sh/ruff/issues/7426
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Backwards tokenizer: Be smarter about where we are in the comment ranges
 
 ---
 
-_Issue opened by @konstin on 2023-09-15 22:03_
+_@konstin_
 
               Nit: Storing a slice and updating the slice when needed should give you the same
 

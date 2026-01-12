@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T20:37:12Z
 updated_at: 2024-10-24T09:05:34Z
 url: https://github.com/astral-sh/ruff/issues/8758
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider conditionally applying rule PLR6201
 
 ---
 
-_Issue opened by @ofek on 2023-11-18 20:37_
+_@ofek_
 
 When the sequences are small, the cost of instantiation of a set in fact negatively impacts performance:
 

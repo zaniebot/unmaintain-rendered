@@ -13,14 +13,14 @@ head: format-stmt-asyncwith
 created_at: 2023-06-26T16:33:04Z
 updated_at: 2023-07-07T20:47:54Z
 url: https://github.com/astral-sh/ruff/pull/5376
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # format StmtAsyncWith
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-26 16:33_
+_@davidszotten_
 
 refactor `FormatStmtWith` and share impl with `FormatStmtAsyncWith`
 

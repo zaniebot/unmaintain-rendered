@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-06T05:55:46Z
 updated_at: 2024-09-06T05:55:46Z
 url: https://github.com/astral-sh/uv/issues/7117
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Create environment variable to place all uv data under one directory
 
 ---
 
-_Issue opened by @bmarroquin on 2024-09-06 05:55_
+_@bmarroquin_
 
 I want to move all UV related files into another drive on my system. Currently, i would need to set a few environment variables to get this to work. It would be nice to add an env var that can be used to move them all at once.
 

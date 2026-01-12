@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-28T03:14:32Z
 updated_at: 2022-02-28T03:31:32Z
 url: https://github.com/clap-rs/clap/issues/3517
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive feature: Add a prefix for env vars
 
 ---
 
-_Issue opened by @remoun on 2022-02-28 03:14_
+_@remoun_
 
 ### Please complete the following tasks
 

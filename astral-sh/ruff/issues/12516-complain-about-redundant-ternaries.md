@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-25T18:58:08Z
 updated_at: 2024-09-04T06:23:44Z
 url: https://github.com/astral-sh/ruff/issues/12516
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Complain about redundant ternaries?
 
 ---
 
-_Issue opened by @janosh on 2024-07-25 18:58_
+_@janosh_
 
 while refactoring i got this code and was fully expecting `ruff` to complain about the redundant ternary but it doesn't. maybe worth adding a rule for this?
 

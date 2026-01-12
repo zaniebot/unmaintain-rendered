@@ -14,14 +14,14 @@ head: ibraheem/get-size-tracker
 created_at: 2025-09-19T20:56:52Z
 updated_at: 2025-09-22T21:37:47Z
 url: https://github.com/astral-sh/ruff/pull/20487
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Update `get-size2`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-19 20:56_
+_@ibraheemdev_
 
 ## Summary
 

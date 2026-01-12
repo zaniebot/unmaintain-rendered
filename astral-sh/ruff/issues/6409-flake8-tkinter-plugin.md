@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-08T00:07:15Z
 updated_at: 2023-08-13T19:21:09Z
 url: https://github.com/astral-sh/ruff/issues/6409
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # flake8-tkinter plugin
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-08-08 00:07_
+_@benjamin-kirkbride_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

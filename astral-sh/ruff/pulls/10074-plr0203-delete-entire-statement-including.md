@@ -12,14 +12,14 @@ head: use-delete-stmt
 created_at: 2024-02-21T21:42:53Z
 updated_at: 2024-02-22T18:06:06Z
 url: https://github.com/astral-sh/ruff/pull/10074
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # PLR0203: Delete entire statement, including semicolons 
 
 ---
 
-_Pull request opened by @sanxiyn on 2024-02-21 21:42_
+_@sanxiyn_
 
 Fix for https://github.com/astral-sh/ruff/issues/8402#issuecomment-1956263418.
 

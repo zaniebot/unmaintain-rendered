@@ -13,14 +13,14 @@ head: trailing-whitespace-inside-multiline-string
 created_at: 2024-01-31T15:52:08Z
 updated_at: 2024-01-31T21:57:49Z
 url: https://github.com/astral-sh/ruff/pull/9744
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Removing trailing whitespace inside multiline strings is unsafe
 
 ---
 
-_Pull request opened by @sanxiyn on 2024-01-31 15:52_
+_@sanxiyn_
 
 Fix #8037.
 

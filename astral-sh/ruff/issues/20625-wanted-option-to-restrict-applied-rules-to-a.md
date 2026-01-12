@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T08:09:46Z
 updated_at: 2025-10-12T06:38:20Z
 url: https://github.com/astral-sh/ruff/issues/20625
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Wanted: Option to restrict applied rules to a subset
 
 ---
 
-_Issue opened by @smurfix on 2025-09-29 08:09_
+_@smurfix_
 
 Hi,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T13:12:14Z
 updated_at: 2025-01-25T02:51:13Z
 url: https://github.com/astral-sh/uv/issues/10562
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Some incompatibility with Prisma
 
 ---
 
-_Issue opened by @Somebi on 2025-01-13 13:12_
+_@Somebi_
 
 ```
 root@tester:~/uploaded_folder/python# ./generate_prisma_cli.sh 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T12:20:58Z
 updated_at: 2025-12-02T17:43:57Z
 url: https://github.com/astral-sh/uv/issues/9440
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Feature request: Support pinning named indexes specified in user-level configuration (uv.toml)
 
 ---
 
-_Issue opened by @freinold on 2024-11-26 12:20_
+_@freinold_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

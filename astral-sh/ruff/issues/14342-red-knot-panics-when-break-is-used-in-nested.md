@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-14T17:27:34Z
 updated_at: 2024-11-22T12:13:56Z
 url: https://github.com/astral-sh/ruff/issues/14342
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics when 'break' is used in nested definitions inside loops
 
 ---
 
-_Issue opened by @qarmin on 2024-11-14 17:27_
+_@qarmin_
 
 ```
 red_knot --current-directory .

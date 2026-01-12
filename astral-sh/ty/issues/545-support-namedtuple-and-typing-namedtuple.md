@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-30T01:50:56Z
 updated_at: 2025-11-29T18:36:52Z
 url: https://github.com/astral-sh/ty/issues/545
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support namedtuple and typing.NamedTuple
 
 ---
 
-_Issue opened by @carljm on 2025-05-30 01:50_
+_@carljm_
 
 _No description provided._
 

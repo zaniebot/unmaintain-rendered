@@ -14,14 +14,14 @@ head: fix-PTH104
 created_at: 2025-04-29T14:50:07Z
 updated_at: 2025-05-01T14:01:18Z
 url: https://github.com/astral-sh/ruff/pull/17712
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`flake8-use-pathlib`] Fix `PTH104`false positive when `rename` is passed a file descriptor
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-29 14:50_
+_@LaBatata101_
 
 
 

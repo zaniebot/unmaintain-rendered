@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T14:12:47Z
 updated_at: 2025-09-12T16:02:19Z
 url: https://github.com/astral-sh/uv/issues/15812
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # uv run / uvx does not support virtual workspaces
 
 ---
 
-_Issue opened by @seandlg on 2025-09-12 14:12_
+_@seandlg_
 
 ### Summary
 

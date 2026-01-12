@@ -14,14 +14,14 @@ head: ibraheem/implicit-cls-signature
 created_at: 2025-12-03T06:25:43Z
 updated_at: 2025-12-10T21:56:22Z
 url: https://github.com/astral-sh/ruff/pull/21771
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Support implicit type of `cls` in signatures
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-03 06:25_
+_@ibraheemdev_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T14:29:31Z
 updated_at: 2025-05-13T14:47:34Z
 url: https://github.com/astral-sh/uv/issues/13432
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Torch 2.7.0 cpu does not store hash in  uv.lock on aarch64
 
 ---
 
-_Issue opened by @07pepa on 2025-05-13 14:29_
+_@07pepa_
 
 ### Summary
 

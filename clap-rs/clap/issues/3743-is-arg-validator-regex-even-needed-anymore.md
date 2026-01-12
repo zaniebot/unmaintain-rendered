@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-05-23T20:21:44Z
 updated_at: 2022-05-25T19:46:11Z
 url: https://github.com/clap-rs/clap/issues/3743
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Is `Arg::validator_regex` even needed anymore?
 
 ---
 
-_Issue opened by @epage on 2022-05-23 20:21_
+_@epage_
 
 It was proposed for addition in #1968.  That included a workaround but the motivating reason for baking it in was yaml support but that was deprecated in #3087.
 

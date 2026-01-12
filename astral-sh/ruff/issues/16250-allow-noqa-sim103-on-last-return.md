@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-19T11:37:46Z
 updated_at: 2025-07-11T05:29:22Z
 url: https://github.com/astral-sh/ruff/issues/16250
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow `# noqa: SIM103` on last return
 
 ---
 
-_Issue opened by @JKE-be on 2025-02-19 11:37_
+_@JKE-be_
 
 ### Description
 

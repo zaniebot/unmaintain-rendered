@@ -13,14 +13,14 @@ head: charlie/constraint-markers
 created_at: 2024-06-29T16:39:53Z
 updated_at: 2024-06-29T16:51:05Z
 url: https://github.com/astral-sh/uv/pull/4648
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Merge markers when applying constraints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-29 16:39_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/return-fully-qualified
 created_at: 2025-08-28T19:46:50Z
 updated_at: 2025-08-29T08:45:10Z
 url: https://github.com/astral-sh/ruff/pull/20141
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Improve disambiguation of types via fully qualified names
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-28 19:46_
+_@AlexWaygood_
 
 ## Summary
 

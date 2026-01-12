@@ -13,14 +13,14 @@ head: dependencies-typo
 created_at: 2024-10-12T08:31:15Z
 updated_at: 2024-10-12T12:53:37Z
 url: https://github.com/astral-sh/uv/pull/8142
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Update dependencies.md with typo fix (stands -> standards)
 
 ---
 
-_Pull request opened by @adamtheturtle on 2024-10-12 08:31_
+_@adamtheturtle_
 
 _No description provided._
 

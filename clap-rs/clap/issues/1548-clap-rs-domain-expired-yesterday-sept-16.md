@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-09-17T16:52:54Z
 updated_at: 2025-02-21T14:36:39Z
 url: https://github.com/clap-rs/clap/issues/1548
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap.rs domain expired yesterday, Sept 16
 
 ---
 
-_Issue opened by @sbromling on 2019-09-17 16:52_
+_@sbromling_
 
 The DNS A-record is already gone.
 

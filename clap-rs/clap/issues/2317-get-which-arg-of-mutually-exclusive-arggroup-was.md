@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-01-28T20:44:43Z
 updated_at: 2022-08-12T22:00:50Z
 url: https://github.com/clap-rs/clap/issues/2317
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Get which arg of mutually exclusive ArgGroup was passed
 
 ---
 
-_Issue opened by @Qyriad on 2021-01-28 20:44_
+_@Qyriad_
 
 ### Make sure you completed the following tasks
 

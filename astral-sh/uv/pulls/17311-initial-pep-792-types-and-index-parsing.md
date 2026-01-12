@@ -12,14 +12,14 @@ head: ww/pep792-types
 created_at: 2026-01-02T22:36:40Z
 updated_at: 2026-01-07T16:35:40Z
 url: https://github.com/astral-sh/uv/pull/17311
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Initial PEP 792 types and index parsing
 
 ---
 
-_Pull request opened by @woodruffw on 2026-01-02 22:36_
+_@woodruffw_
 
 ## Summary
 

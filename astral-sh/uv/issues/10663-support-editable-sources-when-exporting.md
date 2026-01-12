@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T00:59:02Z
 updated_at: 2025-04-09T14:56:01Z
 url: https://github.com/astral-sh/uv/issues/10663
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Support (editable) sources when exporting requirements.txt when building a Docker image
 
 ---
 
-_Issue opened by @tibbe on 2025-01-16 00:59_
+_@tibbe_
 
 We have a monorepo with multiple libraries, some which depend on each other, and multiple executables, which depend on (some of) the libraries. We're trying to build a Docker image for AWS Lambda for each of the executables.
 

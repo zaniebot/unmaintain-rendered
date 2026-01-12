@@ -12,14 +12,14 @@ head: charlie/doc
 created_at: 2022-11-17T16:55:37Z
 updated_at: 2022-11-17T17:04:12Z
 url: https://github.com/astral-sh/ruff/pull/791
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Tweak presentation of `null-ls` and `efm` docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 16:55_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: charlie/overrides
 created_at: 2023-12-13T05:18:09Z
 updated_at: 2023-12-13T15:03:40Z
 url: https://github.com/astral-sh/uv/pull/631
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Enable package overrides in `pip-compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 05:18_
+_@charliermarsh_
 
 ## Summary
 

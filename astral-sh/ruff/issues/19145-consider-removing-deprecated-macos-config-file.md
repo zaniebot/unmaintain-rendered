@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T14:57:47Z
 updated_at: 2025-09-05T14:24:20Z
 url: https://github.com/astral-sh/ruff/issues/19145
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider removing deprecated macOS config file discovery
 
 ---
 
-_Issue opened by @ntBre on 2025-07-04 14:57_
+_@ntBre_
 
 In https://github.com/astral-sh/ruff/pull/11115 we moved from defaulting to `$HOME/Library/Application Support` to `$XDG_HOME` on macOS and added a deprecation warning if we find files in the old location:
 

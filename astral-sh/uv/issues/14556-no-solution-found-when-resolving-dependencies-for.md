@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T03:45:14Z
 updated_at: 2025-07-12T12:14:51Z
 url: https://github.com/astral-sh/uv/issues/14556
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # No solution found when resolving dependencies for split (python_full_version == '3.9.*')
 
 ---
 
-_Issue opened by @xidianwang412 on 2025-07-11 03:45_
+_@xidianwang412_
 
 ### Summary
 

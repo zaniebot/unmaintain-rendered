@@ -13,14 +13,14 @@ head: zb/revert-302
 created_at: 2025-04-22T03:31:49Z
 updated_at: 2025-04-29T14:17:19Z
 url: https://github.com/astral-sh/uv/pull/13041
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Revert "Properly handle authentication for 302 redirect URLs"
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-22 03:31_
+_@zanieb_
 
 This reverts commit 17ed789edb3de7e77f01b4c1548fcbfb191cd55e / #12920 
 

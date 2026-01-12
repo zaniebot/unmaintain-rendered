@@ -13,14 +13,14 @@ head: konsti/remove-missing-aarch64-musl-note
 created_at: 2025-10-21T12:51:08Z
 updated_at: 2025-10-21T14:08:39Z
 url: https://github.com/astral-sh/uv/pull/16385
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Remove outdated aarch64 musl note
 
 ---
 
-_Pull request opened by @konstin on 2025-10-21 12:51_
+_@konstin_
 
 We now build aarch64 musl Python distributions. I've also removed the rye mention since it's now officially deprecated.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-25T02:04:38Z
 updated_at: 2024-08-25T02:14:29Z
 url: https://github.com/astral-sh/uv/issues/6595
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Unable to run uv managed Python on an Alpine based image.
 
 ---
 
-_Issue opened by @narigama on 2024-08-25 02:04_
+_@narigama_
 
 To replicate the issue, run the following:
 ```bash

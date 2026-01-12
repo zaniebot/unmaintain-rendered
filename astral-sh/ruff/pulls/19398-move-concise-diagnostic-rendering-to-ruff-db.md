@@ -15,14 +15,14 @@ head: brent/concise
 created_at: 2025-07-17T13:13:02Z
 updated_at: 2025-07-23T15:43:35Z
 url: https://github.com/astral-sh/ruff/pull/19398
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # Move concise diagnostic rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-17 13:13_
+_@ntBre_
 
 ## Summary
 

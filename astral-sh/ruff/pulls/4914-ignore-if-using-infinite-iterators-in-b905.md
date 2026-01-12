@@ -12,14 +12,14 @@ head: check_itertools_in_zip_without_explicit_strict
 created_at: 2023-06-07T02:32:42Z
 updated_at: 2023-06-08T02:37:48Z
 url: https://github.com/astral-sh/ruff/pull/4914
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # ignore if using infinite iterators in `B905`
 
 ---
 
-_Pull request opened by @kyoto7250 on 2023-06-07 02:32_
+_@kyoto7250_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

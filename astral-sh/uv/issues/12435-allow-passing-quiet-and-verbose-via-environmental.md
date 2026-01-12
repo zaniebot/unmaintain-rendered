@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T15:56:18Z
 updated_at: 2025-09-09T07:07:09Z
 url: https://github.com/astral-sh/uv/issues/12435
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Allow passing --quiet (and --verbose) via environmental variables
 
 ---
 
-_Issue opened by @liiight on 2025-03-24 15:56_
+_@liiight_
 
 ### Summary
 

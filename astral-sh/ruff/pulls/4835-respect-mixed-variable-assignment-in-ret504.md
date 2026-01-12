@@ -12,14 +12,14 @@ head: charlie/ret504
 created_at: 2023-06-03T19:23:33Z
 updated_at: 2023-06-03T19:58:37Z
 url: https://github.com/astral-sh/ruff/pull/4835
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Respect mixed variable assignment in RET504
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-03 19:23_
+_@charliermarsh_
 
 ## Summary
 

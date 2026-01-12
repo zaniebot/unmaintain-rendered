@@ -13,14 +13,14 @@ head: charlie/dyn
 created_at: 2025-01-17T03:59:59Z
 updated_at: 2025-01-17T04:27:47Z
 url: https://github.com/astral-sh/uv/pull/10703
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Avoid building dynamic versions when validating lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 03:59_
+_@charliermarsh_
 
 ## Summary
 

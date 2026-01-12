@@ -13,14 +13,14 @@ head: charlie/format
 created_at: 2023-08-09T20:49:34Z
 updated_at: 2023-08-09T22:13:31Z
 url: https://github.com/astral-sh/ruff/pull/6458
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Document `FormatSpec` fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 20:49_
+_@charliermarsh_
 
 _No description provided._
 

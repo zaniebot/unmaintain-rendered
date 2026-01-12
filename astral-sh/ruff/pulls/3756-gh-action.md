@@ -11,14 +11,14 @@ head: ghaction
 created_at: 2023-03-27T04:29:59Z
 updated_at: 2023-03-30T18:14:34Z
 url: https://github.com/astral-sh/ruff/pull/3756
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # GH-Action
 
 ---
 
-_Pull request opened by @brucearctor on 2023-03-27 04:29_
+_@brucearctor_
 
 Following up on the wish-list item found: https://github.com/charliermarsh/ruff/issues/3289
 

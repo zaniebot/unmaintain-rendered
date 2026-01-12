@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T04:19:34Z
 updated_at: 2025-05-21T12:08:10Z
 url: https://github.com/astral-sh/uv/issues/13081
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Unexpected: uv lock --no-binary
 
 ---
 
-_Issue opened by @dimaqq on 2025-04-24 04:19_
+_@dimaqq_
 
 ### Summary
 

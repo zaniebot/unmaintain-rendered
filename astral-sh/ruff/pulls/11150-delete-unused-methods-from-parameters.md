@@ -13,14 +13,14 @@ head: unused-param-methods
 created_at: 2024-04-25T17:06:49Z
 updated_at: 2024-04-25T21:11:26Z
 url: https://github.com/astral-sh/ruff/pull/11150
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Delete unused methods from `Parameters`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-25 17:06_
+_@AlexWaygood_
 
 ## Summary
 

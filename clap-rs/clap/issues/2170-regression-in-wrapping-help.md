@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-10-13T07:09:46Z
 updated_at: 2020-10-25T22:29:46Z
 url: https://github.com/clap-rs/clap/issues/2170
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Regression in wrapping help
 
 ---
 
-_Issue opened by @pksunkara on 2020-10-13 07:09_
+_@pksunkara_
 
 When you have a small terminal width, your code has `wrap_help` feature enabled, and you have args of which some have `about` very small so that the arg can fit in the terminal width and other args whose `about` is big such that they would be wrapped, we get the following:
 

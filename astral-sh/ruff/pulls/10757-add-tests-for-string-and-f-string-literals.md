@@ -14,14 +14,14 @@ head: dhruv/string-expr
 created_at: 2024-04-03T12:26:51Z
 updated_at: 2024-04-04T10:08:41Z
 url: https://github.com/astral-sh/ruff/pull/10757
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for string and f-string literals
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-03 12:26_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/macos
 created_at: 2024-04-25T15:25:39Z
 updated_at: 2024-04-25T16:07:26Z
 url: https://github.com/astral-sh/ruff/pull/11146
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Use `macos-12` to build release wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 15:25_
+_@charliermarsh_
 
 ## Summary
 

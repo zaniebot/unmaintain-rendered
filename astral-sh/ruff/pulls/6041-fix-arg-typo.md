@@ -12,14 +12,14 @@ head: charlie/arg
 created_at: 2023-07-24T21:04:19Z
 updated_at: 2023-07-24T21:39:19Z
 url: https://github.com/astral-sh/ruff/pull/6041
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix `Arg` typo
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 21:04_
+_@charliermarsh_
 
 _No description provided._
 

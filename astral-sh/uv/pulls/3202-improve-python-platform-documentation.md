@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-04-23T02:32:19Z
 updated_at: 2024-04-23T02:42:31Z
 url: https://github.com/astral-sh/uv/pull/3202
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Improve `--python-platform` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 02:32_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/3154#pullrequestreview-2016083883
 

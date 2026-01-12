@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-28T14:58:06Z
 updated_at: 2024-05-28T16:48:02Z
 url: https://github.com/astral-sh/ruff/issues/11583
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PEP 701 f-strings parsing even if `--target-version` < `py312`
 
 ---
 
-_Issue opened by @miccoli on 2024-05-28 14:58_
+_@miccoli_
 
 In ruff version 0.4.5 f-strings are parsed according to [PEP701](https://peps.python.org/pep-0701/) even if the target python version is `< 3.12`:
 ```bash

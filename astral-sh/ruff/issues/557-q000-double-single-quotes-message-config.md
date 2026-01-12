@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-03T01:57:52Z
 updated_at: 2022-11-03T02:15:06Z
 url: https://github.com/astral-sh/ruff/issues/557
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Q000 Double/Single quotes message & config
 
 ---
 
-_Issue opened by @tgross35 on 2022-11-03 01:57_
+_@tgross35_
 
 Hello,
 

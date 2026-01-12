@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-05T08:04:16Z
 updated_at: 2024-07-07T20:01:36Z
 url: https://github.com/astral-sh/uv/issues/4825
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Python downloads should show a progress bar
 
 ---
 
-_Issue opened by @konstin on 2024-07-05 08:04_
+_@konstin_
 
 When downloading a python toolchain for running a tool, i wait several seconds without any output. This is very untypical and feels wrong for uv. We should add a message indicating the start of a large download and a progress bar. The message should be shown anyway since non-interactive environments don't show progress bars. (The video is from the failing https://github.com/astral-sh/uv/pull/4810, but it applies also when this is fixed)
 

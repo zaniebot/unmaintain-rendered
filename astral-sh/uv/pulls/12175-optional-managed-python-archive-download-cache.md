@@ -13,14 +13,14 @@ head: konsti/cache-python-download-archives
 created_at: 2025-03-14T19:19:37Z
 updated_at: 2025-04-28T10:09:11Z
 url: https://github.com/astral-sh/uv/pull/12175
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Optional managed Python archive download cache
 
 ---
 
-_Pull request opened by @konstin on 2025-03-14 19:19_
+_@konstin_
 
 Part of #11834
 

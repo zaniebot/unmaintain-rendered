@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-26T11:18:08Z
 updated_at: 2025-10-10T04:06:25Z
 url: https://github.com/astral-sh/ruff/issues/20096
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP045 doesn't trigger inside of `cast`
 
 ---
 
-_Issue opened by @ntjohnson1 on 2025-08-26 11:18_
+_@ntjohnson1_
 
 ### Summary
 

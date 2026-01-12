@@ -14,14 +14,14 @@ head: alex/non-fully-static-negations
 created_at: 2025-09-30T16:48:25Z
 updated_at: 2025-10-03T12:02:02Z
 url: https://github.com/astral-sh/ruff/pull/20651
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Fix simplification of `T & ~T` for non-fully-static types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-30 16:48_
+_@AlexWaygood_
 
 ## Summary
 

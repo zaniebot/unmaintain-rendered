@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-22T09:40:50Z
 updated_at: 2023-11-22T13:48:17Z
 url: https://github.com/astral-sh/ruff/issues/8817
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ruff --config` not listed in `ruff --help
 
 ---
 
-_Issue opened by @Ttibsi on 2023-11-22 09:40_
+_@Ttibsi_
 
 ```sh
 ❯ ruff --version

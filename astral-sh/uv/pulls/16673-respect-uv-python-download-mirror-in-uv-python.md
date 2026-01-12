@@ -13,14 +13,14 @@ head: zb/download-list-mirror
 created_at: 2025-11-10T18:23:53Z
 updated_at: 2025-12-18T17:29:50Z
 url: https://github.com/astral-sh/uv/pull/16673
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Respect `UV_PYTHON_DOWNLOAD_MIRROR` in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-10 18:23_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16671
 

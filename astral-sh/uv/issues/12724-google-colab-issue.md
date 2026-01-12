@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-07T18:06:30Z
 updated_at: 2025-04-29T06:38:08Z
 url: https://github.com/astral-sh/uv/issues/12724
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Google colab issue
 
 ---
 
-_Issue opened by @AznamirWoW on 2025-04-07 18:06_
+_@AznamirWoW_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-09-24T19:00:29Z
 updated_at: 2021-09-29T18:20:02Z
 url: https://github.com/clap-rs/clap/issues/2790
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow Windows users to opt into color support
 
 ---
 
-_Issue opened by @pie-flavor on 2021-09-24 19:00_
+_@pie-flavor_
 
 ### Please complete the following tasks
 

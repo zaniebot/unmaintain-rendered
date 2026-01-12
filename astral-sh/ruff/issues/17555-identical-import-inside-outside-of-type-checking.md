@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T14:58:51Z
 updated_at: 2025-12-10T17:55:18Z
 url: https://github.com/astral-sh/ruff/issues/17555
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Identical import inside+outside of `TYPE_CHECKING` block does not emit `F811`
 
 ---
 
-_Issue opened by @injust on 2025-04-22 14:58_
+_@injust_
 
 ### Summary
 

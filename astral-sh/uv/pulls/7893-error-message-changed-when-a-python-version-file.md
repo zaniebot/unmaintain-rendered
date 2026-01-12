@@ -11,14 +11,14 @@ head: dot-python-version-incompatible-with-project-version-better-error
 created_at: 2024-10-03T12:38:50Z
 updated_at: 2024-12-02T08:45:27Z
 url: https://github.com/astral-sh/uv/pull/7893
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Error message changed when a .python-version file requirement is incompatible with the project.
 
 ---
 
-_Pull request opened by @mstepan on 2024-10-03 12:38_
+_@mstepan_
 
 Fix issue described in https://github.com/astral-sh/uv/issues/7737
 

@@ -13,14 +13,14 @@ head: named-expr-without-context
 created_at: 2023-05-19T15:23:14Z
 updated_at: 2023-05-19T18:22:15Z
 url: https://github.com/astral-sh/ruff/pull/4531
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`pylint`] Add `named_expr_without_context` (`W0131`)
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-19 15:23_
+_@hoel-bagard_
 
 This is part of https://github.com/charliermarsh/ruff/issues/970.
 

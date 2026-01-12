@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-17T18:51:26Z
 updated_at: 2023-10-19T04:35:59Z
 url: https://github.com/astral-sh/uv/issues/112
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # In resolver, take first-available package when no metadata is available
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-17 18:51_
+_@charliermarsh_
 
 _No description provided._
 

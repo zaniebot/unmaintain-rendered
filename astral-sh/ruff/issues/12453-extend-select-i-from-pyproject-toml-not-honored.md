@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-22T13:37:39Z
 updated_at: 2024-07-22T15:03:22Z
 url: https://github.com/astral-sh/ruff/issues/12453
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `extend-select = ["I"]` from pyproject.toml not honored for tests in very specific circumstances
 
 ---
 
-_Issue opened by @jamesharr on 2024-07-22 13:37_
+_@jamesharr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: charlie/isort-order
 created_at: 2022-11-12T03:41:19Z
 updated_at: 2022-11-12T03:41:40Z
 url: https://github.com/astral-sh/ruff/pull/691
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Default to isort's import sort logic
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 03:41_
+_@charliermarsh_
 
 We now resolve to isort's sorting logic -- which is a little complicated, but in short:
 

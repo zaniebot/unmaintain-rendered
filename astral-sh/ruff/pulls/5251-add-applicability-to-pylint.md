@@ -12,14 +12,14 @@ head: applicability_pylint
 created_at: 2023-06-21T13:14:47Z
 updated_at: 2023-06-21T17:45:13Z
 url: https://github.com/astral-sh/ruff/pull/5251
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add Applicability to pylint
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-21 13:14_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: micha/preserve-multiline-implicit-concatenated-string-in-docstrings
 created_at: 2024-12-23T15:41:19Z
 updated_at: 2025-01-03T09:27:15Z
 url: https://github.com/astral-sh/ruff/pull/15126
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Preserve multiline implicit concatenated strings in docstring positions
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-23 15:41_
+_@MichaReiser_
 
 ## Summary
 This is a bug fix for https://github.com/astral-sh/ruff/pull/13928

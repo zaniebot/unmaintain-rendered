@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T11:28:31Z
 updated_at: 2024-08-25T15:15:43Z
 url: https://github.com/astral-sh/uv/issues/6576
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Minor false positive warning for uvx reinstall
 
 ---
 
-_Issue opened by @bluss on 2024-08-24 11:28_
+_@bluss_
 
 Original command:
 

@@ -12,14 +12,14 @@ head: riscv64-release
 created_at: 2025-04-06T05:19:00Z
 updated_at: 2025-06-10T15:18:28Z
 url: https://github.com/astral-sh/uv/pull/12688
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:21Z
 ```
 
 # build-binaries for riscv64 
 
 ---
 
-_Pull request opened by @Xeonacid on 2025-04-06 05:19_
+_@Xeonacid_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

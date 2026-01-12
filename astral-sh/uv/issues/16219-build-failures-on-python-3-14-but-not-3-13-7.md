@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T03:20:23Z
 updated_at: 2025-10-16T05:22:10Z
 url: https://github.com/astral-sh/uv/issues/16219
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # Build failures on python 3.14 but not 3.13.7
 
 ---
 
-_Issue opened by @killcoder on 2025-10-10 03:20_
+_@killcoder_
 
 ### Summary
 

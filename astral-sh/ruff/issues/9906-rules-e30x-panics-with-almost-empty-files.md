@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T06:48:32Z
 updated_at: 2024-02-09T14:26:25Z
 url: https://github.com/astral-sh/ruff/issues/9906
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rules E30X panics with almost empty files
 
 ---
 
-_Issue opened by @qarmin on 2024-02-09 06:48_
+_@qarmin_
 
 Ruff ruff 0.2.1 (latest changes from main branch)
 ```

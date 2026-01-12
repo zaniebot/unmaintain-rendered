@@ -13,14 +13,14 @@ head: david/complement-disjointness
 created_at: 2025-02-10T21:16:15Z
 updated_at: 2025-12-24T12:59:12Z
 url: https://github.com/astral-sh/ruff/pull/16087
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [ty] T is disjoint from ~T
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-10 21:16_
+_@sharkdp_
 
 ## Summary
 

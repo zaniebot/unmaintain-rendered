@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-14T10:46:13Z
 updated_at: 2023-02-15T15:54:17Z
 url: https://github.com/astral-sh/ruff/issues/2892
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [flake8-django] DJ001 is not raised for models not directly inherited from Model
 
 ---
 
-_Issue opened by @konysko on 2023-02-14 10:46_
+_@konysko_
 
 DJ001 is not raised for models which doesn't directly inherits from django.db.models.Model. The source of bug is in https://github.com/charliermarsh/ruff/blob/f7515739acc0a7b5c580bf05aac6055181739c65/crates/ruff/src/rules/flake8_django/rules/helpers.rs#L6 It should lookup whole mro for the Model class. 
 

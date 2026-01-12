@@ -13,14 +13,14 @@ head: charlie/bare-viv
 created_at: 2024-03-22T02:47:16Z
 updated_at: 2024-03-22T03:20:41Z
 url: https://github.com/astral-sh/uv/pull/2604
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Use PEP 517 build hooks to resolve unnamed requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-22 02:47_
+_@charliermarsh_
 
 _No description provided._
 

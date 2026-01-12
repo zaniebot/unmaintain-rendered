@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-07-07T21:12:30Z
 updated_at: 2024-07-08T00:39:48Z
 url: https://github.com/astral-sh/uv/pull/4868
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Avoid creating cache directories in tool directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-07 21:12_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/4867.
 
@@ -39,5 +39,15 @@ _Closed by @charliermarsh on 2024-07-07 21:19_
 ---
 
 _Branch deleted on 2024-07-07 21:19_
+
+---
+
+_@zanieb reviewed on 2024-07-08 00:39_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/tool/list.rs`:32 on 2024-07-08 00:39_
+
+Huh? That's weird. Must have been missed in a review.
 
 ---

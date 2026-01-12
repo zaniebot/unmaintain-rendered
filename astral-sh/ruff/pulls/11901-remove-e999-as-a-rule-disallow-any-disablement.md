@@ -14,14 +14,14 @@ head: dhruv/syntax-error-2
 created_at: 2024-06-17T11:57:20Z
 updated_at: 2024-06-27T02:21:34Z
 url: https://github.com/astral-sh/ruff/pull/11901
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Remove `E999` as a rule, disallow any disablement methods for syntax error
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-17 11:57_
+_@dhruvmanila_
 
 ## Summary
 

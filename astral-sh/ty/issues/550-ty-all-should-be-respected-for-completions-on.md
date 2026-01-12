@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-30T13:06:26Z
 updated_at: 2025-10-03T12:20:11Z
 url: https://github.com/astral-sh/ty/issues/550
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [ty] `__all__` should be respected for completions on items defined in stub files
 
 ---
 
-_Issue opened by @BurntSushi on 2025-05-30 13:06_
+_@BurntSushi_
 
 At present, `all_members` in `ty_extensions` doesn't respect `__all__` when listing members of a module with a stub file. But it should, because items not in `__all__` are not available at runtime.
 

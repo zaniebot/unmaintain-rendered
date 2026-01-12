@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T09:19:22Z
 updated_at: 2024-07-09T18:38:39Z
 url: https://github.com/astral-sh/uv/issues/4919
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # HTTP error 416 Range Not Satisfiable with torch index
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 09:19_
+_@konstin_
 
 Trying to use the torch index at https://download.pytorch.org/whl/nightly/cu121 fails with HTTP error 416 Range Not Satisfiable:
 

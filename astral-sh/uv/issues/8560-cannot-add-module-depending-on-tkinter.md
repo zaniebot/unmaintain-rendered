@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T09:38:04Z
 updated_at: 2024-10-26T16:08:03Z
 url: https://github.com/astral-sh/uv/issues/8560
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Cannot 'add' module depending on tkinter
 
 ---
 
-_Issue opened by @Barrowcroft on 2024-10-25 09:38_
+_@Barrowcroft_
 
 Using UV and Python 3.12 I can create a script that imports tkinter without any problems.
 

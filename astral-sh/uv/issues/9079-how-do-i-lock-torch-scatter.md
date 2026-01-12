@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T07:52:39Z
 updated_at: 2025-01-07T13:23:20Z
 url: https://github.com/astral-sh/uv/issues/9079
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # How do I lock `torch-scatter`?
 
 ---
 
-_Issue opened by @NellyWhads on 2024-11-13 07:52_
+_@NellyWhads_
 
 Here's a relevant example project toml in which I attempt to lock `torch-scatter` as a dependency which only installs on a specific platform:
 

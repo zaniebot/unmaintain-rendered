@@ -12,14 +12,14 @@ head: ag/version-opt
 created_at: 2024-01-04T19:55:37Z
 updated_at: 2024-01-09T16:37:44Z
 url: https://github.com/astral-sh/uv/pull/789
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # pep440: rewrite the parser and make version comparisons cheaper
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-04 19:55_
+_@BurntSushi_
 
 This PR builds on #780 by making both version parsing faster, and
 perhaps more importantly, making version comparisons much faster.

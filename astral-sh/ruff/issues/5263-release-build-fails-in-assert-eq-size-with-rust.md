@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-21T18:48:13Z
 updated_at: 2023-06-21T21:26:11Z
 url: https://github.com/astral-sh/ruff/issues/5263
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Release build fails in assert_eq_size! with Rust nightly ≥ 2023-06-09
 
 ---
 
-_Issue opened by @andersk on 2023-06-21 18:48_
+_@andersk_
 
 ```
 error[E0512]: cannot transmute between types of different sizes, or dependently-sized types

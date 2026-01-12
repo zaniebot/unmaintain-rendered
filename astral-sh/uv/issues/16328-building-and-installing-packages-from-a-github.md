@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T09:34:30Z
 updated_at: 2025-11-04T16:02:59Z
 url: https://github.com/astral-sh/uv/issues/16328
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Building and installing packages from a GitHub mono repo with a uv workspace
 
 ---
 
-_Issue opened by @klet7944 on 2025-10-16 09:34_
+_@klet7944_
 
 ### Question
 

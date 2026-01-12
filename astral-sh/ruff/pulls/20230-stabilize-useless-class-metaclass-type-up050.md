@@ -13,14 +13,14 @@ head: brent/up050
 created_at: 2025-09-04T13:28:50Z
 updated_at: 2025-09-04T20:43:11Z
 url: https://github.com/astral-sh/ruff/pull/20230
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `useless-class-metaclass-type` (`UP050`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 13:28_
+_@ntBre_
 
 Tests and docs look good
 

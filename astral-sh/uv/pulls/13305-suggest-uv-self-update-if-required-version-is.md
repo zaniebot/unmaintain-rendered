@@ -13,14 +13,14 @@ head: suggest-self-update
 created_at: 2025-05-05T20:40:43Z
 updated_at: 2025-05-08T00:09:29Z
 url: https://github.com/astral-sh/uv/pull/13305
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Suggest `uv self update` if required version is newer
 
 ---
 
-_Pull request opened by @blueraft on 2025-05-05 20:40_
+_@blueraft_
 
 ## Summary
 

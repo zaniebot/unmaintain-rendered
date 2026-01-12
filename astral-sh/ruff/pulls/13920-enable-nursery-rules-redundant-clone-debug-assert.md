@@ -13,14 +13,14 @@ head: micha/more-clippy
 created_at: 2024-10-25T07:08:21Z
 updated_at: 2024-10-25T07:46:32Z
 url: https://github.com/astral-sh/ruff/pull/13920
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Enable nursery rules: 'redundant_clone', 'debug_assert_with_mut_call', and 'unused_peekable'
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-25 07:08_
+_@MichaReiser_
 
 ## Summary
 

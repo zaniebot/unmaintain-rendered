@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T20:31:37Z
 updated_at: 2024-06-05T21:35:17Z
 url: https://github.com/astral-sh/uv/issues/4072
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Issue with `uv@0.2.7` in Dockerfile + venv
 
 ---
 
-_Issue opened by @omarish on 2024-06-05 20:31_
+_@omarish_
 
 I think I've encountered an issue related to (I believe) virtualenv detection when using uv in a dockerfile. Specifically, I noticed that my company's CI started failing on all images that rely on uv.
 

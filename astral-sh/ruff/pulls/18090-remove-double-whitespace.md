@@ -13,14 +13,14 @@ head: fix/double-whitespace
 created_at: 2025-05-14T09:11:39Z
 updated_at: 2025-05-14T09:20:29Z
 url: https://github.com/astral-sh/ruff/pull/18090
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # Remove double whitespace
 
 ---
 
-_Pull request opened by @lukeanderson93 on 2025-05-14 09:11_
+_@lukeanderson93_
 
 _No description provided._
 

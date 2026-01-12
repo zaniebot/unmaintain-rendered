@@ -13,14 +13,14 @@ head: use_cache_in_cargo_udeps_ci
 created_at: 2023-03-30T11:09:46Z
 updated_at: 2023-03-31T15:25:05Z
 url: https://github.com/astral-sh/ruff/pull/3809
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use cache in cargo udeps CI
 
 ---
 
-_Pull request opened by @konstin on 2023-03-30 11:09_
+_@konstin_
 
 Checking for unused dependencies is currently the slowest step just after the cargo test runs
 

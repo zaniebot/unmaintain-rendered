@@ -14,14 +14,14 @@ head: dcreager/genprop
 created_at: 2025-12-10T18:22:13Z
 updated_at: 2026-01-08T17:31:48Z
 url: https://github.com/astral-sh/ruff/pull/21902
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Infer typevar specializations for implicit generic protocols
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-10 18:22_
+_@dcreager_
 
 Grabbing a PR number for the generic protocol work. Better description TBD
 

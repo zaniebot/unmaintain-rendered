@@ -13,14 +13,14 @@ head: clarify-python-matrix-strategy-gh-workflow
 created_at: 2024-11-26T22:21:49Z
 updated_at: 2024-12-16T19:38:06Z
 url: https://github.com/astral-sh/uv/pull/9454
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # clarify best practice for python matrix strategy github workflow
 
 ---
 
-_Pull request opened by @zkurtz on 2024-11-26 22:21_
+_@zkurtz_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

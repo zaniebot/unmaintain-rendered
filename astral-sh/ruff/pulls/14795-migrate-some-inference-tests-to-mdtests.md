@@ -14,14 +14,14 @@ head: dcreager/infer-mdtests
 created_at: 2024-12-05T19:50:56Z
 updated_at: 2024-12-06T14:42:00Z
 url: https://github.com/astral-sh/ruff/pull/14795
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Migrate some inference tests to mdtests
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-05 19:50_
+_@dcreager_
 
 As part of #13696, this PR ports a smallish number of inference tests over to the mdtest framework.
 

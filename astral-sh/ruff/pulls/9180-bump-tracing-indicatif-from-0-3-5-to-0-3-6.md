@@ -13,14 +13,14 @@ head: dependabot/cargo/tracing-indicatif-0.3.6
 created_at: 2023-12-18T08:58:32Z
 updated_at: 2023-12-18T09:15:01Z
 url: https://github.com/astral-sh/ruff/pull/9180
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump tracing-indicatif from 0.3.5 to 0.3.6
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-18 08:58_
+_@dependabot_
 
 Bumps [tracing-indicatif](https://github.com/emersonford/tracing-indicatif) from 0.3.5 to 0.3.6.
 <details>

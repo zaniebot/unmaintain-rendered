@@ -14,14 +14,14 @@ head: charlie/target-version
 created_at: 2023-10-18T20:44:02Z
 updated_at: 2023-10-19T21:30:14Z
 url: https://github.com/astral-sh/ruff/pull/8055
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Accept `--target-version` in the format CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 20:44_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: bswck/init-script-typehinted
 created_at: 2024-09-09T18:10:54Z
 updated_at: 2024-09-14T07:00:51Z
 url: https://github.com/astral-sh/uv/pull/7225
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Use type hints in code from `uv init`
 
 ---
 
-_Pull request opened by @johnslavik on 2024-09-09 18:10_
+_@johnslavik_
 
 Let's promote type hints!
 

@@ -9,16 +9,16 @@ assignees: []
 base: main
 head: appleparan/fix-pytorch-docs
 created_at: 2026-01-09T14:56:30Z
-updated_at: 2026-01-12T14:50:58Z
+updated_at: 2026-01-12T14:58:36Z
 url: https://github.com/astral-sh/uv/pull/17380
-synced_at: 2026-01-12T15:03:50Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Update docs to fix torchvision version specifiers for CPU wheels
 
 ---
 
-_Pull request opened by @appleparan on 2026-01-09 14:56_
+_@appleparan_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:
@@ -154,5 +154,21 @@ It's a temporary issue in 0.24.x, so I should close this PR.
 ---
 
 _Closed by @appleparan on 2026-01-12 14:50_
+
+---
+
+_Comment by @appleparan on 2026-01-12 14:58_
+
+I close this PR due to [this comment](https://github.com/pytorch/vision/issues/9330#issuecomment-3718998124)
+
+> This is the same issue as: https://github.com/pytorch/vision/issues/9249 and its fix for the release 0.25.0 of torchvision.
+
+It turns out this is a 0.24.x-specific issue that is fixed in 0.25.0. I will reopen this PR if we need to document this behavior for 0.24.x.
+
+---
+
+_Comment by @charliermarsh on 2026-01-12 14:58_
+
+Thank you @appleparan!
 
 ---

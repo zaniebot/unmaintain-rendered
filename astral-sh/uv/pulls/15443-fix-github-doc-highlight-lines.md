@@ -13,14 +13,14 @@ head: github-doc-highlight
 created_at: 2025-08-22T02:33:53Z
 updated_at: 2025-08-22T16:28:41Z
 url: https://github.com/astral-sh/uv/pull/15443
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Fix github doc highlight lines
 
 ---
 
-_Pull request opened by @KotlinIsland on 2025-08-22 02:33_
+_@KotlinIsland_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

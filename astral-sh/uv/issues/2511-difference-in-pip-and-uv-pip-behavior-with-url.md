@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T15:29:02Z
 updated_at: 2024-03-18T17:21:09Z
 url: https://github.com/astral-sh/uv/issues/2511
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Difference in `pip` and `uv pip` behavior with URL requirements
 
 ---
 
-_Issue opened by @gozdal on 2024-03-18 15:29_
+_@gozdal_
 
 Say you have `pyproject.toml`:
 ```toml

@@ -12,14 +12,14 @@ head: feat/d21x-autofix
 created_at: 2023-01-22T21:52:23Z
 updated_at: 2023-01-25T19:59:30Z
 url: https://github.com/astral-sh/ruff/pull/2093
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: autofix `multi-line-summary-*-line`
 
 ---
 
-_Pull request opened by @scop on 2023-01-22 21:52_
+_@scop_
 
 _No description provided._
 

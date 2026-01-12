@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T03:28:41Z
 updated_at: 2024-04-19T03:39:25Z
 url: https://github.com/astral-sh/ruff/issues/11023
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `invalid-length-return-type` (`PLE0303`) - false positive when `__len__` raises an exception
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-19 03:28_
+_@DetachHead_
 
 ```py
 class Foo:

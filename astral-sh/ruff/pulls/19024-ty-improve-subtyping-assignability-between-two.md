@@ -13,14 +13,14 @@ head: alex/transitive-protocols
 created_at: 2025-06-29T11:45:50Z
 updated_at: 2025-10-24T16:25:04Z
 url: https://github.com/astral-sh/ruff/pull/19024
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Improve subtyping/assignability between two protocol types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-29 11:45_
+_@AlexWaygood_
 
 ## Summary
 

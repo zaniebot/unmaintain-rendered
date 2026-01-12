@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-30T04:10:05Z
 updated_at: 2025-07-30T10:25:53Z
 url: https://github.com/astral-sh/uv/pull/14965
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Fix typo in uv-pep440/README.md
 
 ---
 
-_Pull request opened by @cbscsm on 2025-07-30 04:10_
+_@cbscsm_
 
 ## Summary
 

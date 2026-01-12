@@ -14,14 +14,14 @@ head: jane/reflink/fallback-with-copy
 created_at: 2024-02-20T18:08:29Z
 updated_at: 2024-02-22T04:13:51Z
 url: https://github.com/astral-sh/uv/pull/1773
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Linker copies files as a fallback when ref-linking fails
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-20 18:08_
+_@snowsignal_
 
 ## Summary
 

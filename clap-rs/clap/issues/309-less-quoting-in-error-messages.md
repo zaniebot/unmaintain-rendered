@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-10-05T19:19:59Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/309
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Less quoting in error messages
 
 ---
 
-_Issue opened by @birkenfeld on 2015-10-05 19:19_
+_@birkenfeld_
 
 IMO this is a bit too much quoting:
 

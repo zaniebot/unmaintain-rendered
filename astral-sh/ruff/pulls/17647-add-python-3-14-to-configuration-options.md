@@ -13,14 +13,14 @@ head: config-py314
 created_at: 2025-04-26T20:51:31Z
 updated_at: 2025-04-28T21:29:01Z
 url: https://github.com/astral-sh/ruff/pull/17647
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Add Python 3.14 to configuration options
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-26 20:51_
+_@dylwil3_
 
 A small PR that just updates the various settings/configurations to allow Python 3.14. (At the moment selecting that target version will have no impact compared to Python 3.13).
 

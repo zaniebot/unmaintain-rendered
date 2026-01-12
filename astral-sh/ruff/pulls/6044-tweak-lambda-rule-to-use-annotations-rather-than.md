@@ -13,14 +13,14 @@ head: charlie/lambda
 created_at: 2023-07-24T21:30:46Z
 updated_at: 2023-07-24T21:56:29Z
 url: https://github.com/astral-sh/ruff/pull/6044
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Tweak lambda rule to use annotations rather than shadowing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 21:30_
+_@charliermarsh_
 
 ## Summary
 

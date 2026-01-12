@@ -12,14 +12,14 @@ head: source-dist-metadata-refactor
 created_at: 2023-11-20T11:41:25Z
 updated_at: 2023-11-24T17:47:59Z
 url: https://github.com/astral-sh/uv/pull/468
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Source dist metadata refactor
 
 ---
 
-_Pull request opened by @konstin on 2023-11-20 11:41_
+_@konstin_
 
 ## Summary and motivation
 

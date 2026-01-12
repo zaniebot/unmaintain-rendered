@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-30T14:31:41Z
 updated_at: 2025-04-09T12:18:29Z
 url: https://github.com/astral-sh/uv/issues/6873
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `uv python install 3.12` is not working on armv7 libc is identify as `gnu` instead of `gnueabihf`
 
 ---
 
-_Issue opened by @zarch on 2024-08-30 14:31_
+_@zarch_
 
 
 I tried uv `0.3.5` to install a specific version of python on my raspberry-pi:

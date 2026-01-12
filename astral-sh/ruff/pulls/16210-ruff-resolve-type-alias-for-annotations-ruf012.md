@@ -12,14 +12,14 @@ head: bugfix/ruf012-does-not-respect-type-aliases
 created_at: 2025-02-17T12:18:45Z
 updated_at: 2025-04-28T07:19:40Z
 url: https://github.com/astral-sh/ruff/pull/16210
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [ruff] Resolve type alias for annotations (RUF012)
 
 ---
 
-_Pull request opened by @vladNed on 2025-02-17 12:18_
+_@vladNed_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

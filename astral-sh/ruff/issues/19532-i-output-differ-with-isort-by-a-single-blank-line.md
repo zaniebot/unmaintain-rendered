@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T15:40:05Z
 updated_at: 2025-07-25T07:25:07Z
 url: https://github.com/astral-sh/ruff/issues/19532
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `I` output differ with `isort` by a single blank line
 
 ---
 
-_Issue opened by @knguyen1 on 2025-07-24 15:40_
+_@knguyen1_
 
 ### Summary
 

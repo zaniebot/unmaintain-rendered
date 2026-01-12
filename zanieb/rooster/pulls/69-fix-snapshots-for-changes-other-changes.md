@@ -12,14 +12,14 @@ head: zb/snap-fix
 created_at: 2025-05-13T12:45:01Z
 updated_at: 2025-05-13T12:45:13Z
 url: https://github.com/zanieb/rooster/pull/69
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix snapshots for `Changes` / `Other changes`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-13 12:45_
+_@zanieb_
 
 _No description provided._
 

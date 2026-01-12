@@ -14,14 +14,14 @@ head: charlie/mixed-source-url
 created_at: 2024-08-12T23:42:05Z
 updated_at: 2024-08-12T23:49:38Z
 url: https://github.com/astral-sh/uv/pull/6051
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Add tests for mixed sources and versions in lock
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 23:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T12:16:48Z
 updated_at: 2024-12-31T02:24:59Z
 url: https://github.com/astral-sh/uv/issues/6936
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # "Why is it fast" documentation
 
 ---
 
-_Issue opened by @valentincalomme on 2024-09-02 12:16_
+_@valentincalomme_
 
 I've been trying to track down some info related to "why is uv" faster than `pip` and I was somehow successful. I found that this is often the first question I get when I mention `uv` to people. I say "it's faster than `pip`" and people say "yeah, but how, you're still downloading the same stuff?".
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-09T09:41:00Z
 updated_at: 2025-02-10T02:37:47Z
 url: https://github.com/astral-sh/uv/issues/11350
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Improper cache behavior when installing in development mode
 
 ---
 
-_Issue opened by @youkaichao on 2025-02-09 09:41_
+_@youkaichao_
 
 ### Summary
 

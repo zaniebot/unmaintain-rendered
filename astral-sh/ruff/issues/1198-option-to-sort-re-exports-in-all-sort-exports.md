@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-11T18:35:16Z
 updated_at: 2025-01-30T03:56:34Z
 url: https://github.com/astral-sh/ruff/issues/1198
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Option to sort re-exports in `__all__` (`sort_exports` from isort)
 
 ---
 
-_Issue opened by @Jackenmen on 2022-12-11 18:35_
+_@Jackenmen_
 
 Isort allows sorting `__all__` when `sort_reexports` is used:
 https://github.com/PyCQA/isort/blob/f547290178f86b6e5f0007cf1cb31d4736dcdaee/isort/core.py#L235-L241

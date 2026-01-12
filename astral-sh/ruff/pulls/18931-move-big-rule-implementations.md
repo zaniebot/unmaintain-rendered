@@ -13,14 +13,14 @@ head: move-big-rule-imeplementations
 created_at: 2025-06-25T04:22:07Z
 updated_at: 2025-06-25T15:47:27Z
 url: https://github.com/astral-sh/ruff/pull/18931
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # Move big rule implementations
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-25 04:22_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-12T07:31:36Z
 updated_at: 2021-12-13T14:23:06Z
 url: https://github.com/clap-rs/clap/issues/3159
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Clink completions for Windows users
 
 ---
 
-_Issue opened by @rashil2000 on 2021-12-12 07:31_
+_@rashil2000_
 
 ### Please complete the following tasks
 

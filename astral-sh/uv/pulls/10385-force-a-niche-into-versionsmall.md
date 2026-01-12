@@ -13,14 +13,14 @@ head: konsti/force-niche
 created_at: 2025-01-08T09:48:30Z
 updated_at: 2025-01-08T13:33:44Z
 url: https://github.com/astral-sh/uv/pull/10385
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Force a niche into `VersionSmall`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-08 09:48_
+_@konstin_
 
 Force a niche into the aligned type so the [`Version`] enum is two words instead of three (x86_64). Rustc currently fails to optimize this on its own.
 

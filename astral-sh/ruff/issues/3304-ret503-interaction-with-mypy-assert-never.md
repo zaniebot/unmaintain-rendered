@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-02T13:12:43Z
 updated_at: 2023-04-17T19:38:27Z
 url: https://github.com/astral-sh/ruff/issues/3304
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [RET503] Interaction with `mypy` assert_never 
 
 ---
 
-_Issue opened by @eddiebergman on 2023-03-02 13:12_
+_@eddiebergman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

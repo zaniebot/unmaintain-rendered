@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T13:16:30Z
 updated_at: 2025-04-26T13:23:09Z
 url: https://github.com/astral-sh/uv/issues/13118
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # How to change the `source` in uv.lock (like when a package repo goes offline)?
 
 ---
 
-_Issue opened by @krupan on 2025-04-26 13:16_
+_@krupan_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T15:23:22Z
 updated_at: 2025-06-13T18:33:10Z
 url: https://github.com/astral-sh/ruff/issues/18661
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # module-import-not-at-top-of-file (E402) is not reported in functions
 
 ---
 
-_Issue opened by @stmlange on 2025-06-13 15:23_
+_@stmlange_
 
 ### Summary
 

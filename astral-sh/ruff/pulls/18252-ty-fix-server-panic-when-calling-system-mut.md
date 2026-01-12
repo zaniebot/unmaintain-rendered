@@ -15,14 +15,14 @@ head: micha/fix-arc-get-mut-panic
 created_at: 2025-05-22T11:56:55Z
 updated_at: 2025-05-22T14:10:09Z
 url: https://github.com/astral-sh/ruff/pull/18252
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Fix server panic when calling `system_mut`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-22 11:56_
+_@MichaReiser_
 
 ## Summary
 

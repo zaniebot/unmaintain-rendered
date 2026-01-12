@@ -13,14 +13,14 @@ head: up038-docs
 created_at: 2023-10-09T15:42:38Z
 updated_at: 2023-10-09T20:59:39Z
 url: https://github.com/astral-sh/ruff/pull/7872
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update UP038 docs to note that it results in slower code
 
 ---
 
-_Pull request opened by @AlexWaygood on 2023-10-09 15:42_
+_@AlexWaygood_
 
 See discussion in #7871. I tried to use language similar to the existing performance warnings in the `flake8-use-pathlib` docs, e.g. https://docs.astral.sh/ruff/rules/os-path-abspath/#os-path-abspath-pth100
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-11T09:18:54Z
 updated_at: 2026-01-12T12:41:23Z
 url: https://github.com/astral-sh/ty/issues/2440
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # "Extract variable" refactor
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-11 09:18_
+_@AndBoyS_
 
 When having expression selected, add code action "extract variable" like in Pylance
 

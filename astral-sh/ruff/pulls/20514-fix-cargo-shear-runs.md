@@ -13,14 +13,14 @@ head: david/fix-cargo-shear
 created_at: 2025-09-22T13:49:19Z
 updated_at: 2025-09-22T14:04:58Z
 url: https://github.com/astral-sh/ruff/pull/20514
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # Fix 'cargo shear' runs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-22 13:49_
+_@sharkdp_
 
 ## Summary
 

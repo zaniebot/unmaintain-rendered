@@ -13,14 +13,14 @@ head: david/add-incrementality-section
 created_at: 2025-12-16T13:51:07Z
 updated_at: 2025-12-16T14:25:38Z
 url: https://github.com/astral-sh/ty/pull/1930
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add incrementality section to LSP docs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 13:51_
+_@sharkdp_
 
 I was halfway through with designing an example here to understand fine-grained incrementality, but ultimately, I'm not sure this is the right place to discuss this? It is interesting in a technical talk, but it's (ideally) really not relevant for users to understand this in detail(?).
 

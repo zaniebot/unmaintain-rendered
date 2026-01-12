@@ -12,14 +12,14 @@ head: revert-15161-charlie/s
 created_at: 2025-08-11T21:24:56Z
 updated_at: 2025-08-18T13:52:00Z
 url: https://github.com/astral-sh/uv/pull/15228
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Revert "Fix settings rendering for `extra-build-dependencies`"
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-11 21:24_
+_@charliermarsh_
 
 Reverts astral-sh/uv#15161
 

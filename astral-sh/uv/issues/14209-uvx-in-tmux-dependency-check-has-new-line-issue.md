@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T05:39:42Z
 updated_at: 2025-06-26T22:59:18Z
 url: https://github.com/astral-sh/uv/issues/14209
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # uvx in tmux - dependency check has new line issue
 
 ---
 
-_Issue opened by @patrickwolf on 2025-06-23 05:39_
+_@patrickwolf_
 
 ### Summary
 

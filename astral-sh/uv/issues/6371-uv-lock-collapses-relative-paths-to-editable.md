@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T19:17:10Z
 updated_at: 2024-08-24T02:19:12Z
 url: https://github.com/astral-sh/uv/issues/6371
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # `uv lock` collapses relative paths to editable builds in monorepo, breaks `uv sync`
 
 ---
 
-_Issue opened by @leddy231 on 2024-08-21 19:17_
+_@leddy231_
 
 Hi there! Excited to move our monorepo from poetry to uv.
 

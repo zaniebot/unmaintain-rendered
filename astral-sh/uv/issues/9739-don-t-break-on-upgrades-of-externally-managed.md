@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T15:05:47Z
 updated_at: 2025-01-07T19:26:27Z
 url: https://github.com/astral-sh/uv/issues/9739
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Don't break on upgrades of externally-managed Pythons
 
 ---
 
-_Issue opened by @lishaduck on 2024-12-09 15:05_
+_@lishaduck_
 
 I primarily use uv a a pipx replacement. Whenever I run `brew upgrade` and there's a new version of the `python@3.13` package, all of the Python CLIs I use break with `/Users/username/.local/bin/some-package: bad interpreter: /Users/username/.local/share/uv/tools/some-package/bin/python3: no such file or directory`. Upon further inspection, it looks like uv is using aliases instead of symlinks, which the wonderful internet informs me link to a file id, rather than a file path.
 If I try to repair them using `uv tool install --force some-package`, it works, but I have to run this manually. `uv tool upgrade --all --reinstall` fails with ``error: Failed to upgrade some-package Caused by: `some-package` is not installed; run `uv tool install some-package` to install``.

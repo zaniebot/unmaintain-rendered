@@ -13,14 +13,14 @@ head: charlie/source-dist
 created_at: 2024-01-08T19:10:18Z
 updated_at: 2024-01-08T19:14:46Z
 url: https://github.com/astral-sh/uv/pull/839
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Break `source_dist.rs` into a module
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 19:10_
+_@charliermarsh_
 
 ## Summary
 

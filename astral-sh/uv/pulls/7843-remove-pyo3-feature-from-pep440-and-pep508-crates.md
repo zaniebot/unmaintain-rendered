@@ -13,14 +13,14 @@ head: konsti/remove-pyo3
 created_at: 2024-10-01T14:15:04Z
 updated_at: 2024-10-01T14:24:35Z
 url: https://github.com/astral-sh/uv/pull/7843
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Remove pyo3 feature from pep440 and pep508 crates
 
 ---
 
-_Pull request opened by @konstin on 2024-10-01 14:15_
+_@konstin_
 
 Python bindings should be added as a separate crate.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T23:07:52Z
 updated_at: 2025-10-22T11:29:20Z
 url: https://github.com/astral-sh/uv/issues/16378
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Slower startup time compared to using pip in Docker
 
 ---
 
-_Issue opened by @dyens on 2025-10-20 23:07_
+_@dyens_
 
 ### Summary
 

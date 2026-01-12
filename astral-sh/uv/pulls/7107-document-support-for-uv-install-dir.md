@@ -13,14 +13,14 @@ head: zb/install-path
 created_at: 2024-09-05T23:43:24Z
 updated_at: 2024-09-07T15:26:38Z
 url: https://github.com/astral-sh/uv/pull/7107
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Document support for `UV_INSTALL_DIR`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-05 23:43_
+_@zanieb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-01-15T18:58:38Z
 updated_at: 2025-01-15T19:00:05Z
 url: https://github.com/astral-sh/uv/pull/10638
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # sync python releases
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 18:58_
+_@zanieb_
 
 - **Sync latest Python releases**
 - **Add support for `riscv64` in template**

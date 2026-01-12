@@ -14,14 +14,14 @@ head: charlie/RUF017
 created_at: 2023-10-01T14:44:30Z
 updated_at: 2023-10-01T15:00:11Z
 url: https://github.com/astral-sh/ruff/pull/7739
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Perform insertions before replacements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 14:44_
+_@charliermarsh_
 
 ## Summary
 

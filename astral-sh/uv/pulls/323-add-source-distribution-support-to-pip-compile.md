@@ -13,14 +13,14 @@ head: charlie/sdist
 created_at: 2023-11-06T05:15:34Z
 updated_at: 2023-11-06T13:22:38Z
 url: https://github.com/astral-sh/uv/pull/323
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Add source distribution support to `pip-compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 05:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/string-like-part-iter
 created_at: 2024-05-13T08:23:24Z
 updated_at: 2024-05-13T16:02:57Z
 url: https://github.com/astral-sh/ruff/pull/11399
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add `Iterator` impl for `StringLike` parts
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-13 08:23_
+_@dhruvmanila_
 
 ## Summary
 

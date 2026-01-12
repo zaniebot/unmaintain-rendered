@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-05T18:43:12Z
 updated_at: 2025-02-06T17:33:02Z
 url: https://github.com/clap-rs/clap/issues/5902
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Dependabot updates for `clap` uses changelog for `clap-complete`
 
 ---
 
-_Issue opened by @duckinator on 2025-02-05 18:43_
+_@duckinator_
 
 Dependabot PRs to update `clap` are mostly correct, but link to changelogs for `clap-complete`, which presents conflicting information about what's in an update.
 

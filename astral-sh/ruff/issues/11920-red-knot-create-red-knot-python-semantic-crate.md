@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T06:53:27Z
 updated_at: 2024-06-20T11:24:25Z
 url: https://github.com/astral-sh/ruff/issues/11920
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] Create `red-knot-python-semantic` crate
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-18 06:53_
+_@MichaReiser_
 
 I know I said this morning I was OK either way, but after reading this PR and thinking about it more, I really do favor putting all this in a separate crate. I don't see any shared code between the old ruff_python_semantic code and the new, and looking through the old semantic model code, I'm not really seeing where there would be shared code between them in the future (or even any direct dependency between them). I think the code we are likely to share is in other crates; ruff_python_semantic we are basically replacing. I think it will be a lot clearer, both for maintainers of the old semantic model and for development of the new, if we use a new crate.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T06:12:27Z
 updated_at: 2025-03-29T18:14:43Z
 url: https://github.com/astral-sh/uv/issues/12542
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # UV init optionally create a gitignore
 
 ---
 
-_Issue opened by @akshaybabloo on 2025-03-29 06:12_
+_@akshaybabloo_
 
 ### Summary
 

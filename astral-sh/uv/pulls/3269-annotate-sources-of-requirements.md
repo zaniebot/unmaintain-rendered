@@ -13,14 +13,14 @@ head: annotate-requirements-sources
 created_at: 2024-04-25T20:29:00Z
 updated_at: 2024-05-09T13:35:33Z
 url: https://github.com/astral-sh/uv/pull/3269
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Annotate sources of requirements
 
 ---
 
-_Pull request opened by @palfrey on 2024-04-25 20:29_
+_@palfrey_
 
 ## Summary
 

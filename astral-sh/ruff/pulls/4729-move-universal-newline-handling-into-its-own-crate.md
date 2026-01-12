@@ -12,14 +12,14 @@ head: charlie/newlines
 created_at: 2023-05-30T16:17:17Z
 updated_at: 2023-05-31T16:00:49Z
 url: https://github.com/astral-sh/ruff/pull/4729
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Move universal newline handling into its own crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 16:17_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

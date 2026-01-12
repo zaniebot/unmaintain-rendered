@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-09T20:52:51Z
 updated_at: 2025-06-30T16:38:27Z
 url: https://github.com/astral-sh/ruff/issues/18599
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # C420 fix should add spaces between tokens
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-09 20:52_
+_@dscorbett_
 
 ### Summary
 

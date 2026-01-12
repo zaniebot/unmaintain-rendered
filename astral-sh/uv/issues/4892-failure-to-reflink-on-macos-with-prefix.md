@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T13:27:04Z
 updated_at: 2024-07-08T14:15:26Z
 url: https://github.com/astral-sh/uv/issues/4892
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Failure to reflink on macOS with `--prefix`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-08 13:27_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/4880#discussion_r1668619291.
 

@@ -12,14 +12,14 @@ head: konsti/dont-do-path-lookups
 created_at: 2024-03-12T17:49:42Z
 updated_at: 2024-04-05T14:32:57Z
 url: https://github.com/astral-sh/uv/pull/2388
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Stop looking for `-p` in PATH
 
 ---
 
-_Pull request opened by @konstin on 2024-03-12 17:49_
+_@konstin_
 
 See #2386 for the motivation and semantics. We keep only two behaviours for `-p`, we have an absolute or relative path (containing a system path separator) or `-p <implementation><version>`.
 

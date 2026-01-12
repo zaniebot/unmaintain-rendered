@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-07T07:00:02Z
 updated_at: 2024-09-13T13:28:34Z
 url: https://github.com/astral-sh/ruff/issues/9043
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Make docstring convention a global setting
 
 ---
 
-_Issue opened by @Mr-Pepe on 2023-12-07 07:00_
+_@Mr-Pepe_
 
 Pydocstyle has a setting to specify the used docstring convention:
 

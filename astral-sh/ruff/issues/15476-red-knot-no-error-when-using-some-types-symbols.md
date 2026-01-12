@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-14T14:46:21Z
 updated_at: 2025-02-14T09:47:53Z
 url: https://github.com/astral-sh/ruff/issues/15476
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] No error when using some `types` symbols without importing them
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-14 14:46_
+_@sharkdp_
 
 Red Knot does not raise any errors when using some symbols from `types` without importing them. I haven't done an exhaustive investigation, but all of these should raise errors:
 ```py

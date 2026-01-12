@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T11:30:57Z
 updated_at: 2024-12-19T16:54:46Z
 url: https://github.com/astral-sh/uv/issues/9968
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # new build backend - scripts data: script not executable in wheel
 
 ---
 
-_Issue opened by @davidszotten on 2024-12-17 11:30_
+_@davidszotten_
 
 Hi,
 

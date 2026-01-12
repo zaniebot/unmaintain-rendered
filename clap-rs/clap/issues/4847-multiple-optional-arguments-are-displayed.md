@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-19T17:20:25Z
 updated_at: 2023-04-20T17:31:14Z
 url: https://github.com/clap-rs/clap/issues/4847
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Multiple optional arguments are displayed incorrectly in help output
 
 ---
 
-_Issue opened by @fabianfreyer on 2023-04-19 17:20_
+_@fabianfreyer_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: refactor-set-module-paths
 created_at: 2024-06-05T22:43:42Z
 updated_at: 2024-06-06T15:48:31Z
 url: https://github.com/astral-sh/ruff/pull/11767
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] Encapsulate module resolution logic in `module.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-05 22:43_
+_@AlexWaygood_
 
 This PR encapsulates all module-resolution logic in `module.rs`. Currently a `Vec` of search paths is passed into the routines in `module.rs`, but this opens the door to the search paths being passed in an incorrect order. The order of search paths should be maintained as an invariant via a common routine to avoid the possiblity of error.
 

@@ -13,14 +13,14 @@ head: charlie/backtrack
 created_at: 2024-04-05T18:05:37Z
 updated_at: 2024-04-05T18:16:20Z
 url: https://github.com/astral-sh/uv/pull/2839
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Add backtracking tests for distribution incompatibilities
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 18:05_
+_@charliermarsh_
 
 ## Summary
 

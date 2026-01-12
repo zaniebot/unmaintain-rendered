@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-15T14:51:00Z
 updated_at: 2023-09-18T17:37:18Z
 url: https://github.com/clap-rs/clap/issues/5128
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clap fails to parse subcommand preceded by vararg 
 
 ---
 
-_Issue opened by @Pzixel on 2023-09-15 14:51_
+_@Pzixel_
 
 ### Please complete the following tasks
 

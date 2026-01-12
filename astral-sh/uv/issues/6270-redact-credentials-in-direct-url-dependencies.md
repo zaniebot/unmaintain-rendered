@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T19:39:55Z
 updated_at: 2025-06-26T07:25:42Z
 url: https://github.com/astral-sh/uv/issues/6270
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Redact credentials in direct URL dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-20 19:39_
+_@charliermarsh_
 
 E.g., for:
 

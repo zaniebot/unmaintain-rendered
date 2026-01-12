@@ -13,14 +13,14 @@ head: david/dnf-type-simplifications
 created_at: 2024-10-16T12:12:30Z
 updated_at: 2024-10-18T21:43:45Z
 url: https://github.com/astral-sh/ruff/pull/13775
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red knot] add `Type::is_disjoint_from` and intersection simplifications
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-16 12:12_
+_@sharkdp_
 
 ## Summary
 

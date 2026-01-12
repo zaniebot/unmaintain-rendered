@@ -11,14 +11,14 @@ head: bugfix/17307
 created_at: 2026-01-04T18:46:08Z
 updated_at: 2026-01-07T03:56:24Z
 url: https://github.com/astral-sh/uv/pull/17316
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Preserve absolute paths in `uv add` for local dependencies
 
 ---
 
-_Pull request opened by @nooscraft on 2026-01-04 18:46_
+_@nooscraft_
 
 When adding a local package with an absolute path like `uv add /path/to/package`, keep it absolute instead of converting to relative. Relative paths stay relative.
 

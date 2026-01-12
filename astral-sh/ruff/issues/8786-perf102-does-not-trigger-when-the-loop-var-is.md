@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T13:45:31Z
 updated_at: 2024-02-13T14:40:10Z
 url: https://github.com/astral-sh/ruff/issues/8786
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PERF102 does not trigger when the loop var is used in a previous loop
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-20 13:45_
+_@ThiefMaster_
 
 ```py
 dict_a = {}

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-09T02:10:28Z
 updated_at: 2023-10-06T19:56:41Z
 url: https://github.com/astral-sh/ruff/issues/6434
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Confine PEP 695 type annotation rewrites (`UP040`) to non-runtime contexts
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-09 02:10_
+_@charliermarsh_
 
 See the comment here: https://github.com/astral-sh/ruff/pull/6289#issuecomment-1670239247. PEP 695 type aliases can't be used for runtime typing, so we need to limit the cases in which we flag and rewrite them. For starters, we could consider limiting to `.pyi` files, where it should ~always be safe. We could then extend to "private" type aliases that aren't used in runtime contexts within a file.
 

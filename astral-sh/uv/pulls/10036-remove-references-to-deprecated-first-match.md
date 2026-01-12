@@ -14,14 +14,14 @@ head: charlie/refs
 created_at: 2024-12-19T17:20:01Z
 updated_at: 2024-12-19T17:54:40Z
 url: https://github.com/astral-sh/uv/pull/10036
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Remove references to deprecated `first-match`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-19 17:20_
+_@charliermarsh_
 
 ## Summary
 

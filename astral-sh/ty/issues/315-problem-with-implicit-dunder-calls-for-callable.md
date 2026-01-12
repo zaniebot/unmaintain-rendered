@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-11T09:57:43Z
 updated_at: 2025-05-14T18:07:52Z
 url: https://github.com/astral-sh/ty/issues/315
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Problem with implicit dunder calls for `Callable` members
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-05-11 09:57_
+_@Julian-J-S_
 
 Its hard for me to narrow down the problem but I will try to give as much context as needed 🤓 
 

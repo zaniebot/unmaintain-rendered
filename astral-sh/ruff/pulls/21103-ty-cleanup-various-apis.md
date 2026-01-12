@@ -13,14 +13,14 @@ head: alex/into_instance
 created_at: 2025-10-27T20:33:06Z
 updated_at: 2025-10-30T20:57:16Z
 url: https://github.com/astral-sh/ruff/pull/21103
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Cleanup various APIs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-27 20:33_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

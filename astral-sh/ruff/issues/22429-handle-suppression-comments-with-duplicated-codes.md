@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-07T02:43:48Z
 updated_at: 2026-01-07T02:43:48Z
 url: https://github.com/astral-sh/ruff/issues/22429
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Handle suppression comments with duplicated codes
 
 ---
 
-_Issue opened by @amyreese on 2026-01-07 02:43_
+_@amyreese_
 
 context: https://github.com/astral-sh/ruff/pull/22099#discussion_r2639484337
 

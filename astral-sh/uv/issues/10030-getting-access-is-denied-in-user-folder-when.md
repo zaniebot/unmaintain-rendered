@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-19T14:32:54Z
 updated_at: 2025-09-10T17:23:17Z
 url: https://github.com/astral-sh/uv/issues/10030
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Getting "access is denied" in user folder when running "uv tool install" on Windows 10
 
 ---
 
-_Issue opened by @driscollis on 2024-12-19 14:32_
+_@driscollis_
 
 I tried the [posting](https://github.com/darrenburns/posting) app with uv on my Windows 10 machine. The author of `posting` recommends running the following command:
 

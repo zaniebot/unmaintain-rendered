@@ -12,14 +12,14 @@ head: charlie/__future__
 created_at: 2022-09-02T12:46:28Z
 updated_at: 2022-09-02T12:56:27Z
 url: https://github.com/astral-sh/ruff/pull/85
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix future-to-__future__ typo
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-02 12:46_
+_@charliermarsh_
 
 _No description provided._
 

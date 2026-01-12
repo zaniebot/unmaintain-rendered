@@ -13,14 +13,14 @@ head: gui-overlays
 created_at: 2025-08-07T13:30:02Z
 updated_at: 2025-08-07T15:47:54Z
 url: https://github.com/astral-sh/uv/pull/15134
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Consider pythonw when copying entrypoints in uv run
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-07 13:30_
+_@samypr100_
 
 
 ## Summary

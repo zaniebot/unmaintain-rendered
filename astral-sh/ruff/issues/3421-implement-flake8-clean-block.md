@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-09T16:11:24Z
 updated_at: 2023-07-10T01:26:08Z
 url: https://github.com/astral-sh/ruff/issues/3421
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement `flake8-clean-block`
 
 ---
 
-_Issue opened by @sasanjac on 2023-03-09 16:11_
+_@sasanjac_
 
 [`flake8-clean-block`](https://github.com/cyyc1/flake8-clean-block) enforces a blank line after indented blocks to increase code readability.
 

@@ -12,14 +12,14 @@ head: charlie/map
 created_at: 2023-04-14T01:47:14Z
 updated_at: 2023-04-14T02:13:32Z
 url: https://github.com/astral-sh/ruff/pull/3971
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Redirect `PIE802` to `C419`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-14 01:47_
+_@charliermarsh_
 
 This rule was implemented in the latest `flake8-comprehensions` release. `flake8-comprehensions` is a more popular plugin (and the rules are more thematically related), so I'd rather have this categorized under `flake8-comprehensions` than `flake8-pie`.
 

@@ -12,14 +12,14 @@ head: issue-11796
 created_at: 2025-03-16T12:12:47Z
 updated_at: 2025-08-19T03:13:23Z
 url: https://github.com/astral-sh/uv/pull/12201
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # More descriptive error message for `uv run pythonx.xx`
 
 ---
 
-_Pull request opened by @JWLee89 on 2025-03-16 12:12_
+_@JWLee89_
 
 ## Related Issue 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-27T07:10:20Z
 updated_at: 2024-07-29T01:42:43Z
 url: https://github.com/astral-sh/ruff/issues/12540
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Implement A003, A004, A006 (flake8-builtins)
 
 ---
 
-_Issue opened by @nkakouros on 2024-07-27 07:10_
+_@nkakouros_
 
 [`flake8-builtins`](https://pypi.org/project/flake8-builtins/#rules) has added 3 new rules since A001-003 where implemented in ruff:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-03-29T19:42:49Z
 updated_at: 2018-08-02T03:29:37Z
 url: https://github.com/clap-rs/clap/issues/44
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Positional args with multiple values
 
 ---
 
-_Issue opened by @jhelwig on 2015-03-29 19:42_
+_@jhelwig_
 
 I'm working on a command that allows a user to specify an arbitrary number of files/directories on the command line (Ex: `dupe-finder /path/to/dir1 /path/to/dir2 /path/to/dir3`).  I know I could do this currently, if I changed the form to use an option that allowed multiple values (`dupe-finder -d /path/to/dir1 -d /path/to/dir2 -d /path/to/dir3`), but it would be handy to be able to have a positional argument that captured any positional arguments at & after its index into a vector.
 

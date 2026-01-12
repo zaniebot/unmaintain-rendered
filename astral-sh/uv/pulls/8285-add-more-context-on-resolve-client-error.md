@@ -14,14 +14,14 @@ head: konsti/url-error-context
 created_at: 2024-10-17T10:45:07Z
 updated_at: 2024-10-17T12:22:16Z
 url: https://github.com/astral-sh/uv/pull/8285
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Add more context on resolve client error
 
 ---
 
-_Pull request opened by @konstin on 2024-10-17 10:45_
+_@konstin_
 
 I'm not clear where #8144 comes from, so I'm adding some more error context to narrow it down.
 

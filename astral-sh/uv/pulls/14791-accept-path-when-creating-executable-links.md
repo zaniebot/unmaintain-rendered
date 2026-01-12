@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2025-07-21T15:47:06Z
 updated_at: 2025-07-21T15:53:30Z
 url: https://github.com/astral-sh/uv/pull/14791
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Accept `&Path` when creating executable links
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 15:47_
+_@charliermarsh_
 
 ## Summary
 

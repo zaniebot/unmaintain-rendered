@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-06-19T16:33:10Z
 updated_at: 2020-02-01T13:26:03Z
 url: https://github.com/clap-rs/clap/issues/1498
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Switch default branch to v3-master
 
 ---
 
-_Issue opened by @erickt on 2019-06-19 16:33_
+_@erickt_
 
 According to this [comment](https://github.com/clap-rs/clap/pull/1492#issuecomment-503618790), the v2 branch is closed, and all future PRs be submitted against v3-master. Could the default github branch be switched to that to avoid other people working off the wrong base?
 

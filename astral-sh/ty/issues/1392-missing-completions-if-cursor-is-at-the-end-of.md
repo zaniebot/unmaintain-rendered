@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-17T19:46:22Z
 updated_at: 2025-10-21T09:24:33Z
 url: https://github.com/astral-sh/ty/issues/1392
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Missing completions if cursor is at the end of the file
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-17 19:46_
+_@sharkdp_
 
 I recently added these tests: https://github.com/astral-sh/ruff/blob/8ca2b5555d47e211c04136637477c5227172d885/crates/ty_ide/src/completion.rs#L3899-L3946
 

@@ -14,14 +14,14 @@ head: ag/require-serde
 created_at: 2024-05-03T13:26:10Z
 updated_at: 2024-05-03T14:23:16Z
 url: https://github.com/astral-sh/uv/pull/3345
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # require serde and rkyv everywhere; remove optional serde and rkyv features
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-03 13:26_
+_@BurntSushi_
 
 In *some* places in our crates, `serde` (and `rkyv`) are optional
 dependencies. I believe this was done out of reasons of "good sense,"

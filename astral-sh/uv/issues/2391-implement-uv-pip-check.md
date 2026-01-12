@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T19:48:07Z
 updated_at: 2024-03-15T17:39:56Z
 url: https://github.com/astral-sh/uv/issues/2391
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Implement `uv pip check`
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-12 19:48_
+_@danielhollas_
 
 Heya. :wave:  Small feature request for implementing the functionality of `pip check`
 

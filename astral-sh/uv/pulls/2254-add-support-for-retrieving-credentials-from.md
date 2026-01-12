@@ -12,14 +12,14 @@ head: feature/basic-use-keyring
 created_at: 2024-03-06T23:29:53Z
 updated_at: 2024-03-13T20:02:19Z
 url: https://github.com/astral-sh/uv/pull/2254
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Add support for retrieving credentials from `keyring`
 
 ---
 
-_Pull request opened by @BakerNet on 2024-03-06 23:29_
+_@BakerNet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

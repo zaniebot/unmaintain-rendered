@@ -13,14 +13,14 @@ head: charlie/html
 created_at: 2023-12-28T14:34:55Z
 updated_at: 2023-12-28T14:44:52Z
 url: https://github.com/astral-sh/ruff/pull/9301
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Escape trailing placeholders in rule documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-28 14:34_
+_@charliermarsh_
 
 ## Summary
 

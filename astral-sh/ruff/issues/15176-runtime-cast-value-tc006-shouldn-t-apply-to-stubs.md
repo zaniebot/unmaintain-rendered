@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-29T01:36:43Z
 updated_at: 2024-12-29T19:39:17Z
 url: https://github.com/astral-sh/ruff/issues/15176
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `runtime-cast-value (TC006)` shouldn't apply to stubs
 
 ---
 
-_Issue opened by @Avasam on 2024-12-29 01:36_
+_@Avasam_
 
 Found this whilst applying various Ruff groups on typeshed.
 

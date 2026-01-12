@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-19T21:16:54Z
 updated_at: 2023-10-22T02:58:07Z
 url: https://github.com/astral-sh/uv/issues/142
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Consider choosing lowest-matching versions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 21:16_
+_@charliermarsh_
 
 This would also make our tests reproducible in perpetuity
 

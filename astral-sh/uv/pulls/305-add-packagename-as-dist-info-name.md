@@ -12,14 +12,14 @@ head: as-dist-info-name
 created_at: 2023-11-03T08:14:14Z
 updated_at: 2023-11-03T08:16:45Z
 url: https://github.com/astral-sh/uv/pull/305
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Add PackageName::as_dist_info_name
 
 ---
 
-_Pull request opened by @konstin on 2023-11-03 08:14_
+_@konstin_
 
 From https://packaging.python.org/en/latest/specifications/recording-installed-packages/#recording-installed-packages
 

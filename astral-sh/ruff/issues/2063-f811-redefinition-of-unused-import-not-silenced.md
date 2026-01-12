@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T16:57:12Z
 updated_at: 2023-02-03T21:07:33Z
 url: https://github.com/astral-sh/ruff/issues/2063
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F811 Redefinition of unused import not silenced by noqa for grouped imports
 
 ---
 
-_Issue opened by @alisaifee on 2023-01-21 16:57_
+_@alisaifee_
 
 When there are conditional (re)imports which are subsequently exported the `noqa` directive doesn't silence the F811 rule. 
 

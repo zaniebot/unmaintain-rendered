@@ -13,14 +13,14 @@ head: eagerly-validate-search-paths
 created_at: 2024-08-09T12:54:21Z
 updated_at: 2024-08-12T07:56:39Z
 url: https://github.com/astral-sh/ruff/pull/12783
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Eagerly validate search paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-09 12:54_
+_@MichaReiser_
 
 ## Summary
 This PR moves from a lazy search path validation and makes it eagerly so that Red Knot fails to start if the settings are incorrect.

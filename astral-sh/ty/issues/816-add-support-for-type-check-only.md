@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-11T13:25:20Z
 updated_at: 2025-11-14T17:09:03Z
 url: https://github.com/astral-sh/ty/issues/816
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add support for `@type_check_only`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-11 13:25_
+_@AlexWaygood_
 
 We should add support for [the `type_check_only` decorator](https://docs.python.org/3/library/typing.html#typing.type_check_only). Any class or function with this decorator should never be included in autocomplete suggestions. We should possibly also emit a warning if a class or function decorated with `@type_check_only` is imported into a non-stub file.
 

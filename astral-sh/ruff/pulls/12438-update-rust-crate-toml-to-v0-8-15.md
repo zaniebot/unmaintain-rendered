@@ -13,14 +13,14 @@ head: renovate/toml-0.x-lockfile
 created_at: 2024-07-22T01:27:51Z
 updated_at: 2024-07-22T01:49:25Z
 url: https://github.com/astral-sh/ruff/pull/12438
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update Rust crate toml to v0.8.15
 
 ---
 
-_Pull request opened by @renovate on 2024-07-22 01:27_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T19:49:38Z
 updated_at: 2024-12-20T19:15:06Z
 url: https://github.com/astral-sh/uv/issues/9646
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Can't install torch_scatter wheel from index on OSX
 
 ---
 
-_Issue opened by @dionhaefner on 2024-12-04 19:49_
+_@dionhaefner_
 
 It seems impossible to install `torch_scatter` CPU wheels using `uv` on OSX. I'm following the [official installation instructions](https://pytorch-geometric.readthedocs.io/en/2.5.2/notes/installation.html) which require `--find-links` to be passed.
 

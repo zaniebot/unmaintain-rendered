@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T08:41:42Z
 updated_at: 2024-08-16T10:25:00Z
 url: https://github.com/astral-sh/ruff/issues/12921
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Invalid python code in the documentation for ASYNC100 rule
 
 ---
 
-_Issue opened by @olutra on 2024-08-16 08:41_
+_@olutra_
 
 Examples for the rule **cancel-scope-no-checkpoint (ASYNC100)** are not valid python code
 https://github.com/astral-sh/ruff/blob/d8debb7a36bad602b543a299f5cdca5b4c29524f/crates/ruff_linter/src/rules/flake8_async/rules/cancel_scope_no_checkpoint.rs#L29-L35

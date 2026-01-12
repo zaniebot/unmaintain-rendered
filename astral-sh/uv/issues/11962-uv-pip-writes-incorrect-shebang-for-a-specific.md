@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T23:42:46Z
 updated_at: 2025-03-05T00:08:13Z
 url: https://github.com/astral-sh/uv/issues/11962
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # uv pip writes incorrect shebang for a specific project
 
 ---
 
-_Issue opened by @mistydemeo on 2025-03-04 23:42_
+_@mistydemeo_
 
 ### Summary
 

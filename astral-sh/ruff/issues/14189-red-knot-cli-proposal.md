@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T07:58:58Z
 updated_at: 2025-01-09T18:23:34Z
 url: https://github.com/astral-sh/ruff/issues/14189
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Red knot CLI Proposal
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-08 07:58_
+_@MichaReiser_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T04:57:31Z
 updated_at: 2025-12-08T12:49:05Z
 url: https://github.com/astral-sh/uv/issues/1430
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Create scenario for `.none` extra
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-16 04:57_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/1428
 

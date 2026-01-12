@@ -14,14 +14,14 @@ head: handle_type_ignore_for_module
 created_at: 2023-06-05T08:58:03Z
 updated_at: 2023-06-05T09:38:09Z
 url: https://github.com/astral-sh/ruff/pull/4861
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Ensure type_ignores for Module are empty
 
 ---
 
-_Pull request opened by @konstin on 2023-06-05 08:58_
+_@konstin_
 
 According to https://docs.python.org/3/library/ast.html#ast-helpers, we expect type_ignores to be always be empty, so this adds a debug assert.  
 

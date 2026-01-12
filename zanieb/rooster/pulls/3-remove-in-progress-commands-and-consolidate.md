@@ -12,14 +12,14 @@ head: zanie/tmp
 created_at: 2023-10-26T17:31:02Z
 updated_at: 2023-11-08T02:29:01Z
 url: https://github.com/zanieb/rooster/pull/3
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Remove in-progress commands and consolidate functionality
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-26 17:31_
+_@zanieb_
 
 _No description provided._
 

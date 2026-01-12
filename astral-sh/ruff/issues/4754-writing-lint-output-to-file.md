@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T13:37:55Z
 updated_at: 2023-06-20T16:46:50Z
 url: https://github.com/astral-sh/ruff/issues/4754
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Writing lint output to file
 
 ---
 
-_Issue opened by @TalAmuyal on 2023-05-31 13:37_
+_@TalAmuyal_
 
 **TL;DR:** I couldn't find how to tell Ruff to write the report to file.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T15:51:31Z
 updated_at: 2025-07-07T16:40:39Z
 url: https://github.com/astral-sh/uv/issues/14487
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # `uv_build` perfomance
 
 ---
 
-_Issue opened by @chirizxc on 2025-07-07 15:51_
+_@chirizxc_
 
 ### Question
 

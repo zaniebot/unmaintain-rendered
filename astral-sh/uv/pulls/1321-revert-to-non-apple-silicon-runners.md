@@ -12,14 +12,14 @@ head: charlie/run
 created_at: 2024-02-15T18:19:00Z
 updated_at: 2024-02-15T18:22:41Z
 url: https://github.com/astral-sh/uv/pull/1321
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Revert to non-Apple Silicon runners
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-15 18:19_
+_@charliermarsh_
 
 We rolled this back in Ruff too due to compatibility issues.
 

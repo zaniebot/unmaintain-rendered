@@ -12,14 +12,14 @@ head: charlie/skip-empty-pyproject
 created_at: 2022-12-14T22:59:10Z
 updated_at: 2022-12-15T00:35:54Z
 url: https://github.com/astral-sh/ruff/pull/1243
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Ignore any `pyproject.toml` without a `[tool.ruff]` section
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-14 22:59_
+_@charliermarsh_
 
 Resolves #1223.
 

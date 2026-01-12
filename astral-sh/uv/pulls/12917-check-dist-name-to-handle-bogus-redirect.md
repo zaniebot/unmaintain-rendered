@@ -13,14 +13,14 @@ head: konsti/check-distribution-name
 created_at: 2025-04-16T13:20:27Z
 updated_at: 2025-04-22T15:36:29Z
 url: https://github.com/astral-sh/uv/pull/12917
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Check dist name to handle bogus redirect
 
 ---
 
-_Pull request opened by @konstin on 2025-04-16 13:20_
+_@konstin_
 
 When an index performs a bogus redirect or otherwise returns a different distribution name than expected, uv currently hangs.
 

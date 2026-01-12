@@ -11,14 +11,14 @@ head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
 updated_at: 2026-01-12T08:17:20Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-12T08:52:59Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # Drop WSL1 special case in flake8-executable
 
 ---
 
-_Pull request opened by @K900 on 2025-12-01 11:31_
+_@K900_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

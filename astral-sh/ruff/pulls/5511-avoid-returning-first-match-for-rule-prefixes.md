@@ -13,14 +13,14 @@ head: charlie/prefix
 created_at: 2023-07-04T19:17:38Z
 updated_at: 2023-07-04T19:42:45Z
 url: https://github.com/astral-sh/ruff/pull/5511
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid returning first-match for rule prefixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 19:17_
+_@charliermarsh_
 
 Closes #5495, but there's a TODO here to improve this further. The current `from_code` implementation feels really indirect.
 

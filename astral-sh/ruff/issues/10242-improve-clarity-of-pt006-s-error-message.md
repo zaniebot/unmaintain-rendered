@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-03-05T21:14:12Z
 updated_at: 2024-03-20T18:22:03Z
 url: https://github.com/astral-sh/ruff/issues/10242
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Improve clarity of `PT006`'s error message
 
 ---
 
-_Issue opened by @trag1c on 2024-03-05 21:14_
+_@trag1c_
 
 I was a bit startled by this when writing tests:
 ```py

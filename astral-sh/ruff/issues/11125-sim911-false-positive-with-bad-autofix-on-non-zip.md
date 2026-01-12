@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T12:51:47Z
 updated_at: 2024-04-24T13:05:19Z
 url: https://github.com/astral-sh/ruff/issues/11125
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # SIM911 false positive (with bad autofix) on non-`zip` attribute calls
 
 ---
 
-_Issue opened by @lukas-folle-snkeos on 2024-04-24 12:51_
+_@lukas-folle-snkeos_
 
 ## Description
 Running the ruff format on `plt.bar(dict_a.keys(), dict_a.values())` is formatted by ruff to `dict_a.items()` which seems to be an issue.

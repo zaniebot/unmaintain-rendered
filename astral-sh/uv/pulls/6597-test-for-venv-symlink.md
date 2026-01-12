@@ -14,14 +14,14 @@ head: symlink-test
 created_at: 2024-08-25T08:19:12Z
 updated_at: 2024-08-26T16:48:56Z
 url: https://github.com/astral-sh/uv/pull/6597
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Test for .venv symlink
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-08-25 08:19_
+_@hauntsaninja_
 
 For various reasons, I have a preference for out of tree virtual environments. Things just work if I symlink, but I don't know that this is guaranteed, so I thought I'd add a test for it. It looks like there's another code path that matters (`FoundInterpreter::discover -> PythonEnvironment::from_root`) for the higher level commands, but couldn't spot a good place to test that.
 

@@ -15,14 +15,14 @@ head: zsol/jj-nnvrymrotuon
 created_at: 2025-09-20T11:39:26Z
 updated_at: 2025-09-22T16:59:49Z
 url: https://github.com/astral-sh/uv/pull/15959
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Allow upgrading prerelease versions of the same minor Python version
 
 ---
 
-_Pull request opened by @zsol on 2025-09-20 11:39_
+_@zsol_
 
 Turns out if the minor versions matched we returned false from `is_upgrade_of` instead of continuing to compare prerelease versions.
 

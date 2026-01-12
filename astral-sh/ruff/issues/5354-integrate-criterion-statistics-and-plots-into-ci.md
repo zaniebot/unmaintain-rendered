@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-25T11:24:49Z
 updated_at: 2023-11-10T05:32:46Z
 url: https://github.com/astral-sh/ruff/issues/5354
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Integrate criterion statistics and plots into CI
 
 ---
 
-_Issue opened by @konstin on 2023-06-25 11:24_
+_@konstin_
 
 For each PR, our CI [compares](https://github.com/astral-sh/ruff/blob/main/.github/workflows/benchmark.yaml) running criterion benchmarks on main vs. running them on the PR and posts a comment with the timing changes. Unfortunately, the github actions runner performance is rather noisy, so e.g. in [this change](https://github.com/astral-sh/ruff/pull/5340#issuecomment-1604574715) that doesn't touch the linter at all we still see large seeming changes to linter performance.
 

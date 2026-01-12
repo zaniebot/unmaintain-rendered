@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-17T08:06:01Z
 updated_at: 2024-07-02T08:52:53Z
 url: https://github.com/astral-sh/ruff/issues/11455
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff applies auto-fix in files with syntax errors
 
 ---
 
-_Issue opened by @Dobatymo on 2024-05-17 08:06_
+_@Dobatymo_
 
 When running `ruff format` ruff will not modify files if it encounters a `SyntaxError` (which is expected I think). However running `ruff check --fix` will encounter the `SyntaxError` as well, but will continue to "fix" and modify the files. I don't know if this is expected, but I find that behaviour surprising.
 

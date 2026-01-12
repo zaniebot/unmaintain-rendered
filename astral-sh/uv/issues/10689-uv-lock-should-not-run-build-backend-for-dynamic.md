@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T17:40:28Z
 updated_at: 2025-01-17T04:27:48Z
 url: https://github.com/astral-sh/uv/issues/10689
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # uv lock should not run build backend for dynamic versions
 
 ---
 
-_Issue opened by @danielhollas on 2025-01-16 17:40_
+_@danielhollas_
 
 `uv lock` still invokes the build backend even after the project's dynamic version has been omited from uv.lock in #10622. 
 

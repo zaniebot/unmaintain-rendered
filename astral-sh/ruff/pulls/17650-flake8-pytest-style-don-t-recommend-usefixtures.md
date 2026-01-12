@@ -13,14 +13,14 @@ head: fix-PT019
 created_at: 2025-04-26T22:27:44Z
 updated_at: 2025-05-14T15:08:22Z
 url: https://github.com/astral-sh/ruff/pull/17650
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`flake8-pytest-style`] Don't recommend `usefixtures` for parametrize values in `PT019`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-26 22:27_
+_@LaBatata101_
 
 
 

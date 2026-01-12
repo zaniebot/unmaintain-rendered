@@ -14,14 +14,14 @@ head: alex/more-mdtest-fixes
 created_at: 2025-12-19T13:43:24Z
 updated_at: 2025-12-19T13:53:33Z
 url: https://github.com/astral-sh/ruff/pull/22081
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Collect mdtest failures as part of the assertion message rather than printing them to the terminal immediately
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 13:43_
+_@AlexWaygood_
 
 ## Summary
 

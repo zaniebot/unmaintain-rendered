@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-11T11:41:54Z
 updated_at: 2025-09-12T17:11:06Z
 url: https://github.com/astral-sh/uv/issues/15785
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Document the `NO_PROXY` environment variable support and schema
 
 ---
 
-_Issue opened by @albertino87 on 2025-09-11 11:41_
+_@albertino87_
 
 ### Summary
 

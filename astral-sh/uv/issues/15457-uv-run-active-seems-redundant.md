@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T15:53:37Z
 updated_at: 2025-08-24T00:14:31Z
 url: https://github.com/astral-sh/uv/issues/15457
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # uv run --active seems redundant?
 
 ---
 
-_Issue opened by @AlKhrulev on 2025-08-22 15:53_
+_@AlKhrulev_
 
 ### Question
 

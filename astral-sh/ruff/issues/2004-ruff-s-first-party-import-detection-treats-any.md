@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-19T19:05:06Z
 updated_at: 2023-03-24T20:21:54Z
 url: https://github.com/astral-sh/ruff/issues/2004
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Ruff's first party import detection treats any folder in root as a package
 
 ---
 
-_Issue opened by @Jackenmen on 2023-01-19 19:05_
+_@Jackenmen_
 
 Repro:
 ```

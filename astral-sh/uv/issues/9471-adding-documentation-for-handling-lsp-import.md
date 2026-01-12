@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T15:10:59Z
 updated_at: 2024-11-28T08:09:06Z
 url: https://github.com/astral-sh/uv/issues/9471
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Adding documentation for handling LSP import error when using packages from workspaces
 
 ---
 
-_Issue opened by @mohit2152sharma on 2024-11-27 15:10_
+_@mohit2152sharma_
 
 Consider the following directory structure, in this example, I have a `llm` package in the workspace.
 

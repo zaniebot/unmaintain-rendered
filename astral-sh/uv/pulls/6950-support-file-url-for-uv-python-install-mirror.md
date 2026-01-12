@@ -13,14 +13,14 @@ head: python-mirror-file-url
 created_at: 2024-09-02T23:10:35Z
 updated_at: 2025-09-08T13:05:46Z
 url: https://github.com/astral-sh/uv/pull/6950
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Support file:// URL for `UV_PYTHON_INSTALL_MIRROR`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-09-02 23:10_
+_@eth3lbert_
 
 ## Summary
 

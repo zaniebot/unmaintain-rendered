@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T15:40:45Z
 updated_at: 2025-09-05T16:09:25Z
 url: https://github.com/astral-sh/uv/issues/15633
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Is it possible to run a script before every uv command?
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-09-02 15:40_
+_@kurt-rhee_
 
 ### Question
 

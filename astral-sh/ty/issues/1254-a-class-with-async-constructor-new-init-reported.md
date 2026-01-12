@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-25T14:24:06Z
 updated_at: 2025-09-25T14:26:12Z
 url: https://github.com/astral-sh/ty/issues/1254
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # A class with async constructor (__new__ + __init__) reported as not awaitable
 
 ---
 
-_Issue opened by @dm0 on 2025-09-25 14:24_
+_@dm0_
 
 ### Summary
 

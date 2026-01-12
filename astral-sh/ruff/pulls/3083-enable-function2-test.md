@@ -12,14 +12,14 @@ head: charlie/formatter-tests
 created_at: 2023-02-21T04:32:16Z
 updated_at: 2023-02-21T04:37:52Z
 url: https://github.com/astral-sh/ruff/pull/3083
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Enable `function2` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 04:32_
+_@charliermarsh_
 
 This is another case in which we have just a minor deviation, and I want to check it in anyway while making a note of it (until we improve the snapshot setup):
 

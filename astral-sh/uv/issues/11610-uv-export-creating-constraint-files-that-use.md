@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-18T23:28:01Z
 updated_at: 2025-02-19T19:10:57Z
 url: https://github.com/astral-sh/uv/issues/11610
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # uv export creating constraint files that use python_full_version where they could be using just python_version
 
 ---
 
-_Issue opened by @gibsondan on 2025-02-18 23:28_
+_@gibsondan_
 
 ### Summary
 

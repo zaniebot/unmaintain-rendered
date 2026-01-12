@@ -14,14 +14,14 @@ head: cjm/no-return-callable
 created_at: 2026-01-06T20:40:45Z
 updated_at: 2026-01-07T17:18:41Z
 url: https://github.com/astral-sh/ruff/pull/22425
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Make signature return and parameter types non-optional
 
 ---
 
-_Pull request opened by @carljm on 2026-01-06 20:40_
+_@carljm_
 
 ## Summary
 

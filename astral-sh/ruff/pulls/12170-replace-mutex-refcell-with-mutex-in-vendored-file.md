@@ -13,14 +13,14 @@ head: vendored-remove-refcell
 created_at: 2024-07-03T12:28:41Z
 updated_at: 2024-07-03T13:12:14Z
 url: https://github.com/astral-sh/ruff/pull/12170
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Replace `Mutex<RefCell>` with `Mutex` in vendored file system"
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-03 12:28_
+_@MichaReiser_
 
 ## Summary
 

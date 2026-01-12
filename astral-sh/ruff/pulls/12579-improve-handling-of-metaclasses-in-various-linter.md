@@ -13,14 +13,14 @@ head: alex/is-metaclass-centralize
 created_at: 2024-07-30T12:56:12Z
 updated_at: 2024-07-30T13:48:38Z
 url: https://github.com/astral-sh/ruff/pull/12579
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Improve handling of metaclasses in various linter rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 12:56_
+_@AlexWaygood_
 
 ## Summary
 

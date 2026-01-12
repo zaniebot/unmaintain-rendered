@@ -14,14 +14,14 @@ head: alex/classmethod-is-not-a-function
 created_at: 2025-10-30T15:49:30Z
 updated_at: 2025-10-30T17:14:41Z
 url: https://github.com/astral-sh/ruff/pull/21145
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # Fix bug where classmethods and staticmethods were considered subtypes of `types.FunctionType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-30 15:49_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1452
 

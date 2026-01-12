@@ -13,14 +13,14 @@ head: feature/implement-annotation-style
 created_at: 2024-02-19T02:37:22Z
 updated_at: 2024-02-21T13:46:37Z
 url: https://github.com/astral-sh/uv/pull/1679
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # feat: Implement `--annotation-style` parameter for `uv pip compile`
 
 ---
 
-_Pull request opened by @drjackild on 2024-02-19 02:37_
+_@drjackild_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

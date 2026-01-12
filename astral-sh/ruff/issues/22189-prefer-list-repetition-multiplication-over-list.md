@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T06:32:29Z
 updated_at: 2025-12-25T14:43:00Z
 url: https://github.com/astral-sh/ruff/issues/22189
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Prefer list repetition/multiplication over list comprehension
 
 ---
 
-_Issue opened by @injust on 2025-12-25 06:32_
+_@injust_
 
 ### Summary
 

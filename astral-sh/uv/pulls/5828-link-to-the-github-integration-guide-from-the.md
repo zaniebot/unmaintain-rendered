@@ -14,14 +14,14 @@ head: zb/docs-caching-ci
 created_at: 2024-08-06T20:30:01Z
 updated_at: 2024-08-06T20:48:22Z
 url: https://github.com/astral-sh/uv/pull/5828
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Link to the GitHub integration guide from the cache concept
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 20:30_
+_@zanieb_
 
 _No description provided._
 

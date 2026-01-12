@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-31T21:17:40Z
 updated_at: 2023-10-31T21:45:34Z
 url: https://github.com/astral-sh/ruff/issues/8395
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # noqa not working
 
 ---
 
-_Issue opened by @sparisi on 2023-10-31 21:17_
+_@sparisi_
 
 In one file, I'd like `ruff lint .` not to raise 
 ```

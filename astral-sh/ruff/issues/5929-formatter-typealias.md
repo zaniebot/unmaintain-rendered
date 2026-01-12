@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-20T19:42:34Z
 updated_at: 2023-08-24T20:02:27Z
 url: https://github.com/astral-sh/ruff/issues/5929
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `TypeAlias`
 
 ---
 
-_Issue opened by @konstin on 2023-07-20 19:42_
+_@konstin_
 
 See [PEP 695](https://peps.python.org/pep-0695/) for details on this python 3.12 feature. Not to be confused with `typing.TypeAlias` of python 3.10. The goal is to format statements in the form:
 

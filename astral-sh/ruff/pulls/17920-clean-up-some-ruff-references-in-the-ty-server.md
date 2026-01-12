@@ -14,14 +14,14 @@ head: charlie/ty
 created_at: 2025-05-07T14:43:16Z
 updated_at: 2025-05-07T14:55:18Z
 url: https://github.com/astral-sh/ruff/pull/17920
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Clean up some Ruff references in the ty server
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-07 14:43_
+_@charliermarsh_
 
 ## Summary
 

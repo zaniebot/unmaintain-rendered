@@ -13,14 +13,14 @@ head: charlie/no-bin
 created_at: 2024-11-11T18:44:06Z
 updated_at: 2024-11-11T18:52:23Z
 url: https://github.com/astral-sh/uv/pull/9025
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Add an error case for `--no-binary` sync failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-11 18:44_
+_@charliermarsh_
 
 _No description provided._
 

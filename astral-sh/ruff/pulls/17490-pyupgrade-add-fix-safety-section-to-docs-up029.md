@@ -13,14 +13,14 @@ head: doc_fix_safety_for_unnecessary_builtin_import
 created_at: 2025-04-20T08:00:55Z
 updated_at: 2025-08-29T14:02:59Z
 url: https://github.com/astral-sh/ruff/pull/17490
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pyupgrade`] Add fix safety section to docs (`UP029`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 08:00_
+_@Kalmaegi_
 
 ## Summary
 

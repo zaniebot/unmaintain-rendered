@@ -13,14 +13,14 @@ head: zb/check-docs-public
 created_at: 2024-08-27T17:26:30Z
 updated_at: 2024-08-27T17:35:44Z
 url: https://github.com/astral-sh/uv/pull/6707
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Always run both public and private documentation checks
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 17:26_
+_@zanieb_
 
 Avoiding failures like https://github.com/astral-sh/uv/pull/6705
 

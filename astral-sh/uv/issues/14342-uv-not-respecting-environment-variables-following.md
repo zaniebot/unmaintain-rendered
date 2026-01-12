@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-28T21:25:21Z
 updated_at: 2025-07-11T01:51:03Z
 url: https://github.com/astral-sh/uv/issues/14342
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # UV not respecting environment variables following installation
 
 ---
 
-_Issue opened by @sodium-hydroxide on 2025-06-28 21:25_
+_@sodium-hydroxide_
 
 ### Summary
 

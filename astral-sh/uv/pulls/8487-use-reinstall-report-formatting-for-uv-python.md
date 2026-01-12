@@ -13,14 +13,14 @@ head: python-reinstall
 created_at: 2024-10-23T05:23:42Z
 updated_at: 2024-10-24T14:29:21Z
 url: https://github.com/astral-sh/uv/pull/8487
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Use reinstall report formatting for `uv python install --reinstall`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-23 05:23_
+_@j178_
 
 ## Summary
 

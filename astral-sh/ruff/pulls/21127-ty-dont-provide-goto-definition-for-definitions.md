@@ -14,14 +14,14 @@ head: fix-not-reexported-builtin-goto
 created_at: 2025-10-29T18:13:56Z
 updated_at: 2025-11-06T11:48:55Z
 url: https://github.com/astral-sh/ruff/pull/21127
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Dont provide goto definition for definitions which are not reexported in builtins
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-10-29 18:13_
+_@MatthewMckee4_
 
 
 <!--

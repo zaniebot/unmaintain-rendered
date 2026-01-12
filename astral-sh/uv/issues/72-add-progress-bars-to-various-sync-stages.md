@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-09T03:26:55Z
 updated_at: 2023-10-09T16:14:46Z
 url: https://github.com/astral-sh/uv/issues/72
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add progress bars to various `sync` stages
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-09 03:26_
+_@charliermarsh_
 
 _No description provided._
 

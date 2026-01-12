@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T15:33:00Z
 updated_at: 2025-07-07T13:04:30Z
 url: https://github.com/astral-sh/ruff/issues/14164
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] instance attributes
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 15:33_
+_@carljm_
 
 - [x] Write test suite with desired behavior (resolved by https://github.com/astral-sh/ruff/pull/15474 and https://github.com/astral-sh/ruff/pull/15474)
 - [x] Support pure instance variables, declared in class body (resolved by https://github.com/astral-sh/ruff/pull/15515)

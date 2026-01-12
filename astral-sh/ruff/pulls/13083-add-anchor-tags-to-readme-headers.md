@@ -13,14 +13,14 @@ head: add-links-to-pypi-docs
 created_at: 2024-08-23T16:34:19Z
 updated_at: 2024-08-26T10:47:44Z
 url: https://github.com/astral-sh/ruff/pull/13083
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add anchor tags to README headers
 
 ---
 
-_Pull request opened by @calumy on 2024-08-23 16:34_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

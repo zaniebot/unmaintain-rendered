@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T21:36:52Z
 updated_at: 2024-11-01T23:49:23Z
 url: https://github.com/astral-sh/uv/issues/8761
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # uv does not pass PID 1 to child processes
 
 ---
 
-_Issue opened by @ejungcl on 2024-11-01 21:36_
+_@ejungcl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

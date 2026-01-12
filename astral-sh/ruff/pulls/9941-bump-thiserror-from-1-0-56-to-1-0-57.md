@@ -13,14 +13,14 @@ head: dependabot/cargo/thiserror-1.0.57
 created_at: 2024-02-12T08:46:13Z
 updated_at: 2024-02-12T09:24:41Z
 url: https://github.com/astral-sh/ruff/pull/9941
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Bump thiserror from 1.0.56 to 1.0.57
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-12 08:46_
+_@dependabot_
 
 Bumps [thiserror](https://github.com/dtolnay/thiserror) from 1.0.56 to 1.0.57.
 <details>

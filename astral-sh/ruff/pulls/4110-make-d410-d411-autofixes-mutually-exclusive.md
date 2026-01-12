@@ -14,14 +14,14 @@ head: 3827_docstring_autofix
 created_at: 2023-04-26T02:42:31Z
 updated_at: 2023-04-28T18:56:38Z
 url: https://github.com/astral-sh/ruff/pull/4110
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Make D410/D411 autofixes mutually exclusive
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-26 02:42_
+_@evanrittenhouse_
 
 This should close #3827.
 

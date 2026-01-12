@@ -14,14 +14,14 @@ head: micha/formatter-change
 created_at: 2025-03-17T11:14:20Z
 updated_at: 2025-05-03T17:46:47Z
 url: https://github.com/astral-sh/ruff/pull/16799
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # Test "determine-changes" step for formatter only change"
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 11:14_
+_@MichaReiser_
 
 GitHub actions should skip the ruff linter ecosystem check
 

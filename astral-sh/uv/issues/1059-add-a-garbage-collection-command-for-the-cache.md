@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T05:40:40Z
 updated_at: 2024-03-21T18:07:50Z
 url: https://github.com/astral-sh/uv/issues/1059
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Add a garbage collection command for the cache
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 05:40_
+_@charliermarsh_
 
 As of PRs like #1037, we store entries in the cache in a common archive, with cache buckets symlinking into the archive. We should clean up old cache entries periodically by looking for directories in the archive with no links pointing to them.
 

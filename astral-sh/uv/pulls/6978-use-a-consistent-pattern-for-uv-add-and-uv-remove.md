@@ -14,14 +14,14 @@ head: zb/fix-test-context
 created_at: 2024-09-03T21:12:30Z
 updated_at: 2024-09-03T23:33:40Z
 url: https://github.com/astral-sh/uv/pull/6978
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Use a consistent pattern for `uv add` and `uv remove` tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 21:12_
+_@zanieb_
 
 Noticed during #6976 — I'd rather we just used a consistent pattern here.
 

@@ -13,14 +13,14 @@ head: zb/preview-changelog
 created_at: 2024-06-12T21:42:01Z
 updated_at: 2024-06-12T21:49:13Z
 url: https://github.com/astral-sh/uv/pull/4290
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Move the preview changelog so the GitHub Release shows stable changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-12 21:42_
+_@zanieb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: charlie/abc
 created_at: 2023-05-09T01:48:58Z
 updated_at: 2023-05-09T02:14:53Z
 url: https://github.com/astral-sh/ruff/pull/4298
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Include static and class methods in in abstract decorator list
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 01:48_
+_@charliermarsh_
 
 Closes #4285.
 

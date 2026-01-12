@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-06-28T10:05:31Z
 updated_at: 2023-06-28T11:27:44Z
 url: https://github.com/astral-sh/ruff/pull/5413
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # types.rs: fnmatch url should point to current Python docs
 
 ---
 
-_Pull request opened by @cclauss on 2023-06-28 10:05_
+_@cclauss_
 
 Like #5412
 ```diff

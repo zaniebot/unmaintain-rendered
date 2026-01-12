@@ -13,14 +13,14 @@ head: zb/brew-doc
 created_at: 2024-02-18T07:45:16Z
 updated_at: 2024-02-18T07:49:50Z
 url: https://github.com/astral-sh/uv/pull/1629
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Add brew to readme
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-18 07:45_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1627
 

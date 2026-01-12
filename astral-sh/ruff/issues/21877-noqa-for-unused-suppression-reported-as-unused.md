@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T20:29:08Z
 updated_at: 2025-12-09T20:30:36Z
 url: https://github.com/astral-sh/ruff/issues/21877
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # noqa for unused suppression reported as unused noqa
 
 ---
 
-_Issue opened by @amyreese on 2025-12-09 20:29_
+_@amyreese_
 
 Using a `noqa` comment to suppress an unused range suppression will still report the *noqa comment* as unused:
 

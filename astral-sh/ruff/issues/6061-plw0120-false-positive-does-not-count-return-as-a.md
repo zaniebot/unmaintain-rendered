@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T10:27:44Z
 updated_at: 2023-07-28T04:33:10Z
 url: https://github.com/astral-sh/ruff/issues/6061
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PLW0120 false positive: does not count return as a break
 
 ---
 
-_Issue opened by @berzi on 2023-07-25 10:27_
+_@berzi_
 
 Version: `ruff 0.0.278`
 

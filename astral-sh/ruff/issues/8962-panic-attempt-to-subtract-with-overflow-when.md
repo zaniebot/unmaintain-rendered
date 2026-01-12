@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T11:08:46Z
 updated_at: 2023-12-02T13:56:58Z
 url: https://github.com/astral-sh/ruff/issues/8962
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Panic `attempt to subtract with overflow` when checking code
 
 ---
 
-_Issue opened by @qarmin on 2023-12-02 11:08_
+_@qarmin_
 
 Ruff 0.1.6 nightly version - quite new regression probably from https://github.com/astral-sh/ruff/pull/8917
 ```

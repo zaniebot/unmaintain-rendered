@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T15:19:48Z
 updated_at: 2025-03-06T15:37:25Z
 url: https://github.com/astral-sh/uv/issues/12009
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # uv equivalent of `pip download`
 
 ---
 
-_Issue opened by @alechouse97 on 2025-03-06 15:19_
+_@alechouse97_
 
 ### Summary
 

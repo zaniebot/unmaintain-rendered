@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-19T15:35:23Z
 updated_at: 2023-10-25T04:17:58Z
 url: https://github.com/astral-sh/uv/issues/139
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Implement self-update
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 15:35_
+_@charliermarsh_
 
 We should look at how Rye does this.
 

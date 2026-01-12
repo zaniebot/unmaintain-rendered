@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T08:58:31Z
 updated_at: 2025-02-17T12:52:46Z
 url: https://github.com/astral-sh/ruff/issues/16156
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Question: Best way to handle S608 triggers on GAQL
 
 ---
 
-_Issue opened by @lociii on 2025-02-14 08:58_
+_@lociii_
 
 ### Description
 

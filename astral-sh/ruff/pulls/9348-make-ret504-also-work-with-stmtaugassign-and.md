@@ -11,14 +11,14 @@ head: evanrittenhouse/9327
 created_at: 2024-01-01T16:06:03Z
 updated_at: 2024-04-08T06:59:50Z
 url: https://github.com/astral-sh/ruff/pull/9348
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Make RET504 also work with StmtAugAssign and StmtAnnAssign AST nodes
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2024-01-01 16:06_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

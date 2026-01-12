@@ -13,14 +13,14 @@ head: server-vim-kate-setup
 created_at: 2024-05-30T08:32:46Z
 updated_at: 2024-05-31T19:10:16Z
 url: https://github.com/astral-sh/ruff/pull/11615
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add Vim and Kate setup guide for `ruff server`
 
 ---
 
-_Pull request opened by @JaRoSchm on 2024-05-30 08:32_
+_@JaRoSchm_
 
 ## Summary
 

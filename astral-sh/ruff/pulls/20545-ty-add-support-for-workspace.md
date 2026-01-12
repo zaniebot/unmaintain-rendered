@@ -14,14 +14,14 @@ head: didChangeConfiguration_server
 created_at: 2025-09-24T07:57:00Z
 updated_at: 2025-12-10T17:41:44Z
 url: https://github.com/astral-sh/ruff/pull/20545
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Add support for workspace/didChangeConfiguration notification
 
 ---
 
-_Pull request opened by @Guillaume-Fgt on 2025-09-24 07:57_
+_@Guillaume-Fgt_
 
 ## Summary
 

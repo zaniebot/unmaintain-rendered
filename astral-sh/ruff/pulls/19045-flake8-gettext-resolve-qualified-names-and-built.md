@@ -14,14 +14,14 @@ head: fix/19028-flake8-gettext-false-negative
 created_at: 2025-06-30T11:25:11Z
 updated_at: 2025-10-21T05:32:08Z
 url: https://github.com/astral-sh/ruff/pull/19045
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [`flake8-gettext`] Resolve qualified names and built-in bindings (`INT001`, `INT002`, `INT003`)
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-30 11:25_
+_@robsdedude_
 
 ## Summary
 Make rules `INT001`, `INT002`, and `INT003` also 

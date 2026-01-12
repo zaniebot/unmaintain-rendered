@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T12:32:46Z
 updated_at: 2025-12-17T12:34:19Z
 url: https://github.com/astral-sh/ty/issues/2004
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # TypeIs fails to narrow when used as a method
 
 ---
 
-_Issue opened by @EnzoAgosta on 2025-12-17 12:32_
+_@EnzoAgosta_
 
 ### Summary
 

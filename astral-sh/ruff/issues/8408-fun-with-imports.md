@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T16:13:09Z
 updated_at: 2023-11-14T04:49:26Z
 url: https://github.com/astral-sh/ruff/issues/8408
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Fun with imports :)
 
 ---
 
-_Issue opened by @vgoklani on 2023-11-01 16:13_
+_@vgoklani_
 
 Hey there,
 

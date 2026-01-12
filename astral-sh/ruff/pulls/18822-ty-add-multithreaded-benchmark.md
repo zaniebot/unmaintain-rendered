@@ -14,14 +14,14 @@ head: micha/multithreaded-benchmark
 created_at: 2025-06-20T11:51:57Z
 updated_at: 2025-06-21T15:44:33Z
 url: https://github.com/astral-sh/ruff/pull/18822
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Add multithreaded benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-20 11:51_
+_@MichaReiser_
 
 This PR adds a benchmark that runs one project multi-threaded. This is to identify any congestion or otherwise multithreading releated overhead like https://github.com/salsa-rs/salsa/issues/918.
 

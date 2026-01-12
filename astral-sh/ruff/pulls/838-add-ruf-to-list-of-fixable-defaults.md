@@ -12,14 +12,14 @@ head: charlie/ruf
 created_at: 2022-11-20T20:39:52Z
 updated_at: 2022-11-20T20:50:28Z
 url: https://github.com/astral-sh/ruff/pull/838
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add RUF to list of fixable defaults
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-20 20:39_
+_@charliermarsh_
 
 \cc @JonathanPlasse 
 

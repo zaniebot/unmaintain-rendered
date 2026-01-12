@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-17T06:28:06Z
 updated_at: 2024-11-17T17:15:46Z
 url: https://github.com/astral-sh/ruff/issues/14396
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Fixing file with rules PYI041, RUF013, UP007 cause panic (`redundant_numeric_union`)
 
 ---
 
-_Issue opened by @qarmin on 2024-11-17 06:28_
+_@qarmin_
 
 ruff 0.7.4+1285 (4dcb7ddaf 2024-11-16)
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T19:14:02Z
 updated_at: 2025-04-04T19:26:09Z
 url: https://github.com/astral-sh/uv/issues/12680
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # `uv pip sync` weird functionality
 
 ---
 
-_Issue opened by @gtkacz on 2025-04-04 19:14_
+_@gtkacz_
 
 ### Summary
 

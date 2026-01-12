@@ -14,14 +14,14 @@ head: ag/rkyv-cache
 created_at: 2024-02-05T02:36:26Z
 updated_at: 2024-02-05T21:47:54Z
 url: https://github.com/astral-sh/uv/pull/1249
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # initial implementation of zero-copy deserialization for SimpleMetadata
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-05 02:36_
+_@BurntSushi_
 
 (Please review this PR commit by commit.)
 

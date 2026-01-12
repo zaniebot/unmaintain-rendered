@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T12:54:58Z
 updated_at: 2025-12-20T09:03:42Z
 url: https://github.com/astral-sh/ty/issues/1469
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add `--force-exclude` option to CLI
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-03 12:54_
+_@MichaReiser_
 
 ty checks every path specified on the CLI even if they match an exclude pattern. This is 
 because explicitly passed paths are considered explicit than an exclusion pattern. 

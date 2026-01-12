@@ -11,14 +11,14 @@ head: micha/implicit-namespace-packages
 created_at: 2025-01-08T11:58:11Z
 updated_at: 2025-01-08T12:07:27Z
 url: https://github.com/astral-sh/ruff/pull/15346
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-no-pep420`] Stabilize: Detect empty implicit namespace packages (`INP001`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 11:58_
+_@MichaReiser_
 
 ## Summary
 

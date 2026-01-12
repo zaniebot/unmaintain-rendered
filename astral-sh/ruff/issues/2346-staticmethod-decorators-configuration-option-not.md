@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-30T10:44:25Z
 updated_at: 2023-02-08T22:17:41Z
 url: https://github.com/astral-sh/ruff/issues/2346
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `staticmethod-decorators` configuration option not working.
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-30 10:44_
+_@ngnpope_
 
 This is a bit of an odd one. Let's start with the ~minimal reproducer to refer to:
 

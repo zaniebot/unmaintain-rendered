@@ -13,14 +13,14 @@ head: charlie/receiver
 created_at: 2023-02-13T14:48:59Z
 updated_at: 2023-02-13T14:57:13Z
 url: https://github.com/astral-sh/ruff/pull/2858
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Handle multiple receiver decorators in receiver-decorator
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 14:48_
+_@charliermarsh_
 
 Closes #2850.
 

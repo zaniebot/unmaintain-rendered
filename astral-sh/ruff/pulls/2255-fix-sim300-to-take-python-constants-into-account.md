@@ -12,14 +12,14 @@ head: frenck-2023-0222
 created_at: 2023-01-27T14:40:17Z
 updated_at: 2023-01-27T16:25:28Z
 url: https://github.com/astral-sh/ruff/pull/2255
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix SIM300 to take Python constants into account
 
 ---
 
-_Pull request opened by @frenck on 2023-01-27 14:40_
+_@frenck_
 
 SIM300 currently doesn't take Python constants into account when looking for Yoda conditions, this PR fixes that behavior.
 

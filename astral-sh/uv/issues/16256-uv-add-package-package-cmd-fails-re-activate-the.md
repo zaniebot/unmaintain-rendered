@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-12T16:00:59Z
 updated_at: 2025-10-12T23:20:28Z
 url: https://github.com/astral-sh/uv/issues/16256
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # uv add [package] => package cmd fails""=> re-activate the environment "source .venv/bin/activate"
 
 ---
 
-_Issue opened by @AhnafCodes on 2025-10-12 16:00_
+_@AhnafCodes_
 
 
 

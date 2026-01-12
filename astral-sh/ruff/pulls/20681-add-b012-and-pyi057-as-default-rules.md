@@ -14,14 +14,14 @@ head: brent/new-default-rules
 created_at: 2025-10-02T14:58:00Z
 updated_at: 2025-10-07T16:23:39Z
 url: https://github.com/astral-sh/ruff/pull/20681
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Add `B012` and `PYI057` as default rules
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-02 14:58_
+_@ntBre_
 
 ## Summary
 

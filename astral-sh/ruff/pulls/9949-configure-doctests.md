@@ -12,14 +12,14 @@ head: charlie/doctest
 created_at: 2024-02-12T14:48:29Z
 updated_at: 2024-02-12T15:06:35Z
 url: https://github.com/astral-sh/ruff/pull/9949
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Configure doctests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 14:48_
+_@charliermarsh_
 
 _No description provided._
 

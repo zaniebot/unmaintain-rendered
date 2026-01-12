@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T05:18:18Z
 updated_at: 2025-12-16T12:06:38Z
 url: https://github.com/astral-sh/uv/issues/16994
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Better UX and/or documentation to avoid dev dependencies in production
 
 ---
 
-_Issue opened by @jayqi on 2025-12-05 05:18_
+_@jayqi_
 
 ### Summary
 

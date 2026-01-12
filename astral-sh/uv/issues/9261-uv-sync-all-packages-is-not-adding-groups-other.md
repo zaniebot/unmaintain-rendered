@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T03:07:47Z
 updated_at: 2024-11-20T03:27:13Z
 url: https://github.com/astral-sh/uv/issues/9261
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # "uv sync --all-packages" is not adding groups other than dev
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-11-20 03:07_
+_@inoa-jboliveira_
 
 According to [docs](https://docs.astral.sh/uv/reference/cli/#uv-sync), `--all-packages` should
 

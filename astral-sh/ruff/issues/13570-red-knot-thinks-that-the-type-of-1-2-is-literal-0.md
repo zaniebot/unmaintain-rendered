@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-30T14:09:37Z
 updated_at: 2024-09-30T20:50:38Z
 url: https://github.com/astral-sh/ruff/issues/13570
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # red-knot thinks that the type of `1 / 2` is `Literal[0]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-09-30 14:09_
+_@AlexWaygood_
 
 This is not accurate
 

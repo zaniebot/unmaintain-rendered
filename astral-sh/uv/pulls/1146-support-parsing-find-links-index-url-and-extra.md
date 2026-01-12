@@ -13,14 +13,14 @@ head: charlie/index-url
 created_at: 2024-01-27T03:33:43Z
 updated_at: 2024-01-29T15:06:41Z
 url: https://github.com/astral-sh/uv/pull/1146
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Support parsing `--find-links`, `--index-url`, and `--extra-index-url` in `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-27 03:33_
+_@charliermarsh_
 
 ## Summary
 

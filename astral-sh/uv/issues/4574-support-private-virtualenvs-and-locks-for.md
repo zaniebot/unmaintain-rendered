@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T23:53:32Z
 updated_at: 2025-02-02T14:19:54Z
 url: https://github.com/astral-sh/uv/issues/4574
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Support private virtualenvs and locks for workspace members
 
 ---
 
-_Issue opened by @idlsoft on 2024-06-26 23:53_
+_@idlsoft_
 
 Workspace members currently share a single `uv.lock` and `.venv`, which comes with a couple of side-effects:
 - there can't be two packages with conflicting dependencies, even if they are independent executables.

@@ -13,14 +13,14 @@ head: add-gui-script-flag-6805
 created_at: 2024-11-15T14:58:49Z
 updated_at: 2024-12-10T20:35:17Z
 url: https://github.com/astral-sh/uv/pull/9152
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Add --gui-script flag for running Python scripts with pythonw.exe on …
 
 ---
 
-_Pull request opened by @rajko-rad on 2024-11-15 14:58_
+_@rajko-rad_
 
 Addresses #6805
 

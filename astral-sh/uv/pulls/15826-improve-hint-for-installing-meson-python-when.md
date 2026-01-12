@@ -11,14 +11,14 @@ head: meson-python-hint
 created_at: 2025-09-14T00:56:19Z
 updated_at: 2025-12-22T12:17:20Z
 url: https://github.com/astral-sh/uv/pull/15826
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Improve hint for installing meson-python when missing as build backend
 
 ---
 
-_Pull request opened by @tobiasdiez on 2025-09-14 00:56_
+_@tobiasdiez_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

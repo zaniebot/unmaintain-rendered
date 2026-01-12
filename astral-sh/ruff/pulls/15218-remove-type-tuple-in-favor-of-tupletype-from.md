@@ -13,14 +13,14 @@ head: david/remove-redundant-type-tuple
 created_at: 2025-01-02T08:53:31Z
 updated_at: 2025-01-02T16:22:39Z
 url: https://github.com/astral-sh/ruff/pull/15218
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Remove `Type::tuple` in favor of `TupleType::from_elements`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-02 08:53_
+_@sharkdp_
 
 ## Summary
 

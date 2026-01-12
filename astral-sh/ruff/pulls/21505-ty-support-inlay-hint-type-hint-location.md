@@ -13,14 +13,14 @@ head: inlay-hint-type-hint-location
 created_at: 2025-11-17T21:21:21Z
 updated_at: 2025-12-27T00:21:05Z
 url: https://github.com/astral-sh/ruff/pull/21505
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Support inlay hint type hint location
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-17 21:21_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

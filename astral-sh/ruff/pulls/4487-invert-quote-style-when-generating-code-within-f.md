@@ -12,14 +12,14 @@ head: charlie/f-string-quote
 created_at: 2023-05-18T02:47:39Z
 updated_at: 2023-05-19T07:26:50Z
 url: https://github.com/astral-sh/ruff/pull/4487
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Invert quote-style when generating code within f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 02:47_
+_@charliermarsh_
 
 ## Summary
 

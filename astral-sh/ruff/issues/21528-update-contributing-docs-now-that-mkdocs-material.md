@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T18:16:55Z
 updated_at: 2025-12-05T07:53:10Z
 url: https://github.com/astral-sh/ruff/issues/21528
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # update contributing docs now that mkdocs-material-insiders is free for everyone :)
 
 ---
 
-_Issue opened by @tsvikas on 2025-11-19 18:16_
+_@tsvikas_
 
 Material for MkDocs Insiders is now free for everyone
 https://squidfunk.github.io/mkdocs-material/blog/2025/11/11/insiders-now-free-for-everyone/

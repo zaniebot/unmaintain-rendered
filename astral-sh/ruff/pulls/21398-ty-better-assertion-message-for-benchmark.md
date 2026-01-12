@@ -14,14 +14,14 @@ head: david/better-panic-msg
 created_at: 2025-11-12T09:43:41Z
 updated_at: 2025-11-12T10:18:54Z
 url: https://github.com/astral-sh/ruff/pull/21398
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Better assertion message for benchmark diagnostics check
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-12 09:43_
+_@sharkdp_
 
 I don't know why, but it always takes me an eternity to find the failing project name a few lines below in the output. So I'm suggesting we just add the project name to the assertion message.
 

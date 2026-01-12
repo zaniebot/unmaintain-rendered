@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-30T14:51:40Z
 updated_at: 2025-07-01T09:06:38Z
 url: https://github.com/astral-sh/ty/issues/728
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Nonlocal names do not respect star-import reachability constraints
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-30 14:51_
+_@sharkdp_
 
 We currently don't record the special `*`-import reachability constraints for `UseDefMapBuilder::reachable_definitions`, only for `UseDefMapBuilder::place_states`.
 

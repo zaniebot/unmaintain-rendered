@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-12T19:42:15Z
 updated_at: 2022-10-14T23:04:01Z
 url: https://github.com/astral-sh/ruff/issues/410
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Question: What is the plan for plugin support?
 
 ---
 
-_Issue opened by @ambroselittle on 2022-10-12 19:42_
+_@ambroselittle_
 
 Is it possible to provide backwards compat with pylint plugins, for example? 
 

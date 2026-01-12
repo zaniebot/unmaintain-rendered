@@ -14,14 +14,14 @@ head: david/typing.python.org
 created_at: 2025-04-09T18:31:32Z
 updated_at: 2025-04-09T18:38:24Z
 url: https://github.com/astral-sh/ruff/pull/17323
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Use python.typing.org for typing documentation links
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-09 18:31_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:39:24Z
 updated_at: 2025-11-05T17:44:27Z
 url: https://github.com/astral-sh/uv/issues/16604
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Using `git ls-remote` for commit SHA resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2025-11-05 17:39_
+_@charliermarsh_
 
 This could also work, in theory, for private Git repositories, unlike our use of the GitHub API.
 

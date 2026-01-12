@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-28T23:25:18Z
 updated_at: 2025-03-03T09:51:37Z
 url: https://github.com/astral-sh/ruff/issues/8884
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # F841 preview changes to tuple unpacking
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-28 23:25_
+_@hauntsaninja_
 
 https://github.com/astral-sh/ruff/pull/8489 changes F841 so that it complains about unused variables resulting from tuple unpacking.
 

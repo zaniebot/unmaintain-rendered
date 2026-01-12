@@ -13,14 +13,14 @@ head: brent/pth208-0.10
 created_at: 2025-03-11T18:46:08Z
 updated_at: 2025-03-12T12:09:34Z
 url: https://github.com/astral-sh/ruff/pull/16642
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-use-pathlib`] Stabilize `os-listdir` (`PTH208`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 18:46_
+_@ntBre_
 
 Summary
 --

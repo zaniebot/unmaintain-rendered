@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T14:34:55Z
 updated_at: 2025-07-07T16:34:22Z
 url: https://github.com/astral-sh/uv/issues/14422
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Revert warnings for tilde version specifiers without a patch component (e.g., `~=X.y`)
 
 ---
 
-_Issue opened by @zanieb on 2025-07-02 14:34_
+_@zanieb_
 
 See comment at https://github.com/astral-sh/uv/pull/14008#issuecomment-3028097262
 

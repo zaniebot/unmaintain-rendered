@@ -12,14 +12,14 @@ head: mikayla/uvx-install-prompt
 created_at: 2025-11-14T20:11:43Z
 updated_at: 2025-11-18T21:34:45Z
 url: https://github.com/astral-sh/uv/pull/16743
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # `uvx`/`uv tool run` install confirmation prompt
 
 ---
 
-_Pull request opened by @mikaylathompson on 2025-11-14 20:11_
+_@mikaylathompson_
 
 ## Summary
 

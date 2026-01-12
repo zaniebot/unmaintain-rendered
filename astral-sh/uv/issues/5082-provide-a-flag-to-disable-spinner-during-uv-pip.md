@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-15T21:25:37Z
 updated_at: 2024-07-16T21:48:58Z
 url: https://github.com/astral-sh/uv/issues/5082
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Provide a flag to disable spinner during uv pip sync/install
 
 ---
 
-_Issue opened by @sambhav on 2024-07-15 21:25_
+_@sambhav_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

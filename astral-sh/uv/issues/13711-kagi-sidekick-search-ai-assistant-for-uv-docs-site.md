@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-28T22:20:08Z
 updated_at: 2025-06-02T10:10:25Z
 url: https://github.com/astral-sh/uv/issues/13711
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Kagi Sidekick (search + AI assistant) for uv docs site?
 
 ---
 
-_Issue opened by @rsyring on 2025-05-28 22:20_
+_@rsyring_
 
 Discoverability of information for uv can be challenging given the volume of issues here in GH and how much there is in the documentation.  Given how fast uv has moved, posts from even a few months ago can be outdated which means AI isn't always the most helpful.  I've generally found ai struggles with uv anyway for some reason.
 

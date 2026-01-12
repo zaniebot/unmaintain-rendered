@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-01-05T03:08:04Z
 updated_at: 2025-01-07T21:43:51Z
 url: https://github.com/astral-sh/ruff/issues/15263
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF046 fix is wrong when a newline appears before a call expression’s opening parenthesis
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-05 03:08_
+_@dscorbett_
 
 #15230 categorized `Subscript` and `Call` as having their own brackets, but because their brackets do not surround the entire expressions, this was not a safe categorization for the purpose of [unnecessary-cast-to-int (RUF046)](https://docs.astral.sh/ruff/rules/unnecessary-cast-to-int/). The fix can change program behavior in Ruff 0.8.6.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-23T16:52:04Z
 updated_at: 2024-03-08T11:42:13Z
 url: https://github.com/astral-sh/ruff/issues/5343
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Attribute and call chains "fluent interface"
 
 ---
 
-_Issue opened by @konstin on 2023-06-23 16:52_
+_@konstin_
 
 Black supports attribute access and call chaining to provide good formatting for [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) style programming with extensive method chaining which is common e.g. with django (https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains):
 

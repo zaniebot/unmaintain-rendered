@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T23:04:57Z
 updated_at: 2025-01-21T07:28:56Z
 url: https://github.com/astral-sh/ruff/issues/15624
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `PLW3201` false positive for Pydantic dunders like `__get_pydantic_core_schema__`
 
 ---
 
-_Issue opened by @jamesbraza on 2025-01-20 23:04_
+_@jamesbraza_
 
 With the following dependencies and Python 3.12.7:
 

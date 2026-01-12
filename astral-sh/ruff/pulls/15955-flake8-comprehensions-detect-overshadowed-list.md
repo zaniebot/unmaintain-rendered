@@ -14,14 +14,14 @@ head: C417-2
 created_at: 2025-02-05T01:01:21Z
 updated_at: 2025-02-07T15:12:15Z
 url: https://github.com/astral-sh/ruff/pull/15955
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-comprehensions`] Detect overshadowed `list`/`set`/`dict`, ignore variadics and named expressions (`C417`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-05 01:01_
+_@InSyncWithFoo_
 
 ## Summary
 

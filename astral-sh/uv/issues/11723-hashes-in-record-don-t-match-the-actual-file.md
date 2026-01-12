@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-23T14:40:59Z
 updated_at: 2025-02-23T23:53:46Z
 url: https://github.com/astral-sh/uv/issues/11723
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Hashes in `RECORD` don't match the actual file hashes
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-23 14:40_
+_@chrisrodrigue_
 
 ### Summary
 

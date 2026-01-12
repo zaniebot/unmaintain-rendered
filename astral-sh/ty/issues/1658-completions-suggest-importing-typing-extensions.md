@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-27T18:31:10Z
 updated_at: 2025-12-01T16:24:17Z
 url: https://github.com/astral-sh/ty/issues/1658
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # completions suggest importing `typing_extensions` even if you don't depend on it
 
 ---
 
-_Issue opened by @Gankra on 2025-11-27 18:31_
+_@Gankra_
 
 * Original discussion https://github.com/astral-sh/ruff/pull/21668#issuecomment-3586965089
 * Related to https://github.com/astral-sh/ty/issues/1274

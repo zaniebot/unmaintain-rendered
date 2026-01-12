@@ -14,14 +14,14 @@ head: brent/report-violation-builder
 created_at: 2025-05-20T20:38:46Z
 updated_at: 2025-05-28T11:41:33Z
 url: https://github.com/astral-sh/ruff/pull/18232
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Return `DiagnosticGuard` from `Checker::report_diagnostic`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-20 20:38_
+_@ntBre_
 
 Summary
 --

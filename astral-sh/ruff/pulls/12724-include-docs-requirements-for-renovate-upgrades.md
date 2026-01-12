@@ -13,14 +13,14 @@ head: dhruv/renovate-docs-req
 created_at: 2024-08-07T04:24:54Z
 updated_at: 2024-08-07T07:41:20Z
 url: https://github.com/astral-sh/ruff/pull/12724
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Include docs requirements for Renovate upgrades
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-07 04:24_
+_@dhruvmanila_
 
 ## Summary
 

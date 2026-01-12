@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T08:13:21Z
 updated_at: 2025-12-13T17:30:11Z
 url: https://github.com/astral-sh/ty/issues/111
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Advanced dataclass support
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-28 08:13_
+_@sharkdp_
 
 We already have initial support for dataclasses, but some more advanced features are still missing. The following list is most probably not complete:
 

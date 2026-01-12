@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-07T08:39:53Z
 updated_at: 2025-11-07T14:01:03Z
 url: https://github.com/astral-sh/ty/issues/1499
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # invalid-assignment error when try to unpack an array shape when the array has type hint with multiple shape
 
 ---
 
-_Issue opened by @BaoNguyen6742 on 2025-11-07 08:39_
+_@BaoNguyen6742_
 
 ### Summary
 

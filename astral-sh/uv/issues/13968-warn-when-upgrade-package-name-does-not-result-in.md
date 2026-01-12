@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T15:17:14Z
 updated_at: 2025-06-11T15:34:37Z
 url: https://github.com/astral-sh/uv/issues/13968
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Warn when `--upgrade-package <name>` does not result in an upgrade
 
 ---
 
-_Issue opened by @zanieb on 2025-06-11 15:17_
+_@zanieb_
 
 ### Summary
 

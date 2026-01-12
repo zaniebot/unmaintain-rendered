@@ -13,14 +13,14 @@ head: zb/domain-login
 created_at: 2025-09-10T19:02:23Z
 updated_at: 2025-09-10T19:24:47Z
 url: https://github.com/astral-sh/uv/pull/15774
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Respect `PYX_API_URL` when suggesting `uv auth login` on 401
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 19:02_
+_@zanieb_
 
 _No description provided._
 

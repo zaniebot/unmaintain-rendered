@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T11:15:05Z
 updated_at: 2025-01-20T07:42:39Z
 url: https://github.com/astral-sh/ruff/issues/15397
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Move type-property tests to Markdown
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-10 11:15_
+_@sharkdp_
 
 The various type-property tests here …
 

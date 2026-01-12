@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T11:00:50Z
 updated_at: 2024-12-27T14:52:47Z
 url: https://github.com/astral-sh/uv/issues/5213
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Support for "Updated" indicator on install/uninstall output
 
 ---
 
-_Issue opened by @T-256 on 2024-07-19 11:00_
+_@T-256_
 
 Ref https://github.com/astral-sh/uv/pull/5197#discussion_r1683553671
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T22:25:48Z
 updated_at: 2024-12-03T13:14:23Z
 url: https://github.com/astral-sh/uv/issues/9587
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Adding an explicit index with no references causes private packages to fail dependency resolution
 
 ---
 
-_Issue opened by @JonZeolla on 2024-12-02 22:25_
+_@JonZeolla_
 
 I was following the docs to [add pytorch](https://docs.astral.sh/uv/guides/integration/pytorch/) to a repo and found that when I add the following:
 

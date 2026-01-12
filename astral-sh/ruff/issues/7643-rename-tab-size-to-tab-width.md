@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T09:01:49Z
 updated_at: 2023-10-24T14:01:27Z
 url: https://github.com/astral-sh/ruff/issues/7643
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rename `tab-size` to `tab-width` 
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:01_
+_@MichaReiser_
 
 Rename the `tab-size` option to `tab-width`. 
 

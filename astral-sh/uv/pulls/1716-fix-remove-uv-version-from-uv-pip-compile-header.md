@@ -13,14 +13,14 @@ head: henryiii/fix/uv-compile-version
 created_at: 2024-02-19T20:03:11Z
 updated_at: 2024-02-19T20:28:06Z
 url: https://github.com/astral-sh/uv/pull/1716
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # fix: remove uv version from uv pip compile header
 
 ---
 
-_Pull request opened by @henryiii on 2024-02-19 20:03_
+_@henryiii_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

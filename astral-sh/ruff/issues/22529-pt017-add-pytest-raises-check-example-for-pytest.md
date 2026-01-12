@@ -5,19 +5,19 @@ type: issue
 state: open
 author: harupy
 labels:
-  - question
+  - documentation
 assignees: []
 created_at: 2026-01-12T09:17:38Z
-updated_at: 2026-01-12T10:01:57Z
+updated_at: 2026-01-12T15:00:34Z
 url: https://github.com/astral-sh/ruff/issues/22529
-synced_at: 2026-01-12T11:01:08Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # PT017: add `pytest.raises(..., check=...)` example (for pytest ≥ 8.4.0)
 
 ---
 
-_Issue opened by @harupy on 2026-01-12 09:17_
+_@harupy_
 
 The [PT017](https://docs.astral.sh/ruff/rules/pytest-assert-in-except/#pytest-assert-in-except-pt017) documentation currently shows validating exception details by binding `exc_info` from `pytest.raises` and asserting on it afterward.
 
@@ -63,5 +63,19 @@ Sorry, this is not a question but a rule request. If this request makes sense, I
 ---
 
 _Renamed from "PT017: add `pytest.raises(..., check=...)` example (pytest ≥ 8.4.0)" to "PT017: add `pytest.raises(..., check=...)` example (for pytest ≥ 8.4.0)" by @harupy on 2026-01-12 09:49_
+
+---
+
+_Comment by @ntBre on 2026-01-12 15:00_
+
+Makes sense to me! This also seems related to the changes in https://github.com/astral-sh/ruff/pull/21964.
+
+---
+
+_Label `question` removed by @ntBre on 2026-01-12 15:00_
+
+---
+
+_Label `documentation` added by @ntBre on 2026-01-12 15:00_
 
 ---

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-20T22:09:56Z
 updated_at: 2025-07-24T14:03:32Z
 url: https://github.com/astral-sh/ruff/issues/1306
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False-positive `DTZ007`:  The use of `datetime.datetime.strptime()` without %z must be followed by `.replace(tzinfo=)`
 
 ---
 
-_Issue opened by @actionless on 2022-12-20 22:09_
+_@actionless_
 
 ```python
 import datetime

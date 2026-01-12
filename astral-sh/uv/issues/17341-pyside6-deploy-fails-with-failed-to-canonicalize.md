@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T22:53:40Z
 updated_at: 2026-01-07T20:28:34Z
 url: https://github.com/astral-sh/uv/issues/17341
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # `pyside6-deploy` fails with `Failed to canonicalize script path`
 
 ---
 
-_Issue opened by @docentYT on 2026-01-06 22:53_
+_@docentYT_
 
 ### Summary
 

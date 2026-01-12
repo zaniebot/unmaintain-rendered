@@ -13,14 +13,14 @@ head: charlie/read
 created_at: 2023-06-14T13:58:19Z
 updated_at: 2023-06-14T14:31:10Z
 url: https://github.com/astral-sh/ruff/pull/5084
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move binding accesses into `SemanticModel` method
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 13:58_
+_@charliermarsh_
 
 _No description provided._
 

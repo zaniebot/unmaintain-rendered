@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-14T17:29:38Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/777
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # App name, author and about are not wrapped
 
 ---
 
-_Issue opened by @malbarbo on 2016-12-14 17:29_
+_@malbarbo_
 
 ### Rust Version
 

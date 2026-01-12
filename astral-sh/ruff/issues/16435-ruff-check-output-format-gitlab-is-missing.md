@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T10:21:47Z
 updated_at: 2025-02-28T15:19:38Z
 url: https://github.com/astral-sh/ruff/issues/16435
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff check --output-format=gitlab is missing required property "check_name"
 
 ---
 
-_Issue opened by @kaisengit on 2025-02-28 10:21_
+_@kaisengit_
 
 ### Summary
 

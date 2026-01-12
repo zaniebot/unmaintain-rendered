@@ -14,14 +14,14 @@ head: micha/better-balanced-walltime-shardiing
 created_at: 2025-12-21T10:59:35Z
 updated_at: 2025-12-22T07:44:28Z
 url: https://github.com/astral-sh/ruff/pull/22126
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Speedup ty-walltime benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-21 10:59_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T14:28:50Z
 updated_at: 2025-02-04T16:43:10Z
 url: https://github.com/astral-sh/ruff/issues/15937
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP035 autofix breaks code when a `typing`-module alias is used in a PEP-604 union in combination with a string
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-02-04 14:28_
+_@PhilipVinc_
 
 ### Description
 

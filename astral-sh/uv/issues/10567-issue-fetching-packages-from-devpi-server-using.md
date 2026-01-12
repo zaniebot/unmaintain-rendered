@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T15:21:41Z
 updated_at: 2025-01-31T18:18:54Z
 url: https://github.com/astral-sh/uv/issues/10567
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Issue Fetching Packages from Devpi Server Using uv and --index-url
 
 ---
 
-_Issue opened by @ALEXRG27 on 2025-01-13 15:21_
+_@ALEXRG27_
 
 Description:
 I am hosting all my packages on a Devpi server, and I have configured pip.ini as shown below to manage the sources. However, when I try to install the experimentbase package, it does not fetch correctly. While I can see the information on the index, the installation fails. Below is the relevant configuration and logs:

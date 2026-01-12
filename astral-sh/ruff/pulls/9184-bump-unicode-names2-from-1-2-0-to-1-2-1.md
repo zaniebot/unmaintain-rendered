@@ -13,14 +13,14 @@ head: dependabot/cargo/unicode_names2-1.2.1
 created_at: 2023-12-18T08:59:30Z
 updated_at: 2023-12-18T09:30:51Z
 url: https://github.com/astral-sh/ruff/pull/9184
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump unicode_names2 from 1.2.0 to 1.2.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-18 08:59_
+_@dependabot_
 
 Bumps [unicode_names2](https://github.com/progval/unicode_names2) from 1.2.0 to 1.2.1.
 <details>

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T12:33:28Z
 updated_at: 2024-11-28T17:40:01Z
 url: https://github.com/astral-sh/uv/issues/9499
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Platform markers are ignored when syncing optional self-dependencies
 
 ---
 
-_Issue opened by @befelix on 2024-11-28 12:33_
+_@befelix_
 
 In the following minimal  `pyproject.toml` file, we are creating a package where the `self` optional dependency that depends on the `base` extra (the `tomli` package) through a self-dependency together with a platform marker that is not satisfied on my Linux machine. When running `uv sync --extra self` the packages from the `base` extra get installed, even though the platform marker should exclude them.
 

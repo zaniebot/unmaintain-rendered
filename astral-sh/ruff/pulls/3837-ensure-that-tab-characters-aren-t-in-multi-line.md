@@ -12,14 +12,14 @@ head: 3674_multiline_tabs
 created_at: 2023-04-01T01:55:48Z
 updated_at: 2023-06-15T21:14:03Z
 url: https://github.com/astral-sh/ruff/pull/3837
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Ensure that tab characters aren't in multi-line strings before throwing a violation
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-01 01:55_
+_@evanrittenhouse_
 
 Fixes #3674 and #3438
 

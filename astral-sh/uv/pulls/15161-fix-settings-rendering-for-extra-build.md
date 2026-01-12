@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2025-08-08T09:37:06Z
 updated_at: 2025-09-01T14:07:27Z
 url: https://github.com/astral-sh/uv/pull/15161
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Fix settings rendering for `extra-build-dependencies`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-08 09:37_
+_@charliermarsh_
 
 ## Summary
 

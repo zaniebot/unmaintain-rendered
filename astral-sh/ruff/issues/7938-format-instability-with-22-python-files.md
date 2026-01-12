@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-13T09:40:55Z
 updated_at: 2023-10-25T19:27:08Z
 url: https://github.com/astral-sh/ruff/issues/7938
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Format instability with 22 python files
 
 ---
 
-_Issue opened by @qarmin on 2023-10-13 09:40_
+_@qarmin_
 
 Ruff 0.0.292 48b256bd943ae7c95d27c8251fd33bb429b59bb0
 

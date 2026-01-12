@@ -13,14 +13,14 @@ head: ag/bench-fix
 created_at: 2024-01-12T14:30:21Z
 updated_at: 2024-01-12T14:40:26Z
 url: https://github.com/astral-sh/uv/pull/897
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # bench: ignore empty requirements lines
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-12 14:30_
+_@BurntSushi_
 
 In particular, this script previously choked on the `home-assistant.in`
 requirements file because it contains many empty lines.

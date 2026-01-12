@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T17:55:30Z
 updated_at: 2024-05-02T23:10:33Z
 url: https://github.com/astral-sh/ruff/issues/10390
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add fix to remove unused standard library imports from `__init__.py` files
 
 ---
 
-_Issue opened by @zanieb on 2024-03-13 17:55_
+_@zanieb_
 
 See https://github.com/astral-sh/ruff/issues/10365#issuecomment-1995132836
 

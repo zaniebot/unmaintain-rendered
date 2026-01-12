@@ -14,14 +14,14 @@ head: ty-possibly-unbound-dunder-call
 created_at: 2025-05-11T14:20:21Z
 updated_at: 2025-05-22T15:29:47Z
 url: https://github.com/astral-sh/ruff/pull/18017
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Rename `call-possibly-unbound-method` to `possibly-unbound-implicit-call`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-11 14:20_
+_@InSyncWithFoo_
 
 ## Summary
 

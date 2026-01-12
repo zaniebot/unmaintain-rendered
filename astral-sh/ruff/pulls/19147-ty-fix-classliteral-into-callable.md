@@ -13,14 +13,14 @@ head: fix-class-literal-into-callable
 created_at: 2025-07-04T15:56:41Z
 updated_at: 2025-07-16T21:12:33Z
 url: https://github.com/astral-sh/ruff/pull/19147
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Fix `ClassLiteral.into_callable`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-04 15:56_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

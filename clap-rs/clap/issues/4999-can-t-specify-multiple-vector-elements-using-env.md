@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-07T11:36:06Z
 updated_at: 2023-07-10T09:11:10Z
 url: https://github.com/clap-rs/clap/issues/4999
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Can't specify multiple vector elements using env vars
 
 ---
 
-_Issue opened by @johananl on 2023-07-07 11:36_
+_@johananl_
 
 ### Please complete the following tasks
 

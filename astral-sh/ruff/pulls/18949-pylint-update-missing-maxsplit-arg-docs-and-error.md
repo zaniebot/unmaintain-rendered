@@ -13,14 +13,14 @@ head: jjb-missing-maxsplit-message
 created_at: 2025-06-26T00:41:59Z
 updated_at: 2025-07-16T18:21:11Z
 url: https://github.com/astral-sh/ruff/pull/18949
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`pylint`] Update `missing-maxsplit-arg` docs and error to suggest proper usage (`PLC0207`)
 
 ---
 
-_Pull request opened by @junhsonjb on 2025-06-26 00:41_
+_@junhsonjb_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

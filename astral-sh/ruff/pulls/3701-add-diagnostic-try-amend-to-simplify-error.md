@@ -12,14 +12,14 @@ head: refactor-diagnostic-amend
 created_at: 2023-03-23T23:21:49Z
 updated_at: 2023-03-24T22:38:31Z
 url: https://github.com/astral-sh/ruff/pull/3701
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add `Diagnostic.try_amend()` to simplify error handling
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-23 23:21_
+_@JonathanPlasse_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-23T18:29:51Z
 updated_at: 2023-03-23T21:15:10Z
 url: https://github.com/astral-sh/ruff/issues/3690
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM118 Incorrect error message and autofix
 
 ---
 
-_Issue opened by @dosisod on 2023-03-23 18:29_
+_@dosisod_
 
 <!--
 * A minimal code snippet that reproduces the bug.

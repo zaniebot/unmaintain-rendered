@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-15T17:08:21Z
 updated_at: 2024-01-16T13:09:32Z
 url: https://github.com/astral-sh/ruff/issues/9534
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive F401 "imported but unused" when use is cast() inside a lambda
 
 ---
 
-_Issue opened by @jriddy on 2024-01-15 17:08_
+_@jriddy_
 
 I found a fun edgy edge case running this one my code base. Ruff cannot detect use of classes in calls to `cast()` inside a lambda with `from __future__ import annotations` on.
 

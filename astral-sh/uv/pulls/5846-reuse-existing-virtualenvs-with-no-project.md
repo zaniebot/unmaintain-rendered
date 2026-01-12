@@ -14,14 +14,14 @@ head: charlie/proj-venv
 created_at: 2024-08-07T02:05:50Z
 updated_at: 2024-08-07T02:52:16Z
 url: https://github.com/astral-sh/uv/pull/5846
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Reuse existing virtualenvs with `--no-project`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 02:05_
+_@charliermarsh_
 
 ## Summary
 

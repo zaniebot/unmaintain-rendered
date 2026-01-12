@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-08T10:43:39Z
 updated_at: 2025-11-08T16:17:14Z
 url: https://github.com/astral-sh/ruff/pull/21337
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ruff+ty] Add colour to `--help`
 
 ---
 
-_Pull request opened by @hugovk on 2025-11-08 10:43_
+_@hugovk_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

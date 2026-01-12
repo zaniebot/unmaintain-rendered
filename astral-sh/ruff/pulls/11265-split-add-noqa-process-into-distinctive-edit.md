@@ -13,14 +13,14 @@ head: jane/linter/noqa-edits
 created_at: 2024-05-03T16:04:11Z
 updated_at: 2024-05-10T23:22:15Z
 url: https://github.com/astral-sh/ruff/pull/11265
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Split `add_noqa` process into distinctive edit generation and edit application stages
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-03 16:04_
+_@snowsignal_
 
 ## Summary
 

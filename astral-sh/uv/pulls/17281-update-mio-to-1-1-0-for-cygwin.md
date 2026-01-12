@@ -14,14 +14,14 @@ head: update-mio-cygwin
 created_at: 2026-01-01T11:02:15Z
 updated_at: 2026-01-06T09:51:35Z
 url: https://github.com/astral-sh/uv/pull/17281
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Update mio to 1.1.0 (for Cygwin)
 
 ---
 
-_Pull request opened by @lazka on 2026-01-01 11:02_
+_@lazka_
 
 ## Summary
 

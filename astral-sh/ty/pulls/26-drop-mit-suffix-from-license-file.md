@@ -12,14 +12,14 @@ head: rename-mit
 created_at: 2025-05-05T13:31:08Z
 updated_at: 2025-07-08T10:39:18Z
 url: https://github.com/astral-sh/ty/pull/26
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Drop `-MIT` suffix from license file
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 13:31_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T19:34:21Z
 updated_at: 2024-11-28T14:23:56Z
 url: https://github.com/astral-sh/ruff/issues/14593
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Inverse narrowing without explicit `else` branches
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-25 19:34_
+_@sharkdp_
 
 Consider the following code:
 

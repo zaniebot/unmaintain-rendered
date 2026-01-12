@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T11:18:54Z
 updated_at: 2025-06-11T11:41:13Z
 url: https://github.com/astral-sh/ruff/issues/8579
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # new rule - not calling super() in custom exception's __init__()
 
 ---
 
-_Issue opened by @m-aciek on 2023-11-09 11:18_
+_@m-aciek_
 
 ```python
 class CustomException(Exception):

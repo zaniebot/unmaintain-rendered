@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T07:26:09Z
 updated_at: 2025-09-11T07:41:28Z
 url: https://github.com/astral-sh/uv/issues/15783
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Configuring uv to source Python from conda
 
 ---
 
-_Issue opened by @thomasaarholt on 2025-09-11 07:26_
+_@thomasaarholt_
 
 ### Question
 

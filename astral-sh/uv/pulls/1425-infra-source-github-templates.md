@@ -13,14 +13,14 @@ head: gh-workflow
 created_at: 2024-02-16T04:28:18Z
 updated_at: 2024-02-17T00:27:36Z
 url: https://github.com/astral-sh/uv/pull/1425
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # infra: source github templates
 
 ---
 
-_Pull request opened by @JacobCoffee on 2024-02-16 04:28_
+_@JacobCoffee_
 
 ## What
 

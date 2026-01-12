@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-18T17:01:37Z
 updated_at: 2024-01-02T18:57:04Z
 url: https://github.com/astral-sh/ruff/issues/3015
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # flake8-to-ruff flake8-bugbear opinionated rules
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 17:01_
+_@JonathanPlasse_
 
 By default `flake8-bugbear` does not activate opinionated rules.
 Should `flake8-to-ruff` ignore by default `B9` rules if they are not selected?

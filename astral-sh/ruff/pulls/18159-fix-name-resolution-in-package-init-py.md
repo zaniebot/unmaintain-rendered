@@ -14,14 +14,14 @@ head: fix/resolve-names-in-package-init
 created_at: 2025-05-17T22:27:32Z
 updated_at: 2025-07-25T06:59:44Z
 url: https://github.com/astral-sh/ruff/pull/18159
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Fix name resolution in package __init__.py
 
 ---
 
-_Pull request opened by @robsdedude on 2025-05-17 22:27_
+_@robsdedude_
 
 ## Summary
 When resolving the name while linting a package's `__init__.py` file, ruff was considering `__init__` to be a proper module name. Whereas it's not really. Classes, functions, and other objects defined in `__init__.py` will belong to the package. This PR fixes that resolution. In particular, `D103`, and `PLW0406` were affected. Maybe more that I couldn't find.

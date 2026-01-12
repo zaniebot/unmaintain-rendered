@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T17:45:54Z
 updated_at: 2024-02-28T14:53:29Z
 url: https://github.com/astral-sh/uv/issues/2024
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # cannot install packages from gemfury private repos
 
 ---
 
-_Issue opened by @ellisonleao on 2024-02-27 17:45_
+_@ellisonleao_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

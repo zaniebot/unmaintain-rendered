@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-10T15:29:14Z
 updated_at: 2022-12-31T00:39:35Z
 url: https://github.com/astral-sh/ruff/issues/1177
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Revisit use of rope for `SourceCodeLocator`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-10 15:29_
+_@charliermarsh_
 
 We use `ropey` to support random-access and slicing on source code (see: `source_code_locator.rs`). I suspect that this is non-optimal for certain kinds of access patterns.
 

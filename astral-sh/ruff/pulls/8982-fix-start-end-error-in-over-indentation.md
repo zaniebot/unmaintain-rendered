@@ -14,14 +14,14 @@ head: charlie/indent
 created_at: 2023-12-03T20:14:31Z
 updated_at: 2023-12-03T20:26:49Z
 url: https://github.com/astral-sh/ruff/pull/8982
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix start >= end error in over-indentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-03 20:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8977.
 

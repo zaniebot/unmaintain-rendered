@@ -13,14 +13,14 @@ head: builtins-resolution
 created_at: 2024-07-18T19:23:52Z
 updated_at: 2024-07-19T16:52:01Z
 url: https://github.com/astral-sh/ruff/pull/12390
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Resolve symbols from `builtins.pyi` in the stdlib if they cannot be found in other scopes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-18 19:23_
+_@AlexWaygood_
 
 ## Summary
 

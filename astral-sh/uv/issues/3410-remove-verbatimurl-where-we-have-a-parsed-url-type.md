@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T14:20:30Z
 updated_at: 2024-11-20T00:32:30Z
 url: https://github.com/astral-sh/uv/issues/3410
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Remove `VerbatimUrl` where we have a parsed url type
 
 ---
 
-_Issue opened by @konstin on 2024-05-06 14:20_
+_@konstin_
 
 Final item for #3407: Cleanup.
 

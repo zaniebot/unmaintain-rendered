@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-15T16:43:47Z
 updated_at: 2022-11-15T20:29:11Z
 url: https://github.com/astral-sh/ruff/issues/756
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Suggestion: Do not print update information if `--format=json`
 
 ---
 
-_Issue opened by @dhruvmanila on 2022-11-15 16:43_
+_@dhruvmanila_
 
 When passing the flag to output in the JSON format, the update information is still being provided which leads to parsing error when passing the output to any JSON processor.
 

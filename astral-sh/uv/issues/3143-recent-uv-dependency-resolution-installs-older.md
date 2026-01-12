@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-19T17:47:31Z
 updated_at: 2025-05-11T19:43:50Z
 url: https://github.com/astral-sh/uv/issues/3143
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Recent `uv` dependency resolution installs older version of package
 
 ---
 
-_Issue opened by @pjbull on 2024-04-19 17:47_
+_@pjbull_
 
 Our CI process that uses uv fails because dependency resolution now selects a much older version of `boto3` and `botocore`.
 

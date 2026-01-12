@@ -13,14 +13,14 @@ head: charlie/kwargs
 created_at: 2023-09-24T14:20:34Z
 updated_at: 2023-09-24T14:34:25Z
 url: https://github.com/astral-sh/ruff/pull/7630
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Flag FURB105 with starred kwargs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-24 14:20_
+_@charliermarsh_
 
 _No description provided._
 

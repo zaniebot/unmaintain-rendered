@@ -13,14 +13,14 @@ head: charlie/de
 created_at: 2024-07-27T00:39:48Z
 updated_at: 2024-07-27T00:51:25Z
 url: https://github.com/astral-sh/uv/pull/5501
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Remove serialize traits from verbatim URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-27 00:39_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: micha/renovate-pin
 created_at: 2025-03-17T07:29:38Z
 updated_at: 2025-03-17T07:51:59Z
 url: https://github.com/astral-sh/ruff/pull/16789
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # Instruct Renovate to pin GitHub Actions based on SHA
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 07:29_
+_@MichaReiser_
 
 ## Summary
 

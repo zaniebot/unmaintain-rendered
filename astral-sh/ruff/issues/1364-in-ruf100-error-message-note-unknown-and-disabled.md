@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-24T19:09:29Z
 updated_at: 2022-12-24T19:55:56Z
 url: https://github.com/astral-sh/ruff/issues/1364
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # In RUF100 error message, note unknown and disabled error codes
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-24 19:09_
+_@charliermarsh_
 
 See: #1362.
 

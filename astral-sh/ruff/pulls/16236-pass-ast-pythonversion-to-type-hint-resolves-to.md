@@ -13,14 +13,14 @@ head: brent/type-hint-resolve
 created_at: 2025-02-18T18:08:25Z
 updated_at: 2025-02-18T18:22:52Z
 url: https://github.com/astral-sh/ruff/pull/16236
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Pass `ast::PythonVersion` to `type_hint_resolves_to_any`
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-18 18:08_
+_@ntBre_
 
 This is a follow-up to #16170 to use `ast::PythonVersion` in the `type_hint_resolves_to_any` call chain, as suggested (and implemented!) by Alex [here](https://github.com/astral-sh/ruff/pull/16170#discussion_r1960015181).
 

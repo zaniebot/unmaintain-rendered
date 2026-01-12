@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T03:13:54Z
 updated_at: 2024-08-16T14:59:37Z
 url: https://github.com/astral-sh/uv/issues/6139
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Feature Request: In universal resolution indicate or provide option for maximum version of Python
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-16 03:13_
+_@notatallshaw_
 
 If I run:
 

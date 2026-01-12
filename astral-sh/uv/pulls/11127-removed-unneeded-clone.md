@@ -12,14 +12,14 @@ head: main
 created_at: 2025-01-31T07:28:20Z
 updated_at: 2025-01-31T10:12:19Z
 url: https://github.com/astral-sh/uv/pull/11127
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # removed unneeded `.clone()`
 
 ---
 
-_Pull request opened by @JackDyre on 2025-01-31 07:28_
+_@JackDyre_
 
 ## Summary
 

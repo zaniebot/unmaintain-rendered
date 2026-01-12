@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T20:51:10Z
 updated_at: 2024-07-17T16:37:34Z
 url: https://github.com/astral-sh/uv/issues/5129
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Autogenerate "Possible values" in API reference
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 20:51_
+_@charliermarsh_
 
 _No description provided._
 

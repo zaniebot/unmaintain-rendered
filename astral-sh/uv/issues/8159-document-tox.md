@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-13T16:08:53Z
 updated_at: 2024-10-13T19:24:16Z
 url: https://github.com/astral-sh/uv/issues/8159
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # document: tox
 
 ---
 
-_Issue opened by @amirreza8002 on 2024-10-13 16:08_
+_@amirreza8002_
 
 something like this should get you going:
 

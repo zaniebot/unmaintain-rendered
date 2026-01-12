@@ -13,14 +13,14 @@ head: rk-exceptions
 created_at: 2024-12-18T00:02:19Z
 updated_at: 2024-12-18T18:32:49Z
 url: https://github.com/astral-sh/ruff/pull/15042
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Report invalid exceptions
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-18 00:02_
+_@InSyncWithFoo_
 
 ## Summary
 

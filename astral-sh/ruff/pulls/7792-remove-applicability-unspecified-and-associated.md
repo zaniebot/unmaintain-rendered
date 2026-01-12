@@ -12,14 +12,14 @@ head: zanie/app-unspecified
 created_at: 2023-10-03T19:27:00Z
 updated_at: 2023-10-05T18:09:38Z
 url: https://github.com/astral-sh/ruff/pull/7792
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove `Applicability::Unspecified` and associated helpers
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-03 19:27_
+_@zanieb_
 
 Based on #7769
 

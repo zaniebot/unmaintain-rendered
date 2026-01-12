@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T18:16:27Z
 updated_at: 2024-10-01T11:19:22Z
 url: https://github.com/astral-sh/ruff/issues/13550
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # N806 (non-lowercase-variable-in-function) for local variable in function
 
 ---
 
-_Issue opened by @opk12 on 2024-09-29 18:16_
+_@opk12_
 
 mypy supports `Final` for local variables - it errors out, if `DIR` is assigned twice.
 

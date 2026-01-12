@@ -13,14 +13,14 @@ head: charlie/comment-only
 created_at: 2023-07-26T22:36:39Z
 updated_at: 2023-07-26T23:13:22Z
 url: https://github.com/astral-sh/ruff/pull/6110
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Move `utf8-encoding-declaration` to token-based rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-26 22:36_
+_@charliermarsh_
 
 Closes #5979.
 

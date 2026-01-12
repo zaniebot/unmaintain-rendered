@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-19T12:43:42Z
 updated_at: 2025-07-20T17:13:13Z
 url: https://github.com/astral-sh/uv/issues/14745
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Suggestion: Make `install.sh` a lightweight redirect to GitHub-hosted installer script (like `pyenv`)
 
 ---
 
-_Issue opened by @tataouinea on 2025-07-19 12:43_
+_@tataouinea_
 
 ### Summary
 

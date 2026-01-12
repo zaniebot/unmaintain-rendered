@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-14T16:09:54Z
 updated_at: 2023-10-14T19:52:26Z
 url: https://github.com/astral-sh/ruff/issues/7960
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # New rule idea: alphabetic `__all__`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-14 16:09_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

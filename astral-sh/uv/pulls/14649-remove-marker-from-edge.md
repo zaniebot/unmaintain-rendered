@@ -13,14 +13,14 @@ head: konsti/remove-marker-from-edge
 created_at: 2025-07-16T13:12:01Z
 updated_at: 2025-07-16T14:21:26Z
 url: https://github.com/astral-sh/uv/pull/14649
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Remove marker from `Edge`
 
 ---
 
-_Pull request opened by @konstin on 2025-07-16 13:12_
+_@konstin_
 
 It seems that this field is unused.
 

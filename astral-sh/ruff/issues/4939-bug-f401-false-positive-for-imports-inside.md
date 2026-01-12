@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T20:45:36Z
 updated_at: 2023-06-07T21:56:05Z
 url: https://github.com/astral-sh/ruff/issues/4939
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [bug] F401 false positive for imports inside functions
 
 ---
 
-_Issue opened by @smackesey on 2023-06-07 20:45_
+_@smackesey_
 
 Contrived example, but ruff 0.0.271 flags the below import inside of `fn` with F401 (unused import) and auto-deletes it, but this results in a runtime error when you execute the code, because the first argument to `cast` doesn't get a deferred annotation like a function parameter:
 

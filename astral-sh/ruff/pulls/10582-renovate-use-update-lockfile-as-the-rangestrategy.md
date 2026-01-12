@@ -12,14 +12,14 @@ head: cargo-range-strategy
 created_at: 2024-03-25T18:08:40Z
 updated_at: 2024-03-25T18:17:04Z
 url: https://github.com/astral-sh/ruff/pull/10582
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Renovate: Use `update-lockfile` as the rangeStrategy for cargo dependencies
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-25 18:08_
+_@AlexWaygood_
 
 cc. @zanieb 
 

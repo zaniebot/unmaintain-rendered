@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T19:06:17Z
 updated_at: 2025-04-09T16:36:40Z
 url: https://github.com/astral-sh/uv/issues/11288
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # `uv run --python <path> <tool>` always recreates virtualenvironment
 
 ---
 
-_Issue opened by @LordAro on 2025-02-06 19:06_
+_@LordAro_
 
 ### Summary
 

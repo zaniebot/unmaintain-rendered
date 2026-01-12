@@ -13,14 +13,14 @@ head: charlie/headers
 created_at: 2024-03-08T03:54:43Z
 updated_at: 2024-03-08T03:59:54Z
 url: https://github.com/astral-sh/uv/pull/2295
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Encapsulate header parsing for metadata files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 03:54_
+_@charliermarsh_
 
 _No description provided._
 

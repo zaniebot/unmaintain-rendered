@@ -13,14 +13,14 @@ head: RUFF100-docs
 created_at: 2023-04-28T21:30:29Z
 updated_at: 2023-04-29T08:53:23Z
 url: https://github.com/astral-sh/ruff/pull/4141
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Document RUF100
 
 ---
 
-_Pull request opened by @calumy on 2023-04-28 21:30_
+_@calumy_
 
 Add documentation for the RUF100 (`unused-noqa`) rule.
 

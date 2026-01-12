@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-13T08:54:53Z
 updated_at: 2025-04-14T12:12:57Z
 url: https://github.com/astral-sh/uv/issues/12853
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Sync Error
 
 ---
 
-_Issue opened by @hczs on 2025-04-13 08:54_
+_@hczs_
 
 ### Summary
 

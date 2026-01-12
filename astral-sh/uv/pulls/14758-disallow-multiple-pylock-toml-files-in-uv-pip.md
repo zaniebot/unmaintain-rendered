@@ -12,14 +12,14 @@ head: charlie/one
 created_at: 2025-07-20T17:59:37Z
 updated_at: 2025-07-20T18:01:04Z
 url: https://github.com/astral-sh/uv/pull/14758
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Disallow multiple `pylock.toml` files in `uv pip install` and `uv pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 17:59_
+_@charliermarsh_
 
 ## Summary
 

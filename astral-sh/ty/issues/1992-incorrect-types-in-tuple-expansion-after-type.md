@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T09:44:33Z
 updated_at: 2025-12-17T10:48:11Z
 url: https://github.com/astral-sh/ty/issues/1992
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect types in tuple expansion after type narrowing
 
 ---
 
-_Issue opened by @judahrand on 2025-12-17 09:44_
+_@judahrand_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-06-08T11:12:28Z
 updated_at: 2025-06-09T00:21:09Z
 url: https://github.com/astral-sh/uv/pull/13899
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Update pytorch.md
 
 ---
 
-_Pull request opened by @kabouzeid on 2025-06-08 11:12_
+_@kabouzeid_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

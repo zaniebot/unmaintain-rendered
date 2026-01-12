@@ -13,14 +13,14 @@ head: charlie/builtin
 created_at: 2023-02-28T23:22:18Z
 updated_at: 2023-02-28T23:25:43Z
 url: https://github.com/astral-sh/ruff/pull/3286
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid PEP 585 rewrites when builtins are shadowed
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-28 23:22_
+_@charliermarsh_
 
 This just avoids attempting to fix these -- so it doesn't solve the issue as-described, but it avoids breaking the user's code.
 

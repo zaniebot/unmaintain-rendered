@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T04:02:21Z
 updated_at: 2025-09-11T06:41:28Z
 url: https://github.com/astral-sh/uv/issues/14645
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Extras in dep group self includes are ignored if the extra is in a conflict group
 
 ---
 
-_Issue opened by @Dillonwong12 on 2025-07-16 04:02_
+_@Dillonwong12_
 
 ### Summary
 

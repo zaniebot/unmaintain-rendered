@@ -14,14 +14,14 @@ head: procfs-0.18
 created_at: 2025-12-30T23:31:29Z
 updated_at: 2026-01-06T09:51:30Z
 url: https://github.com/astral-sh/uv/pull/17275
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Update procfs to 0.18.0
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-12-30 23:31_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/name
 created_at: 2023-07-27T17:12:39Z
 updated_at: 2023-07-27T17:38:53Z
 url: https://github.com/astral-sh/ruff/pull/6133
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix E211 documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-27 17:12_
+_@charliermarsh_
 
 _No description provided._
 

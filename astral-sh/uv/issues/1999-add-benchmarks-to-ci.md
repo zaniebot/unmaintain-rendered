@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T23:18:28Z
 updated_at: 2024-05-21T21:50:01Z
 url: https://github.com/astral-sh/uv/issues/1999
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Add benchmarks to CI
 
 ---
 
-_Issue opened by @zanieb on 2024-02-26 23:18_
+_@zanieb_
 
 We should automate benchmarking in CI so we can get reports on pull requests and track regressions
 

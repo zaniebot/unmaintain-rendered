@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-09-03T18:44:22Z
 updated_at: 2020-02-01T12:38:17Z
 url: https://github.com/clap-rs/clap/issues/1542
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # No git tags for recent releases.
 
 ---
 
-_Issue opened by @nathan-at-least on 2019-09-03 18:44_
+_@nathan-at-least_
 
 
 ### Rust Version

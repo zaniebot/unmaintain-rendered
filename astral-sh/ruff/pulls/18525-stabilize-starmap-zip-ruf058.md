@@ -13,14 +13,14 @@ head: brent/stabilize-ruf058
 created_at: 2025-06-07T00:52:27Z
 updated_at: 2025-06-10T20:12:00Z
 url: https://github.com/astral-sh/ruff/pull/18525
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # Stabilize `starmap-zip` (`RUF058`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-07 00:52_
+_@ntBre_
 
 ## Summary
 - Stabilizes RUF058 (starmap-zip) rule by changing it from Preview to Stable

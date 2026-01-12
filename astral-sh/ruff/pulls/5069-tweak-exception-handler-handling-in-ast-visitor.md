@@ -13,14 +13,14 @@ head: charlie/except
 created_at: 2023-06-14T00:50:47Z
 updated_at: 2023-06-14T01:17:34Z
 url: https://github.com/astral-sh/ruff/pull/5069
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Tweak exception-handler handling in AST visitor
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 00:50_
+_@charliermarsh_
 
 _No description provided._
 

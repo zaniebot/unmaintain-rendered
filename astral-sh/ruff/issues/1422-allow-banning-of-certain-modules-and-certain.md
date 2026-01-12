@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-28T10:22:38Z
 updated_at: 2023-01-04T01:59:02Z
 url: https://github.com/astral-sh/ruff/issues/1422
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Allow banning of certain modules and certain module members
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-28 10:22_
+_@not-my-profile_
 
 Sometimes you want to assert that certain modules are never imported. Apparently Pylint and Pyflake have plugins for that ([pylint-restricted-imports](https://pypi.org/project/pylint-restricted-imports/) and [flake8-tidy-imports](https://github.com/adamchainz/flake8-tidy-imports#banned-modules) respectively).
 

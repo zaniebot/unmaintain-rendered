@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T16:28:44Z
 updated_at: 2025-02-05T20:19:58Z
 url: https://github.com/astral-sh/uv/issues/11219
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Project virtual environment creation is not concurrency-safe
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-04 16:28_
+_@charliermarsh_
 
 E.g., this script fails if you run it repeatedly:
 

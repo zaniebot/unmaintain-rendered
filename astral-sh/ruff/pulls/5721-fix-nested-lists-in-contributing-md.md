@@ -13,14 +13,14 @@ head: charlie/nested
 created_at: 2023-07-13T02:58:30Z
 updated_at: 2023-07-13T16:51:14Z
 url: https://github.com/astral-sh/ruff/pull/5721
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix nested lists in CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 02:58_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T17:20:51Z
 updated_at: 2025-12-18T01:27:00Z
 url: https://github.com/astral-sh/uv/issues/5921
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Prioritize platform-compatible distributions during universal resolve
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-08 17:20_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/5845.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T17:49:53Z
 updated_at: 2024-06-27T18:41:46Z
 url: https://github.com/astral-sh/uv/issues/4591
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # pip compile --universal using python version markers
 
 ---
 
-_Issue opened by @bluss on 2024-06-27 17:49_
+_@bluss_
 
 Python version markers being used in an interesting way by pip compile --universal.
 

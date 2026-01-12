@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T02:34:34Z
 updated_at: 2024-03-01T18:24:06Z
 url: https://github.com/astral-sh/uv/issues/2098
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Prefer wheel over source packages when choosing between multiple indexes
 
 ---
 
-_Issue opened by @andrey-klochkov-liftoff on 2024-03-01 02:34_
+_@andrey-klochkov-liftoff_
 
 We build wheels for packages that only have a source package on pypi.org, and put them on our private pypi repo. We then do `pip install --index-url https://pypi.org/simple/ --extra-index-url https://private-repo/simple/`, and `pip` always chooses to install the wheel package if it's available in our repo.
 

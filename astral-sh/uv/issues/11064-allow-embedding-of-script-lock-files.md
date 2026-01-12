@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T14:30:56Z
 updated_at: 2025-07-28T17:29:59Z
 url: https://github.com/astral-sh/uv/issues/11064
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Allow embedding of script lock files
 
 ---
 
-_Issue opened by @zanieb on 2025-01-29 14:30_
+_@zanieb_
 
 e.g., see https://github.com/astral-sh/uv/issues/6318#issuecomment-2621176886
 

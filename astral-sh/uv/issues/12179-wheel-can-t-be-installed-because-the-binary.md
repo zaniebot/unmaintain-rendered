@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T00:46:33Z
 updated_at: 2025-03-15T00:55:06Z
 url: https://github.com/astral-sh/uv/issues/12179
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Wheel can't be installed because the binary distribution is incompatible with the current platform
 
 ---
 
-_Issue opened by @vultix on 2025-03-15 00:46_
+_@vultix_
 
 ### Summary
 

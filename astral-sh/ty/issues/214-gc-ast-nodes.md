@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T16:38:06Z
 updated_at: 2025-06-24T10:38:42Z
 url: https://github.com/astral-sh/ty/issues/214
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # GC AST nodes
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-20 16:38_
+_@MichaReiser_
 
 Red Knot currently loads and holds on to every analyzed file's AST and source code. For large projects, this can easily take up multiple GB of data. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-06-03T12:33:39Z
 updated_at: 2020-10-09T19:29:46Z
 url: https://github.com/clap-rs/clap/issues/1284
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Suggest PATTERN when passing an invalid flag as a pattern
 
 ---
 
-_Issue opened by @flip111 on 2018-06-03 12:33_
+_@flip111_
 
 ### Rust Version
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T06:38:38Z
 updated_at: 2025-12-25T14:42:43Z
 url: https://github.com/astral-sh/ruff/issues/22190
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Prefer `itertools.repeat` over generator expressions (`foo for _ in range(n)`)
 
 ---
 
-_Issue opened by @injust on 2025-12-25 06:38_
+_@injust_
 
 ### Summary
 

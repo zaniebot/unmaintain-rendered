@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T15:33:03Z
 updated_at: 2024-05-26T23:39:32Z
 url: https://github.com/astral-sh/ruff/issues/11544
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # flake8-to-ruff tool produces config with warning
 
 ---
 
-_Issue opened by @dwreeves on 2024-05-26 15:33_
+_@dwreeves_
 
 Input:
 

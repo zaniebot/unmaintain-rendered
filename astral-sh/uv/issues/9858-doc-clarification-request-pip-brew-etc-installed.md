@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-13T01:48:21Z
 updated_at: 2025-01-07T19:07:50Z
 url: https://github.com/astral-sh/uv/issues/9858
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # [DOC]: Clarification Request: `pip`/`brew`/etc installed `uv` takes precedence over standalone installer
 
 ---
 
-_Issue opened by @adam-grant-hendry on 2024-12-13 01:48_
+_@adam-grant-hendry_
 
 ### System Info
 `OS`: Windows 10 22H2

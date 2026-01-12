@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-15T14:13:33Z
 updated_at: 2025-07-29T15:37:48Z
 url: https://github.com/astral-sh/uv/issues/5073
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv downloads are slow on fallback to streamed wheel downloads
 
 ---
 
-_Issue opened by @morotti on 2024-07-15 14:13_
+_@morotti_
 
 Hello,
 

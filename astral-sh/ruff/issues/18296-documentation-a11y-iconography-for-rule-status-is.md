@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-25T12:45:37Z
 updated_at: 2025-05-26T14:35:21Z
 url: https://github.com/astral-sh/ruff/issues/18296
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Documentation A11y: iconography for rule status is difficult to read in dark mode
 
 ---
 
-_Issue opened by @MaddyGuthridge on 2025-05-25 12:45_
+_@MaddyGuthridge_
 
 Currently, the iconography showing the status of a rule (stable, unstable) is a little challenging to read when dark mode. In particular the ✔️ emoji does not have very good contrast, and they greyed-out 🛠️ emoji is a little unclear imo.
 

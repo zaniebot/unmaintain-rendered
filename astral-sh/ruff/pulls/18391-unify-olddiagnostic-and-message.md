@@ -14,14 +14,14 @@ head: brent/combine-message-diagnostic
 created_at: 2025-05-30T19:27:53Z
 updated_at: 2025-06-20T20:09:39Z
 url: https://github.com/astral-sh/ruff/pull/18391
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # Unify `OldDiagnostic` and `Message`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-30 19:27_
+_@ntBre_
 
 Summary
 --

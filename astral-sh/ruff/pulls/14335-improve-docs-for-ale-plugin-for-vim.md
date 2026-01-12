@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-14T10:55:40Z
 updated_at: 2024-11-14T13:06:30Z
 url: https://github.com/astral-sh/ruff/pull/14335
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Improve docs for ALE plugin for vim
 
 ---
 
-_Pull request opened by @pgiraud on 2024-11-14 10:55_
+_@pgiraud_
 
 2 different fixers are available in ALE :
  - ruff which runs `ruff check --fix` command (useful for example when isort is enabled in lint config),

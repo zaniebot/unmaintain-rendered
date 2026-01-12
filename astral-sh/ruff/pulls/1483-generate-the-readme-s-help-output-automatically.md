@@ -12,14 +12,14 @@ head: auto-generate-cli-help-in-readme
 created_at: 2022-12-30T18:14:32Z
 updated_at: 2022-12-31T03:52:47Z
 url: https://github.com/astral-sh/ruff/pull/1483
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Generate the README's --help output automatically via cargo +nightly dev generate-all
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-30 18:14_
+_@squiddy_
 
 Closes: #1474
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T11:18:48Z
 updated_at: 2025-05-04T13:38:29Z
 url: https://github.com/astral-sh/uv/issues/13224
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Shouldn't INSTALLER_NO_MODIFY_PATH be UV_INSTALL_NO_MODIFY_PATH?
 
 ---
 
-_Issue opened by @nedbat on 2025-04-30 11:18_
+_@nedbat_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: 1004-import-conventions
 created_at: 2022-12-06T02:55:05Z
 updated_at: 2022-12-06T21:05:43Z
 url: https://github.com/astral-sh/ruff/pull/1098
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement import conventions
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-12-06 02:55_
+_@edgarrmondragon_
 
 Closes #1004 
 

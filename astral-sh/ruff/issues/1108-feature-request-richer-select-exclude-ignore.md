@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-06T13:16:04Z
 updated_at: 2022-12-16T05:25:08Z
 url: https://github.com/astral-sh/ruff/issues/1108
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Richer `select`/`exclude`/`ignore` specification
 
 ---
 
-_Issue opened by @smackesey on 2022-12-06 13:16_
+_@smackesey_
 
 `ruff` inherited flake8's approach to  existing Python linter's approach to building lists from multiple configuration sources. There are default options for `select`/`exclude`/`ignore`, and users can set `extend-{select,exclude,ignore}` to append to this list without overwriting it. This system is not great for certain workflows.
 

@@ -12,14 +12,14 @@ head: charlie/dist-info-name
 created_at: 2023-10-10T23:16:34Z
 updated_at: 2023-10-10T23:21:20Z
 url: https://github.com/astral-sh/uv/pull/85
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Add a separate dist-info name struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 23:16_
+_@charliermarsh_
 
 _No description provided._
 

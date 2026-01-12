@@ -14,14 +14,14 @@ head: extend-AIR302
 created_at: 2024-12-20T14:44:55Z
 updated_at: 2025-01-08T07:28:02Z
 url: https://github.com/astral-sh/ruff/pull/15083
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`airflow`] Extend rule to check class attributes, methods, arguments (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-20 14:44_
+_@Lee-W_
 
 
 <!--

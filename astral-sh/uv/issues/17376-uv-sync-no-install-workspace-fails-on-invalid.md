@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T13:24:46Z
 updated_at: 2026-01-09T14:07:03Z
 url: https://github.com/astral-sh/uv/issues/17376
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv sync --no-install-workspace fails on 'invalid' workspaces
 
 ---
 
-_Issue opened by @kurtsys-vintecc on 2026-01-09 13:24_
+_@kurtsys-vintecc_
 
 ### Summary
 

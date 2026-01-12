@@ -13,14 +13,14 @@ head: konsti/branching-url-support
 created_at: 2024-06-21T16:10:03Z
 updated_at: 2024-06-26T11:58:24Z
 url: https://github.com/astral-sh/uv/pull/4435
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Support conflicting URL in separate forks
 
 ---
 
-_Pull request opened by @konstin on 2024-06-21 16:10_
+_@konstin_
 
 Downstack PR: #4481
 

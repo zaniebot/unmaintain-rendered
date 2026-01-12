@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T21:55:16Z
 updated_at: 2025-10-27T02:04:49Z
 url: https://github.com/astral-sh/ruff/issues/18654
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # unwanted ARG001 for @singledispatch
 
 ---
 
-_Issue opened by @belm0 on 2025-06-12 21:55_
+_@belm0_
 
 ### Summary
 

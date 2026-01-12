@@ -13,14 +13,14 @@ head: micha/knot-ide
 created_at: 2025-03-28T19:17:32Z
 updated_at: 2025-04-01T07:36:03Z
 url: https://github.com/astral-sh/ruff/pull/17045
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] IDE crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-28 19:17_
+_@MichaReiser_
 
 ## Summary
 

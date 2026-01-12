@@ -13,14 +13,14 @@ head: renovate/pin-dependencies
 created_at: 2025-03-31T02:37:59Z
 updated_at: 2025-03-31T13:08:28Z
 url: https://github.com/astral-sh/uv/pull/12567
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Pin actions/checkout action to 11bd719 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-03-31 02:37_
+_@renovate_
 
 This PR contains the following updates:
 

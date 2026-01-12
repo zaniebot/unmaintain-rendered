@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T17:22:47Z
 updated_at: 2023-06-13T21:34:23Z
 url: https://github.com/astral-sh/ruff/issues/4987
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Format `Constant::Ellipsis`
 
 ---
 
-_Issue opened by @evanrittenhouse on 2023-06-09 17:22_
+_@evanrittenhouse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

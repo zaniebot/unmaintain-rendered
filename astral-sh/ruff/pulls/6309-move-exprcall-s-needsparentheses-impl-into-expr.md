@@ -13,14 +13,14 @@ head: charlie/expr-call
 created_at: 2023-08-03T15:52:37Z
 updated_at: 2023-08-03T16:22:18Z
 url: https://github.com/astral-sh/ruff/pull/6309
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Move `ExprCall`'s `NeedsParentheses` impl into `expr_call.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 15:52_
+_@charliermarsh_
 
 Accidental move.
 

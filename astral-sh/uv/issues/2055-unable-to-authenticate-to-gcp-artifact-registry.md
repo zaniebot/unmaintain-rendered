@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-28T21:05:49Z
 updated_at: 2024-02-28T21:09:43Z
 url: https://github.com/astral-sh/uv/issues/2055
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Unable to authenticate to GCP artifact registry
 
 ---
 
-_Issue opened by @meridionaljet on 2024-02-28 21:05_
+_@meridionaljet_
 
 uv version: 0.1.11
 Platform: Linux

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-30T11:31:20Z
 updated_at: 2025-06-30T23:41:32Z
 url: https://github.com/astral-sh/uv/issues/14370
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # `uv lock --upgrade-package` does not error on misspelled package name
 
 ---
 
-_Issue opened by @johnthagen on 2025-06-30 11:31_
+_@johnthagen_
 
 ### Summary
 

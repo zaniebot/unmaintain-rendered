@@ -12,14 +12,14 @@ head: do-not-allow-add-groups
 created_at: 2025-06-12T13:57:14Z
 updated_at: 2025-06-12T14:48:30Z
 url: https://github.com/astral-sh/uv/pull/13997
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Do not allow `uv add --group ... --script`
 
 ---
 
-_Pull request opened by @blueraft on 2025-06-12 13:57_
+_@blueraft_
 
 ## Summary
 

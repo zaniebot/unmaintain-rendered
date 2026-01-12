@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-11T15:00:01Z
 updated_at: 2025-09-11T15:18:25Z
 url: https://github.com/astral-sh/ty/issues/1171
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic]
 
 ---
 
-_Issue opened by @leclairm on 2025-09-11 15:00_
+_@leclairm_
 
 Hi Astral team,
 

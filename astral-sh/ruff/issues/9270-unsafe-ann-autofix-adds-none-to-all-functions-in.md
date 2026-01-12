@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-25T03:17:08Z
 updated_at: 2023-12-25T14:03:25Z
 url: https://github.com/astral-sh/ruff/issues/9270
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # unsafe ANN autofix adds -> None to all functions in pyi files
 
 ---
 
-_Issue opened by @twoertwein on 2023-12-25 03:17_
+_@twoertwein_
 
 `ruff --select "ANN001,ANN2" --fix-only` (version 0.1.9) adds `-> None` to all functions in pyi files as they have no implementation in the stub files.
 

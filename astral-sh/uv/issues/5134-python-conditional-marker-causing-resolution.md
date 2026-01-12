@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T21:40:17Z
 updated_at: 2024-07-17T01:19:09Z
 url: https://github.com/astral-sh/uv/issues/5134
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Python conditional marker causing resolution issue where it shouldn't
 
 ---
 
-_Issue opened by @mkniewallner on 2024-07-16 21:40_
+_@mkniewallner_
 
 Stumbled upon what I think is a bug in the dependency resolution algorithm.
 

@@ -12,14 +12,14 @@ head: charlie/link-mode
 created_at: 2023-10-22T04:13:57Z
 updated_at: 2023-10-23T13:06:29Z
 url: https://github.com/astral-sh/uv/pull/164
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Add support for parameterized link modes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-22 04:13_
+_@charliermarsh_
 
 Allows the user to select between clone, hardlink, and copy semantics for installs. (The pnpm documentation has a decent description of what these mean: https://pnpm.io/npmrc#package-import-method.)
 

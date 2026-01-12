@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T21:00:23Z
 updated_at: 2024-07-31T15:08:23Z
 url: https://github.com/astral-sh/uv/issues/5130
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Navigation bar heading is redundant
 
 ---
 
-_Issue opened by @zanieb on 2024-07-16 21:00_
+_@zanieb_
 
 There's a "uv" title at the top of the page, we don't need one at the top of the navigation bar too
 

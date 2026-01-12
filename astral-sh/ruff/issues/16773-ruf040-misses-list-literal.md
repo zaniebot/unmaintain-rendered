@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-16T08:42:59Z
 updated_at: 2025-03-16T08:55:59Z
 url: https://github.com/astral-sh/ruff/issues/16773
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF040 misses list literal
 
 ---
 
-_Issue opened by @de-odex on 2025-03-16 08:42_
+_@de-odex_
 
 ### Summary
 

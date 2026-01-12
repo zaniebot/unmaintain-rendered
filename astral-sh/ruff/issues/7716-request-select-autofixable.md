@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-29T17:11:55Z
 updated_at: 2025-08-08T20:07:52Z
 url: https://github.com/astral-sh/ruff/issues/7716
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Request: `select=["AUTOFIXABLE"]` 🚀 
 
 ---
 
-_Issue opened by @jamesbraza on 2023-09-29 17:11_
+_@jamesbraza_
 
 I think `ruff` has some excellent opt-in rules enabled by `select=["ALL"]`.  However, for large new projects, I either have to:
 

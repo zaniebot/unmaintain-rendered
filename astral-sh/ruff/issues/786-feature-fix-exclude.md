@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T13:08:01Z
 updated_at: 2022-11-18T23:58:57Z
 url: https://github.com/astral-sh/ruff/issues/786
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # feature: fix-exclude?
 
 ---
 
-_Issue opened by @tlambert03 on 2022-11-17 13:08_
+_@tlambert03_
 
 first: ruff is freakin amazing and incredibly helpful.  _thank you_ for your work.
 

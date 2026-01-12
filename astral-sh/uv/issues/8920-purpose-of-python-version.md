@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T05:48:24Z
 updated_at: 2024-11-08T23:14:37Z
 url: https://github.com/astral-sh/uv/issues/8920
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Purpose of .python-version?
 
 ---
 
-_Issue opened by @denkasyanov on 2024-11-08 05:48_
+_@denkasyanov_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

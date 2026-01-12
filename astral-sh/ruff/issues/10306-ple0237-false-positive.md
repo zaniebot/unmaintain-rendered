@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T02:21:50Z
 updated_at: 2024-03-11T22:48:58Z
 url: https://github.com/astral-sh/ruff/issues/10306
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLE0237 false positive
 
 ---
 
-_Issue opened by @henryiii on 2024-03-09 02:21_
+_@henryiii_
 
 Currently, PLE0237 will report "Attribute `other` is not defined in class's `__slots__`" on a class like this:
 

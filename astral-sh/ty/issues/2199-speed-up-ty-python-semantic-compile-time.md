@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T07:55:54Z
 updated_at: 2025-12-24T08:01:23Z
 url: https://github.com/astral-sh/ty/issues/2199
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Speed-up `ty_python_semantic` compile time
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-24 07:55_
+_@MichaReiser_
 
 `ty_python_semantic` is by far the slowest to-compile crate in ty (and it's in the critical path too). 
 

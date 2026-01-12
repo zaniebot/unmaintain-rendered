@@ -14,14 +14,14 @@ head: gankra/old-python-version
 created_at: 2025-10-16T01:34:35Z
 updated_at: 2025-10-16T13:25:09Z
 url: https://github.com/astral-sh/ruff/pull/20908
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Check typeshed VERSIONS for parent modules when reporting failed stdlib imports
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-16 01:34_
+_@Gankra_
 
 This is a drive-by improvement that I stumbled backwards into while looking into 
 

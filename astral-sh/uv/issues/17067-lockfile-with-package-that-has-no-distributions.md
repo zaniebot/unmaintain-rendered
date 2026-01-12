@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-10T11:14:39Z
 updated_at: 2025-12-11T15:29:29Z
 url: https://github.com/astral-sh/uv/issues/17067
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Lockfile with package that has no distributions with environments
 
 ---
 
-_Issue opened by @konstin on 2025-12-10 11:14_
+_@konstin_
 
 Using `tool.uv.environments` with an index that mismatches those environments creates a lockfile with an entry with no distributions. The resolution should instead fail.
 

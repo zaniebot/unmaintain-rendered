@@ -13,14 +13,14 @@ head: charlie/lower
 created_at: 2024-06-05T17:32:27Z
 updated_at: 2024-06-05T17:39:38Z
 url: https://github.com/astral-sh/uv/pull/4055
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Reduce visibility of `lowering`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-05 17:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T09:36:21Z
 updated_at: 2025-11-24T23:16:15Z
 url: https://github.com/astral-sh/ruff/issues/19200
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Server: Consider `root_uri`/`root_path` as a fallback to detect workspace root
 
 ---
 
-_Issue opened by @lunik1 on 2025-07-08 09:36_
+_@lunik1_
 
 ### Summary
 

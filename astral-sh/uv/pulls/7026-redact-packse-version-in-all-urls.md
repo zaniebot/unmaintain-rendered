@@ -13,14 +13,14 @@ head: konsti/redact-all-packse-urls
 created_at: 2024-09-04T14:53:14Z
 updated_at: 2024-09-04T14:59:08Z
 url: https://github.com/astral-sh/uv/pull/7026
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Redact packse version in all urls
 
 ---
 
-_Pull request opened by @konstin on 2024-09-04 14:53_
+_@konstin_
 
 Reduce the diff on packse updates
 

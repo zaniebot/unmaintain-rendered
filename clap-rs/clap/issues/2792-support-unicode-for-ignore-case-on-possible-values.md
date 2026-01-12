@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-09-26T17:38:20Z
 updated_at: 2021-10-09T13:45:12Z
 url: https://github.com/clap-rs/clap/issues/2792
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Support unicode for ignore_case on possible_values
 
 ---
 
-_Issue opened by @ModProg on 2021-09-26 17:38_
+_@ModProg_
 
 ### Please complete the following tasks
 

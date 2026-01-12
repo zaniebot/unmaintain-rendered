@@ -14,14 +14,14 @@ head: async-rules
 created_at: 2025-08-28T00:20:21Z
 updated_at: 2025-08-28T18:04:25Z
 url: https://github.com/astral-sh/ruff/pull/20122
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`flake8-async`] Implement `blocking-input` rule (`ASYNC250`)
 
 ---
 
-_Pull request opened by @amyreese on 2025-08-28 00:20_
+_@amyreese_
 
 ## Summary
 

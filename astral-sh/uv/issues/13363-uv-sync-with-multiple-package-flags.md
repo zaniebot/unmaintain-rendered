@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T08:52:35Z
 updated_at: 2025-05-10T14:51:17Z
 url: https://github.com/astral-sh/uv/issues/13363
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # uv sync with multiple --package flags
 
 ---
 
-_Issue opened by @heiner on 2025-05-09 08:52_
+_@heiner_
 
 ### Summary
 

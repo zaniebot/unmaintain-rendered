@@ -12,14 +12,14 @@ head: unpin-reqwest
 created_at: 2025-06-24T15:47:43Z
 updated_at: 2025-07-07T11:43:47Z
 url: https://github.com/astral-sh/uv/pull/14243
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Update to reqwest 0.12.20
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-06-24 15:47_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

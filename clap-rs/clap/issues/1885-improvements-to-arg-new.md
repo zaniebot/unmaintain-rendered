@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-04-30T18:26:20Z
 updated_at: 2020-05-15T06:30:08Z
 url: https://github.com/clap-rs/clap/issues/1885
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Improvements to `Arg::new`
 
 ---
 
-_Issue opened by @pksunkara on 2020-04-30 18:26_
+_@pksunkara_
 
 ### Make sure you completed the following tasks
 

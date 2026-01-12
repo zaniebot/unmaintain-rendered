@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-24T16:22:48Z
 updated_at: 2023-01-25T04:47:22Z
 url: https://github.com/astral-sh/ruff/issues/2134
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # pre-commit instructions not in sync with `ruff-pre-commit` repo
 
 ---
 
-_Issue opened by @goretkin on 2023-01-24 16:22_
+_@goretkin_
 
 https://github.com/charliermarsh/ruff/blob/605416922d193d2261bc8b5ed0de8741691a018d/README.md#usage has
 

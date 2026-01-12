@@ -13,14 +13,14 @@ head: alex/isinstance-validation
 created_at: 2025-11-08T20:03:35Z
 updated_at: 2025-11-10T08:46:33Z
 url: https://github.com/astral-sh/ruff/pull/21343
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Add diagnostics for `isinstance()` and `issubclass()` calls that use invalid PEP-604 unions for their second argument
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-08 20:03_
+_@AlexWaygood_
 
 ## Summary
 

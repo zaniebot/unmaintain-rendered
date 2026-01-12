@@ -13,14 +13,14 @@ head: android
 created_at: 2024-11-11T02:16:50Z
 updated_at: 2024-11-21T11:35:07Z
 url: https://github.com/astral-sh/uv/pull/9005
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Fix Python interpreter discovery on non-glibc hosts
 
 ---
 
-_Pull request opened by @dead10ck on 2024-11-11 02:16_
+_@dead10ck_
 
 ## Summary
 

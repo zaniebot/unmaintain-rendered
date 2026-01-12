@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T06:58:40Z
 updated_at: 2025-08-02T14:58:02Z
 url: https://github.com/astral-sh/uv/issues/15025
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # --bare with --python= should also create .python-version
 
 ---
 
-_Issue opened by @jamesdeluk on 2025-08-02 06:58_
+_@jamesdeluk_
 
 ### Summary
 

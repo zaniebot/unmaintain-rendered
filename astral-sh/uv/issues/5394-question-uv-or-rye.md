@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T02:52:59Z
 updated_at: 2024-07-24T03:40:02Z
 url: https://github.com/astral-sh/uv/issues/5394
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # [question] uv or rye?
 
 ---
 
-_Issue opened by @Jordan-Haidee on 2024-07-24 02:52_
+_@Jordan-Haidee_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

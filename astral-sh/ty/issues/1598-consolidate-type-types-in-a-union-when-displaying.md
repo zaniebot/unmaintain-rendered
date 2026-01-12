@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-20T11:48:53Z
 updated_at: 2025-12-18T14:30:09Z
 url: https://github.com/astral-sh/ty/issues/1598
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consolidate `type[]` types in a union when displaying them
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-20 11:48_
+_@AlexWaygood_
 
 When displaying a union (e.g. in error messages or on hover), it would be nicer if we displayed the union `type[A] | type[B] | type[C]` as `type[A | B | C]`. The latter means the same thing, is a valid type annotation, and is much more concise. This would be similar to the way we display `Literal["a"] | Literal[42] | Literal[b"foooo"]` as `Literal["a", 42, b"foo"]` in diagnostics and on hover.
 

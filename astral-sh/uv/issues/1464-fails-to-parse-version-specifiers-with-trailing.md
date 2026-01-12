@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T09:49:25Z
 updated_at: 2024-02-17T01:47:26Z
 url: https://github.com/astral-sh/uv/issues/1464
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # fails to parse version specifiers with trailing comma
 
 ---
 
-_Issue opened by @davidszotten on 2024-02-16 09:49_
+_@davidszotten_
 
 when installing from our devpi mirror, e.g. celery-5.2.2 fails to install. it looks like it's due to a trailing comma in the `requires-python` value. from reading the pep it's slightly unclear to me whether a trailing comma is allowed but `uv` is the first tool that's complained
 

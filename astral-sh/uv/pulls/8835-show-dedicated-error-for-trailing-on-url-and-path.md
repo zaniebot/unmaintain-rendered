@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-11-05T18:20:26Z
 updated_at: 2024-11-05T18:29:39Z
 url: https://github.com/astral-sh/uv/pull/8835
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Show dedicated error for trailing ; on URL and path requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-05 18:20_
+_@charliermarsh_
 
 ## Summary
 

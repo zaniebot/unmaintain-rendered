@@ -12,14 +12,14 @@ head: pylint-empty-comment
 created_at: 2023-07-19T20:45:31Z
 updated_at: 2023-11-30T22:23:50Z
 url: https://github.com/astral-sh/ruff/pull/5900
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Implement pylint's `empty-comment` rule (`PLR2044`)
 
 ---
 
-_Pull request opened by @jelly on 2023-07-19 20:45_
+_@jelly_
 
 Implement empty-comment
 https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/empty-comment.html

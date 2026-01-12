@@ -12,14 +12,14 @@ head: bug-pyi016
 created_at: 2024-05-03T21:10:56Z
 updated_at: 2024-09-08T19:45:03Z
 url: https://github.com/astral-sh/ruff/pull/11273
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Handle single element cases in PYI016
 
 ---
 
-_Pull request opened by @tusharsadhwani on 2024-05-03 21:10_
+_@tusharsadhwani_
 
 ## Summary
 

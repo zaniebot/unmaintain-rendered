@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T03:00:29Z
 updated_at: 2025-11-09T18:29:59Z
 url: https://github.com/astral-sh/ruff/issues/10592
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature request: Expand nested unpacking and unpacking of single inline element
 
 ---
 
-_Issue opened by @Avasam on 2024-03-26 03:00_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

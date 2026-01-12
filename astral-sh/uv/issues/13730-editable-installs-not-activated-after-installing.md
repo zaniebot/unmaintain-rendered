@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T13:02:03Z
 updated_at: 2025-09-12T16:45:31Z
 url: https://github.com/astral-sh/uv/issues/13730
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Editable installs not activated after installing in Google Colab
 
 ---
 
-_Issue opened by @thewh1teagle on 2025-05-30 13:02_
+_@thewh1teagle_
 
 ### Summary
 

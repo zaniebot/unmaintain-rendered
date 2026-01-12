@@ -13,14 +13,14 @@ head: charlie/res
 created_at: 2024-06-06T01:27:09Z
 updated_at: 2024-06-06T01:48:44Z
 url: https://github.com/astral-sh/uv/pull/4083
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Remove integration tests from `uv-resolver`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 01:27_
+_@charliermarsh_
 
 ## Summary
 

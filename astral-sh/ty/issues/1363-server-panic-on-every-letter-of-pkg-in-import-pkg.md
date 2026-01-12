@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-15T21:11:04Z
 updated_at: 2025-10-16T14:23:04Z
 url: https://github.com/astral-sh/ty/issues/1363
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Server panic on every letter of pkg in `import pkg` completion (not just #1277)
 
 ---
 
-_Issue opened by @Danielkonge on 2025-10-15 21:11_
+_@Danielkonge_
 
 ### Summary
 

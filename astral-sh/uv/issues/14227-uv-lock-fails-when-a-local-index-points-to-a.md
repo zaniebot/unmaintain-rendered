@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T01:58:27Z
 updated_at: 2025-06-26T20:17:44Z
 url: https://github.com/astral-sh/uv/issues/14227
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # `uv lock` fails when a local index points to a remote wheel
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-24 01:58_
+_@charliermarsh_
 
 The error is like: `Failed to convert URL to path`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T05:58:08Z
 updated_at: 2025-03-10T11:08:10Z
 url: https://github.com/astral-sh/uv/issues/8770
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # CLI reported by `uv run` on Windows is not found on invocation
 
 ---
 
-_Issue opened by @kdeldycke on 2024-11-03 05:58_
+_@kdeldycke_
 
 Tl;Dr: On Windows `nuitka` is [reported as an available CLI](https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280568400#step:5:15) in a `uv` venv:
 ```shell-session

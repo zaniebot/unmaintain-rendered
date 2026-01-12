@@ -12,14 +12,14 @@ head: main
 created_at: 2023-04-18T07:03:20Z
 updated_at: 2023-04-18T13:52:41Z
 url: https://github.com/astral-sh/ruff/pull/4008
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add Robyn to user list
 
 ---
 
-_Pull request opened by @mirecl on 2023-04-18 07:03_
+_@mirecl_
 
 Add Robyn to user list.
 

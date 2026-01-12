@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T15:08:45Z
 updated_at: 2025-02-18T18:12:52Z
 url: https://github.com/astral-sh/uv/issues/11447
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Insert `pyproject.toml` `[dependency-groups]` entries in sorted order
 
 ---
 
-_Issue opened by @woutervh on 2025-02-12 15:08_
+_@woutervh_
 
 ### Summary
 

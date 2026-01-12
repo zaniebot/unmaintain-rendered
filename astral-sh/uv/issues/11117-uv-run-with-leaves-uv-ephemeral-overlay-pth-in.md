@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-30T19:53:08Z
 updated_at: 2025-02-04T22:45:46Z
 url: https://github.com/astral-sh/uv/issues/11117
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # `uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment
 
 ---
 
-_Issue opened by @daviesian on 2025-01-30 19:53_
+_@daviesian_
 
 ## Summary
 

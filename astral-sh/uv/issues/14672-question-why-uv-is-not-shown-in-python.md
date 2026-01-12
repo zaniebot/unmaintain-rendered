@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T21:25:40Z
 updated_at: 2025-07-18T07:00:21Z
 url: https://github.com/astral-sh/uv/issues/14672
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Question: why `uv` is not shown in Python documentation
 
 ---
 
-_Issue opened by @PaulVe2024 on 2025-07-16 21:25_
+_@PaulVe2024_
 
 ### Question
 

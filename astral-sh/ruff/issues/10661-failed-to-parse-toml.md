@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-29T14:41:41Z
 updated_at: 2024-03-30T10:17:58Z
 url: https://github.com/astral-sh/ruff/issues/10661
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # failed to parse toml
 
 ---
 
-_Issue opened by @anantgupta129 on 2024-03-29 14:41_
+_@anantgupta129_
 
 ```toml
 # Exclude a variety of commonly ignored directories.

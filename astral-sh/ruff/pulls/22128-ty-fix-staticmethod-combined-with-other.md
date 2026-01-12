@@ -13,14 +13,14 @@ head: charlie/static-like
 created_at: 2025-12-21T14:47:08Z
 updated_at: 2025-12-24T03:35:10Z
 url: https://github.com/astral-sh/ruff/pull/22128
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Fix `@staticmethod` combined with other decorators incorrectly binding `self`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-21 14:47_
+_@charliermarsh_
 
 ## Summary
 

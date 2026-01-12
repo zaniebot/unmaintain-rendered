@@ -13,14 +13,14 @@ head: dhruv/callable-assignability
 created_at: 2025-03-19T13:23:04Z
 updated_at: 2025-03-22T20:58:46Z
 url: https://github.com/astral-sh/ruff/pull/16845
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Check assignability for two callable types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-19 13:23_
+_@dhruvmanila_
 
 ## Summary
 

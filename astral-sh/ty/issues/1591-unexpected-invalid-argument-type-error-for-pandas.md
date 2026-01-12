@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-19T11:16:02Z
 updated_at: 2025-11-19T20:53:02Z
 url: https://github.com/astral-sh/ty/issues/1591
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Unexpected invalid-argument-type error for pandas DataFrame with columns
 
 ---
 
-_Issue opened by @knutae on 2025-11-19 11:16_
+_@knutae_
 
 ### Summary
 

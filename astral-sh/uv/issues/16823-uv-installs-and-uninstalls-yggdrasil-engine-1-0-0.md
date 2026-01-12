@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T15:29:26Z
 updated_at: 2025-11-24T13:55:30Z
 url: https://github.com/astral-sh/uv/issues/16823
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # uv installs and uninstalls yggdrasil-engine==1.0.0 during each sync
 
 ---
 
-_Issue opened by @ErliSoares on 2025-11-23 15:29_
+_@ErliSoares_
 
 ### Summary
 

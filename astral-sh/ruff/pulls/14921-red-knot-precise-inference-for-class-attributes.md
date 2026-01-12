@@ -13,14 +13,14 @@ head: alex/dunder-class-everywhere
 created_at: 2024-12-11T16:50:55Z
 updated_at: 2024-12-11T17:32:15Z
 url: https://github.com/astral-sh/ruff/pull/14921
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Precise inference for `__class__` attributes on objects of all types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 16:50_
+_@AlexWaygood_
 
 ## Summary
 

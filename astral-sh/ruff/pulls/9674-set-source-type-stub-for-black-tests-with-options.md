@@ -14,14 +14,14 @@ head: set-source-type-for-stub-files-in-black-tests
 created_at: 2024-01-29T14:43:32Z
 updated_at: 2024-01-29T14:54:31Z
 url: https://github.com/astral-sh/ruff/pull/9674
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Set source type: Stub for black tests with options
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-29 14:43_
+_@MichaReiser_
 
 ## Summary
 

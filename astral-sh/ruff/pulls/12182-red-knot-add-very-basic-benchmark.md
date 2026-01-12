@@ -13,14 +13,14 @@ head: red-knot-benchmark
 created_at: 2024-07-04T07:12:15Z
 updated_at: 2024-07-04T15:43:15Z
 url: https://github.com/astral-sh/ruff/pull/12182
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add very basic benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-04 07:12_
+_@MichaReiser_
 
 ## Summary
 

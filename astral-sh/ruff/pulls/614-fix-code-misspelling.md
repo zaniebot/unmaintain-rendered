@@ -12,14 +12,14 @@ head: coade
 created_at: 2022-11-05T23:21:55Z
 updated_at: 2022-11-05T23:31:21Z
 url: https://github.com/astral-sh/ruff/pull/614
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix “Code” misspelling
 
 ---
 
-_Pull request opened by @andersk on 2022-11-05 23:21_
+_@andersk_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-12T14:28:08Z
 updated_at: 2022-07-12T14:45:08Z
 url: https://github.com/clap-rs/clap/issues/3911
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_derive: Merge/inherit `ValueEnum` (sharing enum variants in `ValueEnum`)
 
 ---
 
-_Issue opened by @KSXGitHub on 2022-07-12 14:28_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

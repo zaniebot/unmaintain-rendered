@@ -14,14 +14,14 @@ head: zb/toolchain-install-python-version
 created_at: 2024-06-14T22:54:21Z
 updated_at: 2024-06-17T18:37:54Z
 url: https://github.com/astral-sh/uv/pull/4335
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Read Python version files during toolchain installs
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 22:54_
+_@zanieb_
 
 A bare `uv toolchain install` invocation now reads default requests from Python version files in the working directory. In order, a bare invocation means:
 

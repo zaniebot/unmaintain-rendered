@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T02:56:29Z
 updated_at: 2025-10-07T15:43:13Z
 url: https://github.com/astral-sh/uv/issues/3599
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Incompatible cached wheels may continue to be used after upgrade
 
 ---
 
-_Issue opened by @wimglenn on 2024-05-15 02:56_
+_@wimglenn_
 
 I saw an issue installing pydantic on macOS where it uv would use an incompatible wheel for pydantic_core (with cp312-cp312-macosx_10_12_x86_64 tag) resulting in this error message:
 

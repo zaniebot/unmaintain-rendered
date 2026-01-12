@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T02:01:39Z
 updated_at: 2025-10-02T10:08:07Z
 url: https://github.com/astral-sh/uv/issues/12306
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Using uv for Jupyter notebook from VS Code unable to export
 
 ---
 
-_Issue opened by @Choudhry18 on 2025-03-19 02:01_
+_@Choudhry18_
 
 ### Question
 

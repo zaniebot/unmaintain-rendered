@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T04:23:28Z
 updated_at: 2024-08-28T18:07:14Z
 url: https://github.com/astral-sh/uv/issues/6492
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv add` should assume `--dev` if in a virtual workspace root
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-23 04:23_
+_@charliermarsh_
 
 I find it somewhat tedious that you have to add `--dev`:
 

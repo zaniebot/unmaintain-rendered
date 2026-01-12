@@ -13,14 +13,14 @@ head: zb/remove-warn
 created_at: 2024-12-17T05:39:00Z
 updated_at: 2024-12-17T20:23:31Z
 url: https://github.com/astral-sh/uv/pull/9960
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Improve styling of `uv remove` dependency hints
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 05:39_
+_@zanieb_
 
 Instead of using a warning, which is pretty aggressive feeling, use a hint.
 

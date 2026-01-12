@@ -14,14 +14,14 @@ head: dcreager/inherited-legacy-base
 created_at: 2025-10-12T19:16:17Z
 updated_at: 2025-10-13T23:30:51Z
 url: https://github.com/astral-sh/ruff/pull/20822
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Diagnostic for generic classes that reference typevars in enclosing scope
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-12 19:16_
+_@dcreager_
 
 Generic classes are not allowed to bind or reference a typevar from an enclosing scope:
 

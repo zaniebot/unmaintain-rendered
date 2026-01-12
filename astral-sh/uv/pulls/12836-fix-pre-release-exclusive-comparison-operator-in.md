@@ -13,14 +13,14 @@ head: konsti/pep440-prelease-exclude-matching
 created_at: 2025-04-11T12:45:28Z
 updated_at: 2025-04-14T08:02:50Z
 url: https://github.com/astral-sh/uv/pull/12836
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Fix pre-release exclusive comparison operator in uv-pep440
 
 ---
 
-_Pull request opened by @konstin on 2025-04-11 12:45_
+_@konstin_
 
 From PEP 440:
 

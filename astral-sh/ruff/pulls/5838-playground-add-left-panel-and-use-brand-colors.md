@@ -13,14 +13,14 @@ head: left-panel
 created_at: 2023-07-17T17:34:48Z
 updated_at: 2023-07-19T14:34:23Z
 url: https://github.com/astral-sh/ruff/pull/5838
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # playground: Add left panel and use brand colors
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-17 17:34_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

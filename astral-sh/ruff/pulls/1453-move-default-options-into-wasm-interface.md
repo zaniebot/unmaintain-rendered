@@ -12,14 +12,14 @@ head: charlie/options
 created_at: 2022-12-29T23:02:49Z
 updated_at: 2022-12-29T23:06:59Z
 url: https://github.com/astral-sh/ruff/pull/1453
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Move default options into WASM interface
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-29 23:02_
+_@charliermarsh_
 
 Resolves #1444.
 

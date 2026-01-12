@@ -12,14 +12,14 @@ head: charlie/complex
 created_at: 2023-01-12T17:50:15Z
 updated_at: 2023-01-12T17:51:24Z
 url: https://github.com/astral-sh/ruff/pull/1825
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Don't trigger SIM401 for complex default values
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-12 17:50_
+_@charliermarsh_
 
 Resolves #1809.
 

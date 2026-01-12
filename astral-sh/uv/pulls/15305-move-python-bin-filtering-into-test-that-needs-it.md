@@ -13,14 +13,14 @@ head: zb/python-bin-filter
 created_at: 2025-08-15T12:46:47Z
 updated_at: 2025-08-15T13:06:53Z
 url: https://github.com/astral-sh/uv/pull/15305
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Move python bin filtering into test that needs it
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-15 12:46_
+_@zanieb_
 
 Closes #15188 
 

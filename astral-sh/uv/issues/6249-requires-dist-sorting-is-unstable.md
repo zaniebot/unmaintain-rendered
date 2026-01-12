@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T13:04:17Z
 updated_at: 2024-08-20T17:11:58Z
 url: https://github.com/astral-sh/uv/issues/6249
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `requires-dist` sorting is unstable
 
 ---
 
-_Issue opened by @konstin on 2024-08-20 13:04_
+_@konstin_
 
 When i run:
 ```shell

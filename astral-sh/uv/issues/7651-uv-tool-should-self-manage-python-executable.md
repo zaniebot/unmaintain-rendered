@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T00:15:46Z
 updated_at: 2024-09-24T20:41:20Z
 url: https://github.com/astral-sh/uv/issues/7651
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv tool should self-manage Python executable dependencies
 
 ---
 
-_Issue opened by @jayqi on 2024-09-24 00:15_
+_@jayqi_
 
 This is related to #7634 and #1640 but not quite the same thing.
 

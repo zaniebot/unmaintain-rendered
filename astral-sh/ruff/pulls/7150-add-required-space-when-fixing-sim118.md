@@ -14,14 +14,14 @@ head: charlie/SIM118
 created_at: 2023-09-05T11:43:59Z
 updated_at: 2023-09-05T11:57:59Z
 url: https://github.com/astral-sh/ruff/pull/7150
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add required space when fixing SIM118
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 11:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7124.
 

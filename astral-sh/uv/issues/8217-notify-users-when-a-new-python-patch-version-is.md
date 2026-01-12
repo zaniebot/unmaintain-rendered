@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T13:44:32Z
 updated_at: 2025-01-14T20:49:32Z
 url: https://github.com/astral-sh/uv/issues/8217
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Notify users when a new Python patch version is available
 
 ---
 
-_Issue opened by @itamarst on 2024-10-15 13:44_
+_@itamarst_
 
 I'm running on 3.12.7. CPython releases 3.12.8 with security fixes. It would be good for `uv` to notify users that they want to install this new version.
 

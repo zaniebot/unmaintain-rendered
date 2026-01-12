@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-24T05:47:56Z
 updated_at: 2024-09-05T14:17:06Z
 url: https://github.com/clap-rs/clap/issues/5594
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support `allow_hyphen_values` in native completions
 
 ---
 
-_Issue opened by @shannmu on 2024-07-24 05:47_
+_@shannmu_
 
 ### Please complete the following tasks
 

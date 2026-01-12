@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T00:34:10Z
 updated_at: 2025-04-01T16:51:15Z
 url: https://github.com/astral-sh/uv/issues/8848
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # `uv build` does not work if UV_PROJECT_ENVIRONMENT is a sub path of `.venv`
 
 ---
 
-_Issue opened by @zwing99 on 2024-11-06 00:34_
+_@zwing99_
 
 ## uv version
 uv version = 0.4.29

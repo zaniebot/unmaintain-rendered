@@ -13,14 +13,14 @@ head: charlie/o
 created_at: 2024-11-16T03:50:03Z
 updated_at: 2024-11-16T20:39:16Z
 url: https://github.com/astral-sh/uv/pull/9162
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Support overrides and constraints in PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-16 03:50_
+_@charliermarsh_
 
 ## Summary
 

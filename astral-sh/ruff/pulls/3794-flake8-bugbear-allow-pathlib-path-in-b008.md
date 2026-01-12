@@ -12,14 +12,14 @@ head: b008-pathlib-path
 created_at: 2023-03-29T14:07:00Z
 updated_at: 2023-03-29T15:42:43Z
 url: https://github.com/astral-sh/ruff/pull/3794
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [flake8-bugbear] Allow `pathlib.Path()` in `B008`
 
 ---
 
-_Pull request opened by @rouge8 on 2023-03-29 14:07_
+_@rouge8_
 
 `pathlib.Path()` is immutable.
 

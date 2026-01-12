@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-01-30T03:09:27Z
 updated_at: 2024-01-30T03:31:25Z
 url: https://github.com/astral-sh/uv/pull/1182
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Accept relative file paths in CLI requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 03:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/colon
 created_at: 2024-01-19T20:49:01Z
 updated_at: 2024-01-19T21:01:34Z
 url: https://github.com/astral-sh/uv/pull/1018
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Make editable URL parsing more robust
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 20:49_
+_@charliermarsh_
 
 This just generalizes the parsing to handle arbitrary schemes instead of encoding a fixed list.
 

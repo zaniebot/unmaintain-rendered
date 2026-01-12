@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T13:53:57Z
 updated_at: 2025-07-08T01:10:36Z
 url: https://github.com/astral-sh/uv/issues/14485
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Unwanted lock file updates
 
 ---
 
-_Issue opened by @melMass on 2025-07-07 13:53_
+_@melMass_
 
 ### Summary
 

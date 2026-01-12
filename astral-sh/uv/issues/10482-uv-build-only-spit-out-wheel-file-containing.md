@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T22:41:10Z
 updated_at: 2025-01-10T23:27:53Z
 url: https://github.com/astral-sh/uv/issues/10482
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # uv build only spit out wheel file containing metadata but no code
 
 ---
 
-_Issue opened by @tmatup on 2025-01-10 22:41_
+_@tmatup_
 
 `uv build` command is generating a very small wheel file, which is only including essential metadata and minimal code. what could be missing?
 

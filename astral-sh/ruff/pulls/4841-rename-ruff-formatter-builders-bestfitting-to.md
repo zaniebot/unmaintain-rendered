@@ -12,14 +12,14 @@ head: internal/4840
 created_at: 2023-06-03T21:42:00Z
 updated_at: 2023-06-03T22:25:22Z
 url: https://github.com/astral-sh/ruff/pull/4841
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Rename `ruff_formatter::builders::BestFitting` to `FormatBestFitting`
 
 ---
 
-_Pull request opened by @zanieb on 2023-06-03 21:42_
+_@zanieb_
 
 Closes https://github.com/charliermarsh/ruff/issues/4840
 

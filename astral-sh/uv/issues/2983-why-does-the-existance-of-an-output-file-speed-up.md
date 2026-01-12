@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T22:53:09Z
 updated_at: 2024-04-10T23:35:05Z
 url: https://github.com/astral-sh/uv/issues/2983
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Why does the existance of an output file speed up resolution?
 
 ---
 
-_Issue opened by @notatallshaw on 2024-04-10 22:53_
+_@notatallshaw_
 
 Python 3.10 uv 0.1.31
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T17:14:54Z
 updated_at: 2025-12-17T17:48:07Z
 url: https://github.com/astral-sh/ty/issues/2022
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # possibly-missing-attribute warning on Union type narrowing based on Literal values
 
 ---
 
-_Issue opened by @arthur-st on 2025-12-17 17:14_
+_@arthur-st_
 
 ### Summary
 

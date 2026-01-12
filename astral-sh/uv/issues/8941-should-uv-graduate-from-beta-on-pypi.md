@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T14:07:24Z
 updated_at: 2024-11-09T02:21:08Z
 url: https://github.com/astral-sh/uv/issues/8941
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Should `uv` graduate from 'beta' on PyPI?
 
 ---
 
-_Issue opened by @paveldikov on 2024-11-08 14:07_
+_@paveldikov_
 
 The release announcement for 0.5.0 alludes to `uv`'s increasing maturity; maybe the time is now?
 

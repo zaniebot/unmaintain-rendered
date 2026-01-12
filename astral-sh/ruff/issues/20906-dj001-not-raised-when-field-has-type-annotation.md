@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T22:32:39Z
 updated_at: 2025-10-27T08:19:16Z
 url: https://github.com/astral-sh/ruff/issues/20906
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DJ001 not raised when field has type annotation
 
 ---
 
-_Issue opened by @janlarres on 2025-10-15 22:32_
+_@janlarres_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-13T17:28:28Z
 updated_at: 2026-01-12T10:34:20Z
 url: https://github.com/astral-sh/uv/issues/16726
-synced_at: 2026-01-12T11:01:24Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # UV Python SIGKILL Issue on macOS
 
 ---
 
-_Issue opened by @mgrbyte on 2025-11-13 17:28_
+_@mgrbyte_
 
 ### Summary
 

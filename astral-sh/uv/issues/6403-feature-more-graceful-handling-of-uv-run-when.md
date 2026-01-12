@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-22T03:14:21Z
 updated_at: 2025-03-27T11:49:15Z
 url: https://github.com/astral-sh/uv/issues/6403
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Feature: more graceful handling of `uv run` when CLIs aren't well exposed.
 
 ---
 
-_Issue opened by @strangemonad on 2024-08-22 03:14_
+_@strangemonad_
 
 I don't have a great solution but wanted to call out some uvx rough edges. Some popular python packages don't expose conventionally named CLI entrypoints or rely on entrypoints from a transitive dependency.
 

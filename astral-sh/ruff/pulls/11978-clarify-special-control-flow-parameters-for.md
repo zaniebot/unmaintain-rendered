@@ -13,14 +13,14 @@ head: PLR0917/improve-docs
 created_at: 2024-06-21T23:15:38Z
 updated_at: 2024-06-23T22:42:27Z
 url: https://github.com/astral-sh/ruff/pull/11978
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Clarify special control flow parameters for `PLR0917`: `too-many-positional`
 
 ---
 
-_Pull request opened by @Peiffap on 2024-06-21 23:15_
+_@Peiffap_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

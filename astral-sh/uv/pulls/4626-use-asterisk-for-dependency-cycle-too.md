@@ -13,14 +13,14 @@ head: pip-tree-cycle-use-asterisk
 created_at: 2024-06-28T16:10:34Z
 updated_at: 2024-06-28T22:35:37Z
 url: https://github.com/astral-sh/uv/pull/4626
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # use asterisk for dependency cycle too
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-28 16:10_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

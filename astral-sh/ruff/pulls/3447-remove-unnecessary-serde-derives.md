@@ -12,14 +12,14 @@ head: charlie/serde
 created_at: 2023-03-11T05:10:04Z
 updated_at: 2023-03-11T05:20:19Z
 url: https://github.com/astral-sh/ruff/pull/3447
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove unnecessary Serde derives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-11 05:10_
+_@charliermarsh_
 
 These became unnecessary when we started serializing the materialized `Diagnostic`, rather than the underlying struct.
 

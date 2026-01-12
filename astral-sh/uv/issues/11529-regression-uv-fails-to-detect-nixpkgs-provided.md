@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T02:13:10Z
 updated_at: 2025-02-19T01:30:26Z
 url: https://github.com/astral-sh/uv/issues/11529
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Regression: uv fails to detect nixpkgs provided python as a valid system-managed interpreter when it's installed with libraries
 
 ---
 
-_Issue opened by @iniw on 2025-02-15 02:13_
+_@iniw_
 
 ### Summary
 

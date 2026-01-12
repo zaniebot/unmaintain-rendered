@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T09:35:34Z
 updated_at: 2023-08-05T19:45:51Z
 url: https://github.com/astral-sh/ruff/issues/6335
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # No Python files found under the given path(s)
 
 ---
 
-_Issue opened by @ghost on 2023-08-04 09:35_
+_@ghost_
 
 Despite many Python files existing in subdirectories of the current directory, none are found.
 

@@ -13,14 +13,14 @@ head: docs/fix-jupyter-discovery-info-21892
 created_at: 2026-01-07T22:50:20Z
 updated_at: 2026-01-08T06:22:01Z
 url: https://github.com/astral-sh/ruff/pull/22447
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # docs: fix jupyter notebook discovery info for editors
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-07 22:50_
+_@Jkhall81_
 
 Resolves #21892
 

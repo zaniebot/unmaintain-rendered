@@ -13,14 +13,14 @@ head: alex/is-property-2
 created_at: 2024-07-30T14:50:29Z
 updated_at: 2024-07-31T09:39:35Z
 url: https://github.com/astral-sh/ruff/pull/12582
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Make setting and retrieving pydocstyle settings less tedious
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 14:50_
+_@AlexWaygood_
 
 ## Summary
 

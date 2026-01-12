@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-23T09:53:20Z
 updated_at: 2023-08-25T21:34:48Z
 url: https://github.com/astral-sh/ruff/issues/6808
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `TD` rules should respect `task-tags`
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-08-23 09:53_
+_@tylerlaprade_
 
 ![image](https://github.com/astral-sh/ruff/assets/5475199/98ef7ff4-0262-4fbb-9a1d-7413dced5aa9)
 

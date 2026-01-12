@@ -13,14 +13,14 @@ head: konsti/cfg-external-tests
 created_at: 2024-10-18T07:02:07Z
 updated_at: 2024-10-18T16:30:16Z
 url: https://github.com/astral-sh/uv/pull/8320
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Add cfg for other external resources tests
 
 ---
 
-_Pull request opened by @konstin on 2024-10-18 07:02_
+_@konstin_
 
 Fixes #8295
 

@@ -13,14 +13,14 @@ head: charlie/default-message
 created_at: 2024-11-22T20:19:16Z
 updated_at: 2024-11-22T21:13:17Z
 url: https://github.com/astral-sh/uv/pull/9368
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Annotate default groups in conflict error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-22 20:19_
+_@charliermarsh_
 
 ## Summary
 

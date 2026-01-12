@@ -13,14 +13,14 @@ head: zb/313t-name
 created_at: 2024-10-17T22:21:23Z
 updated_at: 2024-10-17T23:27:58Z
 url: https://github.com/astral-sh/uv/pull/8310
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Patch Python executable name for Windows free-threaded builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-17 22:21_
+_@zanieb_
 
 A temporary fix for https://github.com/astral-sh/uv/issues/8298 while we wait for my slower upstream fix at https://github.com/indygreg/python-build-standalone/pull/373
 

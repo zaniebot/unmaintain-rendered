@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T20:44:39Z
 updated_at: 2025-05-20T12:53:22Z
 url: https://github.com/astral-sh/uv/issues/11296
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Hitting ulimit with huge workspace
 
 ---
 
-_Issue opened by @potiuk on 2025-02-06 20:44_
+_@potiuk_
 
 ### Summary
 

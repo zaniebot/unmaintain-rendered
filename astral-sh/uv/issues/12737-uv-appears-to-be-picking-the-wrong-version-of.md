@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T08:05:28Z
 updated_at: 2025-04-08T19:46:46Z
 url: https://github.com/astral-sh/uv/issues/12737
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # uv appears to be picking the wrong version of python for project's documentation build
 
 ---
 
-_Issue opened by @cjw296 on 2025-04-08 08:05_
+_@cjw296_
 
 ### Summary
 

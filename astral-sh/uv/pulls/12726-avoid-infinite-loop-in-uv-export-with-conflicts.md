@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-04-07T18:49:14Z
 updated_at: 2025-04-07T19:10:59Z
 url: https://github.com/astral-sh/uv/pull/12726
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Avoid infinite loop in `uv export` with conflicts
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-07 18:49_
+_@charliermarsh_
 
 ## Summary
 

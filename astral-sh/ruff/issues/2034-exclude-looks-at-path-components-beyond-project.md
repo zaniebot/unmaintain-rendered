@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T16:13:57Z
 updated_at: 2023-02-03T13:24:26Z
 url: https://github.com/astral-sh/ruff/issues/2034
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `exclude` looks at path components beyond "project root" (née does `--force-exclude` work like it should?)
 
 ---
 
-_Issue opened by @akx on 2023-01-20 16:13_
+_@akx_
 
 I don't think `--force-exclude` does what it should; this is especially obvious when using `pre-commit-ruff` (which is supposed to be used with that flag).
 

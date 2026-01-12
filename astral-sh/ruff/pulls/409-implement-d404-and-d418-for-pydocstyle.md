@@ -12,14 +12,14 @@ head: charlie/pydocstyle
 created_at: 2022-10-12T17:20:26Z
 updated_at: 2022-10-12T17:20:56Z
 url: https://github.com/astral-sh/ruff/pull/409
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement D404 and D418 for pydocstyle
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-12 17:20_
+_@charliermarsh_
 
 Part of #274.
 

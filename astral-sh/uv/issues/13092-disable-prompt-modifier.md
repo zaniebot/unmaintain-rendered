@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T15:24:02Z
 updated_at: 2025-04-25T03:08:06Z
 url: https://github.com/astral-sh/uv/issues/13092
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Disable prompt modifier?
 
 ---
 
-_Issue opened by @norweeg on 2025-04-24 15:24_
+_@norweeg_
 
 ### Question
 

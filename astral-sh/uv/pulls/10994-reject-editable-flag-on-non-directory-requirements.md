@@ -13,14 +13,14 @@ head: charlie/ed
 created_at: 2025-01-27T17:46:45Z
 updated_at: 2025-01-27T19:37:24Z
 url: https://github.com/astral-sh/uv/pull/10994
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Reject `--editable` flag on non-directory requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 17:46_
+_@charliermarsh_
 
 ## Summary
 

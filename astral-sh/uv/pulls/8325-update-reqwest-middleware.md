@@ -13,14 +13,14 @@ head: konsti/reqwest-middleware
 created_at: 2024-10-18T11:43:35Z
 updated_at: 2024-10-18T11:51:03Z
 url: https://github.com/astral-sh/uv/pull/8325
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Update reqwest-middleware
 
 ---
 
-_Pull request opened by @konstin on 2024-10-18 11:43_
+_@konstin_
 
 Update to upstream main of reqwest-middleware and reqwest-retry in preparation for updating to the next crates.io release.
 

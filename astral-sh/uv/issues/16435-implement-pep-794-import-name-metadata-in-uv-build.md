@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T11:12:18Z
 updated_at: 2025-10-24T11:12:18Z
 url: https://github.com/astral-sh/uv/issues/16435
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Implement PEP 794 "Import Name Metadata" in uv_build
 
 ---
 
-_Issue opened by @konstin on 2025-10-24 11:12_
+_@konstin_
 
 PEP 794 has been accepted, and we should support it and its fields in the uv build backend.
 

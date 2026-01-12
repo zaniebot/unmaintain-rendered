@@ -14,14 +14,14 @@ head: dhruv/virtual-files-in-project-db
 created_at: 2025-07-14T08:37:50Z
 updated_at: 2025-07-14T14:47:53Z
 url: https://github.com/astral-sh/ruff/pull/19322
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Add virtual files to the only project database
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-14 08:37_
+_@dhruvmanila_
 
 ## Summary
 

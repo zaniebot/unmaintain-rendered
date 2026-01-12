@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-09-17T19:11:18Z
 updated_at: 2024-09-17T19:19:46Z
 url: https://github.com/astral-sh/uv/pull/7477
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Document `store_credentials_from_workspace`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-17 19:11_
+_@charliermarsh_
 
 _No description provided._
 

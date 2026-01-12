@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T20:57:15Z
 updated_at: 2025-12-17T22:07:28Z
 url: https://github.com/astral-sh/ty/issues/2036
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[unresolved-attribute]: Module `sqlean` has no member `connect`
 
 ---
 
-_Issue opened by @kracekumar on 2025-12-17 20:57_
+_@kracekumar_
 
 ### Summary
 

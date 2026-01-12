@@ -11,14 +11,14 @@ head: repology-multi-column
 created_at: 2023-01-11T05:42:54Z
 updated_at: 2023-01-14T03:29:54Z
 url: https://github.com/astral-sh/ruff/pull/1779
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Use multi-column layout for packaging status badge
 
 ---
 
-_Pull request opened by @messense on 2023-01-11 05:42_
+_@messense_
 
 So it takes less space, demo: https://github.com/messense/ruff/tree/repology-multi-column#installation
 

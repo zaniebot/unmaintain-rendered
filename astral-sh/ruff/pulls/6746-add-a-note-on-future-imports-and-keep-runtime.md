@@ -13,14 +13,14 @@ head: charlie/keep-runtime-typing-docs
 created_at: 2023-08-21T23:51:48Z
 updated_at: 2023-08-22T21:04:01Z
 url: https://github.com/astral-sh/ruff/pull/6746
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add a note on `__future__` imports and `keep-runtime-typing` to pyupgrade rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 23:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6740.
 

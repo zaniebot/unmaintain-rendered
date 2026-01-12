@@ -12,14 +12,14 @@ head: pylint-format
 created_at: 2023-01-19T11:33:04Z
 updated_at: 2023-01-19T14:15:09Z
 url: https://github.com/astral-sh/ruff/pull/1995
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Added pylint formatter
 
 ---
 
-_Pull request opened by @damienallen on 2023-01-19 11:33_
+_@damienallen_
 
 Fixes: #1953
 

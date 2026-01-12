@@ -12,14 +12,14 @@ head: flake8-to-ruff-isort
 created_at: 2023-01-22T04:42:36Z
 updated_at: 2023-01-22T18:18:20Z
 url: https://github.com/astral-sh/ruff/pull/2082
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # flake8_to_ruff: support `isort` options
 
 ---
 
-_Pull request opened by @shannonrothe on 2023-01-22 04:42_
+_@shannonrothe_
 
 Hey @charliermarsh 👋🏼 I've been learning Rust for a little bit but haven't contributed any PRs until this one, so excuse me if it's a little rough. I mostly followed what was already in place for picking up `Black` options in the `flake8_to_ruff` converter.
 

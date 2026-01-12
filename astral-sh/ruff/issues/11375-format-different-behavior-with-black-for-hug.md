@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-12T06:34:52Z
 updated_at: 2024-11-15T08:46:37Z
 url: https://github.com/astral-sh/ruff/issues/11375
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # format: different behavior with black for `hug_parens_with_braces_and_square_brackets` and generators
 
 ---
 
-_Issue opened by @trim21 on 2024-05-12 06:34_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

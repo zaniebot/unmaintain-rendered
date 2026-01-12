@@ -12,14 +12,14 @@ head: nested_min_max
 created_at: 2023-05-03T05:10:02Z
 updated_at: 2023-05-15T14:35:20Z
 url: https://github.com/astral-sh/ruff/pull/4200
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`pylint`] Implement `nested-min-max` (`W3301`)
 
 ---
 
-_Pull request opened by @mccullocht on 2023-05-03 05:10_
+_@mccullocht_
 
 Detect nested calls to `min()` or `max()` and generate fixes for these, e.g. `min(1, min(2, 3)) => min(1, 2, 3)`
 

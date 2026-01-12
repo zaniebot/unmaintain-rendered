@@ -13,14 +13,14 @@ head: zb/freebsd
 created_at: 2024-10-16T19:34:47Z
 updated_at: 2024-10-17T15:24:23Z
 url: https://github.com/astral-sh/uv/pull/8269
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Add a FreeBSD build to CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 19:34_
+_@zanieb_
 
 Playing with this because it's interesting and I learned about this cool firecracker action.
 

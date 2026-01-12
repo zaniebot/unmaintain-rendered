@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T21:35:04Z
 updated_at: 2025-12-13T03:03:51Z
 url: https://github.com/astral-sh/uv/issues/17113
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `uv add -U package` claims unsatisfiable with pinned dependency and constraints-dependencies configured
 
 ---
 
-_Issue opened by @rogersei on 2025-12-12 21:35_
+_@rogersei_
 
 ### Summary
 

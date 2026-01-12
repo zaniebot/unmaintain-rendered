@@ -13,14 +13,14 @@ head: charlie/hardlink
 created_at: 2023-11-10T20:19:57Z
 updated_at: 2023-11-10T20:24:21Z
 url: https://github.com/astral-sh/uv/pull/402
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Overwrite existing files when hardlinking
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 20:19_
+_@charliermarsh_
 
 ## Summary
 

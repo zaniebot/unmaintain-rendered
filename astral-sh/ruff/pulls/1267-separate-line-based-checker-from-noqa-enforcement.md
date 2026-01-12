@@ -12,14 +12,14 @@ head: charlie/split-lines-noqa
 created_at: 2022-12-17T03:49:15Z
 updated_at: 2022-12-17T03:49:28Z
 url: https://github.com/astral-sh/ruff/pull/1267
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Separate line-based checker from `noqa` enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-17 03:49_
+_@charliermarsh_
 
 _No description provided._
 

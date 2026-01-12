@@ -13,14 +13,14 @@ head: change-default-docker
 created_at: 2025-08-18T15:00:22Z
 updated_at: 2025-10-07T23:10:38Z
 url: https://github.com/astral-sh/uv/pull/15352
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Promote trixie and alpine 3.22 as default tags
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-18 15:00_
+_@samypr100_
 
 ## Summary
 

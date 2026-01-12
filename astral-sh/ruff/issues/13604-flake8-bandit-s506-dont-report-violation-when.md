@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T12:20:34Z
 updated_at: 2024-10-31T12:08:46Z
 url: https://github.com/astral-sh/ruff/issues/13604
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [flake8-bandit/S506] Dont report violation when using BaseLoader
 
 ---
 
-_Issue opened by @mcmitch on 2024-10-02 12:20_
+_@mcmitch_
 
 From https://pyyaml.org/wiki/PyYAMLDocumentation
 - Loader supports all predefined tags and may construct an arbitrary Python object. Therefore it is not safe to use Loader to load a document received from an untrusted source. By default, the functions scan, parse, compose, construct, and others use Loader.

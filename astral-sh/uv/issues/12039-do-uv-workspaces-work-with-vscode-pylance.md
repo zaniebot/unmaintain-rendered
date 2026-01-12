@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T11:05:43Z
 updated_at: 2025-08-15T00:18:40Z
 url: https://github.com/astral-sh/uv/issues/12039
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Do uv workspaces work with VSCode / Pylance?
 
 ---
 
-_Issue opened by @Timmmm on 2025-03-07 11:05_
+_@Timmmm_
 
 ### Question
 

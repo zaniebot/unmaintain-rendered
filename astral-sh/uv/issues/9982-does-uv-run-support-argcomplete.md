@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T20:21:51Z
 updated_at: 2025-06-12T08:37:45Z
 url: https://github.com/astral-sh/uv/issues/9982
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Does uv run support argcomplete?
 
 ---
 
-_Issue opened by @carlpaten-ivadolabs on 2024-12-17 20:21_
+_@carlpaten-ivadolabs_
 
 I can't find in the documentation whether I can use `argcomplete` to get bash/zsh autocompletion when running `uv run myscript.py`.
 

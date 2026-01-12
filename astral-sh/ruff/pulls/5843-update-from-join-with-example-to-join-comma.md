@@ -12,14 +12,14 @@ head: docs
 created_at: 2023-07-17T22:21:45Z
 updated_at: 2023-07-20T11:28:59Z
 url: https://github.com/astral-sh/ruff/pull/5843
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update from `join_with` example to `join_comma_separated`
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-17 22:21_
+_@cnpryer_
 
 ## Summary
 

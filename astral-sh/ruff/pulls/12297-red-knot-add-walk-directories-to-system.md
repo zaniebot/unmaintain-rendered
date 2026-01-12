@@ -13,14 +13,14 @@ head: system-walk-directories
 created_at: 2024-07-12T09:25:20Z
 updated_at: 2024-07-16T06:54:36Z
 url: https://github.com/astral-sh/ruff/pull/12297
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add `walk_directories` to `System`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-12 09:25_
+_@MichaReiser_
 
 
 ## Summary

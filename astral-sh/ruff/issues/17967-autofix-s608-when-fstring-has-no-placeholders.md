@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T21:22:09Z
 updated_at: 2025-05-10T10:37:59Z
 url: https://github.com/astral-sh/ruff/issues/17967
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Autofix `S608` when fstring has no placeholders
 
 ---
 
-_Issue opened by @dosisod on 2025-05-08 21:22_
+_@dosisod_
 
 ### Summary
 

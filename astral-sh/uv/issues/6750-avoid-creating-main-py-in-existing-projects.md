@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T14:26:07Z
 updated_at: 2025-04-18T09:48:05Z
 url: https://github.com/astral-sh/uv/issues/6750
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Avoid creating `main.py` in existing projects
 
 ---
 
-_Issue opened by @zanieb on 2024-08-28 14:26_
+_@zanieb_
 
 e.g. in `uv-fastapi-example` I don't want a `hello.py` when I regenerate the `pyproject.toml`
 

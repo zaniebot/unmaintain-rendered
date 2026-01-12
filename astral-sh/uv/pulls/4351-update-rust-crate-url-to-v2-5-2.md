@@ -13,14 +13,14 @@ head: renovate/url-2.x-lockfile
 created_at: 2024-06-17T00:12:46Z
 updated_at: 2024-06-22T14:28:59Z
 url: https://github.com/astral-sh/uv/pull/4351
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Update Rust crate url to v2.5.2
 
 ---
 
-_Pull request opened by @renovate on 2024-06-17 00:12_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

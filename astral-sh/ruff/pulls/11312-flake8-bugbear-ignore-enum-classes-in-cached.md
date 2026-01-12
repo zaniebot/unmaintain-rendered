@@ -13,14 +13,14 @@ head: charlie/en
 created_at: 2024-05-06T17:58:41Z
 updated_at: 2024-05-06T18:19:23Z
 url: https://github.com/astral-sh/ruff/pull/11312
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`flake8-bugbear`] Ignore enum classes in `cached-instance-method` (`B019`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-06 17:58_
+_@charliermarsh_
 
 ## Summary
 

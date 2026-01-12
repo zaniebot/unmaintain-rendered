@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-23T03:29:04Z
 updated_at: 2023-12-01T03:11:24Z
 url: https://github.com/astral-sh/ruff/issues/885
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Failed to build wheel on FreeBSD
 
 ---
 
-_Issue opened by @hhartzer on 2022-11-23 03:29_
+_@hhartzer_
 
 This looks awesome and I am really excited to try it out. However, I'm using FreeBSD so I have to build my own wheels.
 

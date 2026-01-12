@@ -12,14 +12,14 @@ head: charlie/pyproject
 created_at: 2023-06-20T16:21:23Z
 updated_at: 2023-06-20T17:36:12Z
 url: https://github.com/astral-sh/ruff/pull/5217
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove defaults from fixtures/pyproject.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 16:21_
+_@charliermarsh_
 
 ## Summary
 

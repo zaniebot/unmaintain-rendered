@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-26T05:11:44Z
 updated_at: 2024-12-27T19:33:05Z
 url: https://github.com/astral-sh/ruff/issues/14600
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # no UP031 fix for `"%d" % 1`
 
 ---
 
-_Issue opened by @njzjz on 2024-11-26 05:11_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

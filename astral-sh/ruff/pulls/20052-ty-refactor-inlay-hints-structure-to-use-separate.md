@@ -15,14 +15,14 @@ head: refactor-inlay-hints
 created_at: 2025-08-22T21:22:34Z
 updated_at: 2025-11-06T11:48:22Z
 url: https://github.com/astral-sh/ruff/pull/20052
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Refactor inlay hints structure to use separate parts
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-08-22 21:22_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

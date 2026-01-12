@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T14:34:28Z
 updated_at: 2024-12-04T02:54:32Z
 url: https://github.com/astral-sh/uv/issues/7660
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Allow command for `tool.uv.index-url` and `tool.uv.pip.index-url`
 
 ---
 
-_Issue opened by @jpedrick on 2024-09-24 14:34_
+_@jpedrick_
 
 UV currently supports using a keyring for the credential provider. However, in my case it's not always practical. I would like to have a simple command line script: `get_pip_credentials.sh` that could invoke something like:
 

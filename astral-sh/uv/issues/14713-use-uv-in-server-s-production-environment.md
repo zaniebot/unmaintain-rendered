@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T11:17:32Z
 updated_at: 2025-07-18T12:03:51Z
 url: https://github.com/astral-sh/uv/issues/14713
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Use uv in server's production environment
 
 ---
 
-_Issue opened by @cedric-sun on 2025-07-18 11:17_
+_@cedric-sun_
 
 ### Question
 

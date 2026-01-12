@@ -13,14 +13,14 @@ head: keyword-helper
 created_at: 2023-07-22T14:32:18Z
 updated_at: 2023-07-23T00:01:06Z
 url: https://github.com/astral-sh/ruff/pull/5983
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use `find_keyword` helper function
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-22 14:32_
+_@tjkuson_
 
 ## Summary
 

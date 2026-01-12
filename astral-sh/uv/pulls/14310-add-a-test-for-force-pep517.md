@@ -13,14 +13,14 @@ head: konsti/test-force-pep517
 created_at: 2025-06-27T10:42:19Z
 updated_at: 2025-07-03T13:34:45Z
 url: https://github.com/astral-sh/uv/pull/14310
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Add a test for `--force-pep517`
 
 ---
 
-_Pull request opened by @konstin on 2025-06-27 10:42_
+_@konstin_
 
 There was previously a gap in the test coverage in ensuring that `--force-pep517` was respected.
 

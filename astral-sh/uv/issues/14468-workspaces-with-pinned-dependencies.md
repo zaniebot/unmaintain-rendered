@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-05T16:27:58Z
 updated_at: 2025-07-07T14:40:46Z
 url: https://github.com/astral-sh/uv/issues/14468
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Workspaces with pinned dependencies
 
 ---
 
-_Issue opened by @davidggz on 2025-07-05 16:27_
+_@davidggz_
 
 ### Question
 

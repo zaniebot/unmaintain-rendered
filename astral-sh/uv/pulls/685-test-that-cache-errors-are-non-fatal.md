@@ -12,14 +12,14 @@ head: konsti/non-fatal-cache-errors
 created_at: 2023-12-18T14:05:12Z
 updated_at: 2023-12-19T12:02:50Z
 url: https://github.com/astral-sh/uv/pull/685
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Test that cache errors are non-fatal
 
 ---
 
-_Pull request opened by @konstin on 2023-12-18 14:05_
+_@konstin_
 
 The test creates a cache from multiple sources and injects faults (once using invalid data and once by making the files unreadable on the fs level), then resolves again.
 

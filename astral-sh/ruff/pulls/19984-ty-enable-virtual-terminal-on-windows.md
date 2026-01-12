@@ -14,14 +14,14 @@ head: david/fix-1045
 created_at: 2025-08-19T07:46:32Z
 updated_at: 2025-08-19T09:14:06Z
 url: https://github.com/astral-sh/ruff/pull/19984
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Enable virtual terminal on Windows
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-19 07:46_
+_@sharkdp_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-07-05T17:28:00Z
 updated_at: 2018-08-02T03:30:26Z
 url: https://github.com/clap-rs/clap/issues/1315
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Accept string arguments inside quotes
 
 ---
 
-_Issue opened by @NQNStudios on 2018-07-05 17:28_
+_@NQNStudios_
 
 ### Bug or Feature Request Summary
 

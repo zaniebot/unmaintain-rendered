@@ -13,14 +13,14 @@ head: extend-AIR311
 created_at: 2025-10-23T10:32:36Z
 updated_at: 2025-10-23T21:12:52Z
 url: https://github.com/astral-sh/ruff/pull/21043
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [`airflow`] Extend `airflow.models..Param` check (`AIR311`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-10-23 10:32_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

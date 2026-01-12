@@ -13,14 +13,14 @@ head: charlie/next
 created_at: 2023-08-21T14:44:19Z
 updated_at: 2023-08-21T15:24:30Z
 url: https://github.com/astral-sh/ruff/pull/6729
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Allow next in FBT exclusions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 14:44_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6711.
 

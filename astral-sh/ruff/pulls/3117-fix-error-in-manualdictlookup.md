@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-02-22T09:55:18Z
 updated_at: 2023-02-22T15:14:31Z
 url: https://github.com/astral-sh/ruff/pull/3117
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix =/== error in `ManualDictLookup`
 
 ---
 
-_Pull request opened by @Rupt on 2023-02-22 09:55_
+_@Rupt_
 
 Fix a tiny `=` over `==` syntax error in docs.
 

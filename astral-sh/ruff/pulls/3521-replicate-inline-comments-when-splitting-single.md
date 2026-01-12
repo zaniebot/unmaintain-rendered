@@ -13,14 +13,14 @@ head: charlie/comments
 created_at: 2023-03-14T18:36:34Z
 updated_at: 2023-03-14T18:48:15Z
 url: https://github.com/astral-sh/ruff/pull/3521
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Replicate inline comments when splitting single-line imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-14 18:36_
+_@charliermarsh_
 
 ## Summary
 

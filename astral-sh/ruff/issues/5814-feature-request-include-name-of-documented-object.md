@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-16T21:56:08Z
 updated_at: 2023-07-17T02:51:35Z
 url: https://github.com/astral-sh/ruff/issues/5814
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [feature-request] Include name of documented object in `D417` (`undocumented-param`) error message
 
 ---
 
-_Issue opened by @smackesey on 2023-07-16 21:56_
+_@smackesey_
 
 Just ran `D417` (`undocumented-param`) on the codebase. We haven't turned this on yet because we have so many violations. The errors printed look like this:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-24T18:30:27Z
 updated_at: 2024-03-25T07:44:21Z
 url: https://github.com/astral-sh/ruff/issues/10550
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # removal of leading white-space in top-of-file comment 
 
 ---
 
-_Issue opened by @janwilmans on 2024-03-24 18:30_
+_@janwilmans_
 
 using ruff vscode plugin,  default configuration but with:
 

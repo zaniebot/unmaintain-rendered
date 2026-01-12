@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T08:14:29Z
 updated_at: 2022-12-05T23:05:37Z
 url: https://github.com/astral-sh/ruff/issues/1050
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # I001 weird asterisk behavior
 
 ---
 
-_Issue opened by @guyrosin on 2022-12-05 08:14_
+_@guyrosin_
 
 Given the following two imports:
 ```

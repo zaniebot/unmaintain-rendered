@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T02:22:54Z
 updated_at: 2025-07-23T01:30:26Z
 url: https://github.com/astral-sh/uv/issues/14472
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # How to specify a shebang to run a streamlit app python file with inline requirements?
 
 ---
 
-_Issue opened by @AY1uZwIcJzKhaGywovQP on 2025-07-07 02:22_
+_@AY1uZwIcJzKhaGywovQP_
 
 ### Question
 

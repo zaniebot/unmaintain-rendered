@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T09:57:33Z
 updated_at: 2024-12-16T20:31:29Z
 url: https://github.com/astral-sh/uv/issues/9908
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Suggestion: read Python versions from PyPI Trove Classifiers
 
 ---
 
-_Issue opened by @RomainBrault on 2024-12-15 09:57_
+_@RomainBrault_
 
 Would it be possible to have an option to read Python versions from trove classifiers ?
 

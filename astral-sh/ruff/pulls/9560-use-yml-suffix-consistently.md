@@ -12,14 +12,14 @@ head: charlie/yml
 created_at: 2024-01-17T05:56:40Z
 updated_at: 2024-01-17T17:45:28Z
 url: https://github.com/astral-sh/ruff/pull/9560
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Use `.yml` suffix consistently
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 05:56_
+_@charliermarsh_
 
 ## Summary
 

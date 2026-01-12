@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T07:27:31Z
 updated_at: 2025-09-08T17:57:42Z
 url: https://github.com/astral-sh/uv/issues/15730
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Source used over default index even when not specified explicitly
 
 ---
 
-_Issue opened by @befelix on 2025-09-08 07:27_
+_@befelix_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: block-attr-fix
 created_at: 2025-05-06T08:25:27Z
 updated_at: 2025-06-21T06:27:07Z
 url: https://github.com/astral-sh/ruff/pull/17884
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [`airflow`] Block fixing if the symbol is an attribute access (`AIR3`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-06 08:25_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: statistics-fixable-help
 created_at: 2024-10-16T10:59:13Z
 updated_at: 2024-10-17T09:15:16Z
 url: https://github.com/astral-sh/ruff/pull/13774
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Add explanation of fixable in `--statistics` command
 
 ---
 
-_Pull request opened by @sbrugman on 2024-10-16 10:59_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

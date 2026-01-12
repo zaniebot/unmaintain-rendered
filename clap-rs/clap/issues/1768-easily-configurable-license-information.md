@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-03-27T15:01:10Z
 updated_at: 2025-06-23T13:31:04Z
 url: https://github.com/clap-rs/clap/issues/1768
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Easily configurable license information
 
 ---
 
-_Issue opened by @Dantali0n on 2020-03-27 15:01_
+_@Dantali0n_
 
 ### Describe your use case
 

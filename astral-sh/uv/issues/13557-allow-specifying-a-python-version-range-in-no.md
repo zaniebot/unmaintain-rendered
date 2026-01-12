@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-20T15:34:08Z
 updated_at: 2025-05-20T20:12:31Z
 url: https://github.com/astral-sh/uv/issues/13557
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Allow specifying a Python version range in `no-binary-package`
 
 ---
 
-_Issue opened by @millerdev on 2025-05-20 15:34_
+_@millerdev_
 
 ### Summary
 

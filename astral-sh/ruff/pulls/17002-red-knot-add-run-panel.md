@@ -14,14 +14,14 @@ head: micha/playground-run
 created_at: 2025-03-26T19:18:04Z
 updated_at: 2025-03-26T21:39:20Z
 url: https://github.com/astral-sh/ruff/pull/17002
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Add run panel
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-26 19:18_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: typing-self-function-scope
 created_at: 2025-06-04T21:51:36Z
 updated_at: 2025-10-22T15:12:13Z
 url: https://github.com/astral-sh/ruff/pull/18473
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Infer type of self as typing.Self in method body
 
 ---
 
-_Pull request opened by @Glyphack on 2025-06-04 21:51_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

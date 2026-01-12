@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-17T11:23:39Z
 updated_at: 2025-02-06T10:57:07Z
 url: https://github.com/astral-sh/ruff/issues/3574
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Sonar RSPEC-1192 (String literals should not be duplicated)
 
 ---
 
-_Issue opened by @mirecl on 2023-03-17 11:23_
+_@mirecl_
 
 Hi all!
 Tell me pls - now there is a check for duplicate value?

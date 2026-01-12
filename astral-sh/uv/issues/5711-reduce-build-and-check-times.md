@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T20:32:02Z
 updated_at: 2024-08-01T20:33:10Z
 url: https://github.com/astral-sh/uv/issues/5711
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Reduce build and check times
 
 ---
 
-_Issue opened by @zanieb on 2024-08-01 20:32_
+_@zanieb_
 
 I can update this with some concrete timing information, but `cargo build` and `cargo clippy` times are on the rise as the project grows. This is a tracking issue to improve the situation and discuss sources of slowness.
 

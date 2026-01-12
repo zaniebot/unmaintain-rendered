@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T15:51:12Z
 updated_at: 2024-05-09T18:16:45Z
 url: https://github.com/astral-sh/uv/issues/3354
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: refactor resolver state into explicit type
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 15:51_
+_@BurntSushi_
 
 Currently, our resolver's state (managed across different calls to unit propagation) is tracked implicitly on the stack of our `solve` routine:
 

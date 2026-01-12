@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-23T15:00:03Z
 updated_at: 2024-07-24T07:08:28Z
 url: https://github.com/astral-sh/ruff/issues/12478
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Incorrectly sorting first-party modules when referenced by full name instead of .my_module
 
 ---
 
-_Issue opened by @GellertPalfi on 2024-07-23 15:00_
+_@GellertPalfi_
 
 Ruff seems to incorrectly sort first-party modules when they are referenced by their full name when using a config file. 
 `--select "I"` seems to work correctly.

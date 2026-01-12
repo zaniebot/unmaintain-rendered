@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T23:06:42Z
 updated_at: 2024-01-10T20:16:24Z
 url: https://github.com/astral-sh/uv/issues/810
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Improve formatting of version range logic
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 23:06_
+_@zanieb_
 
 It's very hard to distinguish when a `,` is part of the sentence **or** a logical and of version ranges, e.g. ([ref](https://github.com/astral-sh/puffin/blob/88adba83a01357dec22bc7e2a0d79ab53e589d5c/crates/puffin-cli/tests/pip_install_scenarios.rs#L152-L155))
 

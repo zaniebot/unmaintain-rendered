@@ -12,14 +12,14 @@ head: charlie/shebang
 created_at: 2023-07-11T16:16:31Z
 updated_at: 2023-07-11T20:30:39Z
 url: https://github.com/astral-sh/ruff/pull/5690
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Refactor shebang parsing to remove regex dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-11 16:16_
+_@charliermarsh_
 
 ## Summary
 

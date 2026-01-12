@@ -13,14 +13,14 @@ head: zb/remove-dir
 created_at: 2025-10-21T17:38:59Z
 updated_at: 2025-10-23T20:08:55Z
 url: https://github.com/astral-sh/uv/pull/16394
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Do not error when a virtual environment directory cannot be removed due to a busy error
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-21 17:38_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16218
 

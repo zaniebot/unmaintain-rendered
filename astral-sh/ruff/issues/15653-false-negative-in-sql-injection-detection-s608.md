@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T18:55:15Z
 updated_at: 2025-01-22T04:50:23Z
 url: https://github.com/astral-sh/ruff/issues/15653
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False negative in SQL injection detection (S608) when selecting multiple columns across multiple lines
 
 ---
 
-_Issue opened by @aripollak on 2025-01-21 18:55_
+_@aripollak_
 
 Here's a file that demonstrates the issue when checked with `ruff check --select S608 test.py`:
 

@@ -13,14 +13,14 @@ head: exclude-upgrade-package-header
 created_at: 2024-07-13T05:04:36Z
 updated_at: 2024-07-13T17:19:22Z
 url: https://github.com/astral-sh/uv/pull/5033
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # pip compile: exclude --upgrade-package when option and value are passed as a single argument
 
 ---
 
-_Pull request opened by @skshetry on 2024-07-13 05:04_
+_@skshetry_
 
 This excludes `--upgrade-package` from `compile_command` when value and option are passed as a single argument. Eg:
 

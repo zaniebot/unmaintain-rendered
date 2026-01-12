@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-08T00:09:39Z
 updated_at: 2023-02-08T02:38:58Z
 url: https://github.com/astral-sh/ruff/issues/2648
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Remove autofix for no-print rule
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-08 00:09_
+_@charliermarsh_
 
 Too confusing.
 

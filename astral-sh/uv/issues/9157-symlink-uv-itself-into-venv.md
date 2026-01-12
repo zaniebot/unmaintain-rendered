@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-15T23:28:07Z
 updated_at: 2024-12-26T16:57:37Z
 url: https://github.com/astral-sh/uv/issues/9157
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Symlink uv itself into venv
 
 ---
 
-_Issue opened by @rdaysky on 2024-11-15 23:28_
+_@rdaysky_
 
 The following workflow seems to have no uv counterpart:
 ```

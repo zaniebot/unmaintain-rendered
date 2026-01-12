@@ -11,14 +11,14 @@ head: fewer-deps
 created_at: 2024-09-04T09:31:43Z
 updated_at: 2024-09-25T15:41:42Z
 url: https://github.com/astral-sh/uv/pull/7000
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Clean up "performance allocators" and "performance flate2" backends
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-09-04 09:31_
+_@fasterthanlime_
 
 ## Summary
 

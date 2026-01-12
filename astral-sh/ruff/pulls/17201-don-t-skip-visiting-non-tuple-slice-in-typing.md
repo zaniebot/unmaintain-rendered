@@ -13,14 +13,14 @@ head: bugfix/esoteric-use-of-annotated
 created_at: 2025-04-04T12:12:00Z
 updated_at: 2025-04-04T14:32:15Z
 url: https://github.com/astral-sh/ruff/pull/17201
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Don't skip visiting non-tuple slice in `typing.Annotated` subscripts
 
 ---
 
-_Pull request opened by @Daverball on 2025-04-04 12:12_
+_@Daverball_
 
 Fixes: #17196
 

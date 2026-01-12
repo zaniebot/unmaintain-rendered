@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T16:03:49Z
 updated_at: 2025-04-16T10:29:46Z
 url: https://github.com/astral-sh/uv/issues/10569
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Great work, but can we support build script e.g. `build.py` for building simple C extension modules?
 
 ---
 
-_Issue opened by @jymchng on 2025-01-13 16:03_
+_@jymchng_
 
 Hi, great work with `uv`! I love Rust and love seeing how it is revolutionizing the Python's ecosystem.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T13:16:41Z
 updated_at: 2024-02-17T07:59:21Z
 url: https://github.com/astral-sh/uv/issues/1489
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # output colouring for light mode terminal
 
 ---
 
-_Issue opened by @detlefla on 2024-02-16 13:16_
+_@detlefla_
 
 In the `uv pip sync` coloured output, package names are in a white font. In a black-on-white terminal they are invisible, and the output looks kind of surprising.
 

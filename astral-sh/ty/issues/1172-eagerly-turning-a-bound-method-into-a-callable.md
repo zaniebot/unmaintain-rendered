@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-11T17:46:58Z
 updated_at: 2026-01-09T02:50:21Z
 url: https://github.com/astral-sh/ty/issues/1172
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Eagerly turning a bound method into a callable leads to wrong signature
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-11 17:46_
+_@sharkdp_
 
 This is very similar to #1169, but since we've talked about this example a few times over the last days, here is our current handling of it:
 

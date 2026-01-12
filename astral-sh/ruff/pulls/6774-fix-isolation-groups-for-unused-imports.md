@@ -13,14 +13,14 @@ head: charlie/isolate
 created_at: 2023-08-22T15:29:51Z
 updated_at: 2023-08-22T16:12:44Z
 url: https://github.com/astral-sh/ruff/pull/6774
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix isolation groups for unused imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 15:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-22T19:22:56Z
 updated_at: 2025-12-19T11:21:03Z
 url: https://github.com/astral-sh/ty/issues/491
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Assume (with mypy/pyright) that a Callable ClassVar is a bound method descriptor
 
 ---
 
-_Issue opened by @carljm on 2025-05-22 19:22_
+_@carljm_
 
 Currently we assume that Callable types do not implement the descriptor protocol -- specifically, the bound method descriptor behavior that function and lambda objects implement, to bind the first argument to the receiver instance.
 

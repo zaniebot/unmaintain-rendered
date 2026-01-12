@@ -12,14 +12,14 @@ head: docs/complete-simplify-fish-source
 created_at: 2025-09-06T11:04:52Z
 updated_at: 2025-09-08T14:38:21Z
 url: https://github.com/clap-rs/clap/pull/6121
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs(complete): Simplify sourcing fish completions
 
 ---
 
-_Pull request opened by @AudaciousAxiom on 2025-09-06 11:04_
+_@AudaciousAxiom_
 
 Unlike most other shells, fish [supports sourcing directly from the standard input](https://github.com/fish-shell/fish-shell/blob/898cc3242b15efc9be514538ff97048ed40c2d77/doc_src/cmds/source.rst), which is simpler and more idiomatic.
 

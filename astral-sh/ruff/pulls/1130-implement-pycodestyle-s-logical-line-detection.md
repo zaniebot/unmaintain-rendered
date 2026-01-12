@@ -12,14 +12,14 @@ head: charlie/pycodestyle
 created_at: 2022-12-07T22:11:55Z
 updated_at: 2023-02-19T15:26:30Z
 url: https://github.com/astral-sh/ruff/pull/1130
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement pycodestyle's logical line detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-07 22:11_
+_@charliermarsh_
 
 Along with the logical line detection, this adds 14 of the missing `pycodestyle` rules.
 

@@ -13,14 +13,14 @@ head: scikit-init-suggestion
 created_at: 2025-09-06T10:20:58Z
 updated_at: 2025-09-12T13:10:37Z
 url: https://github.com/astral-sh/uv/pull/15705
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Better defaults for native build backend cache keys
 
 ---
 
-_Pull request opened by @rimathia on 2025-09-06 10:20_
+_@rimathia_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

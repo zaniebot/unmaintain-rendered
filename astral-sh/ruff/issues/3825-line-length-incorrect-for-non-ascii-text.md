@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T18:40:49Z
 updated_at: 2024-07-18T06:10:45Z
 url: https://github.com/astral-sh/ruff/issues/3825
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Line length incorrect for non-ascii text
 
 ---
 
-_Issue opened by @snstanton on 2023-03-30 18:40_
+_@snstanton_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

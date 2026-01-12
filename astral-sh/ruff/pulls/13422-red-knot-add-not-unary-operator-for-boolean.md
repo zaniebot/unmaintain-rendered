@@ -13,14 +13,14 @@ head: hr/not_bool
 created_at: 2024-09-20T18:33:34Z
 updated_at: 2024-09-20T22:24:38Z
 url: https://github.com/astral-sh/ruff/pull/13422
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # red-knot: Add not unary operator for boolean literals
 
 ---
 
-_Pull request opened by @haarisr on 2024-09-20 18:33_
+_@haarisr_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

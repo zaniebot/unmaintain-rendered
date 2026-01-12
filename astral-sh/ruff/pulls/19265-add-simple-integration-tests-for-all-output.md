@@ -14,14 +14,14 @@ head: brent/output-format-tests
 created_at: 2025-07-10T17:07:22Z
 updated_at: 2025-07-10T21:57:50Z
 url: https://github.com/astral-sh/ruff/pull/19265
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # Add simple integration tests for all output formats
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-10 17:07_
+_@ntBre_
 
 Summary
 --

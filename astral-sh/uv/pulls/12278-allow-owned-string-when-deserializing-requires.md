@@ -13,14 +13,14 @@ head: charlie/cow
 created_at: 2025-03-18T13:09:04Z
 updated_at: 2025-03-18T13:27:23Z
 url: https://github.com/astral-sh/uv/pull/12278
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Allow owned string when deserializing `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 13:09_
+_@charliermarsh_
 
 ## Summary
 

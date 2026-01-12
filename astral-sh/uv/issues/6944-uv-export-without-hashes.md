@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-02T20:38:55Z
 updated_at: 2024-09-03T02:12:30Z
 url: https://github.com/astral-sh/uv/issues/6944
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv export --without-hashes
 
 ---
 
-_Issue opened by @maxfirman on 2024-09-02 20:38_
+_@maxfirman_
 
 Please could you add a `--without-hashes` option to `uv export` similar to [`pdm export`](https://pdm-project.org/latest/reference/cli/#export)
 

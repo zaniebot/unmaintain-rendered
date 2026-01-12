@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-23T13:08:04Z
 updated_at: 2025-02-26T10:02:49Z
 url: https://github.com/astral-sh/uv/issues/10895
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Detect if project directory was moved for venv reconstruction
 
 ---
 
-_Issue opened by @jonaslb on 2025-01-23 13:08_
+_@jonaslb_
 
 ### Summary
 

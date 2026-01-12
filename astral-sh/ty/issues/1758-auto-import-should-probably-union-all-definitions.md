@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T15:55:59Z
 updated_at: 2025-12-04T15:55:59Z
 url: https://github.com/astral-sh/ty/issues/1758
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import should probably union `__all__` definitions in some cases
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-04 15:55_
+_@BurntSushi_
 
 Ref: https://github.com/astral-sh/ruff/pull/21779/files/d314aa859dcf9a6ffb006a594d7ca0431dd4fab2#r2586995420
 

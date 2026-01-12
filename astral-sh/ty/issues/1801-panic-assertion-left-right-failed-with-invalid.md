@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-07T21:23:42Z
 updated_at: 2025-12-08T15:24:07Z
 url: https://github.com/astral-sh/ty/issues/1801
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: assertion `left == right` failed with invalid typing.Annotated usage
 
 ---
 
-_Issue opened by @correctmost on 2025-12-07 21:23_
+_@correctmost_
 
 ### Summary
 

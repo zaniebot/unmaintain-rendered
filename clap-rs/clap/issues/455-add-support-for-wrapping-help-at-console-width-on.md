@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-18T13:28:43Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/455
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for wrapping help at console width on windows
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-18 13:28_
+_@kbknapp_
 
 Probably using [GetConsoleScreenBufferInfo](https://retep998.github.io/doc/kernel32/fn.GetConsoleScreenBufferInfoEx.html)
 

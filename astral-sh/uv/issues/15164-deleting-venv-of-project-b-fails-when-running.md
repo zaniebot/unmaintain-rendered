@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T10:41:29Z
 updated_at: 2025-08-08T20:05:16Z
 url: https://github.com/astral-sh/uv/issues/15164
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Deleting .venv of Project B fails when running Project A due to locked files
 
 ---
 
-_Issue opened by @ctykk on 2025-08-08 10:41_
+_@ctykk_
 
 ### Summary
 

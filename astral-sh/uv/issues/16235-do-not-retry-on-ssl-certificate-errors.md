@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T15:56:04Z
 updated_at: 2025-10-15T00:18:13Z
 url: https://github.com/astral-sh/uv/issues/16235
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Do not retry on SSL certificate errors
 
 ---
 
-_Issue opened by @zanieb on 2025-10-10 15:56_
+_@zanieb_
 
 e.g., https://github.com/astral-sh/uv/issues/16233
 

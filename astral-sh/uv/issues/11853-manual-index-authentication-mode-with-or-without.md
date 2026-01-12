@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T13:13:10Z
 updated_at: 2025-02-28T14:15:33Z
 url: https://github.com/astral-sh/uv/issues/11853
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Manual index authentication mode with (or without) keyring
 
 ---
 
-_Issue opened by @marcellszekrenyes on 2025-02-28 13:13_
+_@marcellszekrenyes_
 
 ### Summary
 At the moment I see a two ways of HTTPS authentication for private package registries. Either by storing the username/password/token somewhere, or by directly including it in the URL. My idea/request is to have a mode where the user gets prompted for username/password instead. I have looked around a bit, I can see a few possible options to achieve this and I would be willing to work on such a feature if there is no specific reason not to have such a functionality.

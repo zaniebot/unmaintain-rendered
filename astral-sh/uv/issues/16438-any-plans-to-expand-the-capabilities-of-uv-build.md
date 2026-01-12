@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T15:16:46Z
 updated_at: 2025-10-29T18:27:54Z
 url: https://github.com/astral-sh/uv/issues/16438
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Any plans to expand the capabilities of `uv build` to allow more control over sdist and wheel contents?
 
 ---
 
-_Issue opened by @rzuckerm on 2025-10-24 15:16_
+_@rzuckerm_
 
 ### Question
 

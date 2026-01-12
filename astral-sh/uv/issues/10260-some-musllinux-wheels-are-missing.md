@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-01T07:33:06Z
 updated_at: 2025-05-19T12:07:57Z
 url: https://github.com/astral-sh/uv/issues/10260
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # some musllinux wheels are missing
 
 ---
 
-_Issue opened by @Freed-Wu on 2025-01-01 07:33_
+_@Freed-Wu_
 
 https://pypi.org/project/uv/#files
 

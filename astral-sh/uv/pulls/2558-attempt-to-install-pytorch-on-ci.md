@@ -12,14 +12,14 @@ head: charlie/stream-error
 created_at: 2024-03-20T01:06:32Z
 updated_at: 2024-04-24T19:59:32Z
 url: https://github.com/astral-sh/uv/pull/2558
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Attempt to install PyTorch on CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 01:06_
+_@charliermarsh_
 
 Trying to reproduce reported errors.
 

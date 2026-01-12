@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T07:05:46Z
 updated_at: 2025-01-01T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/10232
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Issues with uv init when working with production/staging environments
 
 ---
 
-_Issue opened by @elieobeid7 on 2024-12-30 07:05_
+_@elieobeid7_
 
 I have an existing project that uses pip and virtual env in a folder called `foo bar`. I want to migrate from pip to uv. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T15:31:53Z
 updated_at: 2024-12-02T17:23:03Z
 url: https://github.com/astral-sh/ruff/issues/13141
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RET504 for yield
 
 ---
 
-_Issue opened by @opk12 on 2024-08-28 15:31_
+_@opk12_
 
 Hi, Python newbie here. `test_return()` warns about unnecessary assignment before return, so I was wondering, what about the same, but for yield?
 

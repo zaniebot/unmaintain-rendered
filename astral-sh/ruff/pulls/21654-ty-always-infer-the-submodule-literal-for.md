@@ -14,14 +14,14 @@ head: gankra/submodule-attr-fallback-ty
 created_at: 2025-11-27T03:17:50Z
 updated_at: 2025-11-28T14:28:54Z
 url: https://github.com/astral-sh/ruff/pull/21654
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Always infer the submodule literal for submodule attribute-acces…
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-27 03:17_
+_@Gankra_
 
 This is #21619 but based on top the #21583 to see if this looks better on top of it.
 

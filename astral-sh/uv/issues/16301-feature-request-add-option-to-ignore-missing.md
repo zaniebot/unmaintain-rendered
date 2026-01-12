@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T19:01:50Z
 updated_at: 2025-12-15T18:00:25Z
 url: https://github.com/astral-sh/uv/issues/16301
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Feature request: Add option to ignore missing/unavailable indexes
 
 ---
 
-_Issue opened by @rabyj on 2025-10-14 19:01_
+_@rabyj_
 
 ### Summary
 

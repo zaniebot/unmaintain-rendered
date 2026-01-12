@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-31T18:05:05Z
 updated_at: 2024-07-31T21:41:54Z
 url: https://github.com/astral-sh/ruff/issues/12598
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Design call to action messages for fixes displayed in `check`
 
 ---
 
-_Issue opened by @chriskrycho on 2024-07-31 18:05_
+_@chriskrycho_
 
 While working on #12595, @zanieb suggested to split out the design for calls-to-action for unsafe fixes and display-only fixes, since it is not obvious what the design there should be. A few key points to consider:
 

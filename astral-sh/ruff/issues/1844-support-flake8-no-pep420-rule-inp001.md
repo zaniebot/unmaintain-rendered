@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-13T01:53:33Z
 updated_at: 2023-01-18T03:10:33Z
 url: https://github.com/astral-sh/ruff/issues/1844
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support flake8-no-pep420 rule INP001
 
 ---
 
-_Issue opened by @nefrob on 2023-01-13 01:53_
+_@nefrob_
 
 PyPI link: https://pypi.org/project/flake8-no-pep420/.
 

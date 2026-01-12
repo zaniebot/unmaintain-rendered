@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-30T18:15:23Z
 updated_at: 2023-07-17T15:54:02Z
 url: https://github.com/clap-rs/clap/issues/4687
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # how to enable `-h` / `--help` (short help) + `--help-all` (long help)
 
 ---
 
-_Issue opened by @asottile on 2023-01-30 18:15_
+_@asottile_
 
 ### Please complete the following tasks
 

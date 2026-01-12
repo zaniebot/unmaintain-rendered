@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-22T07:17:56Z
 updated_at: 2025-04-26T06:28:47Z
 url: https://github.com/astral-sh/ruff/issues/17537
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Panic leads to hang
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-22 07:17_
+_@sharkdp_
 
 With a 5%-10% chance, Red Knot *hangs* when running on [hydpy](https://github.com/hydpy-dev/hydpy) (with dependencies installed). In all *other* cases, Red Knot panics with
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T12:51:44Z
 updated_at: 2024-11-08T08:23:48Z
 url: https://github.com/astral-sh/ruff/issues/14153
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Docs: code blocks invalid python syntax
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-07 12:51_
+_@sbrugman_
 
 Several rules that operate on physical lines have Python example code blocks. However, often these blocks are invalid Python syntax.
 Should these be changed to text?

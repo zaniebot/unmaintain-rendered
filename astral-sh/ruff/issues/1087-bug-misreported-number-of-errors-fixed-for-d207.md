@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T23:28:02Z
 updated_at: 2022-12-09T22:31:05Z
 url: https://github.com/astral-sh/ruff/issues/1087
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] Misreported number of errors fixed for `D207`/`D208`
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 23:28_
+_@smackesey_
 
 From my shell (on `0.0.160`):
 

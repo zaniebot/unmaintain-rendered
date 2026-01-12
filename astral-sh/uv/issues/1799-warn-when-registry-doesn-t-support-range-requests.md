@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T09:29:51Z
 updated_at: 2024-11-23T03:32:16Z
 url: https://github.com/astral-sh/uv/issues/1799
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Warn when registry doesn't support range requests for wheels
 
 ---
 
-_Issue opened by @konstin on 2024-02-21 09:29_
+_@konstin_
 
 [Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests) are very important for uv's performance, especially with large wheels. They are the difference between downloading entire wheels and just some slices in the bytes to KB range. They have been part of the HTTP/1.1 and are supported by all major webserver and blob storages. We should warn users if their registry is misconfigured and doesn't support range requests. Without a warning, it is otherwise inexplicable to users why uv is slower than advertised.
 

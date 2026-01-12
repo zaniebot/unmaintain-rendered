@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T15:08:57Z
 updated_at: 2024-11-22T15:11:57Z
 url: https://github.com/astral-sh/uv/issues/9324
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # uv sync produces a large (9.5GB) docker layer upon build
 
 ---
 
-_Issue opened by @fortminors on 2024-11-21 15:08_
+_@fortminors_
 
 I have the following pyproject.toml:
 ```toml

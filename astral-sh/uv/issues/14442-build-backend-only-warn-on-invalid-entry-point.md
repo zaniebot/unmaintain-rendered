@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-03T15:39:34Z
 updated_at: 2025-07-24T12:12:37Z
 url: https://github.com/astral-sh/uv/issues/14442
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Build backend: only warn on invalid entry point names
 
 ---
 
-_Issue opened by @Tpt on 2025-07-03 15:39_
+_@Tpt_
 
 ### Summary
 

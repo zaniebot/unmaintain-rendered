@@ -12,14 +12,14 @@ head: fix-binding
 created_at: 2025-06-27T22:25:59Z
 updated_at: 2025-12-10T17:43:25Z
 url: https://github.com/astral-sh/ruff/pull/19004
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # Fix semantic model symbol resolution in classes
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-27 22:25_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

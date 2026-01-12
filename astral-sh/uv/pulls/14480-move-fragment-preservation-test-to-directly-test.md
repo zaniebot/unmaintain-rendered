@@ -13,14 +13,14 @@ head: jtfm/remove-fragment-redirect
 created_at: 2025-07-07T08:23:52Z
 updated_at: 2025-07-07T10:51:23Z
 url: https://github.com/astral-sh/uv/pull/14480
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:14Z
 ```
 
 # Move fragment preservation test to directly test our redirect handling logic
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-07 08:23_
+_@jtfmumm_
 
 When [updating](https://github.com/astral-sh/uv/pull/14475) to the latest `reqwest` version, our fragment propagation test broke. That test was partially testing the `reqwest` behavior, so this PR moves the fragment test to directly test our logic for constructing redirect requests.
 

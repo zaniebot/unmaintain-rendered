@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T18:39:13Z
 updated_at: 2024-03-28T19:29:08Z
 url: https://github.com/clap-rs/clap/issues/5435
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `flatten` with `required` breaks requirement checking
 
 ---
 
-_Issue opened by @nihaals on 2024-03-28 18:39_
+_@nihaals_
 
 ### Please complete the following tasks
 

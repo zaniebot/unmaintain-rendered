@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-21T12:05:19Z
 updated_at: 2025-12-22T12:06:47Z
 url: https://github.com/astral-sh/ty/issues/2144
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `sys.version_info` not being picked up from virtual environment
 
 ---
 
-_Issue opened by @dedeswim on 2025-12-21 12:05_
+_@dedeswim_
 
 ### Summary
 

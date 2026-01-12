@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-05T10:32:55Z
 updated_at: 2024-07-12T04:10:10Z
 url: https://github.com/astral-sh/ruff/issues/12202
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Broken link in 0.5.0 release notes
 
 ---
 
-_Issue opened by @pjonsson on 2024-07-05 10:32_
+_@pjonsson_
 
 The link to `misplaced-bare-raise` at https://github.com/astral-sh/ruff/releases/tag/0.5.0 ends with `%60/` which results in a 404. Removing the `%60` seems to go to the right page.
 

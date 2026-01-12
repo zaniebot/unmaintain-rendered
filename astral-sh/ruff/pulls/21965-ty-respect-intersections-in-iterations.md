@@ -14,14 +14,14 @@ head: charlie/int
 created_at: 2025-12-13T19:28:41Z
 updated_at: 2025-12-19T17:36:42Z
 url: https://github.com/astral-sh/ruff/pull/21965
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Respect intersections in iterations
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 19:28_
+_@charliermarsh_
 
 ## Summary
 

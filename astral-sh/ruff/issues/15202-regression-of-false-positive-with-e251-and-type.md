@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-30T15:17:27Z
 updated_at: 2025-01-01T17:00:33Z
 url: https://github.com/astral-sh/ruff/issues/15202
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Regression of false positive with e251 and type statement type variable defaults
 
 ---
 
-_Issue opened by @mikeshardmind on 2024-12-30 15:17_
+_@mikeshardmind_
 
 ruff version 0.8.4
 python version 3.13

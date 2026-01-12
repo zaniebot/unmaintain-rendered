@@ -12,14 +12,14 @@ head: delimit
 created_at: 2025-09-19T20:26:22Z
 updated_at: 2025-09-19T20:35:20Z
 url: https://github.com/clap-rs/clap/pull/6136
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs(builder): Explain dont_delimit_trailing_values
 
 ---
 
-_Pull request opened by @epage on 2025-09-19 20:26_
+_@epage_
 
 <!--
 Thanks for helping out!

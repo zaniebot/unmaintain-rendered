@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T05:56:16Z
 updated_at: 2023-10-01T08:29:56Z
 url: https://github.com/astral-sh/ruff/issues/7070
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules E203,E231 cause infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 05:56_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-29T19:51:06Z
 updated_at: 2023-06-30T00:03:41Z
 url: https://github.com/astral-sh/ruff/issues/5448
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Infer Python target version from Poetry dependencies
 
 ---
 
-_Issue opened by @MicaelJarniac on 2023-06-29 19:51_
+_@MicaelJarniac_
 
 Ruff is able to infer `tool.ruff.target-version` from `project.requires-python`, but not from Poetry's `tool.poetry.dependencies.python`.
 

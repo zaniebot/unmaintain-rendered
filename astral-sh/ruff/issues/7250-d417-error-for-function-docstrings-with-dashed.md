@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-09T01:50:07Z
 updated_at: 2023-09-10T16:28:45Z
 url: https://github.com/astral-sh/ruff/issues/7250
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # D417 Error for function docstrings with dashed lines
 
 ---
 
-_Issue opened by @eronnen on 2023-09-09 01:50_
+_@eronnen_
 
 ```
 check.py:8:5: D417 Missing argument description in the docstring for `b`: `y`

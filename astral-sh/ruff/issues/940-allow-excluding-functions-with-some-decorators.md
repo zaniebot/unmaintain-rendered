@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-28T12:37:45Z
 updated_at: 2022-11-28T20:42:56Z
 url: https://github.com/astral-sh/ruff/issues/940
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Allow excluding functions with some decorators (like `@override`) from the docstring rules
 
 ---
 
-_Issue opened by @tmke8 on 2022-11-28 12:37_
+_@tmke8_
 
 I use [typing_extensions.override](https://github.com/python/typing_extensions/blob/main/CHANGELOG.md#release-440-october-6-2022) to annotate methods that are overriding a method in the super class. The overriding methods don't need (but of course can optionally have) docstrings because the super method already has one.
 

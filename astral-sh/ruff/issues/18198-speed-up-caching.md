@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T15:42:59Z
 updated_at: 2025-08-11T14:46:13Z
 url: https://github.com/astral-sh/ruff/issues/18198
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Speed up caching
 
 ---
 
-_Issue opened by @ntBre on 2025-05-19 15:42_
+_@ntBre_
 
 It looks like the caching slowdown is not recent, it's been in a pretty steady decline since that 6x number was recorded. These tags aren't exact, just the tag before the commit I was bisecting:
 

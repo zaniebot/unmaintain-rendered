@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T10:00:06Z
 updated_at: 2024-02-22T16:32:20Z
 url: https://github.com/astral-sh/ruff/issues/10069
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF009 triggers for intentional constant computation
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2024-02-21 10:00_
+_@RonnyPfannschmidt_
 
 https://play.ruff.rs/aa67fe33-c09c-4a7f-91fc-5fe9b5b98425
 

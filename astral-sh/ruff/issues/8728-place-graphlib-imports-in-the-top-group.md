@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T22:13:13Z
 updated_at: 2023-11-16T23:15:52Z
 url: https://github.com/astral-sh/ruff/issues/8728
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Place graphlib imports in the top group?
 
 ---
 
-_Issue opened by @gerhard4 on 2023-11-16 22:13_
+_@gerhard4_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: renovate/prek-dependencies
 created_at: 2026-01-12T07:41:10Z
 updated_at: 2026-01-12T08:11:02Z
 url: https://github.com/astral-sh/ruff/pull/22526
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Update prek dependencies
 
 ---
 
-_Pull request opened by @renovate on 2026-01-12 07:41_
+_@renovate_
 
 This PR contains the following updates:
 

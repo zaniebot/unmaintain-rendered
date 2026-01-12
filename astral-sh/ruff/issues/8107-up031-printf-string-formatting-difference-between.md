@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-21T14:53:41Z
 updated_at: 2023-12-07T03:43:22Z
 url: https://github.com/astral-sh/ruff/issues/8107
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `UP031` (printf-string-formatting) difference between Ruff and pyupgrade
 
 ---
 
-_Issue opened by @tdulcet on 2023-10-21 14:53_
+_@tdulcet_
 
 I ran Ruff on medium sized project and then pyupgrade. Ruff missed one `UP031` autofix that pyupgrade fixed. Both Ruff and pyupgrade missed 96 `UP031` (a [known problem](https://docs.astral.sh/ruff/rules/printf-string-formatting/#known-problems)) and 23 `UP032` (a few of these may be caused by #8106).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T15:32:43Z
 updated_at: 2025-05-21T21:14:12Z
 url: https://github.com/astral-sh/ruff/issues/11264
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `flake8-boolean-trap.extend-allowed-calls` don't resolve class types
 
 ---
 
-_Issue opened by @clara-bordes on 2024-05-03 15:32_
+_@clara-bordes_
 
 I am actually working on fixing the rule **boolean-positional-value-in-call (FBT003)** on a code repository.
 

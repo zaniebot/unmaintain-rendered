@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T14:13:20Z
 updated_at: 2025-06-04T03:55:56Z
 url: https://github.com/astral-sh/uv/issues/9576
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # NETRC environment variable ignored for git installs
 
 ---
 
-_Issue opened by @remidebette on 2024-12-02 14:13_
+_@remidebette_
 
 Hi, 
 

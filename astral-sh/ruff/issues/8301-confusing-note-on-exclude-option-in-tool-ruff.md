@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-28T09:06:53Z
 updated_at: 2023-10-28T13:08:26Z
 url: https://github.com/astral-sh/ruff/issues/8301
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Confusing note on `exclude` option in `tool.ruff.format`
 
 ---
 
-_Issue opened by @Giuzzilla on 2023-10-28 09:06_
+_@Giuzzilla_
 
 I was checking the various options for `tool.ruff.format` and in particular I wanted to add additional exclusions to the formatter (in addition to the exclusions in `tool.ruff`.
 

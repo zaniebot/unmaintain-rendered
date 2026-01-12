@@ -13,14 +13,14 @@ head: fix-SIM911pt2
 created_at: 2025-06-19T14:38:24Z
 updated_at: 2025-06-20T19:27:14Z
 url: https://github.com/astral-sh/ruff/pull/18794
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-simplify`] Fix false negatives for shadowed bindings  (`SIM910`, `SIM911`)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-19 14:38_
+_@LaBatata101_
 
 
 

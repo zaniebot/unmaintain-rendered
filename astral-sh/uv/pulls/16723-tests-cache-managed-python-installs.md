@@ -11,14 +11,14 @@ head: fix-managed-python-cache-tests
 created_at: 2025-11-13T15:06:06Z
 updated_at: 2025-11-14T02:55:37Z
 url: https://github.com/astral-sh/uv/pull/16723
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # tests: cache managed Python installs
 
 ---
 
-_Pull request opened by @nooscraft on 2025-11-13 15:06_
+_@nooscraft_
 
 Cache managed Python downloads (#16721)
 

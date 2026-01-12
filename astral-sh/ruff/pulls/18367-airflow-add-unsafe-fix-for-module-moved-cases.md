@@ -14,14 +14,14 @@ head: apply-autofix-to-AIR301
 created_at: 2025-05-29T11:52:00Z
 updated_at: 2025-05-30T12:46:39Z
 url: https://github.com/astral-sh/ruff/pull/18367
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [`airflow`] Add unsafe fix for module moved cases (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-29 11:52_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

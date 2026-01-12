@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-15T16:37:54Z
 updated_at: 2025-06-16T17:32:59Z
 url: https://github.com/astral-sh/ruff/issues/18686
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F401 autofix (adding import to `__all__`) should be unsafe
 
 ---
 
-_Issue opened by @robsdedude on 2025-06-15 16:37_
+_@robsdedude_
 
 ### Summary
 

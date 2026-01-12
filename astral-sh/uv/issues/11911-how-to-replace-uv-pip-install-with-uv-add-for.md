@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T02:58:10Z
 updated_at: 2025-03-03T06:52:29Z
 url: https://github.com/astral-sh/uv/issues/11911
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # How to replace uv pip install with uv add for installing PyTorch?
 
 ---
 
-_Issue opened by @wzr0108 on 2025-03-03 02:58_
+_@wzr0108_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T21:09:49Z
 updated_at: 2025-06-06T15:16:37Z
 url: https://github.com/astral-sh/uv/issues/11002
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Concurrent cache access causes errors on Windows
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-27 21:09_
+_@charliermarsh_
 
 See the comments in https://github.com/astral-sh/uv/issues/7434#issuecomment-2615798114.
 

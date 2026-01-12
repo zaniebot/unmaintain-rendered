@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-28T23:44:01Z
 updated_at: 2023-10-30T23:30:38Z
 url: https://github.com/astral-sh/ruff/issues/8318
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider handling invalid octal escapes
 
 ---
 
-_Issue opened by @sno2 on 2023-10-28 23:44_
+_@sno2_
 
 Here is the wording from the [Python 3.12 lexical analysis page on escape sequences](https://docs.python.org/3/reference/lexical_analysis.html#escape-sequences):
 

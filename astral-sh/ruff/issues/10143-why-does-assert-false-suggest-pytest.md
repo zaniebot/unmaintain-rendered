@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T06:52:10Z
 updated_at: 2024-02-28T01:00:29Z
 url: https://github.com/astral-sh/ruff/issues/10143
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Why does assert False suggest pytest?
 
 ---
 
-_Issue opened by @kaddkaka on 2024-02-27 06:52_
+_@kaddkaka_
 
 Upon linting a python file with only this content, ruff suggests to use pytest, why?
 

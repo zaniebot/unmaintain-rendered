@@ -14,14 +14,14 @@ head: charlie/root
 created_at: 2024-05-09T19:38:51Z
 updated_at: 2024-05-09T19:54:11Z
 url: https://github.com/astral-sh/uv/pull/3497
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Read and write `uv.lock` based on project root
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 19:38_
+_@charliermarsh_
 
 ## Summary
 

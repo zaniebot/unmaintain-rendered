@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T20:21:18Z
 updated_at: 2024-08-19T17:52:53Z
 url: https://github.com/astral-sh/uv/issues/5928
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Resolve from lockfile cannot detect yanked versions
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-08-08 20:21_
+_@ibraheemdev_
 
 When resolving from the lockfile we don't query the registry and so cannot detect yanked versions. We should document this or add an explicit check for yanked versions even when resolving from the lockfile.
 

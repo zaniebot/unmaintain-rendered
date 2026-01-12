@@ -13,14 +13,14 @@ head: fix(RET503)/respect_noreturn_annotation
 created_at: 2024-01-24T16:23:53Z
 updated_at: 2024-01-24T17:28:07Z
 url: https://github.com/astral-sh/ruff/pull/9636
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-return`] Take `NoReturn` annotation into account when analyzing implicit returns
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-24 16:23_
+_@mikeleppane_
 
 ## Summary
 

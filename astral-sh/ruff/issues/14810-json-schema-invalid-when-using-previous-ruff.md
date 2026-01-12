@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T09:58:10Z
 updated_at: 2025-08-11T13:05:08Z
 url: https://github.com/astral-sh/ruff/issues/14810
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # JSON Schema invalid when using previous ruff version
 
 ---
 
-_Issue opened by @DaniBodor on 2024-12-06 09:58_
+_@DaniBodor_
 
 Hi,
 

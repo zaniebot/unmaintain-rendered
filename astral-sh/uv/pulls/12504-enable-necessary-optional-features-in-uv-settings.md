@@ -14,14 +14,14 @@ head: charlie/feat
 created_at: 2025-03-27T02:21:41Z
 updated_at: 2025-03-27T02:30:01Z
 url: https://github.com/astral-sh/uv/pull/12504
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Enable necessary optional features in `uv-settings`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-27 02:21_
+_@charliermarsh_
 
 ## Summary
 

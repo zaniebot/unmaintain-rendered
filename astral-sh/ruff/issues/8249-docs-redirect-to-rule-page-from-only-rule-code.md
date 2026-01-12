@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T11:03:36Z
 updated_at: 2023-11-12T20:36:34Z
 url: https://github.com/astral-sh/ruff/issues/8249
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Docs: Redirect to rule page from only rule code
 
 ---
 
-_Issue opened by @Mogost on 2023-10-26 11:03_
+_@Mogost_
 
 ## Issue Description
 

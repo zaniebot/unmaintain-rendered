@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T09:26:16Z
 updated_at: 2024-12-02T13:35:43Z
 url: https://github.com/astral-sh/uv/issues/9572
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Package version identifier is limited to 18446744073709551615
 
 ---
 
-_Issue opened by @sassanh on 2024-12-02 09:26_
+_@sassanh_
 
 This is a duplicate of https://github.com/astral-sh/uv/issues/8271, the author of that issue closed it as they didn't have that requirement anymore, but the issue is not resolved yet.
 

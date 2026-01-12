@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T19:34:56Z
 updated_at: 2024-09-03T19:35:01Z
 url: https://github.com/astral-sh/uv/issues/6977
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Consider requiring explicit `VIRTUAL_ENV` for `uv run` tests
 
 ---
 
-_Issue opened by @zanieb on 2024-09-03 19:34_
+_@zanieb_
 
 Right now, the `uv run` tests set `VIRTUAL_ENV` by default but other project commands do not (#6976).
 

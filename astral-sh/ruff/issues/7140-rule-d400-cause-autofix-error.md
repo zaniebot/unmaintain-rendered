@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-05T06:21:43Z
 updated_at: 2023-09-06T08:51:52Z
 url: https://github.com/astral-sh/ruff/issues/7140
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule D400 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-05 06:21_
+_@qarmin_
 
 
 Ruff 0.0.287 (latest changes from main branch)

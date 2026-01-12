@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-24T19:21:15Z
 updated_at: 2024-06-29T22:54:11Z
 url: https://github.com/astral-sh/uv/issues/4486
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Add `uv tool list`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-24 19:21_
+_@zanieb_
 
 Should list installed tools. See #3560 
 

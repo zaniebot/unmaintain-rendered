@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-11T23:49:42Z
 updated_at: 2025-09-23T20:02:10Z
 url: https://github.com/astral-sh/ty/issues/183
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support enums
 
 ---
 
-_Issue opened by @carljm on 2025-03-11 23:49_
+_@carljm_
 
 Doc: https://docs.python.org/3/library/enum.html
 Typing spec: https://typing.python.org/en/latest/spec/enums.html

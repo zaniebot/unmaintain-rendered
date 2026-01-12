@@ -14,14 +14,14 @@ head: micha/mypy-primer-opt-level
 created_at: 2025-04-23T07:51:33Z
 updated_at: 2025-05-03T17:46:27Z
 url: https://github.com/astral-sh/ruff/pull/17576
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Use opt-level 3 for mypy primer runs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-23 07:51_
+_@MichaReiser_
 
 _No description provided._
 

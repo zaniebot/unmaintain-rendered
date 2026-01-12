@@ -13,14 +13,14 @@ head: dcreager/hover-mdtest
 created_at: 2025-10-09T12:24:30Z
 updated_at: 2026-01-05T13:36:38Z
 url: https://github.com/astral-sh/ruff/pull/20786
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Add new `hover` mdtest assertion
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-09 12:24_
+_@dcreager_
 
 This PR adds a new `hover` mdtest assertion. This exercises the same logic as the hover LSP action. It's useful for when `reveal_type` would display a different infered type. (`reveal_type` is not transparent to bidirectional typing, so inserting a `reveal_type` call can sometimes _change_ the type that we infer for an expression!)
 

@@ -13,14 +13,14 @@ head: feature/warn-duplicate-index-names
 created_at: 2025-02-27T07:09:08Z
 updated_at: 2025-02-28T08:28:50Z
 url: https://github.com/astral-sh/uv/pull/11824
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Warn when duplicate index names found in single file
 
 ---
 
-_Pull request opened by @sou1118 on 2025-02-27 07:09_
+_@sou1118_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T23:59:28Z
 updated_at: 2024-06-10T21:53:38Z
 url: https://github.com/astral-sh/uv/issues/3845
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv self update error on Windows: The system cannot move the file to a different disk drive
 
 ---
 
-_Issue opened by @ThatOtherAndrew on 2024-05-26 23:59_
+_@ThatOtherAndrew_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: micha/max-parallelism
 created_at: 2025-05-04T13:25:04Z
 updated_at: 2025-05-04T14:27:17Z
 url: https://github.com/astral-sh/ruff/pull/17830
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Introduce `TY_MAX_PARALLELISM` environment variable
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-04 13:25_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/environment-missing-error
 created_at: 2024-06-27T14:36:09Z
 updated_at: 2024-06-27T18:23:10Z
 url: https://github.com/astral-sh/uv/pull/4589
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Improve error message when a virtual environment cannot be found
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 14:36_
+_@zanieb_
 
 _No description provided._
 

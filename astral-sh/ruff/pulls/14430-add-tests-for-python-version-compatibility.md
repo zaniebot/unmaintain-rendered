@@ -14,14 +14,14 @@ head: micha/tests-for-python-version-compatibility
 created_at: 2024-11-18T11:51:09Z
 updated_at: 2024-11-18T12:41:31Z
 url: https://github.com/astral-sh/ruff/pull/14430
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Add tests for python version compatibility
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-18 11:51_
+_@MichaReiser_
 
 ## Summary
 

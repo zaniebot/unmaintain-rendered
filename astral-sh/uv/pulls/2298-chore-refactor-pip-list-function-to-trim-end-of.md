@@ -12,14 +12,14 @@ head: trim_end
 created_at: 2024-03-08T08:24:14Z
 updated_at: 2024-03-08T08:53:29Z
 url: https://github.com/astral-sh/uv/pull/2298
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # 🧹 chore: refactor pip_list function to trim end of joined elements
 
 ---
 
-_Pull request opened by @zrr1999 on 2024-03-08 08:24_
+_@zrr1999_
 
 
 <!--

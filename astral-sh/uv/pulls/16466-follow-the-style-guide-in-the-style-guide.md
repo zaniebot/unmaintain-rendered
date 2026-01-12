@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-27T08:20:47Z
 updated_at: 2025-10-27T20:53:16Z
 url: https://github.com/astral-sh/uv/pull/16466
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Follow the style guide in the style guide
 
 ---
 
-_Pull request opened by @hugovk on 2025-10-27 08:20_
+_@hugovk_
 
 
 <!--

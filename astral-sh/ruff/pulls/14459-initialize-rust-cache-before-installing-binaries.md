@@ -13,14 +13,14 @@ head: zb/ci-cache
 created_at: 2024-11-19T14:33:27Z
 updated_at: 2025-01-22T16:04:13Z
 url: https://github.com/astral-sh/ruff/pull/14459
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Initialize Rust cache before installing binaries and additional components
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 14:33_
+_@zanieb_
 
 I was hoping to reduce the time spent on binary installs, but unfortunately additional binaries are always reinstalled https://github.com/taiki-e/install-action/issues/577 — unfortunately that increases the cache size.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T15:28:49Z
 updated_at: 2023-11-10T16:35:32Z
 url: https://github.com/astral-sh/ruff/issues/8604
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [ruff-format] flake8-class-newline
 
 ---
 
-_Issue opened by @oysstu on 2023-11-10 15:28_
+_@oysstu_
 
 Working on a codebase where [flake8-class-newline](https://pypi.org/project/flake8-class-newline/) is enforced. To quote that module:
 

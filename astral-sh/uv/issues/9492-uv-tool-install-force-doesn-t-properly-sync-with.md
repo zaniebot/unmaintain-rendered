@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-28T03:02:36Z
 updated_at: 2024-11-28T12:01:07Z
 url: https://github.com/astral-sh/uv/issues/9492
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # uv tool install --force doesn't properly sync with local modifications
 
 ---
 
-_Issue opened by @CoderJoshDK on 2024-11-28 03:02_
+_@CoderJoshDK_
 
 Using the command `uv tool install --force .`, doesn't actually update tool with new changes.
 

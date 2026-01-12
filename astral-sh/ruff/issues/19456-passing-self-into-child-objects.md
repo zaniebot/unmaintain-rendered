@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T09:11:09Z
 updated_at: 2025-07-28T12:26:02Z
 url: https://github.com/astral-sh/ruff/issues/19456
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Passing `self` into child objects
 
 ---
 
-_Issue opened by @jack-mcivor on 2025-07-21 09:11_
+_@jack-mcivor_
 
 ### Summary
 

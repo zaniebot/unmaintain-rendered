@@ -14,14 +14,14 @@ head: micha/update-salsa
 created_at: 2025-02-24T08:04:18Z
 updated_at: 2025-02-24T08:46:35Z
 url: https://github.com/astral-sh/ruff/pull/16338
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Update Salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-24 08:04_
+_@MichaReiser_
 
 Update Salsa to fix stale query results for multi-argument queries where one argument is a tracked struct. 
 

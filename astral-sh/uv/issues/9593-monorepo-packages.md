@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T03:39:58Z
 updated_at: 2024-12-03T05:03:45Z
 url: https://github.com/astral-sh/uv/issues/9593
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Monorepo packages
 
 ---
 
-_Issue opened by @Dayof on 2024-12-03 03:39_
+_@Dayof_
 
 I have this following structure on poetry:
 

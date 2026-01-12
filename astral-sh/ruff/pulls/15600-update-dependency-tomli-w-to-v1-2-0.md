@@ -13,14 +13,14 @@ head: renovate/tomli_w-1.x
 created_at: 2025-01-20T03:32:17Z
 updated_at: 2025-01-20T04:48:45Z
 url: https://github.com/astral-sh/ruff/pull/15600
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Update dependency tomli_w to v1.2.0
 
 ---
 
-_Pull request opened by @renovate on 2025-01-20 03:32_
+_@renovate_
 
 This PR contains the following updates:
 

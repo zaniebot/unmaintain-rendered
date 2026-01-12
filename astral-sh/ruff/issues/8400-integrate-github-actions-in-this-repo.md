@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T08:57:37Z
 updated_at: 2024-11-26T03:27:57Z
 url: https://github.com/astral-sh/ruff/issues/8400
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Integrate GitHub Actions in this repo
 
 ---
 
-_Issue opened by @jonathanberthias on 2023-11-01 08:57_
+_@jonathanberthias_
 
 Hello! And thanks for the great work on `ruff`!
 

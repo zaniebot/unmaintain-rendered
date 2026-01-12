@@ -13,14 +13,14 @@ head: alex/upgrade-zizmor
 created_at: 2024-12-16T14:41:58Z
 updated_at: 2024-12-16T17:45:47Z
 url: https://github.com/astral-sh/ruff/pull/15022
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Bump zizmor pre-commit hook to the latest version and fix new warnings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-16 14:41_
+_@AlexWaygood_
 
 ## Summary
 

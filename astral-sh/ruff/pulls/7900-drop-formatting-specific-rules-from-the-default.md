@@ -13,14 +13,14 @@ head: zanie/default-rules
 created_at: 2023-10-10T17:21:00Z
 updated_at: 2023-11-14T19:52:40Z
 url: https://github.com/astral-sh/ruff/pull/7900
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Drop formatting specific rules from the default set
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-10 17:21_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/7572
 

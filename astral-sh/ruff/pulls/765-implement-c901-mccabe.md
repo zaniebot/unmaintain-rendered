@@ -12,14 +12,14 @@ head: feat/mccabe
 created_at: 2022-11-16T07:34:13Z
 updated_at: 2022-11-18T00:17:13Z
 url: https://github.com/astral-sh/ruff/pull/765
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement C901 (mccabe)
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-11-16 07:34_
+_@edgarrmondragon_
 
 Closes https://github.com/charliermarsh/ruff/issues/491
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T14:56:25Z
 updated_at: 2025-01-13T17:43:12Z
 url: https://github.com/astral-sh/uv/issues/10566
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # uv sync is not removing former seed packages
 
 ---
 
-_Issue opened by @adriengardou on 2025-01-13 14:56_
+_@adriengardou_
 
 It is stated in venv creation (https://docs.astral.sh/uv/reference/cli/#uv-venv) with `--seed` option that :
 

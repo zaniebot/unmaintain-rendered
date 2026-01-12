@@ -13,14 +13,14 @@ head: alex/star-imports-redux
 created_at: 2025-03-22T22:51:41Z
 updated_at: 2025-05-07T15:20:59Z
 url: https://github.com/astral-sh/ruff/pull/16923
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Add initial support for `*` imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-22 22:51_
+_@AlexWaygood_
 
 ## Summary
 

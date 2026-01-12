@@ -13,14 +13,14 @@ head: charlie/mapping
 created_at: 2023-08-24T04:36:51Z
 updated_at: 2023-08-25T04:56:54Z
 url: https://github.com/astral-sh/ruff/pull/6836
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add support for PatternMatchMapping formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-24 04:36_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: exit-safety
 created_at: 2025-05-03T03:14:29Z
 updated_at: 2025-05-03T20:27:02Z
 url: https://github.com/astral-sh/ruff/pull/17805
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [pylint] add fix safety section (PLR1722)
 
 ---
 
-_Pull request opened by @eduardorittner on 2025-05-03 03:14_
+_@eduardorittner_
 
 Still a WIP
 

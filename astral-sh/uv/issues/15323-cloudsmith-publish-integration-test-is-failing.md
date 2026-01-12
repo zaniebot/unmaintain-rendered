@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-16T12:42:10Z
 updated_at: 2025-08-18T19:14:41Z
 url: https://github.com/astral-sh/uv/issues/15323
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Cloudsmith publish integration test is failing
 
 ---
 
-_Issue opened by @zanieb on 2025-08-16 12:42_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/actions/runs/17001407277/job/48203823438
 

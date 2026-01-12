@@ -13,14 +13,14 @@ head: add-codeartifact-docs
 created_at: 2024-08-29T14:51:48Z
 updated_at: 2024-08-29T17:40:41Z
 url: https://github.com/astral-sh/uv/pull/6816
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # add docs for AWS CodeArtifact
 
 ---
 
-_Pull request opened by @fmariluis on 2024-08-29 14:51_
+_@fmariluis_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

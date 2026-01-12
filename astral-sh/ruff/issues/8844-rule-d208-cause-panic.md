@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-26T21:05:28Z
 updated_at: 2023-11-28T05:47:37Z
 url: https://github.com/astral-sh/ruff/issues/8844
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule D208 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2023-11-26 21:05_
+_@qarmin_
 
 Ruff 0.1.6 (latest changes from main branch)
 ```

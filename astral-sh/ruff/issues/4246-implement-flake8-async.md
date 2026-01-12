@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-05T13:42:39Z
 updated_at: 2023-05-15T13:15:29Z
 url: https://github.com/astral-sh/ruff/issues/4246
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement flake8-async
 
 ---
 
-_Issue opened by @dacevedo12 on 2023-05-05 13:42_
+_@dacevedo12_
 
 https://github.com/cooperlees/flake8-async
 

@@ -13,14 +13,14 @@ head: better-async109-docs
 created_at: 2024-08-29T05:14:00Z
 updated_at: 2024-09-01T21:47:18Z
 url: https://github.com/astral-sh/ruff/pull/13146
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Expand docs for `ASYNC109`
 
 ---
 
-_Pull request opened by @jamesbraza on 2024-08-29 05:14_
+_@jamesbraza_
 
 ## Summary
 

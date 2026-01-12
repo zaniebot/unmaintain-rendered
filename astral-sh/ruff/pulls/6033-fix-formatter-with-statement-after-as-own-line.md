@@ -13,14 +13,14 @@ head: fix_with_statement_comment_placement_edge_case
 created_at: 2023-07-24T15:06:56Z
 updated_at: 2023-07-24T20:59:04Z
 url: https://github.com/astral-sh/ruff/pull/6033
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix formatter with-statement after-as own line comment instability
 
 ---
 
-_Pull request opened by @konstin on 2023-07-24 15:06_
+_@konstin_
 
 **Summary** Fix an instability in with statement formatter when there is an own line comment as the `as`
 ```python

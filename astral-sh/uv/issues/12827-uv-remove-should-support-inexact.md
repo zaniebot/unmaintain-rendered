@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T07:04:53Z
 updated_at: 2025-04-16T15:20:30Z
 url: https://github.com/astral-sh/uv/issues/12827
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # uv remove should support inexact
 
 ---
 
-_Issue opened by @wu-clan on 2025-04-11 07:04_
+_@wu-clan_
 
 ### Summary
 

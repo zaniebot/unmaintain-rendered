@@ -12,14 +12,14 @@ head: cjm/faq
 created_at: 2025-12-20T00:43:31Z
 updated_at: 2025-12-20T17:00:15Z
 url: https://github.com/astral-sh/ty/pull/2126
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # two new typing FAQ entries
 
 ---
 
-_Pull request opened by @carljm on 2025-12-20 00:43_
+_@carljm_
 
 Add new FAQ entries about checking rule code docs, and `Top` types.
 

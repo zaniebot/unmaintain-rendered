@@ -13,14 +13,14 @@ head: charlie/F541
 created_at: 2023-06-22T20:57:28Z
 updated_at: 2023-06-22T21:31:11Z
 url: https://github.com/astral-sh/ruff/pull/5319
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid syntax errors when removing f-string prefixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 20:57_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5281.
 

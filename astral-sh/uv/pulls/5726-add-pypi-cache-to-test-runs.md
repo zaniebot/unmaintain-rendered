@@ -14,14 +14,14 @@ head: zb/ci-pypi-nginx
 created_at: 2024-08-02T13:34:44Z
 updated_at: 2024-10-01T22:44:37Z
 url: https://github.com/astral-sh/uv/pull/5726
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Add PyPI cache to test runs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-02 13:34_
+_@zanieb_
 
 Part of #5713 
 

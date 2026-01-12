@@ -11,16 +11,16 @@ draft: true
 base: charlie/dyn
 head: charlie/dyn-overload
 created_at: 2026-01-11T14:55:39Z
-updated_at: 2026-01-11T17:58:37Z
+updated_at: 2026-01-12T15:34:46Z
 url: https://github.com/astral-sh/ruff/pull/22502
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Assume 3-argument form for variadics in type(...)
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-11 14:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T23:26:01Z
 updated_at: 2025-05-08T10:02:55Z
 url: https://github.com/astral-sh/ty/issues/108
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # salsa panic "attempt to subtract with overflow" in table/memo.rs
 
 ---
 
-_Issue opened by @carljm on 2025-04-30 23:26_
+_@carljm_
 
 ```
 fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/42f1583/src/table/memo.rs:225:30 when checking `/tmp/mypy_primer/projects/optuna/optuna/visualization/_rank.py`: `attempt to subtract with overflow`

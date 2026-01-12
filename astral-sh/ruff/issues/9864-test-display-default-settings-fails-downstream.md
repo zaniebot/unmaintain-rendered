@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T21:07:00Z
 updated_at: 2024-02-18T13:35:12Z
 url: https://github.com/astral-sh/ruff/issues/9864
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Test display_default_settings fails downstream
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-02-06 21:07_
+_@WhyNotHugo_
 
 Alpine's package runs the tests suite during builds to confirm some sanity.
 The test `display_default_settings` fails downstream.

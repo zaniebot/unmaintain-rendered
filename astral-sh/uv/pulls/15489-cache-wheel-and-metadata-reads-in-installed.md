@@ -13,14 +13,14 @@ head: charlie/once-lock
 created_at: 2025-08-24T18:56:46Z
 updated_at: 2025-08-25T13:40:21Z
 url: https://github.com/astral-sh/uv/pull/15489
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Cache `WHEEL` and `METADATA` reads in installed distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 18:56_
+_@charliermarsh_
 
 ## Summary
 

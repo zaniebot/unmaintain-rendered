@@ -14,14 +14,14 @@ head: deprecated-dunder-method
 created_at: 2024-09-01T14:42:07Z
 updated_at: 2024-09-04T06:23:08Z
 url: https://github.com/astral-sh/ruff/pull/13194
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [pylint] removed dunder methods in Python 3 (PLW3201)
 
 ---
 
-_Pull request opened by @vieira127 on 2024-09-01 14:42_
+_@vieira127_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

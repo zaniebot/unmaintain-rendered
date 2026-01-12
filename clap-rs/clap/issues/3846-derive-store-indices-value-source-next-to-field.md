@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-16T23:25:20Z
 updated_at: 2022-11-30T00:38:29Z
 url: https://github.com/clap-rs/clap/issues/3846
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # derive: Store indices, value source next to field values
 
 ---
 
-_Issue opened by @stepancheg on 2022-06-16 23:25_
+_@stepancheg_
 
 ### Please complete the following tasks
 

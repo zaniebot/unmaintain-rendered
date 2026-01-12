@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T14:12:04Z
 updated_at: 2025-07-11T01:38:30Z
 url: https://github.com/astral-sh/uv/issues/14273
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Ability to specify platform when running `uv sync`
 
 ---
 
-_Issue opened by @LordAro on 2025-06-26 14:12_
+_@LordAro_
 
 ### Summary
 

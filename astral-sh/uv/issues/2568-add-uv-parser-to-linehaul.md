@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T17:06:53Z
 updated_at: 2024-04-24T01:06:28Z
 url: https://github.com/astral-sh/uv/issues/2568
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Add `uv` parser to linehaul 
 
 ---
 
-_Issue opened by @MichaReiser on 2024-03-20 17:06_
+_@MichaReiser_
 
 https://github.com/astral-sh/uv/pull/2493 updated `uv` to include additional metadata in the requests sent to PyPI (or any package index). I tried to query the PyPI big data table but no `uv` records are showing up yet. I believe this is due to the fact that linehaul doesn't recognize `uv` because it doesn't have a `uv` parser configuration in
 

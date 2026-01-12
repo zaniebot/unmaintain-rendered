@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-13T00:11:25Z
 updated_at: 2022-12-15T00:35:54Z
 url: https://github.com/astral-sh/ruff/issues/1223
-synced_at: 2026-01-10T12:06:19Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ignore `pyproject.toml` files that lack `[tool.ruff]`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-13 00:11_
+_@charliermarsh_
 
 Maybe? I think so?
 

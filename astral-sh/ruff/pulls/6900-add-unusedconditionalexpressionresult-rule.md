@@ -12,14 +12,14 @@ head: unused-conditional-expression-result-rule
 created_at: 2023-08-26T17:06:25Z
 updated_at: 2023-12-12T21:44:19Z
 url: https://github.com/astral-sh/ruff/pull/6900
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add UnusedConditionalExpressionResult rule
 
 ---
 
-_Pull request opened by @wookie184 on 2023-08-26 17:06_
+_@wookie184_
 
 Closes #6850
 

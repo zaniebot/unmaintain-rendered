@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T04:57:54Z
 updated_at: 2025-02-12T17:09:47Z
 url: https://github.com/astral-sh/uv/issues/8068
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv python install with custom UV_PYTHON_INSTALL_MIRROR is not respected for pypy
 
 ---
 
-_Issue opened by @gaborbernat on 2024-10-10 04:57_
+_@gaborbernat_
 
 ```bash
 ❯ env UV_PYTHON_INSTALL_MIRROR=https://magic.com/py uv python install pypy3.10 -vv

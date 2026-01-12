@@ -13,14 +13,14 @@ head: aka/docs-integration-marimo
 created_at: 2025-05-27T21:52:51Z
 updated_at: 2025-05-27T23:43:43Z
 url: https://github.com/astral-sh/uv/pull/13691
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # docs: integration with marimo guide
 
 ---
 
-_Pull request opened by @akshayka on 2025-05-27 21:52_
+_@akshayka_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: salsa-boxcar
 created_at: 2025-02-14T18:18:07Z
 updated_at: 2025-06-11T21:39:00Z
 url: https://github.com/astral-sh/ruff/pull/16167
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # update salsa
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-02-14 18:18_
+_@ibraheemdev_
 
 Testing the red-knot benchmarks with https://github.com/salsa-rs/salsa/pull/688 applied.
 

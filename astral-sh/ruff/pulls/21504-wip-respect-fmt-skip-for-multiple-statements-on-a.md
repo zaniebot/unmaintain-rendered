@@ -14,14 +14,14 @@ head: fmt-skip-semicolon
 created_at: 2025-11-17T20:34:38Z
 updated_at: 2025-12-20T21:44:38Z
 url: https://github.com/astral-sh/ruff/pull/21504
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [WIP] Respect `fmt: skip` for multiple statements on a single line
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-11-17 20:34_
+_@dylwil3_
 
 Closes #11430 and #17331
 

@@ -12,14 +12,14 @@ head: charlie/add
 created_at: 2023-10-18T04:49:35Z
 updated_at: 2023-10-18T04:51:21Z
 url: https://github.com/astral-sh/uv/pull/117
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Add a `puffin add` command
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 04:49_
+_@charliermarsh_
 
 This needs far better error handling and user-facing feedback, but it does the basic operation (and includes discovery of the `pyproject.toml` file, etc.).
 

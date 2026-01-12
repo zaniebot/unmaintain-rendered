@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T21:08:22Z
 updated_at: 2025-02-28T21:08:31Z
 url: https://github.com/astral-sh/uv/issues/11866
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Wrap all distribution types in `Arc`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-28 21:08_
+_@charliermarsh_
 
 This is probably worth exploring, but it's a fairly invasive change.
 

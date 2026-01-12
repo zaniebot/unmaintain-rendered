@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-22T14:37:21Z
 updated_at: 2023-03-23T13:19:57Z
 url: https://github.com/astral-sh/ruff/issues/3667
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support for nested classes
 
 ---
 
-_Issue opened by @ShalokShalom on 2023-03-22 14:37_
+_@ShalokShalom_
 
 I know that nested classes are usually not considered to be pythonic, or usable at all. 
 I actually found a use, and suggest to consider them:

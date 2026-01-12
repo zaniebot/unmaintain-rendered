@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T10:05:29Z
 updated_at: 2025-09-23T09:18:23Z
 url: https://github.com/astral-sh/uv/issues/13569
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Cannot `uv pip install` with yanked dependencies
 
 ---
 
-_Issue opened by @vangelem on 2025-05-21 10:05_
+_@vangelem_
 
 ### Question
 

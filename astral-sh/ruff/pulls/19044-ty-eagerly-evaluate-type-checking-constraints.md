@@ -13,14 +13,14 @@ head: david/eagerly-evaluate-type_checking-constant
 created_at: 2025-06-30T11:17:21Z
 updated_at: 2025-07-01T09:05:54Z
 url: https://github.com/astral-sh/ruff/pull/19044
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Eagerly evaluate `TYPE_CHECKING` constraints
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-30 11:17_
+_@sharkdp_
 
 ## Summary
 

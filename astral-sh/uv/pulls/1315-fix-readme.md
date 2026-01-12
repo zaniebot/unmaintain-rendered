@@ -13,14 +13,14 @@ head: charlie/readme
 created_at: 2024-02-15T16:51:38Z
 updated_at: 2024-02-15T17:01:55Z
 url: https://github.com/astral-sh/uv/pull/1315
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Fix README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-15 16:51_
+_@charliermarsh_
 
 Oversight and typo.
 

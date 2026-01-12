@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T00:37:12Z
 updated_at: 2025-07-03T00:03:09Z
 url: https://github.com/astral-sh/ruff/issues/2315
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Potential New Lint Check: Alphabetized Enums
 
 ---
 
-_Issue opened by @traviscook21 on 2023-01-29 00:37_
+_@traviscook21_
 
 Hi there - thanks for the great repo.  I've been continually amazed by how many checks have been included and how fast `ruff` is.  The work y'all are doing is amazing.
 

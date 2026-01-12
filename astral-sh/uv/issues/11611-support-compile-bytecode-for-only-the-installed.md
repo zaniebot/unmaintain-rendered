@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-19T01:30:09Z
 updated_at: 2025-03-14T06:47:01Z
 url: https://github.com/astral-sh/uv/issues/11611
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Support --compile-bytecode for only the installed packages
 
 ---
 
-_Issue opened by @shixuan-fan on 2025-02-19 01:30_
+_@shixuan-fan_
 
 ### Summary
 

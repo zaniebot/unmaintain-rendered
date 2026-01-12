@@ -13,14 +13,14 @@ head: zb/toolchain-python
 created_at: 2024-07-02T18:57:50Z
 updated_at: 2025-10-26T15:51:25Z
 url: https://github.com/astral-sh/uv/pull/4735
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Change "toolchain" to "python"
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 18:57_
+_@zanieb_
 
 Whew this is a lot.
 

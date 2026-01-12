@@ -12,14 +12,14 @@ head: Show_header_for_formatter_comment_decoration_info
 created_at: 2023-09-07T17:27:05Z
 updated_at: 2023-09-08T09:25:08Z
 url: https://github.com/astral-sh/ruff/pull/7228
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Show header for formatter comment decoration info
 
 ---
 
-_Pull request opened by @konstin on 2023-09-07 17:27_
+_@konstin_
 
 Show header for formatter comment decoration info
 

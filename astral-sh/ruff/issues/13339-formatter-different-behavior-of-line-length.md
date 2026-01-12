@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T11:20:57Z
 updated_at: 2024-09-12T12:01:36Z
 url: https://github.com/astral-sh/ruff/issues/13339
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter: Different behavior of `line-length` between ruff and black for docstrings and comments
 
 ---
 
-_Issue opened by @kevalmorabia97 on 2024-09-12 11:20_
+_@kevalmorabia97_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

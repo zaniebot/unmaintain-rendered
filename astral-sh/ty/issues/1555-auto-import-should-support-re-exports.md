@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T13:42:15Z
 updated_at: 2025-12-04T18:21:28Z
 url: https://github.com/astral-sh/ty/issues/1555
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import should support re-exports
 
 ---
 
-_Issue opened by @BurntSushi on 2025-11-14 13:42_
+_@BurntSushi_
 
 At present, ty's auto-import feature doesn't understand re-exports. While this can manifest in a number of ways, one practical real world problem is that it makes auto-import with numpy effectively useless:
 

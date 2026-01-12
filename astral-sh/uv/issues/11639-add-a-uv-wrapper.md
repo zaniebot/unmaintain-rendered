@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T20:37:00Z
 updated_at: 2025-02-20T14:54:42Z
 url: https://github.com/astral-sh/uv/issues/11639
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # Add a uv wrapper
 
 ---
 
-_Issue opened by @cliebBS on 2025-02-19 20:37_
+_@cliebBS_
 
 ### Summary
 

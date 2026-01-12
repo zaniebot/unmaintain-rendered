@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T18:33:35Z
 updated_at: 2025-03-21T13:38:13Z
 url: https://github.com/astral-sh/ruff/issues/15460
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] match arguments to parameters before inferring argument types
 
 ---
 
-_Issue opened by @carljm on 2025-01-13 18:33_
+_@carljm_
 
 In the medium term, we will need contextual type inference of argument types. (This will be more relevant once we have generics.) Some specific examples are at https://discuss.python.org/t/pep-747-typeexpr-type-hint-for-a-type-expression/55984/67. PEP 747 will also add a new case of this. This means we will have to know which parameter an argument maps to, before we infer the type of the argument expression.
 

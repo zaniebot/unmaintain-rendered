@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-24T18:18:51Z
 updated_at: 2025-01-29T22:06:01Z
 url: https://github.com/astral-sh/uv/issues/10942
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # UV binary not working on raspberry pi 5
 
 ---
 
-_Issue opened by @nhumrich on 2025-01-24 18:18_
+_@nhumrich_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-05T08:46:24Z
 updated_at: 2025-04-28T08:33:25Z
 url: https://github.com/astral-sh/ruff/issues/17219
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Importing a logger circumvents "logging-f-string (G004)"
 
 ---
 
-_Issue opened by @Topher-the-Geek on 2025-04-05 08:46_
+_@Topher-the-Geek_
 
 ### Summary
 

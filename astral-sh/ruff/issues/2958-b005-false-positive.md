@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T16:54:23Z
 updated_at: 2023-02-17T00:05:32Z
 url: https://github.com/astral-sh/ruff/issues/2958
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # B005 false positive
 
 ---
 
-_Issue opened by @henryiii on 2023-02-16 16:54_
+_@henryiii_
 
 The following code works in flake8-bugbear but triggers a false positive in Ruff:
 

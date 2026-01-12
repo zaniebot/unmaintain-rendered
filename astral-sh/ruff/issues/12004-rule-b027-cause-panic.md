@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-24T06:06:01Z
 updated_at: 2024-06-25T02:13:56Z
 url: https://github.com/astral-sh/ruff/issues/12004
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule B027 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-06-24 06:06_
+_@qarmin_
 
 ruff 0.4.10+29 (068b75cc8 2024-06-23)
 ```

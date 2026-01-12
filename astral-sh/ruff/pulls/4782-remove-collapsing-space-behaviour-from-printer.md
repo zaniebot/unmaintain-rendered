@@ -14,14 +14,14 @@ head: 06-01-remove-space-collapsing
 created_at: 2023-06-01T10:49:05Z
 updated_at: 2023-06-01T11:38:44Z
 url: https://github.com/astral-sh/ruff/pull/4782
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove collapsing `space` behaviour from `Printer` 
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-01 10:49_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

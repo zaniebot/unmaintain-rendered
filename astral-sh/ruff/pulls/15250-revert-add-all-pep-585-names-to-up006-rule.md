@@ -13,14 +13,14 @@ head: revert-5454-more-UP006-detection
 created_at: 2025-01-04T11:08:55Z
 updated_at: 2025-01-04T11:23:55Z
 url: https://github.com/astral-sh/ruff/pull/15250
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Revert "Add all PEP-585 names to UP006 rule"
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-04 11:08_
+_@MichaReiser_
 
 Reverts astral-sh/ruff#5454
 

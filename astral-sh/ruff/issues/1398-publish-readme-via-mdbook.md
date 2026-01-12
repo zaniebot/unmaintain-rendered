@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-27T03:41:23Z
 updated_at: 2023-01-28T15:34:15Z
 url: https://github.com/astral-sh/ruff/issues/1398
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Publish README via mdBook
 
 ---
 
-_Issue opened by @ischaojie on 2022-12-27 03:41_
+_@ischaojie_
 
 Currently, the README file so long to tired to read, Maybe can create specialized docs' Dir (Using mkdocs or some others).
 

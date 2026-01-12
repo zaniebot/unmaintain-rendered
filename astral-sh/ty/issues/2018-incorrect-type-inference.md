@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T15:42:17Z
 updated_at: 2025-12-17T18:32:12Z
 url: https://github.com/astral-sh/ty/issues/2018
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect type inference
 
 ---
 
-_Issue opened by @Yura52 on 2025-12-17 15:42_
+_@Yura52_
 
 ### Summary
 

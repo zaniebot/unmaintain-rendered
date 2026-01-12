@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T21:39:32Z
 updated_at: 2024-02-25T03:03:19Z
 url: https://github.com/clap-rs/clap/issues/5374
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Why do all issues asking for prefix are closed?
 
 ---
 
-_Issue opened by @DimanNe on 2024-02-24 21:39_
+_@DimanNe_
 
 ### Please complete the following tasks
 

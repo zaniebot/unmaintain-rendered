@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-29T09:01:14Z
 updated_at: 2024-03-29T18:22:24Z
 url: https://github.com/astral-sh/uv/issues/2726
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # uv incorrectly determines local package availability as part of `install_requires`
 
 ---
 
-_Issue opened by @ikalchev on 2024-03-29 09:01_
+_@ikalchev_
 
 First of all - wow this thing is fast! I recently moved a project's _six_ of the linters/formatters to ruff and now uv is equally impressive. Cheers folks, splendid work!
 

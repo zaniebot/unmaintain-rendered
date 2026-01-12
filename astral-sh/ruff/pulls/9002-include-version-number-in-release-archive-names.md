@@ -13,14 +13,14 @@ head: release-archive-versions
 created_at: 2023-12-05T00:07:50Z
 updated_at: 2023-12-05T19:42:22Z
 url: https://github.com/astral-sh/ruff/pull/9002
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Include version number in release archive names
 
 ---
 
-_Pull request opened by @tobbez on 2023-12-05 00:07_
+_@tobbez_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T23:45:40Z
 updated_at: 2024-02-16T04:37:10Z
 url: https://github.com/astral-sh/uv/issues/1388
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # uv pip install/compile fails on AWS codeartifact repo
 
 ---
 
-_Issue opened by @raylu on 2024-02-15 23:45_
+_@raylu_
 
 pip works:
 ```

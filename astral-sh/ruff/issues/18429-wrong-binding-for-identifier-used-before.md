@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T14:44:51Z
 updated_at: 2025-06-04T22:25:44Z
 url: https://github.com/astral-sh/ruff/issues/18429
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Wrong binding for identifier used before definition in class nested in function
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-02 14:44_
+_@dscorbett_
 
 ### Summary
 

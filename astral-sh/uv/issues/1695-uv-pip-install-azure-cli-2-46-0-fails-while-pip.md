@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-19T14:27:01Z
 updated_at: 2024-02-19T14:30:57Z
 url: https://github.com/astral-sh/uv/issues/1695
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv pip install azure-cli==2.46.0 fails while pip install azure-cli==2.46.0 works
 
 ---
 
-_Issue opened by @erdembanak on 2024-02-19 14:27_
+_@erdembanak_
 
 Due to prerelease handling, `uv pip install azure-cli==2.46.0 ` fails:
 

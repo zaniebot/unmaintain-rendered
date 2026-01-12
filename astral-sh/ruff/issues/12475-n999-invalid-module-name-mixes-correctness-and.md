@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T09:14:06Z
 updated_at: 2024-08-01T21:34:27Z
 url: https://github.com/astral-sh/ruff/issues/12475
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `N999` (`invalid-module-name`) mixes correctness and stylistic recommendations
 
 ---
 
-_Issue opened by @edhinard on 2024-07-23 09:14_
+_@edhinard_
 
 Not only does rule N999 check that the PEP8 convention is respected, but also checks that the module name is syntactically correct. The latter is not part of PEP8. This is a problem for me currently working on "old non linted" code. I have to ignore this rule because of some modules whose names are syntactically correct but sometimes with capital letters.
 I think a E rule is missing that would only include the syntax checking of N999. (If I were you I would also remove that part from N999 for consistency)

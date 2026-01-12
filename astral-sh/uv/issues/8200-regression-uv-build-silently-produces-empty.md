@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-15T08:04:18Z
 updated_at: 2024-10-15T17:29:51Z
 url: https://github.com/astral-sh/uv/issues/8200
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # regression: uv build silently produces empty wheels with hatchling if .gitignore is missing
 
 ---
 
-_Issue opened by @jinnatar on 2024-10-15 08:04_
+_@jinnatar_
 
 ### Summary:
 Newer versions of uv build "empty" wheels under the following conditions with `hatchling.build` when depending on hatch default logic of finding the sources at `src/$project/__init__.py`.

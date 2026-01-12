@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T18:57:31Z
 updated_at: 2024-11-23T02:17:45Z
 url: https://github.com/astral-sh/uv/issues/9362
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Indicate in workspaces' doc that workspace dependencies are editable by default 
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2024-11-22 18:57_
+_@ReinforcedKnowledge_
 
 Hi!
 

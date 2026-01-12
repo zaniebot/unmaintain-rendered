@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-23T21:10:43Z
 updated_at: 2024-04-24T14:48:51Z
 url: https://github.com/astral-sh/ruff/issues/11117
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `PYI026`/`type-alias-without-annotation` false positives with `None` in `Enum`
 
 ---
 
-_Issue opened by @Avasam on 2024-04-23 21:10_
+_@Avasam_
 
 ```py
 class VariablePolicy(Enum):

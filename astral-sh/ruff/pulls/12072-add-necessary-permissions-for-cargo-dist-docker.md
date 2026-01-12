@@ -13,14 +13,14 @@ head: charlie/docker
 created_at: 2024-06-27T15:06:45Z
 updated_at: 2024-06-27T15:25:13Z
 url: https://github.com/astral-sh/ruff/pull/12072
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add necessary permissions for cargo-dist Docker build
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-27 15:06_
+_@charliermarsh_
 
 ## Summary
 

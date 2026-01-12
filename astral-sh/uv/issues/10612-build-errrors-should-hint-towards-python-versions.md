@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T19:08:20Z
 updated_at: 2025-01-14T20:21:02Z
 url: https://github.com/astral-sh/uv/issues/10612
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Build errrors should hint towards python versions with a wheel
 
 ---
 
-_Issue opened by @konstin on 2025-01-14 19:08_
+_@konstin_
 
 This is the sibling problem to #2777: Build errors often occur when using a package on an unsupported python version. Instead of using one of the wheels that exist, uv tries to build and then spills a build error about this package, with no indication about why we tried to build in the first place (the difference to #2777 is that we have a source dist).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-16T00:57:13Z
 updated_at: 2021-12-13T22:15:58Z
 url: https://github.com/clap-rs/clap/issues/2892
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `cmd help help` includes `-h` and global arguments but errors when you pass them in
 
 ---
 
-_Issue opened by @epage on 2021-10-16 00:57_
+_@epage_
 
 ### Please complete the following tasks
 

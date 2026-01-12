@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T02:04:42Z
 updated_at: 2025-11-13T02:16:21Z
 url: https://github.com/astral-sh/uv/issues/16714
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # types-protobuf pyi files are not put into venv
 
 ---
 
-_Issue opened by @trajano on 2025-11-13 02:04_
+_@trajano_
 
 ### Summary
 

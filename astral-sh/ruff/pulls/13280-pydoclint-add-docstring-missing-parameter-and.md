@@ -13,14 +13,14 @@ head: doc10x
 created_at: 2024-09-07T23:57:55Z
 updated_at: 2025-10-29T15:05:28Z
 url: https://github.com/astral-sh/ruff/pull/13280
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pydoclint`] Add `docstring-missing-parameter` and `docstring-extraneous-parameter` (`DOC101`, `DOC102`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-09-07 23:57_
+_@augustelalande_
 
 ## Summary
 

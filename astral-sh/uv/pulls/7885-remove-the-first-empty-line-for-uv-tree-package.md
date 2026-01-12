@@ -12,14 +12,14 @@ head: empty-line
 created_at: 2024-10-03T06:17:32Z
 updated_at: 2024-10-03T13:14:45Z
 url: https://github.com/astral-sh/uv/pull/7885
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Remove the first empty line for `uv tree --package foo`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 06:17_
+_@j178_
 
 ## Summary
 

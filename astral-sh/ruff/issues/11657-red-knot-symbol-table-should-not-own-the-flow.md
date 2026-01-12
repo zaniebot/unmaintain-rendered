@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:55:55Z
 updated_at: 2024-06-05T12:23:45Z
 url: https://github.com/astral-sh/ruff/issues/11657
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] symbol table should not own the flow graph
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 21:55_
+_@carljm_
 
 See https://github.com/astral-sh/ruff/pull/11624#discussion_r1622717731
 

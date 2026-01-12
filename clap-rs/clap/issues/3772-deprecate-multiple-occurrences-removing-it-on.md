@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-31T14:48:59Z
 updated_at: 2022-06-08T15:25:14Z
 url: https://github.com/clap-rs/clap/issues/3772
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Deprecate multiple_occurrences, removing it on next breaking change
 
 ---
 
-_Issue opened by @epage on 2022-05-31 14:48_
+_@epage_
 
 With #3405, we are adding Actions.  This would allow us to fold multiple occurrences into Actions if we are willing for [Command::args_override_self](https://docs.rs/clap/latest/clap/struct.App.html#method.args_override_self) to be exclusively the behavior.
 

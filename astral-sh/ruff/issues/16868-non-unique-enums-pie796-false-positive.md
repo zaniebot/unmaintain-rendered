@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T13:02:03Z
 updated_at: 2025-04-08T19:53:29Z
 url: https://github.com/astral-sh/ruff/issues/16868
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # non-unique-enums (PIE796): false positive
 
 ---
 
-_Issue opened by @g-braeunlich on 2025-03-20 13:02_
+_@g-braeunlich_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-14T20:03:40Z
 updated_at: 2023-02-14T20:53:05Z
 url: https://github.com/astral-sh/ruff/issues/2899
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # pre-commit does not pickup black line-length from pyproject.toml
 
 ---
 
-_Issue opened by @quassy on 2023-02-14 20:03_
+_@quassy_
 
 Since #1317 ruff should pick up `line-length` from the `tool.black` section of pyproject.toml, but for me it does not:
 

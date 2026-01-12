@@ -13,14 +13,14 @@ head: QuotedAnnotations
 created_at: 2023-02-01T03:12:20Z
 updated_at: 2023-02-05T14:43:18Z
 url: https://github.com/astral-sh/ruff/pull/2431
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`pyupgrade`]: Removes quotes from annotations
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-01 03:12_
+_@colin99d_
 
 Fixes #827 
 

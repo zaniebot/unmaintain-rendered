@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:03:41Z
 updated_at: 2024-02-16T16:42:05Z
 url: https://github.com/astral-sh/uv/issues/1342
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip install "apache-airflow[all]"` fails to install the required extras
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-15 21:03_
+_@notatallshaw_
 
 Hi all, just found out about this project, I've done a lot of work to test and improve real world resolution performance for Pip and done a lot of testing against [Rip](https://github.com/prefix-dev/rip).
 

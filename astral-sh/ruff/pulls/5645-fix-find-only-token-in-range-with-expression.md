@@ -12,14 +12,14 @@ head: fix_find_only_token_in_range_with_optional_expression_parentheses
 created_at: 2023-07-10T12:09:49Z
 updated_at: 2023-07-10T13:55:20Z
 url: https://github.com/astral-sh/ruff/pull/5645
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix find_only_token_in_range with expression parentheses
 
 ---
 
-_Pull request opened by @konstin on 2023-07-10 12:09_
+_@konstin_
 
 ## Summary
 

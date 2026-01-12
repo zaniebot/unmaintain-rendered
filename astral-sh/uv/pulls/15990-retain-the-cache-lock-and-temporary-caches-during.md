@@ -13,14 +13,14 @@ head: zb/no-drop-cache
 created_at: 2025-09-22T20:04:00Z
 updated_at: 2025-09-22T20:41:09Z
 url: https://github.com/astral-sh/uv/pull/15990
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # Retain the cache lock and temporary caches during `uv run` and `uvx`
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-22 20:04_
+_@zanieb_
 
 We're seeing reports of a regression from https://github.com/astral-sh/uv/pull/15888 where `--no-cache` causes `uv run` and `uvx` to fail to spawn a command.
 

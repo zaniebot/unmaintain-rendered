@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-03-26T10:14:28Z
 updated_at: 2021-08-08T19:56:09Z
 url: https://github.com/clap-rs/clap/issues/1437
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `allow_leading_hyphens` doesn't work on positional arguments
 
 ---
 
-_Issue opened by @rocallahan on 2019-03-26 10:14_
+_@rocallahan_
 
 ### Affected Version of clap
 

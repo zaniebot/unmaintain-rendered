@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T14:28:20Z
 updated_at: 2024-08-31T23:18:21Z
 url: https://github.com/astral-sh/uv/issues/5912
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Project reinstalls should be special cased in install summary
 
 ---
 
-_Issue opened by @zanieb on 2024-08-08 14:28_
+_@zanieb_
 
 e.g.
 

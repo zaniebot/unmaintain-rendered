@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T21:09:09Z
 updated_at: 2024-02-20T22:11:22Z
 url: https://github.com/astral-sh/uv/issues/1783
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # uv venv --seed creates pip command with wrong python version
 
 ---
 
-_Issue opened by @wimglenn on 2024-02-20 21:09_
+_@wimglenn_
 
 uv 0.1.6 on Linux.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T15:17:19Z
 updated_at: 2023-11-10T15:15:35Z
 url: https://github.com/astral-sh/ruff/issues/8565
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP041 false-positive in the case of target=py310
 
 ---
 
-_Issue opened by @alex-700 on 2023-11-08 15:17_
+_@alex-700_
 
 Hi!
 

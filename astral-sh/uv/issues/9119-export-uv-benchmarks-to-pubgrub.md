@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T13:01:23Z
 updated_at: 2024-11-14T13:01:24Z
 url: https://github.com/astral-sh/uv/issues/9119
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Export uv benchmarks to pubgrub
 
 ---
 
-_Issue opened by @konstin on 2024-11-14 13:01_
+_@konstin_
 
 It would be very helpful if we could run uv's main benchmarks (`jupyter`, `jupyter` universal, `apache-airflow[all]`) in pubgrub without uv, so we can benchmark and optimize pubgrub in isolation. This would require three pieces:
 

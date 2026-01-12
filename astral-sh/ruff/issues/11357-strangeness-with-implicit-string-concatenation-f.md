@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T03:15:48Z
 updated_at: 2024-05-10T14:48:07Z
 url: https://github.com/astral-sh/ruff/issues/11357
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Strangeness with implicit string concatenation, f-strings, and rules F541, RUF027
 
 ---
 
-_Issue opened by @dougthor42 on 2024-05-10 03:15_
+_@dougthor42_
 
 ## Summary
 

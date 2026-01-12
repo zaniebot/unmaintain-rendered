@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T04:57:51Z
 updated_at: 2025-02-09T19:26:43Z
 url: https://github.com/astral-sh/uv/issues/9654
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # `uv sync --no-group` incorrectly installs from the excluded group if `tensorrt-cu12-libs==10.3.0` package is a dependency, but correctly excludes for other packages
 
 ---
 
-_Issue opened by @akiyamasho on 2024-12-05 04:57_
+_@akiyamasho_
 
 ### Overview
 

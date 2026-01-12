@@ -13,14 +13,14 @@ head: feat/loongarch64
 created_at: 2025-09-12T08:23:38Z
 updated_at: 2025-09-12T17:49:14Z
 url: https://github.com/astral-sh/ruff/pull/20361
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ruff]: Build loongarch64 binaries in CI
 
 ---
 
-_Pull request opened by @SkyBird233 on 2025-09-12 08:23_
+_@SkyBird233_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

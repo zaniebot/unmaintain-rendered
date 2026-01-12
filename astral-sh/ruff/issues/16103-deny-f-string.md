@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-11T20:06:06Z
 updated_at: 2025-02-12T14:01:40Z
 url: https://github.com/astral-sh/ruff/issues/16103
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Deny f-string
 
 ---
 
-_Issue opened by @danmur97 on 2025-02-11 20:06_
+_@danmur97_
 
 ### Description
 

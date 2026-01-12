@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-30T15:45:32Z
 updated_at: 2025-08-07T16:15:37Z
 url: https://github.com/astral-sh/ruff/issues/9707
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Internal PR title patcher
 
 ---
 
-_Issue opened by @johnslavik on 2024-01-30 15:45_
+_@johnslavik_
 
 Would you be interested in a GitHub Action that checks PRs for which rules they affected and edits their titles to meet the format
 "[`origin`] Title (`rule-code`)"?

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-20T20:59:28Z
 updated_at: 2023-07-20T21:25:30Z
 url: https://github.com/clap-rs/clap/issues/5029
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Provide better did-you-mean suggestions for swapped words
 
 ---
 
-_Issue opened by @not-my-profile on 2023-07-20 20:59_
+_@not-my-profile_
 
 While using the `deno` CLI (which uses clap) I experienced the following:
 

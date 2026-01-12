@@ -13,14 +13,14 @@ head: alex/remove-target-version
 created_at: 2024-08-09T19:18:10Z
 updated_at: 2024-08-10T13:28:32Z
 url: https://github.com/astral-sh/ruff/pull/12790
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove `red_knot_python_semantic::python_version::TargetVersion`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-09 19:18_
+_@AlexWaygood_
 
 ## Summary
 

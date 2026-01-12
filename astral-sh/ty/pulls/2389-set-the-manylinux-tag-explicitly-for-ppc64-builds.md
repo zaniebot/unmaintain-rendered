@@ -11,14 +11,14 @@ head: zb/ppc-force
 created_at: 2026-01-07T23:32:03Z
 updated_at: 2026-01-08T13:05:11Z
 url: https://github.com/astral-sh/ty/pull/2389
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Set the manylinux tag explicitly for ppc64 builds
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-07 23:32_
+_@zanieb_
 
 As of the latest version of maturin, this actually may not be compatible with the manylinux tag, but I think we should continue publishing it until we've made the actual choice to drop support. This is redundant with #2387 which downgrades maturin, but relevant for future upgrades.
 

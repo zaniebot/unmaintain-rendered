@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T06:57:54Z
 updated_at: 2025-01-15T07:49:18Z
 url: https://github.com/astral-sh/ruff/issues/12523
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Provide log messages for the native server
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-26 06:57_
+_@dhruvmanila_
 
 There aren't many log messages emitted by the server which can help in debugging. It would be quite useful to provide some more log messages at info / debug / trace levels.
 

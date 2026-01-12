@@ -13,14 +13,14 @@ head: charlie/ann
 created_at: 2024-04-02T19:50:23Z
 updated_at: 2024-04-02T20:18:07Z
 url: https://github.com/astral-sh/ruff/pull/10741
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`flake8-return`] Ignore assignments to annotated variables in `unnecessary-assign`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 19:50_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: pt003-autofix
 created_at: 2023-01-27T17:50:31Z
 updated_at: 2023-01-30T07:52:17Z
 url: https://github.com/astral-sh/ruff/pull/2270
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # autofix for PT003
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-27 17:50_
+_@sbrugman_
 
 Closes https://github.com/charliermarsh/ruff/issues/2260
 

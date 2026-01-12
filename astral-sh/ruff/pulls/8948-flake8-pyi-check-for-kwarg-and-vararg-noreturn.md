@@ -13,14 +13,14 @@ head: noreturn-false-negative
 created_at: 2023-12-01T16:30:35Z
 updated_at: 2023-12-01T17:20:34Z
 url: https://github.com/astral-sh/ruff/pull/8948
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`flake8-pyi`] Check for kwarg and vararg `NoReturn` type annotations
 
 ---
 
-_Pull request opened by @tjkuson on 2023-12-01 16:30_
+_@tjkuson_
 
 ## Summary
 

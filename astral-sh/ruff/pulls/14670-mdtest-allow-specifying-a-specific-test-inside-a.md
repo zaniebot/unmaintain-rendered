@@ -14,14 +14,14 @@ head: mdtest-single
 created_at: 2024-11-29T06:52:41Z
 updated_at: 2024-11-29T15:22:25Z
 url: https://github.com/astral-sh/ruff/pull/14670
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # mdtest: allow specifying a specific test inside a file
 
 ---
 
-_Pull request opened by @connorskees on 2024-11-29 06:52_
+_@connorskees_
 
 Resolves https://github.com/astral-sh/ruff/issues/13868 by adding an environment variable `MDTEST_FILE_FILTER` which can be used to specify a substring for tests to be filtered by. I was working around this when implementing another PR by deleting all the other tests in a file. 
 

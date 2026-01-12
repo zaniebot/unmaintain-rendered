@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T15:01:41Z
 updated_at: 2025-03-03T10:06:03Z
 url: https://github.com/astral-sh/ruff/issues/16373
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # A001 and A003 should ignore variables like `__doc__`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-25 15:01_
+_@dscorbett_
 
 ### Summary
 

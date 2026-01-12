@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-05-23T23:04:00Z
 updated_at: 2025-05-24T00:20:04Z
 url: https://github.com/astral-sh/uv/pull/13630
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Update projects.md hello-world main file name
 
 ---
 
-_Pull request opened by @jmiddleton on 2025-05-23 23:04_
+_@jmiddleton_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

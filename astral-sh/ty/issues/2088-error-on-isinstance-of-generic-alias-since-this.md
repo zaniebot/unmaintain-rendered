@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T20:25:11Z
 updated_at: 2025-12-18T21:08:52Z
 url: https://github.com/astral-sh/ty/issues/2088
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error on `isinstance` of generic alias, since this fails at runtime
 
 ---
 
-_Issue opened by @carljm on 2025-12-18 20:25_
+_@carljm_
 
 Right now we are fine with `isinstance(x, list[str])` (and we even do "the right thing" from a type system perspective), but this check actually fails at runtime, we should error on it.
 

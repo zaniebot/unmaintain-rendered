@@ -13,14 +13,14 @@ head: renovate/hashbrown-0.x-lockfile
 created_at: 2025-05-05T02:16:17Z
 updated_at: 2025-05-05T09:36:03Z
 url: https://github.com/astral-sh/uv/pull/13294
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Update Rust crate hashbrown to v0.15.3
 
 ---
 
-_Pull request opened by @renovate on 2025-05-05 02:16_
+_@renovate_
 
 This PR contains the following updates:
 

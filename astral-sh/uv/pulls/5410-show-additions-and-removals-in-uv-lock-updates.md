@@ -14,14 +14,14 @@ head: charlie/update
 created_at: 2024-07-24T14:55:59Z
 updated_at: 2024-07-24T15:33:10Z
 url: https://github.com/astral-sh/uv/pull/5410
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Show additions and removals in `uv lock` updates
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 14:55_
+_@charliermarsh_
 
 ## Summary
 

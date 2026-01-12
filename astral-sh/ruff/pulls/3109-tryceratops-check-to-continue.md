@@ -12,14 +12,14 @@ head: check_to_continue
 created_at: 2023-02-22T03:11:28Z
 updated_at: 2023-02-27T00:11:44Z
 url: https://github.com/astral-sh/ruff/pull/3109
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`tryceratops`]: Check to continue
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-22 03:11_
+_@colin99d_
 
 #2056 
 

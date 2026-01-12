@@ -13,14 +13,14 @@ head: konsti/lock-test-publish-script
 created_at: 2025-01-14T18:48:06Z
 updated_at: 2025-01-14T20:10:38Z
 url: https://github.com/astral-sh/uv/pull/10611
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Use script locking for publish test script
 
 ---
 
-_Pull request opened by @konstin on 2025-01-14 18:48_
+_@konstin_
 
 Use the script locking feature in uv's own test suite, as an example and to use our features ourselves.
 

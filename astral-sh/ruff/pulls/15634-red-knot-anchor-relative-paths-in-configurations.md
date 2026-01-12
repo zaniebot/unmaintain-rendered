@@ -13,14 +13,14 @@ head: micha/path-anchoring
 created_at: 2025-01-21T10:52:33Z
 updated_at: 2025-01-23T09:14:04Z
 url: https://github.com/astral-sh/ruff/pull/15634
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Anchor relative paths in configurations
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-21 10:52_
+_@MichaReiser_
 
 ## Summary
 

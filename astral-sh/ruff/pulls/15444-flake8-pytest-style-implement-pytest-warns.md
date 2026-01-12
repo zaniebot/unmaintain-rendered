@@ -14,14 +14,14 @@ head: pytest-raises
 created_at: 2025-01-12T20:33:24Z
 updated_at: 2025-01-13T23:40:37Z
 url: https://github.com/astral-sh/ruff/pull/15444
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-pytest-style`] Implement pytest.warns diagnostics (`PT029`, `PT030`, `PT031`)
 
 ---
 
-_Pull request opened by @tjkuson on 2025-01-12 20:33_
+_@tjkuson_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T18:05:38Z
 updated_at: 2025-06-13T18:38:29Z
 url: https://github.com/astral-sh/uv/issues/14034
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # aws codeartifact works in v0.7.12 but not v0.7.13
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-06-13 18:05_
+_@kurt-rhee_
 
 ### Summary
 

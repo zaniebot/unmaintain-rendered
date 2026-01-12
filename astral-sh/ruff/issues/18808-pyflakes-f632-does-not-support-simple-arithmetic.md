@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T01:05:35Z
 updated_at: 2025-06-20T06:12:29Z
 url: https://github.com/astral-sh/ruff/issues/18808
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pyflakes`] `F632` does not support simple arithmetic
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 01:05_
+_@MeGaGiGaGon_
 
 ### Summary
 

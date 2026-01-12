@@ -14,14 +14,14 @@ head: normalalize-hex-escapes
 created_at: 2023-12-26T03:56:06Z
 updated_at: 2023-12-28T01:06:59Z
 url: https://github.com/astral-sh/ruff/pull/9280
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Normalise Hex and unicode escape sequences in string
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-26 03:56_
+_@MichaReiser_
 
 ## Summary
 

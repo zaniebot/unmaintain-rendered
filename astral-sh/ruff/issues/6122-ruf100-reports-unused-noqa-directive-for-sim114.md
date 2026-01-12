@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-27T11:21:00Z
 updated_at: 2023-07-27T13:32:11Z
 url: https://github.com/astral-sh/ruff/issues/6122
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF100 reports unused noqa directive for SIM114, but it is not unused
 
 ---
 
-_Issue opened by @tkukushkin on 2023-07-27 11:21_
+_@tkukushkin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

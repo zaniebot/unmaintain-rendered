@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-23T09:26:10Z
 updated_at: 2023-08-23T13:29:35Z
 url: https://github.com/astral-sh/ruff/issues/6807
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False-positive F401 when typing is used in comment
 
 ---
 
-_Issue opened by @mmhw on 2023-08-23 09:26_
+_@mmhw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

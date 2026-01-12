@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T11:31:31Z
 updated_at: 2025-11-25T18:50:48Z
 url: https://github.com/astral-sh/ty/issues/533
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add support for `nonlocal` and `global` bindings to find-references
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 11:31_
+_@MichaReiser_
 
 Add support for finding all references to a symbol in the project. See [find reference](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_references) request
 

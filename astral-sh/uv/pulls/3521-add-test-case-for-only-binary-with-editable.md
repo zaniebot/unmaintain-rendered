@@ -13,14 +13,14 @@ head: zb/editable-only-binary
 created_at: 2024-05-11T02:27:33Z
 updated_at: 2024-05-13T14:00:13Z
 url: https://github.com/astral-sh/uv/pull/3521
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Add test case for `--only-binary` with editable requirement
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-11 02:27_
+_@zanieb_
 
 _No description provided._
 

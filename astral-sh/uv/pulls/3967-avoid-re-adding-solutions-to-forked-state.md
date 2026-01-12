@@ -14,14 +14,14 @@ head: charlie/glob
 created_at: 2024-06-02T21:14:09Z
 updated_at: 2024-06-02T21:58:43Z
 url: https://github.com/astral-sh/uv/pull/3967
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Avoid re-adding solutions to forked state
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-02 21:14_
+_@charliermarsh_
 
 ## Summary
 

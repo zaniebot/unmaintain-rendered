@@ -12,14 +12,14 @@ head: charlie/puffin
 created_at: 2023-10-06T01:03:16Z
 updated_at: 2023-10-06T01:03:22Z
 url: https://github.com/astral-sh/uv/pull/16
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Rename `puffin-requirements` to `puffin-package`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 01:03_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/7.
 

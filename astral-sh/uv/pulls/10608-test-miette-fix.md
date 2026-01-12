@@ -12,14 +12,14 @@ head: zb/test-miette
 created_at: 2025-01-14T18:32:33Z
 updated_at: 2025-01-14T19:04:21Z
 url: https://github.com/astral-sh/uv/pull/10608
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Test miette fix
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-14 18:32_
+_@zanieb_
 
 _No description provided._
 

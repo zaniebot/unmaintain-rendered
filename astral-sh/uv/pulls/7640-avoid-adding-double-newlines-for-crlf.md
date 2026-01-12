@@ -14,14 +14,14 @@ head: charlie/cr
 created_at: 2024-09-23T13:51:21Z
 updated_at: 2024-09-23T13:58:25Z
 url: https://github.com/astral-sh/uv/pull/7640
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Avoid adding double-newlines for CRLF
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-23 13:51_
+_@charliermarsh_
 
 ## Summary
 

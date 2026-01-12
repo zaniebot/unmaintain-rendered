@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T04:47:28Z
 updated_at: 2025-07-02T19:40:19Z
 url: https://github.com/astral-sh/uv/issues/12889
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv run --with environment caching question
 
 ---
 
-_Issue opened by @tjni on 2025-04-15 04:47_
+_@tjni_
 
 ### Summary
 

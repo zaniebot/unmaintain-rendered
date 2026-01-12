@@ -12,14 +12,14 @@ head: konsti/warn-on-slow-resolve
 created_at: 2024-02-28T10:25:17Z
 updated_at: 2024-05-21T16:03:28Z
 url: https://github.com/astral-sh/uv/pull/2041
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Warn when trying many versions
 
 ---
 
-_Pull request opened by @konstin on 2024-02-28 10:25_
+_@konstin_
 
 In pathological cases, it's hard to follow why the resolution is slow. This is an attempt to give the user an indication what is slow (boto3) and how to fix this (add a manual boto3 constraint). This also helps to determine if this is a pathological case or a server that doesn't support range requests.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T23:28:02Z
 updated_at: 2025-09-24T13:40:06Z
 url: https://github.com/astral-sh/uv/issues/13904
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Automatically detect and delete unused packages
 
 ---
 
-_Issue opened by @hamirmahal on 2025-06-08 23:28_
+_@hamirmahal_
 
 ### Summary
 

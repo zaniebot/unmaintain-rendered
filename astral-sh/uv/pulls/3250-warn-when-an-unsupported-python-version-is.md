@@ -12,14 +12,14 @@ head: feat/add-warning-message-unsupported-python-version
 created_at: 2024-04-24T16:19:23Z
 updated_at: 2024-04-24T17:51:58Z
 url: https://github.com/astral-sh/uv/pull/3250
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Warn when an unsupported Python version is encountered
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-24 16:19_
+_@zanieb_
 
 I rebased https://github.com/astral-sh/uv/pull/2757 then realized that we want to implement this for more than `uv venv`.
 

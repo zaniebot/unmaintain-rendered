@@ -13,14 +13,14 @@ head: update-self-target
 created_at: 2024-09-10T13:06:44Z
 updated_at: 2024-09-10T15:16:15Z
 url: https://github.com/astral-sh/uv/pull/7252
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Allow setting a target version for `uv self update`
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-10 13:06_
+_@blueraft_
 
 ## Summary
 

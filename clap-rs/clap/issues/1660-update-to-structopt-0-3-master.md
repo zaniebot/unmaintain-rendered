@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-10-02T20:25:15Z
 updated_at: 2020-09-22T23:10:15Z
 url: https://github.com/clap-rs/clap/issues/1660
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Update to structopt 0.3 master
 
 ---
 
-_Issue opened by @CreepySkeleton on 2019-10-02 20:25_
+_@CreepySkeleton_
 
 `structopt` has released v0.3.0 a month ago. This update brings in a number of breaking changes (most noticeably `raw` attributes removal), cosmetic changes (like span-based error reporting), and a lot of minor improvements and bug fixes. Furthermore, it has been improving further over this month, working both on new features and bug fixes. Also docs have been clarified and greatly improved. 
 

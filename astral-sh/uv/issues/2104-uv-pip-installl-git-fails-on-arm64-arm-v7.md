@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T08:01:57Z
 updated_at: 2024-07-09T09:14:23Z
 url: https://github.com/astral-sh/uv/issues/2104
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv pip installl git+ fails on arm64 + arm/v7
 
 ---
 
-_Issue opened by @gregerspoulsen on 2024-03-01 08:01_
+_@gregerspoulsen_
 
 Running `uv pip install git+...` fails on arm64 + arm/v7 but completes on amd64.
 Tested with uv version 0.1.12 and 0.1.13

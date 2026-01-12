@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-11-03T19:00:51Z
 updated_at: 2024-11-03T19:16:29Z
 url: https://github.com/astral-sh/ruff/pull/14066
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Allow `open` without context manager in `return` statement
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-03 19:00_
+_@charliermarsh_
 
 ## Summary
 

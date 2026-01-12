@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-20T14:00:25Z
 updated_at: 2025-08-07T20:15:54Z
 url: https://github.com/clap-rs/clap/issues/5920
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Changelog top level date is wrong
 
 ---
 
-_Issue opened by @ThierryBerger on 2025-02-20 14:00_
+_@ThierryBerger_
 
 Looking at the changelog is confusing due to 2022 being listed on the top level, it should probably be "unreleased". But then we see "unreleased" later.
 

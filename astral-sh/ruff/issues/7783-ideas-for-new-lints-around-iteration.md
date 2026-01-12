@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-03T15:48:53Z
 updated_at: 2023-10-12T19:39:49Z
 url: https://github.com/astral-sh/ruff/issues/7783
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ideas for new lints around iteration
 
 ---
 
-_Issue opened by @alexprengere on 2023-10-03 15:48_
+_@alexprengere_
 
 I apologize if you not looking for new lints to implement in Ruff.
 

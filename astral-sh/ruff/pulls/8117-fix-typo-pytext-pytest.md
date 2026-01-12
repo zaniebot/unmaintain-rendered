@@ -12,14 +12,14 @@ head: fix-pytext
 created_at: 2023-10-22T07:09:42Z
 updated_at: 2023-10-22T14:46:40Z
 url: https://github.com/astral-sh/ruff/pull/8117
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix typo (`pytext` -> `pytest`)
 
 ---
 
-_Pull request opened by @harupy on 2023-10-22 07:09_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

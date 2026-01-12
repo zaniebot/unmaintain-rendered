@@ -13,14 +13,14 @@ head: akuhn/docs-formatter-redundancy
 created_at: 2024-02-16T15:29:41Z
 updated_at: 2024-12-28T23:44:56Z
 url: https://github.com/astral-sh/ruff/pull/10007
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # docs: Formatter compatibility warning for D207 and D300
 
 ---
 
-_Pull request opened by @arkuhn on 2024-02-16 15:29_
+_@arkuhn_
 
 - Update docs to mention formatter compatibility interactions for under-indentation (D207) and triple-single-quotes (D300)
 - Changes verified locally with mkdocs

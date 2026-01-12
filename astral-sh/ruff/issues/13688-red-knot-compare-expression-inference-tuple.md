@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T08:45:10Z
 updated_at: 2024-10-16T11:39:56Z
 url: https://github.com/astral-sh/ruff/issues/13688
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Compare expression inference - Tuple
 
 ---
 
-_Issue opened by @cake-monotone on 2024-10-09 08:45_
+_@cake-monotone_
 
 Related to #13618
 

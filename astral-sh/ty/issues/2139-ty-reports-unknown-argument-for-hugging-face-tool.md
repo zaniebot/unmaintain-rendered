@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-21T04:34:35Z
 updated_at: 2026-01-06T11:29:07Z
 url: https://github.com/astral-sh/ty/issues/2139
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty reports unknown-argument for Hugging Face tool choice dataclasses
 
 ---
 
-_Issue opened by @dsfaccini on 2025-12-21 04:34_
+_@dsfaccini_
 
 ### Summary
 Ty reports `unknown-argument` for valid fields on Hugging Face chat tool choice dataclasses.

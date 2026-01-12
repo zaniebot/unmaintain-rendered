@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-09-20T17:05:23Z
 updated_at: 2022-02-02T20:11:20Z
 url: https://github.com/clap-rs/clap/issues/1549
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Option not to reorder possible values for an argument
 
 ---
 
-_Issue opened by @rzumer on 2019-09-20 17:05_
+_@rzumer_
 
 ### Affected Version of clap
 

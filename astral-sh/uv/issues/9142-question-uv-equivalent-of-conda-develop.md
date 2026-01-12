@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T06:28:19Z
 updated_at: 2024-11-20T21:48:23Z
 url: https://github.com/astral-sh/uv/issues/9142
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Question: UV equivalent of "conda develop ."
 
 ---
 
-_Issue opened by @killcoder on 2024-11-15 06:28_
+_@killcoder_
 
 Does uv have an equivalent command to "conda develop ."? I've recently started testing uv as a replacement for conda env but straight away it couldn't find local module "assets" even though its in the project folder. 
 ```

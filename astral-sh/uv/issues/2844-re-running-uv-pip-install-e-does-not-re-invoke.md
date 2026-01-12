@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T22:22:09Z
 updated_at: 2024-09-13T12:56:48Z
 url: https://github.com/astral-sh/uv/issues/2844
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # re-running "uv pip install -e ..." does not re-invoke the build system on the package
 
 ---
 
-_Issue opened by @mmerickel on 2024-04-05 22:22_
+_@mmerickel_
 
 uv version: 0.1.29
 platform: macos 14.4.1 (m1 max)

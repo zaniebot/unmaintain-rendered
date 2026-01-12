@@ -13,14 +13,14 @@ head: py38-dryrun
 created_at: 2025-06-05T10:55:41Z
 updated_at: 2025-06-05T13:15:00Z
 url: https://github.com/astral-sh/uv/pull/13858
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Switch `sync_dry_run` test to Python 3.9
 
 ---
 
-_Pull request opened by @mgorny on 2025-06-05 10:55_
+_@mgorny_
 
 ## Summary
 

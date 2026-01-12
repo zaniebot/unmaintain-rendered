@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-13T19:28:34Z
 updated_at: 2023-12-13T19:39:59Z
 url: https://github.com/astral-sh/ruff/issues/9118
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # URL to blog post in 0.1.8 release returns 404
 
 ---
 
-_Issue opened by @kkirsche on 2023-12-13 19:28_
+_@kkirsche_
 
 The release https://github.com/astral-sh/ruff/releases/tag/v0.1.8 includes the following:
 

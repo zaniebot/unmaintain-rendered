@@ -13,14 +13,14 @@ head: zb/crate-desc
 created_at: 2025-11-21T19:04:46Z
 updated_at: 2025-11-21T19:22:49Z
 url: https://github.com/astral-sh/uv/pull/16810
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Use the word "internal" in crate descriptions
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-21 19:04_
+_@zanieb_
 
 ref https://github.com/astral-sh/uv/pull/16809#pullrequestreview-3494007588
 

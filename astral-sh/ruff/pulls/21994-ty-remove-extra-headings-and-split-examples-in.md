@@ -14,14 +14,14 @@ head: zb/ty-overrides-config
 created_at: 2025-12-16T02:46:27Z
 updated_at: 2025-12-16T12:57:08Z
 url: https://github.com/astral-sh/ruff/pull/21994
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Remove extra headings and split examples in the `overrides` configuration docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 02:46_
+_@zanieb_
 
 Having these as markdown headings ends up being weird in the reference documentation, e.g., before:
 

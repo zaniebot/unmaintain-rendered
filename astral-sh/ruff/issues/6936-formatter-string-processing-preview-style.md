@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T08:46:54Z
 updated_at: 2025-12-23T20:31:41Z
 url: https://github.com/astral-sh/ruff/issues/6936
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `string_processing` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-28 08:46_
+_@MichaReiser_
 
 Add support for Black's improved [string processing](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-string-processing).
 

@@ -13,14 +13,14 @@ head: zb/pin-arbitrary
 created_at: 2025-04-15T21:11:11Z
 updated_at: 2025-04-19T19:14:20Z
 url: https://github.com/astral-sh/uv/pull/12909
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Ignore arbitrary Python requests in version files
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-15 21:11_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/12605
 

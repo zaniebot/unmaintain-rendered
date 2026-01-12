@@ -14,14 +14,14 @@ head: charlie/C414
 created_at: 2023-10-03T04:25:01Z
 updated_at: 2023-10-03T04:42:52Z
 url: https://github.com/astral-sh/ruff/pull/7775
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Preserve trailing comments in C414 fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-03 04:25_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7772.
 

@@ -11,14 +11,14 @@ head: charlie/main
 created_at: 2023-02-04T21:32:24Z
 updated_at: 2023-02-04T21:33:50Z
 url: https://github.com/astral-sh/ruff/pull/2573
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Follow-up fixes for `__main__.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-04 21:32_
+_@charliermarsh_
 
 See comments in #2563.
 

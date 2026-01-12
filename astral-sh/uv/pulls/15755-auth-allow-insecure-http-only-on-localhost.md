@@ -12,14 +12,14 @@ head: zsol/jj-qtzyyyskmxss
 created_at: 2025-09-09T15:09:25Z
 updated_at: 2025-09-09T16:21:17Z
 url: https://github.com/astral-sh/uv/pull/15755
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # auth: allow insecure http only on localhost
 
 ---
 
-_Pull request opened by @zsol on 2025-09-09 15:09_
+_@zsol_
 
 ## Summary
 

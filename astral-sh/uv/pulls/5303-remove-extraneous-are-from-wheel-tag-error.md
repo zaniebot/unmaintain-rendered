@@ -14,14 +14,14 @@ head: charlie/are
 created_at: 2024-07-22T18:09:29Z
 updated_at: 2024-07-22T18:42:59Z
 url: https://github.com/astral-sh/uv/pull/5303
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Remove extraneous `are` from wheel tag error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 18:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T12:59:57Z
 updated_at: 2025-05-12T12:59:57Z
 url: https://github.com/astral-sh/uv/issues/13409
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # pdb integration
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-12 12:59_
+_@dimaqq_
 
 ### Summary
 

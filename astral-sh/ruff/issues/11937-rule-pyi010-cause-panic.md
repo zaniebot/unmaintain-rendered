@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-19T10:31:37Z
 updated_at: 2024-06-20T10:57:37Z
 url: https://github.com/astral-sh/ruff/issues/11937
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule PYI010 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-06-19 10:31_
+_@qarmin_
 
 
 ruff 0.4.9+27 (cdc7c7144 2024-06-19) (latest changes from main branch)

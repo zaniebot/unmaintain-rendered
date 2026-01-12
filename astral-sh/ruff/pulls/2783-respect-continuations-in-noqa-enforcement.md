@@ -13,14 +13,14 @@ head: charlie/continuation
 created_at: 2023-02-11T23:08:57Z
 updated_at: 2023-02-11T23:29:38Z
 url: https://github.com/astral-sh/ruff/pull/2783
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Respect continuations in `noqa` enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 23:08_
+_@charliermarsh_
 
 Closes #2198.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T18:18:49Z
 updated_at: 2025-02-17T03:07:01Z
 url: https://github.com/astral-sh/uv/issues/10039
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Regression in uv 5.10 installing from directory/git package with pyproject.toml
 
 ---
 
-_Issue opened by @peterroelants on 2024-12-19 18:18_
+_@peterroelants_
 
 `uv pip install` a directory with a `pyproject.toml` fails with uv version 0.5.10 (and works with `uv<0.5.10`)
 

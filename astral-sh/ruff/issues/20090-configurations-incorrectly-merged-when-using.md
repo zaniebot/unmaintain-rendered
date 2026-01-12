@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T19:57:51Z
 updated_at: 2025-09-02T13:48:06Z
 url: https://github.com/astral-sh/ruff/issues/20090
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Configurations incorrectly merged when using `extend` key
 
 ---
 
-_Issue opened by @A-CGray on 2025-08-25 19:57_
+_@A-CGray_
 
 ### Summary
 

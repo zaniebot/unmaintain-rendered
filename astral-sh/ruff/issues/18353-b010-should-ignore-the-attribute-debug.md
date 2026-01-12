@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T13:32:11Z
 updated_at: 2025-05-28T20:24:53Z
 url: https://github.com/astral-sh/ruff/issues/18353
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # B010 should ignore the attribute `__debug__`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-28 13:32_
+_@dscorbett_
 
 ### Summary
 

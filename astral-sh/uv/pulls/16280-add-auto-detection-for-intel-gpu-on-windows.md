@@ -13,14 +13,14 @@ head: guangyey/intel_win
 created_at: 2025-10-13T11:56:17Z
 updated_at: 2025-10-17T02:31:25Z
 url: https://github.com/astral-sh/uv/pull/16280
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Add auto-detection for Intel GPU on Windows
 
 ---
 
-_Pull request opened by @guangyey on 2025-10-13 11:56_
+_@guangyey_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T09:32:14Z
 updated_at: 2024-02-16T09:35:16Z
 url: https://github.com/astral-sh/uv/issues/1462
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv` is a pretty confusing name
 
 ---
 
-_Issue opened by @cjw296 on 2024-02-16 09:32_
+_@cjw296_
 
 If you wanted to use `pacman` instead, I'm happy to transfer it:
 https://pypi.org/project/pacman/

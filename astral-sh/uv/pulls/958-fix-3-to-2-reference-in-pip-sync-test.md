@@ -13,14 +13,14 @@ head: charlie/3
 created_at: 2024-01-18T04:29:23Z
 updated_at: 2024-01-18T04:33:47Z
 url: https://github.com/astral-sh/uv/pull/958
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Fix 3-to-2 reference in pip sync test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 04:29_
+_@charliermarsh_
 
 _No description provided._
 

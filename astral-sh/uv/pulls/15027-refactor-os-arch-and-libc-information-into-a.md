@@ -13,14 +13,14 @@ head: zb/platform-sorting
 created_at: 2025-08-02T12:37:29Z
 updated_at: 2025-08-13T14:02:57Z
 url: https://github.com/astral-sh/uv/pull/15027
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Refactor os, arch, and libc information into a shared `Platform` type
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-02 12:37_
+_@zanieb_
 
 Addresses this outstanding item from a previous review https://github.com/astral-sh/uv/pull/13724#discussion_r2114867288
 

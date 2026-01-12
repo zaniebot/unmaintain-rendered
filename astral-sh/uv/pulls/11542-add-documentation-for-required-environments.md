@@ -13,14 +13,14 @@ head: charlie/required-platforms
 created_at: 2025-02-15T20:17:46Z
 updated_at: 2025-02-17T17:27:59Z
 url: https://github.com/astral-sh/uv/pull/11542
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:53Z
 ```
 
 # Add documentation for required environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-15 20:17_
+_@charliermarsh_
 
 ## Summary
 

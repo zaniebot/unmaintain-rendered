@@ -14,14 +14,14 @@ head: dcreager/pair-visitor-tag
 created_at: 2025-08-13T20:33:10Z
 updated_at: 2025-08-13T21:32:37Z
 url: https://github.com/astral-sh/ruff/pull/19903
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Add some additional type safety to `CycleDetector`
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-13 20:33_
+_@dcreager_
 
 This PR adds a type tag to the `CycleDetector` visitor (and its aliases).
 

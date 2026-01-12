@@ -12,14 +12,14 @@ head: zb/rooster-head
 created_at: 2025-09-09T12:11:11Z
 updated_at: 2025-09-10T19:34:44Z
 url: https://github.com/astral-sh/uv/pull/15749
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Upgrade to the latest rooster version
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-09 12:11_
+_@zanieb_
 
 For all my latest bells and whistles...
 

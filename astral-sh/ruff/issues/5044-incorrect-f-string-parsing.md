@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-13T07:15:30Z
 updated_at: 2023-06-13T13:04:44Z
 url: https://github.com/astral-sh/ruff/issues/5044
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Incorrect f-string parsing
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-06-13 07:15_
+_@hauntsaninja_
 
 Not the best string ever, but ruff doesn't handle it like Python
 ```

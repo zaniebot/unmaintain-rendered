@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T10:06:23Z
 updated_at: 2022-11-21T02:41:56Z
 url: https://github.com/astral-sh/ruff/issues/826
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # U007 Autofix on string type format
 
 ---
 
-_Issue opened by @martinlehoux on 2022-11-20 10:06_
+_@martinlehoux_
 
 I have an issue with U007 autofix, but I can't really say if it's a bug or not.
 

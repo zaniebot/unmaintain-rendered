@@ -14,14 +14,14 @@ head: zb/printer
 created_at: 2025-07-09T12:30:30Z
 updated_at: 2025-07-10T14:40:49Z
 url: https://github.com/astral-sh/ruff/pull/19233
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Add a `--quiet` mode
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-09 12:30_
+_@zanieb_
 
 Adds a `--quiet` flag which silences diagnostic, warning logs, and messages like "all checks passed" while retaining summary messages that indicate problems, e.g., the number of diagnostics.
 

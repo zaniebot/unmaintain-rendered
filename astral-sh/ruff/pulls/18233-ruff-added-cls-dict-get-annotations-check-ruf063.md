@@ -14,14 +14,14 @@ head: 17853-cls-dict-annotations
 created_at: 2025-05-20T21:25:21Z
 updated_at: 2025-06-20T13:39:25Z
 url: https://github.com/astral-sh/ruff/pull/18233
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [`ruff`] Added `cls.__dict__.get('__annotations__')` check (`RUF063`)
 
 ---
 
-_Pull request opened by @dericcrago on 2025-05-20 21:25_
+_@dericcrago_
 
 Added `cls.__dict__.get('__annotations__')` check for Python 3.10+ and Python < 3.10 with `typing-extensions` enabled.
 

@@ -13,14 +13,14 @@ head: pixi-env-detection
 created_at: 2025-11-04T06:54:19Z
 updated_at: 2025-11-10T04:16:18Z
 url: https://github.com/astral-sh/uv/pull/16585
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Fix pixi environment detection by recognizing Conda prefixes with `conda-meta/pixi`
 
 ---
 
-_Pull request opened by @terror on 2025-11-04 06:54_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16295
 

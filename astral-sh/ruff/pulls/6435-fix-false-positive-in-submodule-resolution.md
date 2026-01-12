@@ -13,14 +13,14 @@ head: charlie/F823
 created_at: 2023-08-09T02:26:33Z
 updated_at: 2023-08-09T02:53:00Z
 url: https://github.com/astral-sh/ruff/pull/6435
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix false-positive in submodule resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 02:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6433.
 

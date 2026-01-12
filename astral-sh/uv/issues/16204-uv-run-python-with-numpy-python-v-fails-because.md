@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T11:32:46Z
 updated_at: 2025-10-09T15:17:16Z
 url: https://github.com/astral-sh/uv/issues/16204
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # `uv run python --with numpy python -V` fails because Scripts directory doesn't exist
 
 ---
 
-_Issue opened by @pfmoore on 2025-10-09 11:32_
+_@pfmoore_
 
 ### Summary
 

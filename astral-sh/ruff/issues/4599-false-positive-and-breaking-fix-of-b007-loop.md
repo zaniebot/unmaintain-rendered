@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-23T13:39:57Z
 updated_at: 2023-05-23T15:44:01Z
 url: https://github.com/astral-sh/ruff/issues/4599
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False-positive and breaking fix of B007: Loop control variable not used within loop body
 
 ---
 
-_Issue opened by @bersbersbers on 2023-05-23 13:39_
+_@bersbersbers_
 
 `bug.py`
 ```python

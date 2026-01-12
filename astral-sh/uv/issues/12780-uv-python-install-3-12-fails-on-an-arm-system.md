@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T13:20:40Z
 updated_at: 2025-04-17T23:32:58Z
 url: https://github.com/astral-sh/uv/issues/12780
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # uv python install 3.12 fails on an arm system, despite its being a supported platform
 
 ---
 
-_Issue opened by @johndunderhill on 2025-04-09 13:20_
+_@johndunderhill_
 
 ### Summary
 

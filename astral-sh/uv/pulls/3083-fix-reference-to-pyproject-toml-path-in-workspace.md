@@ -13,14 +13,14 @@ head: charlie/ref
 created_at: 2024-04-17T01:34:55Z
 updated_at: 2024-04-17T01:41:02Z
 url: https://github.com/astral-sh/uv/pull/3083
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Fix reference to `pyproject.toml` path in workspace discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 01:34_
+_@charliermarsh_
 
 This is why we write tests :joy:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T16:51:02Z
 updated_at: 2025-12-17T22:37:02Z
 url: https://github.com/astral-sh/ruff/issues/13014
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Add a new rule to warn on implicitly-concatenated strings separated by a comment
 
 ---
 
-_Issue opened by @Zac-HD on 2024-08-20 16:51_
+_@Zac-HD_
 
 What's wrong with this code?
 

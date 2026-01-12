@@ -13,14 +13,14 @@ head: zb/fixup-i
 created_at: 2025-09-15T16:57:31Z
 updated_at: 2025-09-15T17:04:20Z
 url: https://github.com/astral-sh/uv/pull/15880
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Remove `lock_git_change_log`
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-15 16:57_
+_@zanieb_
 
 This test is unstable
 

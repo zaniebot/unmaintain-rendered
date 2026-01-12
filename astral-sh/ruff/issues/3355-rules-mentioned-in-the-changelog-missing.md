@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-06T05:49:22Z
 updated_at: 2023-03-06T14:08:21Z
 url: https://github.com/astral-sh/ruff/issues/3355
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Rules mentioned in the changelog missing
 
 ---
 
-_Issue opened by @xmatthias on 2023-03-06 05:49_
+_@xmatthias_
 
 
 Version: ruff 0.0.254

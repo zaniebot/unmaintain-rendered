@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-05T11:58:19Z
 updated_at: 2025-06-04T16:05:44Z
 url: https://github.com/astral-sh/ty/issues/206
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Diagnostic for conflicting declared attribute types
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 11:58_
+_@sharkdp_
 
 We should emit a diagnostic when we see conflicting declared types of attributes, either between the declaration in the class body and declarations in a method, or between annotated assignments in different methods. We have existing tests for this scenario (see `TODO` comments):
 

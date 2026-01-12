@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T15:39:07Z
 updated_at: 2025-05-23T15:41:44Z
 url: https://github.com/astral-sh/ty/issues/498
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # CLI docs: auto-annotate defaults
 
 ---
 
-_Issue opened by @brainwane on 2025-05-23 15:39_
+_@brainwane_
 
 `docs/reference/cli.md` lists a few options that are lacking documentation of default values (e.g.  `--color`).
 

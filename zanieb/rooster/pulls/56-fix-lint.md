@@ -12,14 +12,14 @@ head: zb/lint
 created_at: 2025-05-03T21:51:33Z
 updated_at: 2025-05-03T21:52:38Z
 url: https://github.com/zanieb/rooster/pull/56
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix lint
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-03 21:51_
+_@zanieb_
 
 _No description provided._
 

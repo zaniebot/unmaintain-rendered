@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-29T20:02:12Z
 updated_at: 2025-12-30T13:10:58Z
 url: https://github.com/astral-sh/ty/issues/2264
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Keyword-argument completion suggestions should be suppressed if the user is in the middle of a non-`Name` expression
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-29 20:02_
+_@AlexWaygood_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T21:39:02Z
 updated_at: 2024-02-23T09:25:26Z
 url: https://github.com/astral-sh/uv/issues/1834
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Consider to hide `--index-url` and `--extra-index-url` if `--emit-index-url` flag is not presented
 
 ---
 
-_Issue opened by @drjackild on 2024-02-21 21:39_
+_@drjackild_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

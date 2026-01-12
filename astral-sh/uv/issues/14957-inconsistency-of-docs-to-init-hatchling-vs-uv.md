@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T15:25:58Z
 updated_at: 2025-07-30T12:04:08Z
 url: https://github.com/astral-sh/uv/issues/14957
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Inconsistency of docs to init: hatchling vs uv_build
 
 ---
 
-_Issue opened by @michellepace on 2025-07-29 15:25_
+_@michellepace_
 
 ### Summary
 

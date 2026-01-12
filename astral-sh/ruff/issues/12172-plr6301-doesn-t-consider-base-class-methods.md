@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T15:51:07Z
 updated_at: 2025-08-11T22:21:10Z
 url: https://github.com/astral-sh/ruff/issues/12172
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `PLR6301` doesn't consider base class methods
 
 ---
 
-_Issue opened by @minusf on 2024-07-03 15:51_
+_@minusf_
 
 Consider the following simple example (and common python pattern in general) in django:
 to build a management command, one simply inherits from `BaseCommand` and overrides some methods:

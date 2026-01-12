@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-28T02:13:59Z
 updated_at: 2025-04-28T06:33:54Z
 url: https://github.com/astral-sh/ruff/issues/17663
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Per-file customisation of builtins
 
 ---
 
-_Issue opened by @jakeanq on 2025-04-28 02:13_
+_@jakeanq_
 
 ### Summary
 

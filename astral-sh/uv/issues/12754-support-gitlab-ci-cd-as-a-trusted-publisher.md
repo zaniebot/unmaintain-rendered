@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T17:51:39Z
 updated_at: 2025-09-12T14:05:07Z
 url: https://github.com/astral-sh/uv/issues/12754
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # Support Gitlab CI/CD as a trusted publisher
 
 ---
 
-_Issue opened by @jamesharr on 2025-04-08 17:51_
+_@jamesharr_
 
 ### Summary
 

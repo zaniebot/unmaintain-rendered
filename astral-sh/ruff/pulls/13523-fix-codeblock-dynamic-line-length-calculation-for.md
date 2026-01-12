@@ -14,14 +14,14 @@ head: micha/fix-docstring-codeblock-dynamic
 created_at: 2024-09-26T13:20:52Z
 updated_at: 2024-09-27T07:09:09Z
 url: https://github.com/astral-sh/ruff/pull/13523
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix codeblock dynamic line length calculation for indented examples
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-26 13:20_
+_@MichaReiser_
 
 ## Summary
 

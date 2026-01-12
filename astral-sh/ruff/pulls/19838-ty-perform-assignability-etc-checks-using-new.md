@@ -13,14 +13,14 @@ head: dcreager/relation-with-constraints
 created_at: 2025-08-08T20:59:14Z
 updated_at: 2025-08-21T13:30:11Z
 url: https://github.com/astral-sh/ruff/pull/19838
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Perform assignability etc checks using new `Constraints` trait
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-08 20:59_
+_@dcreager_
 
 "Why would you do this? This looks like you just replaced `bool` with an overly complex trait"
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T14:33:07Z
 updated_at: 2025-09-17T15:23:57Z
 url: https://github.com/astral-sh/ruff/issues/20214
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `os-path-expanduser` (PTH111) should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-03 14:33_
+_@dscorbett_
 
 ### Summary
 

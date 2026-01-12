@@ -14,14 +14,14 @@ head: formatter-respect-tab-size
 created_at: 2023-10-17T10:17:25Z
 updated_at: 2023-10-20T07:12:14Z
 url: https://github.com/astral-sh/ruff/pull/8006
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Respect `tab-size` setting in formatter
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-17 10:17_
+_@MichaReiser_
 
 ## Summary
 

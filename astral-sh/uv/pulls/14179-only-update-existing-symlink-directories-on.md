@@ -13,14 +13,14 @@ head: jtfm/update-minor-link
 created_at: 2025-06-21T07:11:19Z
 updated_at: 2025-06-21T07:50:43Z
 url: https://github.com/astral-sh/uv/pull/14179
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Only update existing symlink directories on preview uninstall
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-21 07:11_
+_@jtfmumm_
 
 On preview uninstall, we should not create a new minor version symlink directory if one doesn't exist. We should only update existing ones.
 

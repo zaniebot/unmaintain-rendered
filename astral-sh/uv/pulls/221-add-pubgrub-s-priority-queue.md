@@ -12,14 +12,14 @@ head: charlie/priority-queue
 created_at: 2023-10-29T20:50:23Z
 updated_at: 2023-10-29T21:16:03Z
 url: https://github.com/astral-sh/uv/pull/221
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Add PubGrub's priority queue
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 20:50_
+_@charliermarsh_
 
 Pulls in https://github.com/pubgrub-rs/pubgrub/pull/104.
 

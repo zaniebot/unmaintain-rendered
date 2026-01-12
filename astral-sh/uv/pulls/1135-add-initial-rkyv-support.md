@@ -14,14 +14,14 @@ head: ag/rkyv-init
 created_at: 2024-01-26T19:57:15Z
 updated_at: 2024-01-28T18:12:21Z
 url: https://github.com/astral-sh/uv/pull/1135
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # add initial rkyv support
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-26 19:57_
+_@BurntSushi_
 
 This PR adds initial support for [rkyv] to puffin. In particular,
 the main aim here is to make puffin-client's `SimpleMetadata` type

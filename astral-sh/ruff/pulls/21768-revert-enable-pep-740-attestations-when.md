@@ -14,14 +14,14 @@ head: revert-21735-ww/pep740
 created_at: 2025-12-03T00:42:34Z
 updated_at: 2025-12-03T16:07:30Z
 url: https://github.com/astral-sh/ruff/pull/21768
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # Revert "Enable PEP 740 attestations when publishing to PyPI"
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-03 00:42_
+_@woodruffw_
 
 Reverts astral-sh/ruff#21735
 

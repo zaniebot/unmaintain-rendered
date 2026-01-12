@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-11T17:45:55Z
 updated_at: 2023-03-14T18:34:30Z
 url: https://github.com/astral-sh/ruff/issues/3450
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [feature-request] Ruff version of isort action comments
 
 ---
 
-_Issue opened by @smackesey on 2023-03-11 17:45_
+_@smackesey_
 
 This is pretty minor, but it's a bit confusing that `# isort` action comments are the only way to control Ruff's import formatting via action comments. Especially confusing for new contributors who see these comments and reasonably assume our project is using `isort`.
 

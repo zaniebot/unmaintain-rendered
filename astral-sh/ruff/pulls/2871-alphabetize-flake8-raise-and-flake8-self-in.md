@@ -12,14 +12,14 @@ head: alphabetize
 created_at: 2023-02-13T22:46:27Z
 updated_at: 2023-02-13T23:24:35Z
 url: https://github.com/astral-sh/ruff/pull/2871
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Alphabetize flake8-raise and flake8-self in documentation
 
 ---
 
-_Pull request opened by @andersk on 2023-02-13 22:46_
+_@andersk_
 
 _No description provided._
 

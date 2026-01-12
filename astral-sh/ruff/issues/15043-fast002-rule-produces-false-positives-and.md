@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T08:04:38Z
 updated_at: 2025-01-15T18:05:55Z
 url: https://github.com/astral-sh/ruff/issues/15043
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `FAST002` rule produces false positives and incorrect suggestions
 
 ---
 
-_Issue opened by @MarkusSintonen on 2024-12-18 08:04_
+_@MarkusSintonen_
 
 Ruff (0.8.3) `FAST002` produces false positives and suggests incorrect `Annotated` format with FastAPI params having default values. Following example can not be converted into the `Annotated` format as FastAPI does not support this format with params having default values. Also `--unsafe-fixes` fixes it to the format the FastAPI wont accept.
 

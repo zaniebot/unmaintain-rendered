@@ -13,14 +13,14 @@ head: fix_S506_safe_loader
 created_at: 2023-12-28T14:01:57Z
 updated_at: 2023-12-28T14:49:34Z
 url: https://github.com/astral-sh/ruff/pull/9299
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [flake8-bandit/S506] Dont report violation when SafeLoader is imported from yaml.loader
 
 ---
 
-_Pull request opened by @mikaelarguedas on 2023-12-28 14:01_
+_@mikaelarguedas_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

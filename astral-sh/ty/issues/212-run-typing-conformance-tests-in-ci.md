@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T04:22:15Z
 updated_at: 2025-07-28T06:03:24Z
 url: https://github.com/astral-sh/ty/issues/212
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Run typing conformance tests in CI
 
 ---
 
-_Issue opened by @karthiknadig on 2025-01-24 04:22_
+_@karthiknadig_
 
 ### Description
 

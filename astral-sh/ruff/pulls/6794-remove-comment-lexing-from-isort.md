@@ -13,14 +13,14 @@ head: charlie/lex
 created_at: 2023-08-22T21:19:49Z
 updated_at: 2023-08-22T21:55:20Z
 url: https://github.com/astral-sh/ruff/pull/6794
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove comment lexing from isort
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 21:19_
+_@charliermarsh_
 
 ## Summary
 

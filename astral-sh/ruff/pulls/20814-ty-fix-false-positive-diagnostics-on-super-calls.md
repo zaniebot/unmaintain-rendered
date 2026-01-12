@@ -14,14 +14,14 @@ head: alex/not-so-super
 created_at: 2025-10-11T20:59:49Z
 updated_at: 2025-10-13T11:14:27Z
 url: https://github.com/astral-sh/ruff/pull/20814
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Fix false-positive diagnostics on `super()` calls
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-11 20:59_
+_@AlexWaygood_
 
 ## Summary
 

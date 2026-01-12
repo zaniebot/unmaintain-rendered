@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-09T08:12:47Z
 updated_at: 2024-07-28T00:39:23Z
 url: https://github.com/astral-sh/uv/issues/4918
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # UCRT64 ~ # uv toolchain list warning: `uv toolchain list` is experimental and may change without warning. error: Running `py --list-paths` failed with status exit code: 2 
 
 ---
 
-_Issue opened by @az49xcl on 2024-07-09 08:12_
+_@az49xcl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/keyword-comments
 created_at: 2023-08-25T21:10:27Z
 updated_at: 2023-08-30T13:53:18Z
 url: https://github.com/astral-sh/ruff/pull/6883
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Handle keyword comments between = and value
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-25 21:10_
+_@charliermarsh_
 
 ## Summary
 

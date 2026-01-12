@@ -14,14 +14,14 @@ head: alex/concatenate-crash
 created_at: 2025-06-07T13:27:24Z
 updated_at: 2025-06-11T10:48:37Z
 url: https://github.com/astral-sh/ruff/pull/18534
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] Fix panic when trying to pull types for subscript expressions inside `Callable` type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-07 13:27_
+_@AlexWaygood_
 
 ## Summary
 

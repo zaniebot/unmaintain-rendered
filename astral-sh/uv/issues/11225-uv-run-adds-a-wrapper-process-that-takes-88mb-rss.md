@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T19:33:53Z
 updated_at: 2025-02-04T21:08:00Z
 url: https://github.com/astral-sh/uv/issues/11225
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # `uv run` adds a wrapper process that takes ~88mb RSS
 
 ---
 
-_Issue opened by @beaugunderson on 2025-02-04 19:33_
+_@beaugunderson_
 
 ### Summary
 

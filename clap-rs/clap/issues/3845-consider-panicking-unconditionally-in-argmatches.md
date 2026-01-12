@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-16T21:45:30Z
 updated_at: 2022-06-16T21:58:08Z
 url: https://github.com/clap-rs/clap/issues/3845
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Consider panicking unconditionally in ArgMatches::get_arg
 
 ---
 
-_Issue opened by @stepancheg on 2022-06-16 21:45_
+_@stepancheg_
 
 ### Please complete the following tasks
 

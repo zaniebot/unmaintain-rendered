@@ -13,14 +13,14 @@ head: fix-reinstall-prerelease
 created_at: 2025-05-25T23:10:35Z
 updated_at: 2025-05-28T03:00:51Z
 url: https://github.com/astral-sh/uv/pull/13645
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Include pre-release versions in `uv python install --reinstall`
 
 ---
 
-_Pull request opened by @Michaelgathara on 2025-05-25 23:10_
+_@Michaelgathara_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

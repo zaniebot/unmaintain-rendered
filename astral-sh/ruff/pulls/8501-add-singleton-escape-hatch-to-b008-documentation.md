@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2023-11-06T01:00:00Z
 updated_at: 2023-11-07T05:00:22Z
 url: https://github.com/astral-sh/ruff/pull/8501
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add singleton escape hatch to B008 documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 01:00_
+_@charliermarsh_
 
 ## Summary:
 

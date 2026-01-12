@@ -12,14 +12,14 @@ head: charlie/crates
 created_at: 2023-02-05T22:01:05Z
 updated_at: 2023-02-05T22:01:11Z
 url: https://github.com/astral-sh/ruff/pull/2590
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add a description of project structure
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-05 22:01_
+_@charliermarsh_
 
 _No description provided._
 

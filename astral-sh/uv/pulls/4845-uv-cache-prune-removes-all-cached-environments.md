@@ -14,14 +14,14 @@ head: prune-cached-env
 created_at: 2024-07-06T10:42:38Z
 updated_at: 2024-07-06T19:37:16Z
 url: https://github.com/astral-sh/uv/pull/4845
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # `uv cache prune` removes all cached environments
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-06 10:42_
+_@blueraft_
 
 ## Summary
 

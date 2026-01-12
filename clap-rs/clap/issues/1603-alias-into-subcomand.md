@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-12-09T02:51:05Z
 updated_at: 2024-10-22T18:26:14Z
 url: https://github.com/clap-rs/clap/issues/1603
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Alias into subcomand
 
 ---
 
-_Issue opened by @CAD97 on 2019-12-09 02:51_
+_@CAD97_
 
 As far as I can tell, it's currently possible to alias command arguments and subcommands. For things such as https://github.com/rust-lang/rustup/issues/2148#issue-534509269, it'd be really nice if it's somehow possible to alias both "across" and "into" subcommands, e.g. treat `rustup install` the same as `rustup toolchain install`, i.e. including all arguments and such configured for the target subcommand.
 

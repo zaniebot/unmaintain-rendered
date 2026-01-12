@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T02:42:57Z
 updated_at: 2023-01-18T03:03:18Z
 url: https://github.com/astral-sh/ruff/issues/1943
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM103 fix leaves invalid dangling `else: return False`
 
 ---
 
-_Issue opened by @andersk on 2023-01-18 02:42_
+_@andersk_
 
 ```diff
 $ ruff --select=SIM103 --diff test.py

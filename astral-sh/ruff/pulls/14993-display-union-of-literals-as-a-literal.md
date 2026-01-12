@@ -13,14 +13,14 @@ head: literal-union
 created_at: 2024-12-15T20:31:29Z
 updated_at: 2025-05-21T20:26:37Z
 url: https://github.com/astral-sh/ruff/pull/14993
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Display Union of Literals as a Literal
 
 ---
 
-_Pull request opened by @Glyphack on 2024-12-15 20:31_
+_@Glyphack_
 
 ## Summary
 

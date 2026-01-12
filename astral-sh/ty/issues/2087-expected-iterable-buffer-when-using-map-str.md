@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T20:18:01Z
 updated_at: 2025-12-18T22:02:42Z
 url: https://github.com/astral-sh/ty/issues/2087
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Expected `Iterable[Buffer]` when using `map(str, ...)`
 
 ---
 
-_Issue opened by @karlicoss on 2025-12-18 20:18_
+_@karlicoss_
 
 ### Summary
 

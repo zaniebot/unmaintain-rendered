@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T17:49:31Z
 updated_at: 2025-11-08T19:49:38Z
 url: https://github.com/astral-sh/uv/issues/16617
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Caching wheel files - does not refresh?
 
 ---
 
-_Issue opened by @behrenhoff on 2025-11-06 17:49_
+_@behrenhoff_
 
 ### Summary
 

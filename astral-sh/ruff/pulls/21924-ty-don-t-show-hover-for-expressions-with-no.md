@@ -14,14 +14,14 @@ head: micha/hover-expressions-no-type
 created_at: 2025-12-11T17:18:33Z
 updated_at: 2025-12-11T17:55:33Z
 url: https://github.com/astral-sh/ruff/pull/21924
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Don't show hover for expressions with no inferred type
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-11 17:18_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-21T18:51:26Z
 updated_at: 2024-08-21T20:57:15Z
 url: https://github.com/astral-sh/uv/pull/6366
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Avoid adding extra newline for script with non-empty prelude
 
 ---
 
-_Pull request opened by @j178 on 2024-08-21 18:51_
+_@j178_
 
 Closes #6364
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T06:54:14Z
 updated_at: 2025-01-10T14:40:16Z
 url: https://github.com/astral-sh/uv/issues/10460
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Show ETA when downloading wheels (like pip)
 
 ---
 
-_Issue opened by @StarConnor on 2025-01-10 06:54_
+_@StarConnor_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: zb/auth-fix-i
 created_at: 2025-08-30T14:11:01Z
 updated_at: 2025-08-30T14:14:14Z
 url: https://github.com/astral-sh/uv/pull/15589
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Remove unused dependencies from `uv auth` preview refactor
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 14:11_
+_@zanieb_
 
 _No description provided._
 

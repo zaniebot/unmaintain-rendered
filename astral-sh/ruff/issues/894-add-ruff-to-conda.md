@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-23T15:04:55Z
 updated_at: 2022-12-01T22:25:39Z
 url: https://github.com/astral-sh/ruff/issues/894
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add Ruff to Conda
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-23 15:04_
+_@charliermarsh_
 
 _No description provided._
 

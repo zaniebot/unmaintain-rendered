@@ -11,14 +11,14 @@ head: wsl_shebang
 created_at: 2025-04-23T15:29:13Z
 updated_at: 2026-01-11T09:35:41Z
 url: https://github.com/astral-sh/ruff/pull/17584
-synced_at: 2026-01-12T02:12:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Allow EXE001 & EXE002 on WSL, fix issues with other cases of mounting non-unix filesystems
 
 ---
 
-_Pull request opened by @MusicalNinjaDad on 2025-04-23 15:29_
+_@MusicalNinjaDad_
 
 Handle non-unix filesystems in a way which satisfies not only WSL (#3110, #5445, fixes #10084) but also non-WSL (#12941) cases.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T15:15:35Z
 updated_at: 2025-04-03T16:51:27Z
 url: https://github.com/astral-sh/uv/issues/12655
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # UV lock upgrade not upgrading anything
 
 ---
 
-_Issue opened by @RafaelCenzano on 2025-04-03 15:15_
+_@RafaelCenzano_
 
 ### Question
 

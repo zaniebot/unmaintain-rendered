@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-29T07:18:34Z
 updated_at: 2025-12-11T09:54:31Z
 url: https://github.com/astral-sh/uv/issues/16892
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Script overwriting behavior not aligned with pip
 
 ---
 
-_Issue opened by @ywang96 on 2025-11-29 07:18_
+_@ywang96_
 
 ### Question
 

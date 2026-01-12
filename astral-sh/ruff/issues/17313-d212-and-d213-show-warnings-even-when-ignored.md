@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T13:59:00Z
 updated_at: 2025-04-10T06:59:22Z
 url: https://github.com/astral-sh/ruff/issues/17313
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # D212 and D213 show warnings even when ignored
 
 ---
 
-_Issue opened by @nunokaeru on 2025-04-09 13:59_
+_@nunokaeru_
 
 ### Summary
 

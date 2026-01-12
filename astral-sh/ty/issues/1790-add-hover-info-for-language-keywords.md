@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T23:15:17Z
 updated_at: 2025-12-06T01:29:47Z
 url: https://github.com/astral-sh/ty/issues/1790
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add hover info for language keywords
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-05 23:15_
+_@MeGaGiGaGon_
 
 One of my favorite features from rust-analyzer, if you hover over a keyword it shows documentation about that keyword.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T20:46:46Z
 updated_at: 2024-04-17T17:32:59Z
 url: https://github.com/astral-sh/ruff/issues/10983
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Formatter: include files that were formatted in the output
 
 ---
 
-_Issue opened by @AdrianB-sovo on 2024-04-16 20:46_
+_@AdrianB-sovo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: jtfm/move-dependency-groups-file
 created_at: 2025-03-07T10:48:22Z
 updated_at: 2025-03-07T11:30:49Z
 url: https://github.com/astral-sh/uv/pull/12037
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Move `DependencyGroups` to uv-pypi-types so it can be imported there
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-07 10:48_
+_@jtfmumm_
 
 This PR is in support of #12005, where we need to import `DependencyGroups` in the `uv-pypi-types` crate without a circular dependency on `uv-workspace`. 
 

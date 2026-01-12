@@ -14,14 +14,14 @@ head: alex/mdtest-error-msg
 created_at: 2025-02-27T20:26:40Z
 updated_at: 2025-02-28T11:37:08Z
 url: https://github.com/astral-sh/ruff/pull/16422
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Switch to a handwritten parser for mdtest error assertions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-27 20:26_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/windows
 created_at: 2023-02-22T04:11:15Z
 updated_at: 2023-02-22T04:39:58Z
 url: https://github.com/astral-sh/ruff/pull/3111
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Skip EXE001 and EXE002 rules on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 04:11_
+_@charliermarsh_
 
 Closes #3110.
 

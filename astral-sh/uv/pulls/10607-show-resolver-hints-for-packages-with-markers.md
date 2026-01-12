@@ -14,14 +14,14 @@ head: charlie/base
 created_at: 2025-01-14T17:53:54Z
 updated_at: 2025-01-14T18:17:29Z
 url: https://github.com/astral-sh/uv/pull/10607
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Show resolver hints for packages with markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 17:53_
+_@charliermarsh_
 
 ## Summary
 

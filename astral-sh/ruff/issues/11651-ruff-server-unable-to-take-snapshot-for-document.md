@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T21:13:24Z
 updated_at: 2024-06-21T17:53:32Z
 url: https://github.com/astral-sh/ruff/issues/11651
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server`: Unable to take snapshot for document
 
 ---
 
-_Issue opened by @T-256 on 2024-05-31 21:13_
+_@T-256_
 
 Repro on VSCode: create new untitled notebook then close it.
 

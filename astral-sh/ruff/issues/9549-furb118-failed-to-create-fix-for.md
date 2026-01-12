@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T11:09:40Z
 updated_at: 2024-01-16T20:26:19Z
 url: https://github.com/astral-sh/ruff/issues/9549
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # FURB118: Failed to create fix for ReimplementedOperator
 
 ---
 
-_Issue opened by @93578237 on 2024-01-16 11:09_
+_@93578237_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

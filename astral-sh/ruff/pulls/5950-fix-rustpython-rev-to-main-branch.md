@@ -13,14 +13,14 @@ head: fix_parser_ref
 created_at: 2023-07-21T15:44:32Z
 updated_at: 2023-07-21T16:11:33Z
 url: https://github.com/astral-sh/ruff/pull/5950
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix RustPython rev to main branch
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 15:44_
+_@konstin_
 
 **Summary** I accidentally merged earlier while the RustPython parser rev was still pointing to the feature branch instead of to the merged main. This make the rev point to the RustPython parser repo main again
 

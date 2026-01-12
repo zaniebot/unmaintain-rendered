@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-27T16:05:36Z
 updated_at: 2023-12-23T12:39:11Z
 url: https://github.com/astral-sh/ruff/issues/8856
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # docstring code formatter: emit warning messages when code snippets fail to format
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-27 16:05_
+_@BurntSushi_
 
 #8811 added initial support for formatting doctest code snippets in docstrings, but it does have some silent behavior that should probably be louder. For example, if it detects a code snippet that is invalid Python, then it will silently skip the code snippet. Another example is a bit more pathological, but it is possible for the code snippet formatter to generate invalid Python in some case (as a result of nested triple quoted strings in some cases). In this case, we detect it and bail out of reformatting the code snippet. Ideally, we would emit a warning about this too, although this is arguably more of a bug in the current implementation.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T19:05:53Z
 updated_at: 2025-01-29T20:20:04Z
 url: https://github.com/astral-sh/uv/issues/11078
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Version discovery with untrusted `.venv` Python binary
 
 ---
 
-_Issue opened by @RoloEdits on 2025-01-29 19:05_
+_@RoloEdits_
 
 ### Question
 

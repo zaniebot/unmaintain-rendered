@@ -12,14 +12,14 @@ head: zb/permission-token
 created_at: 2025-09-11T13:12:28Z
 updated_at: 2025-09-11T13:13:13Z
 url: https://github.com/zanieb/rooster/pull/81
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Adjust permissions of the release job
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-11 13:12_
+_@zanieb_
 
 _No description provided._
 

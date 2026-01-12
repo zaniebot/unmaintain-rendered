@@ -14,14 +14,14 @@ head: dhruv/re-lexing-fstring-bug
 created_at: 2024-06-19T12:20:17Z
 updated_at: 2024-06-20T10:57:37Z
 url: https://github.com/astral-sh/ruff/pull/11939
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Avoid moving back the lexer for triple-quoted fstring
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-19 12:20_
+_@dhruvmanila_
 
 ## Summary
 

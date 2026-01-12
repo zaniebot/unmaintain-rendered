@@ -13,14 +13,14 @@ head: charlie/dyn
 created_at: 2025-01-29T01:03:34Z
 updated_at: 2025-01-29T01:27:10Z
 url: https://github.com/astral-sh/uv/pull/11046
-synced_at: 2026-01-10T11:45:25Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Mark metadata as dynamic when reading from built wheel cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-29 01:03_
+_@charliermarsh_
 
 ## Summary
 

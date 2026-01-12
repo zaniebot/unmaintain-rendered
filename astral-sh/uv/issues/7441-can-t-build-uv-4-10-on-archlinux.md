@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T21:05:37Z
 updated_at: 2024-09-18T12:14:08Z
 url: https://github.com/astral-sh/uv/issues/7441
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Can't build uv 4.10 on Archlinux
 
 ---
 
-_Issue opened by @mardiros on 2024-09-16 21:05_
+_@mardiros_
 
 Hi, 
 

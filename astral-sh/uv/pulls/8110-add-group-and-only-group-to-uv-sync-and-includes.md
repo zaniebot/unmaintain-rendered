@@ -12,14 +12,14 @@ head: zb/735-sync-lock
 created_at: 2024-10-10T21:08:03Z
 updated_at: 2024-10-16T22:53:27Z
 url: https://github.com/astral-sh/uv/pull/8110
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Add `--group` and `--only-group` to `uv sync` and includes all groups in `uv lock`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 21:08_
+_@zanieb_
 
 Part of #8090 
 

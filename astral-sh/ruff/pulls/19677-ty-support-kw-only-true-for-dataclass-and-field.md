@@ -13,14 +13,14 @@ head: thejchap/kw-only
 created_at: 2025-08-01T02:21:08Z
 updated_at: 2025-08-14T15:02:55Z
 url: https://github.com/astral-sh/ruff/pull/19677
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] support `kw_only=True` for `dataclass()` and `field()`
 
 ---
 
-_Pull request opened by @thejchap on 2025-08-01 02:21_
+_@thejchap_
 
 ## Summary
 https://github.com/astral-sh/ty/issues/111

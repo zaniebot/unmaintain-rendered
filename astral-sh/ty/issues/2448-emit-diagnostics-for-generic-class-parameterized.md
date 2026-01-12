@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-11T17:06:23Z
 updated_at: 2026-01-12T13:18:28Z
 url: https://github.com/astral-sh/ty/issues/2448
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostics for generic class parameterized with a single-element tuple of types if the generic class accepts only a single type argument
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-11 17:06_
+_@hyperkai_
 
 ### Summary
 

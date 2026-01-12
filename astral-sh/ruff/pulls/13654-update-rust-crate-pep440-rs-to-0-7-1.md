@@ -13,14 +13,14 @@ head: renovate/pep440_rs-0.x
 created_at: 2024-10-07T01:12:46Z
 updated_at: 2024-10-20T09:52:57Z
 url: https://github.com/astral-sh/ruff/pull/13654
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update Rust crate pep440_rs to 0.7.1
 
 ---
 
-_Pull request opened by @renovate on 2024-10-07 01:12_
+_@renovate_
 
 This PR contains the following updates:
 

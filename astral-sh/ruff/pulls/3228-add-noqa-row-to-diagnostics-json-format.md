@@ -12,14 +12,14 @@ head: noqa-line-json
 created_at: 2023-02-25T22:22:23Z
 updated_at: 2023-02-25T23:13:25Z
 url: https://github.com/astral-sh/ruff/pull/3228
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add `noqa_row` to diagnostics JSON format
 
 ---
 
-_Pull request opened by @bluetech on 2023-02-25 22:22_
+_@bluetech_
 
 In ruff-lsp (https://github.com/charliermarsh/ruff-lsp/pull/76) we want to add a "Disable \<rule\> for this line" quickfix. However, finding the correct line into which the `noqa` comment should be inserted is non-trivial (multi-line strings for example).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T19:26:58Z
 updated_at: 2024-06-05T21:13:11Z
 url: https://github.com/astral-sh/ruff/issues/11742
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] add walrus expression support to Definitions and CFG
 
 ---
 
-_Issue opened by @carljm on 2024-06-04 19:26_
+_@carljm_
 
 This may be useful in flushing out issues, since it's an unusual edge case (an expression that defines a symbol also.)
 

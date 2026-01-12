@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-15T14:44:58Z
 updated_at: 2025-01-09T16:50:42Z
 url: https://github.com/astral-sh/ruff/issues/13763
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # W391 reported but not fixed in Jupyter notebook
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2024-10-15 14:44_
+_@DimitriPapadopoulos_
 
 Ruff emits a **W391** error, a spurious one as far as I can see, and `--fix` doesn't modify the file:
 ```console

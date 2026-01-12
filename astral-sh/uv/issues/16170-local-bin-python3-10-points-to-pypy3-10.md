@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T01:32:34Z
 updated_at: 2025-10-08T04:12:02Z
 url: https://github.com/astral-sh/uv/issues/16170
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # `~/.local/bin/python3.10` points to `pypy3.10`
 
 ---
 
-_Issue opened by @balthild on 2025-10-08 01:32_
+_@balthild_
 
 ### Summary
 

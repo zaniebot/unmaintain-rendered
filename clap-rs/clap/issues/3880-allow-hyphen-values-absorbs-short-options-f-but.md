@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-28T09:14:55Z
 updated_at: 2022-09-07T12:39:26Z
 url: https://github.com/clap-rs/clap/issues/3880
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # "allow_hyphen_values" absorbs short options (-f), but not long options (--flag)
 
 ---
 
-_Issue opened by @david0u0 on 2022-06-28 09:14_
+_@david0u0_
 
 ### Please complete the following tasks
 

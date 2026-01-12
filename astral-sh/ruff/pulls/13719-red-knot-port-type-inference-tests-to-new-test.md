@@ -13,14 +13,14 @@ head: type-infer-tests
 created_at: 2024-10-11T18:32:18Z
 updated_at: 2024-10-15T19:41:40Z
 url: https://github.com/astral-sh/ruff/pull/13719
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Port type inference tests to new test framework
 
 ---
 
-_Pull request opened by @Lexxxzy on 2024-10-11 18:32_
+_@Lexxxzy_
 
 ## Summary
 

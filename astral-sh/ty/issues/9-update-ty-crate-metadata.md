@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-05T09:50:45Z
 updated_at: 2025-05-07T14:13:48Z
 url: https://github.com/astral-sh/ty/issues/9
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Update ty crate metadata
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 09:50_
+_@MichaReiser_
 
 The URl should point to this repository
 

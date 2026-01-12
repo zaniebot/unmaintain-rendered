@@ -13,14 +13,14 @@ head: dhruv/bump
 created_at: 2024-12-05T12:28:00Z
 updated_at: 2024-12-05T12:36:44Z
 url: https://github.com/astral-sh/ruff/pull/14789
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Bump version to 0.8.2
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-05 12:28_
+_@dhruvmanila_
 
 _No description provided._
 

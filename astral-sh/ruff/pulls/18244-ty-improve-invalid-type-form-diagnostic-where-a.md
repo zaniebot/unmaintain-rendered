@@ -14,14 +14,14 @@ head: alex/datetime-dot-datetime-diag
 created_at: 2025-05-21T16:57:52Z
 updated_at: 2025-05-21T19:38:58Z
 url: https://github.com/astral-sh/ruff/pull/18244
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Improve `invalid-type-form` diagnostic where a module-literal type is used in a type expression and the module has a member which would be valid in a type expression
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-21 16:57_
+_@AlexWaygood_
 
 ## Summary
 

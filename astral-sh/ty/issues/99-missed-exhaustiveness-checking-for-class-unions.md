@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T16:33:58Z
 updated_at: 2025-12-01T11:37:31Z
 url: https://github.com/astral-sh/ty/issues/99
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Missed exhaustiveness checking for class unions
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 16:33_
+_@charliermarsh_
 
 `print(obj_type)` here is marked as "used when possibly not defined".
 

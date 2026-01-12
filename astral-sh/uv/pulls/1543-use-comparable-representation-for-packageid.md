@@ -13,14 +13,14 @@ head: charlie/pytz
 created_at: 2024-02-16T21:09:25Z
 updated_at: 2024-02-16T21:30:55Z
 url: https://github.com/astral-sh/uv/pull/1543
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Use comparable representation for `PackageId`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 21:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: fix/13307-unsafe-fix
 created_at: 2025-05-17T11:32:33Z
 updated_at: 2025-06-03T00:54:12Z
 url: https://github.com/astral-sh/ruff/pull/18149
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [`refurb`] Mark `FURB180` fix unsafe when class has bases
 
 ---
 
-_Pull request opened by @robsdedude on 2025-05-17 11:32_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

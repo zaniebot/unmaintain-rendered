@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:42:55Z
 updated_at: 2023-09-18T16:44:47Z
 url: https://github.com/astral-sh/ruff/issues/7292
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `F541` to use new tokens to detect f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:42_
+_@dhruvmanila_
 
 `F541` checks for useless f-strings i.e., f-strings without any placeholders.
 

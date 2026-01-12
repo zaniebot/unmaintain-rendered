@@ -13,14 +13,14 @@ head: add-d403-auto-fix
 created_at: 2023-03-25T14:32:02Z
 updated_at: 2023-03-25T19:39:01Z
 url: https://github.com/astral-sh/ruff/pull/3731
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`pydocstyle`] Implement autofix for `D403`
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-25 14:32_
+_@JonathanPlasse_
 
 - Close #2114
 

@@ -13,14 +13,14 @@ head: david/dunder-calls
 created_at: 2025-02-25T11:54:19Z
 updated_at: 2025-02-25T21:10:44Z
 url: https://github.com/astral-sh/ruff/pull/16368
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Correct modeling of dunder calls
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-25 11:54_
+_@sharkdp_
 
 ## Summary
 

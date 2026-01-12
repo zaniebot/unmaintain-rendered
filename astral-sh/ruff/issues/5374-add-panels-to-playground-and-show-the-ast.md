@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-26T15:42:49Z
 updated_at: 2023-07-25T11:32:33Z
 url: https://github.com/astral-sh/ruff/issues/5374
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add Panels to Playground and show the AST
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-26 15:42_
+_@MichaReiser_
 
 Add a right column to the playground that shows a text representation of the AST. Having a quick way to inspect the AST is useful during development. 
 

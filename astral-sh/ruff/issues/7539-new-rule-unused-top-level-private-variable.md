@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T11:08:30Z
 updated_at: 2023-10-27T07:51:28Z
 url: https://github.com/astral-sh/ruff/issues/7539
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # new rule - unused top level private variable
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-20 11:08_
+_@DetachHead_
 
 if a symbol is prefixed with a `_` and is not used in the same file, it should be reasonable to assume it's not being used at all
 ```py

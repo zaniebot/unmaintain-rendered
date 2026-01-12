@@ -12,14 +12,14 @@ head: sdist-buillder
 created_at: 2023-10-16T12:34:40Z
 updated_at: 2023-10-16T12:43:33Z
 url: https://github.com/astral-sh/uv/pull/104
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Add basic sdist builder
 
 ---
 
-_Pull request opened by @konstin on 2023-10-16 12:34_
+_@konstin_
 
 This adds a basic sdist builder that has been tested with two source distributions, one with a PEP 517 backend and one with setup.py.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-22T09:47:17Z
 updated_at: 2024-07-24T13:19:31Z
 url: https://github.com/astral-sh/ruff/issues/12450
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # B013 false positive when using iterable unpacking in except clause
 
 ---
 
-_Issue opened by @raqbit on 2024-07-22 09:47_
+_@raqbit_
 
 When unpacking an iterable into a tuple as part of an except clause, `B013` is triggered even though the unpacking can cause the tuple to contain multiple exceptions.
 

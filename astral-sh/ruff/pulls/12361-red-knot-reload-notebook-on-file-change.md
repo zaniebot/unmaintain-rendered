@@ -13,14 +13,14 @@ head: reload-notebook-on-change
 created_at: 2024-07-17T12:19:20Z
 updated_at: 2024-07-17T12:33:03Z
 url: https://github.com/astral-sh/ruff/pull/12361
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Reload notebook on file change
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-17 12:19_
+_@MichaReiser_
 
 ## Summary
 

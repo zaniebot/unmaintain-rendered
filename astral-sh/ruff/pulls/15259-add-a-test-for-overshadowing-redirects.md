@@ -13,14 +13,14 @@ head: tests-redirects
 created_at: 2025-01-04T16:17:28Z
 updated_at: 2025-01-05T08:50:33Z
 url: https://github.com/astral-sh/ruff/pull/15259
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Add a test for overshadowing redirects
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-04 16:17_
+_@InSyncWithFoo_
 
 ## Summary
 

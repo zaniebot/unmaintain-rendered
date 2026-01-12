@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T13:10:58Z
 updated_at: 2025-04-01T20:50:55Z
 url: https://github.com/astral-sh/uv/issues/12529
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Command to update metadata in PEP 723 script from project
 
 ---
 
-_Issue opened by @dbohdan on 2025-03-28 13:10_
+_@dbohdan_
 
 ### Summary
 

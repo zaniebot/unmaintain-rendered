@@ -13,14 +13,14 @@ head: charlie/sim118
 created_at: 2023-07-29T03:27:02Z
 updated_at: 2023-07-29T03:53:17Z
 url: https://github.com/astral-sh/ruff/pull/6165
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid key-in-dict violations for `self` accesses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-29 03:27_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6163.
 

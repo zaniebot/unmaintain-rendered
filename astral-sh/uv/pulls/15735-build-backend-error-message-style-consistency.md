@@ -13,14 +13,14 @@ head: konsti/build-backend-style-consistency
 created_at: 2025-09-08T13:39:09Z
 updated_at: 2025-09-09T17:34:57Z
 url: https://github.com/astral-sh/uv/pull/15735
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Build backend error message style consistency
 
 ---
 
-_Pull request opened by @konstin on 2025-09-08 13:39_
+_@konstin_
 
 Consistently omit backticks after a colon in build backend messages, following https://github.com/astral-sh/uv/pull/15733#discussion_r2330156783.
 

@@ -14,14 +14,14 @@ head: dhruv/background-request-handler
 created_at: 2025-06-30T05:43:17Z
 updated_at: 2025-07-07T14:03:10Z
 url: https://github.com/astral-sh/ruff/pull/19041
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Add background request task support
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-30 05:43_
+_@dhruvmanila_
 
 ## Summary
 

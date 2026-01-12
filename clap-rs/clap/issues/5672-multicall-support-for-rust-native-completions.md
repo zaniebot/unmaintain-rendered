@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-12T17:17:49Z
 updated_at: 2025-04-10T16:00:44Z
 url: https://github.com/clap-rs/clap/issues/5672
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # multicall support for rust-native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-12 17:17_
+_@epage_
 
 See #3166
 

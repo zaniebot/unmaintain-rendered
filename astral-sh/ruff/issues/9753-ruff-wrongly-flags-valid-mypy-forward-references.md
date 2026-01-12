@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T15:13:20Z
 updated_at: 2024-02-05T16:09:42Z
 url: https://github.com/astral-sh/ruff/issues/9753
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff wrongly flags valid mypy forward references in TYPE_CHECKING as not defined
 
 ---
 
-_Issue opened by @ezyang on 2024-02-01 15:13_
+_@ezyang_
 
 ```
 from typing import TYPE_CHECKING

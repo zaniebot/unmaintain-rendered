@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-04T15:33:50Z
 updated_at: 2025-12-04T15:39:21Z
 url: https://github.com/astral-sh/ty/issues/1756
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Completions should be more discriminating with symbols in stub files
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-04 15:33_
+_@BurntSushi_
 
 This came up [here](https://github.com/astral-sh/ruff/pull/21779/files/d314aa859dcf9a6ffb006a594d7ca0431dd4fab2#r2586899735).
 

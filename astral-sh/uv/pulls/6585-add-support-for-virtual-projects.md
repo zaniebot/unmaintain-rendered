@@ -12,14 +12,14 @@ head: charlie/virtuals
 created_at: 2024-08-24T16:03:38Z
 updated_at: 2024-08-27T17:42:48Z
 url: https://github.com/astral-sh/uv/pull/6585
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Add support for virtual projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 16:03_
+_@charliermarsh_
 
 ## Summary
 

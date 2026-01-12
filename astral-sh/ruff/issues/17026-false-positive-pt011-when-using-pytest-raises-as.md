@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-27T22:28:07Z
 updated_at: 2025-04-08T07:24:48Z
 url: https://github.com/astral-sh/ruff/issues/17026
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive PT011 when using pytest.raises as a function
 
 ---
 
-_Issue opened by @hauh on 2025-03-27 22:28_
+_@hauh_
 
 ### Summary
 

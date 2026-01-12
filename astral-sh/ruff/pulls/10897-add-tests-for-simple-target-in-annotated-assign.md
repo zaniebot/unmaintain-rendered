@@ -15,14 +15,14 @@ head: dhruv/ann-assign-simple-target-test
 created_at: 2024-04-12T06:28:38Z
 updated_at: 2024-04-12T06:49:42Z
 url: https://github.com/astral-sh/ruff/pull/10897
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for simple target in annotated assign stmt
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-12 06:28_
+_@dhruvmanila_
 
 > `simple` is a boolean integer set to `True` for a [Name](https://docs.python.org/3/library/ast.html#ast.Name) node in `target` that do not appear in between parenthesis and are hence pure names and not expressions.
 

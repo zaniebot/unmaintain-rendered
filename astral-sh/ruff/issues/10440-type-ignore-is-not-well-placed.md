@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-17T23:53:44Z
 updated_at: 2024-03-19T11:55:34Z
 url: https://github.com/astral-sh/ruff/issues/10440
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # # type:ignore is not well placed
 
 ---
 
-_Issue opened by @sylvainmouquet on 2024-03-17 23:53_
+_@sylvainmouquet_
 
 Hello,
 

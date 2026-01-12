@@ -12,14 +12,14 @@ head: source-build-trait
 created_at: 2023-12-12T13:00:09Z
 updated_at: 2023-12-12T20:45:38Z
 url: https://github.com/astral-sh/uv/pull/616
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Towards using `prepare_metadata_for_build_wheel` in the resolver
 
 ---
 
-_Pull request opened by @konstin on 2023-12-12 13:00_
+_@konstin_
 
 Make `prepare_metadata_for_build_wheel` accessible across the puffin codebase by splitting the built call into a setup, a metadata and a wheel call. This does not actually use the hook yet, but it's the required refactoring for it.
 

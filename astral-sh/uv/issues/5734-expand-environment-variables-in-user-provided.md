@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T19:32:33Z
 updated_at: 2025-10-09T08:47:39Z
 url: https://github.com/astral-sh/uv/issues/5734
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Expand environment variables in user-provided index URLs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-02 19:32_
+_@charliermarsh_
 
 Right now, we only support expansion (1) by the shell (of course) and (2) in requirements files. But the following don't expand:
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-03-02T15:19:30Z
 updated_at: 2024-03-03T00:02:59Z
 url: https://github.com/astral-sh/ruff/pull/10197
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Update README.md, add Kraken Tech
 
 ---
 
-_Pull request opened by @jbkkd on 2024-03-02 15:19_
+_@jbkkd_
 
 _No description provided._
 

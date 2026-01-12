@@ -13,14 +13,14 @@ head: sim101
 created_at: 2023-10-04T03:50:38Z
 updated_at: 2024-09-10T23:38:39Z
 url: https://github.com/astral-sh/ruff/pull/7798
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix issues with SIM101 (adjacent isinstance() calls)
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2023-10-04 03:50_
+_@JelleZijlstra_
 
 - Only trigger for immediately adjacent isinstance() calls with the same target
 - Preserve order of or conditions

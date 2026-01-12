@@ -13,14 +13,14 @@ head: konsti/file-pins-comment
 created_at: 2025-01-08T10:36:01Z
 updated_at: 2025-01-08T11:42:27Z
 url: https://github.com/astral-sh/uv/pull/10387
-synced_at: 2026-01-10T11:44:46Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Improve file pinning comments
 
 ---
 
-_Pull request opened by @konstin on 2025-01-08 10:36_
+_@konstin_
 
 Not ideal still but it captures the reason why the code is the way it is.
 

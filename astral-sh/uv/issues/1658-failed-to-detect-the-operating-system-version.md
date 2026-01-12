@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T17:32:52Z
 updated_at: 2024-02-18T21:00:46Z
 url: https://github.com/astral-sh/uv/issues/1658
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Failed to Detect the Operating System Version
 
 ---
 
-_Issue opened by @PeterParker on 2024-02-18 17:32_
+_@PeterParker_
 
 Using `uv venv` inside a [RedHat UBI9 Docker container](https://hub.docker.com/r/redhat/ubi9/tags) leads to an error after failing to detect the operation system version:
 

@@ -12,14 +12,14 @@ head: jtfm/auth-error-messages
 created_at: 2025-04-04T10:16:25Z
 updated_at: 2025-06-01T11:21:32Z
 url: https://github.com/astral-sh/uv/pull/12667
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Distinguish between authentication failures due to missing vs invalid credentials
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-04 10:16_
+_@jtfmumm_
 
 Prior to this change, unless an index was configured as `authenticate = "always"`, authentication failures would output the same error message whether the cause was missing credentials or incorrect credentials. This PR ensures that missing credentials lead to a distinct error message.
 

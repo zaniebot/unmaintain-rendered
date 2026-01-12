@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T12:25:19Z
 updated_at: 2024-11-18T15:21:47Z
 url: https://github.com/astral-sh/ruff/issues/14431
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Narrowing for `type(x) is C` (where C is a class)
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-18 12:25_
+_@sharkdp_
 
 part of: #13694
 

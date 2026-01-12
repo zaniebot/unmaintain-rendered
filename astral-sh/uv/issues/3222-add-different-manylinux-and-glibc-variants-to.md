@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T20:22:09Z
 updated_at: 2024-04-24T11:53:27Z
 url: https://github.com/astral-sh/uv/issues/3222
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add different manylinux and glibc variants to `--python-platform`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-23 20:22_
+_@charliermarsh_
 
 See, e.g.: https://github.com/astral-sh/uv/pull/3111#discussion_r1576845895
 

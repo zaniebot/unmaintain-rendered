@@ -13,14 +13,14 @@ head: dhruv/fix-zed-docs
 created_at: 2024-08-23T16:15:20Z
 updated_at: 2024-08-23T16:18:06Z
 url: https://github.com/astral-sh/ruff/pull/13082
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Include all required keys for Zed settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-23 16:15_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/error-handling
 created_at: 2023-06-28T17:53:44Z
 updated_at: 2023-06-28T18:24:43Z
 url: https://github.com/astral-sh/ruff/pull/5426
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove all `unwrap` calls from the resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-28 17:53_
+_@charliermarsh_
 
 _No description provided._
 

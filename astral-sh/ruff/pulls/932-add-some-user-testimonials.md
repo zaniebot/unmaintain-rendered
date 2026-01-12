@@ -12,14 +12,14 @@ head: charlie/testimonial
 created_at: 2022-11-28T02:53:17Z
 updated_at: 2022-11-28T02:55:02Z
 url: https://github.com/astral-sh/ruff/pull/932
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add some user testimonials
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 02:53_
+_@charliermarsh_
 
 Resolves #926.
 

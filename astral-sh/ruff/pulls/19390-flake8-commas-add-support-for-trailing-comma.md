@@ -14,14 +14,14 @@ head: fix-18844
 created_at: 2025-07-16T22:42:53Z
 updated_at: 2025-07-28T23:54:03Z
 url: https://github.com/astral-sh/ruff/pull/19390
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [`flake8-commas`] Add support for trailing comma checks in type parameter lists (`COM812`, `COM819`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-16 22:42_
+_@danparizher_
 
 ## Summary
 

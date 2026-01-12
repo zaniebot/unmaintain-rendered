@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-12T22:32:03Z
 updated_at: 2024-07-13T01:55:07Z
 url: https://github.com/astral-sh/uv/issues/5027
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add Windows support to `uv tool update-shell`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-12 22:32_
+_@charliermarsh_
 
 _No description provided._
 

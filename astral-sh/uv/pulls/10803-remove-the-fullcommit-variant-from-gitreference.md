@@ -13,14 +13,14 @@ head: charlie/ref
 created_at: 2025-01-21T02:09:43Z
 updated_at: 2025-01-21T19:26:59Z
 url: https://github.com/astral-sh/uv/pull/10803
-synced_at: 2026-01-10T11:45:11Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Remove the `FullCommit` variant from `GitReference`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 02:09_
+_@charliermarsh_
 
 ## Summary
 

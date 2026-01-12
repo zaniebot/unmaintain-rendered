@@ -14,14 +14,14 @@ head: david/playground-3.14
 created_at: 2025-10-08T09:43:47Z
 updated_at: 2025-10-08T10:41:58Z
 url: https://github.com/astral-sh/ruff/pull/20760
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Use 3.14 in the ty playground
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-08 09:43_
+_@sharkdp_
 
 ## Summary
 

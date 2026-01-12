@@ -14,14 +14,14 @@ head: formatter-range-formatting
 created_at: 2024-01-24T15:16:11Z
 updated_at: 2024-01-31T10:13:38Z
 url: https://github.com/astral-sh/ruff/pull/9635
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Range formatting API
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-24 15:16_
+_@MichaReiser_
 
 ## Summary
 

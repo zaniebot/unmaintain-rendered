@@ -13,14 +13,14 @@ head: henryiii/docs/explicit-source
 created_at: 2025-04-11T20:12:39Z
 updated_at: 2025-04-14T12:22:23Z
 url: https://github.com/astral-sh/uv/pull/12844
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # docs: add explicit source (matching PyTorch guide)
 
 ---
 
-_Pull request opened by @henryiii on 2025-04-11 20:12_
+_@henryiii_
 
 
 <!--

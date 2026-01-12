@@ -13,14 +13,14 @@ head: alex/disjointness-cosmetic-changes
 created_at: 2025-01-04T17:29:56Z
 updated_at: 2025-01-04T17:35:53Z
 url: https://github.com/astral-sh/ruff/pull/15260
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Minor cleanup to `Type::is_disjoint_from()` and `Type::is_subtype_of()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-04 17:29_
+_@AlexWaygood_
 
 ## Summary
 

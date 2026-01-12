@@ -14,14 +14,14 @@ head: ag/fix-playground
 created_at: 2025-06-27T14:26:57Z
 updated_at: 2025-06-27T15:16:16Z
 url: https://github.com/astral-sh/ruff/pull/18986
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Fix playground
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-27 14:26_
+_@BurntSushi_
 
 I renamed a field on a `Completion` struct in #18982, and it looks like
 this caused the playground to fail to build:

@@ -13,14 +13,14 @@ head: dependabot/cargo/anstream-0.6.13
 created_at: 2024-03-04T22:02:57Z
 updated_at: 2024-03-04T22:16:11Z
 url: https://github.com/astral-sh/uv/pull/2177
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Bump anstream from 0.6.12 to 0.6.13
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-04 22:02_
+_@dependabot_
 
 Bumps [anstream](https://github.com/rust-cli/anstyle) from 0.6.12 to 0.6.13.
 <details>

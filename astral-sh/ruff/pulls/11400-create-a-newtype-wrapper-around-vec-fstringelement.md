@@ -13,14 +13,14 @@ head: dhruv/f-string-elements
 created_at: 2024-05-13T09:05:42Z
 updated_at: 2024-05-27T15:47:26Z
 url: https://github.com/astral-sh/ruff/pull/11400
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Create a newtype wrapper around `Vec<FStringElement>`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-13 09:05_
+_@dhruvmanila_
 
 ## Summary
 

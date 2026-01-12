@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T17:57:29Z
 updated_at: 2025-10-06T10:23:37Z
 url: https://github.com/astral-sh/ruff/issues/2208
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # B020 false positive: for foo.bar in baz
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 17:57_
+_@spaceone_
 
 ```
 for server, struct in self.versions(start, end, for_mirror_list):

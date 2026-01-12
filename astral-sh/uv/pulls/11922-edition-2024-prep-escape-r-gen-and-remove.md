@@ -13,14 +13,14 @@ head: konsti/edition-2025-min
 created_at: 2025-03-03T11:05:23Z
 updated_at: 2025-03-03T11:13:57Z
 url: https://github.com/astral-sh/uv/pull/11922
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Edition 2024 prep: Escape `r#gen` and remove redundant ref
 
 ---
 
-_Pull request opened by @konstin on 2025-03-03 11:05_
+_@konstin_
 
 Three edition 2021 compatible sets of changes in preparation for the edition 2025 split out from #11724.
 

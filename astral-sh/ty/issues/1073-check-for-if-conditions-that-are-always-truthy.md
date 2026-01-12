@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T03:20:26Z
 updated_at: 2025-10-06T16:51:48Z
 url: https://github.com/astral-sh/ty/issues/1073
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Check for `if` conditions that are always truthy
 
 ---
 
-_Issue opened by @kkpattern on 2025-08-21 03:20_
+_@kkpattern_
 
 I wish ty can check for comparing coroutine in if statement. Given the following code:
 

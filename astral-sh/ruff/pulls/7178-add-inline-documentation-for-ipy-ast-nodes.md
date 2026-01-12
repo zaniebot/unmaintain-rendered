@@ -13,14 +13,14 @@ head: dhruv/ipy-node-doc
 created_at: 2023-09-06T05:35:48Z
 updated_at: 2023-09-06T06:37:36Z
 url: https://github.com/astral-sh/ruff/pull/7178
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add inline documentation for `Ipy*` AST nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-06 05:35_
+_@dhruvmanila_
 
 ## Summary
 

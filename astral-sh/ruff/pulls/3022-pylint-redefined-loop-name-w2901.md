@@ -13,14 +13,14 @@ head: pylint-redefined-loop-name
 created_at: 2023-02-19T01:06:16Z
 updated_at: 2023-02-27T23:01:22Z
 url: https://github.com/astral-sh/ruff/pull/3022
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [pylint] redefined-loop-name (W2901)
 
 ---
 
-_Pull request opened by @matthewlloyd on 2023-02-19 01:06_
+_@matthewlloyd_
 
 Slightly broadens W2901 to cover `with` statements too.
 

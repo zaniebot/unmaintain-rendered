@@ -13,14 +13,14 @@ head: upgrade-salsa
 created_at: 2024-08-20T19:52:50Z
 updated_at: 2024-08-21T07:13:16Z
 url: https://github.com/astral-sh/ruff/pull/13016
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Upgrade to Salsa with tables
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-20 19:52_
+_@MichaReiser_
 
 ## Summary
 Upgrade to the latest salsa version

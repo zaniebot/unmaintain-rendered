@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:32:34Z
 updated_at: 2025-01-16T09:25:51Z
 url: https://github.com/astral-sh/uv/issues/10440
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Install failed with uv but works with regular python
 
 ---
 
-_Issue opened by @thewh1teagle on 2025-01-09 18:32_
+_@thewh1teagle_
 
 With uv (failed)
 

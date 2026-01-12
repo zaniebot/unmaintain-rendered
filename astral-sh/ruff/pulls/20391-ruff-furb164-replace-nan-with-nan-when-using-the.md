@@ -14,14 +14,14 @@ head: fix-negative-nan-issue-for-furb164
 created_at: 2025-09-15T00:47:38Z
 updated_at: 2025-09-19T18:46:42Z
 url: https://github.com/astral-sh/ruff/pull/20391
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [`ruff`] `FURB164` Replace -nan with nan when using the value to construct `Decimal`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-15 00:47_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

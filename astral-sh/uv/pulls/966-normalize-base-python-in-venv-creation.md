@@ -12,14 +12,14 @@ head: konsti/normalize-base-python
 created_at: 2024-01-18T15:30:51Z
 updated_at: 2024-01-18T15:32:31Z
 url: https://github.com/astral-sh/uv/pull/966
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Normalize base python in venv creation
 
 ---
 
-_Pull request opened by @konstin on 2024-01-18 15:30_
+_@konstin_
 
 Fixes #965
 

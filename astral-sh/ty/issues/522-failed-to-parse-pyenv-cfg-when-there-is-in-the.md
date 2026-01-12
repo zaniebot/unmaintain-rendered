@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T10:23:27Z
 updated_at: 2025-05-27T10:32:15Z
 url: https://github.com/astral-sh/ty/issues/522
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Failed to parse pyenv.cfg when there is "=" in the command
 
 ---
 
-_Issue opened by @kkpattern on 2025-05-27 10:23_
+_@kkpattern_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T09:28:25Z
 updated_at: 2024-05-22T04:18:02Z
 url: https://github.com/astral-sh/ruff/issues/11333
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLE0237 false positive for slots literal concatenation 
 
 ---
 
-_Issue opened by @airallergy on 2024-05-08 09:28_
+_@airallergy_
 
 I have a class, whose slots are formed by concatenating other literal tuples via RUF005 style. Below `B` is reported to violate PLE0237, which is a false positive, I also tried a few variants of `B`:
 

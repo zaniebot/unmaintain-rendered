@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-17T19:11:17Z
 updated_at: 2025-06-17T19:21:32Z
 url: https://github.com/astral-sh/ty/issues/671
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # dataclass causes incorrect invalid-argument-type error
 
 ---
 
-_Issue opened by @lexicalunit on 2025-06-17 19:11_
+_@lexicalunit_
 
 ### Summary
 

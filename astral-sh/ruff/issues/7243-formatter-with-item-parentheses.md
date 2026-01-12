@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-08T10:53:24Z
 updated_at: 2023-10-04T04:23:33Z
 url: https://github.com/astral-sh/ruff/issues/7243
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: With Item parentheses
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 10:53_
+_@MichaReiser_
 
 ## Input
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T19:07:57Z
 updated_at: 2025-10-28T23:36:14Z
 url: https://github.com/astral-sh/uv/issues/16443
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Warning after installing torch via wheelnext
 
 ---
 
-_Issue opened by @intexcor on 2025-10-24 19:07_
+_@intexcor_
 
 ### Summary
 

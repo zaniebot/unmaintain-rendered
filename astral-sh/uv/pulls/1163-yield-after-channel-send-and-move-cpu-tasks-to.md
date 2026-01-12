@@ -13,14 +13,14 @@ head: konsti/yield-after-send
 created_at: 2024-01-29T10:37:37Z
 updated_at: 2024-02-02T17:18:26Z
 url: https://github.com/astral-sh/uv/pull/1163
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Yield after channel send and move cpu tasks to thread
 
 ---
 
-_Pull request opened by @konstin on 2024-01-29 10:37_
+_@konstin_
 
 ## Summary
 

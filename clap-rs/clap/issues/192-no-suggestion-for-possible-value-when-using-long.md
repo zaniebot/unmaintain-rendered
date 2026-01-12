@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-08-27T02:29:57Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/192
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # no suggestion for possible value when using 'long=' format
 
 ---
 
-_Issue opened by @kbknapp on 2015-08-27 02:29_
+_@kbknapp_
 
 When setting up a long option with possible values, and you run `--long=value` if `value` isn't valid you will not get an error. Yet running `--long value` will result in the appropriate error.
 

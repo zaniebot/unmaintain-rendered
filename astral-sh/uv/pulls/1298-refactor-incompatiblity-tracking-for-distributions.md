@@ -13,14 +13,14 @@ head: zb/incompatible-dists
 created_at: 2024-02-14T17:37:51Z
 updated_at: 2024-03-08T17:02:32Z
 url: https://github.com/astral-sh/uv/pull/1298
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Refactor incompatiblity tracking for distributions
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-14 17:37_
+_@zanieb_
 
 Extends the "compatibility" types introduced in #1293 to apply to source distributions as well as wheels.
 

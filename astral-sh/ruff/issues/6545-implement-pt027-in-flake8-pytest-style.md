@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-14T03:42:11Z
 updated_at: 2023-08-14T20:25:24Z
 url: https://github.com/astral-sh/ruff/issues/6545
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Implement `PT027` in `flake8-pytest-style`
 
 ---
 
-_Issue opened by @harupy on 2023-08-14 03:42_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

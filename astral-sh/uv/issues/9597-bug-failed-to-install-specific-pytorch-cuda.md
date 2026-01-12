@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T05:44:21Z
 updated_at: 2024-12-03T15:29:37Z
 url: https://github.com/astral-sh/uv/issues/9597
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # [BUG] Failed to install specific pytorch cuda version with `uv pip`
 
 ---
 
-_Issue opened by @ISJDOG on 2024-12-03 05:44_
+_@ISJDOG_
 
 The command is as followed: 
 

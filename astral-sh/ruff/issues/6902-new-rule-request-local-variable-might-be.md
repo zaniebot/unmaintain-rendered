@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-26T19:11:40Z
 updated_at: 2025-09-08T23:28:58Z
 url: https://github.com/astral-sh/ruff/issues/6902
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # New rule request: Local variable might be referenced before assignment
 
 ---
 
-_Issue opened by @Garrett-R on 2023-08-26 19:11_
+_@Garrett-R_
 
 It would be awesome if Ruff could catch an error (like PyCharm does) for code like this:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T23:39:56Z
 updated_at: 2023-05-13T15:20:06Z
 url: https://github.com/astral-sh/ruff/issues/4408
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Suppress ANN401 for methods annotated with typing_extensions.override
 
 ---
 
-_Issue opened by @sirrus233 on 2023-05-12 23:39_
+_@sirrus233_
 
 I believe this is a follow-on request from: https://github.com/charliermarsh/ruff/issues/3952
 

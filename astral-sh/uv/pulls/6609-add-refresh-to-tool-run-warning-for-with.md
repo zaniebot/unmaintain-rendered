@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2024-08-25T15:01:17Z
 updated_at: 2024-08-25T15:15:43Z
 url: https://github.com/astral-sh/uv/pull/6609
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Add `--refresh` to `tool run` warning for `--with` dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 15:01_
+_@charliermarsh_
 
 ## Summary
 

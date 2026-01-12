@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-22T02:08:55Z
 updated_at: 2024-07-22T13:17:11Z
 url: https://github.com/astral-sh/uv/issues/5278
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Feature Request: Add Poetry dependency group support to `uv pip compile`
 
 ---
 
-_Issue opened by @siavashyj on 2024-07-22 02:08_
+_@siavashyj_
 
 ### Description
 

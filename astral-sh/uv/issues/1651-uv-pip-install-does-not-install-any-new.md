@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T15:00:25Z
 updated_at: 2024-03-04T19:40:53Z
 url: https://github.com/astral-sh/uv/issues/1651
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `uv pip install` does not install any new dependencies
 
 ---
 
-_Issue opened by @skshetry on 2024-02-18 15:00_
+_@skshetry_
 
 Let's say I have a project with the following dependencies, and installed the package using:
 

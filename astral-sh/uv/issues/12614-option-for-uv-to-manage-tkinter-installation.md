@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T23:54:24Z
 updated_at: 2025-04-02T00:20:30Z
 url: https://github.com/astral-sh/uv/issues/12614
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # option for uv to manage tkinter installation
 
 ---
 
-_Issue opened by @DetachHead on 2025-04-01 23:54_
+_@DetachHead_
 
 ### Summary
 

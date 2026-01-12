@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T01:49:38Z
 updated_at: 2025-12-17T03:49:13Z
 url: https://github.com/astral-sh/ty/issues/1817
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider allowing variables of type `type[...]` in explicit specializations
 
 ---
 
-_Issue opened by @carljm on 2025-12-09 01:49_
+_@carljm_
 
 Here is the original use case presented at https://discord.com/channels/1039017663004942429/1279201882337705994/1446534091901108355
 

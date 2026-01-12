@@ -12,14 +12,14 @@ head: charlie/rename-symbols
 created_at: 2023-06-14T03:47:35Z
 updated_at: 2023-06-16T14:25:35Z
 url: https://github.com/astral-sh/ruff/pull/5074
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add autofix for `Set`-to-`AbstractSet` rewrite using reference tracking
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 03:47_
+_@charliermarsh_
 
 ## Summary
 

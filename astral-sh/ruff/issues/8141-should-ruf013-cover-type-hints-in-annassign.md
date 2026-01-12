@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-23T11:56:26Z
 updated_at: 2023-10-23T15:09:07Z
 url: https://github.com/astral-sh/ruff/issues/8141
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Should `RUF013` cover type hints in `AnnAssign`?
 
 ---
 
-_Issue opened by @harupy on 2023-10-23 11:56_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-21T16:17:19Z
 updated_at: 2023-11-28T00:11:06Z
 url: https://github.com/astral-sh/uv/issues/481
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Move simple index queries to `CachedClient`
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 16:17_
+_@konstin_
 
 Currently simple index queries use the [http_cache](https://docs.rs/http-cache/latest/http_cache). We should move them to `CachedClient`. This allows merging different types of index response before caching, sharding by index (#480), saving a smaller response (we can filter it down to wheels, source dists and sentinel versions) and makes optimizations for much faster cache reading and writing possible.
 

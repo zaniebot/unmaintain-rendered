@@ -13,14 +13,14 @@ head: renovate/pre-commit-dependencies
 created_at: 2025-09-15T02:55:54Z
 updated_at: 2025-09-15T07:50:18Z
 url: https://github.com/astral-sh/uv/pull/15864
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Update pre-commit hook astral-sh/ruff-pre-commit to v0.13.0
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 02:55_
+_@renovate_
 
 This PR contains the following updates:
 

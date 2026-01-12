@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T15:09:34Z
 updated_at: 2025-06-11T15:09:34Z
 url: https://github.com/astral-sh/uv/issues/13967
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Git usage fails on Windows with `is not compatible with the version of Windows you're running`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-11 15:09_
+_@zanieb_
 
 ```
 thread 'export::pep_751_git_dependency' panicked at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb\library\core\src\ops\function.rs:250:5:

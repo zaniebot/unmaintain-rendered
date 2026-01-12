@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-13T18:16:22Z
 updated_at: 2022-11-15T10:52:41Z
 url: https://github.com/astral-sh/ruff/issues/723
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Avoid back-ticks in linter messages
 
 ---
 
-_Issue opened by @peterjc on 2022-11-13 18:16_
+_@peterjc_
 
 e.g. Trying ruff 0.0.114 on the Biopython codebase as an alternative to flake8 (for which is almost unbelievably fast, sub-second even if I deliberately run ``rm -rf .ruff_cache/`` first. Nice!):
 

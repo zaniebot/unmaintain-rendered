@@ -13,14 +13,14 @@ head: alex/property-test-tweaks
 created_at: 2025-01-12T13:50:31Z
 updated_at: 2025-01-12T16:27:56Z
 url: https://github.com/astral-sh/ruff/pull/15440
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Minor improvements to `property_tests.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-12 13:50_
+_@AlexWaygood_
 
 ## Summary
 

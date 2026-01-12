@@ -12,14 +12,14 @@ head: charlie/semantic-crate
 created_at: 2023-04-03T16:49:01Z
 updated_at: 2023-04-04T17:07:11Z
 url: https://github.com/astral-sh/ruff/pull/3865
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Introduce a `ruff_python_semantic` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-03 16:49_
+_@charliermarsh_
 
 ## Summary
 

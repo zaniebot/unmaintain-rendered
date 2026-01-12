@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T10:21:28Z
 updated_at: 2025-03-29T16:35:49Z
 url: https://github.com/astral-sh/ruff/issues/13759
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff doesn't raise syntax error for single starred assignment target
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-10-15 10:21_
+_@dhruvmanila_
 
 We should be raising syntax error for the following code:
 

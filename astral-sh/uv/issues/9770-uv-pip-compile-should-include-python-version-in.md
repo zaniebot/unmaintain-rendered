@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T12:05:12Z
 updated_at: 2024-12-10T14:45:37Z
 url: https://github.com/astral-sh/uv/issues/9770
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv pip compile` should include python version in the header like `pip-compile`
 
 ---
 
-_Issue opened by @karthiknadig on 2024-12-10 12:05_
+_@karthiknadig_
 
 ![Image](https://github.com/user-attachments/assets/39cd54ae-f481-4433-98b5-7ed7d9334073)
 

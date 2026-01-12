@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T23:54:09Z
 updated_at: 2025-07-09T15:06:18Z
 url: https://github.com/astral-sh/uv/issues/14513
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Docker image ghcr.io/astral-sh/... returns 403 Forbidden when pulling
 
 ---
 
-_Issue opened by @kbukum1 on 2025-07-08 23:54_
+_@kbukum1_
 
 ### Summary
 

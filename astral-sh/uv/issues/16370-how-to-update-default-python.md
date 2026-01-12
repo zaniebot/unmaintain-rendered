@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T09:34:15Z
 updated_at: 2025-12-20T15:06:13Z
 url: https://github.com/astral-sh/uv/issues/16370
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # How to update default python?
 
 ---
 
-_Issue opened by @myarcana on 2025-10-20 09:34_
+_@myarcana_
 
 ### Question
 

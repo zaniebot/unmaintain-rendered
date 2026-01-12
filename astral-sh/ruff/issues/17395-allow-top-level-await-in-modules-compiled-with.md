@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T17:01:21Z
 updated_at: 2025-04-25T16:55:52Z
 url: https://github.com/astral-sh/ruff/issues/17395
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow top-level `await` in modules compiled with `ast.PyCF_ALLOW_TOP_LEVEL_AWAIT`
 
 ---
 
-_Issue opened by @ntBre on 2025-04-14 17:01_
+_@ntBre_
 
 This is related to the `await` outside async function syntax error, which currently corresponds to [await-outside-async (PLE1142)](https://docs.astral.sh/ruff/rules/await-outside-async/). It's not currently an issue because the syntax error is still converted to a PLE1142 diagnostic in ruff, but we'll want to have a plan for handling this before stabilizing it as a syntax error.
 

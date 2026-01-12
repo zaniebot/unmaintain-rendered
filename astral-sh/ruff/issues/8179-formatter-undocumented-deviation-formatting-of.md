@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T19:42:12Z
 updated_at: 2025-12-12T17:03:39Z
 url: https://github.com/astral-sh/ruff/issues/8179
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: Formatting of long lambda as keyword argument 
 
 ---
 
-_Issue opened by @henribru on 2023-10-24 19:42_
+_@henribru_
 
 [Black formatting](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AEtAIddAD2IimZxl1N_WlbvK5V8G17R4xukEnqOHRjoYorGA3_x5d79TklUYR_XtF6MM4d5srbPV3-N4pXQ1SwF_YZZxkksYNb5k5P7chlg8SSpdJuccpW53I3EE2uXGr5zBl09V3WMIRMwonXPxdgmzF3oapEcKjKrbacGLJ8ijg5fK84E8SAp_bjGAAAA8DH6Gx1SCp8AAaMBrgIAAHUkjc-xxGf7AgAAAAAEWVo=):
 ```

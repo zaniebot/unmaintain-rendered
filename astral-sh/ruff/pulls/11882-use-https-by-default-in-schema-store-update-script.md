@@ -13,14 +13,14 @@ head: zb/https-default
 created_at: 2024-06-14T21:54:19Z
 updated_at: 2024-06-14T22:30:55Z
 url: https://github.com/astral-sh/ruff/pull/11882
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Use https by default in schema store update script
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 21:54_
+_@zanieb_
 
 _No description provided._
 

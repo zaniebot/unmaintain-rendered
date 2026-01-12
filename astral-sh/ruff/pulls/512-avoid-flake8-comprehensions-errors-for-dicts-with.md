@@ -12,14 +12,14 @@ head: charlie/kwargs
 created_at: 2022-10-29T22:47:36Z
 updated_at: 2022-10-29T22:49:07Z
 url: https://github.com/astral-sh/ruff/pull/512
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid flake8-comprehensions errors for dicts with kwargs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-29 22:47_
+_@charliermarsh_
 
 Resolves: #511
 

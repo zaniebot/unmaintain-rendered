@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-12T19:01:25Z
 updated_at: 2022-10-12T19:12:16Z
 url: https://github.com/clap-rs/clap/issues/4376
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Old docs for `Arg::default_value_ifs`?
 
 ---
 
-_Issue opened by @zohnannor on 2022-10-12 19:01_
+_@zohnannor_
 
 [`Arg::default_value_ifs`](https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.default_value_ifs) docs says:
 

@@ -14,14 +14,14 @@ head: charlie/unsafe-package
 created_at: 2024-02-23T00:13:36Z
 updated_at: 2024-02-23T19:27:03Z
 url: https://github.com/astral-sh/uv/pull/1889
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Add support for pip-compile's `--unsafe-package` flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 00:13_
+_@charliermarsh_
 
 ## Summary
 

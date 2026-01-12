@@ -15,14 +15,14 @@ head: alex/overload-diagnostics
 created_at: 2025-10-07T14:40:53Z
 updated_at: 2025-10-07T21:52:58Z
 url: https://github.com/astral-sh/ruff/pull/20745
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Improve diagnostics for bad `@overload` definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-07 14:40_
+_@AlexWaygood_
 
 ## Summary
 

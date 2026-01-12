@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T18:28:25Z
 updated_at: 2024-12-11T18:54:41Z
 url: https://github.com/astral-sh/uv/issues/9821
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Building fails if you use README.org vs README.md
 
 ---
 
-_Issue opened by @vikigenius on 2024-12-11 18:28_
+_@vikigenius_
 
 `uv sync` fails if you use a README.org file instead of README.md
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-18T13:44:45Z
 updated_at: 2025-01-18T15:25:05Z
 url: https://github.com/astral-sh/uv/issues/10733
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # `uv publish` error uploading to test.pypi.org due to metadata version mismatch
 
 ---
 
-_Issue opened by @CaptSolo on 2025-01-18 13:44_
+_@CaptSolo_
 
 An error appears when uploading a package to `test.pypi.org`:
 

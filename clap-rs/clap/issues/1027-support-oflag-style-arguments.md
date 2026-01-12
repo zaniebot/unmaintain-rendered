@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-14T04:41:43Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1027
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # support -oflag style arguments
 
 ---
 
-_Issue opened by @kahing on 2017-08-14 04:41_
+_@kahing_
 
 Some programs allow both -o key=value and -okey=value and -oflag arguments (ex: mount). How would one do the same thing in clap?
 

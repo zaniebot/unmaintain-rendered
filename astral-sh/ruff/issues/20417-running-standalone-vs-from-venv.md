@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T13:50:42Z
 updated_at: 2025-09-15T14:21:06Z
 url: https://github.com/astral-sh/ruff/issues/20417
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Running standalone vs from venv
 
 ---
 
-_Issue opened by @matdibu on 2025-09-15 13:50_
+_@matdibu_
 
 ### Question
 

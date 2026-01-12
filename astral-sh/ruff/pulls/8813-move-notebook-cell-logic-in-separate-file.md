@@ -13,14 +13,14 @@ head: dhruv/cell
 created_at: 2023-11-21T22:19:08Z
 updated_at: 2023-11-22T15:21:30Z
 url: https://github.com/astral-sh/ruff/pull/8813
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Move notebook cell logic in separate file
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-21 22:19_
+_@dhruvmanila_
 
 Small refactor to move cell related logic to it's own file.
 

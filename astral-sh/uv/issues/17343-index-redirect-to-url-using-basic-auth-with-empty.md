@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T04:29:10Z
 updated_at: 2026-01-07T21:18:53Z
 url: https://github.com/astral-sh/uv/issues/17343
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Index: Redirect to url using basic auth with empty username doesn't work
 
 ---
 
-_Issue opened by @matthuisman on 2026-01-07 04:29_
+_@matthuisman_
 
 ### Summary
 

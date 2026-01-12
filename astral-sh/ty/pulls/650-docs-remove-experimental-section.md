@@ -13,14 +13,14 @@ head: ag/stabilize-completions
 created_at: 2025-06-13T16:07:45Z
 updated_at: 2025-06-16T11:43:27Z
 url: https://github.com/astral-sh/ty/pull/650
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # docs: remove experimental section
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-13 16:07_
+_@BurntSushi_
 
 This was only used to opt into completions. But we're removing the
 opt-in in https://github.com/astral-sh/ruff/pull/18650, so let's remove

@@ -13,14 +13,14 @@ head: doc501-empty-exception
 created_at: 2024-11-20T19:02:30Z
 updated_at: 2025-12-10T17:45:25Z
 url: https://github.com/astral-sh/ruff/pull/14496
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pydoclint`] Extend `docstring-missing-exception` to empty exception descriptions (`DOC501`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-20 19:02_
+_@sbrugman_
 
 
 

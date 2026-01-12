@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-14T13:22:13Z
 updated_at: 2025-06-18T17:07:22Z
 url: https://github.com/astral-sh/uv/issues/11508
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Failed to inspect Python interpreter in conjunction with sitecustomize.py
 
 ---
 
-_Issue opened by @rkoschmitzky on 2025-02-14 13:22_
+_@rkoschmitzky_
 
 ### Summary
 

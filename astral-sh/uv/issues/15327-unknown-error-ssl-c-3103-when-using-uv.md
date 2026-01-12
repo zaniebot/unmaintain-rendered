@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-16T18:00:38Z
 updated_at: 2025-11-18T16:23:58Z
 url: https://github.com/astral-sh/uv/issues/15327
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # unknown error (_ssl.c:3103) when using uv
 
 ---
 
-_Issue opened by @S4r4h-O on 2025-08-16 18:00_
+_@S4r4h-O_
 
 ### Summary
 

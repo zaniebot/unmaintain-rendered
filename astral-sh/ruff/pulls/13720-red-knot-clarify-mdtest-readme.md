@@ -13,14 +13,14 @@ head: cjm/mdtest-readme
 created_at: 2024-10-11T18:53:29Z
 updated_at: 2024-10-11T19:36:50Z
 url: https://github.com/astral-sh/ruff/pull/13720
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] clarify mdtest README
 
 ---
 
-_Pull request opened by @carljm on 2024-10-11 18:53_
+_@carljm_
 
 Address a potential point of confusion that bit a contributor in https://github.com/astral-sh/ruff/pull/13719
 

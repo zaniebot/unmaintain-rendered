@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-08-07T16:47:57Z
 updated_at: 2022-08-22T18:06:08Z
 url: https://github.com/clap-rs/clap/issues/4035
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Lifetime of possible values and PossibleValueParser
 
 ---
 
-_Issue opened by @liningpan on 2022-08-07 16:47_
+_@liningpan_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-03T22:56:46Z
 updated_at: 2023-07-10T01:17:41Z
 url: https://github.com/astral-sh/ruff/issues/3330
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Variable name `df` raises PD901
 
 ---
 
-_Issue opened by @janosh on 2023-03-03 22:56_
+_@janosh_
 
 > PD901 `df` is a bad variable name. Be kinder to your future self.
 

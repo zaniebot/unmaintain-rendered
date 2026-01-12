@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-31T15:39:46Z
 updated_at: 2024-10-31T16:45:38Z
 url: https://github.com/astral-sh/ruff/issues/14021
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Sort imports: zoneinfo ends up in 3rd party section
 
 ---
 
-_Issue opened by @minusf on 2024-10-31 15:39_
+_@minusf_
 
 I am a bit confused about `zoneinfo` ending up behind `requests`:
 

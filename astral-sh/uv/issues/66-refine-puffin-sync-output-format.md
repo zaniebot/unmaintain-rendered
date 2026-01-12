@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T20:51:58Z
 updated_at: 2023-10-10T03:29:10Z
 url: https://github.com/astral-sh/uv/issues/66
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Refine `puffin sync` output format
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 20:51_
+_@charliermarsh_
 
 I like Bun's output, as an example:
 

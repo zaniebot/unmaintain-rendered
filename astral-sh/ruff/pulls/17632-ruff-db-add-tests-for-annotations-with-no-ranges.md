@@ -15,14 +15,14 @@ head: ag/fix-only-file-path-rendering
 created_at: 2025-04-25T17:07:50Z
 updated_at: 2025-04-25T17:25:22Z
 url: https://github.com/astral-sh/ruff/pull/17632
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # ruff_db: add tests for annotations with no ranges
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-25 17:07_
+_@BurntSushi_
 
 ... and fix the case where an annotation with a `Span` but no
 `TextRange` or message gets completely dropped.

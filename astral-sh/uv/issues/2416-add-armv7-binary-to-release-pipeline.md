@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T14:36:48Z
 updated_at: 2024-03-15T13:49:31Z
 url: https://github.com/astral-sh/uv/issues/2416
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Add armv7 binary to release pipeline
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-13 14:36_
+_@charliermarsh_
 
 See: https://github.com/home-assistant/core/pull/112496#issuecomment-1988077257
 

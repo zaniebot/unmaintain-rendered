@@ -14,14 +14,14 @@ head: charlie/decode
 created_at: 2024-03-05T19:21:38Z
 updated_at: 2024-03-05T19:26:55Z
 url: https://github.com/astral-sh/uv/pull/2215
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # HTML-decode URLs in HTML indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 19:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T11:00:14Z
 updated_at: 2025-03-19T10:55:22Z
 url: https://github.com/astral-sh/uv/issues/12149
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Cannot install python behind company proxy
 
 ---
 
-_Issue opened by @gaiazaff on 2025-03-13 11:00_
+_@gaiazaff_
 
 ### Question
 

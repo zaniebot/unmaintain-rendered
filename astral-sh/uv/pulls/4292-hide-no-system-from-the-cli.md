@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-06-13T00:16:10Z
 updated_at: 2024-06-13T00:22:35Z
 url: https://github.com/astral-sh/uv/pull/4292
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Hide `--no-system` from the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 00:16_
+_@charliermarsh_
 
 _No description provided._
 

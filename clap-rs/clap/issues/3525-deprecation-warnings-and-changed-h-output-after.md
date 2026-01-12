@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-01T23:44:22Z
 updated_at: 2022-03-08T16:56:50Z
 url: https://github.com/clap-rs/clap/issues/3525
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Deprecation warnings and changed `-h` output after `cargo update` with Clap version fixed to "3.0.7" in my `cargo.toml`  
 
 ---
 
-_Issue opened by @asishallab on 2022-03-01 23:44_
+_@asishallab_
 
 ### Please complete the following tasks
 

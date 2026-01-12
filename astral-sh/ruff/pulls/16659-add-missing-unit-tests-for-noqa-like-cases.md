@@ -12,14 +12,14 @@ head: noqa
 created_at: 2025-03-12T04:03:47Z
 updated_at: 2025-03-12T13:19:14Z
 url: https://github.com/astral-sh/ruff/pull/16659
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Add missing unit tests for `# noqa:`-like cases
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-12 04:03_
+_@InSyncWithFoo_
 
 ## Summary
 

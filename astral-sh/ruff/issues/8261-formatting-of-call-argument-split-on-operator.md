@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T19:29:10Z
 updated_at: 2023-10-26T23:54:03Z
 url: https://github.com/astral-sh/ruff/issues/8261
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatting of call argument split on operator reduces readability
 
 ---
 
-_Issue opened by @zanieb on 2023-10-26 19:29_
+_@zanieb_
 
 The following code is formatted the same with `black`, `black --preview`, and `ruff format`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T05:09:14Z
 updated_at: 2025-09-17T11:16:18Z
 url: https://github.com/astral-sh/uv/issues/15903
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # add a uv init --if-folder-not-exist flag
 
 ---
 
-_Issue opened by @CNOCTAVE on 2025-09-17 05:09_
+_@CNOCTAVE_
 
 ### Summary
 

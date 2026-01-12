@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-12T22:23:13Z
 updated_at: 2025-12-12T23:21:34Z
 url: https://github.com/astral-sh/ty/issues/1870
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Memory allocation failure with large tuple operations
 
 ---
 
-_Issue opened by @correctmost on 2025-12-12 22:23_
+_@correctmost_
 
 ### Summary
 

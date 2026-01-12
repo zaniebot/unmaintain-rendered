@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-29T10:03:40Z
 updated_at: 2023-11-30T07:06:14Z
 url: https://github.com/astral-sh/ruff/issues/8907
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Feature request: FKA100 (Flake8 force keyword arguments)
 
 ---
 
-_Issue opened by @sebastian-sz on 2023-11-29 10:03_
+_@sebastian-sz_
 
 Would it be possible to add the Flake8's https://pypi.org/project/flake8-force-keyword-arguments/ rule?
 Cheers!

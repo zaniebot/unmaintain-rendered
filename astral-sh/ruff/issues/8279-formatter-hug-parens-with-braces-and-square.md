@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-27T10:37:30Z
 updated_at: 2023-12-19T00:17:31Z
 url: https://github.com/astral-sh/ruff/issues/8279
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `hug_parens_with_braces_and_square_brackets` preview style
 
 ---
 
-_Issue opened by @konstin on 2023-10-27 10:37_
+_@konstin_
 
 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T21:24:58Z
 updated_at: 2024-08-25T12:30:35Z
 url: https://github.com/astral-sh/uv/issues/6590
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Support for carret and tilde requirements
 
 ---
 
-_Issue opened by @seppzer0 on 2024-08-24 21:24_
+_@seppzer0_
 
 Hi! I'm migrating from Poetry, and I'm very much excited for the functionality that is currently in uv 🌟 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-12T20:10:25Z
 updated_at: 2025-02-24T15:36:34Z
 url: https://github.com/astral-sh/uv/issues/9850
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # CLI Option to save logs to a file
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-12-12 20:10_
+_@edgarrmondragon_
 
 In short, similar to the `--log` option of pip:
 

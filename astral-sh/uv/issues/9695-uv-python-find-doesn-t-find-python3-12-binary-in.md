@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T22:28:00Z
 updated_at: 2025-11-05T14:54:58Z
 url: https://github.com/astral-sh/uv/issues/9695
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # `uv python find` doesn't find `python3.12` binary in $PATH when looking for `==3.12.8`
 
 ---
 
-_Issue opened by @aDotInTheVoid on 2024-12-06 22:28_
+_@aDotInTheVoid_
 
 On my system I have both python3.13.0 and python3.12.8 installed through homebrew:
 

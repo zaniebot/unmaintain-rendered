@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T18:46:55Z
 updated_at: 2026-01-09T09:32:44Z
 url: https://github.com/astral-sh/ty/issues/2028
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Go to Definition not working for stringified nested class
 
 ---
 
-_Issue opened by @steved-stripe on 2025-12-17 18:46_
+_@steved-stripe_
 
 ### Summary
 

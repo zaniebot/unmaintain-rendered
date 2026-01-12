@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T15:53:27Z
 updated_at: 2025-07-16T13:43:05Z
 url: https://github.com/astral-sh/uv/issues/14609
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Inconsistent pyproject.toml handling for `uv pip install` for `git+` and local install
 
 ---
 
-_Issue opened by @MilkClouds on 2025-07-14 15:53_
+_@MilkClouds_
 
 ### Summary
 

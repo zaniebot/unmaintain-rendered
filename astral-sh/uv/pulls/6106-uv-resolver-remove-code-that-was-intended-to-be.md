@@ -12,14 +12,14 @@ head: ag/allow-forking-with-prefs
 created_at: 2024-08-15T11:36:54Z
 updated_at: 2024-08-15T12:25:57Z
 url: https://github.com/astral-sh/uv/pull/6106
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # uv-resolver: remove code that was intended to be removed
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-15 11:36_
+_@BurntSushi_
 
 In particular, I added this as a hack to avoid a kinda of
 instability that was caused by our marker code not correctly

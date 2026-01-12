@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T14:49:01Z
 updated_at: 2025-08-14T17:35:42Z
 url: https://github.com/astral-sh/uv/issues/15282
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # How to install local dependencies and intransitive local depenencies
 
 ---
 
-_Issue opened by @rafikg on 2025-08-14 14:49_
+_@rafikg_
 
 ### Question
 

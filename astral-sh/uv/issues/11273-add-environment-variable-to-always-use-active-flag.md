@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-06T04:51:21Z
 updated_at: 2025-08-11T21:48:59Z
 url: https://github.com/astral-sh/uv/issues/11273
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Add environment variable to always use `--active` flag
 
 ---
 
-_Issue opened by @albireox on 2025-02-06 04:51_
+_@albireox_
 
 ### Summary
 

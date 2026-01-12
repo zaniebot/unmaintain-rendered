@@ -14,14 +14,14 @@ head: fix-sim114
 created_at: 2024-01-30T14:32:41Z
 updated_at: 2024-01-30T16:36:45Z
 url: https://github.com/astral-sh/ruff/pull/9704
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`flake8-simplify`] - Fix syntax error in autofix (`SIM114`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-30 14:32_
+_@diceroll123_
 
 ## Summary
 

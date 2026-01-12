@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-13T18:37:40Z
 updated_at: 2023-12-04T14:31:02Z
 url: https://github.com/astral-sh/uv/issues/414
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Don't remove pip from the user's venv
 
 ---
 
-_Issue opened by @konstin on 2023-11-13 18:37_
+_@konstin_
 
 It seems `pip-sync` currently removes pip from the user's venv, we shouldn't do that
 

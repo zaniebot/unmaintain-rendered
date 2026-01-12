@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-02T09:34:14Z
 updated_at: 2023-11-10T05:29:24Z
 url: https://github.com/astral-sh/ruff/issues/4186
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Respect `Applicability` in LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:34_
+_@MichaReiser_
 
 This task is part of #4181 and it depends on #4183 and #4185
 

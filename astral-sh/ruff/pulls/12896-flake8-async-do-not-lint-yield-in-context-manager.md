@@ -12,14 +12,14 @@ head: async100-skip-yield-in-context-manager
 created_at: 2024-08-14T19:21:05Z
 updated_at: 2024-08-15T02:27:00Z
 url: https://github.com/astral-sh/ruff/pull/12896
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [flake8-async] Do not lint yield in context manager `cancel-scope-no-checkpoint (ASYNC100)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-14 19:21_
+_@dylwil3_
 
 For compatibility with upstream, treat `yield` as a checkpoint inside cancel scopes.
 

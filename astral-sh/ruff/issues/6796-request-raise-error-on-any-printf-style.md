@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T23:24:37Z
 updated_at: 2024-11-26T07:00:42Z
 url: https://github.com/astral-sh/ruff/issues/6796
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Request: Raise error on any printf style formatting for direct string interpolation
 
 ---
 
-_Issue opened by @Avasam on 2023-08-22 23:24_
+_@Avasam_
 
 As explained here: https://github.com/astral-sh/ruff/issues/3549#issuecomment-1477242022 , Ruff cannot safely autofix all usages of [printf-style-formatting (UP031)](https://beta.ruff.rs/docs/rules/printf-string-formatting/).
 

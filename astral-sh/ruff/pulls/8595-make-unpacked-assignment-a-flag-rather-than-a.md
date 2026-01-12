@@ -13,14 +13,14 @@ head: charlie/unpack
 created_at: 2023-11-10T02:17:59Z
 updated_at: 2023-11-10T02:41:31Z
 url: https://github.com/astral-sh/ruff/pull/8595
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Make unpacked assignment a flag rather than a `BindingKind`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 02:17_
+_@charliermarsh_
 
 ## Summary
 

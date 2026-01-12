@@ -13,14 +13,14 @@ head: standardise-ruff-config
 created_at: 2025-01-17T21:00:01Z
 updated_at: 2025-01-21T12:18:20Z
 url: https://github.com/astral-sh/ruff/pull/15558
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Standardise ruff config
 
 ---
 
-_Pull request opened by @calumy on 2025-01-17 21:00_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

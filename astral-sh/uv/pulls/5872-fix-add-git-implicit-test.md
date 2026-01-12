@@ -13,14 +13,14 @@ head: charlie/g
 created_at: 2024-08-07T16:15:20Z
 updated_at: 2024-08-07T16:23:48Z
 url: https://github.com/astral-sh/uv/pull/5872
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Fix `add_git_implicit` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 16:15_
+_@charliermarsh_
 
 _No description provided._
 

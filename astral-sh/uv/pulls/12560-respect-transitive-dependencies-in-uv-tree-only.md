@@ -13,14 +13,14 @@ head: charlie/only
 created_at: 2025-03-30T18:39:02Z
 updated_at: 2025-03-30T18:48:49Z
 url: https://github.com/astral-sh/uv/pull/12560
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Respect transitive dependencies in `uv tree --only-group`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-30 18:39_
+_@charliermarsh_
 
 ## Summary
 

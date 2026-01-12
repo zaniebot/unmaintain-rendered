@@ -12,14 +12,14 @@ head: self-invalid-annotation
 created_at: 2025-09-22T21:36:31Z
 updated_at: 2025-09-29T09:09:42Z
 url: https://github.com/astral-sh/ruff/pull/20522
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Warn incompatible type annotation for self
 
 ---
 
-_Pull request opened by @Glyphack on 2025-09-22 21:36_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

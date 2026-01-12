@@ -14,14 +14,14 @@ head: david/mypy_primer-split-installation-and-execution
 created_at: 2025-03-11T11:29:09Z
 updated_at: 2025-03-11T12:06:09Z
 url: https://github.com/astral-sh/ruff/pull/16622
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] mypy_primer: split installation and execution
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-11 11:29_
+_@sharkdp_
 
 ## Summary
 

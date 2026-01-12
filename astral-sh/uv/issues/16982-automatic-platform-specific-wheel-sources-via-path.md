@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T15:49:14Z
 updated_at: 2025-12-10T19:29:11Z
 url: https://github.com/astral-sh/uv/issues/16982
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Automatic platform specific wheel sources via path
 
 ---
 
-_Issue opened by @danielkonecny on 2025-12-04 15:49_
+_@danielkonecny_
 
 ### Summary
 

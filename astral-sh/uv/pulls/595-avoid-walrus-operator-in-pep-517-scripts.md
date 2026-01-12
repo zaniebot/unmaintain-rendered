@@ -13,14 +13,14 @@ head: charlie/walrus
 created_at: 2023-12-09T01:21:46Z
 updated_at: 2023-12-11T08:53:49Z
 url: https://github.com/astral-sh/uv/pull/595
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Avoid walrus operator in PEP 517 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 01:21_
+_@charliermarsh_
 
 I believe this unnecessarily puts a Python 3.7+ requirement on these scripts.
 

@@ -14,14 +14,14 @@ head: dcreager/dynamic-bounds
 created_at: 2025-11-05T19:51:17Z
 updated_at: 2025-11-07T19:01:41Z
 url: https://github.com/astral-sh/ruff/pull/21287
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Clarify behavior of constraint sets for gradual upper bounds and constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-05 19:51_
+_@dcreager_
 
 When checking whether a constraint set is satisfied, if a typevar has a non-fully-static upper bound or constraint, we are free to choose any materialization that makes the check succeed.
 

@@ -11,14 +11,14 @@ head: gh/amyreese/2/head
 created_at: 2025-09-04T19:47:01Z
 updated_at: 2025-11-25T02:00:43Z
 url: https://github.com/astral-sh/ruff/pull/20252
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Better handling for panics during linting
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-04 19:47_
+_@amyreese_
 
 Stack from [ghstack](https://github.com/ezyang/ghstack) (oldest at bottom):
 * __->__ #20252

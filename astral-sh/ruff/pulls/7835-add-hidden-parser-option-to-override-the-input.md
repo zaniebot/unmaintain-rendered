@@ -11,14 +11,14 @@ head: felix-cw/cli-parser-option
 created_at: 2023-10-06T10:00:23Z
 updated_at: 2023-10-31T10:48:04Z
 url: https://github.com/astral-sh/ruff/pull/7835
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add hidden `--parser` option to override the input format, rather than inferring it from the file extension
 
 ---
 
-_Pull request opened by @felix-cw on 2023-10-06 10:00_
+_@felix-cw_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

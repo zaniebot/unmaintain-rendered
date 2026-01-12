@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T02:49:54Z
 updated_at: 2024-03-01T04:02:26Z
 url: https://github.com/astral-sh/uv/issues/1849
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # PyPy: `sys.path` seems to be missing venv's `/site-packages`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-02-22 02:49_
+_@edgarrmondragon_
 
               > @edgarrmondragon Is pypy otherwise working for you as it should? I'm asking because we haven't put much focus on pypy so far.
 

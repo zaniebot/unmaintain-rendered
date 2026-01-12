@@ -12,14 +12,14 @@ head: fix/format-spec-placeholder
 created_at: 2023-08-22T15:15:20Z
 updated_at: 2023-08-24T19:41:10Z
 url: https://github.com/astral-sh/ruff/pull/6773
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix `bad-string-format-character` when a placeholder occurs within a format spec part
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 15:15_
+_@zanieb_
 
 Closes #6767 
 

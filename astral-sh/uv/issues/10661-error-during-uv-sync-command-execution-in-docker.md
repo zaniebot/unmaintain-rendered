@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-15T23:35:58Z
 updated_at: 2025-01-15T23:38:52Z
 url: https://github.com/astral-sh/uv/issues/10661
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Error During `uv sync` Command Execution in Docker Build
 
 ---
 
-_Issue opened by @nimaxin on 2025-01-15 23:35_
+_@nimaxin_
 
 Encountered an error while running the uv sync command during a Docker build step. The error suggests an issue with parsing uv.lock due to an invalid ABI tag in a wheel filename.
 ```bash

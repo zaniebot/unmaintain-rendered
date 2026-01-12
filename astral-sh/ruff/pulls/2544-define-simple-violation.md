@@ -12,14 +12,14 @@ head: define-simple-violation
 created_at: 2023-02-03T14:46:53Z
 updated_at: 2023-02-15T20:18:16Z
 url: https://github.com/astral-sh/ruff/pull/2544
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # define_simple_violation
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 14:46_
+_@akx_
 
 This PR defines a pair of new macros, `define_simple_violation!`, `define_simple_autofix_validation!` that define an unit struct and derive the `Violation`/`AlwaysAutofixableViolation` traits.
 

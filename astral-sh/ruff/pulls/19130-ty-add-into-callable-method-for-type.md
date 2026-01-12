@@ -13,14 +13,14 @@ head: into-callable
 created_at: 2025-07-03T18:28:40Z
 updated_at: 2025-07-16T21:12:31Z
 url: https://github.com/astral-sh/ruff/pull/19130
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Add into_callable method for Type
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-03 18:28_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

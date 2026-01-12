@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T13:51:13Z
 updated_at: 2024-11-10T22:40:38Z
 url: https://github.com/astral-sh/ruff/issues/14202
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `FBT001` exclude operators like `__and__`, `__or__` and `__xor__`, etc.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-11-08 13:51_
+_@randolf-scholz_
 
 [`FBT001`](https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/) should probably by default exclude methods used for operator overloading, in particular boolean logic specific operations:
 

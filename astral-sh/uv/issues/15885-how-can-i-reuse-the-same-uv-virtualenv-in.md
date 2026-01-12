@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T02:42:51Z
 updated_at: 2025-11-19T04:32:26Z
 url: https://github.com/astral-sh/uv/issues/15885
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # How can I reuse the same uv virtualenv in different project?
 
 ---
 
-_Issue opened by @havanoname on 2025-09-16 02:42_
+_@havanoname_
 
 ### Question
 

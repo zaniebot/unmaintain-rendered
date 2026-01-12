@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-08T19:15:10Z
 updated_at: 2023-12-14T16:54:08Z
 url: https://github.com/astral-sh/ruff/issues/9056
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Windows Security flags `ruff.exe` as a virus
 
 ---
 
-_Issue opened by @s-banach on 2023-12-08 19:15_
+_@s-banach_
 
 I'm not sure what you can do about this, but my work computer just decided to flag ruff as a virus and delete it.
 Don't know if "enterprise" windows has an exceptionally tight virus scanner or if consumer windows will start doing this to people as well.

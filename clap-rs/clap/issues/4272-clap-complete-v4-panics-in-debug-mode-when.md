@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-28T18:46:04Z
 updated_at: 2022-09-28T21:25:09Z
 url: https://github.com/clap-rs/clap/issues/4272
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_complete v4 panics in debug mode when generating
 
 ---
 
-_Issue opened by @alexheretic on 2022-09-28 18:46_
+_@alexheretic_
 
 ### Please complete the following tasks
 

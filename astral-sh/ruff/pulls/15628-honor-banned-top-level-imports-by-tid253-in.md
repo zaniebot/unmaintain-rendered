@@ -13,14 +13,14 @@ head: 12803-fix-tid253-incompatible-with-plc0415
 created_at: 2025-01-21T04:05:41Z
 updated_at: 2025-01-24T12:38:20Z
 url: https://github.com/astral-sh/ruff/pull/15628
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Honor banned top level imports by TID253 in PLC0415. 
 
 ---
 
-_Pull request opened by @mishamsk on 2025-01-21 04:05_
+_@mishamsk_
 
 ## Summary
 

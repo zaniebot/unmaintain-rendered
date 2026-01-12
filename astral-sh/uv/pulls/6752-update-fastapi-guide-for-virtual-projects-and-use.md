@@ -13,14 +13,14 @@ head: zb/docs-fastapi-ii
 created_at: 2024-08-28T14:38:39Z
 updated_at: 2024-08-28T15:33:48Z
 url: https://github.com/astral-sh/uv/pull/6752
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Update FastAPI guide for virtual projects and use `uv init` to create the `pyproject.toml`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 14:38_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/6751
 

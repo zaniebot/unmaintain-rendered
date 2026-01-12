@@ -15,14 +15,14 @@ head: alex/intersection-hotfix
 created_at: 2025-06-24T17:51:41Z
 updated_at: 2025-06-24T18:39:03Z
 url: https://github.com/astral-sh/ruff/pull/18920
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Fix false positives when subscripting an object inferred as having an `Intersection` type
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-24 17:51_
+_@AlexWaygood_
 
 ## Summary
 

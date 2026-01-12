@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T15:17:03Z
 updated_at: 2025-05-23T08:50:18Z
 url: https://github.com/astral-sh/uv/issues/2810
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Random errors on accessing cache with simultaneous installs on Windows
 
 ---
 
-_Issue opened by @gozdal on 2024-04-03 15:17_
+_@gozdal_
 
 Quite often `uv venv` or `uv pip install` fails in our CI environment. There are multiple jobs creating virtual envs and/or installing requirements with `uv pip install`. Each is using a different venv but they all share user and thus the cache.
 

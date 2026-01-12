@@ -13,14 +13,14 @@ head: update-nvim-docs
 created_at: 2025-05-14T19:32:12Z
 updated_at: 2025-05-14T20:58:03Z
 url: https://github.com/astral-sh/ruff/pull/18108
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # Update Neovim setup docs
 
 ---
 
-_Pull request opened by @bombsimon on 2025-05-14 19:32_
+_@bombsimon_
 
 Nvim 0.11+ uses the builtin `vim.lsp.enable` and `vim.lsp.config` to enable and configure LSP clients. This adds the new non legacy way of configuring Nvim with `nvim-lspconfig` according to the upstream documentation.
 

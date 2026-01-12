@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-18T14:40:03Z
 updated_at: 2020-10-11T09:27:01Z
 url: https://github.com/clap-rs/clap/issues/2022
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Obscure panic with heading and default value
 
 ---
 
-_Issue opened by @CertainLach on 2020-07-18 14:40_
+_@CertainLach_
 
 ### Make sure you completed the following tasks
 

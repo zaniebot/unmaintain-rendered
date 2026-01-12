@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T17:53:25Z
 updated_at: 2025-12-18T15:29:44Z
 url: https://github.com/astral-sh/uv/issues/16042
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Different python versions crashing
 
 ---
 
-_Issue opened by @danielpassy on 2025-09-26 17:53_
+_@danielpassy_
 
 ### Summary
 

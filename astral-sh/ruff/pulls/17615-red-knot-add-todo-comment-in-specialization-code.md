@@ -13,14 +13,14 @@ head: cjm/addcomment
 created_at: 2025-04-24T21:08:28Z
 updated_at: 2025-04-24T21:41:21Z
 url: https://github.com/astral-sh/ruff/pull/17615
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] add TODO comment in specialization code
 
 ---
 
-_Pull request opened by @carljm on 2025-04-24 21:08_
+_@carljm_
 
 ## Summary
 

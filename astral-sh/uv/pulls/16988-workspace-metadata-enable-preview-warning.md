@@ -14,14 +14,14 @@ head: zsol/jj-nworuwwkmoll
 created_at: 2025-12-04T19:19:51Z
 updated_at: 2025-12-05T10:54:37Z
 url: https://github.com/astral-sh/uv/pull/16988
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # workspace metadata: enable preview warning
 
 ---
 
-_Pull request opened by @zsol on 2025-12-04 19:19_
+_@zsol_
 
 🙃 
 

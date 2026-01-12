@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-21T20:15:19Z
 updated_at: 2023-04-24T04:39:53Z
 url: https://github.com/astral-sh/ruff/issues/4062
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Infinite loop in import sorting for long variable names with force-single-line (ruff >= 0.0.256)
 
 ---
 
-_Issue opened by @pstjohn on 2023-04-21 20:15_
+_@pstjohn_
 
 The following code snippet causes `ruff` to hang for ruff >= 0.0.256.
 

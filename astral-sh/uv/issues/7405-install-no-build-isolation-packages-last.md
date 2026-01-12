@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-15T12:10:31Z
 updated_at: 2024-12-03T15:29:29Z
 url: https://github.com/astral-sh/uv/issues/7405
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Install no-build-isolation-packages last
 
 ---
 
-_Issue opened by @bluss on 2024-09-15 12:10_
+_@bluss_
 
 Feature request/suggestion: If there is a package marked no-build-isolation-package, install it after everything else. This makes uv sync more likely to work without any extra actions (extra uv pip install invocations).
 

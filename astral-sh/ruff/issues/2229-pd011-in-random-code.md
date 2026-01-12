@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T21:47:33Z
 updated_at: 2023-09-18T09:09:57Z
 url: https://github.com/astral-sh/ruff/issues/2229
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PD011 in random code
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 21:47_
+_@spaceone_
 
 I had a function such as:
 ```

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-04-09T08:33:59Z
 updated_at: 2025-04-09T13:58:22Z
 url: https://github.com/astral-sh/uv/pull/12775
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # docs: added shield on twitter
 
 ---
 
-_Pull request opened by @Olexandr88 on 2025-04-09 08:33_
+_@Olexandr88_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T16:21:36Z
 updated_at: 2025-10-31T14:18:34Z
 url: https://github.com/astral-sh/uv/issues/14220
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Replace transitive dependencies? `opencv-python` -> `opencv-python-headless`
 
 ---
 
-_Issue opened by @afaulconbridge on 2025-06-23 16:21_
+_@afaulconbridge_
 
 ### Question
 

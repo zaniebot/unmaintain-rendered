@@ -13,14 +13,14 @@ head: fix-pre-commit-typos
 created_at: 2023-06-05T20:48:15Z
 updated_at: 2023-06-06T06:06:50Z
 url: https://github.com/astral-sh/ruff/pull/4876
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix pre-commit typos action
 
 ---
 
-_Pull request opened by @konstin on 2023-06-05 20:48_
+_@konstin_
 
 The typos pre-commit action would previously edit test fixtures and snapshots. Unfortunately the pre-commit action also doesn't respect _typos.toml and typos action doesn't allow for an exclude key, so i've added a top level exclude key. I have confirmed that this does stop typos from rewriting my fixtures and snapshots
 

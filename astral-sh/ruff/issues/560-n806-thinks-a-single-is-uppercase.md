@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-03T02:14:48Z
 updated_at: 2022-11-03T02:39:24Z
 url: https://github.com/astral-sh/ruff/issues/560
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N806 thinks a single `_` is uppercase
 
 ---
 
-_Issue opened by @tgross35 on 2022-11-03 02:14_
+_@tgross35_
 
 It looks like a single `_` as a variable name gets considered uppercase for N806. I don't think this happens for names that start with an underscore, like `_test`
 

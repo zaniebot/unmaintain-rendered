@@ -13,14 +13,14 @@ head: konsti/use-github-api-hashes
 created_at: 2025-07-18T09:53:56Z
 updated_at: 2025-07-18T12:03:56Z
 url: https://github.com/astral-sh/uv/pull/14708
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Use SHA256 from GitHub API for Python downloads
 
 ---
 
-_Pull request opened by @konstin on 2025-07-18 09:53_
+_@konstin_
 
 We recently ran over the file limit and had to drop hash file from the releases page in favor of bulk SHA256SUMS files (https://github.com/astral-sh/python-build-standalone/pull/691). Conveniently, GitHub has recently started to add a SHA256 digest to the API. GitHub did not backfill the hashes for the old releases, so use the API hashes for newer assets, and eventually only download SHA256SUMS for older releases.
 

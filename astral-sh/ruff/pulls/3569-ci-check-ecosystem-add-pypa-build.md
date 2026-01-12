@@ -12,14 +12,14 @@ head: henryiii/ci/build
 created_at: 2023-03-17T03:08:32Z
 updated_at: 2023-03-18T23:09:23Z
 url: https://github.com/astral-sh/ruff/pull/3569
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci(check_ecosystem): add PyPa/build
 
 ---
 
-_Pull request opened by @henryiii on 2023-03-17 03:08_
+_@henryiii_
 
 Adding PyPA/build.
 

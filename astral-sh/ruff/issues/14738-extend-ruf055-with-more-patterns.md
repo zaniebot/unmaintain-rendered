@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T17:28:54Z
 updated_at: 2025-01-27T02:49:05Z
 url: https://github.com/astral-sh/ruff/issues/14738
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Extend `RUF055` with more patterns
 
 ---
 
-_Issue opened by @MichaReiser on 2024-12-02 17:28_
+_@MichaReiser_
 
 > Here are some slightly more complex examples not supported by the initial implementation in #14659:
 > ```py

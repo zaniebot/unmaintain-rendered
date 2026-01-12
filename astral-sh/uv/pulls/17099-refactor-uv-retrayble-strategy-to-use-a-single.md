@@ -13,14 +13,14 @@ head: konsti/better-retry-handling-3
 created_at: 2025-12-12T11:33:42Z
 updated_at: 2025-12-18T10:10:51Z
 url: https://github.com/astral-sh/uv/pull/17099
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Refactor uv retrayble strategy to use a single code path
 
 ---
 
-_Pull request opened by @konstin on 2025-12-12 11:33_
+_@konstin_
 
 Refactoring that allows uv's retryable strategy to return `Some(Retryable::Fatal)`, also helpful for https://github.com/astral-sh/uv/pull/16245
 

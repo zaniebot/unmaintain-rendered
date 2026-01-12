@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T15:18:00Z
 updated_at: 2024-11-13T19:50:41Z
 url: https://github.com/astral-sh/ruff/issues/14321
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics on named expressions with invalid targets
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-13 15:18_
+_@sharkdp_
 
 Red knot currently panics on three out of four of these examples from `crates/ruff_python_parser/resources/invalid/expressions/named/invalid_target.py`, at two different places:
 ```py

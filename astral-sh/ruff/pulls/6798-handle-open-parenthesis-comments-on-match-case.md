@@ -13,14 +13,14 @@ head: charlie/parenthesized-case
 created_at: 2023-08-23T00:21:26Z
 updated_at: 2023-08-23T04:40:19Z
 url: https://github.com/astral-sh/ruff/pull/6798
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Handle open-parenthesis comments on match case
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 00:21_
+_@charliermarsh_
 
 ## Summary
 

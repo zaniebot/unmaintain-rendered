@@ -13,14 +13,14 @@ head: zb/sleep-int
 created_at: 2025-04-21T16:01:15Z
 updated_at: 2025-04-21T19:47:41Z
 url: https://github.com/astral-sh/uv/pull/13018
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:30Z
 ```
 
 # Add a brief sleep before sending SIGINT to children
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 16:01_
+_@zanieb_
 
 In an attempt to avoid interrupting the child if it is in the process of exiting.
 

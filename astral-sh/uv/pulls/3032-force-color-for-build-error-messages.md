@@ -13,14 +13,14 @@ head: konsti/force-color-for-builds
 created_at: 2024-04-15T09:05:02Z
 updated_at: 2024-04-15T16:12:55Z
 url: https://github.com/astral-sh/uv/pull/3032
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Force color for build error messages
 
 ---
 
-_Pull request opened by @konstin on 2024-04-15 09:05_
+_@konstin_
 
 Since we're using anstream's strip stream, we can force color output from child processes and strip them when we redirect to a file
 

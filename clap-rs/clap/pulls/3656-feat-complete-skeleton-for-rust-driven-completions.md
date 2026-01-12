@@ -12,14 +12,14 @@ head: complete
 created_at: 2022-04-22T21:52:37Z
 updated_at: 2025-06-05T08:51:23Z
 url: https://github.com/clap-rs/clap/pull/3656
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(complete): Skeleton for Rust-driven completions
 
 ---
 
-_Pull request opened by @epage on 2022-04-22 21:52_
+_@epage_
 
 This implements the rudiments of completions within Rust.
 

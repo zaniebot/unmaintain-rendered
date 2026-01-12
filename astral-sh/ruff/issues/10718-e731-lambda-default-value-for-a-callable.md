@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T17:18:55Z
 updated_at: 2024-04-01T19:50:04Z
 url: https://github.com/astral-sh/ruff/issues/10718
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E731: Lambda default value for a Callable dataclass field is incorrectly flagged as lambda assignment
 
 ---
 
-_Issue opened by @richardxia on 2024-04-01 17:18_
+_@richardxia_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

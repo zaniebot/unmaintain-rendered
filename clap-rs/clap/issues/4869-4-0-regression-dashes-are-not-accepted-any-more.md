@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-28T20:02:18Z
 updated_at: 2023-04-29T01:14:59Z
 url: https://github.com/clap-rs/clap/issues/4869
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # 4.0 regression: dashes are not accepted any more
 
 ---
 
-_Issue opened by @est31 on 2023-04-28 20:02_
+_@est31_
 
 ### Please complete the following tasks
 

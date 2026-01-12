@@ -12,14 +12,14 @@ head: absolute-cache-paths
 created_at: 2023-11-19T13:27:38Z
 updated_at: 2023-11-19T13:32:33Z
 url: https://github.com/astral-sh/uv/pull/453
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Use absolute cache paths
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 13:27_
+_@konstin_
 
 Previously, git requirements would fail when setting `--cache-dir`:
 

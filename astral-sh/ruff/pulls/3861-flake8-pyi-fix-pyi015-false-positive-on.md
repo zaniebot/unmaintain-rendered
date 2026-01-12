@@ -12,14 +12,14 @@ head: flake8-pyi-typevar-assign
 created_at: 2023-04-03T10:43:15Z
 updated_at: 2023-04-03T19:52:57Z
 url: https://github.com/astral-sh/ruff/pull/3861
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # flake8-pyi: fix PYI015 false positive on assignment of TypeVar & friends
 
 ---
 
-_Pull request opened by @bluetech on 2023-04-03 10:43_
+_@bluetech_
 
 Fix #3860.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T12:35:59Z
 updated_at: 2025-09-04T13:48:09Z
 url: https://github.com/astral-sh/uv/issues/15677
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Why is uv trying to install packages into /usr/ ?
 
 ---
 
-_Issue opened by @ForceConstant on 2025-09-04 12:35_
+_@ForceConstant_
 
 ### Summary
 

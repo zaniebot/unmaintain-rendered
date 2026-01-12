@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-11T14:28:14Z
 updated_at: 2024-06-11T15:30:36Z
 url: https://github.com/astral-sh/uv/issues/4230
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Urls are not allowed in dev dependencies
 
 ---
 
-_Issue opened by @konstin on 2024-06-11 14:28_
+_@konstin_
 
 The following fails:
 

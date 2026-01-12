@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T14:03:36Z
 updated_at: 2022-12-05T16:22:33Z
 url: https://github.com/astral-sh/ruff/issues/1060
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] `PLR1701` (merge isinstance) misfires when second clause is not `isinstance`
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 14:03_
+_@smackesey_
 
 The below code block incorrectly produced the below error message. The suggested replacement completely drops the second clause of the `or`:
 

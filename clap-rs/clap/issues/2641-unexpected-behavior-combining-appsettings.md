@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-29T21:58:54Z
 updated_at: 2021-07-30T09:31:41Z
 url: https://github.com/clap-rs/clap/issues/2641
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Unexpected behavior combining `AppSettings::TrailingVarArg` and `env` fallbacks
 
 ---
 
-_Issue opened by @eadwu on 2021-07-29 21:58_
+_@eadwu_
 
 ### Please complete the following tasks
 

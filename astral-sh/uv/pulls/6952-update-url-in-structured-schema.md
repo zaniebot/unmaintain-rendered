@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-09-03T00:19:54Z
 updated_at: 2024-09-03T00:28:37Z
 url: https://github.com/astral-sh/uv/pull/6952
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Update URL in structured schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-03 00:19_
+_@charliermarsh_
 
 _No description provided._
 

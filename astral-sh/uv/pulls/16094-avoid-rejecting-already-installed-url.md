@@ -13,14 +13,14 @@ head: charlie/so
 created_at: 2025-10-02T00:11:26Z
 updated_at: 2025-10-02T13:32:16Z
 url: https://github.com/astral-sh/uv/pull/16094
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Avoid rejecting already-installed URL distributions with `--no-sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-02 00:11_
+_@charliermarsh_
 
 ## Summary
 

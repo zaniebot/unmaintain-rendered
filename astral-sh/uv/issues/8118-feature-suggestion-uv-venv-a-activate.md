@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T03:11:02Z
 updated_at: 2024-10-11T15:22:19Z
 url: https://github.com/astral-sh/uv/issues/8118
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Feature suggestion: `uv venv -a/--activate`
 
 ---
 
-_Issue opened by @simonw on 2024-10-11 03:11_
+_@simonw_
 
 I'm trying to retrain myself to use `uv run ...` instead of activating my virtual environment ([see Twitter](https://twitter.com/charliermarsh/status/1837541841727558054)) but I still find myself sometimes wishing it was quicker to create and then activate a virtual environment.
 

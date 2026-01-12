@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T08:02:50Z
 updated_at: 2024-07-10T07:43:13Z
 url: https://github.com/astral-sh/ruff/issues/12039
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add `asyncio` and `anyio` support to `ASYNC1XX`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-26 08:02_
+_@MichaReiser_
 
 The `ASYNC1xx` rules used to be `trio` specific rules, but the upstream `flake8-async` rules now also cover `asyncio` and `anyio` (see https://github.com/astral-sh/ruff/pull/10416 for when we recoded the `trio` rules to `flake8-async`). 
 

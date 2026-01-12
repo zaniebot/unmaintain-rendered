@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T21:40:32Z
 updated_at: 2024-02-18T07:03:10Z
 url: https://github.com/astral-sh/uv/issues/1616
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Extras aren't included for local editable install
 
 ---
 
-_Issue opened by @pjbull on 2024-02-17 21:40_
+_@pjbull_
 
 Our [dev requirements file](https://github.com/drivendataorg/cloudpathlib/blob/a242f68d762cdf6a7cfc56e5962a8d83bced5f1b/requirements-dev.txt#L1) has the line `-e .[all]` in it.
 

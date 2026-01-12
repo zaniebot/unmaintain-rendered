@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-25T11:47:30Z
 updated_at: 2024-02-15T07:14:28Z
 url: https://github.com/astral-sh/ruff/issues/4655
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF100 and E401 with auto-fix seem inconsistent
 
 ---
 
-_Issue opened by @JannKleen on 2023-05-25 11:47_
+_@JannKleen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

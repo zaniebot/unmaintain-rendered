@@ -12,14 +12,14 @@ head: zb/stable-bin
 created_at: 2025-07-15T14:33:40Z
 updated_at: 2025-07-17T16:10:06Z
 url: https://github.com/astral-sh/uv/pull/14626
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Stabilize addition of Python executables to the bin
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 14:33_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14296
 

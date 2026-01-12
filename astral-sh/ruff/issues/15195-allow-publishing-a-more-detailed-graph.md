@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T06:09:04Z
 updated_at: 2025-01-06T23:22:08Z
 url: https://github.com/astral-sh/ruff/issues/15195
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # allow publishing a more detailed graph
 
 ---
 
-_Issue opened by @purajit on 2024-12-30 06:09_
+_@purajit_
 
 In addition to the options to publish the graph based on module paths and including third-party deps 
 mentioned in https://github.com/astral-sh/ruff/issues/13431, publishing a `--detailed` graph would be great! It would allow people to build or

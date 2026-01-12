@@ -12,14 +12,14 @@ head: redknot.encodinglint
 created_at: 2024-05-24T21:56:24Z
 updated_at: 2025-02-20T09:00:25Z
 url: https://github.com/astral-sh/ruff/pull/11536
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [redknot] unspecified-encoding lint rule
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-24 21:56_
+_@plredmond_
 
 Implement an [unspecified_encoding.py](https://github.com/augustelalande/ruff/blob/e1029f1230e51ba75c746bbe5ad0c399e2afa39a/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py) lint rule like the one in [#11288](https://github.com/astral-sh/ruff/pull/11288).
 

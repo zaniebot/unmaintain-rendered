@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T21:06:57Z
 updated_at: 2025-08-15T23:31:23Z
 url: https://github.com/astral-sh/uv/issues/15318
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Flake in test `malo_malicious_zipinzip` due to `peer closed connection without sending TLS close_notify`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-15 21:06_
+_@zanieb_
 
 ```
 

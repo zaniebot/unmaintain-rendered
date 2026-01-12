@@ -14,14 +14,14 @@ head: UP031-avoid-fix-if-comment
 created_at: 2023-08-05T10:05:51Z
 updated_at: 2023-08-05T15:47:17Z
 url: https://github.com/astral-sh/ruff/pull/6364
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid auto-fixing UP031 if there are comments within the right-hand side
 
 ---
 
-_Pull request opened by @harupy on 2023-08-05 10:05_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

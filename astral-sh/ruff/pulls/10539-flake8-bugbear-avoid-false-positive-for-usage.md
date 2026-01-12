@@ -13,14 +13,14 @@ head: reuse-of-groupby-generator
 created_at: 2024-03-23T23:19:21Z
 updated_at: 2024-03-26T14:05:12Z
 url: https://github.com/astral-sh/ruff/pull/10539
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8-bugbear`] Avoid false positive for usage after `continue` (`B031`)
 
 ---
 
-_Pull request opened by @yt2b on 2024-03-23 23:19_
+_@yt2b_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

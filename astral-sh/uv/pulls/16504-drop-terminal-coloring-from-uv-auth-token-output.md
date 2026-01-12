@@ -13,14 +13,14 @@ head: zb/color
 created_at: 2025-10-29T21:38:50Z
 updated_at: 2025-10-30T20:10:08Z
 url: https://github.com/astral-sh/uv/pull/16504
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Drop terminal coloring from `uv auth token` output
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-29 21:38_
+_@zanieb_
 
 It's too common to set `FORCE_COLOR` in CI which then breaks consumption of the token.
 

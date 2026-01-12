@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T11:53:54Z
 updated_at: 2023-04-14T01:28:32Z
 url: https://github.com/astral-sh/ruff/issues/2918
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PT006 fix adds unneeded parenthesis
 
 ---
 
-_Issue opened by @frenck on 2023-02-15 11:53_
+_@frenck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

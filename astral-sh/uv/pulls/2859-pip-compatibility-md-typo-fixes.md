@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-04-07T12:23:01Z
 updated_at: 2024-04-07T12:34:02Z
 url: https://github.com/astral-sh/uv/pull/2859
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # PIP_COMPATIBILITY.md: typo fixes
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2024-04-07 12:23_
+_@JelleZijlstra_
 
 _No description provided._
 

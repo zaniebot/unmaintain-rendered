@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T22:30:02Z
 updated_at: 2024-06-27T11:26:40Z
 url: https://github.com/astral-sh/ruff/issues/12055
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] use an invariant lifetime to avoid exposing unsafe API for AstNodeRef
 
 ---
 
-_Issue opened by @carljm on 2024-06-26 22:30_
+_@carljm_
 
 I've seen some crates making clever use of invariant lifetimes (e.g. via a PhantomData which is an `fn(&'a ()) -> &'a ()`). I haven't worked out the details yet, but I think in principle this technique should be exactly what we need to have the borrow checker enforce that the the descendant node passed to `AstNodeRef::new` is actually from the tree of the root node given. If they have exactly the same lifetime (not just lifetimes where a meet can be found), that gives the guarantee we need.
 

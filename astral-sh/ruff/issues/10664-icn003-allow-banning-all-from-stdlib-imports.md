@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-29T22:05:24Z
 updated_at: 2025-12-25T17:06:47Z
 url: https://github.com/astral-sh/ruff/issues/10664
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ICN003`: Allow banning all `from` stdlib imports
 
 ---
 
-_Issue opened by @Grub4K on 2024-03-29 22:05_
+_@Grub4K_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: charlie/shared-locks
 created_at: 2025-07-02T19:42:12Z
 updated_at: 2025-10-12T21:17:03Z
 url: https://github.com/astral-sh/uv/pull/14428
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Always write filesystem locks to a shared state directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-02 19:42_
+_@charliermarsh_
 
 ## Summary
 

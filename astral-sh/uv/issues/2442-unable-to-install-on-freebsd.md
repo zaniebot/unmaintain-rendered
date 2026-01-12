@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-14T02:09:28Z
 updated_at: 2025-07-07T08:51:09Z
 url: https://github.com/astral-sh/uv/issues/2442
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Unable to install on FreeBSD
 
 ---
 
-_Issue opened by @hhartzer on 2024-03-14 02:09_
+_@hhartzer_
 
 This looks like an interesting project! I was excited to try it out, but alas I cannot use it on FreeBSD.
 

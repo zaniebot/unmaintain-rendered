@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-03-28T00:28:29Z
 updated_at: 2021-06-01T21:44:52Z
 url: https://github.com/clap-rs/clap/issues/2425
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Unable to validate YAML config
 
 ---
 
-_Issue opened by @HitomiTenshi on 2021-03-28 00:28_
+_@HitomiTenshi_
 
 ### Please complete the following tasks
 

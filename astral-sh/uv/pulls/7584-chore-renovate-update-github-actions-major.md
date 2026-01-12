@@ -13,14 +13,14 @@ head: chore/update-github-actions-references-docs
 created_at: 2024-09-20T12:11:21Z
 updated_at: 2024-09-20T20:05:58Z
 url: https://github.com/astral-sh/uv/pull/7584
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # chore(renovate): update GitHub Actions major versions in docs
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-20 12:11_
+_@mkniewallner_
 
 ## Summary
 

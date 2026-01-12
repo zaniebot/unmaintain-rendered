@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2023-02-01T18:37:14Z
 updated_at: 2023-02-01T19:39:51Z
 url: https://github.com/astral-sh/ruff/pull/2453
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix: minor spacing typo in message for PTH123
 
 ---
 
-_Pull request opened by @henryiii on 2023-02-01 18:37_
+_@henryiii_
 
 _No description provided._
 

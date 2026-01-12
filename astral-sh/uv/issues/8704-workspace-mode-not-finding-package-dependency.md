@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T17:32:42Z
 updated_at: 2024-10-30T18:06:22Z
 url: https://github.com/astral-sh/uv/issues/8704
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Workspace mode not finding package dependency 
 
 ---
 
-_Issue opened by @scosman on 2024-10-30 17:32_
+_@scosman_
 
 I'm trying to port a project to UV but I can't get it to work. The project is basically the described use case in the workspaces docs: a core library, and a FastAPI server depending on it, in another library project in the same repo.
 

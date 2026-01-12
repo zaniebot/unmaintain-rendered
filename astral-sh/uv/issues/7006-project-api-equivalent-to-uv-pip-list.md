@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T11:29:48Z
 updated_at: 2024-09-06T01:42:36Z
 url: https://github.com/astral-sh/uv/issues/7006
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # "Project API" equivalent to `uv pip list`?
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-09-04 11:29_
+_@matterhorn103_
 
 Maybe I am the only one who ever does this, but especially when it comes to non-package projects I often like to reassess the dependencies of my project.
 

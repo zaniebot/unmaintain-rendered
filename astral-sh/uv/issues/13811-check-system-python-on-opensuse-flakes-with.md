@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T13:57:28Z
 updated_at: 2025-06-03T13:57:41Z
 url: https://github.com/astral-sh/uv/issues/13811
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # `check system | python on opensuse` flakes with "context canceled" while looking for GPG keys
 
 ---
 
-_Issue opened by @zanieb on 2025-06-03 13:57_
+_@zanieb_
 
 ```
 Run until zypper install -y python310 which && python3.10 -m ensurepip && mv /usr/bin/python3.10 /usr/bin/python3; do sleep 10; done

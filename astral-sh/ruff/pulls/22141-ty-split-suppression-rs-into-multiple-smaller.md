@@ -14,14 +14,14 @@ head: micha/split-suppression-rs
 created_at: 2025-12-22T14:47:54Z
 updated_at: 2025-12-22T15:08:58Z
 url: https://github.com/astral-sh/ruff/pull/22141
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Split `suppression.rs` into multiple smaller modules
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-22 14:47_
+_@MichaReiser_
 
 ## Summary
 

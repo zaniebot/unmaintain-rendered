@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-15T00:25:15Z
 updated_at: 2024-11-18T02:43:04Z
 url: https://github.com/astral-sh/uv/issues/9137
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # `tool_run_cache` is flaky on Windows
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-15 00:25_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/actions/runs/11847662623/job/33017797151?pr=9136
 

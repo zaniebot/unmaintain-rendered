@@ -13,14 +13,14 @@ head: match-args-not-sorted
 created_at: 2024-01-30T22:25:06Z
 updated_at: 2024-01-30T22:45:02Z
 url: https://github.com/astral-sh/ruff/pull/9724
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # RUF023: Don't sort `__match_args__`, only `__slots__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-30 22:25_
+_@AlexWaygood_
 
 Fixes #9723. I'm pretty embarrassed I forgot that order was important here :(
 

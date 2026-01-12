@@ -13,14 +13,14 @@ head: refine-linter-incompatible-option-warnings
 created_at: 2023-10-25T03:17:13Z
 updated_at: 2023-10-26T16:31:45Z
 url: https://github.com/astral-sh/ruff/pull/8196
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Refine the warnings about incompatible linter options
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-25 03:17_
+_@MichaReiser_
 
 ## Summary
 

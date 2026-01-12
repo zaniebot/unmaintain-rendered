@@ -13,14 +13,14 @@ head: exit-non-zero-on-format
 created_at: 2025-02-07T02:40:55Z
 updated_at: 2025-03-19T17:01:44Z
 url: https://github.com/astral-sh/ruff/pull/16009
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Add --exit-non-zero-on-format
 
 ---
 
-_Pull request opened by @thejcannon on 2025-02-07 02:40_
+_@thejcannon_
 
 ## Summary
 

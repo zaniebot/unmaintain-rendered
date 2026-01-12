@@ -13,14 +13,14 @@ head: docs/mention_arch_package
 created_at: 2024-02-20T16:25:23Z
 updated_at: 2024-02-20T16:33:57Z
 url: https://github.com/astral-sh/uv/pull/1765
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # docs(readme): add instructions for installing on Arch Linux
 
 ---
 
-_Pull request opened by @orhun on 2024-02-20 16:25_
+_@orhun_
 
 ## Summary
 

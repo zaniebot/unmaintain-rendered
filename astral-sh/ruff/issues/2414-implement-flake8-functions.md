@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T20:59:46Z
 updated_at: 2024-04-09T10:24:04Z
 url: https://github.com/astral-sh/ruff/issues/2414
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-functions`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 20:59_
+_@ngnpope_
 
 [GitHub](https://github.com/best-doctor/flake8-functions), [PyPI](https://pypi.org/project/flake8-functions/).
 

@@ -14,14 +14,14 @@ head: zb/list-error
 created_at: 2024-06-18T14:11:32Z
 updated_at: 2024-06-18T14:53:00Z
 url: https://github.com/astral-sh/uv/pull/4382
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Ignore query errors during `uv toolchain list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 14:11_
+_@zanieb_
 
 Closes #4380 
 

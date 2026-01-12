@@ -14,14 +14,14 @@ head: renovate/pypi-black-vulnerability
 created_at: 2024-08-07T07:42:19Z
 updated_at: 2024-08-10T12:34:39Z
 url: https://github.com/astral-sh/ruff/pull/12728
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update dependency black to v24
 
 ---
 
-_Pull request opened by @renovate on 2024-08-07 07:42_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

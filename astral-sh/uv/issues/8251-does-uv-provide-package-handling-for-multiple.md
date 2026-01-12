@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T12:19:23Z
 updated_at: 2025-04-28T19:11:44Z
 url: https://github.com/astral-sh/uv/issues/8251
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Does uv provide package handling for multiple code locations?
 
 ---
 
-_Issue opened by @GellertPalfi on 2024-10-16 12:19_
+_@GellertPalfi_
 
 I would like to switch to uv, however Im running dagster that have multiple code locations with some common dependencies but some are only there for one project some only the other, they are now listed in 2 req.txt files:
 Location A:

@@ -12,14 +12,14 @@ head: privatize-internals
 created_at: 2023-01-14T19:37:07Z
 updated_at: 2023-01-14T23:23:59Z
 url: https://github.com/astral-sh/ruff/pull/1874
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Make some internal APIs private
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-14 19:37_
+_@not-my-profile_
 
 _No description provided._
 

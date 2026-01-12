@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T15:32:11Z
 updated_at: 2025-05-18T15:27:11Z
 url: https://github.com/astral-sh/ruff/issues/18153
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Empty `ty` and `ruff` `__init__.py`s
 
 ---
 
-_Issue opened by @bengsparks on 2025-05-17 15:32_
+_@bengsparks_
 
 ### Question
 

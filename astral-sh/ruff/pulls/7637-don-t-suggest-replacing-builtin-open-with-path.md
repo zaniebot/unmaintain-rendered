@@ -14,14 +14,14 @@ head: fix-gh7620
 created_at: 2023-09-25T08:28:33Z
 updated_at: 2023-09-26T09:13:36Z
 url: https://github.com/astral-sh/ruff/pull/7637
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Don't suggest replacing `builtin.open()` with `Path.open()` if the latter doesn't support all options
 
 ---
 
-_Pull request opened by @konstin on 2023-09-25 08:28_
+_@konstin_
 
 **Summary** Check that `closefd` and `opener` aren't being used with `builtin.open()` before suggesting `Path.open()` because pathlib doesn't support these arguments.
 

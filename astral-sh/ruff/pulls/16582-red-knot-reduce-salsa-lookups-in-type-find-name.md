@@ -13,14 +13,14 @@ head: alex/salsa-lookups
 created_at: 2025-03-09T23:21:05Z
 updated_at: 2025-03-10T06:55:24Z
 url: https://github.com/astral-sh/ruff/pull/16582
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Reduce Salsa lookups in `Type::find_name_in_mro`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-09 23:21_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: renovate/rustls-0.x
 created_at: 2024-04-08T03:05:16Z
 updated_at: 2024-04-23T22:18:49Z
 url: https://github.com/astral-sh/uv/pull/2884
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update Rust crate rustls to 0.23.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 03:05_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

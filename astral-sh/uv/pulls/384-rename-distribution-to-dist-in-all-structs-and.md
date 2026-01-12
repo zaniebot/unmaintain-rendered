@@ -13,14 +13,14 @@ head: charlie/dist
 created_at: 2023-11-10T05:41:02Z
 updated_at: 2023-11-10T14:55:12Z
 url: https://github.com/astral-sh/uv/pull/384
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Rename `Distribution` to `Dist` in all structs and traits
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 05:41_
+_@charliermarsh_
 
 We tend to avoid abbreviations, but this one is just so long and absolutely ubiquitous.
 

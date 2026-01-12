@@ -14,14 +14,14 @@ head: zb/docs-dependencies
 created_at: 2024-07-31T15:34:35Z
 updated_at: 2024-07-31T15:44:26Z
 url: https://github.com/astral-sh/uv/pull/5658
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Improvements to the dependency concept doc
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 15:34_
+_@zanieb_
 
 _No description provided._
 

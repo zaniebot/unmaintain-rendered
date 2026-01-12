@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-10T10:30:51Z
 updated_at: 2025-11-16T08:34:55Z
 url: https://github.com/astral-sh/ty/issues/1512
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Mdtest panics with an opaque error message if the last line of an embedded Python file is a `# revealed` assertion
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-10 10:30_
+_@AlexWaygood_
 
 ### Summary
 

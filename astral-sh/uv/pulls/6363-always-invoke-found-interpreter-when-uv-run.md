@@ -13,14 +13,14 @@ head: zb/run-python-missing-2
 created_at: 2024-08-21T18:09:12Z
 updated_at: 2024-08-21T21:41:36Z
 url: https://github.com/astral-sh/uv/pull/6363
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Always invoke found interpreter when `uv run python` is used
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 18:09_
+_@zanieb_
 
 Alternative to https://github.com/astral-sh/uv/pull/6362
 

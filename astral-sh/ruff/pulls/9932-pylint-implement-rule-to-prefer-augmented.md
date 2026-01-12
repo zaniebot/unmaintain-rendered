@@ -14,14 +14,14 @@ head: 8877-new-rule-prefer-in-place-operators
 created_at: 2024-02-11T16:27:34Z
 updated_at: 2024-04-12T03:08:42Z
 url: https://github.com/astral-sh/ruff/pull/9932
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Implement rule to prefer augmented assignment (`PLR6104`)
 
 ---
 
-_Pull request opened by @lshi18 on 2024-02-11 16:27_
+_@lshi18_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

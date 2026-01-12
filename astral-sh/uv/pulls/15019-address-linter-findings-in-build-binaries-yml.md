@@ -13,14 +13,14 @@ head: ww/build-binaries-fixes
 created_at: 2025-08-01T20:29:38Z
 updated_at: 2025-08-06T16:00:53Z
 url: https://github.com/astral-sh/uv/pull/15019
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Address linter findings in build-binaries.yml
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-01 20:29_
+_@woodruffw_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: uv10
 created_at: 2025-09-01T15:26:51Z
 updated_at: 2025-09-03T16:56:58Z
 url: https://github.com/astral-sh/uv/pull/15621
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # merged match arms where possible
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-09-01 15:26_
+_@adamnemecek_
 
 _No description provided._
 

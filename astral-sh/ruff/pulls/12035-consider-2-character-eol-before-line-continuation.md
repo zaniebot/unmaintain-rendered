@@ -14,14 +14,14 @@ head: dhruv/line-continuation-eol
 created_at: 2024-06-26T03:17:29Z
 updated_at: 2024-06-26T08:30:48Z
 url: https://github.com/astral-sh/ruff/pull/12035
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Consider 2-character EOL before line continuation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-26 03:17_
+_@dhruvmanila_
 
 ## Summary
 

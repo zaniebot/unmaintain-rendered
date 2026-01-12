@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-19T04:33:02Z
 updated_at: 2023-02-22T00:05:07Z
 url: https://github.com/astral-sh/ruff/issues/1989
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F401 false positives when match statements are in the file 
 
 ---
 
-_Issue opened by @kendangclubhouse on 2023-01-19 04:33_
+_@kendangclubhouse_
 
 Im seeing that ruff is not finding F401's in files that have match statements. 
 

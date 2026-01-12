@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-24T07:52:48Z
 updated_at: 2025-07-24T08:02:37Z
 url: https://github.com/astral-sh/ty/issues/880
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] in ty when checking code
 
 ---
 
-_Issue opened by @ilitzroth on 2025-07-24 07:52_
+_@ilitzroth_
 
 code typechecks with mypy.
 

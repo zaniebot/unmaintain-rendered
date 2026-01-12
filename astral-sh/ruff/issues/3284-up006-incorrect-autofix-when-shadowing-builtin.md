@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T23:13:11Z
 updated_at: 2023-03-02T21:05:36Z
 url: https://github.com/astral-sh/ruff/issues/3284
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP006: Incorrect autofix when shadowing builtin
 
 ---
 
-_Issue opened by @jdahlin on 2023-02-28 23:13_
+_@jdahlin_
 
 The autofix for UP006 is not working correctly when shadowing a builtin such as `type`. 
 

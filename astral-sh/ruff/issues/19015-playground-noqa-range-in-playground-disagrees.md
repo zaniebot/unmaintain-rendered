@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-28T18:15:19Z
 updated_at: 2025-09-17T07:29:41Z
 url: https://github.com/astral-sh/ruff/issues/19015
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [playground] noqa range in playground disagrees with CLI and server for multiline strings
 
 ---
 
-_Issue opened by @dylwil3 on 2025-06-28 18:15_
+_@dylwil3_
 
 ### Summary
 

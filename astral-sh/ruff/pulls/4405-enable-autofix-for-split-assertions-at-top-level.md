@@ -12,14 +12,14 @@ head: charlie/split-assert
 created_at: 2023-05-12T21:35:44Z
 updated_at: 2023-05-12T22:03:51Z
 url: https://github.com/astral-sh/ruff/pull/4405
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Enable autofix for split-assertions at top level
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-12 21:35_
+_@charliermarsh_
 
 It looks like the `PT018` fix _assumed_ that the assertions would be within a function or otherwise not at the top level. This PR addresses that oversight, borrowing patterns from other existing autofixes.
 

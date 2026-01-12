@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-04T15:43:37Z
 updated_at: 2024-01-07T01:44:06Z
 url: https://github.com/astral-sh/uv/issues/782
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Migrate to anstream for colors
 
 ---
 
-_Issue opened by @konstin on 2024-01-04 15:43_
+_@konstin_
 
 Followup to #742.
 

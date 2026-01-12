@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-11-17T19:29:33Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/348
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for comma separated values
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-17 19:29_
+_@kbknapp_
 
 Example, these should all parse to exactly the same matches
 

@@ -13,14 +13,14 @@ head: zb/env
 created_at: 2024-09-04T17:34:00Z
 updated_at: 2024-09-04T20:02:37Z
 url: https://github.com/astral-sh/uv/pull/7038
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Touchup to the project environment config section
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-04 17:34_
+_@zanieb_
 
 _No description provided._
 

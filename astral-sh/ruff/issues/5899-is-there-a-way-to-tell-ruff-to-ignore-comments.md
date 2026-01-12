@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-19T20:25:30Z
 updated_at: 2024-09-24T23:36:48Z
 url: https://github.com/astral-sh/ruff/issues/5899
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Is there a way to tell ruff to ignore comments?
 
 ---
 
-_Issue opened by @xeon826 on 2023-07-19 20:25_
+_@xeon826_
 
 Since Ruff is made to work in unison with Black, and Black doesn't reformat comments that exceed the line length, is there a way to tell Ruff to ignore these?
 

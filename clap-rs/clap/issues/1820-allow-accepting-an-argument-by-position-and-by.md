@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-13T23:41:32Z
 updated_at: 2022-01-11T18:41:25Z
 url: https://github.com/clap-rs/clap/issues/1820
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow accepting an argument by position and by flag
 
 ---
 
-_Issue opened by @casey on 2020-04-13 23:41_
+_@casey_
 
 It would be nice to allow CLIs to a single argument both by position, and by flag.
 

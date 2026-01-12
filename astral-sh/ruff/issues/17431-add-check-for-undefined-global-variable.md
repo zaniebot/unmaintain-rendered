@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T18:05:06Z
 updated_at: 2025-04-16T18:35:36Z
 url: https://github.com/astral-sh/ruff/issues/17431
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add check for undefined global variable
 
 ---
 
-_Issue opened by @nickdrozd on 2025-04-16 18:05_
+_@nickdrozd_
 
 ### Summary
 

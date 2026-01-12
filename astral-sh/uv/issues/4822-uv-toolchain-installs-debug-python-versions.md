@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-05T06:51:54Z
 updated_at: 2024-07-05T14:13:25Z
 url: https://github.com/astral-sh/uv/issues/4822
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # uv toolchain installs debug Python versions
 
 ---
 
-_Issue opened by @gusutabopb on 2024-07-05 06:51_
+_@gusutabopb_
 
 When used on Linux (Ubuntu), `uv toolchain` installs debug Python versions. This leads to some programs printing out various debug messages meant for CPython core developers, not regular Python users.
 

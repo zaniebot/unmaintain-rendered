@@ -13,14 +13,14 @@ head: zanie/applicability-summary
 created_at: 2023-10-03T18:42:48Z
 updated_at: 2023-10-10T15:50:37Z
 url: https://github.com/astral-sh/ruff/pull/7790
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update fix summary message in `check --diff` to include unsafe fix hints
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-03 18:42_
+_@zanieb_
 
 Requires #7769 
 

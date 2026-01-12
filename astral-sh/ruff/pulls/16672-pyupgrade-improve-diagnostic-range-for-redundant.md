@@ -13,14 +13,14 @@ head: micha/unnecessary-mode-argument-range
 created_at: 2025-03-12T12:33:49Z
 updated_at: 2025-03-13T07:45:24Z
 url: https://github.com/astral-sh/ruff/pull/16672
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pyupgrade`]: Improve diagnostic range for `redundant-open-mode` (`UP015`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 12:33_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zbtest-markdown
 created_at: 2024-08-23T22:16:59Z
 updated_at: 2024-08-23T22:35:55Z
 url: https://github.com/astral-sh/uv/pull/6551
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Run tests when `docs/reference` generated files change
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 22:16_
+_@zanieb_
 
 Short-term fix for https://github.com/astral-sh/uv/issues/6352
 

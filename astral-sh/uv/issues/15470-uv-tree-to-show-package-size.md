@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-23T15:38:40Z
 updated_at: 2025-12-03T04:06:18Z
 url: https://github.com/astral-sh/uv/issues/15470
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # uv tree to show package size
 
 ---
 
-_Issue opened by @laoshaw on 2025-08-23 15:38_
+_@laoshaw_
 
 ### Summary
 

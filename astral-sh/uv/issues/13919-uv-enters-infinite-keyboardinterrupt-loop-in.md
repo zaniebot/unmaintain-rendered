@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T15:23:05Z
 updated_at: 2025-06-16T13:44:28Z
 url: https://github.com/astral-sh/uv/issues/13919
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # uv enters infinite `KeyboardInterrupt` loop in interactive shell
 
 ---
 
-_Issue opened by @piehld on 2025-06-09 15:23_
+_@piehld_
 
 ### Summary
 

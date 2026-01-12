@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-05-16T16:09:01Z
 updated_at: 2022-11-08T05:10:27Z
 url: https://github.com/clap-rs/clap/issues/962
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Show usage of subcommand in global help
 
 ---
 
-_Issue opened by @pitkley on 2017-05-16 16:09_
+_@pitkley_
 
 I don't know if this feature exists, if so, I have not found it yet. What I'm looking for is a way to see the usage of a subcommand in the help shown by the `help` subcommand or the global `--help` flag. Compare the actual behavior to the expected behavior for an example.
 

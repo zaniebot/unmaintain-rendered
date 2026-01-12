@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T08:46:27Z
 updated_at: 2023-11-30T16:31:21Z
 url: https://github.com/astral-sh/ruff/issues/8753
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ruff incorrectly ignores Python files included by negated pattern in .gitignore
 
 ---
 
-_Issue opened by @henribru on 2023-11-18 08:46_
+_@henribru_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

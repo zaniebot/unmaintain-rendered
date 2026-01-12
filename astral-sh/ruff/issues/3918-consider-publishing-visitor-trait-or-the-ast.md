@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-08T08:37:55Z
 updated_at: 2023-05-08T22:24:58Z
 url: https://github.com/astral-sh/ruff/issues/3918
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider publishing visitor trait, or the ast crate as a whole
 
 ---
 
-_Issue opened by @sondrelg on 2023-04-08 08:37_
+_@sondrelg_
 
 Hi!
 

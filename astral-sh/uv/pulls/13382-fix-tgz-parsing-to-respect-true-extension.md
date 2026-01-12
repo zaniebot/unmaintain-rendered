@@ -13,14 +13,14 @@ head: charlie/tlz
 created_at: 2025-05-10T20:37:47Z
 updated_at: 2025-05-19T06:03:37Z
 url: https://github.com/astral-sh/uv/pull/13382
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Fix `.tgz` parsing to respect true extension
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-10 20:37_
+_@charliermarsh_
 
 ## Summary
 

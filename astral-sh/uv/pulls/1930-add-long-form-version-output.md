@@ -13,14 +13,14 @@ head: zb/version
 created_at: 2024-02-23T18:44:34Z
 updated_at: 2024-02-23T19:45:02Z
 url: https://github.com/astral-sh/uv/pull/1930
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Add long-form version output
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-23 18:44_
+_@zanieb_
 
 Similar to https://github.com/astral-sh/ruff/pull/8034
 

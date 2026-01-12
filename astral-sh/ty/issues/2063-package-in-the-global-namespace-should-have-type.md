@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T11:50:53Z
 updated_at: 2026-01-07T23:31:00Z
 url: https://github.com/astral-sh/ty/issues/2063
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `__package__` in the global namespace should have type `str`, not `str | None`
 
 ---
 
-_Issue opened by @spaceone on 2025-12-18 11:50_
+_@spaceone_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T03:23:36Z
 updated_at: 2025-11-26T16:33:41Z
 url: https://github.com/astral-sh/uv/issues/16856
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # 0.9.12 breaks installs from requirements.lock
 
 ---
 
-_Issue opened by @jackdent on 2025-11-26 03:23_
+_@jackdent_
 
 ### Summary
 

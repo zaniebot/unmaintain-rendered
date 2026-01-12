@@ -13,14 +13,14 @@ head: update-config-dir-discovery
 created_at: 2024-06-27T07:58:26Z
 updated_at: 2024-06-27T08:50:11Z
 url: https://github.com/astral-sh/ruff/pull/12064
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update documentation to mention `etcetera` crate instead of `dirs` for user configuration discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-27 07:58_
+_@MichaReiser_
 
 ## Summary
 

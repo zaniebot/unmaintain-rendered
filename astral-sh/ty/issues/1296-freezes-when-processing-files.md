@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T18:26:31Z
 updated_at: 2025-10-17T09:10:16Z
 url: https://github.com/astral-sh/ty/issues/1296
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Freezes when processing files
 
 ---
 
-_Issue opened by @qarmin on 2025-10-01 18:26_
+_@qarmin_
 
 ### Summary
 

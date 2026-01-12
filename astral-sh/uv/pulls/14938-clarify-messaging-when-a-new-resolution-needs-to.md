@@ -13,14 +13,14 @@ head: zb/clarify-lockfile
 created_at: 2025-07-28T13:02:26Z
 updated_at: 2025-07-30T01:13:32Z
 url: https://github.com/astral-sh/uv/pull/14938
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Clarify messaging when a new resolution needs to be performed
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-28 13:02_
+_@zanieb_
 
 We do not just "ignore" the existing lockfile here. We retain the existing messaging for cases where we do actually throw out the lockfile, like `--upgrade`.
 

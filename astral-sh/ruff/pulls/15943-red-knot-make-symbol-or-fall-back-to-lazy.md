@@ -13,14 +13,14 @@ head: alex/symbol-fallback-builder
 created_at: 2025-02-04T17:31:55Z
 updated_at: 2025-02-05T16:51:50Z
 url: https://github.com/astral-sh/ruff/pull/15943
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Make `Symbol::or_fall_back_to()` lazy
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-04 17:31_
+_@AlexWaygood_
 
 ## Summary
 

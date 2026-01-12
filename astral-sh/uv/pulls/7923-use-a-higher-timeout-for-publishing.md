@@ -13,14 +13,14 @@ head: konsti/higher-timeout-for-publish
 created_at: 2024-10-04T11:17:14Z
 updated_at: 2024-10-04T13:52:24Z
 url: https://github.com/astral-sh/uv/pull/7923
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Use a higher timeout for publishing
 
 ---
 
-_Pull request opened by @konstin on 2024-10-04 11:17_
+_@konstin_
 
 A 30s timeout is too low when uploading a large package over a home internet connection, where uploads can be 10x slower than downloads. We increase the default limit to 15min, while keeping the environment variables to override this intact.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T01:22:45Z
 updated_at: 2024-09-05T03:09:33Z
 url: https://github.com/astral-sh/uv/issues/7059
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Wrong hash is used for repeated `tensorflow-text`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-05 01:22_
+_@charliermarsh_
 
 Not sure it's exactly the same issue, but it is related, so adding it here.
 

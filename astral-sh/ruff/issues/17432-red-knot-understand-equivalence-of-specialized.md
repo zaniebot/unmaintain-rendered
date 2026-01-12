@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T18:21:17Z
 updated_at: 2025-04-18T15:49:23Z
 url: https://github.com/astral-sh/ruff/issues/17432
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] understand equivalence of specialized generic classes
 
 ---
 
-_Issue opened by @carljm on 2025-04-16 18:21_
+_@carljm_
 
 Observed by @cake-monotone in https://github.com/astral-sh/ruff/pull/17174#discussion_r2046229239
 

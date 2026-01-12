@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-19T01:57:43Z
 updated_at: 2023-04-19T18:30:15Z
 url: https://github.com/astral-sh/ruff/issues/4013
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TID251 doesn't respect relative imports
 
 ---
 
-_Issue opened by @henryiii on 2023-04-19 01:57_
+_@henryiii_
 
 If you ban `typing.Protocol`, then `from .typing import Protocol` is flagged, defeating the purpose of the check for that usage (forcing a wrapper module to be used). Shouldn't this require and resolve absolute names?
 

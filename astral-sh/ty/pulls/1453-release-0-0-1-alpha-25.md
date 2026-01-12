@@ -13,14 +13,14 @@ head: gankra/rel
 created_at: 2025-10-29T19:09:10Z
 updated_at: 2025-10-29T19:22:18Z
 url: https://github.com/astral-sh/ty/pull/1453
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Release 0.0.1-alpha.25
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-29 19:09_
+_@Gankra_
 
 _No description provided._
 

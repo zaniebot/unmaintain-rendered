@@ -1,0 +1,200 @@
+```yaml
+number: 1978
+title: Binary tests are failing on Debian as it is prefixing some output with \u
+type: issue
+state: closed
+author: sylvestre
+labels: []
+assignees: []
+created_at: 2021-08-21T18:17:48Z
+updated_at: 2023-11-20T23:28:32Z
+url: https://github.com/BurntSushi/ripgrep/issues/1978
+synced_at: 2026-01-12T16:13:24Z
+```
+
+# Binary tests are failing on Debian as it is prefixing some output with \u
+
+---
+
+_@sylvestre_
+
+#### What version of ripgrep are you using?
+
+13.0.0
+
+#### How did you install ripgrep?
+
+I am packaging it for Debian & Ubuntu
+
+#### What operating system are you using ripgrep on?
+
+Debian
+
+#### Describe your bug.
+
+Binary tests are failing because some output are prefixed with \u
+
+#### What are the steps to reproduce the behavior?
+
+Run the testsuite on a Debian ? Maybe it has something specific as it is building in a schroot
+
+#### What is the actual behavior?
+
+
+```---- binary::after_match2_implicit stdout ----
+thread 'binary::after_match2_implicit' panicked at '
+printed outputs differ!
+
+expected:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+hay:1:The Project Gutenberg EBook of A Study In Scarlet, by Arthur Conan Doyle
+hay: WARNING: stopped searching binary file after match (found "\0" byte around offset 77041)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+got:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+hay:1:The Project Gutenberg EBook of A Study In Scarlet, by Arthur Conan Doyle
+hay: WARNING: stopped searching binary file after match (found "\u{0}" byte around offset 77041)
+
+
+```
+
+These tests are failing:
+```
+    binary::after_match1_explicit
+    binary::after_match1_implicit
+    binary::after_match1_implicit_binary
+    binary::after_match1_stdin
+    binary::after_match2_implicit
+    binary::before_match1_explicit
+    binary::before_match1_implicit_binary
+    binary::before_match2_explicit
+    misc::binary_convert
+    misc::binary_convert_mmap
+    misc::unrestricted3
+```
+
+---
+
+_Comment by @BurntSushi on 2021-08-21 19:44_
+
+Could you please provide a list of the versions of all dependencies being compiled? I've learned the hard way that distros don't necessarily use ripgrep's Cargo.lock. (It's possible there is a bug in ripgrep's minimum dependency specification.)
+
+This is otherwise very unlikely related to anything Debian or chroot specific.
+
+---
+
+_Comment by @sylvestre on 2021-08-29 08:54_
+
+Sure, here is the list of dependencies used to build ripgrep
+```
+libpcre2-16-0 10.36-2
+libpcre2-32-0 10.36-2
+libpcre2-posix2 10.36-2
+libpcre2-dev 10.36-2
+librust-memchr-dev 2.3.3-1
+librust-aho-corasick-dev 0.7.10-1
+librust-aho-corasick+std-dev 0.7.10-1
+librust-libc-dev 0.2.80-1
+librust-winapi-i686-pc-windows-gnu-dev 0.4.0-1+b1
+librust-winapi-x86-64-pc-windows-gnu-dev 0.4.0-1+b1
+librust-winapi-dev 0.3.8-2
+librust-atty-dev 0.2.14-2
+librust-autocfg-dev 1.0.1-1
+librust-base64-dev 0.13.0-1
+librust-bitflags-dev 1.2.1-1
+librust-bstr-dev 0.2.12-1
+librust-bstr+std-dev 0.2.12-1
+librust-lazy-static-dev 1.4.0-1
+librust-byteorder-dev 1.3.4-1
+librust-regex-automata-dev 0.1.8-2
+librust-bstr+unicode-dev 0.2.12-1
+librust-bstr+default-dev 0.2.12-1
+librust-bytecount-dev 0.6.0-1
+librust-cc-dev 1.0.59-1
+librust-cfg-if-0.1-dev 0.1.10-2
+librust-unicode-width-dev 0.1.8-1
+librust-textwrap-dev 0.11.0-1+b1
+librust-clap-dev 2.33.3-1
+librust-strsim-dev 0.9.3-1
+librust-clap+strsim-dev 2.33.3-1
+librust-cloudabi-dev 0.0.3-1+b1
+librust-cloudabi+default-dev 0.0.3-1+b1
+librust-crossbeam-utils-dev 0.7.2-2
+librust-crossbeam-utils+lazy-static-dev 0.7.2-2
+librust-encoding-rs-dev 0.8.22-1
+librust-encoding-rs-io-dev 0.1.6-2
+librust-fnv-dev 1.0.6-1+b1
+librust-log-dev 0.4.11-2
+librust-regex-syntax-dev 0.6.17-1
+librust-regex-dev 1.3.7-1
+librust-scopeguard-dev 1.1.0-1
+librust-lock-api-dev 0.3.4-1
+librust-redox-syscall-dev 0.1.57-2
+librust-smallvec-dev 1.4.2-2
+librust-parking-lot-core-dev 0.7.2-1
+librust-parking-lot-dev 0.10.0-1
+librust-once-cell-dev 1.5.2-1
+librust-thread-local-dev 1.1.3-3
+librust-regex+perf-cache-dev 1.3.7-1
+librust-regex+perf-literal-dev 1.3.7-1
+librust-regex+perf-dev 1.3.7-1
+librust-globset-dev 0.4.8-2
+librust-regex+unicode-age-dev 1.3.7-1
+librust-regex+unicode-bool-dev 1.3.7-1
+librust-regex+unicode-case-dev 1.3.7-1
+librust-regex+unicode-gencat-dev 1.3.7-1
+librust-regex+unicode-perl-dev 1.3.7-1
+librust-regex+unicode-script-dev 1.3.7-1
+librust-regex+unicode-segment-dev 1.3.7-1
+librust-regex-syntax+unicode-dev 0.6.17-1
+librust-regex+unicode-dev 1.3.7-1
+librust-regex+default-dev 1.3.7-1
+librust-winapi-util-dev 0.1.5-1
+librust-same-file-dev 1.0.6-1
+librust-termcolor-dev 1.1.0-1
+librust-grep-cli-dev 0.1.6-2
+librust-grep-matcher-dev 0.1.5-2
+librust-pkg-config-dev 0.3.18-1
+librust-pcre2-sys-dev 0.2.2-1
+librust-pcre2-dev 0.2.3-1
+librust-grep-pcre2-dev 0.1.5-1
+librust-memmap-dev 0.7.0-1
+librust-grep-searcher-dev 0.1.8-2
+librust-grep-searcher+default-dev 0.1.8-2
+librust-serde-dev 1.0.106-1
+librust-unicode-xid-dev 0.2.0-1
+librust-proc-macro2-dev 1.0.18-1
+librust-quote-dev 1.0.7-1
+librust-quote+proc-macro-dev 1.0.7-1
+librust-syn-dev 1.0.12-1
+librust-syn+printing-dev 1.0.12-1
+librust-syn+proc-macro-dev 1.0.12-1
+librust-syn+default-dev 1.0.12-1
+librust-serde-derive-dev 1.0.106-1
+librust-serde+derive-dev 1.0.106-1
+librust-itoa-dev 0.4.3-1
+librust-ryu-dev 1.0.2-1
+librust-serde-json-dev 1.0.41-1
+librust-grep-printer-dev 0.1.6-1
+librust-grep-regex-dev 0.1.9-2
+librust-grep-dev 0.2.8-2
+librust-walkdir-dev 2.3.1-1
+librust-ignore-dev 0.4.18-1
+librust-num-cpus-dev 1.13.0-1
+```
+
+---
+
+_Comment by @BurntSushi on 2023-11-20 23:28_
+
+This is almost certainly because of an out-of-sync dependency. It's _plausible_ there is (or was) a bug in ripgrep, but if there was, it would likely be a more relaxed dependency constraint than what it ought to be.
+
+I'm going to close this because I can't reproduce this. If it's still a problem, I'd like to ask for a simple set of commands that I can run that will reproduce the problem.
+
+---
+
+_Closed by @BurntSushi on 2023-11-20 23:28_
+
+---

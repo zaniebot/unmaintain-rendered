@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T22:12:53Z
 updated_at: 2025-06-27T09:42:57Z
 url: https://github.com/astral-sh/uv/issues/14193
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # uv sync fails on circular optional dependencies when installing from source
 
 ---
 
-_Issue opened by @sveinse on 2025-06-21 22:12_
+_@sveinse_
 
 ### Summary
 

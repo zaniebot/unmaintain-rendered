@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-29T03:24:00Z
 updated_at: 2022-09-29T21:31:53Z
 url: https://github.com/clap-rs/clap/issues/4283
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # No way to accept unbounded number of a custom formatted values that starts with a hyphen
 
 ---
 
-_Issue opened by @lukehsiao on 2022-09-29 03:24_
+_@lukehsiao_
 
 ### Please complete the following tasks
 

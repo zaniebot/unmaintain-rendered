@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T20:53:14Z
 updated_at: 2024-02-15T23:53:14Z
 url: https://github.com/astral-sh/uv/issues/1335
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # "uv venv" doesn't find python (Linux)
 
 ---
 
-_Issue opened by @BWindey on 2024-02-15 20:53_
+_@BWindey_
 
 When trying out uv, I wanted to try install a package to the global space. Which isn't possible apparently, but ok, let's make a virtual environment like the command suggested to me: `uv venv`
 Result:

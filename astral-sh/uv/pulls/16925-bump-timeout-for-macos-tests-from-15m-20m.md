@@ -13,14 +13,14 @@ head: zb/macos-time
 created_at: 2025-12-02T09:59:12Z
 updated_at: 2025-12-02T11:01:44Z
 url: https://github.com/astral-sh/uv/pull/16925
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Bump timeout for macOS tests from 15m -> 20m
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-02 09:59_
+_@zanieb_
 
 This has been failing on main since fbf925ee636327bc958859ba1179fdd37bbcde6e
 

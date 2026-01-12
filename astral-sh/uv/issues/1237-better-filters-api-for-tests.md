@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T18:35:33Z
 updated_at: 2024-04-07T00:18:11Z
 url: https://github.com/astral-sh/uv/issues/1237
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Better filters API for tests 
 
 ---
 
-_Issue opened by @konstin on 2024-02-02 18:35_
+_@konstin_
 
 It would be nice to have a filters api that accepts both paths and strings and automatically refex escapes paths and isn't build around collecting a vec yourself. I imagine something like
 

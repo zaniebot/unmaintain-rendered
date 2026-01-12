@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T15:32:01Z
 updated_at: 2024-09-21T15:21:21Z
 url: https://github.com/astral-sh/uv/issues/7588
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # [question] When I used uv to install `ddddocr===1.4.11`, the installed dependent version was not quite correct 
 
 ---
 
-_Issue opened by @gcil125 on 2024-09-20 15:32_
+_@gcil125_
 
 - command : `uv pip install ddddocr==1.4.11 -v` 
 - platform : `Darwin(macos14)` 

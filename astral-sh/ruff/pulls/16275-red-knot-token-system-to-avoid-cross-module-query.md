@@ -13,14 +13,14 @@ head: micha/prove-system-to-avoid-cross-module-query-dependencies
 created_at: 2025-02-20T13:50:42Z
 updated_at: 2025-02-28T09:21:10Z
 url: https://github.com/astral-sh/ruff/pull/16275
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Token system to avoid cross-module query dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-20 13:50_
+_@MichaReiser_
 
 ## Summary
 

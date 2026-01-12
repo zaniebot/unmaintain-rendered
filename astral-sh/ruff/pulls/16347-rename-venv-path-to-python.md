@@ -13,14 +13,14 @@ head: micha/rename-venv-path-to-python
 created_at: 2025-02-24T14:10:55Z
 updated_at: 2025-02-24T18:41:10Z
 url: https://github.com/astral-sh/ruff/pull/16347
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Rename `venv-path` to `python`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-24 14:10_
+_@MichaReiser_
 
 ## Summary
 

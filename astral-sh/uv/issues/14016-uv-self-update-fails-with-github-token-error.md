@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T08:02:03Z
 updated_at: 2025-11-28T13:19:49Z
 url: https://github.com/astral-sh/uv/issues/14016
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # uv self update fails with github token error
 
 ---
 
-_Issue opened by @Ramesh-kumar-S on 2025-06-13 08:02_
+_@Ramesh-kumar-S_
 
 ### Question
 

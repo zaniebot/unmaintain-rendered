@@ -12,14 +12,14 @@ head: dc/humanize-ruff-toml-error
 created_at: 2023-03-09T13:06:18Z
 updated_at: 2023-03-09T19:55:54Z
 url: https://github.com/astral-sh/ruff/pull/3417
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # fix: Emit a more useful error if an `extend` points at a non-existent ruff.toml file.
 
 ---
 
-_Pull request opened by @DanCardin on 2023-03-09 13:06_
+_@DanCardin_
 
 Today some `extend` usage pointing at a ruff.toml (which does not exist):
 

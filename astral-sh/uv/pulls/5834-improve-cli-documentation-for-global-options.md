@@ -13,14 +13,14 @@ head: zb/cli-docs
 created_at: 2024-08-06T21:31:29Z
 updated_at: 2024-08-07T01:50:31Z
 url: https://github.com/astral-sh/uv/pull/5834
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Improve CLI documentation for global options
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 21:31_
+_@zanieb_
 
 Slowly auditing our CLI help text
 

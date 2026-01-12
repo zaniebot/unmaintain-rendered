@@ -13,14 +13,14 @@ head: zb/retry-cache-windows
 created_at: 2024-07-15T16:00:38Z
 updated_at: 2024-07-15T17:56:09Z
 url: https://github.com/astral-sh/uv/pull/5076
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Retry on permission errors when persisting extracted source distributions to the cache
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-15 16:00_
+_@zanieb_
 
 Another case for https://github.com/astral-sh/uv/issues/1491
 

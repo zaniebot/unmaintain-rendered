@@ -13,14 +13,14 @@ head: konsti/faster-version-render
 created_at: 2025-05-25T12:55:11Z
 updated_at: 2025-05-29T12:40:05Z
 url: https://github.com/astral-sh/uv/pull/13643
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Optimize Version display
 
 ---
 
-_Pull request opened by @konstin on 2025-05-25 12:55_
+_@konstin_
 
 We format enough versions that the `.collect::<Vec<String>>()` showed up in profiles.
 

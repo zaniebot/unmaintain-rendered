@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T22:19:00Z
 updated_at: 2026-01-10T22:36:52Z
 url: https://github.com/astral-sh/ty/issues/2429
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit errors on invalid defaulted TypeVar constructions
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2026-01-09 22:19_
+_@MeGaGiGaGon_
 
 ### Summary
 

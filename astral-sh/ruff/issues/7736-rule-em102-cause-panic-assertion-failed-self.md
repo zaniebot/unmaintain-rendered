@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-01T07:48:32Z
 updated_at: 2023-11-09T05:22:17Z
 url: https://github.com/astral-sh/ruff/issues/7736
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule EM102 cause panic `assertion failed: self.start_locations.is_empty()`
 
 ---
 
-_Issue opened by @qarmin on 2023-10-01 07:48_
+_@qarmin_
 
 
 Ruff 0.0.291 (latest changes from main branch)

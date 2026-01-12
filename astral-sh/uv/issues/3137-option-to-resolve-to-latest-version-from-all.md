@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T08:14:41Z
 updated_at: 2024-04-27T01:31:48Z
 url: https://github.com/astral-sh/uv/issues/3137
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Option to resolve to latest version from all indices
 
 ---
 
-_Issue opened by @yorickvP on 2024-04-19 08:14_
+_@yorickvP_
 
 When specifying `unsafe-any-match`. I'd expect to find the latest version of a package from all indices. However, when using the pytorch index, which has an ancient version of certifi for some reason, uv finds that instead of the recent version from pypi.
 

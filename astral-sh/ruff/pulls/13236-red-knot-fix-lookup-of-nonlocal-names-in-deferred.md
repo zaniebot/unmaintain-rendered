@@ -13,14 +13,14 @@ head: cjm/deferred-lookup
 created_at: 2024-09-03T22:07:50Z
 updated_at: 2024-09-04T17:10:56Z
 url: https://github.com/astral-sh/ruff/pull/13236
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] fix lookup of nonlocal names in deferred annotations
 
 ---
 
-_Pull request opened by @carljm on 2024-09-03 22:07_
+_@carljm_
 
 Initially I had deferred annotation name lookups reuse the "public symbol type", since that gives the correct "from end of scope" view of reaching definitions that we want. But there is a key difference; public symbol types are based only on definitions in the queried scope (or "name in the given namespace" in runtime terms), they don't ever look up a name in nonlocal/global/builtin scopes. Deferred annotation resolution should do this lookup.
 

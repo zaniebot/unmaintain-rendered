@@ -14,14 +14,14 @@ head: alex/hashable
 created_at: 2025-09-07T12:28:17Z
 updated_at: 2025-09-10T10:46:56Z
 url: https://github.com/astral-sh/ruff/pull/20284
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Treat `Hashable`, and similar protocols, equivalently to `object` for subtyping/assignability
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-07 12:28_
+_@AlexWaygood_
 
 ## Summary
 

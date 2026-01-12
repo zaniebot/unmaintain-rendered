@@ -13,14 +13,14 @@ head: feature/preserve-naive-dependency-sort
 created_at: 2025-05-07T17:58:35Z
 updated_at: 2025-05-08T07:35:12Z
 url: https://github.com/astral-sh/uv/pull/13334
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Preserve order of dependencies which are sorted naively
 
 ---
 
-_Pull request opened by @RazerM on 2025-05-07 17:58_
+_@RazerM_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

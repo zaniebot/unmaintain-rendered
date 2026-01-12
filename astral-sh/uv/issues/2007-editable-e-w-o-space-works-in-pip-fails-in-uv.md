@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T09:14:23Z
 updated_at: 2024-02-27T20:47:53Z
 url: https://github.com/astral-sh/uv/issues/2007
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Editable '-e.' w/o space works in pip, fails in uv
 
 ---
 
-_Issue opened by @jensens on 2024-02-27 09:14_
+_@jensens_
 
 I have a `requirement.txt` like so
 ```

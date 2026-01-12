@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T04:34:58Z
 updated_at: 2023-08-17T03:13:22Z
 url: https://github.com/astral-sh/ruff/issues/6587
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # (🎁) new rule: `unconditional-break`/`unconditional-continue` within loop
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-08-15 04:34_
+_@KotlinIsland_
 
 ```py
 for a in [1, 2, 3]:

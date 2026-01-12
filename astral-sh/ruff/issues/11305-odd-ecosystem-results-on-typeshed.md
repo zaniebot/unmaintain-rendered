@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-06T09:15:42Z
 updated_at: 2024-08-13T17:32:08Z
 url: https://github.com/astral-sh/ruff/issues/11305
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Odd ecosystem results on typeshed
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-05-06 09:15_
+_@AlexWaygood_
 
 Seems like there's something up with the ecosystem check when it runs on typeshed currently. We've had issues on several PRs where the ecosystem check has produced surprising results that don't make logical sense and can't be reproduced locally:
 - https://github.com/astral-sh/ruff/pull/11128#issuecomment-2075020838

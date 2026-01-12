@@ -13,14 +13,14 @@ head: dependabot/cargo/annotate-snippets-0.9.2
 created_at: 2023-11-13T08:08:18Z
 updated_at: 2023-11-13T15:05:40Z
 url: https://github.com/astral-sh/ruff/pull/8646
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump annotate-snippets from 0.9.1 to 0.9.2
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-13 08:08_
+_@dependabot_
 
 Bumps [annotate-snippets](https://github.com/rust-lang/annotate-snippets-rs) from 0.9.1 to 0.9.2.
 <details>

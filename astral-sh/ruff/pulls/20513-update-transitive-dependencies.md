@@ -13,14 +13,14 @@ head: micha/update-transitive-depndencies
 created_at: 2025-09-22T10:01:23Z
 updated_at: 2025-09-22T10:50:55Z
 url: https://github.com/astral-sh/ruff/pull/20513
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # Update transitive dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-22 10:01_
+_@MichaReiser_
 
 The svg changes are due to https://github.com/rust-cli/anstyle/pull/267 but there's no visible difference. So they're fine to update.
 

@@ -13,14 +13,14 @@ head: refactor-AIR302
 created_at: 2025-03-31T08:02:58Z
 updated_at: 2025-03-31T10:17:19Z
 url: https://github.com/astral-sh/ruff/pull/17080
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [airflow] Combine AIR302 matches
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-31 08:02_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: micha/fix-normalize-call-arguments
 created_at: 2024-10-24T13:02:47Z
 updated_at: 2024-10-24T13:13:37Z
 url: https://github.com/astral-sh/ruff/pull/13910
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix `normalize` arguments when `fstring_formatting` is disabled
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-24 13:02_
+_@MichaReiser_
 
 ## Summary
 

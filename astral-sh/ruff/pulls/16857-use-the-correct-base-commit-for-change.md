@@ -13,14 +13,14 @@ head: zb/test-merge-base
 created_at: 2025-03-19T20:10:03Z
 updated_at: 2025-03-20T13:03:05Z
 url: https://github.com/astral-sh/ruff/pull/16857
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Use the correct base commit for change determination
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-19 20:10_
+_@zanieb_
 
 `base.sha` appears to be the commit of the base branch when the pull request was opened, not the base commit that's used to construct the test merge commit — which can lead to incorrect "determine changes" results where commits made to the base ref since the pull request are opened are included in the results.
 

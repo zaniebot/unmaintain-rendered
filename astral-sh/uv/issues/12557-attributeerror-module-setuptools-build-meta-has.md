@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-30T10:50:47Z
 updated_at: 2025-05-03T10:39:24Z
 url: https://github.com/astral-sh/uv/issues/12557
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # AttributeError: module 'setuptools.build_meta' has no attribute 'build_editable'
 
 ---
 
-_Issue opened by @jiunbae on 2025-03-30 10:50_
+_@jiunbae_
 
 ### Question
 

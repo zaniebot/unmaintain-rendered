@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T22:26:52Z
 updated_at: 2025-12-18T15:03:25Z
 url: https://github.com/astral-sh/uv/issues/10878
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Add option to save pypi token with cli command
 
 ---
 
-_Issue opened by @thewh1teagle on 2025-01-22 22:26_
+_@thewh1teagle_
 
 ### Summary
 

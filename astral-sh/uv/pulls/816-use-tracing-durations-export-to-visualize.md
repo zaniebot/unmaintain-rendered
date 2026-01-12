@@ -12,14 +12,14 @@ head: konsti/tracing-durations-export
 created_at: 2024-01-06T15:39:14Z
 updated_at: 2024-01-08T15:20:39Z
 url: https://github.com/astral-sh/uv/pull/816
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Use tracing-durations-export to visualize parallelism bottlenecks (dev commands)
 
 ---
 
-_Pull request opened by @konstin on 2024-01-06 15:39_
+_@konstin_
 
 Example usage:
 

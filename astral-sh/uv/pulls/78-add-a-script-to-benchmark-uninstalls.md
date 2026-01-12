@@ -12,14 +12,14 @@ head: charlie/uninstall
 created_at: 2023-10-09T18:15:02Z
 updated_at: 2023-10-09T20:59:16Z
 url: https://github.com/astral-sh/uv/pull/78
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Add a script to benchmark uninstalls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-09 18:15_
+_@charliermarsh_
 
 _No description provided._
 

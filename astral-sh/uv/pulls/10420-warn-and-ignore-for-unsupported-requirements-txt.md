@@ -14,14 +14,14 @@ head: charlie/warn-ignore
 created_at: 2025-01-09T01:18:02Z
 updated_at: 2025-01-09T18:19:53Z
 url: https://github.com/astral-sh/uv/pull/10420
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Warn-and-ignore for unsupported `requirements.txt` options
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 01:18_
+_@charliermarsh_
 
 ## Summary
 

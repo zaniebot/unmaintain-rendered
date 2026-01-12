@@ -13,14 +13,14 @@ head: e251
 created_at: 2023-02-28T13:14:37Z
 updated_at: 2023-02-28T17:02:49Z
 url: https://github.com/astral-sh/ruff/pull/3274
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(E251,E252): add rules
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-28 13:14_
+_@carlosmiei_
 
 _No description provided._
 

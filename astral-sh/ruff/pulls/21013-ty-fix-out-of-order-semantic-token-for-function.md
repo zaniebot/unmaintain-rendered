@@ -15,14 +15,14 @@ head: micha/fix-invalid-semantic-token-order
 created_at: 2025-10-21T07:11:01Z
 updated_at: 2025-10-21T08:51:11Z
 url: https://github.com/astral-sh/ruff/pull/21013
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Fix out-of-order semantic token for function with regular argument after kwargs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-21 07:11_
+_@MichaReiser_
 
 ## Summary
 

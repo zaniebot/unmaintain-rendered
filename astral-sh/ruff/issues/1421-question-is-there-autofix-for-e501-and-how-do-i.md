@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-28T07:23:20Z
 updated_at: 2022-12-28T12:15:54Z
 url: https://github.com/astral-sh/ruff/issues/1421
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [Question] Is there autofix for E501 and how do I turn it on?
 
 ---
 
-_Issue opened by @simkimsia on 2022-12-28 07:23_
+_@simkimsia_
 
 i'm one of your latest stars after you hit 4k.
 

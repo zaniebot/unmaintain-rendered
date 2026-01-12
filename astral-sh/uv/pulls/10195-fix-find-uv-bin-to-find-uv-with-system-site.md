@@ -11,14 +11,14 @@ head: fix/find_uv_bin
 created_at: 2024-12-27T15:13:01Z
 updated_at: 2025-04-16T15:22:39Z
 url: https://github.com/astral-sh/uv/pull/10195
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Fix find_uv_bin to find uv with system site packages
 
 ---
 
-_Pull request opened by @ssbarnea on 2024-12-27 15:13_
+_@ssbarnea_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: charlie/nested-args
 created_at: 2024-01-08T02:35:17Z
 updated_at: 2024-01-08T03:41:01Z
 url: https://github.com/astral-sh/ruff/pull/9427
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Disambiguate argument descriptors from section headers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 02:35_
+_@charliermarsh_
 
 ## Summary
 

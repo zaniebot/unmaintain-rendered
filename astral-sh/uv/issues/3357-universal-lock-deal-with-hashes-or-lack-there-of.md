@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T16:32:17Z
 updated_at: 2024-05-14T23:07:26Z
 url: https://github.com/astral-sh/uv/issues/3357
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: deal with hashes (or lack there of) for some types of distributions
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 16:32_
+_@BurntSushi_
 
 Currently, a `ResolvedDist` does not always have a hash. This is a problem for the lock file where we'd ideally want hashes for _at least_ direct URL dependencies. We currently also don't have hashes for Git or Path dependencies, but I think we probably don't want those. (Cargo doesn't use hashes for that case either.)
 

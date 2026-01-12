@@ -13,14 +13,14 @@ head: konsti/version-union
 created_at: 2024-06-05T10:20:44Z
 updated_at: 2024-06-06T19:21:03Z
 url: https://github.com/astral-sh/uv/pull/4041
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:00Z
 ```
 
 # Use union of `requires-python` in workspace
 
 ---
 
-_Pull request opened by @konstin on 2024-06-05 10:20_
+_@konstin_
 
 Follow-up to #4016.
 

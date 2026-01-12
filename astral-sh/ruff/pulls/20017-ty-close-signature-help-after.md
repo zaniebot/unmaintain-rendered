@@ -15,14 +15,14 @@ head: micha/offset-1
 created_at: 2025-08-21T07:21:44Z
 updated_at: 2025-08-22T14:09:24Z
 url: https://github.com/astral-sh/ruff/pull/20017
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Close signature help after `)`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-21 07:21_
+_@MichaReiser_
 
 ## Summary
 

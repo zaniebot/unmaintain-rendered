@@ -13,14 +13,14 @@ head: diyor/add-redirect-uv-publish
 created_at: 2025-12-14T23:38:06Z
 updated_at: 2025-12-18T00:31:55Z
 url: https://github.com/astral-sh/uv/pull/17130
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Support redirects in `uv publish`
 
 ---
 
-_Pull request opened by @dijor0310 on 2025-12-14 23:38_
+_@dijor0310_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

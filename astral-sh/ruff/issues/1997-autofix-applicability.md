@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-19T15:07:07Z
 updated_at: 2023-06-14T22:28:44Z
 url: https://github.com/astral-sh/ruff/issues/1997
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Autofix applicability
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-19 15:07_
+_@not-my-profile_
 
 Like categorization (#1774) this is another very useful concept we can steal from Rust, see [rustc_errors::Applicability](https://doc.rust-lang.org/stable/nightly-rustc/rustc_errors/enum.Applicability.html).
 

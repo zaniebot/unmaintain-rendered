@@ -14,14 +14,14 @@ head: alex/pulltypes-panics
 created_at: 2025-06-12T10:44:32Z
 updated_at: 2025-06-17T09:40:52Z
 url: https://github.com/astral-sh/ruff/pull/18642
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Fix panics when pulling types for various special forms that have the wrong number of parameters
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-12 10:44_
+_@AlexWaygood_
 
 ## Summary
 

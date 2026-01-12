@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-11-26T17:58:41Z
 updated_at: 2018-08-02T03:30:15Z
 url: https://github.com/clap-rs/clap/issues/1116
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # The pre-built test example has moved
 
 ---
 
-_Issue opened by @tpoliaw on 2017-11-26 17:58_
+_@tpoliaw_
 
 Following the instructions [here](https://github.com/kbknapp/clap-rs#pre-built-test) doesn't seem to be working for me. Cloning and building work ok but the claptests executable is not created.
 

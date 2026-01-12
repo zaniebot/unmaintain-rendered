@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T20:06:23Z
 updated_at: 2025-05-12T08:21:45Z
 url: https://github.com/astral-sh/uv/issues/13389
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # `uv` installs an ancient version of `boto3` on Python `3.9`
 
 ---
 
-_Issue opened by @peterschmidt85 on 2025-05-11 20:06_
+_@peterschmidt85_
 
 ### Summary
 

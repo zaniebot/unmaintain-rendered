@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T22:57:00Z
 updated_at: 2024-06-08T01:10:19Z
 url: https://github.com/astral-sh/uv/issues/4152
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Transitive dependencies via optional dependency aliases fails URL installation
 
 ---
 
-_Issue opened by @ringohoffman on 2024-06-07 22:57_
+_@ringohoffman_
 
 Continuing my report from the comment here:
 

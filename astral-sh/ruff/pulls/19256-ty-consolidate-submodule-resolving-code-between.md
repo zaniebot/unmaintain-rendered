@@ -14,14 +14,14 @@ head: alex/resolve-submodule-method
 created_at: 2025-07-10T11:05:38Z
 updated_at: 2025-07-10T13:10:13Z
 url: https://github.com/astral-sh/ruff/pull/19256
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Consolidate submodule resolving code between `types.rs` and `ide_support.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-10 11:05_
+_@AlexWaygood_
 
 ## Summary
 

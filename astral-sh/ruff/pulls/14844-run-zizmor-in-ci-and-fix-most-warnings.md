@@ -14,14 +14,14 @@ head: alex/zizmor
 created_at: 2024-12-08T23:50:25Z
 updated_at: 2024-12-10T08:40:12Z
 url: https://github.com/astral-sh/ruff/pull/14844
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Run zizmor in CI, and fix most warnings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-08 23:50_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T21:25:26Z
 updated_at: 2024-04-12T03:52:05Z
 url: https://github.com/astral-sh/uv/issues/2915
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # CentOS system test fails to find mirrors for installation
 
 ---
 
-_Issue opened by @zanieb on 2024-04-08 21:25_
+_@zanieb_
 
 See failure at https://github.com/astral-sh/uv/actions/runs/8606634716/job/23585533756
 

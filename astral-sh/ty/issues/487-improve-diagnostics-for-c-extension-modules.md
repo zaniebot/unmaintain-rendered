@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-22T13:57:20Z
 updated_at: 2025-11-24T17:16:48Z
 url: https://github.com/astral-sh/ty/issues/487
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # improve diagnostics for C extension modules without stubs
 
 ---
 
-_Issue opened by @johnniemorrow on 2025-05-22 13:57_
+_@johnniemorrow_
 
 ### Summary
 

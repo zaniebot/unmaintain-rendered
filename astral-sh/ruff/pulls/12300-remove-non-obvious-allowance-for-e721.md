@@ -13,14 +13,14 @@ head: charlie/ob
 created_at: 2024-07-12T12:33:18Z
 updated_at: 2024-07-12T13:21:45Z
 url: https://github.com/astral-sh/ruff/pull/12300
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove 'non-obvious' allowance for E721
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 12:33_
+_@charliermarsh_
 
 ## Summary
 

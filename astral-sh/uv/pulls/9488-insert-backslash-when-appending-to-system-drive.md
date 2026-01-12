@@ -14,14 +14,14 @@ head: charlie/win-sys
 created_at: 2024-11-28T00:18:44Z
 updated_at: 2024-11-28T00:38:30Z
 url: https://github.com/astral-sh/uv/pull/9488
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Insert backslash when appending to system drive
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-28 00:18_
+_@charliermarsh_
 
 ## Summary
 

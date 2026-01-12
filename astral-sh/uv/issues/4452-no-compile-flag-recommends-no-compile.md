@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-23T17:16:15Z
 updated_at: 2024-06-23T17:25:51Z
 url: https://github.com/astral-sh/uv/issues/4452
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `--no-compile` flag recommends `--no_compile`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-23 17:16_
+_@charliermarsh_
 
 @charliermarsh  I'd like to reopen this issue, since --no-compile flag is still not support. Getting this error:
 ```

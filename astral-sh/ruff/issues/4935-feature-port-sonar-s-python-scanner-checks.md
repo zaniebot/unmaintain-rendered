@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-07T19:43:25Z
 updated_at: 2025-07-17T13:17:46Z
 url: https://github.com/astral-sh/ruff/issues/4935
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Feature: Port Sonar's Python scanner checks
 
 ---
 
-_Issue opened by @thejcannon on 2023-06-07 19:43_
+_@thejcannon_
 
 More of a challenge than porting flake8 plugins, because these are written in Java: https://github.com/SonarSource/sonar-python
 

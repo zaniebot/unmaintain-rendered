@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-18T00:24:52Z
 updated_at: 2021-08-18T08:50:13Z
 url: https://github.com/clap-rs/clap/issues/2712
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Warning for unnecessary braces with multilayer subcommand
 
 ---
 
-_Issue opened by @ModProg on 2021-08-18 00:24_
+_@ModProg_
 
 ### Please complete the following tasks
 

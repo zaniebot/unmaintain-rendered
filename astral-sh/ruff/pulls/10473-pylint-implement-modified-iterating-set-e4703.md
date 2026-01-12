@@ -14,14 +14,14 @@ head: modified-iterating-set
 created_at: 2024-03-19T13:16:30Z
 updated_at: 2024-04-01T08:15:09Z
 url: https://github.com/astral-sh/ruff/pull/10473
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Implement `modified-iterating-set` (`E4703`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-19 13:16_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

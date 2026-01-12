@@ -12,14 +12,14 @@ head: deps/rust
 created_at: 2023-08-04T00:24:34Z
 updated_at: 2023-08-04T12:52:13Z
 url: https://github.com/astral-sh/ruff/pull/6323
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Upgrade Rust to 1.71
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-04 00:24_
+_@zanieb_
 
 Addresses [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html) 
 

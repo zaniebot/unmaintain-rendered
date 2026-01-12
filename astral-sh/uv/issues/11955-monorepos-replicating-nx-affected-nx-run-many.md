@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T16:08:54Z
 updated_at: 2025-10-25T09:29:41Z
 url: https://github.com/astral-sh/uv/issues/11955
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Monorepos:  Replicating `nx affected`, `nx run-many` with `uv`.
 
 ---
 
-_Issue opened by @gregglind on 2025-03-04 16:08_
+_@gregglind_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: property-tests
 created_at: 2025-05-15T20:02:49Z
 updated_at: 2025-05-16T07:58:41Z
 url: https://github.com/astral-sh/ty/pull/413
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add daily property tests
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-15 20:02_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

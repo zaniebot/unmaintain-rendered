@@ -13,14 +13,14 @@ head: isort-tabs
 created_at: 2023-01-31T02:47:58Z
 updated_at: 2023-01-31T20:37:31Z
 url: https://github.com/astral-sh/ruff/pull/2374
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`I001`] fix isort check for files with tabs and no indented blocks
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-31 02:47_
+_@sciyoshi_
 
 This is a followup to #2361. The isort check still had an issue in a rather specific case: files with a multiline import, indented with tabs, and not containing any indented blocks.
 

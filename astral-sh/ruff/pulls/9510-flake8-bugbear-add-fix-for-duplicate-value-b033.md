@@ -14,14 +14,14 @@ head: add-B033-autofix
 created_at: 2024-01-14T04:24:33Z
 updated_at: 2024-01-14T23:27:44Z
 url: https://github.com/astral-sh/ruff/pull/9510
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-bugbear`] Add fix for `duplicate-value` (`B033`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-14 04:24_
+_@diceroll123_
 
 ## Summary
 

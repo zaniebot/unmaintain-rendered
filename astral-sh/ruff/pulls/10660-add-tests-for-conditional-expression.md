@@ -14,14 +14,14 @@ head: dhruv/if-expr
 created_at: 2024-03-29T14:23:15Z
 updated_at: 2024-04-03T08:48:48Z
 url: https://github.com/astral-sh/ruff/pull/10660
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add tests for conditional expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-29 14:23_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-05T14:42:29Z
 updated_at: 2024-05-19T02:45:46Z
 url: https://github.com/astral-sh/uv/issues/793
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # document internal data dependencies & flow
 
 ---
 
-_Issue opened by @BurntSushi on 2024-01-05 14:42_
+_@BurntSushi_
 
 This ticket is a little open ended, but one thing I'd like to try and do is document how data flows through Puffin and what is actually used in each step.
 

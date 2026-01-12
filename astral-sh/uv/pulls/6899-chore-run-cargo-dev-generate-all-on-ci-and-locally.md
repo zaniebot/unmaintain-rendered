@@ -13,14 +13,14 @@ head: chore/run-dev-generate-all-on-ci
 created_at: 2024-08-31T20:11:56Z
 updated_at: 2024-08-31T23:07:16Z
 url: https://github.com/astral-sh/uv/pull/6899
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # chore: run `cargo dev generate-all` on CI and locally
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-31 20:11_
+_@mkniewallner_
 
 ## Summary
 

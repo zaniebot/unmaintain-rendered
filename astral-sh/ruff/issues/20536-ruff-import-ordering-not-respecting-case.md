@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T14:57:52Z
 updated_at: 2025-09-25T16:25:13Z
 url: https://github.com/astral-sh/ruff/issues/20536
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff Import ordering not respecting case-insensitivity compared to flake8 `import-order-style`
 
 ---
 
-_Issue opened by @SkylerWittman on 2025-09-23 14:57_
+_@SkylerWittman_
 
 ### Summary
 

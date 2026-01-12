@@ -13,14 +13,14 @@ head: cjm/red-knot/more-types
 created_at: 2024-04-24T21:42:49Z
 updated_at: 2024-04-26T20:05:59Z
 url: https://github.com/astral-sh/ruff/pull/11135
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [red-knot] add more types
 
 ---
 
-_Pull request opened by @carljm on 2024-04-24 21:42_
+_@carljm_
 
 Fill out the representation of types to a few more cases (especially unions and intersections) before going too far with type evaluation.
 

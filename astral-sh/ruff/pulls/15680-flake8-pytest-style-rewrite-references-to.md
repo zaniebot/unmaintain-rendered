@@ -13,14 +13,14 @@ head: PT027
 created_at: 2025-01-23T01:25:24Z
 updated_at: 2025-01-23T16:53:24Z
 url: https://github.com/astral-sh/ruff/pull/15680
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pytest-style`] Rewrite references to `.exception` (`PT027`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-23 01:25_
+_@InSyncWithFoo_
 
 ## Summary
 

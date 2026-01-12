@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T10:20:58Z
 updated_at: 2025-11-21T11:17:09Z
 url: https://github.com/astral-sh/uv/issues/1474
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # How to run uv behind a corporate proxy?
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2024-02-16 10:20_
+_@NiklasRosenstein_
 
 Our corporate proxy inspects traffic and thus inserts its own certificate that has to be configured to trust across applications on the system. I do this by setting `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE`, etc. It seems that `uv` doesn't respect either of those. Is there another environment variable that it takes into account?
 

@@ -12,14 +12,14 @@ head: demonstrate-issue-10885
 created_at: 2024-04-11T16:28:02Z
 updated_at: 2024-04-15T14:16:36Z
 url: https://github.com/astral-sh/ruff/pull/10886
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [pyflakes] Identify f-string without a placeholder in concatenated strings (F541)
 
 ---
 
-_Pull request opened by @samueljsb on 2024-04-11 16:28_
+_@samueljsb_
 
 Prior to this change, an f-string without a placeholder that was
 implicitly concatenated with another f-string that _did_ have a

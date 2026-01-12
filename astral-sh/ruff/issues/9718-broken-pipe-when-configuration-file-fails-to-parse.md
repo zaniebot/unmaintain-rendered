@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-30T20:04:47Z
 updated_at: 2024-02-08T17:33:32Z
 url: https://github.com/astral-sh/ruff/issues/9718
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Broken pipe when configuration file fails to parse
 
 ---
 
-_Issue opened by @kaste on 2024-01-30 20:04_
+_@kaste_
 
 Test scenario:
 

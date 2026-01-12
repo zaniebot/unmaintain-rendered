@@ -14,14 +14,14 @@ head: main
 created_at: 2025-07-10T06:06:29Z
 updated_at: 2025-07-10T13:25:49Z
 url: https://github.com/astral-sh/uv/pull/14532
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # chore: remove redundant words in comment
 
 ---
 
-_Pull request opened by @jingchanglu on 2025-07-10 06:06_
+_@jingchanglu_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

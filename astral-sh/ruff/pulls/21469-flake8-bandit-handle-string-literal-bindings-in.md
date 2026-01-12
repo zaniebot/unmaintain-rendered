@@ -14,14 +14,14 @@ head: fix-21462
 created_at: 2025-11-15T04:48:50Z
 updated_at: 2025-11-26T13:44:28Z
 url: https://github.com/astral-sh/ruff/pull/21469
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [`flake8-bandit`] Handle string literal bindings in suspicious-url-open-usage (`S310`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-15 04:48_
+_@danparizher_
 
 ## Summary
 

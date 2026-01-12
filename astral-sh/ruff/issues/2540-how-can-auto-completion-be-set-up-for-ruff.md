@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-03T13:50:20Z
 updated_at: 2023-02-12T02:51:51Z
 url: https://github.com/astral-sh/ruff/issues/2540
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # How can auto-completion be set up for Ruff?
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-03 13:50_
+_@JonathanPlasse_
 
 I was wondering if there was a command to run to set up auto-completion for Ruff.
 <!--

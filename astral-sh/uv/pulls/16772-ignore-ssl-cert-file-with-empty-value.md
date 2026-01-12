@@ -12,14 +12,14 @@ head: 16712/ssl-cert-file-ignores-empty-value
 created_at: 2025-11-18T18:19:49Z
 updated_at: 2025-12-02T02:56:17Z
 url: https://github.com/astral-sh/uv/pull/16772
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Ignore `SSL_CERT_FILE` with empty value
 
 ---
 
-_Pull request opened by @taearls on 2025-11-18 18:19_
+_@taearls_
 
 ## Summary
 

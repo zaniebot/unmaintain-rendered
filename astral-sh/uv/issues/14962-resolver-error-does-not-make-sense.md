@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-29T21:46:34Z
 updated_at: 2025-07-29T21:50:09Z
 url: https://github.com/astral-sh/uv/issues/14962
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Resolver error does not make sense
 
 ---
 
-_Issue opened by @zanieb on 2025-07-29 21:46_
+_@zanieb_
 
 ```
 ❯ uv tool run --from 'rooster-blue>=0.0.7' --python 3.12 --with 'click<0.8.2' --isolated -- rooster --help

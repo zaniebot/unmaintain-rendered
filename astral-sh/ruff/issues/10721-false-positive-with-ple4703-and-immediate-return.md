@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-01T18:05:47Z
 updated_at: 2024-04-08T06:36:05Z
 url: https://github.com/astral-sh/ruff/issues/10721
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False positive with PLE4703 and immediate return / break
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-04-01 18:05_
+_@hauntsaninja_
 
 Not the biggest deal, but I got a false positive on this with:
 ```

@@ -14,14 +14,14 @@ head: unparenthesized-except
 created_at: 2025-04-27T21:51:38Z
 updated_at: 2025-04-29T12:55:32Z
 url: https://github.com/astral-sh/ruff/pull/17660
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Make syntax error for unparenthesized except tuples version specific to before 3.14
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-27 21:51_
+_@dylwil3_
 
 What it says on the tin 😄 
 

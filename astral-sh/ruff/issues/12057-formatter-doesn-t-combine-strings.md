@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-26T23:46:33Z
 updated_at: 2024-06-27T05:33:32Z
 url: https://github.com/astral-sh/ruff/issues/12057
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter doesn't combine strings
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-06-26 23:46_
+_@KotlinIsland_
 
 # before:
 ```py

@@ -13,14 +13,14 @@ head: fix/fix_docstring_typo
 created_at: 2024-03-05T02:22:51Z
 updated_at: 2024-03-05T02:40:21Z
 url: https://github.com/astral-sh/ruff/pull/10233
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # docs: fix a rustdoc typo in C409 rule
 
 ---
 
-_Pull request opened by @ooooo-create on 2024-03-05 02:22_
+_@ooooo-create_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

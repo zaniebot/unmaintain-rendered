@@ -14,14 +14,14 @@ head: feat(RUF026)/add-rule-for-defaultdict-with-defaulf-factory
 created_at: 2024-01-26T15:03:52Z
 updated_at: 2024-01-26T19:18:03Z
 url: https://github.com/astral-sh/ruff/pull/9651
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`ruff`] Guard against use of `default_factory` as a keyword argument (`RUF026`)
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-26 15:03_
+_@mikeleppane_
 
 ## Summary
 

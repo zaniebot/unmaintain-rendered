@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:29:18Z
 updated_at: 2025-05-04T20:55:17Z
 url: https://github.com/astral-sh/uv/issues/13274
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # ModuleNotFoundError: No module named '_distutils_hack'
 
 ---
 
-_Issue opened by @kdheepak on 2025-05-03 14:29_
+_@kdheepak_
 
 ### Question
 

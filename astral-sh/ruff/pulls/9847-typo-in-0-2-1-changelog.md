@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-05T22:48:23Z
 updated_at: 2024-02-13T22:52:16Z
 url: https://github.com/astral-sh/ruff/pull/9847
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Typo in 0.2.1 changelog
 
 ---
 
-_Pull request opened by @tylerlaprade on 2024-02-05 22:48_
+_@tylerlaprade_
 
 `refurn` -> `refurb`
 

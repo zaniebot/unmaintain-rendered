@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T11:26:02Z
 updated_at: 2024-11-20T14:33:57Z
 url: https://github.com/astral-sh/uv/issues/9272
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # `uv venv ...` not recognizing system-installed python
 
 ---
 
-_Issue opened by @birkin on 2024-11-20 11:26_
+_@birkin_
 
 I'm trying to run the command:
 

@@ -14,14 +14,14 @@ head: zb/install-isolated
 created_at: 2024-07-09T19:37:42Z
 updated_at: 2024-07-10T15:36:26Z
 url: https://github.com/astral-sh/uv/pull/4938
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Respect `--isolated` in `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 19:37_
+_@zanieb_
 
 We ignore Python version files when `--isolated` is used, logging that we skipped them if they exist.
 

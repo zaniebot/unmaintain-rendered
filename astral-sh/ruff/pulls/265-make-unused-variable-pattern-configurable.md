@@ -12,14 +12,14 @@ head: dummy_variable_rgx
 created_at: 2022-09-24T04:37:07Z
 updated_at: 2022-09-24T14:48:25Z
 url: https://github.com/astral-sh/ruff/pull/265
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Make unused variable pattern configurable
 
 ---
 
-_Pull request opened by @harupy on 2022-09-24 04:37_
+_@harupy_
 
 Resolve #134.
 

@@ -13,14 +13,14 @@ head: zb/revert-0214
 created_at: 2024-06-21T16:17:54Z
 updated_at: 2024-06-21T16:24:33Z
 url: https://github.com/astral-sh/uv/pull/4436
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Revert "Bump version to 0.2.14 (#4431)"
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-21 16:17_
+_@zanieb_
 
 This reverts commit e0ad649c7449b7f54c0053e409ac6e7bf18a6f68.
 

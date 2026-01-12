@@ -13,14 +13,14 @@ head: docs/fbt002-enum-example
 created_at: 2024-07-26T10:27:25Z
 updated_at: 2024-07-26T16:00:29Z
 url: https://github.com/astral-sh/ruff/pull/12525
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Complete `FBT002` example with `Enum` argument
 
 ---
 
-_Pull request opened by @sisp on 2024-07-26 10:27_
+_@sisp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

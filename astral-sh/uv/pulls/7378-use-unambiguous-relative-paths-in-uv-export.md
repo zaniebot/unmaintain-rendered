@@ -13,14 +13,14 @@ head: charlie/dot
 created_at: 2024-09-13T20:33:40Z
 updated_at: 2024-09-13T20:48:47Z
 url: https://github.com/astral-sh/uv/pull/7378
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Use unambiguous relative paths in `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-13 20:33_
+_@charliermarsh_
 
 _No description provided._
 

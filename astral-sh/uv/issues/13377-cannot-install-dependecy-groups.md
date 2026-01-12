@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T10:51:17Z
 updated_at: 2025-05-12T10:06:10Z
 url: https://github.com/astral-sh/uv/issues/13377
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # Cannot install dependecy groups
 
 ---
 
-_Issue opened by @PabloVD on 2025-05-10 10:51_
+_@PabloVD_
 
 ### Question
 

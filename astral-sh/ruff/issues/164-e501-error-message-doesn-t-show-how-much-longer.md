@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-12T02:07:30Z
 updated_at: 2022-09-12T02:54:12Z
 url: https://github.com/astral-sh/ruff/issues/164
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # E501: error message doesn't show how much longer the line is
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-12 02:07_
+_@Jackenmen_
 
 Flake8 shows both the max line length and the actual length of the line:
 ```

@@ -13,14 +13,14 @@ head: check-python-uv-mypy
 created_at: 2024-10-03T08:28:48Z
 updated_at: 2024-10-03T12:05:07Z
 url: https://github.com/astral-sh/uv/pull/7891
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Check `python/uv/` folder with `mypy`
 
 ---
 
-_Pull request opened by @sobolevn on 2024-10-03 08:28_
+_@sobolevn_
 
 It used to report:
 

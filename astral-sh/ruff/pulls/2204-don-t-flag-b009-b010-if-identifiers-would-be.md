@@ -12,14 +12,14 @@ head: no-autofix-mangled-idents
 created_at: 2023-01-26T17:24:57Z
 updated_at: 2023-01-26T17:57:27Z
 url: https://github.com/astral-sh/ruff/pull/2204
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Don't flag B009/B010 if identifiers would be mangled
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-26 17:24_
+_@sciyoshi_
 
 Fixes #2202
 

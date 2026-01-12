@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T08:48:10Z
 updated_at: 2023-08-01T15:05:08Z
 url: https://github.com/astral-sh/ruff/issues/6233
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # TCH001 false positive in Ruff 0.0.281
 
 ---
 
-_Issue opened by @flying-sheep on 2023-08-01 08:48_
+_@flying-sheep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

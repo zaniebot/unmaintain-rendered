@@ -13,14 +13,14 @@ head: zb/cache-prune-force
 created_at: 2025-10-06T14:30:05Z
 updated_at: 2025-10-06T16:37:00Z
 url: https://github.com/astral-sh/uv/pull/16137
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # Add `--force` flag for `uv cache prune`
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-06 14:30_
+_@zanieb_
 
 Matching #15992 
 

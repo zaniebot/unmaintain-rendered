@@ -15,14 +15,14 @@ head: starred-tuple
 created_at: 2025-02-10T17:21:55Z
 updated_at: 2025-02-10T17:30:07Z
 url: https://github.com/astral-sh/ruff/pull/16083
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Skip singleton starred expressions for `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-10 17:21_
+_@dylwil3_
 
 The index in subscript access like `d[*y]` will not be linted or autofixed with parentheses, even when `lint.ruff.parenthesize-tuple-in-subscript = true`.
 

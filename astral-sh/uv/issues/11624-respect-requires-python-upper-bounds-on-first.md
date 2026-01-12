@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T15:33:59Z
 updated_at: 2025-02-19T17:09:13Z
 url: https://github.com/astral-sh/uv/issues/11624
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Respect `requires-python` upper bounds on first-party packages
 
 ---
 
-_Issue opened by @zanieb on 2025-02-19 15:33_
+_@zanieb_
 
 We ignore `requires-python` upper bounds during resolution for various reasons (discussed much elsewhere), however, it can be confusing when we apply this to a first party package, e.g.,
 

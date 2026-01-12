@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-21T18:36:45Z
 updated_at: 2024-07-28T23:27:15Z
 url: https://github.com/astral-sh/uv/issues/5263
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Generate benchmarks for release
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-21 18:36_
+_@charliermarsh_
 
 We're going to want a new round of benchmarks with some new comparisons.
 

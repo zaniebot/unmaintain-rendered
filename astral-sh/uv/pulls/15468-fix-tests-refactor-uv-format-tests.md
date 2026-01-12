@@ -13,14 +13,14 @@ head: fix/15458_refactor_uv_format_tests
 created_at: 2025-08-23T09:57:04Z
 updated_at: 2025-08-26T10:20:56Z
 url: https://github.com/astral-sh/uv/pull/15468
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # fix(tests): Refactor uv format tests
 
 ---
 
-_Pull request opened by @pposca on 2025-08-23 09:57_
+_@pposca_
 
 Closes #15458
 

@@ -14,14 +14,14 @@ head: david/implicit-type-aliases
 created_at: 2025-11-01T23:25:38Z
 updated_at: 2025-11-03T20:50:27Z
 url: https://github.com/astral-sh/ruff/pull/21195
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Implicit type aliases: Support for PEP 604 unions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-01 23:25_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: e712-doc-tweak
 created_at: 2023-11-11T09:30:01Z
 updated_at: 2024-03-06T18:06:41Z
 url: https://github.com/astral-sh/ruff/pull/8613
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Tweak `E712` docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-11-11 09:30_
+_@tjkuson_
 
 Recommends `if predicate:` over `if predicate is True:` in the rule message.
 

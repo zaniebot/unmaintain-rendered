@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T06:12:44Z
 updated_at: 2025-01-27T01:27:55Z
 url: https://github.com/astral-sh/ruff/issues/10058
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # (🐞) Cache moment "error: Failed to create fix for MetaClassABCMeta: Unable to insert `ABC` into scope due to name conflict" failure
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-02-20 06:12_
+_@KotlinIsland_
 
 ruff 0.2.2
 Windows 10/11

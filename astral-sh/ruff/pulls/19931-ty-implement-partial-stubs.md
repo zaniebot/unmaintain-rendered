@@ -13,14 +13,14 @@ head: gankra/stub-mod
 created_at: 2025-08-15T17:40:25Z
 updated_at: 2025-08-18T17:14:14Z
 url: https://github.com/astral-sh/ruff/pull/19931
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Implement partial stubs
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-15 17:40_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/184
 

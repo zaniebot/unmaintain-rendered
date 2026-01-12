@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-07T16:00:39Z
 updated_at: 2025-11-07T20:54:15Z
 url: https://github.com/astral-sh/uv/issues/16634
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # `uv build` crashes with hatchling when different items in sdist and wheel
 
 ---
 
-_Issue opened by @rzuckerm on 2025-11-07 16:00_
+_@rzuckerm_
 
 ### Summary
 

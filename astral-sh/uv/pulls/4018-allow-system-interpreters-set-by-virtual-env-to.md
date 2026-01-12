@@ -12,14 +12,14 @@ head: zb/virtual-env-explicit
 created_at: 2024-06-04T17:50:59Z
 updated_at: 2024-06-12T14:24:06Z
 url: https://github.com/astral-sh/uv/pull/4018
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Allow system interpreters set by `VIRTUAL_ENV` to be used without opt-in
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-04 17:50_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/3905
 

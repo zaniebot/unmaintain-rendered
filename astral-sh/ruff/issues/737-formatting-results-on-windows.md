@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-14T15:12:25Z
 updated_at: 2022-11-14T15:29:18Z
 url: https://github.com/astral-sh/ruff/issues/737
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Formatting results on Windows
 
 ---
 
-_Issue opened by @kaniak274 on 2022-11-14 15:12_
+_@kaniak274_
 
 Hi!
 

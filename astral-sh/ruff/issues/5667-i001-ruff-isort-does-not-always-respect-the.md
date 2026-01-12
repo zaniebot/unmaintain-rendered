@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-10T23:08:38Z
 updated_at: 2024-10-08T11:55:22Z
 url: https://github.com/astral-sh/ruff/issues/5667
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # I001: ruff isort does not always respect the global src option
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-07-10 23:08_
+_@saippuakauppias_
 
 I have a slightly odd bug that I don't understand how to fix yet. In a large project (django-service), there is a `statistics` application that overrides an builtin module with the same name.
 

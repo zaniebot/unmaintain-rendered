@@ -11,14 +11,14 @@ head: python-uninstall
 created_at: 2025-04-17T10:03:10Z
 updated_at: 2025-04-17T17:01:40Z
 url: https://github.com/astral-sh/uv/pull/12937
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Prevent uninstalling a Python installation if it is used by a tool
 
 ---
 
-_Pull request opened by @j178 on 2025-04-17 10:03_
+_@j178_
 
 ## Summary
 

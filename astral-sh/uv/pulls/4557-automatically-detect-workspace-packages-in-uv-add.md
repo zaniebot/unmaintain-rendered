@@ -13,14 +13,14 @@ head: charlie/add-workspace
 created_at: 2024-06-26T17:32:55Z
 updated_at: 2024-06-27T07:02:11Z
 url: https://github.com/astral-sh/uv/pull/4557
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Automatically detect workspace packages in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 17:32_
+_@charliermarsh_
 
 ## Summary
 

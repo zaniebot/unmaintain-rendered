@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-25T12:21:57Z
 updated_at: 2022-06-25T12:25:28Z
 url: https://github.com/clap-rs/clap/issues/3867
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Documentation for value_enum how to print possible values in help
 
 ---
 
-_Issue opened by @stepancheg on 2022-06-25 12:21_
+_@stepancheg_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: micha/knot-schema
 created_at: 2025-01-24T23:55:14Z
 updated_at: 2025-02-07T09:59:43Z
 url: https://github.com/astral-sh/ruff/pull/15735
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add knot.toml schema
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-24 23:55_
+_@MichaReiser_
 
 ## Summary
 

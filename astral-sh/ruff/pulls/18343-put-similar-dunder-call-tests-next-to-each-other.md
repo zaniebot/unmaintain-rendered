@@ -14,14 +14,14 @@ head: cjm/dedupe-tests
 created_at: 2025-05-27T19:03:30Z
 updated_at: 2025-05-27T19:16:44Z
 url: https://github.com/astral-sh/ruff/pull/18343
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # put similar dunder-call tests next to each other
 
 ---
 
-_Pull request opened by @carljm on 2025-05-27 19:03_
+_@carljm_
 
 Follow-up from post-land review on https://github.com/astral-sh/ruff/pull/18260
 

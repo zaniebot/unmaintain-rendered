@@ -14,14 +14,14 @@ head: broken-pie802-auto-fix
 created_at: 2023-03-08T14:13:14Z
 updated_at: 2023-03-08T18:05:39Z
 url: https://github.com/astral-sh/ruff/pull/3402
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix PIE802 broken auto-fix with trailing comma
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-08 14:13_
+_@JonathanPlasse_
 
 This code
 ```python

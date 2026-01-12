@@ -12,14 +12,14 @@ head: charlie/descriptor
 created_at: 2023-07-05T19:05:02Z
 updated_at: 2023-07-05T19:35:20Z
 url: https://github.com/astral-sh/ruff/pull/5537
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Allow descriptor instantiations in dataclass fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 19:05_
+_@charliermarsh_
 
 ## Summary
 

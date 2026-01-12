@@ -14,14 +14,14 @@ head: konsti/build-backend-preview-default
 created_at: 2025-04-10T12:14:39Z
 updated_at: 2025-05-05T13:52:32Z
 url: https://github.com/astral-sh/uv/pull/12804
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Build backend: Make preview default and add configuration docs
 
 ---
 
-_Pull request opened by @konstin on 2025-04-10 12:14_
+_@konstin_
 
 Add configuration documentation for the build backend and make it the preview default.
 

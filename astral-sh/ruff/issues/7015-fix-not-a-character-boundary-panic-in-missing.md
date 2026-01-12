@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-31T06:50:32Z
 updated_at: 2023-09-02T07:54:29Z
 url: https://github.com/astral-sh/ruff/issues/7015
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Fix "not a character boundary" panic in `missing_copyright_notice`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-31 06:50_
+_@MichaReiser_
 
 The missing copyright notice only looks at the 1024 first bytes. However, this can go wrong for unicode text if the 1024 byte is not a character boundary (because it is a multibyte character).
 

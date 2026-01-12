@@ -13,14 +13,14 @@ head: konsti/prio-late-after-unspecified
 created_at: 2025-09-21T10:32:09Z
 updated_at: 2025-09-29T09:52:19Z
 url: https://github.com/astral-sh/uv/pull/15969
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Prioritize unspecified over conflict late to improve numba resolution
 
 ---
 
-_Pull request opened by @konstin on 2025-09-21 10:32_
+_@konstin_
 
 See #12060
 

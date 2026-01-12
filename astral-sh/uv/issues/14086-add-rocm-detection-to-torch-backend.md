@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T19:20:44Z
 updated_at: 2025-06-21T15:21:07Z
 url: https://github.com/astral-sh/uv/issues/14086
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Add ROCm detection to `--torch-backend`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-16 19:20_
+_@charliermarsh_
 
 For inspiration: https://github.com/pytorch/pytorch/blob/7cf38d2a0521c5ca292a720bce00617be749a0e7/.github/actions/setup-rocm/action.yml#L24-L49
 

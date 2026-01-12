@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-15T19:00:07Z
 updated_at: 2024-04-15T19:14:14Z
 url: https://github.com/clap-rs/clap/issues/5457
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_complete: `generate()` shouldn't panic if writing fails
 
 ---
 
-_Issue opened by @yedayak on 2024-04-15 19:00_
+_@yedayak_
 
 ### Please complete the following tasks
 

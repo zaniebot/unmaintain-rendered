@@ -13,14 +13,14 @@ head: charlie/shared-builds
 created_at: 2025-06-27T23:41:42Z
 updated_at: 2025-07-01T17:15:48Z
 url: https://github.com/astral-sh/uv/pull/14338
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Reuse build (virtual) environments across resolution and installation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-27 23:41_
+_@charliermarsh_
 
 ## Summary
 

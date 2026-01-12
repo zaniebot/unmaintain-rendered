@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-03T21:56:42Z
 updated_at: 2026-01-05T15:37:08Z
 url: https://github.com/astral-sh/uv/issues/17313
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Unexpected behavior with `sys_platform == 'linux' and platform_machine == 'x86_64'"`
 
 ---
 
-_Issue opened by @collinanderson on 2026-01-03 21:56_
+_@collinanderson_
 
 ### Summary
 

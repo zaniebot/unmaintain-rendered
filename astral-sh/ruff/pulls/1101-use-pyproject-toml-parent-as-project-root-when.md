@@ -12,14 +12,14 @@ head: charlie/root
 created_at: 2022-12-06T04:00:09Z
 updated_at: 2022-12-06T04:01:00Z
 url: https://github.com/astral-sh/ruff/pull/1101
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use pyproject.toml parent as project root when explicitly provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 04:00_
+_@charliermarsh_
 
 Resolves: #1100.
 

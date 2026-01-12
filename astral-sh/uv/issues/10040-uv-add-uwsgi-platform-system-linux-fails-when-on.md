@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T20:08:20Z
 updated_at: 2024-12-20T00:49:11Z
 url: https://github.com/astral-sh/uv/issues/10040
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # uv add "uwsgi; platform_system == 'Linux'"  fails when on Windows machine
 
 ---
 
-_Issue opened by @jacobthetechy on 2024-12-19 20:08_
+_@jacobthetechy_
 
 I'm very new with this package manager and I am trying to learn how to properly use it by trying to convert old projects to use `uv`.
 

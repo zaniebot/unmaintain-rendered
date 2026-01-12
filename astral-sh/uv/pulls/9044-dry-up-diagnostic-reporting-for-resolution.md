@@ -13,14 +13,14 @@ head: charlie/op
 created_at: 2024-11-12T04:11:15Z
 updated_at: 2024-11-12T14:46:04Z
 url: https://github.com/astral-sh/uv/pull/9044
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # DRY up diagnostic reporting for resolution failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-12 04:11_
+_@charliermarsh_
 
 ## Summary
 

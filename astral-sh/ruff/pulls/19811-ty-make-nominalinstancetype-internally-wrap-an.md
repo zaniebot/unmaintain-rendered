@@ -13,14 +13,14 @@ head: alex/remove-tuples-instance-enum
 created_at: 2025-08-07T17:20:14Z
 updated_at: 2025-08-12T15:47:07Z
 url: https://github.com/astral-sh/ruff/pull/19811
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Make `NominalInstanceType` internally wrap an enum
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-07 17:20_
+_@AlexWaygood_
 
 **Stacked on top of https://github.com/astral-sh/ruff/pull/19669; review that PR first!**
 

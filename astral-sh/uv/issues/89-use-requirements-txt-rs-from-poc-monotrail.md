@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-12T13:15:38Z
 updated_at: 2023-10-12T17:09:02Z
 url: https://github.com/astral-sh/uv/issues/89
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Use `requirements_txt.rs` from `poc-monotrail`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-12 13:15_
+_@charliermarsh_
 
 Replace the ad hoc parser I wrote.
 

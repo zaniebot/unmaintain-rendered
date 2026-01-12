@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T12:31:52Z
 updated_at: 2024-09-13T13:13:36Z
 url: https://github.com/astral-sh/uv/issues/7360
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # what is    effect about it ? I  don't have   this directory 
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-09-13 12:31_
+_@Super1Windcloud_
 
 ![image](https://github.com/user-attachments/assets/88ea84b2-46c9-441e-85d7-143f6b323d79)
 

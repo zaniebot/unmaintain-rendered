@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-11T03:02:17Z
 updated_at: 2024-08-20T18:21:38Z
 url: https://github.com/astral-sh/uv/issues/6001
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Remember previous lock options when running `uv sync`
 
 ---
 
-_Issue opened by @nikhilweee on 2024-08-11 03:02_
+_@nikhilweee_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

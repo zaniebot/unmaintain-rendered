@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T03:03:44Z
 updated_at: 2024-10-18T04:30:56Z
 url: https://github.com/astral-sh/uv/issues/8317
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Inline script metadata ignored when using `uv run -m`
 
 ---
 
-_Issue opened by @rkern on 2024-10-18 03:03_
+_@rkern_
 
 `uv run -m` will not respond to PEP 723 inline script metadata that is included in the script module. My motivating use case is that I typically have some developer and CI conveniences wrapped up in a `click` script with lots of subcommands. I want it to run in an isolated Python venv which only needs `click` installed, not the project's venv. The inline script metadata with `uv run` works great for this. However, I usually implement this in a package with a `__main__.py` script (I factor some things out like configuration into a separate module and might have some data files; a package works great to isolate all of this to keep it tidy from the rest of the project). `uv run -m` does not seem to read the inline script metadata implemented in the `__main__.py` (or other modules run via `-m`).
 

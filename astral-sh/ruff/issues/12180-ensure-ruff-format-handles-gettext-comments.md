@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T05:21:25Z
 updated_at: 2024-07-04T07:14:54Z
 url: https://github.com/astral-sh/ruff/issues/12180
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ensure Ruff Format handles gettext comments correctly
 
 ---
 
-_Issue opened by @seanbudd on 2024-07-04 05:21_
+_@seanbudd_
 
 ### issue
 

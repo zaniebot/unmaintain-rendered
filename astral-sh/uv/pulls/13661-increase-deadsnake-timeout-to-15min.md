@@ -13,14 +13,14 @@ head: konsti/15min-to-live-snake
 created_at: 2025-05-26T13:51:28Z
 updated_at: 2025-05-27T14:37:25Z
 url: https://github.com/astral-sh/uv/pull/13661
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Increase deadsnake timeout to 15min
 
 ---
 
-_Pull request opened by @konstin on 2025-05-26 13:51_
+_@konstin_
 
 https://github.com/astral-sh/uv/actions/runs/15254949524/job/42900366590
 

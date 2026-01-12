@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-29T09:42:17Z
 updated_at: 2026-01-09T08:39:03Z
 url: https://github.com/astral-sh/ruff/issues/283
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Meta issue: plugin system
 
 ---
 
-_Issue opened by @sobolevn on 2022-09-29 09:42_
+_@sobolevn_
 
 I think that the main thing why Flake8 is so popular is its plugin system.
 You can find plugins for every possible type of problems and tools.

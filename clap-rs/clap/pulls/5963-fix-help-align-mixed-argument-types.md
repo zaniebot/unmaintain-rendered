@@ -12,14 +12,14 @@ head: align-mixed
 created_at: 2025-03-30T07:33:19Z
 updated_at: 2025-04-11T19:32:56Z
 url: https://github.com/clap-rs/clap/pull/5963
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(help): Align mixed argument types
 
 ---
 
-_Pull request opened by @BrandonXLF on 2025-03-30 07:33_
+_@BrandonXLF_
 
 Fixes the alignment of sections with mixed argument types, including those without short arguments. This is done by adding an extra 4 to the length of arguments that will show a short flag (by calling `fn short`) instead of trying to account for it elsewhere.
 

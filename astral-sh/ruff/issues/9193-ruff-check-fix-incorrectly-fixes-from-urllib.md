@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-18T20:15:50Z
 updated_at: 2024-01-16T04:02:12Z
 url: https://github.com/astral-sh/ruff/issues/9193
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `ruff check . --fix` incorrectly fixes `from urllib import request`
 
 ---
 
-_Issue opened by @discentem on 2023-12-18 20:15_
+_@discentem_
 
 Please let me know if you need any further information. This is my first time submitting an issue and using Ruff!
 

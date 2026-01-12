@@ -13,14 +13,14 @@ head: confusing-naming-unbound-for-methods
 created_at: 2025-09-11T06:43:23Z
 updated_at: 2025-09-21T12:20:18Z
 url: https://github.com/astral-sh/ruff/pull/20344
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Rename "possibly-unbound" diagnostics to "possibly-undeclared"
 
 ---
 
-_Pull request opened by @Renkai on 2025-09-11 06:43_
+_@Renkai_
 
 this fixes https://github.com/astral-sh/ty/issues/636
 

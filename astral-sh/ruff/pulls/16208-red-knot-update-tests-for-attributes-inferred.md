@@ -13,14 +13,14 @@ head: david/close-15960
 created_at: 2025-02-17T08:41:36Z
 updated_at: 2025-02-18T21:43:14Z
 url: https://github.com/astral-sh/ruff/pull/16208
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Update tests for attributes inferred from parameters
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-17 08:41_
+_@sharkdp_
 
 ## Summary
 

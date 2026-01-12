@@ -13,14 +13,14 @@ head: charlie/locks
 created_at: 2024-07-10T21:49:39Z
 updated_at: 2024-07-12T00:53:21Z
 url: https://github.com/astral-sh/uv/pull/4978
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Lock directories to synchronize wheel-install copies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-10 21:49_
+_@charliermarsh_
 
 ## Summary
 

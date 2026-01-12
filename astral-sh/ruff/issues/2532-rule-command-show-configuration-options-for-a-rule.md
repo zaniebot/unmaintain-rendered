@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T12:19:04Z
 updated_at: 2023-02-11T03:11:15Z
 url: https://github.com/astral-sh/ruff/issues/2532
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `rule` command: show configuration options for a rule
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-03 12:19_
+_@ngnpope_
 
 Looking at the current output in v0.0.240, e.g. for `PLR0913`:
 

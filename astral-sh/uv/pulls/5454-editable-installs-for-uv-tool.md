@@ -14,14 +14,14 @@ head: editable-uv-tool
 created_at: 2024-07-25T17:49:24Z
 updated_at: 2024-07-26T20:30:15Z
 url: https://github.com/astral-sh/uv/pull/5454
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Editable installs for `uv tool`
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-25 17:49_
+_@blueraft_
 
 ## Summary
 

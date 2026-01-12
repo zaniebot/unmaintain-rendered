@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-12T08:42:06Z
 updated_at: 2025-08-08T18:24:36Z
 url: https://github.com/astral-sh/uv/issues/10536
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Problem with window/dialog focus and tkinter
 
 ---
 
-_Issue opened by @brot on 2025-01-12 08:42_
+_@brot_
 
 This is somehow a followup to #7036 
 

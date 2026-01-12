@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T05:23:11Z
 updated_at: 2024-11-08T05:50:00Z
 url: https://github.com/astral-sh/uv/issues/8919
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # CI/CD pipelines on Github Actions are breaking
 
 ---
 
-_Issue opened by @vfilter on 2024-11-08 05:23_
+_@vfilter_
 
 All our pipelines on Github Actions just started breaking. We've been installing uv until now like this:
 ```yaml

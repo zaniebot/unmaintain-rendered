@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T09:22:26Z
 updated_at: 2025-08-01T17:08:57Z
 url: https://github.com/astral-sh/ruff/issues/19632
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Got F811 when indirectly importing overload
 
 ---
 
-_Issue opened by @rj-xu on 2025-07-30 09:22_
+_@rj-xu_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-16T07:34:06Z
 updated_at: 2023-01-16T07:53:42Z
 url: https://github.com/astral-sh/ruff/issues/1908
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Enable all rules by default or adding an option to enable all rules
 
 ---
 
-_Issue opened by @zeshuaro on 2023-01-16 07:34_
+_@zeshuaro_
 
 People would have different opinions on this and probably worth a discussion.
 

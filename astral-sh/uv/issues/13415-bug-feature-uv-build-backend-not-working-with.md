@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T20:00:06Z
 updated_at: 2025-05-13T07:53:32Z
 url: https://github.com/astral-sh/uv/issues/13415
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Bug/Feature: UV Build Backend not working with namespace packages
 
 ---
 
-_Issue opened by @badrobit on 2025-05-12 20:00_
+_@badrobit_
 
 ### Summary
 

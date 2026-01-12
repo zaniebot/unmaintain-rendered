@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T18:58:17Z
 updated_at: 2023-02-02T17:36:00Z
 url: https://github.com/astral-sh/ruff/issues/2408
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Query with TCH00[1-3] and `if False`
 
 ---
 
-_Issue opened by @AA-Turner on 2023-01-31 18:58_
+_@AA-Turner_
 
 Ruff version 0.0.238.
 

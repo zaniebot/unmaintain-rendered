@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-14T01:25:58Z
 updated_at: 2025-09-16T04:36:25Z
 url: https://github.com/astral-sh/ty/issues/1181
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # enforce operator functions include the possible right hand version in their input type
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-14 01:25_
+_@KotlinIsland_
 
 ### Summary
 

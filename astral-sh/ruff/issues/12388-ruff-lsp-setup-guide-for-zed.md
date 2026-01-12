@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T17:41:42Z
 updated_at: 2024-07-25T13:09:19Z
 url: https://github.com/astral-sh/ruff/issues/12388
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff LSP Setup Guide for Zed
 
 ---
 
-_Issue opened by @ngriffiths13 on 2024-07-18 17:41_
+_@ngriffiths13_
 
 It would be great to add a Ruff LSP setup guide section for [the Zed IDE](https://zed.dev/) if possible!
 

@@ -14,14 +14,14 @@ head: brent/format-unary-comment
 created_at: 2025-11-12T20:37:01Z
 updated_at: 2025-11-18T15:48:38Z
 url: https://github.com/astral-sh/ruff/pull/21410
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # Fix panic when formatting comments in unary expressions
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-12 20:37_
+_@ntBre_
 
 Summary
 --

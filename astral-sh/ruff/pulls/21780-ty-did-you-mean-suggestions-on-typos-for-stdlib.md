@@ -13,14 +13,14 @@ head: alex/did-you-mean-import
 created_at: 2025-12-03T20:41:22Z
 updated_at: 2025-12-03T20:47:01Z
 url: https://github.com/astral-sh/ruff/pull/21780
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] "Did you mean?" suggestions on typos for stdlib imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-03 20:41_
+_@AlexWaygood_
 
 An easy improvement opportunity I spotted while looking at this area of code for https://github.com/astral-sh/ty/issues/1708
 

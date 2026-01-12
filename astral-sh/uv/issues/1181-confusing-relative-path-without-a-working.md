@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T02:58:56Z
 updated_at: 2024-01-30T05:20:37Z
 url: https://github.com/astral-sh/uv/issues/1181
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Confusing "relative path without a working directory" error
 
 ---
 
-_Issue opened by @zanieb on 2024-01-30 02:58_
+_@zanieb_
 
 e.g.
 

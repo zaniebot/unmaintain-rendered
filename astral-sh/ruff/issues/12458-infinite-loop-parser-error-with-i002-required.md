@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T17:56:14Z
 updated_at: 2024-07-26T18:39:56Z
 url: https://github.com/astral-sh/ruff/issues/12458
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Infinite loop] Parser error with I002 (required imports) and F401 (unused import)
 
 ---
 
-_Issue opened by @AA-Turner on 2024-07-22 17:56_
+_@AA-Turner_
 
 I ran into a fun error:
 

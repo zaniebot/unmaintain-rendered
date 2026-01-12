@@ -13,14 +13,14 @@ head: charlie/string
 created_at: 2024-01-07T15:35:57Z
 updated_at: 2024-01-07T17:36:53Z
 url: https://github.com/astral-sh/ruff/pull/9422
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid extra `String` allocation during parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-07 15:35_
+_@charliermarsh_
 
 ## Summary
 

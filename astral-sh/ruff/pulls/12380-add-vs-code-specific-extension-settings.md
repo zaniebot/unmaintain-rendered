@@ -13,14 +13,14 @@ head: dhruv/vscode-settings
 created_at: 2024-07-18T14:59:05Z
 updated_at: 2024-07-18T15:28:16Z
 url: https://github.com/astral-sh/ruff/pull/12380
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add VS Code specific extension settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-18 14:59_
+_@dhruvmanila_
 
 ## Summary
 

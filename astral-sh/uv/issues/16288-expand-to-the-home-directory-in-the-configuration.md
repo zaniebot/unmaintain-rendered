@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T20:41:43Z
 updated_at: 2025-12-09T01:06:04Z
 url: https://github.com/astral-sh/uv/issues/16288
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Expand `~` to the home directory in the configuration files
 
 ---
 
-_Issue opened by @leodevian on 2025-10-13 20:41_
+_@leodevian_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T11:40:55Z
 updated_at: 2025-03-14T00:39:09Z
 url: https://github.com/astral-sh/uv/issues/11797
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Installation of workspace member's dev dependencies depends on whether the root has a [project] section
 
 ---
 
-_Issue opened by @thorbenk on 2025-02-26 11:40_
+_@thorbenk_
 
 ### Question
 

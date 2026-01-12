@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T23:45:39Z
 updated_at: 2024-02-26T06:07:07Z
 url: https://github.com/astral-sh/ruff/issues/950
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Ignore E501 for long URLs in comments or docstrings
 
 ---
 
-_Issue opened by @brandon-leapyear on 2022-11-28 23:45_
+_@brandon-leapyear_
 
 https://github.com/PyCQA/pycodestyle/blob/1063db8747e7d4e213160458aa3792e5ec05bc10/pycodestyle.py#L278-L285
 

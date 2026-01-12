@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-27T06:50:31Z
 updated_at: 2024-08-27T12:49:59Z
 url: https://github.com/astral-sh/uv/pull/6674
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Fix docs for disabling build isolation with `uv sync`
 
 ---
 
-_Pull request opened by @kabouzeid on 2024-08-27 06:50_
+_@kabouzeid_
 
 Self-explanatory
 

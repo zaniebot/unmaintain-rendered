@@ -12,14 +12,14 @@ head: default-missing-vals-help
 created_at: 2025-08-23T23:41:50Z
 updated_at: 2025-08-25T14:36:48Z
 url: https://github.com/clap-rs/clap/pull/6110
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: Add default missing values of `Arg` to help message
 
 ---
 
-_Pull request opened by @tvercruyssen on 2025-08-23 23:41_
+_@tvercruyssen_
 
 Fixes #6109 
 

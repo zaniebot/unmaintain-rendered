@@ -12,14 +12,14 @@ head: charlie/all
 created_at: 2022-12-09T04:03:18Z
 updated_at: 2022-12-09T04:03:24Z
 url: https://github.com/astral-sh/ruff/pull/1155
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve some __all__ handling cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-09 04:03_
+_@charliermarsh_
 
 Resolves #1153. (We actually already had the code for this, I just forgot about it.)
 

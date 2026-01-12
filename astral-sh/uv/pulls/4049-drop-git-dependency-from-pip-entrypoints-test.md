@@ -13,14 +13,14 @@ head: zb/git-pip-entry
 created_at: 2024-06-05T14:37:17Z
 updated_at: 2024-06-05T15:22:33Z
 url: https://github.com/astral-sh/uv/pull/4049
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:00Z
 ```
 
 # Drop `git` dependency from `pip_entrypoints` test
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 14:37_
+_@zanieb_
 
 There's a release with the changes we want test coverage for now
 

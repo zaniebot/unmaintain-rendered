@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T23:46:58Z
 updated_at: 2023-06-21T23:59:46Z
 url: https://github.com/astral-sh/ruff/issues/5272
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ignore Pydantic classes when evaluating `RUF012`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-21 23:46_
+_@charliermarsh_
 
 See: #5243.
 

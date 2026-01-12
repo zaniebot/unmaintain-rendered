@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-03-31T00:52:40Z
 updated_at: 2020-08-12T14:58:05Z
 url: https://github.com/clap-rs/clap/issues/1771
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # impl Send for App
 
 ---
 
-_Issue opened by @amesgen on 2020-03-31 00:52_
+_@amesgen_
 
 ### Use case
 

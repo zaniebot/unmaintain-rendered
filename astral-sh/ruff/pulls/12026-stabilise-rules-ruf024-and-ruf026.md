@@ -13,14 +13,14 @@ head: ruff-specific-stabilisations
 created_at: 2024-06-25T11:23:51Z
 updated_at: 2024-06-25T15:15:23Z
 url: https://github.com/astral-sh/ruff/pull/12026
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Stabilise rules RUF024 and RUF026
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-25 11:23_
+_@AlexWaygood_
 
 ## Summary
 

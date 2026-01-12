@@ -14,14 +14,14 @@ head: dhruv/soft-keyword
 created_at: 2023-11-28T20:27:21Z
 updated_at: 2023-11-28T20:48:29Z
 url: https://github.com/astral-sh/ruff/pull/8880
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Lexer start of line is false only for `Mode::Expression`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-28 20:27_
+_@dhruvmanila_
 
 ## Summary
 

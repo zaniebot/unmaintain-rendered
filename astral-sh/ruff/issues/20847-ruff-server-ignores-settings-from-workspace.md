@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T15:49:06Z
 updated_at: 2025-10-21T10:05:14Z
 url: https://github.com/astral-sh/ruff/issues/20847
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff server`: Ignores settings from workspace folder if the folder is excluded by a configuration in an ancestor directory
 
 ---
 
-_Issue opened by @lewis6991 on 2025-10-13 15:49_
+_@lewis6991_
 
 ### Summary
 

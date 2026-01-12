@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T20:32:22Z
 updated_at: 2023-01-11T23:24:31Z
 url: https://github.com/astral-sh/ruff/issues/1787
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PIE794 fixer removes wrong code and doens't detect one use case
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 20:32_
+_@spaceone_
 
 ruff 0.0.218
 `ruff --select PIE794 foo.py`

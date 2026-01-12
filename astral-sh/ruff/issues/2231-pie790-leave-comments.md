@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-26T21:54:30Z
 updated_at: 2023-01-26T22:29:14Z
 url: https://github.com/astral-sh/ruff/issues/2231
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PIE790: leave comments?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 21:54_
+_@spaceone_
 
 `PIE790` removed the `pass` statement and the comment.
 ```diff

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T21:36:22Z
 updated_at: 2025-07-16T03:03:27Z
 url: https://github.com/astral-sh/uv/issues/14638
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # uv pip install sentencepiece unexpectedly compiles when prebuilt wheels ought to match
 
 ---
 
-_Issue opened by @doctorpangloss on 2025-07-15 21:36_
+_@doctorpangloss_
 
 ### Summary
 

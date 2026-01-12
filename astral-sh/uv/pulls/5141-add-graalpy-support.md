@@ -13,14 +13,14 @@ head: tim/graalpy
 created_at: 2024-07-17T08:48:47Z
 updated_at: 2024-07-20T08:54:33Z
 url: https://github.com/astral-sh/uv/pull/5141
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Add GraalPy support
 
 ---
 
-_Pull request opened by @timfel on 2024-07-17 08:48_
+_@timfel_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

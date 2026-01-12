@@ -13,14 +13,14 @@ head: dhruv/implicit-str-concat-node
 created_at: 2023-10-12T12:50:32Z
 updated_at: 2023-12-05T20:33:47Z
 url: https://github.com/astral-sh/ruff/pull/7927
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update string nodes for implicit concatenation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-12 12:50_
+_@dhruvmanila_
 
 ## Summary
 

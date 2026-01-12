@@ -14,14 +14,14 @@ head: playground-typo
 created_at: 2025-06-25T00:03:27Z
 updated_at: 2025-06-25T01:09:04Z
 url: https://github.com/astral-sh/ruff/pull/18929
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`docs`] Typo fix for playground
 
 ---
 
-_Pull request opened by @danparizher on 2025-06-25 00:03_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

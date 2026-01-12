@@ -12,14 +12,14 @@ head: charlie/exe
 created_at: 2023-02-24T22:52:45Z
 updated_at: 2023-02-24T22:55:34Z
 url: https://github.com/astral-sh/ruff/pull/3218
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid EXE001 and EXE002 errors from stdin input
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 22:52_
+_@charliermarsh_
 
 Slightly better would be to pass in a `filename` and `filepath` separately, and only run these if we have a `filepath`. As-is, it's a bit strange because we might flag these if a corresponding file exists on disk with the same name as `--stdin-filename` -- which could be a feature, but is arguably a bug.
 

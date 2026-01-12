@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-08-15T19:19:34Z
 updated_at: 2025-08-15T21:06:38Z
 url: https://github.com/astral-sh/uv/pull/15313
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Update cli.md to use proper uv cache subcommand "clean"
 
 ---
 
-_Pull request opened by @NewDestinyDan on 2025-08-15 19:19_
+_@NewDestinyDan_
 
 Correct typo. "uv cache clear" is not a command.
 

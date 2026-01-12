@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T10:44:44Z
 updated_at: 2025-04-05T21:39:28Z
 url: https://github.com/astral-sh/ruff/issues/17198
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # How to disable lint fixes in region? Should `# fmt: off` disable lint fixes?
 
 ---
 
-_Issue opened by @kaddkaka on 2025-04-04 10:44_
+_@kaddkaka_
 
 ### Question
 

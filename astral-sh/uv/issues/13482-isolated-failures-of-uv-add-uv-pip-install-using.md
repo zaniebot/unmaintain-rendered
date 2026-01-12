@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T03:11:47Z
 updated_at: 2025-05-22T17:17:47Z
 url: https://github.com/astral-sh/uv/issues/13482
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Isolated failures of uv add / uv pip install using private repo
 
 ---
 
-_Issue opened by @mhscott64 on 2025-05-16 03:11_
+_@mhscott64_
 
 ### Summary
 

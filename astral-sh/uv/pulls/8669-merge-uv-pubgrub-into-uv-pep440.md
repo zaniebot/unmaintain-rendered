@@ -12,14 +12,14 @@ head: konsti/version-ranges-2
 created_at: 2024-10-29T16:50:46Z
 updated_at: 2024-10-29T19:15:20Z
 url: https://github.com/astral-sh/uv/pull/8669
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Merge uv-pubgrub into uv-pep440
 
 ---
 
-_Pull request opened by @konstin on 2024-10-29 16:50_
+_@konstin_
 
 Enabled by #8667 and https://github.com/pubgrub-rs/pubgrub/pull/262, we can remove the uv-pubgrub crate and move the conversion between pep440 specifiers and version ranges directly into pep440.
 

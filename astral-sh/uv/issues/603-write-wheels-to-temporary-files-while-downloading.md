@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-09T16:19:16Z
 updated_at: 2023-12-10T00:11:32Z
 url: https://github.com/astral-sh/uv/issues/603
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Write wheels to temporary files while downloading
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-09 16:19_
+_@charliermarsh_
 
 This ensures that we don't store incomplete downloads in the cache.
 

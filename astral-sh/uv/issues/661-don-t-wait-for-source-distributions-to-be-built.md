@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-15T12:55:59Z
 updated_at: 2024-01-03T21:50:41Z
 url: https://github.com/astral-sh/uv/issues/661
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Don't wait for source distributions to be built
 
 ---
 
-_Issue opened by @konstin on 2023-12-15 12:55_
+_@konstin_
 
 With the `scripts/requirements/transformers-extras.in` example on python 3.10 on linux, the resolution is often waiting for a specific source distribution build to continue, even if we could start other builds in parallel already. We should investigate ways to do as much as possible before a source distribution build finishes.
 

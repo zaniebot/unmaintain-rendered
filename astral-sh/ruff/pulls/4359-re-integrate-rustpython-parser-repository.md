@@ -13,14 +13,14 @@ head: rustpython
 created_at: 2023-05-10T19:48:26Z
 updated_at: 2023-05-11T09:11:43Z
 url: https://github.com/astral-sh/ruff/pull/4359
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Re-integrate RustPython parser repository
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-10 19:48_
+_@youknowone_
 
 _No description provided._
 

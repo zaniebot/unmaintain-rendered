@@ -13,14 +13,14 @@ head: konsti/clear-progress-bar
 created_at: 2024-10-04T10:55:07Z
 updated_at: 2024-10-04T11:15:28Z
 url: https://github.com/astral-sh/uv/pull/7921
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Clear publish progress bar on retry
 
 ---
 
-_Pull request opened by @konstin on 2024-10-04 10:55_
+_@konstin_
 
 Previously, we would add broken progress bars.
 

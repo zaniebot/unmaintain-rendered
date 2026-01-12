@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T10:43:12Z
 updated_at: 2024-04-25T15:12:02Z
 url: https://github.com/astral-sh/uv/issues/3060
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Allow the `--python` flag in `uv pip install` to take the location of a venv
 
 ---
 
-_Issue opened by @pfmoore on 2024-04-16 10:43_
+_@pfmoore_
 
 Pip allows you to install into a given virtual environment using `pip install --python /path/to/.venv ...`. This is a minor convenince feature because it lets you specify the environment without needing to consider the platform difference of where the interpreter is located `bin/python` or `Scripts/python.exe`
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T16:33:28Z
 updated_at: 2024-07-22T10:52:32Z
 url: https://github.com/astral-sh/ruff/issues/12408
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Setup `--preview` flag for neovim lsp
 
 ---
 
-_Issue opened by @eltbus on 2024-07-19 16:33_
+_@eltbus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

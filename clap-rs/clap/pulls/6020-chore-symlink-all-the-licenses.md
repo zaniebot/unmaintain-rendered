@@ -12,14 +12,14 @@ head: pavan/tspxmqoqosvy
 created_at: 2025-05-30T13:27:50Z
 updated_at: 2025-05-30T20:47:18Z
 url: https://github.com/clap-rs/clap/pull/6020
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: Symlink all the licenses
 
 ---
 
-_Pull request opened by @pksunkara on 2025-05-30 13:27_
+_@pksunkara_
 
 Follow-up to #5895 
 

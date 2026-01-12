@@ -12,14 +12,14 @@ head: simple-tokenizer-reorder-tokens
 created_at: 2024-02-25T17:46:16Z
 updated_at: 2024-02-29T13:18:38Z
 url: https://github.com/astral-sh/ruff/pull/10120
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Perf: Reorder simple tokenizer match branches
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-25 17:46_
+_@MichaReiser_
 
 _No description provided._
 

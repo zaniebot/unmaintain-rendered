@@ -13,14 +13,14 @@ head: charlie/dynamic-extras
 created_at: 2024-10-10T11:32:53Z
 updated_at: 2024-10-10T14:01:21Z
 url: https://github.com/astral-sh/uv/pull/8083
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Treat resolver failures as fatal in lockfile validation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 11:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-20T18:15:01Z
 updated_at: 2025-05-21T03:16:40Z
 url: https://github.com/astral-sh/ruff/issues/18229
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Prefer copy.replace over dataclasses.replace (3.13)
 
 ---
 
-_Issue opened by @Jeremiah-England on 2025-05-20 18:15_
+_@Jeremiah-England_
 
 ### Summary
 

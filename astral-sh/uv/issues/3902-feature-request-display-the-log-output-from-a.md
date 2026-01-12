@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-29T12:47:11Z
 updated_at: 2024-05-29T13:26:34Z
 url: https://github.com/astral-sh/uv/issues/3902
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Feature request: display the log output from a currently-running build backend.
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-05-29 12:47_
+_@patrick-kidger_
 
 If I understand correctly, then I think this `.output`:
 

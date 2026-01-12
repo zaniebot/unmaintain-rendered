@@ -13,14 +13,14 @@ head: konsti/fix-ecosystem-tests-uv-lock
 created_at: 2025-01-20T10:25:59Z
 updated_at: 2025-01-20T10:34:47Z
 url: https://github.com/astral-sh/uv/pull/10775
-synced_at: 2026-01-10T11:45:09Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Ignore lockfile in ecosystem tests
 
 ---
 
-_Pull request opened by @konstin on 2025-01-20 10:25_
+_@konstin_
 
 The ecosystem tests can fail when there is a (gitignored) `uv.lock` in `ecosystem/<name>/uv.lock`.
 

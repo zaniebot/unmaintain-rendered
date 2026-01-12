@@ -13,14 +13,14 @@ head: david/expand-red-knot-corpus
 created_at: 2024-11-15T12:29:52Z
 updated_at: 2024-11-15T16:09:17Z
 url: https://github.com/astral-sh/ruff/pull/14360
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Expand test corpus
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-15 12:29_
+_@sharkdp_
 
 ## Summary
 

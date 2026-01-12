@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T16:30:11Z
 updated_at: 2025-09-18T20:08:27Z
 url: https://github.com/astral-sh/ruff/issues/10009
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature Request: Custom allowlist for Magic Numbers (PLR2004)
 
 ---
 
-_Issue opened by @Spectre5 on 2024-02-16 16:30_
+_@Spectre5_
 
 PLR2004 has a few allowed numbers including '', 0, and 1.  #9964 has fixed a bug so that 0.0 and 1.0 are also allowed.  There is [already](https://docs.astral.sh/ruff/settings/#lint_pylint_allow-magic-value-types) an option to ignore certain types of variables from the check.  I'd like to request an option to extend the allowlist.  For example, I have a library where 2 (and 2.0) are really common and I don't want to use a global variable for it.  So I ether need many noqa comments or to disable the check entirely.
 

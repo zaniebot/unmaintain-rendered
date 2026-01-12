@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-01T10:09:20Z
 updated_at: 2023-12-04T23:32:52Z
 url: https://github.com/astral-sh/ruff/issues/8945
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # feature request: allow PLR0913 in `@override`n methods
 
 ---
 
-_Issue opened by @ZeeD on 2023-12-01 10:09_
+_@ZeeD_
 
 Basically same scenario of #8867 - in case of `@override` there is nothing I can do to simplify the signature of the method, so please ignore [too-many-arguments (PLR0913)](https://docs.astral.sh/ruff/rules/too-many-arguments/) checks.
 

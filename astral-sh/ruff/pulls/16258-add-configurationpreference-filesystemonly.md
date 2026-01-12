@@ -13,14 +13,14 @@ head: ls-filesystem-only
 created_at: 2025-02-19T15:27:13Z
 updated_at: 2025-03-14T09:17:58Z
 url: https://github.com/astral-sh/ruff/pull/16258
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add `ConfigurationPreference::FilesystemOnly`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-19 15:27_
+_@InSyncWithFoo_
 
 ## Summary
 

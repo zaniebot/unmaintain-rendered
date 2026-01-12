@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T18:02:07Z
 updated_at: 2024-06-28T12:09:27Z
 url: https://github.com/astral-sh/uv/issues/4592
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Support Environment Variable Expansion in Version Specifiers
 
 ---
 
-_Issue opened by @akan72 on 2024-06-27 18:02_
+_@akan72_
 
 Specifying the versions of related packages via envvar would be really useful for us! 
 

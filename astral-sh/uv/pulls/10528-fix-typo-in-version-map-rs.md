@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-01-11T23:28:27Z
 updated_at: 2025-01-11T23:39:47Z
 url: https://github.com/astral-sh/uv/pull/10528
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Fix typo in `version_map.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 23:28_
+_@charliermarsh_
 
 _No description provided._
 

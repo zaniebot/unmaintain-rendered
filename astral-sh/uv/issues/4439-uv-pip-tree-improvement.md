@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-21T19:55:47Z
 updated_at: 2024-07-01T21:24:42Z
 url: https://github.com/astral-sh/uv/issues/4439
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv pip tree` improvement
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-21 19:55_
+_@ibraheemdev_
 
 Some additional features that did not land as part of https://github.com/astral-sh/uv/pull/3859:
 - [ ] Proper handling of extras

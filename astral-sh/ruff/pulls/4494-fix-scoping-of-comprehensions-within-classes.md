@@ -13,14 +13,14 @@ head: charlie/comprehension
 created_at: 2023-05-18T14:13:52Z
 updated_at: 2023-05-18T14:53:09Z
 url: https://github.com/astral-sh/ruff/pull/4494
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix scoping of comprehensions within classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 14:13_
+_@charliermarsh_
 
 ## Summary
 

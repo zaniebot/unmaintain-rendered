@@ -13,14 +13,14 @@ head: graphviz
 created_at: 2023-11-17T14:09:08Z
 updated_at: 2023-11-17T18:16:25Z
 url: https://github.com/astral-sh/uv/pull/443
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 #  Add graphviz output to puffin-dev resolve-cli
 
 ---
 
-_Pull request opened by @konstin on 2023-11-17 14:09_
+_@konstin_
 
  I added output in graphviz DOT format to `puffin-dev resolve-cli` to help with debugging resolutions. This requires tracking the requested ranges in the graph. I also fixed the direction of the graph.
 

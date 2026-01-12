@@ -13,14 +13,14 @@ head: david/type-system-reference
 created_at: 2025-12-13T10:40:32Z
 updated_at: 2025-12-15T13:13:30Z
 url: https://github.com/astral-sh/ty/pull/1876
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Type system reference
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-13 10:40_
+_@sharkdp_
 
 A document in this style is probably waaay too detailed for users, but it's sort of helpful for us?
 

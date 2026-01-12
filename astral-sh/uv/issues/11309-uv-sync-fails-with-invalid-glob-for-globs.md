@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T09:39:32Z
 updated_at: 2025-02-07T10:24:07Z
 url: https://github.com/astral-sh/uv/issues/11309
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # `uv sync ` fails with "Invalid glob" for globs starting with `**/` when run in `/`
 
 ---
 
-_Issue opened by @danielgafni on 2025-02-07 09:39_
+_@danielgafni_
 
 ### Summary
 

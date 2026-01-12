@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T14:44:14Z
 updated_at: 2025-08-01T14:49:26Z
 url: https://github.com/astral-sh/uv/issues/13495
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Wheel building fails on MacOS due to space in virtualenv path
 
 ---
 
-_Issue opened by @jnns on 2025-05-16 14:44_
+_@jnns_
 
 ### Summary
 

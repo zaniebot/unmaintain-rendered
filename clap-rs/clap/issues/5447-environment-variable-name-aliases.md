@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-08T09:11:18Z
 updated_at: 2025-10-16T21:13:55Z
 url: https://github.com/clap-rs/clap/issues/5447
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Environment variable name aliases
 
 ---
 
-_Issue opened by @Aeron on 2024-04-08 09:11_
+_@Aeron_
 
 ### Please complete the following tasks
 

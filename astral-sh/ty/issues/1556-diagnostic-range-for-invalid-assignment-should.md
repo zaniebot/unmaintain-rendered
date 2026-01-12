@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T14:10:48Z
 updated_at: 2025-11-18T15:19:01Z
 url: https://github.com/astral-sh/ty/issues/1556
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Diagnostic range for `invalid-assignment` should only cover the right-hand side
 
 ---
 
-_Issue opened by @lucach on 2025-11-14 14:10_
+_@lucach_
 
 ### Summary
 

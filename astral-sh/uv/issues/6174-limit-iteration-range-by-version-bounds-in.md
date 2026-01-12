@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T19:48:36Z
 updated_at: 2025-01-02T01:21:38Z
 url: https://github.com/astral-sh/uv/issues/6174
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Limit iteration range by version bounds in candidate selector
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-17 19:48_
+_@charliermarsh_
 
 When searching for candidate versions, we have a `Range`, and a `BTreeMap`. We iterate over the whole `BTreeMap` in order, ignoring versions that are outside of the given range. Would it be more efficient to apply `BTreeMap::range` on the iterator directly, so that we can skip over entire sections in log(N) time, rather than linear time?
 

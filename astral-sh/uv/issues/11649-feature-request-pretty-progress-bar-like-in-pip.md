@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T00:03:34Z
 updated_at: 2025-03-14T00:40:17Z
 url: https://github.com/astral-sh/uv/issues/11649
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # [feature request] pretty progress bar like in pip
 
 ---
 
-_Issue opened by @gmankab on 2025-02-20 00:03_
+_@gmankab_
 
 ### Summary
 

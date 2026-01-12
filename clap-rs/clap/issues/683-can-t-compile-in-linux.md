@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-06T10:37:30Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/683
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Can't compile in linux
 
 ---
 
-_Issue opened by @laishulu on 2016-10-06 10:37_
+_@laishulu_
 
 output of `uname -a`
 

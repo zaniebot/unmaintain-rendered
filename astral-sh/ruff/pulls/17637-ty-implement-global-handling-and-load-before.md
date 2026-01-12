@@ -13,14 +13,14 @@ head: brent/simple-red-knot-globals
 created_at: 2025-04-25T21:33:12Z
 updated_at: 2025-05-08T14:30:05Z
 url: https://github.com/astral-sh/ruff/pull/17637
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [ty] Implement `global` handling and `load-before-global-declaration` syntax error
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-25 21:33_
+_@ntBre_
 
 Summary
 --

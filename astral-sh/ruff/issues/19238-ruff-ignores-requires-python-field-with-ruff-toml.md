@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T16:41:06Z
 updated_at: 2025-07-15T18:48:07Z
 url: https://github.com/astral-sh/ruff/issues/19238
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff ignores requires-python field with `ruff.toml` in %userprofile% on Windows
 
 ---
 
-_Issue opened by @orishamir on 2025-07-09 16:41_
+_@orishamir_
 
 ### Summary
 

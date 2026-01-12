@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-04T20:36:08Z
 updated_at: 2022-04-13T08:55:48Z
 url: https://github.com/clap-rs/clap/issues/3403
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # short `-h` conflicts with help rather than overwriting it
 
 ---
 
-_Issue opened by @steveklabnik on 2022-02-04 20:36_
+_@steveklabnik_
 
 ### Please complete the following tasks
 

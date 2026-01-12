@@ -13,14 +13,14 @@ head: ag/undo-lto-for-profiling
 created_at: 2024-08-09T13:28:14Z
 updated_at: 2024-08-09T13:34:54Z
 url: https://github.com/astral-sh/uv/pull/5955
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # cargo: straighten out LTO configuration
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-09 13:28_
+_@BurntSushi_
 
 This PR tweaks the change made in #5904 so that the `profiling` Cargo
 profile does _not_ have LTO enabled. With LTO enabled, compile times

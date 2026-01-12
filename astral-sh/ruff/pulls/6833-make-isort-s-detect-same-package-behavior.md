@@ -14,14 +14,14 @@ head: charlie/same-module
 created_at: 2023-08-24T01:34:07Z
 updated_at: 2023-08-24T18:09:28Z
 url: https://github.com/astral-sh/ruff/pull/6833
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Make isort's `detect-same-package` behavior configurable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-24 01:34_
+_@charliermarsh_
 
 ## Summary
 

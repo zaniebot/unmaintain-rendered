@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-10T09:15:40Z
 updated_at: 2024-01-11T09:00:46Z
 url: https://github.com/astral-sh/ruff/issues/9454
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Also check comprehensions with B007
 
 ---
 
-_Issue opened by @hoxbro on 2024-01-10 09:15_
+_@hoxbro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

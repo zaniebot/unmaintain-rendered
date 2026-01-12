@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T11:42:39Z
 updated_at: 2023-12-04T08:54:49Z
 url: https://github.com/astral-sh/uv/issues/197
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Tool to compare resolutions again pip-tools
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 11:42_
+_@konstin_
 
 At the moment, we have no way of checking that our resolution are correct
 

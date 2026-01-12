@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T03:34:11Z
 updated_at: 2025-10-30T01:21:25Z
 url: https://github.com/astral-sh/uv/issues/15763
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Why does uv always automatically switch to Python 3.11?
 
 ---
 
-_Issue opened by @ConanZH429 on 2025-09-10 03:34_
+_@ConanZH429_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T14:41:33Z
 updated_at: 2025-01-27T19:24:49Z
 url: https://github.com/astral-sh/uv/issues/10986
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Fish Shell Activation Script Compatibility Issue
 
 ---
 
-_Issue opened by @CedricRaison on 2025-01-27 14:41_
+_@CedricRaison_
 
 ### Summary
 

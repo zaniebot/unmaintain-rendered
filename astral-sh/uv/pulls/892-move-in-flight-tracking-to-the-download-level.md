@@ -13,14 +13,14 @@ head: charlie/unzip
 created_at: 2024-01-12T03:34:21Z
 updated_at: 2024-01-12T08:52:24Z
 url: https://github.com/astral-sh/uv/pull/892
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Move in-flight tracking to the download level
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 03:34_
+_@charliermarsh_
 
 ## Summary
 

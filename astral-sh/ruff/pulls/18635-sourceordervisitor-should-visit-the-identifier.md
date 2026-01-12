@@ -13,14 +13,14 @@ head: main
 created_at: 2025-06-11T20:31:15Z
 updated_at: 2025-06-12T06:20:14Z
 url: https://github.com/astral-sh/ruff/pull/18635
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # `SourceOrderVisitor` should visit the `Identifier` part of the `PatternKeyword` node
 
 ---
 
-_Pull request opened by @grievejia on 2025-06-11 20:31_
+_@grievejia_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

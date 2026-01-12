@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-01T17:53:51Z
 updated_at: 2025-10-07T19:06:45Z
 url: https://github.com/astral-sh/ruff/issues/8953
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Logging which files were changed when running `ruff format .` ?
 
 ---
 
-_Issue opened by @thvasilo on 2023-12-01 17:53_
+_@thvasilo_
 
 Hi team, thanks for the great tool.
 

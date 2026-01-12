@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T15:48:09Z
 updated_at: 2025-06-20T16:30:20Z
 url: https://github.com/astral-sh/uv/issues/14162
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # "uv pip install" upgrade single package differs from pip
 
 ---
 
-_Issue opened by @ewohnlich on 2025-06-20 15:48_
+_@ewohnlich_
 
 ### Question
 

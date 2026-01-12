@@ -15,14 +15,14 @@ head: dhruv/f-string-format-spec-pre-312
 created_at: 2024-11-27T05:50:20Z
 updated_at: 2024-11-27T07:49:36Z
 url: https://github.com/astral-sh/ruff/pull/14625
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Avoid invalid syntax for format-spec with quotes for all Python versions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 05:50_
+_@dhruvmanila_
 
 ## Summary
 

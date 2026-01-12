@@ -14,14 +14,14 @@ head: konsti/build-backend-namespaces
 created_at: 2025-06-04T13:25:29Z
 updated_at: 2025-06-19T10:54:12Z
 url: https://github.com/astral-sh/uv/pull/13833
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Build backend: Support namespace packages
 
 ---
 
-_Pull request opened by @konstin on 2025-06-04 13:25_
+_@konstin_
 
 Unlike regular packages, specifying all `__init__.py` directories for a namespace package would be very verbose There is e.g. https://github.com/python-poetry/poetry/tree/main/src/poetry, which has 18 modules, or https://github.com/googleapis/api-common-protos which is inconsistently nested. For both the Google Cloud SDK, there are both packages with a single module and those with complex structures, with many having multiple modules due to versioning through `<module>_v1` versioning. The Azure SDK seems to use one module per package (it's not explicitly documented but seems to follow from the process in https://azure.github.io/azure-sdk/python_design.html#azure-sdk-distribution-packages and https://github.com/Azure/azure-sdk-for-python/blob/ccb0e03a3de748f3aabf44be94776ba37e55791f/doc/dev/packaging.md).
 

@@ -13,14 +13,14 @@ head: zb/readme-install-ii
 created_at: 2024-06-06T16:31:15Z
 updated_at: 2024-06-06T17:57:57Z
 url: https://github.com/astral-sh/uv/pull/4105
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Add install link for specific version to README
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-06 16:31_
+_@zanieb_
 
 More minimal version of https://github.com/astral-sh/uv/pull/4092
 

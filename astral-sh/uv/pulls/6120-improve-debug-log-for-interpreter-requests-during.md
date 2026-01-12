@@ -14,14 +14,14 @@ head: zb/interpreter-request
 created_at: 2024-08-15T16:49:28Z
 updated_at: 2024-08-16T01:31:00Z
 url: https://github.com/astral-sh/uv/pull/6120
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Improve debug log for interpreter requests during project commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 16:49_
+_@zanieb_
 
 While it's slightly more convenient to log this where we were, it was pretty unhelpful e.g.
 

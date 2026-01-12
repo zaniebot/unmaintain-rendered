@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T18:22:40Z
 updated_at: 2025-02-24T21:35:09Z
 url: https://github.com/astral-sh/uv/issues/11751
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Best way to achieve "cascading dependencies" that are all resolved together
 
 ---
 
-_Issue opened by @matthawkins90 on 2025-02-24 18:22_
+_@matthawkins90_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T06:03:09Z
 updated_at: 2024-08-09T08:04:07Z
 url: https://github.com/astral-sh/uv/issues/5398
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Invalid non-resolution with `uv lock`
 
 ---
 
-_Issue opened by @JP-Ellis on 2024-07-24 06:03_
+_@JP-Ellis_
 
 ## Summary
 

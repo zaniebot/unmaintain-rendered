@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T03:29:54Z
 updated_at: 2025-07-25T21:52:59Z
 url: https://github.com/astral-sh/ruff/issues/19519
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Allow `logging.critical` to bypass `BLE001`
 
 ---
 
-_Issue opened by @clockback on 2025-07-24 03:29_
+_@clockback_
 
 ### Summary
 

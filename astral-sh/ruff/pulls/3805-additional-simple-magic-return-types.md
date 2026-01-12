@@ -12,14 +12,14 @@ head: new-magic-method-return-types
 created_at: 2023-03-30T03:15:26Z
 updated_at: 2023-03-30T15:11:33Z
 url: https://github.com/astral-sh/ruff/pull/3805
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Additional simple magic return types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-30 03:15_
+_@dhruvmanila_
 
 Refer: https://github.com/JelleZijlstra/autotyping/pull/61
 

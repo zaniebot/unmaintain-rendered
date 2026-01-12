@@ -13,14 +13,14 @@ head: zb/fix-update
 created_at: 2024-03-24T18:01:04Z
 updated_at: 2024-03-24T18:02:09Z
 url: https://github.com/zanieb/rooster/pull/39
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Install rooster before updating changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-24 18:01_
+_@zanieb_
 
 _No description provided._
 

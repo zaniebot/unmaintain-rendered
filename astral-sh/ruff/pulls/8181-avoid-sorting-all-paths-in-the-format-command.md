@@ -14,14 +14,14 @@ head: charlie/sort
 created_at: 2023-10-24T20:09:16Z
 updated_at: 2023-10-25T08:45:57Z
 url: https://github.com/astral-sh/ruff/pull/8181
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid sorting all paths in the format command
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-24 20:09_
+_@charliermarsh_
 
 ## Summary
 

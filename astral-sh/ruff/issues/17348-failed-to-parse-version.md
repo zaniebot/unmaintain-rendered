@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T08:34:15Z
 updated_at: 2025-04-11T08:49:53Z
 url: https://github.com/astral-sh/ruff/issues/17348
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Failed to parse version
 
 ---
 
-_Issue opened by @timthedevguy on 2025-04-11 08:34_
+_@timthedevguy_
 
 ### Summary
 

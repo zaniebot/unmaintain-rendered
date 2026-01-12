@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-20T10:38:30Z
 updated_at: 2023-07-10T01:33:07Z
 url: https://github.com/astral-sh/ruff/issues/3054
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # new rule for sorted keyword arguments
 
 ---
 
-_Issue opened by @spaceone on 2023-02-20 10:38_
+_@spaceone_
 
 A new rule would be nice which can sort(autofix) keyword arguments in a consistent way - best in the order in which the function declares them:
 ```python

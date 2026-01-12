@@ -15,14 +15,14 @@ head: fix-18908
 created_at: 2025-06-25T02:33:36Z
 updated_at: 2025-06-30T14:56:27Z
 url: https://github.com/astral-sh/ruff/pull/18930
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`pydocstyle`] Fix D413 infinite loop for parenthesized docstring
 
 ---
 
-_Pull request opened by @danparizher on 2025-06-25 02:33_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

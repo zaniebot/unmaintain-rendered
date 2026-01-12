@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-08-09T21:57:39Z
 updated_at: 2022-09-13T12:20:38Z
 url: https://github.com/clap-rs/clap/issues/4052
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Ensure v3 deprecation messages are useful for migrating people
 
 ---
 
-_Issue opened by @epage on 2022-08-09 21:57_
+_@epage_
 
 Inspired by [a reddit thread](https://www.reddit.com/r/rust/comments/wgy6mr/new_alternative_for_clap_declarative_basic_and/ijbfpkl/?context=3). in preparing to release v4, we need to audit the deprecation messages in v3 to ensure they are sufficient for migrating people up so we can use it as a guided migration guide and focus the actual migration guide on the more subtle issues that aren't as easily handled
 

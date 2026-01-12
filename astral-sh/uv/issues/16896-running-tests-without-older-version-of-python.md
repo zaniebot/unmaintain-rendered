@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-30T14:37:17Z
 updated_at: 2025-11-30T15:22:58Z
 url: https://github.com/astral-sh/uv/issues/16896
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Running tests without older version of python induces error
 
 ---
 
-_Issue opened by @jimmy312495 on 2025-11-30 14:37_
+_@jimmy312495_
 
 ### Summary
 

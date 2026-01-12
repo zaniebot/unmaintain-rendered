@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T18:40:10Z
 updated_at: 2025-12-19T01:09:16Z
 url: https://github.com/astral-sh/ty/issues/1585
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # support try/except imports of typing special forms
 
 ---
 
-_Issue opened by @carljm on 2025-11-18 18:40_
+_@carljm_
 
 Some projects (at least graphql-core) import typing special forms like this, rather than using `sys.version_info` checks:
 

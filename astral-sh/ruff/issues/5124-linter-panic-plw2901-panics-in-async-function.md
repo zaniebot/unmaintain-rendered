@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-15T18:23:11Z
 updated_at: 2023-06-15T19:00:20Z
 url: https://github.com/astral-sh/ruff/issues/5124
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Linter panic] PLW2901 panics in async function
 
 ---
 
-_Issue opened by @konstin on 2023-06-15 18:23_
+_@konstin_
 
 The following code panics in rule PLW2901 redefined-loop-name:
 ```python

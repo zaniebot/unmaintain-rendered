@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-02T11:09:01Z
 updated_at: 2025-02-12T18:00:42Z
 url: https://github.com/astral-sh/uv/issues/11163
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # 'Invalid cross-device link (os error 18)' during 'ruff' installation in Docker container
 
 ---
 
-_Issue opened by @heso on 2025-02-02 11:09_
+_@heso_
 
 ### Problem:
 When trying to install dependencies mentioned in the dependencies section (only ruff at the moment) using:

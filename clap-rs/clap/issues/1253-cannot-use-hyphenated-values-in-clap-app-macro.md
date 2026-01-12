@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-18T19:09:44Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1253
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cannot use hyphenated values in clap_app! macro
 
 ---
 
-_Issue opened by @mattgathu on 2018-04-18 19:09_
+_@mattgathu_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

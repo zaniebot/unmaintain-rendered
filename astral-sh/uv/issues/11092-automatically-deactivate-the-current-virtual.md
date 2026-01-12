@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-30T12:59:42Z
 updated_at: 2025-01-31T11:15:30Z
 url: https://github.com/astral-sh/uv/issues/11092
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # automatically deactivate the current virtual environment when switching python versions
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-30 12:59_
+_@DetachHead_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/descriptor-union
 created_at: 2025-12-19T02:44:13Z
 updated_at: 2025-12-31T00:16:18Z
 url: https://github.com/astral-sh/ruff/pull/22067
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Add support for descriptor checks with unions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-19 02:44_
+_@charliermarsh_
 
 ## Summary
 

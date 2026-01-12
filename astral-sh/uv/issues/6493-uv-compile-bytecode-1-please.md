@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T05:12:27Z
 updated_at: 2024-08-23T18:05:34Z
 url: https://github.com/astral-sh/uv/issues/6493
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # UV_COMPILE_BYTECODE=1 please? 🥺
 
 ---
 
-_Issue opened by @hynek on 2024-08-23 05:12_
+_@hynek_
 
 Hello, it is I again, your obnoxious Docker user!
 

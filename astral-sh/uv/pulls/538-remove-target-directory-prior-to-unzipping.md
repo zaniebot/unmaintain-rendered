@@ -13,14 +13,14 @@ head: charlie/rm
 created_at: 2023-12-04T05:12:53Z
 updated_at: 2023-12-04T05:18:46Z
 url: https://github.com/astral-sh/uv/pull/538
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Remove target directory prior to unzipping
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 05:12_
+_@charliermarsh_
 
 ## Summary
 

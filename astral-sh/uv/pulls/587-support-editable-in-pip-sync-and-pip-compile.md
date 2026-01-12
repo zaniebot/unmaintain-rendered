@@ -12,14 +12,14 @@ head: konstin/editable-in-pip-sync
 created_at: 2023-12-07T21:27:57Z
 updated_at: 2023-12-17T04:19:10Z
 url: https://github.com/astral-sh/uv/pull/587
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Support editable in pip-sync and pip-compile
 
 ---
 
-_Pull request opened by @konstin on 2023-12-07 21:27_
+_@konstin_
 
 Support `-e path/do/dir` in pip-sync and and pip-compile.
 

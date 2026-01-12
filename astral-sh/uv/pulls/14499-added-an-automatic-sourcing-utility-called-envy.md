@@ -11,14 +11,14 @@ head: main
 created_at: 2025-07-07T22:06:51Z
 updated_at: 2025-08-02T00:18:46Z
 url: https://github.com/astral-sh/uv/pull/14499
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Added an automatic sourcing utility called "Envy" to CLI 
 
 ---
 
-_Pull request opened by @DragonflyRobotics on 2025-07-07 22:06_
+_@DragonflyRobotics_
 
 ## Summary
 Firstly, I am a daily user of `uv` and enjoy its all encompassing features. I am a first time contributor to this project so please let me know of any modifications, improvements, or suggestions. I always struggled sourcing my environment since many projects had multiple environments, often with different names and locations. Sourcing them was always a struggle. I made "Envy" as a CLI tool to automatically find environments in the current directory (recursively) and auto source them. If there are multiple, it will open a FZF session to help the user quickly select one making the development process simpler. Considering that `uv` is a broad spectrum Python tool, I thought it would be best utilized as a component of `uv`. 

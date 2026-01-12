@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T17:00:13Z
 updated_at: 2025-09-24T17:00:13Z
 url: https://github.com/astral-sh/uv/issues/16017
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # rocm7.0 and rocm7.9 should be supported as torch backends, you might also need rocm7.0+gfx110X as a label
 
 ---
 
-_Issue opened by @doctorpangloss on 2025-09-24 17:00_
+_@doctorpangloss_
 
 ### Summary
 

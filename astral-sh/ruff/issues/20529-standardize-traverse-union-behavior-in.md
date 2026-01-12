@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-23T06:22:13Z
 updated_at: 2025-09-23T12:29:16Z
 url: https://github.com/astral-sh/ruff/issues/20529
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Standardize traverse union behavior in `TypeChecker`s.
 
 ---
 
-_Issue opened by @PieterCK on 2025-09-23 06:22_
+_@PieterCK_
 
 Some `TypeChecker`s `match_annotation` implementation doesn't traverse unions, while others do.
 

@@ -14,14 +14,14 @@ head: ibraheem/project-guide
 created_at: 2024-07-18T18:41:32Z
 updated_at: 2024-07-19T00:45:27Z
 url: https://github.com/astral-sh/uv/pull/5195
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Write project guide
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-18 18:41_
+_@ibraheemdev_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-07-06T01:21:16Z
 updated_at: 2018-08-02T03:29:40Z
 url: https://github.com/clap-rs/clap/issues/145
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # properly handle '\n' in argument help messages
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-06 01:21_
+_@kbknapp_
 
 `\n` should be translated to `\n\t\t\t` or whatever number of tabs need to be used so as to properly align with the preceding line.
 

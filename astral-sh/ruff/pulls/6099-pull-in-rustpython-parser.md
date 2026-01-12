@@ -13,14 +13,14 @@ head: pull-in-rust-python
 created_at: 2023-07-26T16:55:07Z
 updated_at: 2023-07-27T09:46:03Z
 url: https://github.com/astral-sh/ruff/pull/6099
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Pull in RustPython parser
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-26 16:55_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

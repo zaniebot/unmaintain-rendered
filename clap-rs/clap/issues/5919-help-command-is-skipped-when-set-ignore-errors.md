@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-19T17:48:59Z
 updated_at: 2025-02-20T14:06:54Z
 url: https://github.com/clap-rs/clap/issues/5919
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `help` command is skipped when set `ignore_errors(true)` on the command.
 
 ---
 
-_Issue opened by @epage on 2025-02-19 17:48_
+_@epage_
 
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/5917

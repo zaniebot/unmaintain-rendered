@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T05:23:44Z
 updated_at: 2024-07-18T02:05:18Z
 url: https://github.com/astral-sh/uv/issues/4914
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv python install` uses debug error
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-09 05:23_
+_@charliermarsh_
 
 ```
 ❯ cargo run python install 3.12.4

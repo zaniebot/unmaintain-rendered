@@ -14,14 +14,14 @@ head: format-expr
 created_at: 2023-06-01T15:45:42Z
 updated_at: 2023-06-03T13:16:07Z
 url: https://github.com/astral-sh/ruff/pull/4788
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format StmtExpr
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-01 15:45_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

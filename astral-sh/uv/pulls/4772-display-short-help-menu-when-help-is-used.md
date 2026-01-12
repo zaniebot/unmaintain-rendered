@@ -13,14 +13,14 @@ head: zb/cli-help
 created_at: 2024-07-03T14:31:01Z
 updated_at: 2024-07-09T17:12:03Z
 url: https://github.com/astral-sh/uv/pull/4772
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Display short help menu when `--help` is used
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 14:31_
+_@zanieb_
 
 I feel like I'm always drowning in the help output from `uv` because we have so many options.
 

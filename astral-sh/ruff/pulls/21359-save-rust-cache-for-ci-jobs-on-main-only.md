@@ -13,14 +13,14 @@ head: micha/rust-cache-main-only
 created_at: 2025-11-10T08:45:25Z
 updated_at: 2025-11-10T09:04:46Z
 url: https://github.com/astral-sh/ruff/pull/21359
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Save rust cache for CI jobs on main only
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-10 08:45_
+_@MichaReiser_
 
 GitHub action imposes a cache limit per repository of 10GB. We consistently exceed this limit by a lot (currently ±80GB). GitHub starts deleting caches when the limit is exceeded. Because of that, it's important that we're deliberate about which artifacts we cache. 
 

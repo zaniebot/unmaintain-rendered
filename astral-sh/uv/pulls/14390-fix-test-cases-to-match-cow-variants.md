@@ -13,14 +13,14 @@ head: jtfm/cow-tests
 created_at: 2025-07-01T12:41:45Z
 updated_at: 2025-07-01T18:39:19Z
 url: https://github.com/astral-sh/uv/pull/14390
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Fix test cases to match Cow variants
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-01 12:41_
+_@jtfmumm_
 
 Updates `without_trailing_slash` and `without_fragment` to separately match values against `Cow` variants.
 

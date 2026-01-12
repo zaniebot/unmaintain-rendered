@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-07T08:27:34Z
 updated_at: 2025-06-11T00:56:58Z
 url: https://github.com/astral-sh/ty/issues/600
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `FunctionType` is inherently unsafe
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-06-07 08:27_
+_@KotlinIsland_
 
 ### Summary
 

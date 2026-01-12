@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-03-12T14:38:49Z
 updated_at: 2024-03-13T07:45:01Z
 url: https://github.com/astral-sh/ruff/pull/10360
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Update ruff pre-commit example
 
 ---
 
-_Pull request opened by @Skylion007 on 2024-03-12 14:38_
+_@Skylion007_
 
 Updates ruff pre-commit example to not use deprecated ruff command
 

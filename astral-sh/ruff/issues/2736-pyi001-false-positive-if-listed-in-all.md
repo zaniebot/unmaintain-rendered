@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T19:55:54Z
 updated_at: 2023-02-26T23:25:00Z
 url: https://github.com/astral-sh/ruff/issues/2736
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PYI001: false positive if listed in `__all__`
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 19:55_
+_@spaceone_
 
 `foo.pyi`:
 ```

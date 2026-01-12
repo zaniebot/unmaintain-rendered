@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T09:15:30Z
 updated_at: 2024-07-12T12:01:49Z
 url: https://github.com/astral-sh/ruff/issues/12296
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Bug] [Formatter] Does combine in one line when line-length is not exceeded
 
 ---
 
-_Issue opened by @LoicRiegel on 2024-07-12 09:15_
+_@LoicRiegel_
 
 Hi, I find this behavior strange in the formatter, and I think this should be fixed.
 

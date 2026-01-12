@@ -13,14 +13,14 @@ head: rule/LOG007
 created_at: 2023-09-15T16:03:21Z
 updated_at: 2023-09-20T09:55:02Z
 url: https://github.com/astral-sh/ruff/pull/7410
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`flake8-logging`] Implement `LOG007`: `ExceptionWithoutExcInfo`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-09-15 16:03_
+_@qdegraaf_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T12:12:39Z
 updated_at: 2025-01-15T07:10:28Z
 url: https://github.com/astral-sh/ruff/issues/15454
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # DJ008 (`__str__` method) fails when inheriting from multiple models, and str only defined in other module
 
 ---
 
-_Issue opened by @zyzzyxdonta on 2025-01-13 12:12_
+_@zyzzyxdonta_
 
 This is related to #9242.
 

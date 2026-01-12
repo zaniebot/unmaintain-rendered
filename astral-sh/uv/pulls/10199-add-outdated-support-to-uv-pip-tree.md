@@ -14,14 +14,14 @@ head: charlie/out
 created_at: 2024-12-27T16:53:27Z
 updated_at: 2024-12-27T17:03:07Z
 url: https://github.com/astral-sh/uv/pull/10199
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Add `--outdated` support to `uv pip tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-27 16:53_
+_@charliermarsh_
 
 ## Summary
 

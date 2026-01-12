@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-17T06:47:08Z
 updated_at: 2023-08-22T14:20:18Z
 url: https://github.com/astral-sh/ruff/issues/5821
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: stub files only have one empty lines between top level items
 
 ---
 
-_Issue opened by @konstin on 2023-07-17 06:47_
+_@konstin_
 
 Black only formats one empty line between top level items in stub files (.pyi), while it uses two empty lines in regular python files. When single line classes, method and functions of the same kind that are stubbed out with ellipses follow each they don't get any empty lines.
 

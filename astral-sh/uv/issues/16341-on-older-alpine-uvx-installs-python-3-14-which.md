@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T11:33:44Z
 updated_at: 2025-10-17T11:36:58Z
 url: https://github.com/astral-sh/uv/issues/16341
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # On older alpine, uvx installs Python 3.14 which cannot run there
 
 ---
 
-_Issue opened by @Ark-kun on 2025-10-17 11:33_
+_@Ark-kun_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-24T05:53:05Z
 updated_at: 2023-03-24T17:06:38Z
 url: https://github.com/astral-sh/ruff/issues/3710
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Is `v0.0.259` the latest release?
 
 ---
 
-_Issue opened by @ZhongRuoyu on 2023-03-24 05:53_
+_@ZhongRuoyu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

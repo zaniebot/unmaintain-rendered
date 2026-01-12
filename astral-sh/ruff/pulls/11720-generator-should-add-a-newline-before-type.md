@@ -14,14 +14,14 @@ head: dhruv/type-alias-generator
 created_at: 2024-06-03T12:46:27Z
 updated_at: 2024-06-03T13:14:22Z
 url: https://github.com/astral-sh/ruff/pull/11720
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Generator should add a newline before type statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-03 12:46_
+_@dhruvmanila_
 
 ## Summary
 

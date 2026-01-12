@@ -13,14 +13,14 @@ head: zb/release-12-large
 created_at: 2024-08-28T18:00:28Z
 updated_at: 2024-08-29T20:11:55Z
 url: https://github.com/astral-sh/uv/pull/6767
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Use the larger x64 macOS runner for release builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 18:00_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6766
 

@@ -13,14 +13,14 @@ head: ag/stabilize-auto-import
 created_at: 2025-12-08T18:07:03Z
 updated_at: 2025-12-09T14:40:52Z
 url: https://github.com/astral-sh/ty/pull/1810
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Stabilize auto-import
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-08 18:07_
+_@BurntSushi_
 
 Ref https://github.com/astral-sh/ty/issues/1765
 

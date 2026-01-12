@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T13:49:12Z
 updated_at: 2024-10-23T09:03:35Z
 url: https://github.com/astral-sh/uv/issues/7019
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Feature request: updating dependency version in a lockfile
 
 ---
 
-_Issue opened by @Kobzol on 2024-09-04 13:49_
+_@Kobzol_
 
 Hi! While migrating an existing Python project to `uv`, I encountered a situation where a command similar to `cargo update --precise` would be quite useful. Essentially, I would like to have the option to tell `uv` to set a package version (usually of a transitive dependency, one that is not specified in `dependencies`) in a lockfile to a specific version (that is semver compatible with the other dependencies).
 

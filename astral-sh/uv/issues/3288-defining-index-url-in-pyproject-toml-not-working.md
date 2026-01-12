@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-27T09:49:21Z
 updated_at: 2024-04-27T12:52:08Z
 url: https://github.com/astral-sh/uv/issues/3288
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Defining index-url in pyproject.toml not working
 
 ---
 
-_Issue opened by @florianfischer91 on 2024-04-27 09:49_
+_@florianfischer91_
 
 First of all thanks for developing uv (and ruff). They are really amazing :-)
  

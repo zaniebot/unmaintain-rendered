@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-11T01:52:11Z
 updated_at: 2024-09-11T13:33:50Z
 url: https://github.com/astral-sh/ruff/issues/13322
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff fails to detect invalid Python syntax in f-string with single quotes
 
 ---
 
-_Issue opened by @mgaitan on 2024-09-11 01:52_
+_@mgaitan_
 
 I found an issue where Ruff doesn't detect a syntax error in f-string. Consider this simple source:
 

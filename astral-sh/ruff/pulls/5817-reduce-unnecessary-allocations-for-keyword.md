@@ -14,14 +14,14 @@ head: charlie/callargs
 created_at: 2023-07-17T02:12:58Z
 updated_at: 2023-07-17T02:40:49Z
 url: https://github.com/astral-sh/ruff/pull/5817
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Reduce unnecessary allocations for keyword detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-17 02:12_
+_@charliermarsh_
 
 _No description provided._
 

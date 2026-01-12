@@ -13,14 +13,14 @@ head: zb/allow-versions
 created_at: 2024-01-25T22:31:45Z
 updated_at: 2024-01-26T18:38:26Z
 url: https://github.com/astral-sh/uv/pull/1111
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Add `pip compile` test where specific Python versions are available on the system
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 22:31_
+_@zanieb_
 
 Extends https://github.com/astral-sh/puffin/pull/1106 with the scenario from https://github.com/zanieb/packse/pull/95 which tests that `pip compile` will use the matching system Python version for builds when available
 

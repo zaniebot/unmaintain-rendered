@@ -13,14 +13,14 @@ head: charlie/error
 created_at: 2023-11-20T11:32:37Z
 updated_at: 2023-11-20T11:38:28Z
 url: https://github.com/astral-sh/uv/pull/466
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Use a dedicated error type for `puffin-distribution`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-20 11:32_
+_@charliermarsh_
 
 _No description provided._
 

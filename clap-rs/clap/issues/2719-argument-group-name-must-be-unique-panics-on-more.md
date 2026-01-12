@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-18T16:03:40Z
 updated_at: 2021-08-19T06:40:41Z
 url: https://github.com/clap-rs/clap/issues/2719
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Argument group name must be unique - panics on more than one group in YAML
 
 ---
 
-_Issue opened by @thargy on 2021-08-18 16:03_
+_@thargy_
 
 ### Please complete the following tasks
 

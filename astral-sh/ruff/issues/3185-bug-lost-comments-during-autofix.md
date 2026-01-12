@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-23T18:58:42Z
 updated_at: 2023-02-24T03:48:43Z
 url: https://github.com/astral-sh/ruff/issues/3185
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # bug: lost comments during autofix
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-02-23 18:58_
+_@upstartjohnvandivier_
 
 repro snippet autofixed from like:
 ```

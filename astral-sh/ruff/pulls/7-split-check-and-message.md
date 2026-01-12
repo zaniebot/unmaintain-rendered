@@ -12,14 +12,14 @@ head: charlie/split
 created_at: 2022-08-13T15:21:54Z
 updated_at: 2022-08-13T15:30:17Z
 url: https://github.com/astral-sh/ruff/pull/7
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Split Check and Message
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-13 15:21_
+_@charliermarsh_
 
 _No description provided._
 

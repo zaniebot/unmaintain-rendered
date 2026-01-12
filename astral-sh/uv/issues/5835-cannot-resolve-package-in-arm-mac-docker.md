@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T21:43:47Z
 updated_at: 2024-08-07T03:03:09Z
 url: https://github.com/astral-sh/uv/issues/5835
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # cannot resolve package in arm Mac Docker container when specifying platform
 
 ---
 
-_Issue opened by @jbcpollak on 2024-08-06 21:43_
+_@jbcpollak_
 
 The below example is with a `uv pip install` but my actual usecase is trying to compile a cross-platform requirements.txt  file using `uv pip compile` and a custom python script (from https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602) which runs the same compile three times, once for each platform, then normalizes them into a single file.
 

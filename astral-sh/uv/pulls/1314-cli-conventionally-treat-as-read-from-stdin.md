@@ -13,14 +13,14 @@ head: ag/requirements-on-stdin
 created_at: 2024-02-15T15:54:11Z
 updated_at: 2024-02-15T16:25:57Z
 url: https://github.com/astral-sh/uv/pull/1314
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # cli: conventionally treat `-` as "read from stdin"
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-15 15:54_
+_@BurntSushi_
 
 Basically, when a path to a requirements file is `-`, then we should
 read its contents from `stdin` instead of the file path named `-`.

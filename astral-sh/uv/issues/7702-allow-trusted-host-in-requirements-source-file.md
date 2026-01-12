@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T09:32:41Z
 updated_at: 2024-09-26T18:53:42Z
 url: https://github.com/astral-sh/uv/issues/7702
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Allow trusted-host in requirements source file
 
 ---
 
-_Issue opened by @gma2th on 2024-09-26 09:32_
+_@gma2th_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

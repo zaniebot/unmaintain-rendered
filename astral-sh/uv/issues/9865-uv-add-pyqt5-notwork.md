@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-13T10:18:54Z
 updated_at: 2024-12-13T16:23:55Z
 url: https://github.com/astral-sh/uv/issues/9865
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # uv add pyqt5  notwork
 
 ---
 
-_Issue opened by @qqzz0xx on 2024-12-13 10:18_
+_@qqzz0xx_
 
 error: Distribution `pyqt5-qt5==5.15.15 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
 

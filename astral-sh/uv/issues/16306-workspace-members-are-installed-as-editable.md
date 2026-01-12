@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T01:53:31Z
 updated_at: 2025-10-17T08:36:04Z
 url: https://github.com/astral-sh/uv/issues/16306
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Workspace members are installed as editable during `uv tool install ./project`
 
 ---
 
-_Issue opened by @krishmas on 2025-10-15 01:53_
+_@krishmas_
 
 ### Question
 

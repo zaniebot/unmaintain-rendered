@@ -14,14 +14,14 @@ head: micha/ty-pragma-comments
 created_at: 2025-06-07T13:13:09Z
 updated_at: 2025-06-07T14:02:45Z
 url: https://github.com/astral-sh/ruff/pull/18532
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # Treat `ty: ` comments as pragma comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-07 13:13_
+_@MichaReiser_
 
 ## Summary
 

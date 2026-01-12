@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-20T18:20:26Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/179
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Confusing error message
 
 ---
 
-_Issue opened by @Vinatorul on 2015-08-20 18:20_
+_@Vinatorul_
 
 I found that following code
 

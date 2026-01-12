@@ -12,14 +12,14 @@ head: charlie/not-not
 created_at: 2023-05-08T23:28:00Z
 updated_at: 2023-05-09T06:02:39Z
 url: https://github.com/astral-sh/ruff/pull/4294
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Rewrite `not not a` as `bool(a)` in boolean contexts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-08 23:28_
+_@charliermarsh_
 
 Closes #3350.
 

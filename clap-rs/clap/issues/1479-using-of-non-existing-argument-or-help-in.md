@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-05-26T13:43:56Z
 updated_at: 2020-02-01T13:37:39Z
 url: https://github.com/clap-rs/clap/issues/1479
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Using of non-existing argument (or "help") in `requires` leads to internal error
 
 ---
 
-_Issue opened by @sphynx on 2019-05-26 13:43_
+_@sphynx_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

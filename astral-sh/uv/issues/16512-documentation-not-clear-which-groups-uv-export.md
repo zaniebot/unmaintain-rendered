@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T14:08:27Z
 updated_at: 2025-10-30T14:20:06Z
 url: https://github.com/astral-sh/uv/issues/16512
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # (Documentation) Not clear which groups `uv export` exports
 
 ---
 
-_Issue opened by @anentropic on 2025-10-30 14:08_
+_@anentropic_
 
 ### Summary
 

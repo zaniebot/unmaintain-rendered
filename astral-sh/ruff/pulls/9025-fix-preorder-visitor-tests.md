@@ -13,14 +13,14 @@ head: dhruv/preorder
 created_at: 2023-12-06T16:52:11Z
 updated_at: 2023-12-06T17:09:09Z
 url: https://github.com/astral-sh/ruff/pull/9025
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix preorder visitor tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-06 16:52_
+_@dhruvmanila_
 
 Follow-up PR to #9009 to fix the `PreorderVisitor` test cases as suggested here: https://github.com/astral-sh/ruff/pull/9009#discussion_r1416459688
 

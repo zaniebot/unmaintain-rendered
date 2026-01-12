@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T22:56:06Z
 updated_at: 2024-07-04T13:45:27Z
 url: https://github.com/astral-sh/uv/issues/4747
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Run resolution before nuking environment in `uv tool install`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-02 22:56_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: konsti/default-exclude
 created_at: 2024-12-01T11:35:04Z
 updated_at: 2024-12-03T14:18:11Z
 url: https://github.com/astral-sh/uv/pull/9552
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Build backend: Default excludes
 
 ---
 
-_Pull request opened by @konstin on 2024-12-01 11:35_
+_@konstin_
 
 When adding excludes, we usually don't want to include python cache files. On the contrary, I haven't seen any project in my ecosystem research that would want any of `__pycache__`, `*.pyc`, `*.pyo` to be included. By moving them behind a `default-excludes` toggle, they are always active even when defining custom excludes, but can be deactivated if the user so chooses.
 

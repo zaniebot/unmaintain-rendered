@@ -13,14 +13,14 @@ head: alex/redknot-tuples
 created_at: 2025-04-01T12:13:25Z
 updated_at: 2025-04-01T14:44:05Z
 url: https://github.com/astral-sh/ruff/pull/17116
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Don't infer Todo for quite so many tuple type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-01 12:13_
+_@AlexWaygood_
 
 ## Summary
 

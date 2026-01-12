@@ -13,14 +13,14 @@ head: ww/limit-login-retries
 created_at: 2025-10-29T15:23:45Z
 updated_at: 2025-10-29T15:39:25Z
 url: https://github.com/astral-sh/uv/pull/16498
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Limit `uv auth login pyx.dev` retries to 60s
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-29 15:23_
+_@woodruffw_
 
 ## Summary
 

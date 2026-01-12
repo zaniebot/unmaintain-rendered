@@ -13,14 +13,14 @@ head: charlie/subdirectory
 created_at: 2023-11-03T18:25:34Z
 updated_at: 2023-11-03T19:28:43Z
 url: https://github.com/astral-sh/uv/pull/312
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Add support for subdirectories in URL dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 18:25_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/307.
 

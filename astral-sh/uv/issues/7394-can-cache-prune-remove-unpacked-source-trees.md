@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T14:41:54Z
 updated_at: 2024-09-16T23:18:21Z
 url: https://github.com/astral-sh/uv/issues/7394
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Can cache prune remove unpacked source trees?
 
 ---
 
-_Issue opened by @bluss on 2024-09-14 14:41_
+_@bluss_
 
 Building wheels from source leaves unpacked source trees after the build, such as this for cython:
 

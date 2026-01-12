@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T00:06:30Z
 updated_at: 2025-05-10T12:24:20Z
 url: https://github.com/astral-sh/uv/issues/13371
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Add Index URL to Top of `requirements.txt` File Created with `uv export`
 
 ---
 
-_Issue opened by @krishsai7 on 2025-05-10 00:06_
+_@krishsai7_
 
 ### Summary
 

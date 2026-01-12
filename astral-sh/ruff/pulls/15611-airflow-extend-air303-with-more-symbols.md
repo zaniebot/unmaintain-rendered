@@ -14,14 +14,14 @@ head: extend-AIR303
 created_at: 2025-01-20T09:23:47Z
 updated_at: 2025-01-23T08:50:02Z
 url: https://github.com/astral-sh/ruff/pull/15611
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`airflow`] Extend `AIR303` with more symbols
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-20 09:23_
+_@Lee-W_
 
 
 

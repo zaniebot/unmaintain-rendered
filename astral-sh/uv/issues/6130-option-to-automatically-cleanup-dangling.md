@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T00:19:13Z
 updated_at: 2024-08-16T00:19:13Z
 url: https://github.com/astral-sh/uv/issues/6130
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # (🎁) option to automatically cleanup dangling temporary directories
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-08-16 00:19_
+_@KotlinIsland_
 
 ```py
 uv pip install basedmypy

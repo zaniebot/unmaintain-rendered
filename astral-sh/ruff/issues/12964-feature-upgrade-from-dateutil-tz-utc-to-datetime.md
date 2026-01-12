@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-18T14:17:13Z
 updated_at: 2024-08-19T08:29:33Z
 url: https://github.com/astral-sh/ruff/issues/12964
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Feature: upgrade from `dateutil.tz.UTC` to `datetime.UTC` or `datetime.timezone.utc`
 
 ---
 
-_Issue opened by @trim21 on 2024-08-18 14:17_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

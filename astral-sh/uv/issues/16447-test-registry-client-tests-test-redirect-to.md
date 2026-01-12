@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-25T09:37:59Z
 updated_at: 2025-12-03T13:51:26Z
 url: https://github.com/astral-sh/uv/issues/16447
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Test registry_client::tests::test_redirect_to_server_with_credentials is flaky
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-10-25 09:37_
+_@musicinmybrain_
 
 ### Summary
 

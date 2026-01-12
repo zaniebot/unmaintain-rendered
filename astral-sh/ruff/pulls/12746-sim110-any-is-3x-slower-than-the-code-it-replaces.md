@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-08T09:09:01Z
 updated_at: 2024-08-08T15:19:59Z
 url: https://github.com/astral-sh/ruff/pull/12746
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # SIM110: `any()` is ~3x slower than the code it replaces
 
 ---
 
-_Pull request opened by @cclauss on 2024-08-08 09:09_
+_@cclauss_
 
 > ~Builtins are also more efficient than `for` loops.~
 

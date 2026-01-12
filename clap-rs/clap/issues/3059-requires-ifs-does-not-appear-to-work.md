@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-04T11:16:26Z
 updated_at: 2021-12-10T22:16:57Z
 url: https://github.com/clap-rs/clap/issues/3059
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # requires_ifs does not appear to work
 
 ---
 
-_Issue opened by @FrankC01 on 2021-12-04 11:16_
+_@FrankC01_
 
 ### Please complete the following tasks
 

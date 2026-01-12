@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-15T17:10:24Z
 updated_at: 2025-11-02T23:21:56Z
 url: https://github.com/astral-sh/ty/issues/1013
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Don't union in `Any` from parameter default into parameter type
 
 ---
 
-_Issue opened by @shroominic on 2025-08-15 17:10_
+_@shroominic_
 
 ### Summary
 

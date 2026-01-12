@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-09T15:43:40Z
 updated_at: 2022-06-01T21:13:10Z
 url: https://github.com/clap-rs/clap/issues/3709
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # No way to rename value names across entire struct
 
 ---
 
-_Issue opened by @epage on 2022-05-09 15:43_
+_@epage_
 
 ### Please complete the following tasks
 

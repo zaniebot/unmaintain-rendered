@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T00:09:48Z
 updated_at: 2025-06-29T13:48:16Z
 url: https://github.com/astral-sh/uv/issues/9755
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Make `--all-packages` the default?
 
 ---
 
-_Issue opened by @gjoseph92 on 2024-12-10 00:09_
+_@gjoseph92_
 
 When setting up a uv workspace in a monorepo, I was surprised to find that `uv sync` would change which packages were installed depending on which directory I ran it from. For example:
 1. it removed all my transitive dev dependencies when run from the root directory

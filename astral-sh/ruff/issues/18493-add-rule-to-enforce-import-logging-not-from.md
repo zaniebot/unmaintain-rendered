@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T09:49:03Z
 updated_at: 2025-06-09T03:16:59Z
 url: https://github.com/astral-sh/ruff/issues/18493
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add rule to enforce import logging (not from logging import ...), matching Python documentation best practice
 
 ---
 
-_Issue opened by @EricWebsmith on 2025-06-06 09:49_
+_@EricWebsmith_
 
 ### Summary
 

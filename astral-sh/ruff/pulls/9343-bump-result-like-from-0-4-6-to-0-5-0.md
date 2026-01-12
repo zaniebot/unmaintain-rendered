@@ -13,14 +13,14 @@ head: dependabot/cargo/result-like-0.5.0
 created_at: 2024-01-01T08:47:03Z
 updated_at: 2024-01-02T02:16:02Z
 url: https://github.com/astral-sh/ruff/pull/9343
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump result-like from 0.4.6 to 0.5.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-01 08:47_
+_@dependabot_
 
 Bumps [result-like](https://github.com/youknowone/result-like) from 0.4.6 to 0.5.0.
 <details>

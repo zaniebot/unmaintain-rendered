@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-09T11:54:14Z
 updated_at: 2025-03-03T05:43:52Z
 url: https://github.com/astral-sh/ruff/issues/10847
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Investigate list parsing for possible performance improvement
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-04-09 11:54_
+_@dhruvmanila_
 
 It seems like there could be performance improvements in list parsing. These methods are used to parse a sequence of nodes, optionally with a comma, which performs error recovery. This is only the case in the new parser.
 

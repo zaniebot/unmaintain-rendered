@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T01:18:09Z
 updated_at: 2025-07-24T12:01:49Z
 url: https://github.com/astral-sh/ruff/issues/18655
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Using ruff_linter programmatically
 
 ---
 
-_Issue opened by @mavwolverine on 2025-06-13 01:18_
+_@mavwolverine_
 
 ### Question
 

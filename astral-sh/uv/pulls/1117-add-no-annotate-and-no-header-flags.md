@@ -13,14 +13,14 @@ head: charlie/annotate
 created_at: 2024-01-26T02:35:18Z
 updated_at: 2024-01-26T12:14:19Z
 url: https://github.com/astral-sh/uv/pull/1117
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Add `--no-annotate` and `--no-header` flags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 02:35_
+_@charliermarsh_
 
 Closes #1107.
 Closes #1108.

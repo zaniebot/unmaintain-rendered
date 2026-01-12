@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2024-03-07T03:33:44Z
 updated_at: 2024-03-07T14:14:42Z
 url: https://github.com/astral-sh/ruff/pull/10263
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pyupgrade`] Allow fixes for f-string rule regardless of line length (`UP032`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 03:33_
+_@charliermarsh_
 
 ## Summary
 

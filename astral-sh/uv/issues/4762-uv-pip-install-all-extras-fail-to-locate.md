@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T10:03:15Z
 updated_at: 2024-10-21T21:25:55Z
 url: https://github.com/astral-sh/uv/issues/4762
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv pip install --all-extras .` fail to locate `pyproject.toml`
 
 ---
 
-_Issue opened by @kdeldycke on 2024-07-03 10:03_
+_@kdeldycke_
 
 Using the latest version of `uv`:
 ```shell-session

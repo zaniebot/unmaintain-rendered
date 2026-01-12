@@ -13,14 +13,14 @@ head: server-notebook-workspace-dependency
 created_at: 2024-05-27T16:32:06Z
 updated_at: 2024-05-28T07:26:40Z
 url: https://github.com/astral-sh/ruff/pull/11572
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Make `ruff_notebook` a workspace dependency in `ruff_server`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-27 16:32_
+_@MichaReiser_
 
 ## Summary
 The `ruff_notebook` dependency was added in https://github.dev/astral-sh/ruff/pull/11206

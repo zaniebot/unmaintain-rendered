@@ -12,14 +12,14 @@ head: zb/packse-test-scenarios
 created_at: 2024-01-02T22:58:19Z
 updated_at: 2024-01-03T21:50:07Z
 url: https://github.com/astral-sh/uv/pull/746
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Add packse scenario tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-02 22:58_
+_@zanieb_
 
 Adds tests using packse test scenarios! Uses `test.pypi.org` as a backing index.
 

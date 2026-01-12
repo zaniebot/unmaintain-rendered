@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T03:10:46Z
 updated_at: 2025-12-18T22:35:52Z
 url: https://github.com/astral-sh/ruff/issues/21995
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # I suggest creating a metacode-compatible parser
 
 ---
 
-_Issue opened by @pomponchik on 2025-12-16 03:10_
+_@pomponchik_
 
 ### Question
 

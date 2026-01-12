@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T18:20:35Z
 updated_at: 2024-06-10T17:31:15Z
 url: https://github.com/astral-sh/ruff/issues/2212
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # allow BLE001 if traceback is generated?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 18:20_
+_@spaceone_
 
 `BLE001` allows
 ```python

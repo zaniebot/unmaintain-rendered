@@ -13,14 +13,14 @@ head: zb/docs-ii-publish
 created_at: 2025-06-30T22:19:54Z
 updated_at: 2025-07-01T16:53:18Z
 url: https://github.com/astral-sh/ty/pull/730
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add documentation publishing workflow
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-30 22:19_
+_@zanieb_
 
 Adds a documentation publishing workflow as a part of https://github.com/astral-sh/ty/pull/729 but is based on `main` so we can test the workflow dispatch against the branch.
 

@@ -12,14 +12,14 @@ head: red-knot-tracing
 created_at: 2024-04-24T14:09:19Z
 updated_at: 2024-04-24T15:44:05Z
 url: https://github.com/astral-sh/ruff/pull/11130
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # red-knot: Add tracing
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-24 14:09_
+_@MichaReiser_
 
 ## Summary
 

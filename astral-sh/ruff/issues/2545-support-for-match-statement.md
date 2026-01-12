@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-03T15:00:11Z
 updated_at: 2023-02-22T00:04:30Z
 url: https://github.com/astral-sh/ruff/issues/2545
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support for match statement
 
 ---
 
-_Issue opened by @AxTheB on 2023-02-03 15:00_
+_@AxTheB_
 
 README  claims python3.11 compatibility, but ruff fails at match statements:
 

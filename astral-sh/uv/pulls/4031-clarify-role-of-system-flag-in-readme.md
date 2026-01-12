@@ -13,14 +13,14 @@ head: zb/docs-discovery
 created_at: 2024-06-04T23:53:29Z
 updated_at: 2024-06-10T16:19:42Z
 url: https://github.com/astral-sh/uv/pull/4031
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Clarify role of `--system` flag in README
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-04 23:53_
+_@zanieb_
 
 For uv>=0.2.0 behavior
 

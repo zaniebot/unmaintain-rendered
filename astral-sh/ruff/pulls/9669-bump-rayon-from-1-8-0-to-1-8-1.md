@@ -13,14 +13,14 @@ head: dependabot/cargo/rayon-1.8.1
 created_at: 2024-01-29T09:05:32Z
 updated_at: 2024-01-29T10:00:42Z
 url: https://github.com/astral-sh/ruff/pull/9669
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump rayon from 1.8.0 to 1.8.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-29 09:05_
+_@dependabot_
 
 Bumps [rayon](https://github.com/rayon-rs/rayon) from 1.8.0 to 1.8.1.
 <details>

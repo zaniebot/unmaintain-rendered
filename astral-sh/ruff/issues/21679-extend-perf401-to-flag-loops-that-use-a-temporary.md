@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-28T14:33:57Z
 updated_at: 2025-11-28T14:55:57Z
 url: https://github.com/astral-sh/ruff/issues/21679
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Extend PERF401 to flag loops that use a temporary variable before append
 
 ---
 
-_Issue opened by @harupy on 2025-11-28 14:33_
+_@harupy_
 
 ### Summary
 

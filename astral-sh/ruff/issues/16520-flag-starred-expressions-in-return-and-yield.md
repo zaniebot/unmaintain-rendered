@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T16:31:15Z
 updated_at: 2025-04-02T12:38:27Z
 url: https://github.com/astral-sh/ruff/issues/16520
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Flag starred expressions in `return` and `yield`
 
 ---
 
-_Issue opened by @ntBre on 2025-03-05 16:31_
+_@ntBre_
 
 Both of these are invalid on every Python version I've tried and should be flagged as `ParseError`s in the parser:
 

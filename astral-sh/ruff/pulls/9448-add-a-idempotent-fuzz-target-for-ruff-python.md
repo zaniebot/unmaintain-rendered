@@ -12,14 +12,14 @@ head: ruff-format-fuzz-target
 created_at: 2024-01-09T11:34:37Z
 updated_at: 2024-01-11T17:53:40Z
 url: https://github.com/astral-sh/ruff/pull/9448
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add a idempotent fuzz_target for ruff_python_formatter
 
 ---
 
-_Pull request opened by @manunio on 2024-01-09 11:34_
+_@manunio_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

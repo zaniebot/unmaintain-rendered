@@ -13,14 +13,14 @@ head: fix-n817-from-import
 created_at: 2024-08-17T11:34:40Z
 updated_at: 2024-08-21T03:59:36Z
 url: https://github.com/astral-sh/ruff/pull/12946
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`pep8-naming`] Don't flag `from` imports following conventional import names (`N817`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-17 11:34_
+_@MichaReiser_
 
 ## Summary
 

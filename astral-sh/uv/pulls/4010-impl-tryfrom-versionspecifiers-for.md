@@ -13,14 +13,14 @@ head: konsti/impl-range-try-from-version-specifiers
 created_at: 2024-06-04T07:53:45Z
 updated_at: 2024-06-04T08:00:08Z
 url: https://github.com/astral-sh/uv/pull/4010
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # `impl TryFrom<&VersionSpecifiers> for PubGrubSpecifier`
 
 ---
 
-_Pull request opened by @konstin on 2024-06-04 07:53_
+_@konstin_
 
 Add a missing utility conversion method from PEP 440 versions specifiers to a pubgrub range.
 

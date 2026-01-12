@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-02T22:40:44Z
 updated_at: 2024-12-02T22:52:39Z
 url: https://github.com/astral-sh/uv/issues/9588
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Add repository topic "uv" or similar
 
 ---
 
-_Issue opened by @dbohdan on 2024-12-02 22:40_
+_@dbohdan_
 
 Some GitHub projects that use uv are tagged with the [topic "uv"](https://github.com/topics/uv). Ruff is the top repo for the [topic "ruff"](https://github.com/topics/ruff). Something to consider is that "uv" is also used for software that works with textures. You may also want to come up with a different, unique topic.
 

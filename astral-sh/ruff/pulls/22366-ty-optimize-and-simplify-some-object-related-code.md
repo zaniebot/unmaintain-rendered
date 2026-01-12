@@ -14,14 +14,14 @@ head: alex/classtype-object
 created_at: 2026-01-04T18:12:43Z
 updated_at: 2026-01-07T08:35:28Z
 url: https://github.com/astral-sh/ruff/pull/22366
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Optimize and simplify some `object`-related code
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-04 18:12_
+_@AlexWaygood_
 
 ## Summary
 

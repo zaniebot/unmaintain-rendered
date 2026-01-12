@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T12:12:15Z
 updated_at: 2025-07-30T15:40:43Z
 url: https://github.com/astral-sh/ty/issues/911
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Server panics when making changes while the workspace diagnostics request is in flight
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-29 12:12_
+_@MichaReiser_
 
 ### Summary
 

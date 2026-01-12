@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T16:50:40Z
 updated_at: 2024-09-10T20:54:26Z
 url: https://github.com/astral-sh/ruff/issues/13311
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [FR] Add config option to emit pre-0.5 condensed output of `ruff check`
 
 ---
 
-_Issue opened by @sterliakov on 2024-09-10 16:50_
+_@sterliakov_
 
 In 0.5.0 the format of ruff's output became much more verbose. It may be useful in some cases, but I use ruff mostly in pre-commit and will navigate to all these files anyway. I don't want to see the big code snippet and would rather see just code, file+lineno and short description.
 

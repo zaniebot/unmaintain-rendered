@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T14:25:45Z
 updated_at: 2025-12-23T11:35:24Z
 url: https://github.com/astral-sh/ty/issues/2160
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Detect invalid attempts to override `@property`s with mutable attributes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-22 14:25_
+_@AlexWaygood_
 
 From the perspective of the Liskov Substitution Principle, this is fine[^1], because the attribute on the subclass can do strictly more than the attribute on the superclass (it's read-only on the superclass, but it's writable on the subclass!).
 

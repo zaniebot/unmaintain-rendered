@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-14T02:37:14Z
 updated_at: 2023-01-14T03:18:22Z
 url: https://github.com/astral-sh/ruff/issues/1858
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D400 Confusion
 
 ---
 
-_Issue opened by @nstarman on 2023-01-14 02:37_
+_@nstarman_
 
 In https://github.com/astropy/astropy/pull/14272#discussion_r1070093557 we are looking to turn on D400, but possibly encountered a bug.  While D400 says a line should end in a period, it's D401 that requires imperative phrasing. With D401 turned off, is a question mark not a suitable alternative to a period?
 Thanks in advance for the clarification.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T07:20:44Z
 updated_at: 2025-12-16T12:04:51Z
 url: https://github.com/astral-sh/uv/issues/17120
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Support user customize the `toml` config template file for `pyproject.toml` generating
 
 ---
 
-_Issue opened by @haiw2sm on 2025-12-13 07:20_
+_@haiw2sm_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/readme-transform
 created_at: 2025-05-12T17:54:30Z
 updated_at: 2025-05-12T18:40:02Z
 url: https://github.com/astral-sh/ty/pull/330
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Restore readme transformation script
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 17:54_
+_@zanieb_
 
 _No description provided._
 

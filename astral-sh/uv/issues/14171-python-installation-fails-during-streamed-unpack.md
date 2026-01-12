@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T20:29:16Z
 updated_at: 2025-09-04T12:45:02Z
 url: https://github.com/astral-sh/uv/issues/14171
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Python installation fails during streamed unpack with connection reset error
 
 ---
 
-_Issue opened by @zanieb on 2025-06-20 20:29_
+_@zanieb_
 
 ```
     error: Failed to install cpython-3.10.17-windows-x86_64-none

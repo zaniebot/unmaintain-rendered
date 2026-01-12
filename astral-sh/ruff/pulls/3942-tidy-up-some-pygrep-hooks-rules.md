@@ -12,14 +12,14 @@ head: charlie/grep-hooks
 created_at: 2023-04-12T03:28:57Z
 updated_at: 2023-04-12T03:56:07Z
 url: https://github.com/astral-sh/ruff/pull/3942
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Tidy up some `pygrep-hooks` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-12 03:28_
+_@charliermarsh_
 
 _No description provided._
 

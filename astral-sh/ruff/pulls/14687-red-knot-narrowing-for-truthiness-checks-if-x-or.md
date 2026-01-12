@@ -14,14 +14,14 @@ head: red-knot-narrowing-for-if-x
 created_at: 2024-11-30T07:21:04Z
 updated_at: 2025-05-07T15:22:46Z
 url: https://github.com/astral-sh/ruff/pull/14687
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Narrowing For Truthiness Checks (`if x` or `if not x`)
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-11-30 07:21_
+_@cake-monotone_
 
 This turned out to be a really interesting but much trickier task than I expected. I thought this would be straightforward, but it was not.
 While I am unsure if this PR will ultimately be merged, I believe it offers valuable insights.

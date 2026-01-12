@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T10:04:49Z
 updated_at: 2024-11-11T18:58:32Z
 url: https://github.com/astral-sh/ruff/issues/8248
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Proposal: HTML output file
 
 ---
 
-_Issue opened by @ryan-cpi on 2023-10-26 10:04_
+_@ryan-cpi_
 
 Would it be possible to support an output-format of HTML where the rules ID/description link back to Ruff rules page e.g [F401](https://docs.astral.sh/ruff/rules/unused-import/) and the lines/files have clickable links going into the files its raising issues against. Having a summary at the end of this file might also be nice here.
 

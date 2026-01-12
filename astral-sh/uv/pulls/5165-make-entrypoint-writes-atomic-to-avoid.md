@@ -13,14 +13,14 @@ head: charlie/atomic
 created_at: 2024-07-17T19:28:57Z
 updated_at: 2024-07-17T19:44:27Z
 url: https://github.com/astral-sh/uv/pull/5165
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Make entrypoint writes atomic to avoid overwriting symlinks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 19:28_
+_@charliermarsh_
 
 ## Summary
 

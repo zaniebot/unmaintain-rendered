@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-29T12:42:47Z
 updated_at: 2022-06-09T02:23:30Z
 url: https://github.com/clap-rs/clap/issues/3589
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # try_from_str and try_from_os_str functions are called twice
 
 ---
 
-_Issue opened by @aj-bagwell on 2022-03-29 12:42_
+_@aj-bagwell_
 
 ### Please complete the following tasks
 

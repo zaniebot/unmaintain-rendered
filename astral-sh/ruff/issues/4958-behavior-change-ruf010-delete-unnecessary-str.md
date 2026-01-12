@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-08T12:32:12Z
 updated_at: 2023-06-26T21:29:31Z
 url: https://github.com/astral-sh/ruff/issues/4958
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [behavior-change] RUF010 delete unnecessary `str()`
 
 ---
 
-_Issue opened by @smackesey on 2023-06-08 12:32_
+_@smackesey_
 
 IIUC, these two expressions are exactly equivalent:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T15:34:00Z
 updated_at: 2024-09-05T16:00:34Z
 url: https://github.com/astral-sh/uv/issues/7087
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Poetry's lock file compatibility
 
 ---
 
-_Issue opened by @skhaz on 2024-09-05 15:34_
+_@skhaz_
 
 Recently, I noticed that support for adding dependencies in the `pyproject.toml` file was added, which is excellent, thank you very much.
 

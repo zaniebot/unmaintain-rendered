@@ -13,14 +13,14 @@ head: charlie/build-docs
 created_at: 2025-08-16T15:51:58Z
 updated_at: 2025-12-22T12:01:37Z
 url: https://github.com/astral-sh/uv/pull/15326
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Document improvements to build-isolation setups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-16 15:51_
+_@charliermarsh_
 
 ## Summary
 

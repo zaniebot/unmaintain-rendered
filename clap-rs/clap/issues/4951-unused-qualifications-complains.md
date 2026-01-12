@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-05T15:55:54Z
 updated_at: 2023-06-05T18:56:14Z
 url: https://github.com/clap-rs/clap/issues/4951
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `unused_qualifications` complains
 
 ---
 
-_Issue opened by @tyranron on 2023-06-05 15:55_
+_@tyranron_
 
 ### Please complete the following tasks
 

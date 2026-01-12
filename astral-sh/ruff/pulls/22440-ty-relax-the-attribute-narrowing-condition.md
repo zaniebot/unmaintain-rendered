@@ -13,14 +13,14 @@ head: relax-attribute-narrowing
 created_at: 2026-01-07T16:36:08Z
 updated_at: 2026-01-07T17:03:34Z
 url: https://github.com/astral-sh/ruff/pull/22440
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] relax the attribute narrowing condition
 
 ---
 
-_Pull request opened by @mtshiba on 2026-01-07 16:36_
+_@mtshiba_
 
 ## Summary
 

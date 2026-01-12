@@ -12,14 +12,14 @@ head: charlie/filter-rules
 created_at: 2022-11-06T22:40:36Z
 updated_at: 2022-11-06T22:42:11Z
 url: https://github.com/astral-sh/ruff/pull/627
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove CheckLocator abstraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-06 22:40_
+_@charliermarsh_
 
 Instead, just enforce that all checks are added via `add_check`, and modify the check location in the rare case that we're in an f-string.
 

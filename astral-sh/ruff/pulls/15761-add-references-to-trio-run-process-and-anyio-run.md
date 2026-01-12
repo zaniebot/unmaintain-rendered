@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-01-27T01:46:55Z
 updated_at: 2025-01-27T01:53:21Z
 url: https://github.com/astral-sh/ruff/pull/15761
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add references to `trio.run_process` and `anyio.run_process`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 01:46_
+_@charliermarsh_
 
 ## Summary
 

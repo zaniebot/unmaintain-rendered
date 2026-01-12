@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2025-03-06T18:11:16Z
 updated_at: 2025-03-06T18:28:10Z
 url: https://github.com/astral-sh/uv/pull/12014
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Allow users to set `package = true` on `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-06 18:11_
+_@charliermarsh_
 
 ## Summary
 

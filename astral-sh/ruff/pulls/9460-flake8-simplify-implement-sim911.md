@@ -14,14 +14,14 @@ head: simplify-SIM911
 created_at: 2024-01-10T23:14:14Z
 updated_at: 2024-01-11T19:47:12Z
 url: https://github.com/astral-sh/ruff/pull/9460
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`flake8-simplify`] Implement `SIM911`
 
 ---
 
-_Pull request opened by @trag1c on 2024-01-10 23:14_
+_@trag1c_
 
 ## Summary
 

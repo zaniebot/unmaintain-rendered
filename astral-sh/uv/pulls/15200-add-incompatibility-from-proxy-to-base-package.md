@@ -14,14 +14,14 @@ head: konsti/add-incompat-for-proxy-packages
 created_at: 2025-08-10T11:26:38Z
 updated_at: 2025-09-22T11:26:10Z
 url: https://github.com/astral-sh/uv/pull/15200
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add incompatibility from proxy to base package
 
 ---
 
-_Pull request opened by @konstin on 2025-08-10 11:26_
+_@konstin_
 
 Add an incompatibility that lets pubgrub skip of marker packages when the base package already has an incompatible version to improve the error messages (https://github.com/astral-sh/uv/issues/15199).
 

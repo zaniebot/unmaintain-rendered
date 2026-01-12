@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T23:33:58Z
 updated_at: 2024-09-03T22:04:02Z
 url: https://github.com/astral-sh/uv/issues/6392
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # `uv venv --python <version>` fails when querying managed python interpreter on alpine
 
 ---
 
-_Issue opened by @SamuelMarks on 2024-08-21 23:33_
+_@SamuelMarks_
 
 Saw your release notes and thought - perfect:
 >    uv venv --python <version> will [automatically download](https://docs.astral.sh/uv/concepts/python-versions/#requesting-a-version) the Python version if required

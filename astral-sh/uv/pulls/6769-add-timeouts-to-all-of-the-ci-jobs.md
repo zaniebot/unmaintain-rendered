@@ -13,14 +13,14 @@ head: zb/ci-timeout
 created_at: 2024-08-28T18:31:41Z
 updated_at: 2024-08-28T18:57:23Z
 url: https://github.com/astral-sh/uv/pull/6769
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Add timeouts to all of the CI jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 18:31_
+_@zanieb_
 
 Noticed https://github.com/astral-sh/uv/actions/runs/10601946253/job/29382920849?pr=6767 hung. This seems like best practice.
 

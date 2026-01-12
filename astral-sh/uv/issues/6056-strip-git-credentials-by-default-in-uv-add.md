@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-13T15:14:36Z
 updated_at: 2024-08-14T01:30:03Z
 url: https://github.com/astral-sh/uv/issues/6056
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Strip Git credentials by default in `uv add`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-13 15:14_
+_@charliermarsh_
 
 We still need to pass them to the `lock` operation though, probably. We should also retain them if `--raw-sources` is used, IMO.
 

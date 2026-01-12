@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-06-06T17:37:48Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/523
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Loosen Clippy Version Restriction
 
 ---
 
-_Issue opened by @indiv0 on 2016-06-06 17:37_
+_@indiv0_
 
 Would it be possible to loosen the Clippy version restriction from `=0.0.64` to `^0.0.64`?
 

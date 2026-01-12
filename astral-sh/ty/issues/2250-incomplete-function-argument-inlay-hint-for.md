@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-28T23:17:00Z
 updated_at: 2025-12-30T22:52:48Z
 url: https://github.com/astral-sh/ty/issues/2250
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incomplete function argument inlay hint for unpacked iterable
 
 ---
 
-_Issue opened by @phistep on 2025-12-28 23:17_
+_@phistep_
 
 ### Summary
 

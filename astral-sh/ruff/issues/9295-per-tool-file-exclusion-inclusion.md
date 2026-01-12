@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-27T23:21:44Z
 updated_at: 2023-12-28T06:29:39Z
 url: https://github.com/astral-sh/ruff/issues/9295
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Per-tool file exclusion/inclusion?
 
 ---
 
-_Issue opened by @ktbarrett on 2023-12-27 23:21_
+_@ktbarrett_
 
 I'm looking to add the `pydocstyle` tool to my ruff config, but it checks all Python sources in the repo with this rule. Not all Python code in the repo is public facing: automation, tests, etc. and does not warrant docstrings which generates a ton of errors.
 

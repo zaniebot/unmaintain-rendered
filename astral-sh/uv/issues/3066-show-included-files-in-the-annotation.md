@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-16T16:19:30Z
 updated_at: 2024-05-09T14:43:40Z
 url: https://github.com/astral-sh/uv/issues/3066
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Show included files in the annotation
 
 ---
 
-_Issue opened by @FredStober on 2024-04-16 16:19_
+_@FredStober_
 
 # Input Files:
 

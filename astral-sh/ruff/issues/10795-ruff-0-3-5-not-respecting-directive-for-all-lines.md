@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-05T22:40:34Z
 updated_at: 2024-04-06T14:51:19Z
 url: https://github.com/astral-sh/ruff/issues/10795
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff 0.3.5 not respecting directive for all lines of a multiline expression
 
 ---
 
-_Issue opened by @BenZickel on 2024-04-05 22:40_
+_@BenZickel_
 
 The bug occurs when switching from ruff 0.3.4 to 0.3.5 with the directive `# noga: F822` not respected for all lines of a multiline expression.
 

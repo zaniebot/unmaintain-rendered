@@ -14,14 +14,14 @@ head: micha/rename-src-root-to-environment-root
 created_at: 2025-06-18T16:17:30Z
 updated_at: 2025-06-24T12:40:47Z
 url: https://github.com/astral-sh/ruff/pull/18760
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [ty] Rename `src.root` setting to `environment.root`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-18 16:17_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fix/ns-package-scripts
 created_at: 2023-02-07T22:06:06Z
 updated_at: 2023-02-08T06:25:28Z
 url: https://github.com/astral-sh/ruff/pull/2640
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Ignore all non-`.py` wrt. implicit namespace package
 
 ---
 
-_Pull request opened by @scop on 2023-02-07 22:06_
+_@scop_
 
 It's not only `.pyi` that should be exempt for this, but also for example scripts which don't have an extension, explicitly passed in command line args.
 

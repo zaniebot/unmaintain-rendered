@@ -12,14 +12,14 @@ head: konsti/packse-0-3-31
 created_at: 2024-07-25T13:42:37Z
 updated_at: 2024-07-26T15:39:31Z
 url: https://github.com/astral-sh/uv/pull/5441
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Update to packse 0.3.31
 
 ---
 
-_Pull request opened by @konstin on 2024-07-25 13:42_
+_@konstin_
 
 Update packse to 0.3.31, adding the instability scenarios.
 

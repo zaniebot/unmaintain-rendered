@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-06T01:49:31Z
 updated_at: 2022-12-06T03:09:46Z
 url: https://github.com/astral-sh/ruff/issues/1096
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F841 detect unused variable in `with` statement
 
 ---
 
-_Issue opened by @tekumara on 2022-12-06 01:49_
+_@tekumara_
 
 ```python
 def foo():

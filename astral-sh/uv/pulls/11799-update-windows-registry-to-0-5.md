@@ -13,14 +13,14 @@ head: konsti/windows-registry-0.5
 created_at: 2025-02-26T14:06:54Z
 updated_at: 2025-02-26T15:33:32Z
 url: https://github.com/astral-sh/uv/pull/11799
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Update windows registry to 0.5
 
 ---
 
-_Pull request opened by @konstin on 2025-02-26 14:06_
+_@konstin_
 
 This update contains the feature we need to fix #11217
 

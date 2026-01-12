@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T14:58:13Z
 updated_at: 2025-08-11T15:41:07Z
 url: https://github.com/astral-sh/ty/issues/969
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # unresolved-import with installed stubs but not without
 
 ---
 
-_Issue opened by @Spindel on 2025-08-11 14:58_
+_@Spindel_
 
 ### Summary
 

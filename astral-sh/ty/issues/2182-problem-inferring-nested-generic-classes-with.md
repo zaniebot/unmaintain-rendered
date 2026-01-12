@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T09:30:15Z
 updated_at: 2026-01-08T18:04:06Z
 url: https://github.com/astral-sh/ty/issues/2182
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Problem inferring nested generic classes with defaults
 
 ---
 
-_Issue opened by @cmp0xff on 2025-12-23 09:30_
+_@cmp0xff_
 
 ### Summary
 

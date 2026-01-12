@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T20:43:46Z
 updated_at: 2026-01-09T21:37:22Z
 url: https://github.com/astral-sh/uv/issues/17390
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # UV_NO_SYNC=1 doesn't work as expected
 
 ---
 
-_Issue opened by @ravenkls on 2026-01-09 20:43_
+_@ravenkls_
 
 ### Summary
 

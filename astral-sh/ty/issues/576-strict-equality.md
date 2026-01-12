@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T14:33:03Z
 updated_at: 2025-12-16T16:29:43Z
 url: https://github.com/astral-sh/ty/issues/576
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # strict-equality
 
 ---
 
-_Issue opened by @zwing99 on 2025-06-03 14:33_
+_@zwing99_
 
 ### Question
 

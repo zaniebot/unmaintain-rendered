@@ -12,14 +12,14 @@ head: charlie/excludes
 created_at: 2022-08-19T22:00:39Z
 updated_at: 2022-08-20T17:00:59Z
 url: https://github.com/astral-sh/ruff/pull/18
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable excludes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-19 22:00_
+_@charliermarsh_
 
 _No description provided._
 

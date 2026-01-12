@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-26T09:39:05Z
 updated_at: 2025-12-27T00:19:24Z
 url: https://github.com/astral-sh/ty/issues/2226
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Widen JustFloat to `float | int` as part of widening literal types
 
 ---
 
-_Issue opened by @Wizzerinus on 2025-12-26 09:39_
+_@Wizzerinus_
 
 ### Summary
 

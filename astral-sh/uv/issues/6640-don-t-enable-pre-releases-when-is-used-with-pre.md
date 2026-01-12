@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-26T09:03:21Z
 updated_at: 2024-10-21T18:25:25Z
 url: https://github.com/astral-sh/uv/issues/6640
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Don't enable pre-releases when `!=` is used with pre-release specifier
 
 ---
 
-_Issue opened by @Czaki on 2024-08-26 09:03_
+_@Czaki_
 
 In napari project, we use uv to provide constraints files in automatic jobs 
 

@@ -15,14 +15,14 @@ head: gankra/real-import
 created_at: 2025-09-18T04:00:55Z
 updated_at: 2025-09-25T01:16:23Z
 url: https://github.com/astral-sh/ruff/pull/20461
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] when analyzing a .py file, do not error if there's also a .pyi for that module
 
 ---
 
-_Pull request opened by @Gankra on 2025-09-18 04:00_
+_@Gankra_
 
 This is a naive(?) implementation of the approach @MichaReiser originally suggested to me in https://github.com/astral-sh/ty/issues/869
 

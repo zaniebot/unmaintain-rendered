@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-20T18:48:08Z
 updated_at: 2023-05-25T14:51:47Z
 url: https://github.com/astral-sh/ruff/issues/4549
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # flake8-todos false negatives
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-05-20 18:48_
+_@JonathanPlasse_
 
 ```python
 # TODO

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-07T17:01:26Z
 updated_at: 2024-12-09T03:20:44Z
 url: https://github.com/astral-sh/uv/issues/9707
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Improve display of executable install errors during `uv python install`
 
 ---
 
-_Issue opened by @zanieb on 2024-12-07 17:01_
+_@zanieb_
 
 e.g.,
 

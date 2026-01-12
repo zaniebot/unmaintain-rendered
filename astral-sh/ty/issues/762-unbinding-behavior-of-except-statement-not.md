@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-03T23:38:40Z
 updated_at: 2025-07-04T01:17:34Z
 url: https://github.com/astral-sh/ty/issues/762
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Unbinding behavior of `except` statement not modeled by ty
 
 ---
 
-_Issue opened by @UnboundVariable on 2025-07-03 23:38_
+_@UnboundVariable_
 
 ### Summary
 

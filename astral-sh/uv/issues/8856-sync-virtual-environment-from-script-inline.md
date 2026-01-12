@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T06:22:43Z
 updated_at: 2024-11-06T15:38:03Z
 url: https://github.com/astral-sh/uv/issues/8856
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Sync virtual environment from script inline metadata
 
 ---
 
-_Issue opened by @tcoliver on 2024-11-06 06:22_
+_@tcoliver_
 
 I'd love to see a way to directly create a venv from a script's inline metadata. Perhaps a `uv sync --script myscript.py` option would work. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T00:54:31Z
 updated_at: 2025-06-23T14:24:48Z
 url: https://github.com/astral-sh/ruff/issues/18776
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-simplify] SIM911 fix causes syntax error
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 00:54_
+_@MeGaGiGaGon_
 
 ### Summary
 

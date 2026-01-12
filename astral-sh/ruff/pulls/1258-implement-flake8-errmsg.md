@@ -12,14 +12,14 @@ head: flake8-errmsg
 created_at: 2022-12-16T03:38:32Z
 updated_at: 2022-12-16T04:35:42Z
 url: https://github.com/astral-sh/ruff/pull/1258
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement `flake8-errmsg`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-12-16 03:38_
+_@edgarrmondragon_
 
 Closes https://github.com/charliermarsh/ruff/issues/1255
 

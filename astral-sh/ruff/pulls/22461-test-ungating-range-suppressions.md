@@ -12,14 +12,14 @@ head: amy/perf-enable-suppressions
 created_at: 2026-01-08T17:38:56Z
 updated_at: 2026-01-08T17:46:54Z
 url: https://github.com/astral-sh/ruff/pull/22461
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Test ungating range suppressions
 
 ---
 
-_Pull request opened by @amyreese on 2026-01-08 17:38_
+_@amyreese_
 
 _No description provided._
 

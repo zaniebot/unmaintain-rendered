@@ -13,14 +13,14 @@ head: add-shellcheck
 created_at: 2024-10-03T07:52:41Z
 updated_at: 2024-10-08T18:58:05Z
 url: https://github.com/astral-sh/uv/pull/7888
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Add shellcheck CI
 
 ---
 
-_Pull request opened by @sobolevn on 2024-10-03 07:52_
+_@sobolevn_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

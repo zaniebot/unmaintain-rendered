@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-06-16T17:43:29Z
 updated_at: 2021-06-17T12:39:41Z
 url: https://github.com/clap-rs/clap/issues/2542
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # support muti-arguments
 
 ---
 
-_Issue opened by @abdelmonem17 on 2021-06-16 17:43_
+_@abdelmonem17_
 
 ### Please complete the following tasks
 

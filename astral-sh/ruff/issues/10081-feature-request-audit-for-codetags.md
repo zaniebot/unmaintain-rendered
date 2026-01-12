@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T15:49:58Z
 updated_at: 2024-03-20T20:09:44Z
 url: https://github.com/astral-sh/ruff/issues/10081
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature Request: Audit for codetags
 
 ---
 
-_Issue opened by @mattgiles on 2024-02-22 15:49_
+_@mattgiles_
 
 This is potentially beyond the perimeter of Ruff's core linting/formatting concerns, but I'm curious if there's any appetite to support a simple workflow/command for auditing/printing/outputting codetag comments (`TODO:`, `HACK:`, etc) from target paths. Either as it's own subcommand, or as an option for `ruff check`.
 

@@ -14,14 +14,14 @@ head: david/final-attributes
 created_at: 2025-07-21T10:59:07Z
 updated_at: 2025-07-21T12:27:57Z
 url: https://github.com/astral-sh/ruff/pull/19457
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Disallow assignment to `Final` class attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-21 10:59_
+_@sharkdp_
 
 ## Summary
 

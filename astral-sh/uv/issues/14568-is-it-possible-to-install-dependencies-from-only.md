@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T17:36:59Z
 updated_at: 2025-07-12T03:47:02Z
 url: https://github.com/astral-sh/uv/issues/14568
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Is it possible to install dependencies from only `uv.lock`?
 
 ---
 
-_Issue opened by @vtiriac on 2025-07-11 17:36_
+_@vtiriac_
 
 ### Question
 

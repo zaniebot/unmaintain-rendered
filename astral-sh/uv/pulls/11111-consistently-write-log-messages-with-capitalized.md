@@ -13,14 +13,14 @@ head: zb/trace-cap
 created_at: 2025-01-30T18:48:26Z
 updated_at: 2025-02-02T14:11:33Z
 url: https://github.com/astral-sh/uv/pull/11111
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Consistently write log messages with capitalized first word
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-30 18:48_
+_@zanieb_
 
 _No description provided._
 

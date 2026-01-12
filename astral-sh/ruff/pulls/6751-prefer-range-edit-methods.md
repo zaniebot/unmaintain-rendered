@@ -13,14 +13,14 @@ head: charlie/range
 created_at: 2023-08-22T03:46:12Z
 updated_at: 2023-08-22T16:05:31Z
 url: https://github.com/astral-sh/ruff/pull/6751
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Prefer `range_*` edit methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 03:46_
+_@charliermarsh_
 
 _No description provided._
 

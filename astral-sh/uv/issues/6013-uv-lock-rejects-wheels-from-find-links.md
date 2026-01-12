@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T00:14:36Z
 updated_at: 2024-08-12T02:02:40Z
 url: https://github.com/astral-sh/uv/issues/6013
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv lock` rejects wheels from `--find-links`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-12 00:14_
+_@charliermarsh_
 
 ```
 ❯ uv lock --no-index --find-links ../scripts/links

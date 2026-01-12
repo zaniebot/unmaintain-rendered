@@ -13,14 +13,14 @@ head: zb/canon
 created_at: 2024-01-22T21:16:55Z
 updated_at: 2024-01-22T21:44:23Z
 url: https://github.com/astral-sh/uv/pull/1046
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Canonicalize paths to interpreter executables before checking modified time
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 21:16_
+_@zanieb_
 
 If the executable is a symbolic link, checking the modified time will not reflect changes to the source file e.g.
 

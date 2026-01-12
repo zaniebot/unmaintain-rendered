@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T23:29:12Z
 updated_at: 2025-05-24T12:19:44Z
 url: https://github.com/astral-sh/uv/issues/13606
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Bug? `uv sync` uses extra dependencies even when not requested
 
 ---
 
-_Issue opened by @Guitaricet on 2025-05-22 23:29_
+_@Guitaricet_
 
 ### Summary
 

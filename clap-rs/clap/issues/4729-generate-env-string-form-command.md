@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-24T13:53:58Z
 updated_at: 2024-07-25T16:03:15Z
 url: https://github.com/clap-rs/clap/issues/4729
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Generate `.env` string form Command
 
 ---
 
-_Issue opened by @joepio on 2023-02-24 13:53_
+_@joepio_
 
 ### Please complete the following tasks
 

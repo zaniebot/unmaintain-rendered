@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-09T12:44:28Z
 updated_at: 2024-03-01T03:32:05Z
 url: https://github.com/astral-sh/ruff/issues/7868
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Do not require built-in sections to be present in `section-order`
 
 ---
 
-_Issue opened by @levrik on 2023-10-09 12:44_
+_@levrik_
 
 I'm currently in the process of migrating from flake8 and isort to Ruff.
 

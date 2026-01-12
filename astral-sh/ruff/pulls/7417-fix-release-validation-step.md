@@ -13,14 +13,14 @@ head: zanie/fix-release-checks
 created_at: 2023-09-15T19:56:18Z
 updated_at: 2023-09-15T21:08:19Z
 url: https://github.com/astral-sh/ruff/pull/7417
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix release validation step
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-15 19:56_
+_@zanieb_
 
 Proof of concept at #7416
 Fixes `main` branch check added in #7279 (see [failure](https://github.com/astral-sh/ruff/actions/runs/6201772425/job/16839150669))

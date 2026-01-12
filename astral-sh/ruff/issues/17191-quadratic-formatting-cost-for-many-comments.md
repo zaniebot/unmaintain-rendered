@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-03T23:56:37Z
 updated_at: 2025-04-05T07:24:27Z
 url: https://github.com/astral-sh/ruff/issues/17191
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Quadratic formatting cost for many comments between two lines
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-04-03 23:56_
+_@hauntsaninja_
 
 ### Summary
 

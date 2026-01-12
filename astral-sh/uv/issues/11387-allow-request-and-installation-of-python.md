@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T15:47:49Z
 updated_at: 2025-02-11T20:33:30Z
 url: https://github.com/astral-sh/uv/issues/11387
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Allow request and installation of Python interpreters with debug symbols
 
 ---
 
-_Issue opened by @willnewton on 2025-02-10 15:47_
+_@willnewton_
 
 ### Question
 

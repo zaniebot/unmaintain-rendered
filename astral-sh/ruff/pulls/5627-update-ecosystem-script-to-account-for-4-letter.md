@@ -12,14 +12,14 @@ head: dhruv/ecosystem-check
 created_at: 2023-07-09T10:22:20Z
 updated_at: 2023-07-11T17:34:51Z
 url: https://github.com/astral-sh/ruff/pull/5627
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update ecosystem script to account for 4 letter code
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-09 10:22_
+_@dhruvmanila_
 
 E.g., `PERF`
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T10:04:34Z
 updated_at: 2025-10-17T18:12:50Z
 url: https://github.com/astral-sh/ruff/issues/20936
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # N818 ErrorSuffixOnExceptionName should apply recursively to sub-subclasses of Exception
 
 ---
 
-_Issue opened by @maltevesper on 2025-10-17 10:04_
+_@maltevesper_
 
 This is created to reraise #783, as requested by @ntBre in [#783](https://github.com/astral-sh/ruff/issues/783#issuecomment-3410784877)_
 

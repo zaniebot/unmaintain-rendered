@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T16:31:56Z
 updated_at: 2024-02-18T08:12:07Z
 url: https://github.com/astral-sh/uv/issues/1598
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Enhancement Request: `uv pip install` with explicit venv path
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-02-17 16:31_
+_@charlesnicholson_
 
 Thanks for `uv`, it's very impressive! :)
 

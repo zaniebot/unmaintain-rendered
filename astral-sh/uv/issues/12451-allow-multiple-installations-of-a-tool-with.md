@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T20:18:10Z
 updated_at: 2025-04-01T20:51:54Z
 url: https://github.com/astral-sh/uv/issues/12451
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # allow multiple installations of a tool with different names in the bin folder
 
 ---
 
-_Issue opened by @jabbera on 2025-03-24 20:18_
+_@jabbera_
 
 ### Summary
 

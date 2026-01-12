@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2024-08-30T19:30:48Z
 updated_at: 2024-08-30T19:40:39Z
 url: https://github.com/astral-sh/uv/pull/6885
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Error when discovered Python is incompatible with `--isolated` workspace
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 19:30_
+_@charliermarsh_
 
 ## Summary
 

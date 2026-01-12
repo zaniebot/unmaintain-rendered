@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T17:56:01Z
 updated_at: 2025-03-05T18:48:09Z
 url: https://github.com/astral-sh/uv/issues/11929
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Upgrading tools adds an identical entry to the `index` list in uv-receipt.toml
 
 ---
 
-_Issue opened by @nbaju1 on 2025-03-03 17:56_
+_@nbaju1_
 
 ### Summary
 

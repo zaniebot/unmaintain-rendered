@@ -14,14 +14,14 @@ head: charlie/ua
 created_at: 2025-01-20T17:43:55Z
 updated_at: 2025-01-20T19:30:06Z
 url: https://github.com/astral-sh/uv/pull/10785
-synced_at: 2026-01-10T11:45:09Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Include version and contact information in GitHub User Agent
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 17:43_
+_@charliermarsh_
 
 ## Summary
 

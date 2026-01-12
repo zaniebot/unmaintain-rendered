@@ -13,14 +13,14 @@ head: alex/safe-mutable
 created_at: 2025-08-07T12:19:43Z
 updated_at: 2025-08-12T17:51:25Z
 url: https://github.com/astral-sh/ruff/pull/19804
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] [experiment] remove "safe mutable class" special handling
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-07 12:19_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

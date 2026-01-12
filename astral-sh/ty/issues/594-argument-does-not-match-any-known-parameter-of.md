@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T18:14:43Z
 updated_at: 2025-06-07T14:14:17Z
 url: https://github.com/astral-sh/ty/issues/594
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Argument does not match any known parameter of bound method `__init__`
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-06 18:14_
+_@Ryang20718_
 
 ### Summary
 

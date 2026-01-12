@@ -13,14 +13,14 @@ head: charlie/url
 created_at: 2024-03-04T21:57:50Z
 updated_at: 2024-03-04T22:09:09Z
 url: https://github.com/astral-sh/uv/pull/2176
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Respect markers on URL dependencies in editables
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 21:57_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2172.
 

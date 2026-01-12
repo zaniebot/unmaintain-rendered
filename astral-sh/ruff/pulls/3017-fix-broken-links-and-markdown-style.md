@@ -12,14 +12,14 @@ head: fix-markdownlint-errors
 created_at: 2023-02-18T18:00:37Z
 updated_at: 2023-02-19T14:53:31Z
 url: https://github.com/astral-sh/ruff/pull/3017
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix broken links and markdown style
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-18 18:00_
+_@JonathanPlasse_
 
 Fix broken links and markdown style.
 The errors were caught by `markdownlint`.

@@ -13,14 +13,14 @@ head: charlie/warn-user-once
 created_at: 2023-10-28T01:29:07Z
 updated_at: 2023-10-30T23:32:56Z
 url: https://github.com/astral-sh/ruff/pull/8292
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid duplicating linter-formatter compatibility warnings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-28 01:29_
+_@charliermarsh_
 
 ## Summary
 

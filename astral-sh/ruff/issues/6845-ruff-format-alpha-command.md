@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T08:21:15Z
 updated_at: 2023-08-28T15:25:48Z
 url: https://github.com/astral-sh/ruff/issues/6845
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ruff `format` alpha command
 
 ---
 
-_Issue opened by @konstin on 2023-08-24 08:21_
+_@konstin_
 
 We would like gather some feedback on the current state of the formatter. We plan to add a beta `ruff format` command that works on stdin (esp. for lsp integration), single files and an entire project (for now, with the same includes/excludes as ruff itself). This command will lack a lot of options and features we want in the final version, the only additional configuration we'll respect is ruff's `line-length`. This command is intended to be tried out and not yet adopted into production projects.
 

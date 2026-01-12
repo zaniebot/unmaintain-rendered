@@ -12,14 +12,14 @@ head: docker-builder
 created_at: 2023-10-30T19:16:52Z
 updated_at: 2023-11-02T11:03:57Z
 url: https://github.com/astral-sh/uv/pull/238
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Add docker builder
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 19:16_
+_@konstin_
 
 This docker container provides isolation of source distribution builds, whether [intended to be helpful](https://pypi.org/project/nvidia-pyindex/) or other more or less malicious forms of host system modification. 
 

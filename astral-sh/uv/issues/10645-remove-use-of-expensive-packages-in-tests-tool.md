@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T21:05:46Z
 updated_at: 2025-01-17T23:20:27Z
 url: https://github.com/astral-sh/uv/issues/10645
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Remove use of expensive packages in tests `tool_run_csv_with` and `tool_run_repeated_with`
 
 ---
 
-_Issue opened by @zanieb on 2025-01-15 21:05_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/7909 added some test cases like `tool_run_csv_with` and `tool_run_repeated_with` which appear in our slow tests list (https://github.com/astral-sh/uv/issues/878#issuecomment-2593922536) presumably because they're using expensive packages like `pandas` and `numpy`. We shouldn't use big packages like that unless we absolutely have to.
 

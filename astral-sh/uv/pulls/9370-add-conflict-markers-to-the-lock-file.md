@@ -14,14 +14,14 @@ head: ag/i9289
 created_at: 2024-11-22T20:38:12Z
 updated_at: 2024-12-10T15:57:57Z
 url: https://github.com/astral-sh/uv/pull/9370
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # add conflict markers to the lock file
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-22 20:38_
+_@BurntSushi_
 
 This PR adds a notion of "conflict markers" to the lock file as an
 attempt to address #9289. The idea is to encode a new kind of boolean

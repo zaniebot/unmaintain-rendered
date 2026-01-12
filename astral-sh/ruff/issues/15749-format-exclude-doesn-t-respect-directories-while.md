@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T01:12:34Z
 updated_at: 2025-01-27T01:33:05Z
 url: https://github.com/astral-sh/ruff/issues/15749
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `format.exclude` doesn't respect directories, while global `extend-exclude` does
 
 ---
 
-_Issue opened by @DavisVaughan on 2025-01-27 01:12_
+_@DavisVaughan_
 
 ### Description
 

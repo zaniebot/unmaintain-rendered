@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T07:25:20Z
 updated_at: 2025-09-12T15:05:57Z
 url: https://github.com/astral-sh/uv/issues/15782
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # How to add dependency to whl file
 
 ---
 
-_Issue opened by @SimonJonsson1999 on 2025-09-11 07:25_
+_@SimonJonsson1999_
 
 ### Question
 

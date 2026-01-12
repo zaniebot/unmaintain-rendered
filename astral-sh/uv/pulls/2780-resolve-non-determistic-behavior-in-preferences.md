@@ -13,14 +13,14 @@ head: zb/test-installed-multiple
 created_at: 2024-04-02T16:50:20Z
 updated_at: 2024-04-02T20:14:47Z
 url: https://github.com/astral-sh/uv/pull/2780
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Resolve non-determistic behavior in preferences due to site-packages ordering
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 16:50_
+_@zanieb_
 
 Originally a regression test for #2779 but we found out that there's some weird behavior where different `anyio` versions were preferred based on the platform.
 

@@ -14,14 +14,14 @@ head: alex/syntax-error-hint
 created_at: 2025-05-25T10:44:00Z
 updated_at: 2025-05-26T20:44:44Z
 url: https://github.com/astral-sh/ruff/pull/18295
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Tell the user why we inferred a certain Python version when reporting version-specific syntax errors
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-25 10:44_
+_@AlexWaygood_
 
 ## Summary
 

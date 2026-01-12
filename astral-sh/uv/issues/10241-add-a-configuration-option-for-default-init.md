@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T14:58:37Z
 updated_at: 2024-12-30T17:37:14Z
 url: https://github.com/astral-sh/uv/issues/10241
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Add a configuration option for default init options
 
 ---
 
-_Issue opened by @m-legrand on 2024-12-30 14:58_
+_@m-legrand_
 
 _This is a feature request_
 

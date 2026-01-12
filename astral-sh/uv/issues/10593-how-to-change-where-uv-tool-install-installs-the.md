@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T12:36:14Z
 updated_at: 2025-01-14T16:39:49Z
 url: https://github.com/astral-sh/uv/issues/10593
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # How to change where `uv tool install` installs the binaries?
 
 ---
 
-_Issue opened by @dezlymacauley on 2025-01-14 12:36_
+_@dezlymacauley_
 
 **uv version:** 
 0.5.18 (27d1bad55 2025-01-11)

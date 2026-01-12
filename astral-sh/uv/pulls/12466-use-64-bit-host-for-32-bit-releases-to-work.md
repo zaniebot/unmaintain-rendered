@@ -13,14 +13,14 @@ head: konsti/fix-i686-oom
 created_at: 2025-03-25T14:44:20Z
 updated_at: 2025-03-25T17:33:32Z
 url: https://github.com/astral-sh/uv/pull/12466
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Use 64-bit host for 32-bit releases to work around OOM
 
 ---
 
-_Pull request opened by @konstin on 2025-03-25 14:44_
+_@konstin_
 
 The i686 linux gnu release job started failing since the last release (#12430) due to an OOM with llvm breaking the 4GB limit for 32-bit processes. We work around this by using a 64-bit host targeting 32-bit.
 

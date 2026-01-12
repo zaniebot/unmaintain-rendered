@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-04-04T16:48:19Z
 updated_at: 2024-04-04T16:50:55Z
 url: https://github.com/astral-sh/ruff/pull/10777
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # docs: `Lint` -> `Format` in formatter.md
 
 ---
 
-_Pull request opened by @SnirBroshi on 2024-04-04 16:48_
+_@SnirBroshi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

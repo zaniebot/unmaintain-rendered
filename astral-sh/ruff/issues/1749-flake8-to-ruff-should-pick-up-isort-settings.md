@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-09T17:52:29Z
 updated_at: 2023-12-07T15:10:45Z
 url: https://github.com/astral-sh/ruff/issues/1749
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `flake8-to-ruff` should pick up `isort` settings
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-09 17:52_
+_@charliermarsh_
 
 _No description provided._
 

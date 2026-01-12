@@ -13,14 +13,14 @@ head: ibraheem/declared-attribute-type-context
 created_at: 2025-10-31T16:01:41Z
 updated_at: 2025-10-31T16:41:15Z
 url: https://github.com/astral-sh/ruff/pull/21170
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Support type context of union attribute assignments
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-31 16:01_
+_@ibraheemdev_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T13:51:25Z
 updated_at: 2022-11-24T16:06:54Z
 url: https://github.com/clap-rs/clap/issues/4504
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Bring back `possible_values` (because `ValueEnum` does not fit everything)
 
 ---
 
-_Issue opened by @KSXGitHub on 2022-11-23 13:51_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

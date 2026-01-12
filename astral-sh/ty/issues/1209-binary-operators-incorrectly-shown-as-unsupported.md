@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-19T15:30:16Z
 updated_at: 2025-10-14T12:27:55Z
 url: https://github.com/astral-sh/ty/issues/1209
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Binary operators incorrectly shown as 'unsupported-operator' if defined via a factory with `Callable` return type
 
 ---
 
-_Issue opened by @wurli on 2025-09-19 15:30_
+_@wurli_
 
 ### Summary
 

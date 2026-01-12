@@ -12,14 +12,14 @@ head: autofix-experimental
 created_at: 2023-06-07T19:45:27Z
 updated_at: 2023-06-12T18:32:24Z
 url: https://github.com/astral-sh/ruff/pull/4936
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Test autofix prompting
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-06-07 19:45_
+_@sladyn98_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

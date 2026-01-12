@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T09:29:35Z
 updated_at: 2024-09-18T06:58:43Z
 url: https://github.com/astral-sh/ruff/issues/13378
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # When set to parents (default) ban-relative-imports setting results in no errors despite parent relative imports being present
 
 ---
 
-_Issue opened by @lgig on 2024-09-17 09:29_
+_@lgig_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T14:29:57Z
 updated_at: 2025-05-08T14:15:55Z
 url: https://github.com/astral-sh/ty/issues/91
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # panics when type-checking CRTP generic classes
 
 ---
 
-_Issue opened by @wence- on 2025-05-07 14:29_
+_@wence-_
 
 ### Summary
 

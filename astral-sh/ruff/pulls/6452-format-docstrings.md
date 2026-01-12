@@ -13,14 +13,14 @@ head: docstring_formatting
 created_at: 2023-08-09T17:31:15Z
 updated_at: 2023-08-14T13:51:17Z
 url: https://github.com/astral-sh/ruff/pull/6452
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Format docstrings
 
 ---
 
-_Pull request opened by @konstin on 2023-08-09 17:31_
+_@konstin_
 
 **Summary** Implement docstring formatting
 

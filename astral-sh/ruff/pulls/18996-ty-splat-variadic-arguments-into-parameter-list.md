@@ -13,14 +13,14 @@ head: dcreager/splat
 created_at: 2025-06-27T19:31:20Z
 updated_at: 2025-07-22T18:33:10Z
 url: https://github.com/astral-sh/ruff/pull/18996
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Splat variadic arguments into parameter list
 
 ---
 
-_Pull request opened by @dcreager on 2025-06-27 19:31_
+_@dcreager_
 
 This PR updates our call binding logic to handle splatted arguments.
 

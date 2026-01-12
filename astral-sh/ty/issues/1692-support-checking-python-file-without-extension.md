@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-30T23:53:25Z
 updated_at: 2025-12-10T16:47:43Z
 url: https://github.com/astral-sh/ty/issues/1692
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support checking python file without extension
 
 ---
 
-_Issue opened by @bulletmark on 2025-11-30 23:53_
+_@bulletmark_
 
 ### Summary
 

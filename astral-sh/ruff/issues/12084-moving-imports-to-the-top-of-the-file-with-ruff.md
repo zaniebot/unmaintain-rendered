@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T05:52:46Z
 updated_at: 2024-06-28T11:51:49Z
 url: https://github.com/astral-sh/ruff/issues/12084
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # moving imports to the top of the file with ruff
 
 ---
 
-_Issue opened by @RishiMalhotra920 on 2024-06-28 05:52_
+_@RishiMalhotra920_
 
 I'm switching over from isort to ruff and one feature I dearly miss is auto-moving imports to the top of the file. I'm using ruff v0.5.0.
 

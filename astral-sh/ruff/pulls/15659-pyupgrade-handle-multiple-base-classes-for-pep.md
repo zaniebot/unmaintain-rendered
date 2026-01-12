@@ -14,14 +14,14 @@ head: brent/pep695-multi-base
 created_at: 2025-01-21T23:17:52Z
 updated_at: 2025-01-23T01:19:15Z
 url: https://github.com/astral-sh/ruff/pull/15659
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyupgrade`] Handle multiple base classes for PEP 695 generics (`UP046`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-21 23:17_
+_@ntBre_
 
 ## Summary
 

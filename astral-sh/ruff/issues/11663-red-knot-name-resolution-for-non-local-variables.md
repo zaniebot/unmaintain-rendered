@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:12:57Z
 updated_at: 2024-09-03T21:18:07Z
 url: https://github.com/astral-sh/ruff/issues/11663
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] name resolution for non-local variables
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:12_
+_@carljm_
 
 Currently we only handle local and global names, not nonlocals.
 

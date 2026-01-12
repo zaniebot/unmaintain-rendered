@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T12:24:26Z
 updated_at: 2025-12-03T13:45:33Z
 url: https://github.com/astral-sh/ruff/issues/21773
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # noqa: PLC0415 F401 - PLC0415 directive gets ignored
 
 ---
 
-_Issue opened by @cleder on 2025-12-03 12:24_
+_@cleder_
 
 ### Summary
 

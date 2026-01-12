@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T00:59:23Z
 updated_at: 2025-04-15T20:28:23Z
 url: https://github.com/astral-sh/uv/issues/12855
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # wrong python used in run
 
 ---
 
-_Issue opened by @dotysan on 2025-04-14 00:59_
+_@dotysan_
 
 ### Summary
 

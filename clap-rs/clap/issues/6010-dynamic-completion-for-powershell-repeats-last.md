@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-22T20:00:17Z
 updated_at: 2025-10-29T22:35:39Z
 url: https://github.com/clap-rs/clap/issues/6010
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Dynamic completion for powershell repeats last word when completing next argument
 
 ---
 
-_Issue opened by @jakobhellermann on 2025-05-22 20:00_
+_@jakobhellermann_
 
 ### Please complete the following tasks
 

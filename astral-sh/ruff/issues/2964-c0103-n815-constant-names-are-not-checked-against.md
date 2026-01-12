@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T18:19:12Z
 updated_at: 2025-04-25T15:48:23Z
 url: https://github.com/astral-sh/ruff/issues/2964
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # C0103/N815: Constant names are not checked against UPPER_CASE naming convention
 
 ---
 
-_Issue opened by @Fall1ngStar on 2023-02-16 18:19_
+_@Fall1ngStar_
 
 Hi ruff team,
 

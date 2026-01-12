@@ -13,14 +13,14 @@ head: jtfm/auth-trace
 created_at: 2025-03-26T21:15:09Z
 updated_at: 2025-03-27T14:10:04Z
 url: https://github.com/astral-sh/uv/pull/12497
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Improve trace message in auth middleware
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-26 21:15_
+_@jtfmumm_
 
 Updated trace message to be clearer.
 

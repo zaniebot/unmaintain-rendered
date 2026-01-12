@@ -13,14 +13,14 @@ head: david/descriptor-protocol-try_call_dunder_get_query
 created_at: 2025-02-20T16:58:24Z
 updated_at: 2025-02-20T18:15:44Z
 url: https://github.com/astral-sh/ruff/pull/16281
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Descriptor PR experiment: make `try_call_dunder_get` a query
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-20 16:58_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

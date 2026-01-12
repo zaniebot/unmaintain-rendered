@@ -13,14 +13,14 @@ head: add_with_editable_in_uvx
 created_at: 2024-08-28T10:50:08Z
 updated_at: 2024-09-19T02:13:47Z
 url: https://github.com/astral-sh/uv/pull/6744
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Add support for `--with-editable` to `uv tool ru`
 
 ---
 
-_Pull request opened by @kyoto7250 on 2024-08-28 10:50_
+_@kyoto7250_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

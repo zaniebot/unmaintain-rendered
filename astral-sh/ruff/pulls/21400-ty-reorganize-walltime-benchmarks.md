@@ -14,14 +14,14 @@ head: david/reorganize-benchmarks
 created_at: 2025-11-12T10:59:44Z
 updated_at: 2025-11-12T11:41:41Z
 url: https://github.com/astral-sh/ruff/pull/21400
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Reorganize walltime benchmarks
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-12 10:59_
+_@sharkdp_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-20T20:09:47Z
 updated_at: 2025-01-25T10:53:44Z
 url: https://github.com/astral-sh/ruff/issues/15087
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Configuration options for argument splitting into multiple lines
 
 ---
 
-_Issue opened by @oxysoft on 2024-12-20 20:09_
+_@oxysoft_
 
 Hi, I looked around and surprisingly did not find any options for this. I just started using Ruff, and it is splitting all my arguments like crazy. For example this line is being turned into 3 lines!
 

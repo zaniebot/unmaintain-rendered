@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-06T00:02:51Z
 updated_at: 2022-12-06T00:13:23Z
 url: https://github.com/astral-sh/ruff/issues/1092
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] Incorrect fix for `D210` (no whitespace surrounding docstring text)
 
 ---
 
-_Issue opened by @smackesey on 2022-12-06 00:02_
+_@smackesey_
 
 When the summary ends in a double quote, the `D210` fix produces invalid Python:
 

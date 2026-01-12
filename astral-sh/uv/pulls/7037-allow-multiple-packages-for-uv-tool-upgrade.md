@@ -13,14 +13,14 @@ head: uv-tool-multiple-pkg
 created_at: 2024-09-04T17:20:47Z
 updated_at: 2024-09-06T08:03:46Z
 url: https://github.com/astral-sh/uv/pull/7037
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Allow multiple packages for `uv tool upgrade/uninstall`
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-04 17:20_
+_@blueraft_
 
 ## Summary
 

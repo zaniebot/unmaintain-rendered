@@ -11,14 +11,14 @@ head: fix/passthrough-username-to-keyring
 created_at: 2024-03-20T18:55:29Z
 updated_at: 2024-04-16T16:50:02Z
 url: https://github.com/astral-sh/uv/pull/2570
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Use URL-encoded username for keyring if no URL-encoded password
 
 ---
 
-_Pull request opened by @BakerNet on 2024-03-20 18:55_
+_@BakerNet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

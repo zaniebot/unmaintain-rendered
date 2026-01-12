@@ -13,14 +13,14 @@ head: konsti/arc-package
 created_at: 2024-05-21T10:11:26Z
 updated_at: 2024-05-21T11:51:26Z
 url: https://github.com/astral-sh/uv/pull/3688
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Arc-wrap `PubGrubPackage` for cheap cloning in pubgrub
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 10:11_
+_@konstin_
 
 Pubgrub stores incompatibilities as (package name, version range) tuples, meaning it needs to clone the package name for each incompatibility, and each non-borrowed operation on incompatibilities. https://github.com/astral-sh/uv/pull/3673 made me realize that `PubGrubPackage` has gotten large (expensive to copy), so like `Version` and other structs, i've added an `Arc` wrapper around it.
 

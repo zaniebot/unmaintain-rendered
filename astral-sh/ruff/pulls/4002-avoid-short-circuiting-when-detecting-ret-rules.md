@@ -12,14 +12,14 @@ head: charlie/ret
 created_at: 2023-04-18T02:35:12Z
 updated_at: 2023-04-18T03:07:00Z
 url: https://github.com/astral-sh/ruff/pull/4002
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Avoid short-circuiting when detecting RET rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-18 02:35_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-14T19:52:49Z
 updated_at: 2025-09-26T05:59:49Z
 url: https://github.com/clap-rs/clap/issues/4481
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # value_parser that should return Vec<u8> panics with Mismatch between definition and access of `Payload`. Could not downcast to u8, need to downcast to alloc::vec::Vec<u8>
 
 ---
 
-_Issue opened by @vslynko on 2022-11-14 19:52_
+_@vslynko_
 
 ### Please complete the following tasks
 

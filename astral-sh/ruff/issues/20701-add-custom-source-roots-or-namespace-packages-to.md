@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-05T10:56:57Z
 updated_at: 2025-10-07T06:47:06Z
 url: https://github.com/astral-sh/ruff/issues/20701
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # add custom source roots or namespace packages to `analyze graph`?
 
 ---
 
-_Issue opened by @gwdekker on 2025-10-05 10:56_
+_@gwdekker_
 
 `ruff analyze graph` is a great potential way to quickly get a projects' dependency tree which could be very useful in many different ways.
 

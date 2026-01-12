@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T14:23:21Z
 updated_at: 2024-10-18T14:39:05Z
 url: https://github.com/astral-sh/uv/issues/8329
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # `uv run` without generating `uv.lock` file
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-10-18 14:23_
+_@patrick-kidger_
 
 We'd like to use `uv`, whilst using `requirements.txt` as the lockfile format.
 

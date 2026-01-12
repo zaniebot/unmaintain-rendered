@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-12T04:34:43Z
 updated_at: 2023-07-12T04:34:47Z
 url: https://github.com/astral-sh/ruff/issues/5703
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Use `globset` for `KnownModules` categorization
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-12 04:34_
+_@charliermarsh_
 
 Rather than maintaining a vector of `Vec<(glob::Pattern, ImportSection)>`, in theory we could collapse the patterns into `Vec<(globset::GlobSet, ImportSection)>`. It's worth profiling to see whether this is impactful on real projects.
 

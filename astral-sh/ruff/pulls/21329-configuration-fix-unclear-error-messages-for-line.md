@@ -12,14 +12,14 @@ head: fix-21328
 created_at: 2025-11-07T23:15:08Z
 updated_at: 2025-11-10T18:45:29Z
 url: https://github.com/astral-sh/ruff/pull/21329
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [`configuration`] Fix unclear error messages for line-length values exceeding `u16::MAX`
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-07 23:15_
+_@danparizher_
 
 ## Summary
 

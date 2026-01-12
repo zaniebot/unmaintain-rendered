@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T22:21:00Z
 updated_at: 2025-02-04T17:28:18Z
 url: https://github.com/astral-sh/uv/issues/10948
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Best Practices for integrating uv with PYTHONPATH
 
 ---
 
-_Issue opened by @ClarkMyWords on 2025-01-24 22:21_
+_@ClarkMyWords_
 
 ### Question
 

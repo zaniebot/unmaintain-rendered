@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T09:52:56Z
 updated_at: 2025-03-28T18:51:18Z
 url: https://github.com/astral-sh/uv/issues/12268
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Fast way to run inline scripts from git
 
 ---
 
-_Issue opened by @mrkbac on 2025-03-18 09:52_
+_@mrkbac_
 
 ### Question
 

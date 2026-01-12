@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T18:22:50Z
 updated_at: 2025-07-22T19:11:16Z
 url: https://github.com/astral-sh/uv/issues/14829
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Possible regression in v0.8.1 - stream did not contain valid UTF-8
 
 ---
 
-_Issue opened by @jaredmarks-allspring on 2025-07-22 18:22_
+_@jaredmarks-allspring_
 
 ### Summary
 

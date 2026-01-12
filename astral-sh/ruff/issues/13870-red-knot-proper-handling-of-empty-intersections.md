@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-21T21:41:30Z
 updated_at: 2024-10-22T19:02:47Z
 url: https://github.com/astral-sh/ruff/issues/13870
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Proper handling of empty intersections and Never.
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-21 21:41_
+_@sharkdp_
 
 I found this while creating the type `Literal[1, 2, 3] & ~Literal[1] & ~Literal[2]`. I was expecting to get `Literal[3]` after all simplifications were applied, but I got `~Literal[2] | Literal[3]` instead. This is clearly not optimal.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T07:48:55Z
 updated_at: 2024-11-06T08:58:05Z
 url: https://github.com/astral-sh/uv/issues/6497
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Possibility for no output when running a script with `uv run main.py` (that has filled requirements)
 
 ---
 
-_Issue opened by @justcallmelarry on 2024-08-23 07:48_
+_@justcallmelarry_
 
 Perhaps this is possible already, but I tried both looking in the documentation and in the code but was not able to figure out a  way, if it is already possible, sorry for the extra work…
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T06:15:32Z
 updated_at: 2024-07-23T13:14:23Z
 url: https://github.com/astral-sh/ruff/issues/12469
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ord violation panic when fixing file with nightly compiler
 
 ---
 
-_Issue opened by @qarmin on 2024-07-23 06:15_
+_@qarmin_
 
 File content(at the bottom should be attached raw, not formatted file - github removes some non-printable characters, so copying from here may not work):
 ```

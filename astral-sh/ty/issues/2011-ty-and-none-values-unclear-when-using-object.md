@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T13:52:52Z
 updated_at: 2025-12-17T14:21:30Z
 url: https://github.com/astral-sh/ty/issues/2011
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Ty and None values unclear when using object initialisation logic
 
 ---
 
-_Issue opened by @laurensnaturalis on 2025-12-17 13:52_
+_@laurensnaturalis_
 
 ### Question
 

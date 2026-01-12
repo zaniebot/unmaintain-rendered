@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T09:24:48Z
 updated_at: 2025-06-11T13:52:20Z
 url: https://github.com/astral-sh/ruff/issues/18622
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Using LiteralString type with S605
 
 ---
 
-_Issue opened by @Kajiih on 2025-06-11 09:24_
+_@Kajiih_
 
 ### Summary
 

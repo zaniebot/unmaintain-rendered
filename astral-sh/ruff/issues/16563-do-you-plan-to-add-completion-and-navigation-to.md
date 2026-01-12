@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T07:42:11Z
 updated_at: 2025-05-29T18:27:21Z
 url: https://github.com/astral-sh/ruff/issues/16563
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # do you plan to add completion and navigation to ruff server ?
 
 ---
 
-_Issue opened by @ginolegigot on 2025-03-08 07:42_
+_@ginolegigot_
 
 ### Question
 

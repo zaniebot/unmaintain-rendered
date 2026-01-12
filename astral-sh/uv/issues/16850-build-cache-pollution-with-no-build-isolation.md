@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-25T19:44:10Z
 updated_at: 2025-11-26T16:48:02Z
 url: https://github.com/astral-sh/uv/issues/16850
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Build cache pollution with `no-build-isolation-package` + `match-runtime = true`
 
 ---
 
-_Issue opened by @ryan-clancy on 2025-11-25 19:44_
+_@ryan-clancy_
 
 ### Summary
 

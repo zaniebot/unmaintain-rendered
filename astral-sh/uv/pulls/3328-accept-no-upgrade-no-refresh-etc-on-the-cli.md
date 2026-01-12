@@ -13,14 +13,14 @@ head: charlie/no-upgrade
 created_at: 2024-05-01T16:48:36Z
 updated_at: 2024-05-01T18:13:34Z
 url: https://github.com/astral-sh/uv/pull/3328
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Accept `--no-upgrade`, `--no-refresh`, etc. on the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-01 16:48_
+_@charliermarsh_
 
 ## Summary
 

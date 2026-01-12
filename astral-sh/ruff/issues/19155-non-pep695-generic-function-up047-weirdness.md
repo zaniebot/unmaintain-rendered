@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-05T17:30:30Z
 updated_at: 2025-09-03T13:31:18Z
 url: https://github.com/astral-sh/ruff/issues/19155
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # non-pep695-generic-function (UP047) weirdness
 
 ---
 
-_Issue opened by @actionless on 2025-07-05 17:30_
+_@actionless_
 
 ### Summary
 

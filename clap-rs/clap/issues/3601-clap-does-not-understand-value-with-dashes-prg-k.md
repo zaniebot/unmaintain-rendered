@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-01T17:05:35Z
 updated_at: 2022-04-04T14:30:51Z
 url: https://github.com/clap-rs/clap/issues/3601
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap does not understand value with dashes, "prg -k -- -value"
 
 ---
 
-_Issue opened by @ayrapetovai on 2022-04-01 17:05_
+_@ayrapetovai_
 
 ### Please complete the following tasks
 

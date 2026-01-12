@@ -14,14 +14,14 @@ head: alex/unsupported-operator-error
 created_at: 2025-12-12T13:40:17Z
 updated_at: 2025-12-12T21:53:31Z
 url: https://github.com/astral-sh/ruff/pull/21947
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Improve diagnostics for unsupported binary operations and unsupported augmented assignments
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-12 13:40_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: ag/fix-double-run-test
 created_at: 2025-08-21T17:23:26Z
 updated_at: 2025-08-21T17:37:09Z
 url: https://github.com/astral-sh/ruff/pull/20026
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Stop running every mdtest twice
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-21 17:23_
+_@BurntSushi_
 
 This was an accidental oversight introduced in commit
 468eb37d7572acaa354c0159875157ffceb9d447.

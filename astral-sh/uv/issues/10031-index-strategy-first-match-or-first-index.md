@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T14:39:54Z
 updated_at: 2024-12-19T17:40:16Z
 url: https://github.com/astral-sh/uv/issues/10031
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # `index-strategy`: `first-match` or `first-index`?
 
 ---
 
-_Issue opened by @yaochie on 2024-12-19 14:39_
+_@yaochie_
 
 Not sure if this is a documentation issue or a bug.
 

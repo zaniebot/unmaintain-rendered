@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-10-24T01:45:07Z
 updated_at: 2025-10-24T15:11:09Z
 url: https://github.com/clap-rs/clap/issues/6160
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Order of global arg usage changes behaviour with conflicts_with on Command arg
 
 ---
 
-_Issue opened by @merc1031 on 2025-10-24 01:45_
+_@merc1031_
 
 ### Please complete the following tasks
 

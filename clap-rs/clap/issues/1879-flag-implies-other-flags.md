@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-29T15:20:52Z
 updated_at: 2020-04-30T16:40:03Z
 url: https://github.com/clap-rs/clap/issues/1879
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Flag implies other flags
 
 ---
 
-_Issue opened by @camsteffen on 2020-04-29 15:20_
+_@camsteffen_
 
 ### Make sure you completed the following tasks
 

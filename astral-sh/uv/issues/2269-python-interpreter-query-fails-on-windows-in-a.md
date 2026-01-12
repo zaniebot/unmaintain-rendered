@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T09:54:18Z
 updated_at: 2024-03-07T14:45:10Z
 url: https://github.com/astral-sh/uv/issues/2269
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Python interpreter query fails on Windows in a conda environment starting with 0.1.14
 
 ---
 
-_Issue opened by @MatthieuDartiailh on 2024-03-07 09:54_
+_@MatthieuDartiailh_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

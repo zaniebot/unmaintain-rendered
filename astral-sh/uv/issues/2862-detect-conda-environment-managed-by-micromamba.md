@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-07T20:27:38Z
 updated_at: 2024-04-09T06:55:04Z
 url: https://github.com/astral-sh/uv/issues/2862
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Detect conda environment managed by micromamba
 
 ---
 
-_Issue opened by @meridionaljet on 2024-04-07 20:27_
+_@meridionaljet_
 
 uv version: 0.1.29
 

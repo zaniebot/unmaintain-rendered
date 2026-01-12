@@ -13,14 +13,14 @@ head: konsti/consistent-cargo-toml
 created_at: 2025-08-02T18:59:19Z
 updated_at: 2025-08-02T20:03:53Z
 url: https://github.com/astral-sh/uv/pull/15031
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Use consistent workspace inheritance
 
 ---
 
-_Pull request opened by @konstin on 2025-08-02 18:59_
+_@konstin_
 
 Following a CI failure in https://github.com/astral-sh/uv/pull/15028, ensure that all workspace crates are inheriting the MSRV and other workspace configuration from the workspace root.
 

@@ -13,14 +13,14 @@ head: internal/remove-tag
 created_at: 2023-07-18T14:21:28Z
 updated_at: 2023-07-18T15:48:53Z
 url: https://github.com/astral-sh/ruff/pull/5861
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove tag information from RustPython-Parser dependency
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-18 14:21_
+_@zanieb_
 
 Following https://github.com/astral-sh/RustPython-Parser/pull/27 we now cherry-pick commits onto our fork instead of rebasing our fork on top of the upstream which means we do not overwrite history and a tag is not necessary to preserve the pinned commit.
 

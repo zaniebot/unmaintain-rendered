@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-03-10T13:32:48Z
 updated_at: 2024-03-10T13:50:20Z
 url: https://github.com/astral-sh/uv/pull/2337
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Update `install_extra_index_url_has_priority` to avoid packaging breakage
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 13:32_
+_@charliermarsh_
 
 `packaging==24.0` came out which broke this test. It has to run without `--exclude-newer` since it's testing an index that doesn't support it. Instead, though, we can just disable dependencies, since the test still exercises the same logic.
 

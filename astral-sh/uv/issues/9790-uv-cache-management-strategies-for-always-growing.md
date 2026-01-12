@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-12-10T22:00:08Z
 updated_at: 2025-12-05T00:53:52Z
 url: https://github.com/astral-sh/uv/issues/9790
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # uv cache management strategies for always-growing caches?
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-12-10 22:00_
+_@charlesnicholson_
 
 Hello `uv` folks! Thanks again for making such an awesome tool; it's optimized and streamlined so many parts our Python workflow.
 

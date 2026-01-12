@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T23:15:51Z
 updated_at: 2024-12-03T01:07:47Z
 url: https://github.com/astral-sh/uv/issues/9589
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Reference a dependency group inside another group
 
 ---
 
-_Issue opened by @Dayof on 2024-12-02 23:15_
+_@Dayof_
 
 Is it possible to add an internal group reference in [optional-dependencies] or [dependency-groups]? For example instead of doing the following:
 

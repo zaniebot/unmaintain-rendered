@@ -13,14 +13,14 @@ head: enable_f822_in_init
 created_at: 2024-05-11T17:32:26Z
 updated_at: 2024-06-03T12:04:08Z
 url: https://github.com/astral-sh/ruff/pull/11370
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # fix(F822): Enable F822 in __init__.py files by default
 
 ---
 
-_Pull request opened by @hassec on 2024-05-11 17:32_
+_@hassec_
 
 **NOTE**
 The actual implementation of this PR changed during review, the below description is outdated.

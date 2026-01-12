@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T11:19:22Z
 updated_at: 2025-11-23T11:30:07Z
 url: https://github.com/astral-sh/ruff/issues/21590
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Provide fix for unparenthesized generator expressions
 
 ---
 
-_Issue opened by @injust on 2025-11-23 11:19_
+_@injust_
 
 ### Summary
 

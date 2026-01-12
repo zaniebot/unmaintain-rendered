@@ -13,14 +13,14 @@ head: zb/docker-workfow
 created_at: 2025-03-03T23:17:02Z
 updated_at: 2025-03-04T14:36:22Z
 url: https://github.com/astral-sh/uv/pull/11938
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Run the Docker build workflow when we touch project or toolchain metadata
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-03 23:17_
+_@zanieb_
 
 I noticed that https://github.com/astral-sh/uv/pull/11936 did not run the Docker builds, nor did #11934 
 

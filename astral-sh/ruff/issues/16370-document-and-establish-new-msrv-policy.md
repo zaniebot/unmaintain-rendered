@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T13:04:32Z
 updated_at: 2025-03-13T03:17:09Z
 url: https://github.com/astral-sh/ruff/issues/16370
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Document and establish new MSRV policy
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-25 13:04_
+_@MichaReiser_
 
 * [x] Update Ruff's versioning policy to allow MSRV bumps in patch versions
 * [x] Decide on whether we want to use latest - 1 or latest - 2 (future bumps should happen as part or shortly after bumping the rust toolchain version)

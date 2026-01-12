@@ -11,14 +11,14 @@ head: jerusdp/command-help-headings
 created_at: 2025-11-17T12:11:54Z
 updated_at: 2025-12-03T12:33:05Z
 url: https://github.com/clap-rs/clap/pull/6183
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # feat: add command headings feature
 
 ---
 
-_Pull request opened by @jerusdp on 2025-11-17 12:11_
+_@jerusdp_
 
 Implementing issue #1553
 

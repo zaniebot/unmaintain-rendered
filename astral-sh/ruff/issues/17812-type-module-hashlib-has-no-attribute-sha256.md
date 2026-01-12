@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:19:28Z
 updated_at: 2025-05-07T15:22:02Z
 url: https://github.com/astral-sh/ruff/issues/17812
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Type `<module 'hashlib'>` has no attribute `sha256`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:19_
+_@charliermarsh_
 
 ```python
 import hashlib

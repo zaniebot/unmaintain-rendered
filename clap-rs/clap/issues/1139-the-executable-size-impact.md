@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-01-05T18:16:36Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1139
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # The executable size impact
 
 ---
 
-_Issue opened by @RazrFalcon on 2018-01-05 18:16_
+_@RazrFalcon_
 
 A minimal *Hello World!* application after `strip -s` is 427 KiB on my machine. But `01b_quick_example.rs` is 1155 KiB which is almost 3x bigger.
 

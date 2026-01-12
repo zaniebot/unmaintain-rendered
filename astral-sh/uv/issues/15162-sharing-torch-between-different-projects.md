@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T09:44:47Z
 updated_at: 2025-08-19T12:05:24Z
 url: https://github.com/astral-sh/uv/issues/15162
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Sharing torch between different projects
 
 ---
 
-_Issue opened by @classronin on 2025-08-08 09:44_
+_@classronin_
 
 ### Question
 

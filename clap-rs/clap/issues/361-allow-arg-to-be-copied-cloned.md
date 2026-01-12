@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-12-11T00:27:47Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/361
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow Arg to be copied/cloned
 
 ---
 
-_Issue opened by @LegNeato on 2015-12-11 00:27_
+_@LegNeato_
 
 (I'm a rust n00b, let me know if I am doing something stupid)
 

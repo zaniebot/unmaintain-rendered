@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-08-25T13:34:50Z
 updated_at: 2025-08-25T13:47:31Z
 url: https://github.com/astral-sh/uv/pull/15514
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Respect `[pip]` settings for `uv pip check`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-25 13:34_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-14T22:19:46Z
 updated_at: 2023-01-14T22:47:36Z
 url: https://github.com/astral-sh/ruff/issues/1876
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Isort and Ruff Isort implementation incompatibilities
 
 ---
 
-_Issue opened by @dbritto-dev on 2023-01-14 22:19_
+_@dbritto-dev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

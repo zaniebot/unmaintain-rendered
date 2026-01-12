@@ -12,14 +12,14 @@ head: contributing-mkdocs
 created_at: 2023-02-12T06:36:19Z
 updated_at: 2023-02-12T16:07:25Z
 url: https://github.com/astral-sh/ruff/pull/2803
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Added MkDocs section to CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @trag1c on 2023-02-12 06:36_
+_@trag1c_
 
 Closes #2802
 

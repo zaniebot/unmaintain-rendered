@@ -13,14 +13,14 @@ head: zb/conda-test-env
 created_at: 2025-09-18T12:30:24Z
 updated_at: 2025-09-18T12:52:25Z
 url: https://github.com/astral-sh/uv/pull/15930
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Use `EnvVars` for Conda variables in tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-18 12:30_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/fs-err-2.10.0
 created_at: 2023-11-13T08:09:17Z
 updated_at: 2023-11-13T14:38:46Z
 url: https://github.com/astral-sh/ruff/pull/8649
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump fs-err from 2.9.0 to 2.10.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-13 08:09_
+_@dependabot_
 
 Bumps [fs-err](https://github.com/andrewhickman/fs-err) from 2.9.0 to 2.10.0.
 <details>

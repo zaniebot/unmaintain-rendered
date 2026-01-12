@@ -14,14 +14,14 @@ head: micha/diagnostic-streaming
 created_at: 2025-07-31T08:19:28Z
 updated_at: 2025-08-04T09:34:46Z
 url: https://github.com/astral-sh/ruff/pull/19657
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Implement streaming for workspace diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-31 08:19_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dhruv/diagnostic-refresh
 created_at: 2024-12-16T09:02:16Z
 updated_at: 2024-12-16T10:56:42Z
 url: https://github.com/astral-sh/ruff/pull/15014
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Check diagnostic refresh support from client capability
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-16 09:02_
+_@dhruvmanila_
 
 ## Summary
 

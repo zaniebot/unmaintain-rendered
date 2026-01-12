@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-18T21:29:53Z
 updated_at: 2022-12-28T00:45:51Z
 url: https://github.com/astral-sh/ruff/issues/454
-synced_at: 2026-01-10T12:05:20Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `code_gen.rs` should take into account existing code preferences
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-18 21:29_
+_@charliermarsh_
 
 It'd be great to generate code that's aware of existing indentation and quotation preferences.
 

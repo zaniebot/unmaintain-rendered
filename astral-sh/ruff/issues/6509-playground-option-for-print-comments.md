@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-11T17:54:00Z
 updated_at: 2023-09-02T08:21:07Z
 url: https://github.com/astral-sh/ruff/issues/6509
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Playground option for "print comments"
 
 ---
 
-_Issue opened by @cnpryer on 2023-08-11 17:54_
+_@cnpryer_
 
 In https://prettier.io/playground/ you can toggle an option to display the comments. It'd be nice to add that to https://play.ruff.rs/.
 

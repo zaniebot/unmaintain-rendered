@@ -12,14 +12,14 @@ head: david/repology-badge
 created_at: 2024-11-21T08:23:21Z
 updated_at: 2024-11-21T19:33:53Z
 url: https://github.com/astral-sh/ruff/pull/14507
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Use multiple columns for repology badge
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-21 08:23_
+_@sharkdp_
 
 ## Summary
 

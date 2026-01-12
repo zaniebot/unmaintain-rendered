@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-17T16:17:13Z
 updated_at: 2024-03-17T19:29:25Z
 url: https://github.com/astral-sh/uv/issues/2497
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # uv venv: Querying Python at `/Users/fungus/.rye/shims/rye` failed
 
 ---
 
-_Issue opened by @shroominic on 2024-03-17 16:17_
+_@shroominic_
 
 I have already installed `rye` and now installed uv but when running `uv venv` it showes me some error related to rye:
 

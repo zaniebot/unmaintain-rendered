@@ -13,14 +13,14 @@ head: charlie/cargo-dist
 created_at: 2025-07-30T01:09:21Z
 updated_at: 2025-07-30T01:25:00Z
 url: https://github.com/astral-sh/uv/pull/14964
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Add `UV_` prefix to installer environment variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-30 01:09_
+_@charliermarsh_
 
 ## Summary
 

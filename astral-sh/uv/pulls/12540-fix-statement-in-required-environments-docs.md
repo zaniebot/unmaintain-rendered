@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-03-29T00:25:46Z
 updated_at: 2025-03-29T11:09:54Z
 url: https://github.com/astral-sh/uv/pull/12540
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Fix statement in Required environments docs
 
 ---
 
-_Pull request opened by @johnthagen on 2025-03-29 00:25_
+_@johnthagen_
 
 ## Summary
 

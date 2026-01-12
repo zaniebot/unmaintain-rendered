@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T19:57:07Z
 updated_at: 2025-07-28T20:00:36Z
 url: https://github.com/astral-sh/uv/issues/14945
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Include install.sh in repo
 
 ---
 
-_Issue opened by @rieje on 2025-07-28 19:57_
+_@rieje_
 
 ### Summary
 

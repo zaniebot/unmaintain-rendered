@@ -14,14 +14,14 @@ head: star-except
 created_at: 2024-12-10T17:56:58Z
 updated_at: 2024-12-10T23:51:01Z
 url: https://github.com/astral-sh/ruff/pull/14895
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Raise syntax error for mixing `except` and `except*`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-10 17:56_
+_@dylwil3_
 
 This PR adds a syntax error if the parser encounters a `TryStmt` that has except clauses both with and without a star.
 

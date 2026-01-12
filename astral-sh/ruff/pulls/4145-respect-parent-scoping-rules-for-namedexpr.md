@@ -12,14 +12,14 @@ head: charlie/named-expr-in-comprehension
 created_at: 2023-04-28T23:09:57Z
 updated_at: 2023-04-29T23:08:06Z
 url: https://github.com/astral-sh/ruff/pull/4145
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Respect parent-scoping rules for `NamedExpr` assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-28 23:09_
+_@charliermarsh_
 
 ## Summary
 

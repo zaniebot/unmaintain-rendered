@@ -14,14 +14,14 @@ head: alex/proto-panic
 created_at: 2025-10-18T13:35:56Z
 updated_at: 2025-10-18T14:01:48Z
 url: https://github.com/astral-sh/ruff/pull/20956
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Fix panic when attempting to validate the members of a protocol that inherits from a protocol in another module
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-18 13:35_
+_@AlexWaygood_
 
 ## Summary
 

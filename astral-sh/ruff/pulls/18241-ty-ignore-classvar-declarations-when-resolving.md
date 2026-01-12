@@ -13,14 +13,14 @@ head: david/ignore-classvar-declarations-for-instance-members
 created_at: 2025-05-21T12:03:07Z
 updated_at: 2025-05-21T17:23:37Z
 url: https://github.com/astral-sh/ruff/pull/18241
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Ignore `ClassVar` declarations when resolving instance members
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-21 12:03_
+_@sharkdp_
 
 ## Summary
 

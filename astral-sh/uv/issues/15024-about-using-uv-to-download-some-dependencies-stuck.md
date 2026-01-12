@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T02:55:40Z
 updated_at: 2025-08-05T13:25:04Z
 url: https://github.com/astral-sh/uv/issues/15024
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # About using uv to download some dependencies stuck
 
 ---
 
-_Issue opened by @YuanJie2001 on 2025-08-02 02:55_
+_@YuanJie2001_
 
 ### Question
 

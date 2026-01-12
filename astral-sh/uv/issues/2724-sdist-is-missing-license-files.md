@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-29T07:01:59Z
 updated_at: 2024-04-07T00:42:31Z
 url: https://github.com/astral-sh/uv/issues/2724
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # sdist is missing license files
 
 ---
 
-_Issue opened by @mtelka on 2024-03-29 07:01_
+_@mtelka_
 
 The sdist package at PyPI is missing both `LICENSE-APACHE` and `LICENSE-MIT` files.  Both files are listed in the `PKG-INFO` file.  Please add both missing files to the sdist.  Thank you.
 

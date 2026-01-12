@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-01T00:09:42Z
 updated_at: 2025-10-15T14:51:57Z
 url: https://github.com/astral-sh/ruff/issues/20656
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `non-pep695-generic-class` (`UP046`) - false negative on old `TypeVar` with `default` argument
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-01 00:09_
+_@DetachHead_
 
 ### Summary
 

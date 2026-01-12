@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-02-11T18:32:42Z
 updated_at: 2022-09-07T12:39:26Z
 url: https://github.com/clap-rs/clap/issues/3450
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # AppSettings::AllowHyphenValues does not document what it does beyond ArgSettings::AllowHyphenValues
 
 ---
 
-_Issue opened by @epage on 2022-02-11 18:32_
+_@epage_
 
 In working on #3449, I was going to make `AppSettings::AllowHyphenValues` be applied to the ArgSettings and remove checking for it at the app-level, but the parser has logic specific to the app level.  This isn't documented and its unclear how intentional this is.  If its to cover some cases, we should be letting users know.  If we can remove it, all the better.
 

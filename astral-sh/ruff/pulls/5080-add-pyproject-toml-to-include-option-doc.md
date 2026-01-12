@@ -12,14 +12,14 @@ head: fix-include-doc
 created_at: 2023-06-14T10:46:54Z
 updated_at: 2023-06-14T16:17:20Z
 url: https://github.com/astral-sh/ruff/pull/5080
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add pyproject.toml to include option doc
 
 ---
 
-_Pull request opened by @konstin on 2023-06-14 10:46_
+_@konstin_
 
 Fixes an oversight where i didn't update this initially
 

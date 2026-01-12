@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-09T16:27:49Z
 updated_at: 2025-07-16T15:47:08Z
 url: https://github.com/astral-sh/ty/issues/793
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `ty` incorrectly skips over definitions that are not bindings when checking not-local loads
 
 ---
 
-_Issue opened by @oconnor663 on 2025-07-09 16:27_
+_@oconnor663_
 
 https://play.ty.dev/9040c09e-01bb-4866-b4b5-9f5d49ea31d2
 

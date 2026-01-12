@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-19T04:26:45Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/695
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Get raw value of subcommand
 
 ---
 
-_Issue opened by @Yamakaky on 2016-10-19 04:26_
+_@Yamakaky_
 
 For example in `sub 1 + 1`, I would like to get the string `"1 + 1"` associated with the subcommand `sub`. `ArgSetting::Multiple` doesn't seem appropriate since it's more for `-v`-like arguments.
 

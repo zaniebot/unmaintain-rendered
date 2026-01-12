@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T18:42:09Z
 updated_at: 2024-10-08T13:42:01Z
 url: https://github.com/astral-sh/ruff/issues/7313
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider suggesting using tempfile classes as context managers 
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-09-12 18:42_
+_@NeilGirdhar_
 
 Just as in:
 ```

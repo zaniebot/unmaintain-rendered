@@ -12,14 +12,14 @@ head: attr-outside-init
 created_at: 2025-06-19T17:22:10Z
 updated_at: 2025-12-10T18:08:20Z
 url: https://github.com/astral-sh/ruff/pull/18796
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [pylint] Implement attribute-defined-outside-init (PLW0201)
 
 ---
 
-_Pull request opened by @jack-mcivor on 2025-06-19 17:22_
+_@jack-mcivor_
 
 ## Summary
 - Add PLW0201 attribute-defined-outside-init, based on https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/attribute-defined-outside-init.html

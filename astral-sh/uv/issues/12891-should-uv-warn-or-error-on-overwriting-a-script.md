@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-15T06:42:53Z
 updated_at: 2025-04-15T09:19:53Z
 url: https://github.com/astral-sh/uv/issues/12891
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Should uv warn or error on overwriting a script in the venv?
 
 ---
 
-_Issue opened by @haarisr on 2025-04-15 06:42_
+_@haarisr_
 
 ### Question
 

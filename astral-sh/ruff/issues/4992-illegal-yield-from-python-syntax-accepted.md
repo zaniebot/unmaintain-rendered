@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T21:51:38Z
 updated_at: 2023-06-13T13:52:16Z
 url: https://github.com/astral-sh/ruff/issues/4992
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Illegal "yield (from)" python syntax accepted
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-09 21:51_
+_@addisoncrump_
 
 I'm not quite sure where the incorrectness here is, but I think this bug indicates an incorrect parsing of the `yield from` expression. The following is a python snippet with illegal syntax:
 

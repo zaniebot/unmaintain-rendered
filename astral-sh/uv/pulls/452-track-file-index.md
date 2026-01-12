@@ -12,14 +12,14 @@ head: track-file-index
 created_at: 2023-11-19T12:51:43Z
 updated_at: 2023-11-20T08:48:17Z
 url: https://github.com/astral-sh/uv/pull/452
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Track file index
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 12:51_
+_@konstin_
 
 Track the index (or at least its url) where we got a file from across the source code.
 

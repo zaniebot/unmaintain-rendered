@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T19:25:55Z
 updated_at: 2024-12-24T23:35:00Z
 url: https://github.com/astral-sh/uv/issues/10147
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # `uv tree` with non-`[project]` workspaces misses dependency groups
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-24 19:25_
+_@charliermarsh_
 
 `uv tree` doesn't include any of the top-level dependencies of the workspace.
 

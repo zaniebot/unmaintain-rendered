@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-12T08:36:07Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/7325
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Upgrade Python version installed by uv
 
 ---
 
-_Issue opened by @stuartmaxwell on 2024-09-12 08:36_
+_@stuartmaxwell_
 
 My apologies if this has been asked and answered before, but I have searched these issues as well as the docs.
 

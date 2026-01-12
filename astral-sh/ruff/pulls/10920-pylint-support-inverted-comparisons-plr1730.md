@@ -13,14 +13,14 @@ head: improve-PLR1730
 created_at: 2024-04-13T19:37:10Z
 updated_at: 2024-04-13T23:03:00Z
 url: https://github.com/astral-sh/ruff/pull/10920
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Support inverted comparisons (`PLR1730`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-04-13 19:37_
+_@diceroll123_
 
 ## Summary
 

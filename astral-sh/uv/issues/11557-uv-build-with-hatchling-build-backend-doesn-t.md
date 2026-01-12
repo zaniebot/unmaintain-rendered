@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T16:30:52Z
 updated_at: 2025-02-16T18:41:06Z
 url: https://github.com/astral-sh/uv/issues/11557
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # `uv build` with `hatchling` build backend doesn't include nested package in wheel
 
 ---
 
-_Issue opened by @Kayrnt on 2025-02-16 16:30_
+_@Kayrnt_
 
 ### Summary
 

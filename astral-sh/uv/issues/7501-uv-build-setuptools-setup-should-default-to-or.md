@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T14:00:02Z
 updated_at: 2024-09-19T01:09:07Z
 url: https://github.com/astral-sh/uv/issues/7501
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv build setuptools setup should default to or honor index-url pip config
 
 ---
 
-_Issue opened by @blackduckx on 2024-09-18 14:00_
+_@blackduckx_
 
 Running `uv build` command without the `[build-system]` section defined in `pyproject.tom` installs `setuptools` by default.
 

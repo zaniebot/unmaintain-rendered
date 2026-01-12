@@ -13,14 +13,14 @@ head: PLC1802-false-negatives
 created_at: 2024-11-30T17:41:02Z
 updated_at: 2024-11-30T20:18:37Z
 url: https://github.com/astral-sh/ruff/pull/14692
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pylint`] Fix false negatives for `ascii` and `sorted` in `len-as-condition` (PLC1802)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-30 17:41_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

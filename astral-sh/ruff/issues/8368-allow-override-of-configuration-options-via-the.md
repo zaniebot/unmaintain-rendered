@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T21:15:37Z
 updated_at: 2024-02-09T21:56:38Z
 url: https://github.com/astral-sh/ruff/issues/8368
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Allow override of configuration options via the CLI
 
 ---
 
-_Issue opened by @zanieb on 2023-10-30 21:15_
+_@zanieb_
 
 Currently, Ruff includes many configuration options that are only available via a configuration file. These options should be available via the CLI as well so users can either:
 

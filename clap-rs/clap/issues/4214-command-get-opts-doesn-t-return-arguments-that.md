@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-14T17:32:24Z
 updated_at: 2022-09-15T00:22:01Z
 url: https://github.com/clap-rs/clap/issues/4214
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Command::get_opts doesn't return arguments that don't take values
 
 ---
 
-_Issue opened by @larswirzenius on 2022-09-14 17:32_
+_@larswirzenius_
 
 ### Please complete the following tasks
 

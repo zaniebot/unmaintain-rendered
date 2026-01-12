@@ -13,14 +13,14 @@ head: konsti/document-discarding-reuqires-python-upper-bounds
 created_at: 2025-09-18T09:04:54Z
 updated_at: 2025-10-10T15:45:10Z
 url: https://github.com/astral-sh/uv/pull/15927
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Document why uv discards upper bounds on `requires-python`
 
 ---
 
-_Pull request opened by @konstin on 2025-09-18 09:04_
+_@konstin_
 
 We're regularly get questions about this. The DPO thread is the best ressource, but it's also a long read, so I summarized some points for uv's decision.
 

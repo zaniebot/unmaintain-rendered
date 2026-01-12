@@ -13,14 +13,14 @@ head: red-knot-named-expr
 created_at: 2024-08-22T11:45:47Z
 updated_at: 2024-08-22T15:13:51Z
 url: https://github.com/astral-sh/ruff/pull/13053
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] `SemanticIndexBuilder` visits value before target in named expressions
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-22 11:45_
+_@dylwil3_
 
 The `SemanticIndexBuilder` was causing a cycle in a salsa query by attempting to resolve the target before the value in a named expression (e.g. `x := x+1`). This PR swaps the order, avoiding a panic.
 

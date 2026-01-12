@@ -13,14 +13,14 @@ head: zb/disable-fuzz
 created_at: 2024-01-02T21:36:26Z
 updated_at: 2024-01-02T22:05:40Z
 url: https://github.com/astral-sh/ruff/pull/9369
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Disable the fuzzer CI job
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-02 21:36_
+_@zanieb_
 
 The job is failing to compile. We should resolve separately but I am disabling for now since it breaks pull requests.
 

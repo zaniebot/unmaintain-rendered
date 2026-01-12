@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T04:21:09Z
 updated_at: 2025-08-13T13:24:20Z
 url: https://github.com/astral-sh/ruff/issues/6262
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # exclude pattern with `*` in file name incorrectly matches entire file path
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-02 04:21_
+_@DetachHead_
 
 ```
 ruff --exclude foo*.py

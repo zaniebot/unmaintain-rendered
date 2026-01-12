@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T18:00:37Z
 updated_at: 2024-10-07T18:11:52Z
 url: https://github.com/astral-sh/uv/issues/7981
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Patch version resolve
 
 ---
 
-_Issue opened by @matthias-Q on 2024-10-07 18:00_
+_@matthias-Q_
 
 Hi,
 I want to migrate from a setup.py to pyproject.toml + uv setup. In my current configuration I use patch version pinning, e.g. `package==1.8.*`. Pip installs version 1.8.10, which is the latest version. `uv` installs 1.8.0, which I find odd. The same happens for `package~=1.8`. I think this is a bug.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T09:15:57Z
 updated_at: 2024-11-20T05:02:15Z
 url: https://github.com/astral-sh/uv/issues/9218
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # error: Failed to install cpython-3.11.10-macos-aarch64-none
 
 ---
 
-_Issue opened by @AmineDjeghri on 2024-11-19 09:15_
+_@AmineDjeghri_
 
 `uv python install 3.11                       
 `

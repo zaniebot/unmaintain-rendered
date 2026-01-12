@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-25T14:08:20Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/968
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Unable to add a validator to an arg from a subcommand using YAML
 
 ---
 
-_Issue opened by @craigzour on 2017-05-25 14:08_
+_@craigzour_
 
 Hi,
 

@@ -13,14 +13,14 @@ head: mirror-script-filter-version
 created_at: 2024-12-20T13:49:39Z
 updated_at: 2024-12-20T18:51:05Z
 url: https://github.com/astral-sh/uv/pull/10055
-synced_at: 2026-01-10T11:44:32Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Add additional version filter to mirror script.
 
 ---
 
-_Pull request opened by @bw513 on 2024-12-20 13:49_
+_@bw513_
 
 ## Summary
 

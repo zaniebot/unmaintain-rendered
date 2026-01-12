@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-18T18:47:46Z
 updated_at: 2024-04-18T08:43:38Z
 url: https://github.com/astral-sh/ruff/issues/809
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # [Feature Request / Proposal] Upstream / preset / profile to preconfigure options
 
 ---
 
-_Issue opened by @pwoolvett on 2022-11-18 18:47_
+_@pwoolvett_
 
 Would something like preset or a profile be a feature you'd like to see?
 

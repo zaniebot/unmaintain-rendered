@@ -12,14 +12,14 @@ head: ww/revert-loong64
 created_at: 2025-09-12T21:01:06Z
 updated_at: 2025-09-16T16:48:56Z
 url: https://github.com/astral-sh/uv/pull/15820
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Revert "feat(ci): build loongarch64 binaries in CI (#15387)"
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-12 21:01_
+_@woodruffw_
 
 This reverts commit 2fd9e53b258e5cbf3ce683c613ae228b7f66bcec.
 

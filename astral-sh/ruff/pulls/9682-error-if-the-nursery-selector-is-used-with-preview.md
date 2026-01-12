@@ -13,14 +13,14 @@ head: zb/nursery-err
 created_at: 2024-01-29T18:23:33Z
 updated_at: 2024-01-29T19:33:48Z
 url: https://github.com/astral-sh/ruff/pull/9682
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Error if the NURSERY selector is used with preview
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-29 18:23_
+_@zanieb_
 
 Changes our warning for combined use of `--preview` and `--select NURSERY` to a hard error.
 

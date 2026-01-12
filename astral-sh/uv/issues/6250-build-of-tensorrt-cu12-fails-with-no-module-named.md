@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T13:31:00Z
 updated_at: 2024-08-20T18:52:58Z
 url: https://github.com/astral-sh/uv/issues/6250
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Build of `tensorrt-cu12` fails with "No module named pip"
 
 ---
 
-_Issue opened by @Kartstig on 2024-08-20 13:31_
+_@Kartstig_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

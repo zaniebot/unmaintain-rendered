@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-14T11:02:19Z
 updated_at: 2025-06-17T08:04:30Z
 url: https://github.com/astral-sh/ty/issues/127
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Silence all diagnostics in unreachable code?
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-14 11:02_
+_@sharkdp_
 
 Our current approach to silencing only a subset of diagnostics in unreachable sections of code has some issues. They are [documented here](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md#limitations-of-the-current-approach). In short, we still emit false positives in some cases:
 ```py

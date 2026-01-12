@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T19:02:54Z
 updated_at: 2025-11-11T22:45:35Z
 url: https://github.com/astral-sh/ty/issues/664
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # possibly unbound and unresolved attribute diagnostic when storing attributes
 
 ---
 
-_Issue opened by @Glyphack on 2025-06-16 19:02_
+_@Glyphack_
 
 ### Summary
 

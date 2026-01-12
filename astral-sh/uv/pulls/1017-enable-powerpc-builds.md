@@ -12,14 +12,14 @@ head: charlie/cross
 created_at: 2024-01-19T20:26:18Z
 updated_at: 2024-01-20T00:30:40Z
 url: https://github.com/astral-sh/uv/pull/1017
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Enable PowerPC builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 20:26_
+_@charliermarsh_
 
 Closes #1015.
 

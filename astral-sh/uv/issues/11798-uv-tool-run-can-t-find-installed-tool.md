@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T13:41:26Z
 updated_at: 2025-02-26T15:43:17Z
 url: https://github.com/astral-sh/uv/issues/11798
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # uv tool run can't find installed tool
 
 ---
 
-_Issue opened by @superlopuh on 2025-02-26 13:41_
+_@superlopuh_
 
 ### Summary
 

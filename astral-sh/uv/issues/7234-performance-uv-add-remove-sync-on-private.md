@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-09T22:11:29Z
 updated_at: 2024-10-21T22:14:31Z
 url: https://github.com/astral-sh/uv/issues/7234
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Performance: uv {add|remove|sync} on private registry slower and finding "stale response"
 
 ---
 
-_Issue opened by @billy-doyle on 2024-09-09 22:11_
+_@billy-doyle_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

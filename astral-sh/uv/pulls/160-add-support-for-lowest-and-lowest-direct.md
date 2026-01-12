@@ -12,14 +12,14 @@ head: charlie/resolve
 created_at: 2023-10-22T01:11:04Z
 updated_at: 2023-10-23T07:31:20Z
 url: https://github.com/astral-sh/uv/pull/160
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Add support for lowest and lowest-direct resolution modes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-22 01:11_
+_@charliermarsh_
 
 Borrows terminology from pnpm by introducing three resolution modes:
 

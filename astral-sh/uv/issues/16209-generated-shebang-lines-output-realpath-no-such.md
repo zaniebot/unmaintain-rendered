@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-09T15:31:01Z
 updated_at: 2025-11-27T13:29:48Z
 url: https://github.com/astral-sh/uv/issues/16209
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # Generated shebang lines output 'realpath: --: No such file or directory'
 
 ---
 
-_Issue opened by @maxwell-k on 2025-10-09 15:31_
+_@maxwell-k_
 
 Example command to reproduce on Alpine Linux:
 

@@ -13,14 +13,14 @@ head: rename-checker-model-to-semantic-model
 created_at: 2023-05-22T10:20:49Z
 updated_at: 2023-05-22T13:14:31Z
 url: https://github.com/astral-sh/ruff/pull/4573
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Rename `Checker::model` to `semantic_model`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-22 10:20_
+_@MichaReiser_
 
 Rename `Checker::model` to `semantic_model` for more clarity. 
 

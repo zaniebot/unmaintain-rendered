@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T20:26:09Z
 updated_at: 2025-04-01T17:54:39Z
 url: https://github.com/astral-sh/uv/issues/12247
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Make uv seed pip by default
 
 ---
 
-_Issue opened by @ThermodynamicBeta on 2025-03-17 20:26_
+_@ThermodynamicBeta_
 
 ### Summary
 

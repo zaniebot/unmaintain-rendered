@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T20:52:36Z
 updated_at: 2024-07-06T03:10:17Z
 url: https://github.com/astral-sh/ruff/issues/8184
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Does the Ruff formatter validate the final AST in a similar manner to Black?
 
 ---
 
-_Issue opened by @max-muoto on 2023-10-24 20:52_
+_@max-muoto_
 
 We are looking to replace `black` with the Ruff formatter, but one question I had was does the Ruff formatter validate for an AST equivalent to the original? I know this can be disabled in `black` with the `--fast` flag but was curious if this was built into the Ruff formatter by default.
 

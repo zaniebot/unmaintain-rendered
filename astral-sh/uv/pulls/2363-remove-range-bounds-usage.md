@@ -13,14 +13,14 @@ head: konsti/remove-range-bounds-call
 created_at: 2024-03-11T20:57:35Z
 updated_at: 2024-03-11T21:10:17Z
 url: https://github.com/astral-sh/uv/pull/2363
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Remove `Range::bounds` usage
 
 ---
 
-_Pull request opened by @konstin on 2024-03-11 20:57_
+_@konstin_
 
 I'm trying to reduce our pubgrub upstream divergences and since we only have one usage of our custom `Range::bounds` it seems more reasonable to do this in uv directly than in pubgrub (https://github.com/pubgrub-rs/pubgrub/pull/188#issuecomment-1989410636).
 

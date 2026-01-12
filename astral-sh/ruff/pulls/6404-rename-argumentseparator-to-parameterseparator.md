@@ -13,14 +13,14 @@ head: charlie/parameters
 created_at: 2023-08-07T19:34:49Z
 updated_at: 2023-08-07T20:01:53Z
 url: https://github.com/astral-sh/ruff/pull/6404
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `ArgumentSeparator` to `ParameterSeparator`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 19:34_
+_@charliermarsh_
 
 To mirror the rename from `Arguments` to `Parameters`.
 

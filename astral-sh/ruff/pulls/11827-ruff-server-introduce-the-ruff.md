@@ -12,14 +12,14 @@ head: jane/server/command/debug
 created_at: 2024-06-10T19:26:39Z
 updated_at: 2024-06-10T21:00:24Z
 url: https://github.com/astral-sh/ruff/pull/11827
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Introduce the `ruff.printDebugInformation` command
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-10 19:26_
+_@snowsignal_
 
 ## Summary
 

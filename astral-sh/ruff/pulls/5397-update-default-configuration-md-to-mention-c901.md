@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-06-27T16:37:06Z
 updated_at: 2023-06-28T21:43:04Z
 url: https://github.com/astral-sh/ruff/pull/5397
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update default configuration.md to mention C901 rule
 
 ---
 
-_Pull request opened by @ethunk on 2023-06-27 16:37_
+_@ethunk_
 
 ## Summary
 

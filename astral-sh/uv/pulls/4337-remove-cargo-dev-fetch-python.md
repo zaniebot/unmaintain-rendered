@@ -13,14 +13,14 @@ head: zb/drop-fetch-python
 created_at: 2024-06-15T01:00:33Z
 updated_at: 2024-06-17T18:49:07Z
 url: https://github.com/astral-sh/uv/pull/4337
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Remove `cargo dev fetch-python`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-15 01:00_
+_@zanieb_
 
 This has been fully replaced by `uv toolchain install`
 

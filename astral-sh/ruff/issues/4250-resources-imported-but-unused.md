@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-05T18:42:21Z
 updated_at: 2024-04-11T09:04:13Z
 url: https://github.com/astral-sh/ruff/issues/4250
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `resources` imported but unused
 
 ---
 
-_Issue opened by @IamRezaMousavi on 2023-05-05 18:42_
+_@IamRezaMousavi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

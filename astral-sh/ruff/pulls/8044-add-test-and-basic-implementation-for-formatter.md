@@ -13,14 +13,14 @@ head: formatter-preview
 created_at: 2023-10-18T11:54:14Z
 updated_at: 2023-10-26T15:40:50Z
 url: https://github.com/astral-sh/ruff/pull/8044
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add test and basic implementation for formatter preview mode
 
 ---
 
-_Pull request opened by @konstin on 2023-10-18 11:54_
+_@konstin_
 
 **Summary** Prepare for the black preview style becoming the black stable style at the end of the year.
 

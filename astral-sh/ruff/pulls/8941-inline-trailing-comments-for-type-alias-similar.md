@@ -13,14 +13,14 @@ head: align-type-alias-with-assignment-formatting
 created_at: 2023-12-01T04:29:05Z
 updated_at: 2023-12-12T03:09:10Z
 url: https://github.com/astral-sh/ruff/pull/8941
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Inline trailing comments for type alias similar to assignments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-01 04:29_
+_@MichaReiser_
 
 ## Summary
 

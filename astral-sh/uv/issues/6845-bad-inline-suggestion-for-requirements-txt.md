@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T00:37:31Z
 updated_at: 2024-10-10T22:09:35Z
 url: https://github.com/astral-sh/uv/issues/6845
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Bad inline suggestion for requirements.txt
 
 ---
 
-_Issue opened by @dimaqq on 2024-08-30 00:37_
+_@dimaqq_
 
 So I didn't read `--help` / usage, and tried this:
 

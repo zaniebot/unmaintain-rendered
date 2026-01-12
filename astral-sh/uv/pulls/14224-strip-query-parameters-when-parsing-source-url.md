@@ -13,14 +13,14 @@ head: charlie/dep-url
 created_at: 2025-06-23T18:37:41Z
 updated_at: 2025-06-23T18:52:09Z
 url: https://github.com/astral-sh/uv/pull/14224
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Strip query parameters when parsing source URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-23 18:37_
+_@charliermarsh_
 
 ## Summary
 

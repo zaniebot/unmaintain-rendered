@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-09-05T14:32:36Z
 updated_at: 2020-10-09T16:36:34Z
 url: https://github.com/clap-rs/clap/issues/2124
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # required_unless not working with yaml
 
 ---
 
-_Issue opened by @grm on 2020-09-05 14:32_
+_@grm_
 
 ### Make sure you completed the following tasks
 

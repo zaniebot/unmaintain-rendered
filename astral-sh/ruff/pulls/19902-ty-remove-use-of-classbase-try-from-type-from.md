@@ -13,14 +13,14 @@ head: alex/superownerkind
 created_at: 2025-08-13T18:04:14Z
 updated_at: 2025-08-14T21:14:33Z
 url: https://github.com/astral-sh/ruff/pull/19902
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Remove use of `ClassBase::try_from_type` from `super()` machinery
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 18:04_
+_@AlexWaygood_
 
 Followup to conversation in https://github.com/astral-sh/ruff/pull/19560#discussion_r2271570071. `ClassBase::try_from_type` doesn't implement the right semantics here.
 

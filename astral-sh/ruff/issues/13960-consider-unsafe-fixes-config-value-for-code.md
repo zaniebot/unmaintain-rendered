@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T08:52:04Z
 updated_at: 2025-01-22T08:14:14Z
 url: https://github.com/astral-sh/ruff/issues/13960
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Consider `unsafe-fixes` config value for code action / command
 
 ---
 
-_Issue opened by @BarrensZeppelin on 2024-10-28 08:52_
+_@BarrensZeppelin_
 
 It would be nice to be able to configure the ruff server to also apply unsafe fixes with the `ruff.applyAutoFix` command and `source.fixAll.ruff` code action.
 

@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2025-11-23T21:08:49Z
 updated_at: 2025-11-26T01:06:00Z
 url: https://github.com/astral-sh/uv/pull/16824
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Validate URL wheel tags against `Requires-Python` and required environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-23 21:08_
+_@charliermarsh_
 
 ## Summary
 

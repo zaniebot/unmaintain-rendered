@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T10:30:37Z
 updated_at: 2024-05-07T10:52:33Z
 url: https://github.com/astral-sh/ruff/issues/11322
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff formatting "\x1E" to "\x1e"
 
 ---
 
-_Issue opened by @MarcoForte on 2024-05-07 10:30_
+_@MarcoForte_
 
 Hello I am trying to understand why ruff is formatting "\x1E" to "\x1e". I'd like to avoid formatting strings since they can be case sensitive. 
 Is there a way to see what rule specifically is invoked in this formatting? 

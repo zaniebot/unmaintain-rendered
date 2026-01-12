@@ -12,14 +12,14 @@ head: zb/nav-spacing
 created_at: 2025-02-24T18:14:47Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11750
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Increase spacing between nav sections and headers
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-24 18:14_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/11757
 

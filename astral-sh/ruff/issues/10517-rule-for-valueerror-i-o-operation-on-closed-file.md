@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T05:16:34Z
 updated_at: 2024-04-06T05:04:50Z
 url: https://github.com/astral-sh/ruff/issues/10517
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # rule for ValueError: I/O operation on closed file.
 
 ---
 
-_Issue opened by @tooptoop4 on 2024-03-22 05:16_
+_@tooptoop4_
 
 ruff does not complain about:
 ```

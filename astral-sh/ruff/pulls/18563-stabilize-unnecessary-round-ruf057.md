@@ -13,14 +13,14 @@ head: dylan/stabilize-ruf057
 created_at: 2025-06-08T19:15:00Z
 updated_at: 2025-06-09T19:00:41Z
 url: https://github.com/astral-sh/ruff/pull/18563
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `unnecessary-round` (`RUF057`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:15_
+_@dylwil3_
 
 _No description provided._
 

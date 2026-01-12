@@ -12,14 +12,14 @@ head: renovate/toml_edit-0.x-lockfile
 created_at: 2025-04-28T00:29:32Z
 updated_at: 2025-04-28T01:32:51Z
 url: https://github.com/astral-sh/uv/pull/13149
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Update Rust crate toml_edit to v0.22.25 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 00:29_
+_@renovate_
 
 This PR contains the following updates:
 

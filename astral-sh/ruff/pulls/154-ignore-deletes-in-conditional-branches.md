@@ -12,14 +12,14 @@ head: charlie/del
 created_at: 2022-09-11T14:06:57Z
 updated_at: 2022-09-11T14:28:08Z
 url: https://github.com/astral-sh/ruff/pull/154
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Ignore deletes in conditional branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-11 14:06_
+_@charliermarsh_
 
 Resolves #149.
 

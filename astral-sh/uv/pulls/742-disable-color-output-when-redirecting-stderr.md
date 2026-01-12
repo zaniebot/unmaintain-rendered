@@ -12,14 +12,14 @@ head: tty-color-redirect
 created_at: 2024-01-02T11:08:19Z
 updated_at: 2024-01-04T15:43:45Z
 url: https://github.com/astral-sh/uv/pull/742
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Disable color output when redirecting stderr
 
 ---
 
-_Pull request opened by @konstin on 2024-01-02 11:08_
+_@konstin_
 
 I'm still confused about it, but this seems to do the right thing?
 

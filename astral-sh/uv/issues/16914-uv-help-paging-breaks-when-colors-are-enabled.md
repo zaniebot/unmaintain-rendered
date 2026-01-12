@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T19:21:04Z
 updated_at: 2025-12-01T20:07:06Z
 url: https://github.com/astral-sh/uv/issues/16914
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `uv help` paging breaks when colors are enabled when using `busybox less` compiled without support for `-R`
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-01 19:21_
+_@EliteTK_
 
 ### Summary
 

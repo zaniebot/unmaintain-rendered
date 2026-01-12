@@ -14,14 +14,14 @@ head: alex/protocol-variant-only-known
 created_at: 2025-04-25T12:26:00Z
 updated_at: 2025-04-29T14:43:12Z
 url: https://github.com/astral-sh/ruff/pull/17625
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Protocols, but the only protocols in the world are the ones in the `typing` module
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-25 12:26_
+_@AlexWaygood_
 
 ## Summary
 

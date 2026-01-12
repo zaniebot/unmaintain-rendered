@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T21:32:11Z
 updated_at: 2025-12-04T14:59:35Z
 url: https://github.com/astral-sh/uv/issues/13417
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Uv command to show the path of the current enviroment
 
 ---
 
-_Issue opened by @infused-kim on 2025-05-12 21:32_
+_@infused-kim_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-12T21:08:53Z
 updated_at: 2021-12-13T15:22:00Z
 url: https://github.com/clap-rs/clap/issues/2865
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Multicall should support programs that have a subcommand with the same name as the program
 
 ---
 
-_Issue opened by @fishface60 on 2021-10-12 21:08_
+_@fishface60_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T14:19:04Z
 updated_at: 2025-01-21T21:01:22Z
 url: https://github.com/astral-sh/uv/issues/10816
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Avoid build backend for lockfile validation with Hatchling with recursive extras and dynamic metadata
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-21 14:19_
+_@charliermarsh_
 
 This is a mouthful but the PR will make it clearer. Partly a note to self: we can avoid the "slow path" from #10797 if we compare both the flattened and unflattened metadata.
 

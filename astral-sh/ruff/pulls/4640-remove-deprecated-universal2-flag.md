@@ -13,14 +13,14 @@ head: charlie/universal
 created_at: 2023-05-24T16:40:10Z
 updated_at: 2023-05-24T17:31:11Z
 url: https://github.com/astral-sh/ruff/pull/4640
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove deprecated --universal2 flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-24 16:40_
+_@charliermarsh_
 
 This was removed as part of the Maturin 1.0 release (https://github.com/PyO3/maturin/pull/1620).
 

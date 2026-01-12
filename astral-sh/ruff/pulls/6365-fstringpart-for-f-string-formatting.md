@@ -12,14 +12,14 @@ head: joined-string-part
 created_at: 2023-08-05T13:34:34Z
 updated_at: 2023-11-24T23:46:45Z
 url: https://github.com/astral-sh/ruff/pull/6365
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # FStringPart for f-string formatting
 
 ---
 
-_Pull request opened by @davidszotten on 2023-08-05 13:34_
+_@davidszotten_
 
 Step one of ["proper f-string formatting" ](https://github.com/astral-sh/ruff/pull/5932#issuecomment-1659647476)
 

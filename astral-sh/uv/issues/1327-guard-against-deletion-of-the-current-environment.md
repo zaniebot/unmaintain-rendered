@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T19:10:52Z
 updated_at: 2025-01-22T13:28:30Z
 url: https://github.com/astral-sh/uv/issues/1327
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Guard against deletion of the current environment
 
 ---
 
-_Issue opened by @zanieb on 2024-02-15 19:10_
+_@zanieb_
 
 For example, `uv venv` will happily clear the current virtual environment.
 

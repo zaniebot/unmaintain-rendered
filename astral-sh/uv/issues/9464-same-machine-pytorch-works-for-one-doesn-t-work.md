@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T12:01:21Z
 updated_at: 2024-12-02T14:04:50Z
 url: https://github.com/astral-sh/uv/issues/9464
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Same Machine, Pytorch works for one, doesn't work for another
 
 ---
 
-_Issue opened by @sglbl on 2024-11-27 12:01_
+_@sglbl_
 
 I have `Ubuntu 22.04` and `uv 0.5.0`.
 

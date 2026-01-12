@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T09:02:50Z
 updated_at: 2024-03-04T14:36:18Z
 url: https://github.com/astral-sh/uv/issues/2147
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Support for installing remotely hosted dependency files (requirements.txt, lock files, constraints, overrides, etc)
 
 ---
 
-_Issue opened by @ketozhang on 2024-03-04 09:02_
+_@ketozhang_
 
 Missing feature from `uv pip` that is available in `pip` is that it cannot install a dependency file from a remote source.
 

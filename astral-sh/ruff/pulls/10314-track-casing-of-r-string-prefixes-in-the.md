@@ -13,14 +13,14 @@ head: r-prefix-casing
 created_at: 2024-03-09T14:51:07Z
 updated_at: 2024-03-18T17:27:43Z
 url: https://github.com/astral-sh/ruff/pull/10314
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Track casing of r-string prefixes in the tokenizer and AST
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-09 14:51_
+_@AlexWaygood_
 
 ## Summary
 

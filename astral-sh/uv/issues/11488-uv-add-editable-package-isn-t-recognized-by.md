@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T19:02:51Z
 updated_at: 2025-02-13T20:39:06Z
 url: https://github.com/astral-sh/uv/issues/11488
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # `uv add --editable .` package isn't recognized by static analysis
 
 ---
 
-_Issue opened by @tonydavis629 on 2025-02-13 19:02_
+_@tonydavis629_
 
 ### Summary
 

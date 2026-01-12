@@ -14,14 +14,14 @@ head: dhruv/speculative-with-items-parsing
 created_at: 2024-06-06T04:48:18Z
 updated_at: 2024-06-06T11:45:35Z
 url: https://github.com/astral-sh/ruff/pull/11770
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use speculative parsing for with-items
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-06 04:48_
+_@dhruvmanila_
 
 ## Summary
 

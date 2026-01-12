@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-25T07:52:46Z
 updated_at: 2023-08-26T14:45:46Z
 url: https://github.com/astral-sh/ruff/issues/6866
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `handle_parenthesized_comment` can't deal with certain kinds of match comments 
 
 ---
 
-_Issue opened by @konstin on 2023-08-25 07:52_
+_@konstin_
 
 The following code is valid python, but crashes `handle_parenthesized_comment`:
 

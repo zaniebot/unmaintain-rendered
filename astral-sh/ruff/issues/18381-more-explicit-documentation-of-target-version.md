@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T02:12:51Z
 updated_at: 2025-05-30T03:06:53Z
 url: https://github.com/astral-sh/ruff/issues/18381
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # More Explicit Documentation of `target-version` behavior
 
 ---
 
-_Issue opened by @asglover on 2025-05-30 02:12_
+_@asglover_
 
 @ntBre 
 

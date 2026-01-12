@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T19:07:30Z
 updated_at: 2024-05-22T14:46:29Z
 url: https://github.com/astral-sh/uv/issues/2620
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Document `--only-binary` behavior when using unnamed requirements
 
 ---
 
-_Issue opened by @zanieb on 2024-03-22 19:07_
+_@zanieb_
 
 We should highlight all exemptions from `--only-binary` and note differences from `pip` in our compatibility document. Note that `pip` does not necessarily have intuitive behavior here as discussed in https://github.com/astral-sh/uv/pull/2600#discussion_r1534779844. This is also an opportunity to highlight any behaviors we should change.
 

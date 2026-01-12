@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T21:13:19Z
 updated_at: 2024-11-03T19:03:57Z
 url: https://github.com/astral-sh/uv/issues/8767
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # In resolver, allow source distributions with static metadata, but no `requires-python` compatibility
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-02 21:13_
+_@charliermarsh_
 
 The following fails to resolve under `--python 3.11`, because `interpreters-pep-734` has no wheels, and it requires at least Python 3.13, ostensibly to get the metadata -- however, the package has static metadata in the `pyproject.toml`, so we should actually be able to resolve it without issue:
 

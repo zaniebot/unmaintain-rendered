@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T09:17:25Z
 updated_at: 2025-07-03T08:48:36Z
 url: https://github.com/astral-sh/ty/issues/709
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # panic when running ty
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-06-26 09:17_
+_@Matt-Ord_
 
 ### Summary
 

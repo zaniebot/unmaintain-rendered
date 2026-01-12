@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-03-01T03:40:08Z
 updated_at: 2025-03-02T01:36:40Z
 url: https://github.com/astral-sh/uv/pull/11875
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Make interpreter caching robust to OS upgrades
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-01 03:40_
+_@charliermarsh_
 
 ## Summary
 

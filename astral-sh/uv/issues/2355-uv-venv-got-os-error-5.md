@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T12:17:31Z
 updated_at: 2024-03-12T03:21:48Z
 url: https://github.com/astral-sh/uv/issues/2355
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv venv got os error 5
 
 ---
 
-_Issue opened by @spin6lock on 2024-03-11 12:17_
+_@spin6lock_
 
 ```powershell
 uv venv     

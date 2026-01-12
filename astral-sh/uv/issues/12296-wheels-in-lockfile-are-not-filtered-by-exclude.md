@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T18:06:37Z
 updated_at: 2025-03-22T16:27:12Z
 url: https://github.com/astral-sh/uv/issues/12296
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Wheels in lockfile are not filtered by `exclude-newer`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-18 18:06_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/12294 for an example snapshot change
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T11:21:58Z
 updated_at: 2025-12-18T11:25:42Z
 url: https://github.com/astral-sh/ty/issues/2061
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support `ty rule "$RULE_NAME"`
 
 ---
 
-_Issue opened by @spaceone on 2025-12-18 11:21_
+_@spaceone_
 
 Similar to ruff, ty could support a "rule" subcommand which explains the violation.
 

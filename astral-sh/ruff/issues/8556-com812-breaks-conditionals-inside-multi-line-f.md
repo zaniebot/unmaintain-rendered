@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T11:44:07Z
 updated_at: 2023-11-10T04:19:16Z
 url: https://github.com/astral-sh/ruff/issues/8556
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # COM812 breaks conditionals inside multi-line f-strings
 
 ---
 
-_Issue opened by @parafoxia on 2023-11-08 11:44_
+_@parafoxia_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

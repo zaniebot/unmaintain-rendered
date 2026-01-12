@@ -14,14 +14,14 @@ head: ag/completion-end-to-end-mvp
 created_at: 2025-04-30T18:24:01Z
 updated_at: 2025-05-01T16:08:12Z
 url: https://github.com/astral-sh/ruff/pull/17744
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] add auto-completion MVP to LSP
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-30 18:24_
+_@BurntSushi_
 
 This PR does the wiring necessary to respond to completion requests from
 LSP clients.

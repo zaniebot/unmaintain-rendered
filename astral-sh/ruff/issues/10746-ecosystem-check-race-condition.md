@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-03T01:34:38Z
 updated_at: 2024-04-03T01:47:24Z
 url: https://github.com/astral-sh/ruff/issues/10746
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ecosystem check race condition
 
 ---
 
-_Issue opened by @zanieb on 2024-04-03 01:34_
+_@zanieb_
 
 The ecosystem checks perform a comparison between the branch `ruff` binary and a baseline `ruff` binary. We pull a baseline binary from the base branch of the pull request:
 

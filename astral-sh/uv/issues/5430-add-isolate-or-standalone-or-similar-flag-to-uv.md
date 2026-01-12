@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T22:14:42Z
 updated_at: 2024-07-30T19:27:48Z
 url: https://github.com/astral-sh/uv/issues/5430
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Add `--isolate` or `--standalone` or similar flag to `uv run`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-24 22:14_
+_@charliermarsh_
 
 We want the ability to run outside of the base environment (e.g., `uv run -p foo --isolate` to run in a dedicated, standalone environment for `foo`, to enforce package isolation boundaries). Perhaps this will even be the default someday.
 

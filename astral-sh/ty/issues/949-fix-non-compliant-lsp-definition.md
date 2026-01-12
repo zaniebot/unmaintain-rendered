@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T08:01:01Z
 updated_at: 2025-08-07T09:17:13Z
 url: https://github.com/astral-sh/ty/issues/949
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Fix non compliant LSP definition
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-07 08:01_
+_@MichaReiser_
 
 See https://github.com/rust-lang/rust-analyzer/pull/20393
 

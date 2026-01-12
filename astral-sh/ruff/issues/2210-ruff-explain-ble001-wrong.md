@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T18:15:20Z
 updated_at: 2023-01-26T18:55:11Z
 url: https://github.com/astral-sh/ruff/issues/2210
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # ruff --explain BLE001 wrong
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 18:15_
+_@spaceone_
 
 ```
 $ ruff --explain BLE001

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T16:58:14Z
 updated_at: 2024-12-06T19:10:25Z
 url: https://github.com/astral-sh/uv/issues/9690
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # [BUG]`--no-build-isolation` is invalid, UV_NO_BUILD_ISOLATION must be used
 
 ---
 
-_Issue opened by @sdbds on 2024-12-06 16:58_
+_@sdbds_
 
 UV version 0.5.6
 `--no-build-isolation` is invalid, UV_NO_BUILD_ISOLATION must be used

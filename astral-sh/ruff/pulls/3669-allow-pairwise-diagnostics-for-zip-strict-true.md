@@ -13,14 +13,14 @@ head: charlie/strict
 created_at: 2023-03-22T16:51:40Z
 updated_at: 2023-03-22T17:23:23Z
 url: https://github.com/astral-sh/ruff/pull/3669
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow `pairwise` diagnostics for `zip(..., strict=True)`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-22 16:51_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/pull/3654#discussion_r1144959468.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T17:22:33Z
 updated_at: 2025-11-06T15:16:03Z
 url: https://github.com/astral-sh/uv/issues/16594
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # uv sync can not resolve version, but uv pip install can
 
 ---
 
-_Issue opened by @Jerakin on 2025-11-04 17:22_
+_@Jerakin_
 
 ### Summary
 

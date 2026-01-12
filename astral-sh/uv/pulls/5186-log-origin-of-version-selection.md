@@ -13,14 +13,14 @@ head: konsti/log-preferences
 created_at: 2024-07-18T13:23:59Z
 updated_at: 2024-07-19T08:15:46Z
 url: https://github.com/astral-sh/uv/pull/5186
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Log origin of version selection
 
 ---
 
-_Pull request opened by @konstin on 2024-07-18 13:23_
+_@konstin_
 
 Log whether a version was picked because it was the next version or because it was a preference (installed, lockfile or sibling fork)
 

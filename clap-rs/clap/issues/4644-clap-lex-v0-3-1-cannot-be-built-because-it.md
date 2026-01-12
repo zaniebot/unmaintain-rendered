@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T04:38:39Z
 updated_at: 2023-01-16T16:10:08Z
 url: https://github.com/clap-rs/clap/issues/4644
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `clap_lex v0.3.1` cannot be built because it requires rustc 1.64.0 or newer
 
 ---
 
-_Issue opened by @uran0sH on 2023-01-16 04:38_
+_@uran0sH_
 
 ### Please complete the following tasks
 

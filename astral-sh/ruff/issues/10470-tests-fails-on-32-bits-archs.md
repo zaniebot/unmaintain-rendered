@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-19T08:02:22Z
 updated_at: 2024-03-20T13:44:10Z
 url: https://github.com/astral-sh/ruff/issues/10470
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Tests fails on 32 bits archs
 
 ---
 
-_Issue opened by @raspbeguy on 2024-03-19 08:02_
+_@raspbeguy_
 
 Hello, this issue is following #10359.
 

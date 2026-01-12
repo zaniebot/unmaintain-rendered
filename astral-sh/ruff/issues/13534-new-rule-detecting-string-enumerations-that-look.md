@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-27T10:36:25Z
 updated_at: 2024-09-29T15:11:22Z
 url: https://github.com/astral-sh/ruff/issues/13534
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - detecting string enumerations that look like string concatenations
 
 ---
 
-_Issue opened by @spaceby on 2024-09-27 10:36_
+_@spaceby_
 
 ```python
 a = ('Hello ',

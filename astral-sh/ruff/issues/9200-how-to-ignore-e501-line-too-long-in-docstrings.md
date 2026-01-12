@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T14:12:27Z
 updated_at: 2025-03-31T09:13:08Z
 url: https://github.com/astral-sh/ruff/issues/9200
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How to ignore E501: Line too long in docstrings
 
 ---
 
-_Issue opened by @DanielNoord on 2023-12-19 14:12_
+_@DanielNoord_
 
 ```python
 def func():

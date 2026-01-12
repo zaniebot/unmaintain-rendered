@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T14:14:14Z
 updated_at: 2025-01-08T16:34:52Z
 url: https://github.com/astral-sh/ruff/issues/15317
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Regression: panic messages about invalid mdtests are now swallowed by mdtest
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-07 14:14_
+_@AlexWaygood_
 
 Following #15241, some of the internal error messages from `red_knot_test` are now swallowed by the framework, for example this one here:
 

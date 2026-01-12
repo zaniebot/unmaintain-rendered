@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-17T23:00:11Z
 updated_at: 2025-11-08T20:01:55Z
 url: https://github.com/astral-sh/uv/issues/9174
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Force uv to skip certain (transitive) dependencies
 
 ---
 
-_Issue opened by @chrisfougner on 2024-11-17 23:00_
+_@chrisfougner_
 
 Is there a way to force uv to skip certain dependencies? Specifically we use docker containers [maintained by Nvidia](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch), which come pre-installed with various python ML packages on the system level (torch, apex, amp_C, flash-attn). If I use `uv venv --system-site-packages` then I can access those dependencies, the problem is that if any package that I install has a transitive dependency on one of these packages (primarily torch), then the one installed in venv will be chosen over the system one, and things break. I'd like to be able to specify that torch for example should not be installed as a transitive dependency, but I'm not sure how to do this.  
 

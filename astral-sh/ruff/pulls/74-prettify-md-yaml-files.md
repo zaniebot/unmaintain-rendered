@@ -12,14 +12,14 @@ head: prettify-md-yaml
 created_at: 2022-09-01T15:06:48Z
 updated_at: 2022-09-02T05:38:56Z
 url: https://github.com/astral-sh/ruff/pull/74
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Prettify md/yaml files
 
 ---
 
-_Pull request opened by @kianmeng on 2022-09-01 15:06_
+_@kianmeng_
 
 Resolved via `prettier -w .`
 

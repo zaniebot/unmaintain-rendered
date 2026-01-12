@@ -12,14 +12,14 @@ head: prepare_metadata_for_build_wheel
 created_at: 2023-10-16T17:20:29Z
 updated_at: 2023-10-18T12:48:32Z
 url: https://github.com/astral-sh/uv/pull/106
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Support prepare_metadata_for_build_wheel
 
 ---
 
-_Pull request opened by @konstin on 2023-10-16 17:20_
+_@konstin_
 
 Support calling `prepare_metadata_for_build_wheel`, which can give you the metadata without executing the actual build if the backend supports it.
 

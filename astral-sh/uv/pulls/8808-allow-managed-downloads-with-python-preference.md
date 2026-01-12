@@ -13,14 +13,14 @@ head: zb/allow-managed-system
 created_at: 2024-11-04T13:07:28Z
 updated_at: 2024-11-04T13:45:27Z
 url: https://github.com/astral-sh/uv/pull/8808
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Allow managed downloads with `--python-preference system`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-04 13:07_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8804
 

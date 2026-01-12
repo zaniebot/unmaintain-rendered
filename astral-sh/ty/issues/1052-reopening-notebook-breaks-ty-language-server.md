@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T15:51:22Z
 updated_at: 2025-08-19T17:32:45Z
 url: https://github.com/astral-sh/ty/issues/1052
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Reopening notebook breaks ty language server partly
 
 ---
 
-_Issue opened by @Xiao-Chenguang on 2025-08-19 15:51_
+_@Xiao-Chenguang_
 
 ### Summary
 

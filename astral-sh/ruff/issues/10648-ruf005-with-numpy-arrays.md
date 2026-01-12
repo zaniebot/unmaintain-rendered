@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T20:02:26Z
 updated_at: 2024-04-02T14:07:33Z
 url: https://github.com/astral-sh/ruff/issues/10648
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `RUF005` with numpy arrays
 
 ---
 
-_Issue opened by @mikedh on 2024-03-28 20:02_
+_@mikedh_
 
 Thanks for the great work on ruff! I ran `ruff check . --fix --unsafe-fixes --preview` with all the `RUF` rules enabled and they nearly all worked great with no manual editing. The only exception being `RUF005`. Admittedly it is correctly marked as "unsafe" so feel free to close. However, if it is possible to whitelist types for both sides of the addition I think this rule would be more robust, since any object that overloads `__add__` could do anything: 
 

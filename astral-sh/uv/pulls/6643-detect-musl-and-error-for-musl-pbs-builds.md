@@ -14,14 +14,14 @@ head: konsti/musl-detection
 created_at: 2024-08-26T12:47:08Z
 updated_at: 2024-08-27T00:06:54Z
 url: https://github.com/astral-sh/uv/pull/6643
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Detect musl and error for musl pbs builds
 
 ---
 
-_Pull request opened by @konstin on 2024-08-26 12:47_
+_@konstin_
 
 As described in #4242, we're currently incorrectly downloading glibc python-build-standalone on musl target, but we also can't fix this by using musl python-build-standalone on musl targets since the musl builds are effectively broken.
 

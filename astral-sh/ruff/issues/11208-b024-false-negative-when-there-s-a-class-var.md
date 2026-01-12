@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T21:01:57Z
 updated_at: 2024-04-30T16:01:09Z
 url: https://github.com/astral-sh/ruff/issues/11208
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # B024 false negative when there's a class var
 
 ---
 
-_Issue opened by @aureliojargas on 2024-04-29 21:01_
+_@aureliojargas_
 
 Taking the example from https://docs.astral.sh/ruff/rules/abstract-base-class-without-abstract-method/
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-07T00:17:31Z
 updated_at: 2024-12-07T00:27:05Z
 url: https://github.com/astral-sh/uv/issues/9699
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Limited Implementation of `tool.uv.conflicts`
 
 ---
 
-_Issue opened by @NellyWhads on 2024-12-07 00:17_
+_@NellyWhads_
 
 Currently, `tool.uv.conflicts` only supports `project.optional-dependencies.{extra}` and `dependency-groups.{group}`. Can we have support for `project.optional-dependencies.{group}` as well?
 

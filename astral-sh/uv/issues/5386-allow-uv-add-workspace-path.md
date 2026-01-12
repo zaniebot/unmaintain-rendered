@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T22:23:14Z
 updated_at: 2024-08-20T18:21:31Z
 url: https://github.com/astral-sh/uv/issues/5386
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Allow `uv add --workspace <path>`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 22:23_
+_@zanieb_
 
 e.g. `uv add [<package>] --workspace <path>` to add a workspace member.
 

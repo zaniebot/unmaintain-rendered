@@ -13,14 +13,14 @@ head: PT008-PT009
 created_at: 2023-08-10T13:37:19Z
 updated_at: 2023-08-12T04:18:18Z
 url: https://github.com/astral-sh/ruff/pull/6479
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add `PT008` and `PT009` docs
 
 ---
 
-_Pull request opened by @harupy on 2023-08-10 13:37_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

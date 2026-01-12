@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-30T17:20:41Z
 updated_at: 2023-01-30T21:31:50Z
 url: https://github.com/astral-sh/ruff/issues/2357
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Add `bytes` to default value for `allow-magic-value-types`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-30 17:20_
+_@ngnpope_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

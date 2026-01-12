@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-17T01:40:24Z
 updated_at: 2025-04-17T16:57:54Z
 url: https://github.com/astral-sh/uv/issues/12929
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # JSON schema for config-settings seems wrong
 
 ---
 
-_Issue opened by @udifuchs on 2025-04-17 01:40_
+_@udifuchs_
 
 There is a mismatch between the documentation for `config-settings` and the JSON schema.
 The documentation has this example:

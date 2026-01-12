@@ -12,14 +12,14 @@ head: format-expr-joined-str
 created_at: 2023-07-20T22:24:19Z
 updated_at: 2023-08-03T09:12:56Z
 url: https://github.com/astral-sh/ruff/pull/5932
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # format ExprJoinedStr
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-20 22:24_
+_@davidszotten_
 
 reuses most of the (constant) string formatting, adding ability to skip changing quote style, if that would require escaping quotes inside formatted values which isn't allowed (in py < 3.12)
 

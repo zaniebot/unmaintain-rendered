@@ -13,14 +13,14 @@ head: charlie/maturin
 created_at: 2024-03-06T21:43:56Z
 updated_at: 2024-03-06T21:50:41Z
 url: https://github.com/astral-sh/ruff/pull/10257
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Set maturin version in `release.yaml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 21:43_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/2219
 

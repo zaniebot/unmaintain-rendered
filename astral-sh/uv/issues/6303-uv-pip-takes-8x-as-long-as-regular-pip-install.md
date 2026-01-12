@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T06:51:27Z
 updated_at: 2024-08-21T13:32:16Z
 url: https://github.com/astral-sh/uv/issues/6303
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv pip takes ~8x as long as regular pip install with Python 3.13
 
 ---
 
-_Issue opened by @EwoutH on 2024-08-21 06:51_
+_@EwoutH_
 
 In our CI setup, we noticed uv pip taking very long to install our package, compared to uv pip, on Pyhton 3.13. While normally uv pip is way faster.
 

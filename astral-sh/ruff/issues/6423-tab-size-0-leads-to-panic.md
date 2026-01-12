@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-08T10:44:23Z
 updated_at: 2023-08-08T20:51:38Z
 url: https://github.com/astral-sh/ruff/issues/6423
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `tab-size = 0` leads to `panic`.
 
 ---
 
-_Issue opened by @Nuno-Mota on 2023-08-08 10:44_
+_@Nuno-Mota_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

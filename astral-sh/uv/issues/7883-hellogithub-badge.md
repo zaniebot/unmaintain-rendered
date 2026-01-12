@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T03:12:22Z
 updated_at: 2024-10-04T03:17:19Z
 url: https://github.com/astral-sh/uv/issues/7883
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # HelloGitHub Badge
 
 ---
 
-_Issue opened by @521xueweihan on 2024-10-03 03:12_
+_@521xueweihan_
 
 Hi, We're thrilled to share that [your project](https://hellogithub.com/en/repository/c2935ced724f4707b4b57ed7ba05e7d1) has caught the attention of the HelloGitHub community and has been recognized for its merit. Your work is truly inspiring, and we'd like to invite you to participate in our [HelloGitHub Badge Program](https://hellogithub.com/en/repository/c2935ced724f4707b4b57ed7ba05e7d1/embed).
 

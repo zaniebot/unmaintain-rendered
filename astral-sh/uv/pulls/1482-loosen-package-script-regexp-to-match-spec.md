@@ -12,14 +12,14 @@ head: fix-script-extra
 created_at: 2024-02-16T12:03:14Z
 updated_at: 2024-02-16T21:39:42Z
 url: https://github.com/astral-sh/uv/pull/1482
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Loosen package script regexp to match spec
 
 ---
 
-_Pull request opened by @akx on 2024-02-16 12:03_
+_@akx_
 
 Fixes #1479.
 

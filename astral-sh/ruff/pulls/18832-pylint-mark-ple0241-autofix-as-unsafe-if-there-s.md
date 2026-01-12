@@ -14,14 +14,14 @@ head: fix-PLE0241
 created_at: 2025-06-20T20:08:37Z
 updated_at: 2025-06-21T20:15:50Z
 url: https://github.com/astral-sh/ruff/pull/18832
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`pylint`] Mark `PLE0241` autofix as unsafe if there's comments in the base classes
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-20 20:08_
+_@LaBatata101_
 
 
 

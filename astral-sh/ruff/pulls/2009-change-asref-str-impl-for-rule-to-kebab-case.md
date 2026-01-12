@@ -12,14 +12,14 @@ head: kebab-case
 created_at: 2023-01-20T02:05:40Z
 updated_at: 2023-01-20T02:37:11Z
 url: https://github.com/astral-sh/ruff/pull/2009
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Change AsRef<str> impl for Rule to kebab-case
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-20 02:05_
+_@not-my-profile_
 
 As we surface rule names more to users we want
 them to be easier to type than PascalCase.

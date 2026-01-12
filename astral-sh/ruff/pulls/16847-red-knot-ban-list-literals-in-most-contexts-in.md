@@ -13,14 +13,14 @@ head: alex/invalid-list-type-exprs
 created_at: 2025-03-19T14:30:13Z
 updated_at: 2025-03-19T14:42:45Z
 url: https://github.com/astral-sh/ruff/pull/16847
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Ban list literals in most contexts in type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-19 14:30_
+_@AlexWaygood_
 
 ## Summary
 

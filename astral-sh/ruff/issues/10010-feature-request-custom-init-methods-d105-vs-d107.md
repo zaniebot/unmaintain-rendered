@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T16:36:20Z
 updated_at: 2024-02-21T20:19:09Z
 url: https://github.com/astral-sh/ruff/issues/10010
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature Request: Custom Init Methods (D105 vs D107)
 
 ---
 
-_Issue opened by @Spectre5 on 2024-02-16 16:36_
+_@Spectre5_
 
 D105 checks for documented magic methods, except that `__init__` is special cased into D107 since many people put that documentation instead into the class docstring.  I'd like ability to add addition magic methods to be considered an init method.  In particular, the dataclass `__post_init__` method as well as the attrs `__attrs_pre_init__`, `__attrs_post_init__`, and `__attrs_init__`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T15:00:57Z
 updated_at: 2024-04-01T14:35:22Z
 url: https://github.com/astral-sh/uv/issues/1062
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Ensure that uv works with `conda` Python distributions
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 15:00_
+_@charliermarsh_
 
 This probably already works, but I've never tested it. It's worth testing manually.
 

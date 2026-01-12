@@ -12,14 +12,14 @@ head: zb/target-version
 created_at: 2024-01-21T17:39:13Z
 updated_at: 2024-01-22T18:46:19Z
 url: https://github.com/astral-sh/uv/pull/1029
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Improve display of Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-21 17:39_
+_@zanieb_
 
 In https://github.com/astral-sh/puffin/pull/986 there was some confusion about what these values are set to and I noticed that we never actually display the target version being used for a resolution.
 

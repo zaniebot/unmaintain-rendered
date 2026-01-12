@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T23:08:26Z
 updated_at: 2023-08-09T04:52:32Z
 url: https://github.com/astral-sh/ruff/issues/6355
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Should S108 be detected in `tempfile.TemporaryDirectory(dir="/dev/shm")`?
 
 ---
 
-_Issue opened by @mihaic on 2023-08-04 23:08_
+_@mihaic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

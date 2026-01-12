@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T18:18:24Z
 updated_at: 2024-05-30T18:23:16Z
 url: https://github.com/astral-sh/uv/issues/3360
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: implement merging of forked resolver states
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 18:18_
+_@BurntSushi_
 
 As part of #3350, when generating a universal lock file, it's possible for the resolver to fork when there are conflicting dependencies. Once all forks have completed, the resolutions from each fork need to be merged into one resolution (which might have multiple versions of the same package). And that in turn needs to get converted to a `ResolutionGraph`.
 

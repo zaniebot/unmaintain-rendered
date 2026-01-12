@@ -14,14 +14,14 @@ head: charlie/call-args
 created_at: 2023-07-24T04:46:10Z
 updated_at: 2023-07-24T05:14:06Z
 url: https://github.com/astral-sh/ruff/pull/6021
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid allocations in `SimpleCallArgs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 04:46_
+_@charliermarsh_
 
 ## Summary
 

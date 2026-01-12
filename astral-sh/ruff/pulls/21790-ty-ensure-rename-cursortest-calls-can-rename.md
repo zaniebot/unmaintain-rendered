@@ -14,14 +14,14 @@ head: micha/rename-tests
 created_at: 2025-12-04T12:48:11Z
 updated_at: 2025-12-04T13:19:50Z
 url: https://github.com/astral-sh/ruff/pull/21790
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Ensure `rename` `CursorTest` calls `can_rename` before renaming
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-04 12:48_
+_@MichaReiser_
 
 ## Summary
 

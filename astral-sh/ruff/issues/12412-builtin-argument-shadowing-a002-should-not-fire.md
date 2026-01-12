@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T20:37:40Z
 updated_at: 2024-07-20T01:32:34Z
 url: https://github.com/astral-sh/ruff/issues/12412
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `builtin-argument-shadowing` (`A002`) should not fire when overriding
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-07-19 20:37_
+_@tylerlaprade_
 
 I have a custom API request factory that inherits from Django Rest Framework's `APIRequestFactory`. I am overriding the `post()` and `patch()` methods with some custom behavior. I need to use the same parameters as the overridden method, including one named `format`. Since `format` is a Python built-in, `A002` is triggered, but I have no recourse to rename it. For now, I'm excluding `"format"` in `builtin-ignores`, but I'd prefer to keep triggering on `format` in any non-overridden method.
 

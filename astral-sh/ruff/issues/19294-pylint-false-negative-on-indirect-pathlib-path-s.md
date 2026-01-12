@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T21:45:46Z
 updated_at: 2025-07-16T16:57:33Z
 url: https://github.com/astral-sh/ruff/issues/19294
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`pylint`] False negative on indirect `pathlib.Path`s (`PLW1514`)
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-11 21:45_
+_@MeGaGiGaGon_
 
 ### Summary
 

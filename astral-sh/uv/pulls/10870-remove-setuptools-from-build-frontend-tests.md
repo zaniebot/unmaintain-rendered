@@ -13,14 +13,14 @@ head: charlie/hatchling
 created_at: 2025-01-22T18:45:49Z
 updated_at: 2025-01-22T19:26:02Z
 url: https://github.com/astral-sh/uv/pull/10870
-synced_at: 2026-01-10T11:45:15Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Remove `setuptools` from build frontend tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 18:45_
+_@charliermarsh_
 
 ## Summary
 

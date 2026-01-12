@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T14:13:22Z
 updated_at: 2025-09-25T13:54:23Z
 url: https://github.com/astral-sh/uv/issues/13702
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Hint at `tool.uv.required-environments` when installation fails for a package with wheels
 
 ---
 
-_Issue opened by @konstin on 2025-05-28 14:13_
+_@konstin_
 
 A common user question is that their installation fails after a successful resolution. An example is installing ML packages that in recent versions only support Apple Silicon on an Intel Mac.
 

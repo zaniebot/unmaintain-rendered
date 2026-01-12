@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T22:21:31Z
 updated_at: 2025-08-27T20:24:30Z
 url: https://github.com/astral-sh/uv/issues/15464
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Include explicit privacy statement in docs
 
 ---
 
-_Issue opened by @abeyerpath on 2025-08-22 22:21_
+_@abeyerpath_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-23T12:48:05Z
 updated_at: 2024-10-31T06:58:36Z
 url: https://github.com/astral-sh/ruff/issues/13891
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # pyupgrade rule for Unpack
 
 ---
 
-_Issue opened by @fzimmermann89 on 2024-10-23 12:48_
+_@fzimmermann89_
 
 It seems ruff is missing https://github.com/asottile/pyupgrade/pull/745 `G[Unpack[T]] => G[*T] ` to change UNPACK to asterisk if supported by the python version:
 

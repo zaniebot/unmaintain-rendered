@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T14:13:11Z
 updated_at: 2025-02-25T20:20:04Z
 url: https://github.com/astral-sh/uv/issues/11778
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Provide a Python native API with bindings to Rust functionality
 
 ---
 
-_Issue opened by @pavelschon on 2025-02-25 14:13_
+_@pavelschon_
 
 ### Summary
 

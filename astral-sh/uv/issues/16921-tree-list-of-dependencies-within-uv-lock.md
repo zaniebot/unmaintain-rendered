@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T09:04:26Z
 updated_at: 2025-12-02T09:53:07Z
 url: https://github.com/astral-sh/uv/issues/16921
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Tree list of dependencies within uv.lock
 
 ---
 
-_Issue opened by @dbogdoll on 2025-12-02 09:04_
+_@dbogdoll_
 
 ### Question
 

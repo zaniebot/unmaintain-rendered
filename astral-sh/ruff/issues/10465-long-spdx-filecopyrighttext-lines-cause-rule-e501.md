@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T22:08:32Z
 updated_at: 2024-03-19T19:57:04Z
 url: https://github.com/astral-sh/ruff/issues/10465
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Long SPDX-FileCopyrightText lines cause rule E501 violations
 
 ---
 
-_Issue opened by @damonlynch on 2024-03-18 22:08_
+_@damonlynch_
 
 First, let me say thank you for a great project. Keep up the great work!
 

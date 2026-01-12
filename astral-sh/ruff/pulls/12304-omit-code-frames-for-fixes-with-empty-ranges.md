@@ -13,14 +13,14 @@ head: charlie/frame
 created_at: 2024-07-12T13:19:16Z
 updated_at: 2024-07-12T15:30:41Z
 url: https://github.com/astral-sh/ruff/pull/12304
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Omit code frames for fixes with empty ranges
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 13:19_
+_@charliermarsh_
 
 ## Summary
 

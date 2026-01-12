@@ -12,14 +12,14 @@ head: hvh/python-list-option
 created_at: 2025-09-12T15:19:42Z
 updated_at: 2025-10-10T17:33:27Z
 url: https://github.com/astral-sh/uv/pull/15814
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Add uv tool list --show-python
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-12 15:19_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

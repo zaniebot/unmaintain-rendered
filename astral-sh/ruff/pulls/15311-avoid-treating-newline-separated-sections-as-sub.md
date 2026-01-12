@@ -14,14 +14,14 @@ head: charlie/d
 created_at: 2025-01-07T03:04:33Z
 updated_at: 2025-01-07T03:13:37Z
 url: https://github.com/astral-sh/ruff/pull/15311
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Avoid treating newline-separated sections as sub-sections
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 03:04_
+_@charliermarsh_
 
 ## Summary
 

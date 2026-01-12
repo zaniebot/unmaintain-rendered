@@ -14,14 +14,14 @@ head: airflow-member-removals
 created_at: 2024-11-25T07:34:34Z
 updated_at: 2024-12-02T09:14:00Z
 url: https://github.com/astral-sh/ruff/pull/14582
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [airflow] Avoid deprecated values (AIR302)
 
 ---
 
-_Pull request opened by @uranusjr on 2024-11-25 07:34_
+_@uranusjr_
 
 ## Summary
 

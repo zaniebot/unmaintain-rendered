@@ -13,14 +13,14 @@ head: docs/pre-commit-manual
 created_at: 2023-08-01T14:31:00Z
 updated_at: 2023-08-01T17:32:16Z
 url: https://github.com/astral-sh/ruff/pull/6243
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Tweak pre-commit message
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-01 14:31_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/ruff/pull/6153
 

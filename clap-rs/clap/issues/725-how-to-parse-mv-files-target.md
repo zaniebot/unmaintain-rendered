@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-11-01T06:56:34Z
 updated_at: 2018-08-02T03:29:56Z
 url: https://github.com/clap-rs/clap/issues/725
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # how to parse `mv <files>... <target>`?
 
 ---
 
-_Issue opened by @hh9527 on 2016-11-01 06:56_
+_@hh9527_
 
 E.g.: `mv a1 a2 a3/`
 

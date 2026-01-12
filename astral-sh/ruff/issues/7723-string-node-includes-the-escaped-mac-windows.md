@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-30T19:01:57Z
 updated_at: 2023-10-01T02:08:00Z
 url: https://github.com/astral-sh/ruff/issues/7723
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # String node includes the escaped mac / windows newline character
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-30 19:01_
+_@dhruvmanila_
 
 This is not easily demonstrable in the playground.
 

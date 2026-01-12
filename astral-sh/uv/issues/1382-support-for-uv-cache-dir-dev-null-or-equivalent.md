@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T23:15:00Z
 updated_at: 2024-02-15T23:36:54Z
 url: https://github.com/astral-sh/uv/issues/1382
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support for `UV_CACHE_DIR=/dev/null` or equivalent
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-15 23:15_
+_@hauntsaninja_
 
 It would be useful to do the equivalent of `uv pip install --no-cache` via env var
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T21:21:26Z
 updated_at: 2023-02-24T22:40:01Z
 url: https://github.com/astral-sh/ruff/issues/3215
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff rewrites `Union[tuple_of_types]` in potentially breaking ways
 
 ---
 
-_Issue opened by @rouge8 on 2023-02-24 21:21_
+_@rouge8_
 
 After Ruff rewrites this file, Python starts throwing an error.
 

@@ -15,14 +15,14 @@ head: david/generate-rules-mkdocs
 created_at: 2025-07-02T13:17:29Z
 updated_at: 2025-07-02T14:01:11Z
 url: https://github.com/astral-sh/ruff/pull/19087
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Adapt generate_ty_rules for MkDocs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 13:17_
+_@sharkdp_
 
 ## Summary
 

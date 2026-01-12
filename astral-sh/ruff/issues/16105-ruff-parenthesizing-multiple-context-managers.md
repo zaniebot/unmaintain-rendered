@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-11T21:20:58Z
 updated_at: 2025-02-11T21:51:33Z
 url: https://github.com/astral-sh/ruff/issues/16105
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff parenthesizing multiple context managers despite `requires-python = ">=3.8"`
 
 ---
 
-_Issue opened by @tamird on 2025-02-11 21:20_
+_@tamird_
 
 ### Description
 

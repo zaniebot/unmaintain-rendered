@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T14:52:50Z
 updated_at: 2023-11-10T18:17:53Z
 url: https://github.com/astral-sh/uv/issues/389
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # pip-sync error when removing __pycache__
 
 ---
 
-_Issue opened by @konstin on 2023-11-10 14:52_
+_@konstin_
 
 There is no context (we should add more), but the cause to be `__pycache__` being different from other installed files
 

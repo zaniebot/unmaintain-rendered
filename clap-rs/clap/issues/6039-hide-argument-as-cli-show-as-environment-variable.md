@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T20:17:10Z
 updated_at: 2025-06-19T20:24:19Z
 url: https://github.com/clap-rs/clap/issues/6039
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Hide Argument as CLI, Show as Environment Variable
 
 ---
 
-_Issue opened by @naftulikay on 2025-06-19 20:17_
+_@naftulikay_
 
 ### Please complete the following tasks
 

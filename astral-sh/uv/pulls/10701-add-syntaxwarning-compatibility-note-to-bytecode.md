@@ -13,14 +13,14 @@ head: charlie/syntax-warnings
 created_at: 2025-01-17T01:03:11Z
 updated_at: 2025-01-17T03:26:04Z
 url: https://github.com/astral-sh/uv/pull/10701
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Add SyntaxWarning compatibility note to bytecode compilation docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 01:03_
+_@charliermarsh_
 
 _No description provided._
 

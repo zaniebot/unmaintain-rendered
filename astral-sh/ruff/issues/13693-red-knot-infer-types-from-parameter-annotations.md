@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T17:19:47Z
 updated_at: 2024-12-06T20:55:58Z
 url: https://github.com/astral-sh/ruff/issues/13693
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] infer types from parameter annotations
 
 ---
 
-_Issue opened by @carljm on 2024-10-09 17:19_
+_@carljm_
 
 Currently we have Definitions for function parameters (that is, inside the function body we know that those names are defined), but we only infer `@Todo` types for those names, even if the parameter has a type annotation.
 

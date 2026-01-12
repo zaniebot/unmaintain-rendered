@@ -14,14 +14,14 @@ head: zb/toolchain-preference-only
 created_at: 2024-06-27T21:25:32Z
 updated_at: 2024-07-02T02:07:32Z
 url: https://github.com/astral-sh/uv/pull/4602
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Drop `prefer` prefix from `toolchain-preference` values
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 21:25_
+_@zanieb_
 
 I think `--toolchain-preference system` is sufficiently clear and `--toolchain-preference prefer-system` is excessively verbose. This was discussed in the original pull request at https://github.com/astral-sh/uv/pull/4424 but because we had a case for preferring "installed managed" toolchains I was hesitant to change it. Now that I've dropped that in #4601, I think we can drop the prefix.
 

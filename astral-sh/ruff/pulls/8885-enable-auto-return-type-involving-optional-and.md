@@ -13,14 +13,14 @@ head: charlie/union
 created_at: 2023-11-28T23:59:51Z
 updated_at: 2023-11-29T02:35:56Z
 url: https://github.com/astral-sh/ruff/pull/8885
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Enable auto-return-type involving `Optional` and `Union` annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-28 23:59_
+_@charliermarsh_
 
 ## Summary
 

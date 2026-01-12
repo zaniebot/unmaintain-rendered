@@ -13,14 +13,14 @@ head: konsti/globwalk-workspace
 created_at: 2024-09-26T14:29:32Z
 updated_at: 2024-09-26T14:54:30Z
 url: https://github.com/astral-sh/uv/pull/7709
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Escape glob patterns
 
 ---
 
-_Pull request opened by @konstin on 2024-09-26 14:29_
+_@konstin_
 
 Previously, we could have interpreted the base directory as part of the glob.
 

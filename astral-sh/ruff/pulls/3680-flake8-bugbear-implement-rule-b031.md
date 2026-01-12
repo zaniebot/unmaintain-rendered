@@ -13,14 +13,14 @@ head: feat/B031
 created_at: 2023-03-23T09:07:08Z
 updated_at: 2023-03-25T01:48:01Z
 url: https://github.com/astral-sh/ruff/pull/3680
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8-bugbear`]: Implement rule `B031`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-23 09:07_
+_@dhruvmanila_
 
 Implement rule `B031` for `flake8-bugbear`:
 

@@ -13,14 +13,14 @@ head: zb/test-virtual-env-pre
 created_at: 2024-09-16T19:51:22Z
 updated_at: 2024-09-16T20:41:55Z
 url: https://github.com/astral-sh/uv/pull/7437
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Add test case for Python pre-release versions from `VIRTUAL_ENV`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-16 19:51_
+_@zanieb_
 
 _No description provided._
 

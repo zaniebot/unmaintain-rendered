@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T16:40:47Z
 updated_at: 2025-01-13T10:00:53Z
 url: https://github.com/astral-sh/uv/issues/6880
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Pytorch downgrades to a lower version
 
 ---
 
-_Issue opened by @thepowerfuldeez on 2024-08-30 16:40_
+_@thepowerfuldeez_
 
 Hi! Is there functionality to ignore dependencies if they are already exist in the system python?
 I am using `nvcr.io/nvidia/pytorch:24.08-py3` docker image which has `pytorch==2.5.0a0+872d972e41.nv24.08` installed

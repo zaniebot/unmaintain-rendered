@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-05-12T19:53:50Z
 updated_at: 2025-05-21T16:01:42Z
 url: https://github.com/clap-rs/clap/issues/6002
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # derive: Read metadata from the fields of the `Cargo.toml` and embeds those to the long version
 
 ---
 
-_Issue opened by @sorairolake on 2025-05-12 19:53_
+_@sorairolake_
 
 ### Please complete the following tasks
 

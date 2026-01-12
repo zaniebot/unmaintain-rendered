@@ -13,14 +13,14 @@ head: adjust-close-handle-offsets
 created_at: 2024-09-03T02:31:08Z
 updated_at: 2024-09-04T22:44:30Z
 url: https://github.com/astral-sh/uv/pull/6955
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # fix: adjust close_handles pointer offsets to match distlib cleanup_fds
 
 ---
 
-_Pull request opened by @samypr100 on 2024-09-03 02:31_
+_@samypr100_
 
 ## Summary
 

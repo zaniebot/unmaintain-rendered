@@ -13,14 +13,14 @@ head: charlie/re-build
 created_at: 2026-01-09T19:09:42Z
 updated_at: 2026-01-09T20:43:21Z
 url: https://github.com/astral-sh/uv/pull/17387
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Rebuild dynamic distribution when version changes with `--no-cache`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 19:09_
+_@charliermarsh_
 
 ## Summary
 

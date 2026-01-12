@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-25T21:04:19Z
 updated_at: 2025-05-18T19:31:31Z
 url: https://github.com/astral-sh/uv/issues/3272
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add a `pipdeptree` like output
 
 ---
 
-_Issue opened by @mgaitan on 2024-04-25 21:04_
+_@mgaitan_
 
 [pipdeptree](https://github.com/tox-dev/pipdeptree) is a cool tool for visualizing the dependency tree of python packages. It allows users to see a structured "tree" of dependencies and, using its reverse mode, to understand why a particular dependency is required for our project.
 

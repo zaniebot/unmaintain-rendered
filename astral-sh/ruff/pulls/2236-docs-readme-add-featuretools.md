@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-26T22:16:11Z
 updated_at: 2023-01-26T22:30:23Z
 url: https://github.com/astral-sh/ruff/pull/2236
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # docs(readme): add featuretools
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-26 22:16_
+_@sbrugman_
 
 The list is getting long, which is a good thing. 
 What about turning it into an alphabetically sorted paragraph, like [kedro](https://github.com/kedro-org/kedro#who-likes-kedro) has? 

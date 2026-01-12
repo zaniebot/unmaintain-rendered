@@ -12,14 +12,14 @@ head: charlie/B905
 created_at: 2022-12-07T15:01:06Z
 updated_at: 2022-12-07T15:01:25Z
 url: https://github.com/astral-sh/ruff/pull/1122
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement B905
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-07 15:01_
+_@charliermarsh_
 
 Resolves: #1120.
 

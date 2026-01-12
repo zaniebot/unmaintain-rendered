@@ -13,14 +13,14 @@ head: david/scope-reachability
 created_at: 2025-04-10T11:08:59Z
 updated_at: 2025-04-10T13:09:27Z
 url: https://github.com/astral-sh/ruff/pull/17332
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Track reachability of scopes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-10 11:08_
+_@sharkdp_
 
 ## Summary
 

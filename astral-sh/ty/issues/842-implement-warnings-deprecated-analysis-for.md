@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T14:58:17Z
 updated_at: 2026-01-09T01:48:49Z
 url: https://github.com/astral-sh/ty/issues/842
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Implement `@warnings.deprecated` analysis for overloads
 
 ---
 
-_Issue opened by @Gankra on 2025-07-17 14:58_
+_@Gankra_
 
 We're landing https://github.com/astral-sh/ruff/pull/19376 without this functionality, leaving it for a followup.
 

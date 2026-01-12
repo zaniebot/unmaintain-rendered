@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-17T19:08:29Z
 updated_at: 2024-08-18T13:19:08Z
 url: https://github.com/astral-sh/uv/issues/6173
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # missing default in the `--help` output.
 
 ---
 
-_Issue opened by @ChannyClaus on 2024-08-17 19:08_
+_@ChannyClaus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

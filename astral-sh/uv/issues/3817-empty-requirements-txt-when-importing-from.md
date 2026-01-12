@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T10:37:58Z
 updated_at: 2024-05-29T13:59:01Z
 url: https://github.com/astral-sh/uv/issues/3817
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # empty `requirements.txt` when importing from `pyproject.toml`
 
 ---
 
-_Issue opened by @BBBmau on 2024-05-24 10:37_
+_@BBBmau_
 
 
 When attempting to import from an existing `pyproject.toml` file I get an empty generated `requirements.txt` file, for context I am currently attempting to import from using `poetry` to using `uv` which could be what's causing it. Is their currently a workaround for this?

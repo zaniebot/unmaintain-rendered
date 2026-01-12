@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-23T13:20:26Z
 updated_at: 2024-09-10T17:25:40Z
 url: https://github.com/astral-sh/ruff/issues/13079
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # docstring-missing-returns (`DOC201`) reports on `__new__`
 
 ---
 
-_Issue opened by @tjkuson on 2024-08-23 13:20_
+_@tjkuson_
 
 Running `ruff check --select DOC201 --preview --isolated` on
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T07:41:21Z
 updated_at: 2024-09-16T01:51:11Z
 url: https://github.com/astral-sh/uv/issues/7211
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # False positive warning: <dep> doesn't have extra <smth>
 
 ---
 
-_Issue opened by @dimaqq on 2024-09-09 07:41_
+_@dimaqq_
 
 Check out https://github.com/canonical/charmcraft
 

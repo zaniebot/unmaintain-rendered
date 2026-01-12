@@ -13,14 +13,14 @@ head: zb/fix-canonical
 created_at: 2025-01-29T20:39:39Z
 updated_at: 2025-01-30T16:10:36Z
 url: https://github.com/astral-sh/uv/pull/11083
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Avoid resolving symbolic links when querying Python interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 20:39_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11048
 

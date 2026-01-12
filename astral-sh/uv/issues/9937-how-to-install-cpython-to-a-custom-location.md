@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T15:11:03Z
 updated_at: 2024-12-16T22:09:38Z
 url: https://github.com/astral-sh/uv/issues/9937
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # How to install CPython to a custom location?
 
 ---
 
-_Issue opened by @ggarra13 on 2024-12-16 15:11_
+_@ggarra13_
 
 Hi.  New to uv.  I would like to install CPython to my user specified local directory.  Is there any way to do it?  
 

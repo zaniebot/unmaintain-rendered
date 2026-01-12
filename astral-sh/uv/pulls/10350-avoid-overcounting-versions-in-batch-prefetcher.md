@@ -13,14 +13,14 @@ head: konsti/opt-batch-prefetch
 created_at: 2025-01-07T09:42:23Z
 updated_at: 2025-01-07T14:12:19Z
 url: https://github.com/astral-sh/uv/pull/10350
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Avoid overcounting versions in batch prefetcher
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 09:42_
+_@konstin_
 
 Ref https://github.com/astral-sh/uv/issues/10344
 

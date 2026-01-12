@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T14:27:33Z
 updated_at: 2025-07-23T23:21:38Z
 url: https://github.com/astral-sh/ty/issues/871
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Prevent overriding of `Final` attributes in subclasses
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-22 14:27_
+_@sharkdp_
 
 Attributes which are qualified as `Final` may not be overwritten in subclasses ([spec](https://typing.python.org/en/latest/spec/qualifiers.html#uppercase-final)):
 

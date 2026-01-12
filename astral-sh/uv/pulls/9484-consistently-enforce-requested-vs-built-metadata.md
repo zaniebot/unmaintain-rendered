@@ -14,14 +14,14 @@ head: charlie/cc
 created_at: 2024-11-27T21:40:14Z
 updated_at: 2024-11-27T21:51:03Z
 url: https://github.com/astral-sh/uv/pull/9484
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Consistently enforce requested-vs.-built metadata when retrieving wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-27 21:40_
+_@charliermarsh_
 
 ## Summary
 

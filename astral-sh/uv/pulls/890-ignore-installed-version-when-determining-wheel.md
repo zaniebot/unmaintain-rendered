@@ -13,14 +13,14 @@ head: charlie/target
 created_at: 2024-01-12T02:19:06Z
 updated_at: 2024-01-12T13:57:01Z
 url: https://github.com/astral-sh/uv/pull/890
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Ignore installed version when determining wheel compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 02:19_
+_@charliermarsh_
 
 _No description provided._
 

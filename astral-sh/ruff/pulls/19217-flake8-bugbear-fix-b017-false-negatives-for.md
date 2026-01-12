@@ -14,14 +14,14 @@ head: fix-19215
 created_at: 2025-07-08T20:35:08Z
 updated_at: 2025-07-11T16:52:39Z
 url: https://github.com/astral-sh/ruff/pull/19217
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`flake8-bugbear`] Fix B017 false negatives for keyword exception arguments
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-08 20:35_
+_@danparizher_
 
 ## Summary
 

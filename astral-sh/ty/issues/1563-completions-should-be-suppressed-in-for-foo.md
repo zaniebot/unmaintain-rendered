@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T19:20:27Z
 updated_at: 2025-11-21T17:06:48Z
 url: https://github.com/astral-sh/ty/issues/1563
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Completions should be suppressed in `for foo<CURSOR>`, `def foo(param<CURSOR>` and `def foo[T<CURSOR>]`
 
 ---
 
-_Issue opened by @BurntSushi on 2025-11-14 19:20_
+_@BurntSushi_
 
 ### Summary
 

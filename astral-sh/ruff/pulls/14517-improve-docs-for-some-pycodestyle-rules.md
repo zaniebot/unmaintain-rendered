@@ -13,14 +13,14 @@ head: alex/multiple-spaces-docs
 created_at: 2024-11-21T17:21:12Z
 updated_at: 2024-11-21T17:27:16Z
 url: https://github.com/astral-sh/ruff/pull/14517
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Improve docs for some pycodestyle rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-21 17:21_
+_@AlexWaygood_
 
 We received a report on Discord that the mention of `Black` in the docs for `MultipleSpacesAfterComma` was a bit confusing
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T17:50:26Z
 updated_at: 2024-11-07T22:07:28Z
 url: https://github.com/astral-sh/ruff/issues/14114
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] fix handling of known instances in `Type` relation methods
 
 ---
 
-_Issue opened by @carljm on 2024-11-05 17:50_
+_@carljm_
 
 We currently represent "known instances" (e.g. special forms like `typing.Literal`, which are an instance of `typing._SpecialForm`, but need to be handled differently from other instances of `typing._SpecialForm`) as an `InstanceType` with a `known` field that is `Some(...)`.
 

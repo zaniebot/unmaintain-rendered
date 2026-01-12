@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T15:06:03Z
 updated_at: 2024-03-08T16:00:32Z
 url: https://github.com/astral-sh/ruff/issues/10275
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff format removes trailing whitespace in doctests
 
 ---
 
-_Issue opened by @peterjc on 2024-03-07 15:06_
+_@peterjc_
 
 Testing under Linux, using ``test_case.py`` based on a real world example:
 

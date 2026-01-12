@@ -13,14 +13,14 @@ head: konsti/respect-retries-in-upload
 created_at: 2025-08-06T11:53:38Z
 updated_at: 2025-08-06T15:59:19Z
 url: https://github.com/astral-sh/uv/pull/15106
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Respect `UV_HTTP_RETRIES` in `uv publish`
 
 ---
 
-_Pull request opened by @konstin on 2025-08-06 11:53_
+_@konstin_
 
 Previously, publish would always use the default retries, now it respects `UV_HTTP_RETRIES`
 

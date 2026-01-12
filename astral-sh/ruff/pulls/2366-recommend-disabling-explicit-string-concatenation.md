@@ -13,14 +13,14 @@ head: charlie/imp
 created_at: 2023-01-30T21:41:46Z
 updated_at: 2023-01-30T21:42:31Z
 url: https://github.com/astral-sh/ruff/pull/2366
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Recommend disabling `explicit-string-concatenation`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-30 21:41_
+_@charliermarsh_
 
 If `allow-multiline = false` is set, then if the user enables `explicit-string-concatenation` (`ISC003`), there's no way for them to create valid multiline strings. This PR notes that they should turn off `ISC003`.
 

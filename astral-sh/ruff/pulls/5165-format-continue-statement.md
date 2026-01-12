@@ -12,14 +12,14 @@ head: stmt-continue
 created_at: 2023-06-17T17:00:36Z
 updated_at: 2023-06-18T11:46:07Z
 url: https://github.com/astral-sh/ruff/pull/5165
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format `continue` statement
 
 ---
 
-_Pull request opened by @cnpryer on 2023-06-17 17:00_
+_@cnpryer_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

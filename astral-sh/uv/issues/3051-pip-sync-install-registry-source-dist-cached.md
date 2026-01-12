@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T06:17:40Z
 updated_at: 2024-04-16T19:07:50Z
 url: https://github.com/astral-sh/uv/issues/3051
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # pip_sync: install_registry_source_dist_cached fails on Gentoo amd64
 
 ---
 
-_Issue opened by @mgorny on 2024-04-16 06:17_
+_@mgorny_
 
 After the fix from #2165, I'm seeing one test failure with uv-0.1.32, on Gentoo Linux amd64:
 

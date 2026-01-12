@@ -14,14 +14,14 @@ head: dunder-new-as-staticmethod
 created_at: 2024-09-10T11:08:48Z
 updated_at: 2025-02-16T20:28:53Z
 url: https://github.com/astral-sh/ruff/pull/13305
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Consider `__new__` methods as special function type for enforcing class method or static method rules
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-09-10 11:08_
+_@cake-monotone_
 
 ## Summary
 

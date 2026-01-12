@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-10-26T18:39:19Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/708
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Minimal yaml not working
 
 ---
 
-_Issue opened by @tvannahl on 2016-10-26 18:39_
+_@tvannahl_
 
 I tried to replicate the first yaml example in the docs and it didn't work out as expected. This should probably get fixed, it doesn't make a good impression.
 

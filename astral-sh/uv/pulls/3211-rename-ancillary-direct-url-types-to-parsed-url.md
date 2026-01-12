@@ -13,14 +13,14 @@ head: konsti/parsed-local-file-url
 created_at: 2024-04-23T14:41:49Z
 updated_at: 2024-04-23T14:51:24Z
 url: https://github.com/astral-sh/uv/pull/3211
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Rename ancillary direct url types to parsed url
 
 ---
 
-_Pull request opened by @konstin on 2024-04-23 14:41_
+_@konstin_
 
 Followup to #3187. Renaming only
 

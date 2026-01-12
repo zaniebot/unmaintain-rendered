@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-28T05:52:21Z
 updated_at: 2025-01-02T18:04:55Z
 url: https://github.com/astral-sh/uv/issues/10211
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Task runner plugin system
 
 ---
 
-_Issue opened by @rmorshea on 2024-12-28 05:52_
+_@rmorshea_
 
 In my projects that use `uv` I've developed a pattern (which I've encoded in a [template repo](https://github.com/rmorshea/python-copier-template?tab=readme-ov-file#whats-in-the-box)) where I define a script called `dev.py` that uses `click` to define a CLI and automate common tasks (e.g. running tests, building docs and linting). With that in mind it would be nice if it were possible to define a "default script" so that, instead of typing `uv run dev.py ...`, I could avoid typing `dev.py` each time and use a shorter command a la `yarn run` or `npm run` which inherit commands from the `scripts` section of `package.json`. Since `uv run` wouldn't be suitable for this due to the fact that positional arguments would be confused with executables, an alternative command like `uv do ...` would be necessary. A hypothetical configuration could look something like:
 

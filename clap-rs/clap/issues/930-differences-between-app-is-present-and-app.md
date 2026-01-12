@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-04-11T17:39:28Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/930
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Differences between App::is_present and App::occurrences_of
 
 ---
 
-_Issue opened by @RazrFalcon on 2017-04-11 17:39_
+_@RazrFalcon_
 
 I have an option with a default value and I want to check that this value was set explicitly. How can I do this?
 

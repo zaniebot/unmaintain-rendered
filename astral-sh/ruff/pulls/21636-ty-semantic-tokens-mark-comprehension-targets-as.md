@@ -14,14 +14,14 @@ head: semantic_tokens_comp
 created_at: 2025-11-26T08:15:21Z
 updated_at: 2025-11-26T08:33:14Z
 url: https://github.com/astral-sh/ruff/pull/21636
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Semantic tokens: mark comprehension targets as definitions
 
 ---
 
-_Pull request opened by @lucach on 2025-11-26 08:15_
+_@lucach_
 
 ## Summary
 

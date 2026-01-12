@@ -14,14 +14,14 @@ head: zb/docs-toc
 created_at: 2024-07-16T20:47:18Z
 updated_at: 2024-07-16T21:11:36Z
 url: https://github.com/astral-sh/uv/pull/5128
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Separate the TOC from the navigation bar
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 20:47_
+_@zanieb_
 
 Starting a discussion.
 

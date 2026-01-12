@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-14T18:27:54Z
 updated_at: 2023-02-14T20:36:51Z
 url: https://github.com/astral-sh/ruff/issues/2898
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET507: Same false positive as flake8-return in case of `elif` + `continue` + `else`
 
 ---
 
-_Issue opened by @aberres on 2023-02-14 18:27_
+_@aberres_
 
 The original issue can be found here: https://github.com/afonasev/flake8-return/issues/127
 

@@ -12,14 +12,14 @@ head: zb/depot-rev
 created_at: 2025-06-26T16:14:23Z
 updated_at: 2025-06-27T22:05:37Z
 url: https://github.com/astral-sh/uv/pull/14281
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Return to GitHub runners for Windows tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 16:14_
+_@zanieb_
 
 While the average performance is better, we're seeing spurious slowdowns leading to a large increase in failure rates
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T22:26:08Z
 updated_at: 2023-05-21T02:19:53Z
 url: https://github.com/clap-rs/clap/issues/4920
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Display order of subcommands' pre-existing args is not merged/updated
 
 ---
 
-_Issue opened by @kornelski on 2023-05-18 22:26_
+_@kornelski_
 
 ### Please complete the following tasks
 

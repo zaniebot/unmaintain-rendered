@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T04:48:34Z
 updated_at: 2024-10-22T15:54:35Z
 url: https://github.com/astral-sh/uv/issues/8406
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # uv build failing to build wheel correctly when project.name != package folder name
 
 ---
 
-_Issue opened by @david-waterworth on 2024-10-21 04:48_
+_@david-waterworth_
 
 I have a project with a name (i.e. foo) that's not the same as the source folder / package name (`src/bar`). 
 

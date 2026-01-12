@@ -14,14 +14,14 @@ head: add-autofix-for-TRY400
 created_at: 2024-01-15T03:19:49Z
 updated_at: 2024-01-16T03:08:17Z
 url: https://github.com/astral-sh/ruff/pull/9520
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`tryceratops`] Add fix for `error-instead-of-exception` (`TRY400`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-15 03:19_
+_@diceroll123_
 
 ## Summary
 

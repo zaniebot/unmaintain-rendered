@@ -12,14 +12,14 @@ head: charlie/simp
 created_at: 2024-01-29T18:54:46Z
 updated_at: 2024-01-29T19:53:38Z
 url: https://github.com/astral-sh/ruff/pull/9686
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove preview gating for `flake8-simplify` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 18:54_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/bstr-1.x-lockfile
 created_at: 2024-12-16T01:14:23Z
 updated_at: 2024-12-16T01:28:38Z
 url: https://github.com/astral-sh/ruff/pull/15000
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Update Rust crate bstr to v1.11.1
 
 ---
 
-_Pull request opened by @renovate on 2024-12-16 01:14_
+_@renovate_
 
 This PR contains the following updates:
 

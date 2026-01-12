@@ -13,14 +13,14 @@ head: charlie/all-groups
 created_at: 2025-07-21T14:32:35Z
 updated_at: 2025-07-22T12:33:49Z
 url: https://github.com/astral-sh/uv/pull/14789
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Add `--all-groups` to `uv pip install` and `uv pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 14:32_
+_@charliermarsh_
 
 ## Summary
 

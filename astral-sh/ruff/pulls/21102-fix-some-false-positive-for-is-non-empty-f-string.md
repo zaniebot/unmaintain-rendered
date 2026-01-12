@@ -12,14 +12,14 @@ head: feature/gh-21048
 created_at: 2025-10-27T19:44:53Z
 updated_at: 2025-10-30T14:00:37Z
 url: https://github.com/astral-sh/ruff/pull/21102
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Fix some false positive for `is_non_empty_f_string`
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-10-27 19:44_
+_@IDrokin117_
 
 ## Summary
 Closes #21048

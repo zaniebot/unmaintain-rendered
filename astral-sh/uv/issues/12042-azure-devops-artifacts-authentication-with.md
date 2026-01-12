@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T12:58:31Z
 updated_at: 2025-12-09T18:16:23Z
 url: https://github.com/astral-sh/uv/issues/12042
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Azure Devops Artifacts authentication with artifacts-keyring not working from within active venv
 
 ---
 
-_Issue opened by @JakobRemmers on 2025-03-07 12:58_
+_@JakobRemmers_
 
 ### Summary
 

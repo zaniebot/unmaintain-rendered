@@ -13,14 +13,14 @@ head: charlie/signature
 created_at: 2023-08-06T14:35:34Z
 updated_at: 2023-08-06T15:46:39Z
 url: https://github.com/astral-sh/ruff/pull/6375
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid allocation in no-signature
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-06 14:35_
+_@charliermarsh_
 
 _No description provided._
 

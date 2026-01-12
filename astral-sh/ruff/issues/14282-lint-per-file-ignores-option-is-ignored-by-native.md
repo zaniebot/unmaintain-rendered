@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-11T14:45:50Z
 updated_at: 2024-11-15T08:15:01Z
 url: https://github.com/astral-sh/ruff/issues/14282
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `lint.per-file-ignores` option is ignored by native server in `ruff.toml`
 
 ---
 
-_Issue opened by @SXHRYU on 2024-11-11 14:45_
+_@SXHRYU_
 
 Basically it's the same issue as https://github.com/astral-sh/ruff/issues/11751 but the problem still occurs when using `ruff.toml` as config file.
 

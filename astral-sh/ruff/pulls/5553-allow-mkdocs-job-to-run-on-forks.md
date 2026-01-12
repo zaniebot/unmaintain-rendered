@@ -13,14 +13,14 @@ head: charlie/secrets
 created_at: 2023-07-06T05:38:49Z
 updated_at: 2023-07-06T06:06:27Z
 url: https://github.com/astral-sh/ruff/pull/5553
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Allow MkDocs job to run on forks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 05:38_
+_@charliermarsh_
 
 Conditionally check whether the secret is available -- see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsif.
 

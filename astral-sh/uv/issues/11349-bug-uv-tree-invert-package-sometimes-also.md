@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T09:03:05Z
 updated_at: 2025-02-10T08:53:38Z
 url: https://github.com/astral-sh/uv/issues/11349
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # BUG: `uv tree --invert --package ...` sometimes also displays packages I didn't ask for
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-02-09 09:03_
+_@neutrinoceros_
 
 ### Summary
 

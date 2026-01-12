@@ -14,14 +14,14 @@ head: charlie/build-tag
 created_at: 2025-01-14T14:44:27Z
 updated_at: 2025-01-14T15:01:46Z
 url: https://github.com/astral-sh/uv/pull/10599
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Include build tag in rendered wheel filenames
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 14:44_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-15T07:02:34Z
 updated_at: 2021-08-15T08:04:33Z
 url: https://github.com/clap-rs/clap/issues/2702
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Compile fails on 2.33.3
 
 ---
 
-_Issue opened by @guytbk on 2021-08-15 07:02_
+_@guytbk_
 
 ### Please complete the following tasks
 

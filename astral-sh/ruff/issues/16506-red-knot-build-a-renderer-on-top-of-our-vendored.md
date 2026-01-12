@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T18:10:34Z
 updated_at: 2025-03-14T18:59:35Z
 url: https://github.com/astral-sh/ruff/issues/16506
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Build a renderer, on top of our vendored `annotate-snippets` crate, for the new diagnostics data model.
 
 ---
 
-_Issue opened by @BurntSushi on 2025-03-04 18:10_
+_@BurntSushi_
 
 This issue is going to be a bit under-specified, but essentially, with the new `Diagnostic` type defined in #16503, we'll want to provide a routine for rendering it into a pleasing output. This is a prerequisite for actually using this type inside of Red Knot.
 

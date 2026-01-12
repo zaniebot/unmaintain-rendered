@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T22:32:20Z
 updated_at: 2025-02-28T20:46:25Z
 url: https://github.com/astral-sh/uv/issues/11842
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # uv sync does not respect keyring
 
 ---
 
-_Issue opened by @davidshen84 on 2025-02-27 22:32_
+_@davidshen84_
 
 ### Summary
 

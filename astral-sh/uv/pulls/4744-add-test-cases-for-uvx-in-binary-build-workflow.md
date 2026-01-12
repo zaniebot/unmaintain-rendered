@@ -14,14 +14,14 @@ head: zb/uvx-test-binary
 created_at: 2024-07-02T22:16:46Z
 updated_at: 2024-07-02T23:21:39Z
 url: https://github.com/astral-sh/uv/pull/4744
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Add test cases for `uvx` in binary build workflow
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 22:16_
+_@zanieb_
 
 _No description provided._
 

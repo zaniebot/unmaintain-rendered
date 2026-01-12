@@ -12,14 +12,14 @@ head: fix-utf8
 created_at: 2024-10-11T04:52:49Z
 updated_at: 2024-10-12T02:50:48Z
 url: https://github.com/astral-sh/uv/pull/8120
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Fix stream did not contain valid UTF-8
 
 ---
 
-_Pull request opened by @kahojyun on 2024-10-11 04:52_
+_@kahojyun_
 
 ## Summary
 

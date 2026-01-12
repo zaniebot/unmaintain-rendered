@@ -13,14 +13,14 @@ head: quoted-fstring-value
 created_at: 2024-06-21T21:54:14Z
 updated_at: 2024-06-28T20:47:45Z
 url: https://github.com/astral-sh/ruff/pull/11977
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bugbear`] Implement `quoted-fstring-value` (`B907`)
 
 ---
 
-_Pull request opened by @alexcdennis on 2024-06-21 21:54_
+_@alexcdennis_
 
 ## Summary
 

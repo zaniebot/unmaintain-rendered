@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T12:35:46Z
 updated_at: 2023-07-26T13:28:13Z
 url: https://github.com/astral-sh/ruff/issues/6093
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Autofix error] UP032 Use f-string instead of `format` call
 
 ---
 
-_Issue opened by @Azd325 on 2023-07-26 12:35_
+_@Azd325_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

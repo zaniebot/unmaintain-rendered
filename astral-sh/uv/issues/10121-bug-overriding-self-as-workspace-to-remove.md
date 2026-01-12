@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T14:47:25Z
 updated_at: 2024-12-26T14:30:24Z
 url: https://github.com/astral-sh/uv/issues/10121
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # bug: Overriding self as workspace (to remove constraints on self from dependencies) prevents uv from installing dev-deps
 
 ---
 
-_Issue opened by @pawamoy on 2024-12-23 14:47_
+_@pawamoy_
 
 Follow-up of https://github.com/astral-sh/uv/issues/8148.
 

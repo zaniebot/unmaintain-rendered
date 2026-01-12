@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T10:32:38Z
 updated_at: 2024-12-20T09:36:14Z
 url: https://github.com/astral-sh/ruff/issues/14523
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF035 (unsafe-markup-use) can be noisy and would benefit from a whitelist
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-11-22 10:32_
+_@ThiefMaster_
 
 There are a few cases where it does not really make sense to get the warning, since it's pretty clearly intentional to avoid escaping, but adding noqa comments in every place where it's used would be very noisy/verbose:
 

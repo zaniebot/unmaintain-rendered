@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-12-04T13:40:12Z
 updated_at: 2022-12-04T14:33:02Z
 url: https://github.com/astral-sh/ruff/pull/1033
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix README header links in isort config section
 
 ---
 
-_Pull request opened by @Jackenmen on 2022-12-04 13:40_
+_@Jackenmen_
 
 _No description provided._
 

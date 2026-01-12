@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T02:13:06Z
 updated_at: 2025-12-16T14:52:37Z
 url: https://github.com/astral-sh/uv/issues/8821
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # uv-managed python installed into .local/bin can't be used with venv module
 
 ---
 
-_Issue opened by @bluss on 2024-11-05 02:13_
+_@bluss_
 
 uv 0.4.30
 

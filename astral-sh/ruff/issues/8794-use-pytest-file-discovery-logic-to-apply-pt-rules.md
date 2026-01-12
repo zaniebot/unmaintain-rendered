@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T19:27:05Z
 updated_at: 2024-08-02T07:08:56Z
 url: https://github.com/astral-sh/ruff/issues/8794
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Use pytest file discovery logic to apply `PT` rules
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-11-20 19:27_
+_@dhruvmanila_
 
 For additional context, refer to https://github.com/astral-sh/ruff/issues/8145#issuecomment-1817657808 and the following comments.
 

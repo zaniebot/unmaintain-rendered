@@ -13,14 +13,14 @@ head: dhruv/notebook-include-note
 created_at: 2024-07-22T09:23:15Z
 updated_at: 2024-07-22T16:10:32Z
 url: https://github.com/astral-sh/ruff/pull/12449
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add note to include notebook files for native server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-22 09:23_
+_@dhruvmanila_
 
 ## Summary
 

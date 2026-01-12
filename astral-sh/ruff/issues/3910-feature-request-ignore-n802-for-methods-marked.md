@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-08T00:06:08Z
 updated_at: 2023-04-08T03:11:51Z
 url: https://github.com/astral-sh/ruff/issues/3910
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Feature request: ignore `N802` for methods marked with `@override`
 
 ---
 
-_Issue opened by @Avasam on 2023-04-08 00:06_
+_@Avasam_
 
 Same as https://github.com/PyCQA/pep8-naming/issues/215 I think this would be useful whether it is added to pep8-naming or not
 

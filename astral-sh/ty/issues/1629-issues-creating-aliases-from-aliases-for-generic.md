@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-25T10:41:01Z
 updated_at: 2025-11-28T19:38:25Z
 url: https://github.com/astral-sh/ty/issues/1629
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Issues Creating Aliases from Aliases for Generic Classes
 
 ---
 
-_Issue opened by @RainSunGone on 2025-11-25 10:41_
+_@RainSunGone_
 
 ### Summary
 

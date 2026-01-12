@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-24T18:18:34Z
 updated_at: 2023-02-24T18:55:50Z
 url: https://github.com/astral-sh/ruff/issues/3211
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support `flake8-noqa`
 
 ---
 
-_Issue opened by @szymonmaszke on 2023-02-24 18:18_
+_@szymonmaszke_
 
 Hey, we are currently using [`flake8-noqa`](https://github.com/plinss/flake8-noqa) in our FOSS [`py-template`](https://github.com/inovintell/py-template) project, but we would like to move to `ruff` exclusively from `flake8` + `flakeheaven`. 
 

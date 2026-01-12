@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T08:30:01Z
 updated_at: 2024-10-25T12:13:43Z
 url: https://github.com/astral-sh/uv/issues/8557
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Windows11 cannot use the virtual environment created by conda.
 
 ---
 
-_Issue opened by @aoaostar on 2024-10-25 08:30_
+_@aoaostar_
 
 - uv 0.4.26 (1b9b9d56b 2024-10-23)
 

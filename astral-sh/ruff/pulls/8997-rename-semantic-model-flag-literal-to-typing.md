@@ -13,14 +13,14 @@ head: dhruv/semantic-flag-typing
 created_at: 2023-12-04T17:16:22Z
 updated_at: 2023-12-04T17:28:40Z
 url: https://github.com/astral-sh/ruff/pull/8997
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Rename semantic model flag `LITERAL` to `TYPING_LITERAL`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-04 17:16_
+_@dhruvmanila_
 
 This PR renames the semantic model flag `LITERAL` to `TYPING_LITERAL` to better reflect its purpose. The main motivation behind this change is to avoid any confusion with the "literal" terminology used in the AST for literal nodes like string, bytes, numbers, etc.
 

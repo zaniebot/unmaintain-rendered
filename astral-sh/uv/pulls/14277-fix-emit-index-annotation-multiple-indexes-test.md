@@ -13,14 +13,14 @@ head: zb/emit_index_annotation_multiple_indexes
 created_at: 2025-06-26T14:36:13Z
 updated_at: 2025-06-26T14:58:25Z
 url: https://github.com/astral-sh/uv/pull/14277
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Fix `emit_index_annotation_multiple_indexes` test case
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 14:36_
+_@zanieb_
 
 uv is taken on Test PyPI now, so the existing test fails
 

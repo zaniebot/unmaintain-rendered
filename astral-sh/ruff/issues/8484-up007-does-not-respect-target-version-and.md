@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-04T09:01:19Z
 updated_at: 2023-11-04T13:30:28Z
 url: https://github.com/astral-sh/ruff/issues/8484
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP007: Does not respect target version and suggests incompatible syntax
 
 ---
 
-_Issue opened by @chbndrhnns on 2023-11-04 09:01_
+_@chbndrhnns_
 
 To me it seems that ruff should only suggest fixes that are compatible with the configured target version. That's not the case for this example using ruff 0.1.4.
 

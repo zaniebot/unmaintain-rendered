@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T14:36:54Z
 updated_at: 2025-01-30T23:21:08Z
 url: https://github.com/astral-sh/ruff/issues/10063
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # FURB171: Auto-fix deletes comments
 
 ---
 
-_Issue opened by @mrcljx on 2024-02-20 14:36_
+_@mrcljx_
 
 ```python
 answer = 1

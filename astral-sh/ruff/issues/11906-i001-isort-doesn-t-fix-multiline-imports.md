@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T15:03:28Z
 updated_at: 2024-06-19T11:43:33Z
 url: https://github.com/astral-sh/ruff/issues/11906
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # I001 Isort doesn't fix multiline imports
 
 ---
 
-_Issue opened by @spaceby on 2024-06-17 15:03_
+_@spaceby_
 
 Isort does not translate multiline improt into one line
 `ruff check . --fix --unsafe-fixes --preview`

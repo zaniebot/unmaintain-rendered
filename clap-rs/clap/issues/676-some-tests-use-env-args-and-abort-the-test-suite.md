@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-10-04T18:21:57Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/676
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Some tests use env::args() and abort the test suite if -q or --ignored are passed
 
 ---
 
-_Issue opened by @tormol on 2016-10-04 18:21_
+_@tormol_
 
 - `create_positional()` in tests/positional.rs:
 - `create_app()` in tests/tests.rs

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T12:21:20Z
 updated_at: 2025-04-25T12:40:37Z
 url: https://github.com/astral-sh/uv/issues/13106
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Persistent configuration of pip indexes in uv
 
 ---
 
-_Issue opened by @juhaszp95 on 2025-04-25 12:21_
+_@juhaszp95_
 
 ### Question
 

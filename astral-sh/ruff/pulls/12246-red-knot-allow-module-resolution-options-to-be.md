@@ -13,14 +13,14 @@ head: redknot-module-resolver-args
 created_at: 2024-07-08T16:39:37Z
 updated_at: 2024-07-09T09:30:47Z
 url: https://github.com/astral-sh/ruff/pull/12246
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Allow module-resolution options to be specified via the CLI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-08 16:39_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T15:10:46Z
 updated_at: 2025-09-24T15:48:39Z
 url: https://github.com/astral-sh/ty/issues/1247
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] Biopython Atom causes panic behaviour.
 
 ---
 
-_Issue opened by @jday1 on 2025-09-24 15:10_
+_@jday1_
 
 ### Summary
 

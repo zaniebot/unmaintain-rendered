@@ -12,14 +12,14 @@ head: perf-logical-lines
 created_at: 2023-04-19T16:20:11Z
 updated_at: 2023-04-26T19:10:37Z
 url: https://github.com/astral-sh/ruff/pull/4022
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # perf(logical-lines): Various small perf improvements
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-19 16:20_
+_@MichaReiser_
 
 This PR introduces a few perf improvements to the pycodestyle rules:
 

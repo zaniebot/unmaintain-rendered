@@ -13,14 +13,14 @@ head: fix-D301
 created_at: 2023-10-16T00:38:16Z
 updated_at: 2023-10-18T02:26:15Z
 url: https://github.com/astral-sh/ruff/pull/7970
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add autofix for `D301`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-16 00:38_
+_@diceroll123_
 
 ## Summary
 

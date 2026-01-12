@@ -13,14 +13,14 @@ head: charlie/pass
 created_at: 2023-09-29T17:05:13Z
 updated_at: 2023-09-29T17:31:55Z
 url: https://github.com/astral-sh/ruff/pull/7715
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Track fix isolation in `unnecessary-pass`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-29 17:05_
+_@charliermarsh_
 
 ## Summary
 

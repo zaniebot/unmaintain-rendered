@@ -13,14 +13,14 @@ head: zb/which3
 created_at: 2024-02-15T21:18:26Z
 updated_at: 2024-02-15T23:07:29Z
 url: https://github.com/astral-sh/uv/pull/1351
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Fix bug where `python3` is not found in the global path
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 21:18_
+_@zanieb_
 
 When we refactored handling for Windows tests, we accidentally dropped `python3` from path searches.
 

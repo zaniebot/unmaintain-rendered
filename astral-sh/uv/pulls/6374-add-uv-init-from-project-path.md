@@ -12,14 +12,14 @@ head: init-from-project
 created_at: 2024-08-21T20:07:46Z
 updated_at: 2025-04-14T08:00:33Z
 url: https://github.com/astral-sh/uv/pull/6374
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Add `uv init --from-project <path>`
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-21 20:07_
+_@blueraft_
 
 ## Summary
 

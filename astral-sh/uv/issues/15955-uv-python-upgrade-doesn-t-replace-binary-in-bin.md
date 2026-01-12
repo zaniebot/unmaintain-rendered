@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T20:51:24Z
 updated_at: 2025-09-22T16:59:49Z
 url: https://github.com/astral-sh/uv/issues/15955
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv python upgrade` doesn't replace binary in bin home for release candidates
 
 ---
 
-_Issue opened by @zsol on 2025-09-19 20:51_
+_@zsol_
 
 ### Summary
 

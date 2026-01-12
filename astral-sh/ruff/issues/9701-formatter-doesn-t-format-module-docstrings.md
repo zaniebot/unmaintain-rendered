@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-01-30T13:37:17Z
 updated_at: 2024-02-05T15:03:36Z
 url: https://github.com/astral-sh/ruff/issues/9701
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter: Doesn't format module docstrings
 
 ---
 
-_Issue opened by @MichaReiser on 2024-01-30 13:37_
+_@MichaReiser_
 
 The formatter doesn't format the module's docstring.
 

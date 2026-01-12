@@ -12,14 +12,14 @@ head: release_rework
 created_at: 2023-05-30T15:58:05Z
 updated_at: 2023-06-20T18:57:17Z
 url: https://github.com/astral-sh/ruff/pull/4728
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Make the release workflow more resilient
 
 ---
 
-_Pull request opened by @konstin on 2023-05-30 15:58_
+_@konstin_
 
 ## Summary
 

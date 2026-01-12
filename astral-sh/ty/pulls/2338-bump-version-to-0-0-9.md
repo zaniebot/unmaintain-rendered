@@ -13,14 +13,14 @@ head: micha/0.0.9
 created_at: 2026-01-05T09:45:24Z
 updated_at: 2026-01-05T12:02:42Z
 url: https://github.com/astral-sh/ty/pull/2338
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump version to 0.0.9
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-05 09:45_
+_@MichaReiser_
 
 _No description provided._
 

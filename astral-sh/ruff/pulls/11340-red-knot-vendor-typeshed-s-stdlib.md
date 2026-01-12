@@ -13,14 +13,14 @@ head: vendor-typeshed
 created_at: 2024-05-08T14:45:48Z
 updated_at: 2024-05-09T13:54:21Z
 url: https://github.com/astral-sh/ruff/pull/11340
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Vendor typeshed's stdlib
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-08 14:45_
+_@AlexWaygood_
 
 ## Summary
 

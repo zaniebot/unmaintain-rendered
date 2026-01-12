@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T08:07:47Z
 updated_at: 2023-05-22T14:07:15Z
 url: https://github.com/astral-sh/ruff/issues/3053
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `A002`: shadowing python builtin bug. 
 
 ---
 
-_Issue opened by @jonathan-s on 2023-02-20 08:07_
+_@jonathan-s_
 
 Ruff version: 0.0.247
 

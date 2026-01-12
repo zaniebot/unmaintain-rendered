@@ -15,14 +15,14 @@ head: jtfm/workspace-member-source-build-by-default
 created_at: 2025-07-16T14:49:35Z
 updated_at: 2025-07-16T15:43:23Z
 url: https://github.com/astral-sh/uv/pull/14660
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # WIP: Treat dependency workspace members as packages by default
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-16 14:49_
+_@jtfmumm_
 
 WIP
 

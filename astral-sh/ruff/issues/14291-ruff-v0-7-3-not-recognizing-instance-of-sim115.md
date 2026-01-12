@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T02:13:51Z
 updated_at: 2024-11-12T04:32:01Z
 url: https://github.com/astral-sh/ruff/issues/14291
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff v0.7.3 not recognizing instance of SIM115 compared to v0.7.2
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-11-12 02:13_
+_@CoolCat467_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

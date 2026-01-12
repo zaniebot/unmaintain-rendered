@@ -13,14 +13,14 @@ head: konsti/optional-jsonschema
 created_at: 2025-02-12T16:06:10Z
 updated_at: 2025-02-12T17:20:21Z
 url: https://github.com/astral-sh/uv/pull/11449
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Optional schemars dependency
 
 ---
 
-_Pull request opened by @konstin on 2025-02-12 16:06_
+_@konstin_
 
 In preparation for `uv-build`, make schemars an optional dependency consistently, so it will not be part of the `uv-build` dependency tree.
 

@@ -13,14 +13,14 @@ head: zb/env-vars-ci
 created_at: 2025-09-18T13:56:41Z
 updated_at: 2025-09-18T14:09:00Z
 url: https://github.com/astral-sh/uv/pull/15931
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Use `EnvVars` in linehaul
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-18 13:56_
+_@zanieb_
 
 _No description provided._
 

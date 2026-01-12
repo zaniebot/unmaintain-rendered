@@ -13,14 +13,14 @@ head: argument-shadow
 created_at: 2024-11-07T01:39:17Z
 updated_at: 2024-11-17T14:28:07Z
 url: https://github.com/astral-sh/ruff/pull/14144
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`flake8-builtins`] Skip lambda expressions in `builtin-argument-shadowing (A002)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-07 01:39_
+_@dylwil3_
 
 Flake8-builtins provides two checks for arguments (really, parameters) of a function shadowing builtins: A002 checks function definitions, and A006 checks lambda expressions. This PR ensures that A002 is restricted to functions rather than lambda expressions.
 

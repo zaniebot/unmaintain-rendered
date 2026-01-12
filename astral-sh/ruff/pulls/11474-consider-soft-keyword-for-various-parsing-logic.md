@@ -13,14 +13,14 @@ head: dhruv/at-soft-keyword
 created_at: 2024-05-20T10:39:06Z
 updated_at: 2024-05-27T16:00:29Z
 url: https://github.com/astral-sh/ruff/pull/11474
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider soft keyword for various parsing logic
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-20 10:39_
+_@dhruvmanila_
 
 ## Summary
 

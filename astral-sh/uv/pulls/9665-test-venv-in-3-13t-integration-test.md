@@ -13,14 +13,14 @@ head: zb/test-13-std
 created_at: 2024-12-05T23:30:51Z
 updated_at: 2024-12-06T02:57:10Z
 url: https://github.com/astral-sh/uv/pull/9665
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Test `venv` in 3.13t integration test
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-05 23:30_
+_@zanieb_
 
 _No description provided._
 

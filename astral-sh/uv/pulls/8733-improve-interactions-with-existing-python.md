@@ -13,14 +13,14 @@ head: zb/python-exec
 created_at: 2024-10-31T18:27:59Z
 updated_at: 2024-11-04T20:22:45Z
 url: https://github.com/astral-sh/uv/pull/8733
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Improve interactions with existing Python executables during install
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-31 18:27_
+_@zanieb_
 
 Previously, we'd use the `--reinstall` flag to determine if we should replace existing Python executables in the bin directory during an install. There are a few problems with this:
 

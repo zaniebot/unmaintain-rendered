@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-08T18:17:40Z
 updated_at: 2022-01-11T18:21:21Z
 url: https://github.com/clap-rs/clap/issues/3270
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # AppSettings::SubcommandRequiredElseHelp affects "leaf" subcommands that don't have own subcommands
 
 ---
 
-_Issue opened by @heroin-moose on 2022-01-08 18:17_
+_@heroin-moose_
 
 ### Please complete the following tasks
 

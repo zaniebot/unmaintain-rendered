@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T14:44:49Z
 updated_at: 2025-09-15T14:04:32Z
 url: https://github.com/astral-sh/ruff/issues/20350
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PERF401 rule confusion
 
 ---
 
-_Issue opened by @minusf on 2025-09-11 14:44_
+_@minusf_
 
 ### Summary
 

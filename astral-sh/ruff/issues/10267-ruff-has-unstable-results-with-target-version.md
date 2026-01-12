@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T07:35:00Z
 updated_at: 2024-03-08T23:48:48Z
 url: https://github.com/astral-sh/ruff/issues/10267
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff has unstable results with target-version (normally hidden by caching)
 
 ---
 
-_Issue opened by @aneeshusa on 2024-03-07 07:35_
+_@aneeshusa_
 
 I am switching from shed to ruff at $WORK and found what looks like a bug in Ruff's formatter (unstable output);
 normally this appears to be hidden by caching, implying a second bug in the caching logic.

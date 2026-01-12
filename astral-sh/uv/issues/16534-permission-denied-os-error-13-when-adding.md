@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-31T11:32:00Z
 updated_at: 2025-10-31T14:53:36Z
 url: https://github.com/astral-sh/uv/issues/16534
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Permission denied (os error 13) when adding dependency to script
 
 ---
 
-_Issue opened by @adamserafini on 2025-10-31 11:32_
+_@adamserafini_
 
 ### Summary
 

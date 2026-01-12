@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T23:51:17Z
 updated_at: 2025-01-06T00:59:50Z
 url: https://github.com/astral-sh/uv/issues/9651
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # PyTorch nightly index makes uv download all torch versions in a loop
 
 ---
 
-_Issue opened by @ViRb3 on 2024-12-04 23:51_
+_@ViRb3_
 
 I copied the full PyTorch example from https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index:
 

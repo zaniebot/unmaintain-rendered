@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T16:55:26Z
 updated_at: 2025-12-02T19:43:32Z
 url: https://github.com/astral-sh/ty/issues/1682
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a non-first-party search path?
 
 ---
 
-_Issue opened by @adamjstewart on 2025-11-29 16:55_
+_@adamjstewart_
 
 ### Summary
 

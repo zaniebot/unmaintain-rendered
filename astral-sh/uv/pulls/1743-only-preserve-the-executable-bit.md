@@ -13,14 +13,14 @@ head: konsti/set-extract-permissions
 created_at: 2024-02-20T09:31:31Z
 updated_at: 2024-02-20T15:41:06Z
 url: https://github.com/astral-sh/uv/pull/1743
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Only preserve the executable bit
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 09:31_
+_@konstin_
 
 A file in a zip can set arbitrary unix permissions, but we, like pip, want to preserve only the executable bit and otherwise use the OS defaults.
 

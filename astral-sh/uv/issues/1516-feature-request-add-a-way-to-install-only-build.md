@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T17:14:21Z
 updated_at: 2025-03-24T07:03:27Z
 url: https://github.com/astral-sh/uv/issues/1516
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Feature request: add a way to install only build dependencies
 
 ---
 
-_Issue opened by @stefanv on 2024-02-16 17:14_
+_@stefanv_
 
 ref: https://github.com/pypa/pip/issues/11440#issuecomment-1615211774
 

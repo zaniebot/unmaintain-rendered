@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T08:05:31Z
 updated_at: 2025-09-21T15:20:15Z
 url: https://github.com/astral-sh/uv/issues/15625
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Please support getting user consent for ruff download in uv format
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-09-02 08:05_
+_@musicinmybrain_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T15:06:54Z
 updated_at: 2024-02-23T21:18:28Z
 url: https://github.com/astral-sh/ruff/issues/10001
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Combine lines when removing unnecessary imports
 
 ---
 
-_Issue opened by @Beliavsky on 2024-02-15 15:06_
+_@Beliavsky_
 
 I ran ruff on a code with the line
 

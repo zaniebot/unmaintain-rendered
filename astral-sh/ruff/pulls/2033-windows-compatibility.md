@@ -12,14 +12,14 @@ head: ci-windows
 created_at: 2023-01-20T16:08:20Z
 updated_at: 2023-01-25T23:01:53Z
 url: https://github.com/astral-sh/ruff/pull/2033
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Windows compatibility
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-20 16:08_
+_@sbrugman_
 
 CI testing for Windows to prevent windows-specific issues in the future (https://github.com/charliermarsh/ruff/issues/2026,  https://github.com/charliermarsh/ruff/issues/1915, https://github.com/charliermarsh/ruff/issues/832)
 

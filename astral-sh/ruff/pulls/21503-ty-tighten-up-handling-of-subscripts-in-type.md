@@ -14,14 +14,14 @@ head: cjm/unknown-subscript
 created_at: 2025-11-17T20:07:58Z
 updated_at: 2025-11-18T18:49:11Z
 url: https://github.com/astral-sh/ruff/pull/21503
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] tighten up handling of subscripts in type expressions
 
 ---
 
-_Pull request opened by @carljm on 2025-11-17 20:07_
+_@carljm_
 
 ## Summary
 

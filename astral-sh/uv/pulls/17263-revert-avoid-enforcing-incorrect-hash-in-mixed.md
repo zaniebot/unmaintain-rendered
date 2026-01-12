@@ -11,14 +11,14 @@ head: revert-17157-charlie/mixed-hash
 created_at: 2025-12-30T14:02:38Z
 updated_at: 2025-12-30T15:24:04Z
 url: https://github.com/astral-sh/uv/pull/17263
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Revert "Avoid enforcing incorrect hash in mixed-hash settings"
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-30 14:02_
+_@woodruffw_
 
 Reverts astral-sh/uv#17157
 

@@ -12,14 +12,14 @@ head: bad-json-url
 created_at: 2023-11-13T11:37:59Z
 updated_at: 2023-11-13T11:41:21Z
 url: https://github.com/astral-sh/uv/pull/409
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Print url for bad json error
 
 ---
 
-_Pull request opened by @konstin on 2023-11-13 11:37_
+_@konstin_
 
 Split out from #382
 

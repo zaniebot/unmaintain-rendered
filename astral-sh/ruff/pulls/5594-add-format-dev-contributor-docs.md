@@ -12,14 +12,14 @@ head: format_dev_contributor_docs
 created_at: 2023-07-07T15:24:17Z
 updated_at: 2023-07-07T17:18:48Z
 url: https://github.com/astral-sh/ruff/pull/5594
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add format-dev contributor docs
 
 ---
 
-_Pull request opened by @konstin on 2023-07-07 15:24_
+_@konstin_
 
 ## Summary
 

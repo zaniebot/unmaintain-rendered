@@ -13,14 +13,14 @@ head: ag/bump-0-0-1a34
 created_at: 2025-12-12T17:29:56Z
 updated_at: 2025-12-12T18:11:21Z
 url: https://github.com/astral-sh/ty/pull/1868
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump version to 0.0.1-alpha.34
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-12 17:29_
+_@BurntSushi_
 
 _No description provided._
 

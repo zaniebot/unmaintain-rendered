@@ -13,14 +13,14 @@ head: improve-config-file-debug-prints
 created_at: 2023-11-17T00:30:33Z
 updated_at: 2023-11-17T01:16:50Z
 url: https://github.com/astral-sh/ruff/pull/8729
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve debug printing for resolving origin of config settings
 
 ---
 
-_Pull request opened by @chan-vince on 2023-11-17 00:30_
+_@chan-vince_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

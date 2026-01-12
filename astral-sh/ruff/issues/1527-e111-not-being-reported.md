@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-01T09:42:09Z
 updated_at: 2023-01-01T09:55:05Z
 url: https://github.com/astral-sh/ruff/issues/1527
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # E111 not being reported?
 
 ---
 
-_Issue opened by @MarcoGorelli on 2023-01-01 09:42_
+_@MarcoGorelli_
 
 Hi,
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T20:52:47Z
 updated_at: 2023-12-20T20:26:08Z
 url: https://github.com/astral-sh/ruff/issues/6956
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # SIM300: CONSTANT_CASE variables are improperly flagged for yoda violation
 
 ---
 
-_Issue opened by @rseeley on 2023-08-28 20:52_
+_@rseeley_
 
 Ruff version: 0.0.286.
 

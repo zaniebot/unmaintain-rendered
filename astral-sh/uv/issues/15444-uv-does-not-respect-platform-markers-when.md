@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T05:43:54Z
 updated_at: 2025-08-25T04:16:57Z
 url: https://github.com/astral-sh/uv/issues/15444
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # uv does not respect platform markers when resolving dependencies into uv.lock
 
 ---
 
-_Issue opened by @OmegaAISP on 2025-08-22 05:43_
+_@OmegaAISP_
 
 ### Summary
 

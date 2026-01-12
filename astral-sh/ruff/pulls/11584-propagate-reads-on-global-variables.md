@@ -13,14 +13,14 @@ head: charlie/global
 created_at: 2024-05-28T18:32:54Z
 updated_at: 2024-05-28T18:47:06Z
 url: https://github.com/astral-sh/ruff/pull/11584
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Propagate reads on global variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-28 18:32_
+_@charliermarsh_
 
 ## Summary
 

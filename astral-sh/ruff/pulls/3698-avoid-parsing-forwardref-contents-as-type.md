@@ -13,14 +13,14 @@ head: charlie/forward
 created_at: 2023-03-23T22:23:57Z
 updated_at: 2023-03-23T22:56:34Z
 url: https://github.com/astral-sh/ruff/pull/3698
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid parsing `ForwardRef` contents as type references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-23 22:23_
+_@charliermarsh_
 
 ## Summary
 

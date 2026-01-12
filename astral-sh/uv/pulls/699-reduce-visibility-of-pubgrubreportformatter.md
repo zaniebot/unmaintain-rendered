@@ -13,14 +13,14 @@ head: charlie/vis
 created_at: 2023-12-19T05:39:19Z
 updated_at: 2023-12-19T14:53:40Z
 url: https://github.com/astral-sh/uv/pull/699
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Reduce visibility of `PubGrubReportFormatter`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-19 05:39_
+_@charliermarsh_
 
 _No description provided._
 

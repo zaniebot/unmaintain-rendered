@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-03-30T03:57:18Z
 updated_at: 2023-03-30T18:39:24Z
 url: https://github.com/astral-sh/ruff/pull/3806
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add Openverse to users of ruff in README
 
 ---
 
-_Pull request opened by @AetherUnbound on 2023-03-30 03:57_
+_@AetherUnbound_
 
 We had a community contributor take this on in https://github.com/WordPress/openverse/pull/963 and we were so pleased with the results! Heard about this on Talk Python To Me and we're glad we did 😄 Thanks for the excellent tool!
 

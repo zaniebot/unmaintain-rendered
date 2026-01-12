@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-24T09:14:44Z
 updated_at: 2024-07-24T09:18:47Z
 url: https://github.com/astral-sh/uv/issues/5399
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv not installing build dependencies
 
 ---
 
-_Issue opened by @EdvardsZ on 2024-07-24 09:14_
+_@EdvardsZ_
 
 * A minimal code snippet that reproduces the bug :
 `uv pip install git+https://github.com/nerfstudio-project/gsplat`

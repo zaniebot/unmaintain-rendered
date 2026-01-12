@@ -14,14 +14,14 @@ head: fix-syntax-errors2
 created_at: 2024-01-30T09:43:31Z
 updated_at: 2024-01-30T17:19:41Z
 url: https://github.com/astral-sh/ruff/pull/9698
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # RUF022, RUF023: never add two trailing commas to the end of a sequence
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-30 09:43_
+_@AlexWaygood_
 
 Fixes the issues highlighted in https://github.com/astral-sh/ruff/issues/8402#issuecomment-1916203707 and https://github.com/astral-sh/ruff/issues/8402#issuecomment-1916213693
 

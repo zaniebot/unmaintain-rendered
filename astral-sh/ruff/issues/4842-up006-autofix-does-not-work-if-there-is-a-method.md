@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T21:58:59Z
 updated_at: 2023-06-04T02:03:11Z
 url: https://github.com/astral-sh/ruff/issues/4842
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP006: autofix does not work if there is a method of the same name
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-06-03 21:58_
+_@saippuakauppias_
 
 Example:
 ```python

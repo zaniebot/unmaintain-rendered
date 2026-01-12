@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T23:37:33Z
 updated_at: 2025-12-18T17:29:00Z
 url: https://github.com/astral-sh/ty/issues/2044
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Consider behavior when `VIRTUAL_ENV` is set to a missing directory
 
 ---
 
-_Issue opened by @zanieb on 2025-12-17 23:37_
+_@zanieb_
 
 This is pulled out of https://github.com/astral-sh/ty/issues/2031 which I'd prefer to keep scoped to the panic in the language server. A couple thoughts were expressed there, e.g., https://github.com/astral-sh/ty/issues/2031#issuecomment-3667543854
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T18:33:03Z
 updated_at: 2025-07-01T18:38:57Z
 url: https://github.com/astral-sh/uv/issues/14400
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # `uv init` why does it think an unrelated dir is a workspace member?
 
 ---
 
-_Issue opened by @anentropic on 2025-07-01 18:33_
+_@anentropic_
 
 ### Summary
 

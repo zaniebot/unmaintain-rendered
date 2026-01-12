@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-14T19:23:12Z
 updated_at: 2024-07-15T08:04:32Z
 url: https://github.com/astral-sh/ruff/issues/12322
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule: RUF025 is now identical to rule flake8-comprehension rule C420
 
 ---
 
-_Issue opened by @Skylion007 on 2024-07-14 19:23_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

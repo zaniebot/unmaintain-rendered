@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-01T19:25:47Z
 updated_at: 2023-03-27T18:03:41Z
 url: https://github.com/astral-sh/ruff/issues/3294
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # rule for detecting format error in gettext translations
 
 ---
 
-_Issue opened by @spaceone on 2023-03-01 19:25_
+_@spaceone_
 
 ```python
 import gettext

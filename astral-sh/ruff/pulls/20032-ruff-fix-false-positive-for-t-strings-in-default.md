@@ -14,14 +14,14 @@ head: ruf026
 created_at: 2025-08-21T19:40:12Z
 updated_at: 2025-08-22T14:29:43Z
 url: https://github.com/astral-sh/ruff/pull/20032
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [`ruff`] Fix false positive for t-strings in `default-factory-kwarg` (`RUF026`)
 
 ---
 
-_Pull request opened by @maxmynter on 2025-08-21 19:40_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

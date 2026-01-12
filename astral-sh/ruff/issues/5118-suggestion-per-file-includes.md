@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-15T10:43:32Z
 updated_at: 2025-11-06T22:04:01Z
 url: https://github.com/astral-sh/ruff/issues/5118
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Suggestion: per-file-includes
 
 ---
 
-_Issue opened by @kobymeir on 2023-06-15 10:43_
+_@kobymeir_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

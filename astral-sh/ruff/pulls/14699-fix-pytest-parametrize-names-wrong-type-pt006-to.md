@@ -14,14 +14,14 @@ head: fix-PT006-single-element
 created_at: 2024-12-01T13:42:25Z
 updated_at: 2024-12-09T12:45:54Z
 url: https://github.com/astral-sh/ruff/pull/14699
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix `pytest-parametrize-names-wrong-type (PT006)` to edit both `argnames` and `argvalues` if both of them are single-element tuples/lists
 
 ---
 
-_Pull request opened by @harupy on 2024-12-01 13:42_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

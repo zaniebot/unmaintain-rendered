@@ -13,14 +13,14 @@ head: minimizer
 created_at: 2023-07-13T09:33:10Z
 updated_at: 2023-07-18T08:18:00Z
 url: https://github.com/astral-sh/ruff/pull/5731
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add a tool for shrinking failing examples
 
 ---
 
-_Pull request opened by @konstin on 2023-07-13 09:33_
+_@konstin_
 
 ## Summary
 

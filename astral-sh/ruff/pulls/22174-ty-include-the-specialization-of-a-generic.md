@@ -13,14 +13,14 @@ head: alex/generic-typeddict-display
 created_at: 2025-12-24T14:33:31Z
 updated_at: 2025-12-24T14:39:48Z
 url: https://github.com/astral-sh/ruff/pull/22174
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Include the specialization of a generic `TypedDict` as part of its display
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-24 14:33_
+_@AlexWaygood_
 
 ## Summary
 

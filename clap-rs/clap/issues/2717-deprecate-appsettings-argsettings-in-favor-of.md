@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-08-18T15:21:59Z
 updated_at: 2022-07-22T20:41:45Z
 url: https://github.com/clap-rs/clap/issues/2717
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Deprecate AppSettings / ArgSettings in favor of binary methods
 
 ---
 
-_Issue opened by @epage on 2021-08-18 15:21_
+_@epage_
 
 Since I was already in a conversation with kbknapp, I figured I might as well ask him for the reason for the transitio to ArgSettings early in clap3.
 

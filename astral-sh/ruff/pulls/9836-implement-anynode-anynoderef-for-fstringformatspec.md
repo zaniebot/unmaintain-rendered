@@ -13,14 +13,14 @@ head: dhruv/format-spec-anynode
 created_at: 2024-02-05T16:15:39Z
 updated_at: 2024-02-05T19:36:24Z
 url: https://github.com/astral-sh/ruff/pull/9836
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Implement `AnyNode`/`AnyNodeRef` for `FStringFormatSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-05 16:15_
+_@dhruvmanila_
 
 ## Summary
 

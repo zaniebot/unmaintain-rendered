@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T12:02:05Z
 updated_at: 2025-10-10T11:50:50Z
 url: https://github.com/astral-sh/uv/issues/16014
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # `uv self update` to respect the `required-version` setting
 
 ---
 
-_Issue opened by @pratt-fds on 2025-09-24 12:02_
+_@pratt-fds_
 
 ### Summary
 

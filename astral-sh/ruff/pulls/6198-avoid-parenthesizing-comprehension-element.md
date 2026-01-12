@@ -12,14 +12,14 @@ head: dhruv/generator-fix
 created_at: 2023-07-31T15:09:38Z
 updated_at: 2023-07-31T15:42:59Z
 url: https://github.com/astral-sh/ruff/pull/6198
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid parenthesizing comprehension element
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-31 15:09_
+_@dhruvmanila_
 
 ## Summary
 

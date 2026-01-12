@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T16:28:42Z
 updated_at: 2025-12-21T19:35:45Z
 url: https://github.com/astral-sh/ty/issues/2115
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Document `escape-character-in-forward-annotation`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-19 16:28_
+_@MichaReiser_
 
 ### Summary
 

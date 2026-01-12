@@ -14,14 +14,14 @@ head: charlie/q
 created_at: 2025-02-19T22:32:13Z
 updated_at: 2025-02-20T20:13:12Z
 url: https://github.com/astral-sh/uv/pull/11644
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Allow quotes around command-line options in `requirement.txt files`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-19 22:32_
+_@charliermarsh_
 
 ## Summary
 

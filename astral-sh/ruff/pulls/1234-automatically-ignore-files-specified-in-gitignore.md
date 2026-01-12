@@ -12,14 +12,14 @@ head: charlie/ignore
 created_at: 2022-12-14T04:26:14Z
 updated_at: 2022-12-14T20:58:42Z
 url: https://github.com/astral-sh/ruff/pull/1234
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Automatically ignore files specified in `.gitignore`
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-14 04:26_
+_@charliermarsh_
 
 This is somewhat inefficient as I have to do two filesystem passes right now -- need to find a way to fix that...
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T08:04:56Z
 updated_at: 2025-08-15T12:43:04Z
 url: https://github.com/astral-sh/ty/issues/264
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Apply formatting to hover information
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-08 08:04_
+_@InSyncWithFoo_
 
 Here's what ty has to say about the type of `pydantic.Field`:
 

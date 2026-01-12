@@ -14,14 +14,14 @@ head: parser-freeze
 created_at: 2025-02-08T23:25:30Z
 updated_at: 2025-02-09T16:10:03Z
 url: https://github.com/astral-sh/ruff/pull/16047
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-type-checking`] Allow f-strings, printf strings, and formatted strings for `runtime-cast-value` (`TC006`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-08 23:25_
+_@dylwil3_
 
 Just as we allow string arguments for `cast` in [runtime-cast-value (TC006)](https://docs.astral.sh/ruff/rules/runtime-cast-value/#runtime-cast-value-tc006), we should allow f-strings, printf-style strings, and formatted strings, since these all evaluate to strings.
 

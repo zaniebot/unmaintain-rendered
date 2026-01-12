@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T06:59:38Z
 updated_at: 2025-07-28T17:50:14Z
 url: https://github.com/astral-sh/uv/issues/14501
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Error when resolving Tensorflow on Windows
 
 ---
 
-_Issue opened by @cbrnr on 2025-07-08 06:59_
+_@cbrnr_
 
 ### Summary
 

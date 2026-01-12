@@ -15,14 +15,14 @@ head: cjm/moregood
 created_at: 2025-09-17T02:10:54Z
 updated_at: 2025-09-17T08:09:34Z
 url: https://github.com/astral-sh/ruff/pull/20447
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] move graphql-core to good.txt
 
 ---
 
-_Pull request opened by @carljm on 2025-09-17 02:10_
+_@carljm_
 
 ## Summary
 

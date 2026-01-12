@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-18T12:18:50Z
 updated_at: 2023-02-22T13:33:36Z
 url: https://github.com/clap-rs/clap/issues/4713
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # default_value_if depends on order in struct
 
 ---
 
-_Issue opened by @drmikehenry on 2023-02-18 12:18_
+_@drmikehenry_
 
 ### Please complete the following tasks
 

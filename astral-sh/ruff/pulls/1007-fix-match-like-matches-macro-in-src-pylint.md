@@ -12,14 +12,14 @@ head: fix-match_like_matches_macro
 created_at: 2022-12-03T05:18:01Z
 updated_at: 2022-12-03T05:21:33Z
 url: https://github.com/astral-sh/ruff/pull/1007
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix `match_like_matches_macro` in `src/pylint/plugins.rs`
 
 ---
 
-_Pull request opened by @harupy on 2022-12-03 05:18_
+_@harupy_
 
 A follow-up for #1005.
 

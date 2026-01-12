@@ -13,14 +13,14 @@ head: exception-tuples
 created_at: 2024-10-06T14:55:59Z
 updated_at: 2024-10-07T16:52:45Z
 url: https://github.com/astral-sh/ruff/pull/13646
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Improve type inference for except handlers where a tuple of exception classes is caught
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-06 14:55_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:03:02Z
 updated_at: 2025-05-07T15:27:43Z
 url: https://github.com/astral-sh/ty/issues/246
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # consider building use-def map per-scope instead of per-module
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:03_
+_@carljm_
 
 Currently we always build symbol tables and definitions for an entire module at once.
 

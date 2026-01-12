@@ -13,14 +13,14 @@ head: docs_perf_improvements
 created_at: 2023-06-16T11:38:22Z
 updated_at: 2023-06-19T13:13:33Z
 url: https://github.com/astral-sh/ruff/pull/5144
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add `cargo dev repeat` for profiling
 
 ---
 
-_Pull request opened by @konstin on 2023-06-16 11:38_
+_@konstin_
 
 ## Summary
 

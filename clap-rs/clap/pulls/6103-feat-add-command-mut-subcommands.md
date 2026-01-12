@@ -12,14 +12,14 @@ head: mut_subcommands
 created_at: 2025-08-11T19:34:25Z
 updated_at: 2025-08-11T19:42:54Z
 url: https://github.com/clap-rs/clap/pull/6103
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: Add Command::mut_subcommands
 
 ---
 
-_Pull request opened by @epage on 2025-08-11 19:34_
+_@epage_
 
 Builds on what we added in #3882.
 

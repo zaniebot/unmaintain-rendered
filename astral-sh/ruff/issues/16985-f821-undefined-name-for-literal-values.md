@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-26T17:28:44Z
 updated_at: 2025-03-26T18:26:59Z
 url: https://github.com/astral-sh/ruff/issues/16985
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F821 "Undefined name" for Literal values
 
 ---
 
-_Issue opened by @gavindsouza on 2025-03-26 17:28_
+_@gavindsouza_
 
 ### Summary
 

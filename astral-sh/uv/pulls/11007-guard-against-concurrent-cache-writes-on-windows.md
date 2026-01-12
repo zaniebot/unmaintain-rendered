@@ -14,14 +14,14 @@ head: charlie/windows
 created_at: 2025-01-27T22:59:57Z
 updated_at: 2025-01-28T20:34:12Z
 url: https://github.com/astral-sh/uv/pull/11007
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Guard against concurrent cache writes on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 22:59_
+_@charliermarsh_
 
 ## Summary
 

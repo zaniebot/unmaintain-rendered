@@ -13,14 +13,14 @@ head: charlie/python-platform
 created_at: 2024-02-28T04:18:29Z
 updated_at: 2024-02-28T15:04:56Z
 url: https://github.com/astral-sh/uv/pull/2034
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Rename `Virtualenv` and `PythonPlatform` structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 04:18_
+_@charliermarsh_
 
 ## Summary
 

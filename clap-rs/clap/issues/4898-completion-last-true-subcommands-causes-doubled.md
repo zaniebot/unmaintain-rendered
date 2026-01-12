@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-10T17:29:42Z
 updated_at: 2023-05-12T08:22:20Z
 url: https://github.com/clap-rs/clap/issues/4898
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # completion: `last(true)` + subcommands causes 'doubled rest argument' error in Zsh
 
 ---
 
-_Issue opened by @clubby789 on 2023-05-10 17:29_
+_@clubby789_
 
 ### Please complete the following tasks
 

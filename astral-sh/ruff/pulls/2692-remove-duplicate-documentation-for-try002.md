@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-02-09T17:06:32Z
 updated_at: 2023-02-09T17:08:39Z
 url: https://github.com/astral-sh/ruff/pull/2692
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Remove duplicate documentation for `TRY002`
 
 ---
 
-_Pull request opened by @ngnpope on 2023-02-09 17:06_
+_@ngnpope_
 
 Looks like this was accidentally added in 9cd1bf9c034bed50747ea0ff26d13f25f6d7a13f.
 

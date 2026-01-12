@@ -12,14 +12,14 @@ head: micha/display-type
 created_at: 2024-12-12T17:27:55Z
 updated_at: 2024-12-13T09:34:34Z
 url: https://github.com/astral-sh/ruff/pull/14940
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Handle recursive types in `Type::display`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-12 17:27_
+_@MichaReiser_
 
 Needs tests and I have to decide on how to represent types when we actually hit a recursion
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-09T23:49:57Z
 updated_at: 2024-04-10T01:59:13Z
 url: https://github.com/astral-sh/uv/issues/2950
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Avoid password in verbose output
 
 ---
 
-_Issue opened by @avelychko12 on 2024-04-09 23:49_
+_@avelychko12_
 
 If you run `uv pip install` with `--verbose` it will show you password in url
 ```

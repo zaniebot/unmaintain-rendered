@@ -14,14 +14,14 @@ head: vigilans/uv-venv-detect-project-python-version
 created_at: 2024-07-30T09:39:02Z
 updated_at: 2024-07-31T13:54:17Z
 url: https://github.com/astral-sh/uv/pull/5592
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Detect python version from python project by default in `uv venv`
 
 ---
 
-_Pull request opened by @Vigilans on 2024-07-30 09:39_
+_@Vigilans_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

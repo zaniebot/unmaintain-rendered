@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T22:40:38Z
 updated_at: 2023-06-04T02:01:22Z
 url: https://github.com/astral-sh/ruff/issues/4844
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # D200: autofix does not work if there are initial/end double quotes in the dockstring
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-06-03 22:40_
+_@saippuakauppias_
 
 Example:
 ```python

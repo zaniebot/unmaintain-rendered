@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T06:17:42Z
 updated_at: 2024-04-16T08:04:17Z
 url: https://github.com/astral-sh/ruff/issues/10967
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `line-to-long` (`E501`) ignore not working as intended
 
 ---
 
-_Issue opened by @bedilbek on 2024-04-16 06:17_
+_@bedilbek_
 
 before
 ```python

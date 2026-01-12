@@ -13,14 +13,14 @@ head: remove-confusing-comment
 created_at: 2023-08-21T12:04:28Z
 updated_at: 2023-08-21T13:05:26Z
 url: https://github.com/astral-sh/ruff/pull/6724
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove confusing comment on `get_parametrize_name_range`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-21 12:04_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

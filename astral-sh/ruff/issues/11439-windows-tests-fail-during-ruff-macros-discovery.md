@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-16T02:18:09Z
 updated_at: 2024-05-20T01:38:50Z
 url: https://github.com/astral-sh/ruff/issues/11439
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Windows tests fail during `ruff_macros` discovery
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-16 02:18_
+_@charliermarsh_
 
 Ex: https://github.com/astral-sh/ruff/actions/runs/9105298538/job/25030681657?pr=11438
 

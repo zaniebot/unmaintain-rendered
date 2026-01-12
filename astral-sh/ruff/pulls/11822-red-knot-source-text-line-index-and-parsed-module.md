@@ -13,14 +13,14 @@ head: salsa-source
 created_at: 2024-06-10T11:19:13Z
 updated_at: 2024-06-13T07:52:54Z
 url: https://github.com/astral-sh/ruff/pull/11822
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # red-knot: `source_text`, `line_index`, and `parsed_module` queries
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-10 11:19_
+_@MichaReiser_
 
 ## Summary
 

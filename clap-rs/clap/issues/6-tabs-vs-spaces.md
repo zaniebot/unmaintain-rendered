@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-03-16T15:41:50Z
 updated_at: 2018-08-02T03:29:35Z
 url: https://github.com/clap-rs/clap/issues/6
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Tabs vs spaces
 
 ---
 
-_Issue opened by @untitaker on 2015-03-16 15:41_
+_@untitaker_
 
 While creating #5 I've noticed that you use tabs. https://github.com/rust-lang/rust-guidelines/blob/master/style/whitespace.md suggests that this is discouraged. Would you consider switching to that guideline?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T06:03:01Z
 updated_at: 2024-08-21T14:22:55Z
 url: https://github.com/clap-rs/clap/issues/5690
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Global argument clashes with subcommand positional of same name
 
 ---
 
-_Issue opened by @bennetthardwick on 2024-08-21 06:03_
+_@bennetthardwick_
 
 ### Please complete the following tasks
 

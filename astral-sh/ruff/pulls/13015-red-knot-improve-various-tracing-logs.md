@@ -13,14 +13,14 @@ head: alex/redknot-module-resolution-logs
 created_at: 2024-08-20T16:59:44Z
 updated_at: 2024-08-20T18:44:34Z
 url: https://github.com/astral-sh/ruff/pull/13015
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Improve various tracing logs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-20 16:59_
+_@AlexWaygood_
 
 Helps with #13011
 

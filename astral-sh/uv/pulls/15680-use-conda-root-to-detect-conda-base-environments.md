@@ -12,14 +12,14 @@ head: zb/conda-root
 created_at: 2025-09-04T13:27:18Z
 updated_at: 2025-09-17T11:17:07Z
 url: https://github.com/astral-sh/uv/pull/15680
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Use `_CONDA_ROOT` to detect conda base environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-04 13:27_
+_@zanieb_
 
 While investigating https://github.com/astral-sh/uv/pull/15679, I noticed this variable was available in the environment and seems like a nice additional heuristic.
 

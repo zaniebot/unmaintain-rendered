@@ -13,14 +13,14 @@ head: zb/sources-example-i
 created_at: 2025-12-18T22:41:07Z
 updated_at: 2025-12-19T14:07:41Z
 url: https://github.com/astral-sh/uv/pull/17183
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Add a sources example to the uv pip migration guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-18 22:41_
+_@zanieb_
 
 Documents https://github.com/astral-sh/uv/issues/6275
 

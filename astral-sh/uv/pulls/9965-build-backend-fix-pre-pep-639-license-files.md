@@ -14,14 +14,14 @@ head: konsti/fix-license-inclusions
 created_at: 2024-12-17T11:04:00Z
 updated_at: 2024-12-17T14:52:52Z
 url: https://github.com/astral-sh/uv/pull/9965
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Build backend: Fix pre-PEP 639 license files
 
 ---
 
-_Pull request opened by @konstin on 2024-12-17 11:04_
+_@konstin_
 
 We were not copying the license file from a pre-PEP 639 declaration to the source distribution.
 

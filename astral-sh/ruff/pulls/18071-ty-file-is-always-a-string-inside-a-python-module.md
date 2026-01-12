@@ -13,14 +13,14 @@ head: cjm/dunderfile
 created_at: 2025-05-13T15:14:31Z
 updated_at: 2025-05-13T18:08:12Z
 url: https://github.com/astral-sh/ruff/pull/18071
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] __file__ is always a string inside a Python module
 
 ---
 
-_Pull request opened by @carljm on 2025-05-13 15:14_
+_@carljm_
 
 ## Summary
 

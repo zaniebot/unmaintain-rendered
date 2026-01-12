@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T06:58:41Z
 updated_at: 2025-07-27T14:30:01Z
 url: https://github.com/astral-sh/uv/issues/14884
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # `uv run` unexpectedly re-creating venv because of `.python-version` created by `uv init`
 
 ---
 
-_Issue opened by @silverwind on 2025-07-25 06:58_
+_@silverwind_
 
 ### Summary
 

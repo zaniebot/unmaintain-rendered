@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T11:10:56Z
 updated_at: 2025-11-10T09:13:31Z
 url: https://github.com/astral-sh/ruff/issues/21271
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `multi-line-implicit-string-concatenation (ISC002)` should use parens.
 
 ---
 
-_Issue opened by @css-optivoy on 2025-11-04 11:10_
+_@css-optivoy_
 
 ### Summary
 

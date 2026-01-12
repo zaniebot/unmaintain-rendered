@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T23:24:40Z
 updated_at: 2026-01-09T09:41:17Z
 url: https://github.com/astral-sh/ty/issues/2406
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type error with FastAPI/Starlette CORSMiddleWare and add_middleware
 
 ---
 
-_Issue opened by @norbusan on 2026-01-08 23:24_
+_@norbusan_
 
 ### Summary
 

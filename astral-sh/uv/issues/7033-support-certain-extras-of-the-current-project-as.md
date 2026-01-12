@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T16:23:41Z
 updated_at: 2024-12-27T14:43:51Z
 url: https://github.com/astral-sh/uv/issues/7033
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Support certain extras of the current project as dev dependencies
 
 ---
 
-_Issue opened by @lengau on 2024-09-04 16:23_
+_@lengau_
 
 It would be nice to be able to support adding specific extras as dev dependencies.. For example, a project that is migrating to `uv` may have optional dependency groups that they'd like to keep separate but add as dev dependencies like so:
 

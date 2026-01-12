@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T02:02:01Z
 updated_at: 2025-02-13T11:39:12Z
 url: https://github.com/astral-sh/uv/issues/11469
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # uv publish fails to upload package to nexus in CI but is able to push to nexus locally.
 
 ---
 
-_Issue opened by @shoaibkhanz on 2025-02-13 02:02_
+_@shoaibkhanz_
 
 ### Question
 

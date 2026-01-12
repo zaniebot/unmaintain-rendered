@@ -14,14 +14,14 @@ head: concurrent-progress-bar
 created_at: 2024-04-24T20:11:54Z
 updated_at: 2024-05-28T20:18:34Z
 url: https://github.com/astral-sh/uv/pull/3252
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Concurrent progress bars
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-24 20:11_
+_@ibraheemdev_
 
 ## Summary
 

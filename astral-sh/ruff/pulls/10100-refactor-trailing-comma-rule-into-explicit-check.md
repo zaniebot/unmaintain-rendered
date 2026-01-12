@@ -13,14 +13,14 @@ head: refactor-trailing-comma-rule
 created_at: 2024-02-23T16:40:22Z
 updated_at: 2024-02-23T16:56:06Z
 url: https://github.com/astral-sh/ruff/pull/10100
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Refactor trailing comma rule into explicit check and state update code
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 16:40_
+_@MichaReiser_
 
 
 ## Summary

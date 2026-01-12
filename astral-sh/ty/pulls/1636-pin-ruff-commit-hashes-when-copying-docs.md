@@ -11,14 +11,14 @@ head: ruff_commit_in_links
 created_at: 2025-11-25T21:18:16Z
 updated_at: 2025-11-26T09:32:07Z
 url: https://github.com/astral-sh/ty/pull/1636
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # pin ruff commit hashes when copying docs
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-11-25 21:18_
+_@oconnor663_
 
 This is a drive-by fix/idea. I noticed that we're publishing links with line numbers that tend to go stale as the upstream Rust code is edited over time (like most of the "View source" links on [this page](https://docs.astral.sh/ty/reference/rules)). Might be nice to snapshot these when we vendor the `.md` files?
 

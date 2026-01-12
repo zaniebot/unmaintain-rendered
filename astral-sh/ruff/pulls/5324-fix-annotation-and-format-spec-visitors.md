@@ -12,14 +12,14 @@ head: fix-visit-annotation
 created_at: 2023-06-23T03:34:58Z
 updated_at: 2023-06-23T04:45:37Z
 url: https://github.com/astral-sh/ruff/pull/5324
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix annotation and format spec visitors
 
 ---
 
-_Pull request opened by @jgberry on 2023-06-23 03:34_
+_@jgberry_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

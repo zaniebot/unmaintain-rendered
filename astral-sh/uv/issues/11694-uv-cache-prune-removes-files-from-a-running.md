@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T10:28:16Z
 updated_at: 2025-11-28T15:18:07Z
 url: https://github.com/astral-sh/uv/issues/11694
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # uv cache prune removes files from a running process executed with `uvx`
 
 ---
 
-_Issue opened by @jezekra1 on 2025-02-21 10:28_
+_@jezekra1_
 
 ### Summary
 

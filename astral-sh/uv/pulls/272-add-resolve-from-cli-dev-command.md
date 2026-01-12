@@ -12,14 +12,14 @@ head: add-resolve-from-cli-puffin-dev-command
 created_at: 2023-11-01T13:41:05Z
 updated_at: 2023-11-01T15:46:48Z
 url: https://github.com/astral-sh/uv/pull/272
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Add resolve from cli dev command
 
 ---
 
-_Pull request opened by @konstin on 2023-11-01 13:41_
+_@konstin_
 
 I don't want to create a new file for every requirement i test, e.g.
 

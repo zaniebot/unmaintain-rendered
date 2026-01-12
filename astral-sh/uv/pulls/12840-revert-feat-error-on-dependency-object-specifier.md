@@ -13,14 +13,14 @@ head: gankra/obj-rev
 created_at: 2025-04-11T18:23:37Z
 updated_at: 2025-04-11T18:32:49Z
 url: https://github.com/astral-sh/uv/pull/12840
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Revert "feat: Error on dependency object specifier (#12811)"
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-11 18:23_
+_@Gankra_
 
 This reverts commit c117acf905c81d1334a186709e068256be299031.
 

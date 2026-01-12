@@ -14,14 +14,14 @@ head: zb/python-managed
 created_at: 2024-07-30T21:37:39Z
 updated_at: 2024-07-31T13:53:40Z
 url: https://github.com/astral-sh/uv/pull/5637
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Replace `--python-preference installed` with `managed`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 21:37_
+_@zanieb_
 
 Collapses the previous default into "managed" and makes the "managed" behavior match "installed". People should use "only-managed" if they want that behavior, it seems overly complicated otherwise.
 

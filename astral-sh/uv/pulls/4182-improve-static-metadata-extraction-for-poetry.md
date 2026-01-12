@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2024-06-10T00:31:07Z
 updated_at: 2024-06-10T16:35:53Z
 url: https://github.com/astral-sh/uv/pull/4182
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Improve static metadata extraction for Poetry projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 00:31_
+_@charliermarsh_
 
 ## Summary
 

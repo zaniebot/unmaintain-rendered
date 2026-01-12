@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T20:47:00Z
 updated_at: 2023-02-23T01:58:47Z
 url: https://github.com/astral-sh/ruff/issues/3144
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement rule PIE802
 
 ---
 
-_Issue opened by @Skylion007 on 2023-02-22 20:47_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-02T17:42:25Z
 updated_at: 2022-04-04T14:31:41Z
 url: https://github.com/clap-rs/clap/issues/3604
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Suggest removing `--` if specified, but unnecessary
 
 ---
 
-_Issue opened by @nazar-pc on 2022-04-02 17:42_
+_@nazar-pc_
 
 ### Please complete the following tasks
 

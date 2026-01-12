@@ -13,14 +13,14 @@ head: workspace-support
 created_at: 2024-07-14T09:47:01Z
 updated_at: 2024-07-17T09:46:47Z
 url: https://github.com/astral-sh/ruff/pull/12318
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add basic workspace support
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-14 09:47_
+_@MichaReiser_
 
 ## Summary
 

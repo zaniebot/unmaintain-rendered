@@ -13,14 +13,14 @@ head: venv-add-pypy-exes
 created_at: 2024-07-14T14:46:10Z
 updated_at: 2024-07-15T19:00:50Z
 url: https://github.com/astral-sh/uv/pull/5047
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Add `pypy` executables when calling `uv venv`
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-14 14:46_
+_@silvanocerza_
 
 ## Summary
 

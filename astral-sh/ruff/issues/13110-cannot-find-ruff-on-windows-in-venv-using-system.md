@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T14:05:41Z
 updated_at: 2024-08-26T16:06:12Z
 url: https://github.com/astral-sh/ruff/issues/13110
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Cannot find ruff on Windows in venv using --system-site-packages
 
 ---
 
-_Issue opened by @markuspi on 2024-08-26 14:05_
+_@markuspi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

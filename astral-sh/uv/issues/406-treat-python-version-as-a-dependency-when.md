@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-13T08:32:25Z
 updated_at: 2024-01-03T15:20:46Z
 url: https://github.com/astral-sh/uv/issues/406
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Treat python version as a dependency when resolving
 
 ---
 
-_Issue opened by @konstin on 2023-11-13 08:32_
+_@konstin_
 
 Sometimes the resolution is impossible because a version of a package can only be installed in a more recent python version than the user has. In the example below, pandas 2.1 requires at least python 3.9, while the user has 3.8.
 

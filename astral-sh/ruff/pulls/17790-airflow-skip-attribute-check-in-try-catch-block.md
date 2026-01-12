@@ -14,14 +14,14 @@ head: try-catch-airflow-rules
 created_at: 2025-05-02T11:10:40Z
 updated_at: 2025-05-05T14:01:05Z
 url: https://github.com/astral-sh/ruff/pull/17790
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`airflow`] Skip attribute check in try catch block (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-02 11:10_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

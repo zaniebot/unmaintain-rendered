@@ -13,14 +13,14 @@ head: charlie/git-tags
 created_at: 2024-10-16T14:45:47Z
 updated_at: 2024-10-16T15:13:31Z
 url: https://github.com/astral-sh/uv/pull/8259
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Allow users to incorporate Git tags into dynamic cache keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-16 14:45_
+_@charliermarsh_
 
 ## Summary
 

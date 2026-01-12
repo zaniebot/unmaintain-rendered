@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-13T19:36:36Z
 updated_at: 2023-08-13T20:00:14Z
 url: https://github.com/astral-sh/ruff/issues/6539
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # distutils is no longer in stdlib since Python 3.12 (PEP 632)
 
 ---
 
-_Issue opened by @dlech on 2023-08-13 19:36_
+_@dlech_
 
 Currently, when ruff sorts imports, `distutils` is grouped with other standard library packages. However, it has long been deprecated and has been removed in Python 3.12. https://peps.python.org/pep-0632/
 

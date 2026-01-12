@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-11T23:36:45Z
 updated_at: 2022-01-12T16:59:28Z
 url: https://github.com/clap-rs/clap/issues/3284
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `IntoApp` docs
 
 ---
 
-_Issue opened by @nipunn1313 on 2022-01-11 23:36_
+_@nipunn1313_
 
 ### Please complete the following tasks
 

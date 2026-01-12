@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-27T08:49:48Z
 updated_at: 2024-11-29T13:22:44Z
 url: https://github.com/astral-sh/uv/issues/9462
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `uv` is not installing the latest version of dependency packages
 
 ---
 
-_Issue opened by @Laughing-q on 2024-11-27 08:49_
+_@Laughing-q_
 
 Hi team! Really awesome work on this package! 
 The installation speed is incredibly fast and we really want to use `uv` package as the python package manager in our github CI tests. However I do noticed it behaves slightly different from the original `pip` manager and it causes our CI tests failing.

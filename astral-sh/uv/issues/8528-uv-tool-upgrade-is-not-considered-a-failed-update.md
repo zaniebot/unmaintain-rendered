@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-24T14:36:03Z
 updated_at: 2025-06-16T09:15:42Z
 url: https://github.com/astral-sh/uv/issues/8528
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # ``uv tool upgrade`` is not considered a failed update when it doesn't replace executable files in windows.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-10-24 14:36_
+_@FishAlchemist_
 
 **version:** uv 0.4.25 (97eb6ab4a 2024-10-21)
 **OS:** Windows 11 x86-64

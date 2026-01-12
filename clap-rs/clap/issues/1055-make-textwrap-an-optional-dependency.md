@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-09-27T17:40:44Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1055
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Make `textwrap` an optional dependency
 
 ---
 
-_Issue opened by @H2CO3 on 2017-09-27 17:40_
+_@H2CO3_
 
 It would be nice to make the `textwrap` crate an optional dependency, so that those who don't care that much about the nice formatting wouldn't need to install the transitive closure of the dependencies of `textwrap` (most notably, `libc` and `winapi`).
 

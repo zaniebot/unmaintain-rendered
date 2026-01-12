@@ -13,14 +13,14 @@ head: zb/fix-docker-ci
 created_at: 2024-04-22T19:44:49Z
 updated_at: 2024-04-23T02:20:25Z
 url: https://github.com/astral-sh/uv/pull/3195
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Fix Docker publish permissions in release pipeline
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-22 19:44_
+_@zanieb_
 
 The publish failed due to missing permissions. We add them here so the next release will include Docker builds.
 

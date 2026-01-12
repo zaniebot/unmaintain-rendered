@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T01:01:26Z
 updated_at: 2024-03-12T12:56:43Z
 url: https://github.com/astral-sh/uv/issues/1248
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # panic in resolver during torture test
 
 ---
 
-_Issue opened by @BurntSushi on 2024-02-05 01:01_
+_@BurntSushi_
 
 I've been hunting around for "torture tests," so I took the top 1k pypi packages and tried to run `puffin pip compile` on them. (I had to trim down the list though because a lot of packages don't build.) In so doing, I found a panic:
 

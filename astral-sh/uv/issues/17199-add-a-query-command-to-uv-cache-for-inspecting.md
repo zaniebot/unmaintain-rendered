@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T12:33:32Z
 updated_at: 2026-01-06T19:24:31Z
 url: https://github.com/astral-sh/uv/issues/17199
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Add a `query` command to uv cache for inspecting local cache, similar to `cargo-cache`
 
 ---
 
-_Issue opened by @zhangzhenxiang666 on 2025-12-20 12:33_
+_@zhangzhenxiang666_
 
 ### Summary
 

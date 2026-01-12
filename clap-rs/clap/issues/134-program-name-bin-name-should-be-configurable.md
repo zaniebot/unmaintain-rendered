@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-30T15:01:51Z
 updated_at: 2015-05-30T18:03:13Z
 url: https://github.com/clap-rs/clap/issues/134
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Program name (bin_name) should be configurable
 
 ---
 
-_Issue opened by @DanielKeep on 2015-05-30 15:01_
+_@DanielKeep_
 
 The first line of the `--help` message for my program is as follows:
 

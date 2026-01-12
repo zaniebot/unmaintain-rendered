@@ -14,14 +14,14 @@ head: dcreager/die-die-intersections
 created_at: 2025-12-09T19:29:03Z
 updated_at: 2025-12-10T15:54:57Z
 url: https://github.com/astral-sh/ruff/pull/21871
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Simplify union lower bounds and intersection upper bounds in constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-09 19:29_
+_@dcreager_
 
 In a constraint set, it's not useful for an upper bound to be an intersection type, or for a lower bound to be a union type. Both of those can be rewritten as simpler BDDs:
 

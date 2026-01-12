@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T20:59:47Z
 updated_at: 2025-12-18T06:58:06Z
 url: https://github.com/astral-sh/ruff/issues/15169
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature Request: Warn when instance attribute shadows class attribute
 
 ---
 
-_Issue opened by @alippai on 2024-12-28 20:59_
+_@alippai_
 
 I suggest adding a linting rule to warn when an instance attribute shadows a class attribute of the same name. This can help prevent bugs from unintended overriding of class-level variables.
 

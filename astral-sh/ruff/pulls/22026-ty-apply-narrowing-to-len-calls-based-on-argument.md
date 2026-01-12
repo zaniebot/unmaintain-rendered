@@ -14,14 +14,14 @@ head: charlie/len
 created_at: 2025-12-17T14:02:00Z
 updated_at: 2025-12-17T18:16:00Z
 url: https://github.com/astral-sh/ruff/pull/22026
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Apply narrowing to `len` calls based on argument size
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 14:02_
+_@charliermarsh_
 
 ## Summary
 

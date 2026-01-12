@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T00:08:39Z
 updated_at: 2025-11-08T19:34:50Z
 url: https://github.com/astral-sh/uv/issues/12954
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # `run --script --no-project --no-sync --isolated` still synchronizes the project unless the script contains inline metadata
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-04-18 00:08_
+_@InSyncWithFoo_
 
 ### Summary
 

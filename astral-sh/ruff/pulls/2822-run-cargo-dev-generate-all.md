@@ -12,14 +12,14 @@ head: charlie/dev
 created_at: 2023-02-12T19:09:08Z
 updated_at: 2023-02-12T19:11:51Z
 url: https://github.com/astral-sh/ruff/pull/2822
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Run cargo dev generate-all
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 19:09_
+_@charliermarsh_
 
 I think this snuck in due to an out-of-order merge.
 

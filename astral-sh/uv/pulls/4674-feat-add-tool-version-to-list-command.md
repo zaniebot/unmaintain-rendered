@@ -12,14 +12,14 @@ head: feat/add-tool-version-to-listing
 created_at: 2024-07-01T00:12:07Z
 updated_at: 2024-07-03T18:24:38Z
 url: https://github.com/astral-sh/uv/pull/4674
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:23Z
 ```
 
 # feat: add tool version to list command
 
 ---
 
-_Pull request opened by @caiquejjx on 2024-07-01 00:12_
+_@caiquejjx_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/source-file
 created_at: 2025-05-07T18:10:04Z
 updated_at: 2025-05-07T18:53:10Z
 url: https://github.com/astral-sh/uv/pull/13335
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Avoid enumerating sources in errors for path Python requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 18:10_
+_@zanieb_
 
 e.g., these are misleading cruft in the error message at https://github.com/astral-sh/uv/pull/12168#discussion_r2078204601
 

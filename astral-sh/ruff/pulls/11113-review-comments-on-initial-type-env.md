@@ -13,14 +13,14 @@ head: cjm/red-knot-type-env-review-comments
 created_at: 2024-04-23T18:37:40Z
 updated_at: 2024-04-26T20:06:35Z
 url: https://github.com/astral-sh/ruff/pull/11113
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # review comments on initial type env
 
 ---
 
-_Pull request opened by @carljm on 2024-04-23 18:37_
+_@carljm_
 
 Review comments from https://github.com/astral-sh/ruff/pull/10849/commits/762fa0b66f5b316a84e88d79b7594fc160e0f7b0
 

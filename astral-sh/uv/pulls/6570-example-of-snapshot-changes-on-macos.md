@@ -13,14 +13,14 @@ head: zb/snapshot-diff
 created_at: 2024-08-24T05:56:24Z
 updated_at: 2024-09-03T20:33:02Z
 url: https://github.com/astral-sh/uv/pull/6570
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Example of snapshot changes on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-24 05:56_
+_@zanieb_
 
 Encountering these failures locally, suspicious of the test context changes.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-19T17:37:57Z
 updated_at: 2025-01-03T09:05:46Z
 url: https://github.com/astral-sh/ruff/issues/13824
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # F821 (Undefined name) and F722 (bad forward annotation) can trigger on `@no_type_check`-ed annotations
 
 ---
 
-_Issue opened by @Wuestengecko on 2024-10-19 17:37_
+_@Wuestengecko_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

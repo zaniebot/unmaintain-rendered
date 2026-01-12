@@ -13,14 +13,14 @@ head: ag/rkyv-update
 created_at: 2024-09-18T18:34:58Z
 updated_at: 2024-09-18T18:49:56Z
 url: https://github.com/astral-sh/uv/pull/7513
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # uv: migrate to rkyv 0.8
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-18 18:34_
+_@BurntSushi_
 
 Recently, rkyv 0.8 was released. Its API is a fair bit simpler now for
 higher level uses (like for us in `uv`) and results in us being able to

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-25T16:36:14Z
 updated_at: 2024-06-29T04:39:27Z
 url: https://github.com/astral-sh/uv/issues/4522
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Cryptic error for `python -m uv pip compile --python-version x.y.z` when using the Windows app store Python app
 
 ---
 
-_Issue opened by @ncoghlan on 2024-06-25 16:36_
+_@ncoghlan_
 
 I am running the PSF's CPython build from the Windows app store in order to benefit from the automatic updates.
 

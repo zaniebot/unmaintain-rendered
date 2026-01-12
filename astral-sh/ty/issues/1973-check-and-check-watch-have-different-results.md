@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T02:29:36Z
 updated_at: 2026-01-09T09:34:32Z
 url: https://github.com/astral-sh/ty/issues/1973
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `check` and `check --watch` have different results
 
 ---
 
-_Issue opened by @fosskers on 2025-12-17 02:29_
+_@fosskers_
 
 ### Summary
 

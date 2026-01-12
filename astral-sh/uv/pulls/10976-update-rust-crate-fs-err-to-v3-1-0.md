@@ -13,14 +13,14 @@ head: renovate/fs-err-3.x-lockfile
 created_at: 2025-01-27T02:22:14Z
 updated_at: 2025-01-27T02:49:03Z
 url: https://github.com/astral-sh/uv/pull/10976
-synced_at: 2026-01-10T11:45:21Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # Update Rust crate fs-err to v3.1.0
 
 ---
 
-_Pull request opened by @renovate on 2025-01-27 02:22_
+_@renovate_
 
 This PR contains the following updates:
 

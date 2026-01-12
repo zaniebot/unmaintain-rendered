@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-14T00:12:31Z
 updated_at: 2023-11-25T18:42:21Z
 url: https://github.com/astral-sh/ruff/issues/8667
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `self-assigning-variable` (`PLW0127`) false negative on multi assignment
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-14 00:12_
+_@DetachHead_
 
 ```py
 a = 1

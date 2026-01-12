@@ -13,14 +13,14 @@ head: charlie/middleware
 created_at: 2024-03-06T20:27:52Z
 updated_at: 2024-03-06T20:37:20Z
 url: https://github.com/astral-sh/uv/pull/2250
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Stop exposing `client_raw`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 20:27_
+_@charliermarsh_
 
 ## Summary
 

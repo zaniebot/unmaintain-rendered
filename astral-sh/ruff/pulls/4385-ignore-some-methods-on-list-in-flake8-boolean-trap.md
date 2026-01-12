@@ -12,14 +12,14 @@ head: charlie/boolean-trap
 created_at: 2023-05-11T21:49:54Z
 updated_at: 2023-05-11T22:29:53Z
 url: https://github.com/astral-sh/ruff/pull/4385
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore some methods on list in `flake8-boolean-trap`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 21:49_
+_@charliermarsh_
 
 Closes #4382.
 

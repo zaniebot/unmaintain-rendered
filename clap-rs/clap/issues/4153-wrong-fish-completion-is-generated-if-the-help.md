@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-08-31T04:50:38Z
 updated_at: 2022-09-02T13:48:25Z
 url: https://github.com/clap-rs/clap/issues/4153
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Wrong fish completion is generated if the help description of the value has the comma
 
 ---
 
-_Issue opened by @sorairolake on 2022-08-31 04:50_
+_@sorairolake_
 
 ### Please complete the following tasks
 

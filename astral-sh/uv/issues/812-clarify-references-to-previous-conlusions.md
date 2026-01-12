@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T23:30:19Z
 updated_at: 2024-01-10T20:16:25Z
 url: https://github.com/astral-sh/uv/issues/812
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Clarify references to previous conlusions
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 23:30_
+_@zanieb_
 
 e.g. 
 

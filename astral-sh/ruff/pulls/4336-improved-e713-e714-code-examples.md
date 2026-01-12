@@ -13,14 +13,14 @@ head: improve-e714-doc
 created_at: 2023-05-10T02:19:28Z
 updated_at: 2023-05-10T02:48:09Z
 url: https://github.com/astral-sh/ruff/pull/4336
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Improved E713 & E714 code examples
 
 ---
 
-_Pull request opened by @trag1c on 2023-05-10 02:19_
+_@trag1c_
 
 These felt *reaaally* weird seeing how the before/after code is completely changed. The weirdest part for me was E714 changing `not x is y` to `not (x in y)` 💀
 

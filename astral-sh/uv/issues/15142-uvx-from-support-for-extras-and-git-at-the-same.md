@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T16:44:38Z
 updated_at: 2025-08-26T02:23:50Z
 url: https://github.com/astral-sh/uv/issues/15142
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `uvx --from` support for extras and git at the same time
 
 ---
 
-_Issue opened by @bradbeattie on 2025-08-07 16:44_
+_@bradbeattie_
 
 ### Summary
 

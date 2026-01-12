@@ -13,14 +13,14 @@ head: hoel/remove_dot_from_docs
 created_at: 2024-03-03T23:56:33Z
 updated_at: 2024-03-13T23:46:56Z
 url: https://github.com/astral-sh/ruff/pull/10217
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # `docs`: remove `.` from check and format commands
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-03 23:56_
+_@hoel-bagard_
 
 ## Summary
 

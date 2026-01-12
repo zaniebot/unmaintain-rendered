@@ -14,14 +14,14 @@ head: fix-UP018
 created_at: 2025-04-26T21:03:41Z
 updated_at: 2025-05-07T07:34:08Z
 url: https://github.com/astral-sh/ruff/pull/17648
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`pyupgrade`] Add spaces between tokens as necessary to avoid syntax errors in `UP018` autofix
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-26 21:03_
+_@LaBatata101_
 
 ## Summary
 

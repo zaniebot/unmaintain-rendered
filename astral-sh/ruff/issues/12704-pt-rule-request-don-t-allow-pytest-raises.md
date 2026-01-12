@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T23:38:37Z
 updated_at: 2024-08-06T06:21:15Z
 url: https://github.com/astral-sh/ruff/issues/12704
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PT Rule Request: Don't allow `pytest.raises(AssertionError)` with `assert` in body
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-05 23:38_
+_@notatallshaw_
 
 I am working on adding [pytest rules for pip](https://github.com/pypa/pip/pull/12894). And it highlighted [a test](https://github.com/pypa/pip/blob/3259c061fb36698339877bbf2cefb5e82815e812/tests/functional/test_install_reqs.py#L627) with an interesting anti-pattern:
 

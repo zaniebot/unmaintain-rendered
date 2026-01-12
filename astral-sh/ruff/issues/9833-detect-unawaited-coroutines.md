@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-05T15:24:22Z
 updated_at: 2025-07-12T16:30:47Z
 url: https://github.com/astral-sh/ruff/issues/9833
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Detect unawaited coroutines
 
 ---
 
-_Issue opened by @alekssamos on 2024-02-05 15:24_
+_@alekssamos_
 
 Hello. I fixed my code via ruff.
 Applied fix and  unsafe fixes.

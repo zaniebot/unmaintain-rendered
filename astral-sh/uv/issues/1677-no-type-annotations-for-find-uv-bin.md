@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T01:55:40Z
 updated_at: 2024-02-20T15:21:59Z
 url: https://github.com/astral-sh/uv/issues/1677
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # No type annotations for find_uv_bin
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-19 01:55_
+_@gaborbernat_
 
 I'm using `find_uv_bin` inside https://github.com/tox-dev/tox-uv/blob/main/src/tox_uv/_venv.py#L14, but mypy complain that this method is not exposed (no `__all__` containing it) and also no type annotations for it (because https://peps.python.org/pep-0561/#packaging-type-information is missing from the Python package, plus actual type annotations for it)
 

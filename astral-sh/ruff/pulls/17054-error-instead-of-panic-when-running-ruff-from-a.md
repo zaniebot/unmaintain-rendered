@@ -14,14 +14,14 @@ head: main
 created_at: 2025-03-28T23:07:33Z
 updated_at: 2025-04-01T12:17:08Z
 url: https://github.com/astral-sh/ruff/pull/17054
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Error instead of `panic!` when running Ruff from a deleted directory (#16903)
 
 ---
 
-_Pull request opened by @maxmynter on 2025-03-28 23:07_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

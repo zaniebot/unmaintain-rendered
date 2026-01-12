@@ -12,14 +12,14 @@ head: clap-4
 created_at: 2022-09-28T20:49:22Z
 updated_at: 2022-09-29T02:18:12Z
 url: https://github.com/astral-sh/ruff/pull/272
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Upgrade to clap 4
 
 ---
 
-_Pull request opened by @andersk on 2022-09-28 20:49_
+_@andersk_
 
 https://epage.github.io/blog/2022/09/clap4/
 

@@ -12,14 +12,14 @@ head: improve-unused-snapshot-check
 created_at: 2023-01-01T05:00:58Z
 updated_at: 2023-01-01T07:43:08Z
 url: https://github.com/astral-sh/ruff/pull/1525
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Simplify unused snapshot check
 
 ---
 
-_Pull request opened by @harupy on 2023-01-01 05:00_
+_@harupy_
 
 This PR simplifies the unused snapshot check by applying @max-sixty's suggestion [here](https://github.com/charliermarsh/ruff/pull/1497#discussion_r1059673152).
 

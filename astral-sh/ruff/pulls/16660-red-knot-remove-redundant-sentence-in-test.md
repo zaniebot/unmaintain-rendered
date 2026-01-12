@@ -13,14 +13,14 @@ head: cjm/followup
 created_at: 2025-03-12T04:16:48Z
 updated_at: 2025-03-12T04:22:22Z
 url: https://github.com/astral-sh/ruff/pull/16660
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] remove redundant sentence in test
 
 ---
 
-_Pull request opened by @carljm on 2025-03-12 04:16_
+_@carljm_
 
 Removes a redundant sentence I accidentally left in the test suite from in #16540 (my mistake).
 

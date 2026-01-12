@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-09T11:20:30Z
 updated_at: 2025-05-15T02:51:24Z
 url: https://github.com/astral-sh/ty/issues/290
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Too many positional arguments to bound method: expected 0, got 0
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-09 11:20_
+_@InSyncWithFoo_
 
 Minimal reproducible example ([playground](https://play.ty.dev/afd4f49f-a6a8-4b31-86e2-de0072c1f88e)):
 

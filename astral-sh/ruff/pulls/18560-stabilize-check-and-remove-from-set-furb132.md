@@ -13,14 +13,14 @@ head: dylan/stabilize-furb132
 created_at: 2025-06-08T19:10:41Z
 updated_at: 2025-06-09T19:03:55Z
 url: https://github.com/astral-sh/ruff/pull/18560
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `check-and-remove-from-set` (`FURB132`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:10_
+_@dylwil3_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/msrv
 created_at: 2025-03-03T02:22:49Z
 updated_at: 2025-03-03T02:30:19Z
 url: https://github.com/astral-sh/uv/pull/11898
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Document our MSRV policy
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-03 02:22_
+_@charliermarsh_
 
 ## Summary
 

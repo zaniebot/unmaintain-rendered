@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-30T13:14:11Z
 updated_at: 2024-09-05T06:13:30Z
 url: https://github.com/astral-sh/uv/issues/6866
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # CMake stub crashes when executed by VS Code
 
 ---
 
-_Issue opened by @petermbauer on 2024-08-30 13:14_
+_@petermbauer_
 
 When installing CMake via `uv pip install` instead of `pip install`, the stub created by uv crashes with a segfault when executed by the [CMake Tools](https://github.com/microsoft/vscode-cmake-tools) extension.
 

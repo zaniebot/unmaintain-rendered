@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-11-23T16:02:52Z
 updated_at: 2021-03-12T08:21:42Z
 url: https://github.com/clap-rs/clap/issues/2220
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # deno completions zsh failed and clap asked me to post here
 
 ---
 
-_Issue opened by @06kellyjac on 2020-11-23 16:02_
+_@06kellyjac_
 
 ### Make sure you completed the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-09T11:49:04Z
 updated_at: 2025-10-31T15:16:11Z
 url: https://github.com/astral-sh/ruff/issues/20785
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `FURB103` fixes breaks code
 
 ---
 
-_Issue opened by @chirizxc on 2025-10-09 11:49_
+_@chirizxc_
 
 ### Summary
 

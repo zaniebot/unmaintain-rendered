@@ -13,14 +13,14 @@ head: zb/riscv64
 created_at: 2024-10-29T13:39:06Z
 updated_at: 2024-10-29T13:48:21Z
 url: https://github.com/astral-sh/uv/pull/8660
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add riscv64 to supported Python platform tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-29 13:39_
+_@zanieb_
 
 Closes #8657 
 

@@ -12,14 +12,14 @@ head: charlie/exit
 created_at: 2022-10-07T16:13:04Z
 updated_at: 2022-10-07T16:13:16Z
 url: https://github.com/astral-sh/ruff/pull/342
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Exit 0 if all errors are fixed
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-07 16:13_
+_@charliermarsh_
 
 Resolves #341.
 

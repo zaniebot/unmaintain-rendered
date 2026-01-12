@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-30T19:47:24Z
 updated_at: 2025-12-05T13:07:49Z
 url: https://github.com/astral-sh/ty/issues/1688
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: assertion `left == right` failed
 
 ---
 
-_Issue opened by @correctmost on 2025-11-30 19:47_
+_@correctmost_
 
 ### Summary
 

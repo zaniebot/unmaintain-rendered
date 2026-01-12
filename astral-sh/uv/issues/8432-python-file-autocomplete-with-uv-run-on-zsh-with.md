@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-21T22:46:33Z
 updated_at: 2025-12-28T10:24:22Z
 url: https://github.com/astral-sh/uv/issues/8432
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Python file autocomplete with `uv run` on zsh with ohmyzsh
 
 ---
 
-_Issue opened by @thethomp on 2024-10-21 22:46_
+_@thethomp_
 
 Howdy - this is likely just a question and not a bug, but after googling and ChatGPT-ing with no luck for quite a while, I figured I'd post here. 
 

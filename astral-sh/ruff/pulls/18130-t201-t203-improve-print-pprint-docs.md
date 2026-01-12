@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-05-16T11:59:59Z
 updated_at: 2025-05-18T16:40:42Z
 url: https://github.com/astral-sh/ruff/pull/18130
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # T201/T203 Improve print/pprint docs
 
 ---
 
-_Pull request opened by @dragon-dxw on 2025-05-16 11:59_
+_@dragon-dxw_
 
 
 * discuss legitimate uses like CLI

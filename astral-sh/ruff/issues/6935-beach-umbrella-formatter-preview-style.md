@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T08:46:22Z
 updated_at: 2024-01-10T16:53:00Z
 url: https://github.com/astral-sh/ruff/issues/6935
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # :beach_umbrella: Formatter Preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-28 08:46_
+_@MichaReiser_
 
 This is an umbrella issue to track the progress towards supporting the [preview style](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#preview-style)
 

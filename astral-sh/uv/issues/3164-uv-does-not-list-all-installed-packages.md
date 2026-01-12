@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-20T22:00:39Z
 updated_at: 2025-03-31T13:35:54Z
 url: https://github.com/astral-sh/uv/issues/3164
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Uv does not list all installed packages.
 
 ---
 
-_Issue opened by @mathias-ted on 2024-04-20 22:00_
+_@mathias-ted_
 
 
 Command: uv pip list

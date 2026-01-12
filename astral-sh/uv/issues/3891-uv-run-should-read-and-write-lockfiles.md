@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T23:06:20Z
 updated_at: 2024-05-29T13:28:23Z
 url: https://github.com/astral-sh/uv/issues/3891
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv run` should read and write lockfiles
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-28 23:06_
+_@charliermarsh_
 
 Rather than resolving in-memory and comparing the resolution to the environment, we should be going through the lockfile APIs.
 

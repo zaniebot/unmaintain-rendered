@@ -14,14 +14,14 @@ head: add-rule-async-240-blocking-path-usage
 created_at: 2025-09-05T10:08:09Z
 updated_at: 2025-09-23T14:42:03Z
 url: https://github.com/astral-sh/ruff/pull/20264
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-async`] Implement `blocking-path-method` (`ASYNC240`)
 
 ---
 
-_Pull request opened by @PieterCK on 2025-09-05 10:08_
+_@PieterCK_
 
 ## Summary
 Adds a new rule to find and report use of `os.path` or `pathlib.Path` in

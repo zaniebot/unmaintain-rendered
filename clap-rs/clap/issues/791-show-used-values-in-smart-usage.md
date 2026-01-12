@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-12-28T22:59:50Z
 updated_at: 2021-12-09T16:59:27Z
 url: https://github.com/clap-rs/clap/issues/791
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Show used values in "smart usage"
 
 ---
 
-_Issue opened by @kbknapp on 2016-12-28 22:59_
+_@kbknapp_
 
 It would be nice to show actual values in the context sensitive usage statements:
 

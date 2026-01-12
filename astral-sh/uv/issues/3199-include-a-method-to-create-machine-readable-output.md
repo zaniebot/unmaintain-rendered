@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T21:09:18Z
 updated_at: 2025-06-13T12:05:16Z
 url: https://github.com/astral-sh/uv/issues/3199
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Include a method to create machine readable output
 
 ---
 
-_Issue opened by @pfmoore on 2024-04-22 21:09_
+_@pfmoore_
 
 When automating `uv`, having to parse the command output (which is intended for human readability) is not ideal. It would be useful to have an option to produce machine readable (probably JSON) output from the various `uv` commands.
 

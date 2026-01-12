@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T17:02:52Z
 updated_at: 2024-10-08T19:06:39Z
 url: https://github.com/astral-sh/uv/issues/7718
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # `uv init` should autofill the `authors` field in pyproject.toml
 
 ---
 
-_Issue opened by @Ravencentric on 2024-09-26 17:02_
+_@Ravencentric_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

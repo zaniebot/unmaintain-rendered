@@ -13,14 +13,14 @@ head: zb/exclude-newer-tests
 created_at: 2025-12-10T13:50:16Z
 updated_at: 2025-12-10T14:04:06Z
 url: https://github.com/astral-sh/uv/pull/17071
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Drop some non-integration exclude-newer tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-10 13:50_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/17070
 

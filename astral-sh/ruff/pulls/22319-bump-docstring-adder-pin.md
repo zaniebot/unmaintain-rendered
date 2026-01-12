@@ -14,14 +14,14 @@ head: AlexWaygood-patch-1
 created_at: 2025-12-31T22:33:56Z
 updated_at: 2025-12-31T22:37:54Z
 url: https://github.com/astral-sh/ruff/pull/22319
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # Bump docstring-adder pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-31 22:33_
+_@AlexWaygood_
 
 ## Summary
 

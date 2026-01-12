@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-11T18:31:47Z
 updated_at: 2025-05-08T05:23:49Z
 url: https://github.com/astral-sh/uv/issues/9822
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Git submodule cloning not working when using relative paths
 
 ---
 
-_Issue opened by @breuninger-dgrimm on 2024-12-11 18:31_
+_@breuninger-dgrimm_
 
 Hey,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T14:50:40Z
 updated_at: 2023-03-02T22:19:22Z
 url: https://github.com/astral-sh/ruff/issues/3308
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Is there a `noqa` equivalent for do not fix
 
 ---
 
-_Issue opened by @paddyroddy on 2023-03-02 14:50_
+_@paddyroddy_
 
 Unfortunately for `pydantic` you can't use the new union syntax `X | Y` for models and so you have to change it to i.e. `Union[X, Y]` or `Optional[X]` (depending on use case) if using `python` < `3.10` pydantic/pydantic#2609.
 

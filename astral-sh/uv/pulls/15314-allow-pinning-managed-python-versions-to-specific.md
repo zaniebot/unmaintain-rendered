@@ -14,14 +14,14 @@ head: zb/download-build-key
 created_at: 2025-08-15T19:24:15Z
 updated_at: 2025-08-25T21:25:07Z
 url: https://github.com/astral-sh/uv/pull/15314
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Allow pinning managed Python versions to specific build versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-15 19:24_
+_@zanieb_
 
 Allows pinning the Python build version via environment variables, e.g., `UV_PYTHON_CPYTHON_BUILD=...`. Each variable is implementation specific, because they use different versioning schemes.
 

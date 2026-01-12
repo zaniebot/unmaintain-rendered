@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T09:26:19Z
 updated_at: 2023-03-13T18:27:51Z
 url: https://github.com/clap-rs/clap/issues/4733
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `clippy::almost_swapped` check failing on latest nightly
 
 ---
 
-_Issue opened by @rkrasiuk on 2023-02-27 09:26_
+_@rkrasiuk_
 
 ### Please complete the following tasks
 

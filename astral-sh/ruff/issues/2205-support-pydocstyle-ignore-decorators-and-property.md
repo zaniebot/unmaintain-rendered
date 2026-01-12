@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T17:29:26Z
 updated_at: 2023-03-02T22:00:12Z
 url: https://github.com/astral-sh/ruff/issues/2205
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support pydocstyle `ignore_decorators` and `property_decorators` options
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-01-26 17:29_
+_@edgarrmondragon_
 
 - [x] `ignore-decorators`: ignore any functions or methods that are decorated by a function with a name fitting the `<decorators>` regular expression (https://github.com/charliermarsh/ruff/pull/3229)
 - [x] `property-decorators`: consider any method decorated with one of these decorators as a property, and consequently allow a docstring which is not in imperative mood

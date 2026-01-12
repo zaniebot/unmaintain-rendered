@@ -13,14 +13,14 @@ head: charlie/rm
 created_at: 2023-12-23T12:31:14Z
 updated_at: 2023-12-23T12:43:43Z
 url: https://github.com/astral-sh/ruff/pull/9258
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove separate `push` method
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-23 12:31_
+_@charliermarsh_
 
 _No description provided._
 

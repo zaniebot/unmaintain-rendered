@@ -13,14 +13,14 @@ head: dhruv/unsorted-dunder
 created_at: 2024-05-24T13:56:44Z
 updated_at: 2024-05-27T00:20:21Z
 url: https://github.com/astral-sh/ruff/pull/11533
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Avoid owned token data in sequence sorting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-24 13:56_
+_@dhruvmanila_
 
 ## Summary
 

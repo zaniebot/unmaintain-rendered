@@ -12,14 +12,14 @@ head: patch-4
 created_at: 2023-03-18T22:32:51Z
 updated_at: 2023-03-18T23:03:12Z
 url: https://github.com/astral-sh/ruff/pull/3602
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: fix check_ecosystem
 
 ---
 
-_Pull request opened by @henryiii on 2023-03-18 22:32_
+_@henryiii_
 
 Broken by #3590.
 

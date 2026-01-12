@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T23:40:25Z
 updated_at: 2025-03-22T15:36:51Z
 url: https://github.com/astral-sh/uv/issues/12383
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Incorrect URL suffix when requesting wheel metadata in Simple HTML API
 
 ---
 
-_Issue opened by @f3flight on 2025-03-21 23:40_
+_@f3flight_
 
 ### Summary
 

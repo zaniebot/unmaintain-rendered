@@ -13,14 +13,14 @@ head: zb/fail-on-err
 created_at: 2025-01-21T22:52:19Z
 updated_at: 2025-01-22T21:00:52Z
 url: https://github.com/astral-sh/uv/pull/10831
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Update smoke test scripts to fail on first error
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 22:52_
+_@zanieb_
 
 These continue on failure on Windows, which is annoying.
 

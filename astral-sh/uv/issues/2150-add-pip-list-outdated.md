@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T11:02:47Z
 updated_at: 2025-10-23T14:08:46Z
 url: https://github.com/astral-sh/uv/issues/2150
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Add `pip list --outdated`
 
 ---
 
-_Issue opened by @pfmoore on 2024-03-04 11:02_
+_@pfmoore_
 
               `pip list --outdated` is also a useful feature.
 

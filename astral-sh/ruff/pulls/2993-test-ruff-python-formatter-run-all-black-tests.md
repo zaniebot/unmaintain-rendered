@@ -12,14 +12,14 @@ head: micha/formatter-tests
 created_at: 2023-02-17T18:16:57Z
 updated_at: 2023-02-22T14:25:06Z
 url: https://github.com/astral-sh/ruff/pull/2993
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # test(ruff_python_formatter): Run all Black tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-02-17 18:16_
+_@MichaReiser_
 
 This PR changes the testing infrastructure to run all black tests and:
 

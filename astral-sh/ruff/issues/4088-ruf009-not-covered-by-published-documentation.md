@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-25T07:05:32Z
 updated_at: 2023-04-25T17:30:39Z
 url: https://github.com/astral-sh/ruff/issues/4088
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `RUF009` not covered by published documentation
 
 ---
 
-_Issue opened by @jakob-keller on 2023-04-25 07:05_
+_@jakob-keller_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

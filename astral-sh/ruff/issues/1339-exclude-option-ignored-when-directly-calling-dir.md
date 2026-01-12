@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T16:55:33Z
 updated_at: 2022-12-22T21:40:16Z
 url: https://github.com/astral-sh/ruff/issues/1339
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Exclude option ignored when directly calling dir/file
 
 ---
 
-_Issue opened by @jhossbach on 2022-12-22 16:55_
+_@jhossbach_
 
 MWE:
 ```toml

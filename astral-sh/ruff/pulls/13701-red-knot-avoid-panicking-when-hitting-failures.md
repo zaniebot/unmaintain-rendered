@@ -13,14 +13,14 @@ head: never-panic
 created_at: 2024-10-10T06:59:05Z
 updated_at: 2024-11-14T10:14:40Z
 url: https://github.com/astral-sh/ruff/pull/13701
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Avoid panicking when hitting failures looking up AST information
 
 ---
 
-_Pull request opened by @rtpg on 2024-10-10 06:59_
+_@rtpg_
 
 This is a set of changes that allow for `cargo --bin red_knot` to not panic (though report _many_ failures across the repo).
 

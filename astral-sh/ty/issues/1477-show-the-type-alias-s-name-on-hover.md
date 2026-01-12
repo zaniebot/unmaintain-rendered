@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-04T14:19:42Z
 updated_at: 2025-12-19T12:15:04Z
 url: https://github.com/astral-sh/ty/issues/1477
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Show the type alias's name on hover
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-04 14:19_
+_@MichaReiser_
 
 Hovering a type alias currently reveals the aliased type. 
 

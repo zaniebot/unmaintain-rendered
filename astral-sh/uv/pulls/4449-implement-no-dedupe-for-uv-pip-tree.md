@@ -12,14 +12,14 @@ head: pip-tree-no-dedupe
 created_at: 2024-06-22T19:26:40Z
 updated_at: 2024-06-24T16:54:55Z
 url: https://github.com/astral-sh/uv/pull/4449
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # implement `--no-dedupe` for `uv pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-22 19:26_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

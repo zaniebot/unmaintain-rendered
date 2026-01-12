@@ -13,14 +13,14 @@ head: generator-force-tup-parenth
 created_at: 2025-10-23T08:30:51Z
 updated_at: 2025-10-25T08:52:33Z
 url: https://github.com/astral-sh/ruff/pull/21041
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Configurable "unparse mode" for `ruff_python_codegen::Generator`
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-10-23 08:30_
+_@ShaharNaveh_
 
 ## Summary
 

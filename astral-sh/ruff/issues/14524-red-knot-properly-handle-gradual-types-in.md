@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T10:51:32Z
 updated_at: 2024-12-04T16:11:26Z
 url: https://github.com/astral-sh/ruff/issues/14524
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Properly handle gradual types in subtyping/equivalence relations
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-22 10:51_
+_@sharkdp_
 
 From https://typing.readthedocs.io/en/latest/spec/concepts.html#materialization:
 

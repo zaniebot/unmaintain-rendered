@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-11T21:57:56Z
 updated_at: 2025-09-11T22:17:30Z
 url: https://github.com/astral-sh/ty/issues/1174
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] `infer_scope_types(Id(10403)): execute: too many cycle iterations`
 
 ---
 
-_Issue opened by @RandomBrainCode on 2025-09-11 21:57_
+_@RandomBrainCode_
 
  uv run ty check
 WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.

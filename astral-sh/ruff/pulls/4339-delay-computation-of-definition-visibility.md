@@ -12,14 +12,14 @@ head: charlie/definitions
 created_at: 2023-05-10T03:27:56Z
 updated_at: 2023-05-11T17:39:43Z
 url: https://github.com/astral-sh/ruff/pull/4339
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Delay computation of `Definition` visibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-10 03:27_
+_@charliermarsh_
 
 ## Summary
 

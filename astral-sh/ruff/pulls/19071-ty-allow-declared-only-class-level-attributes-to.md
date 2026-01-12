@@ -14,14 +14,14 @@ head: david/declared-only-class-level-attributes
 created_at: 2025-07-01T14:19:50Z
 updated_at: 2025-07-02T16:03:58Z
 url: https://github.com/astral-sh/ruff/pull/19071
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Allow declared-only class-level attributes to be accessed on the class
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-01 14:19_
+_@sharkdp_
 
 ## Summary
 

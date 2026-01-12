@@ -14,14 +14,14 @@ head: charlie/py-fork
 created_at: 2024-08-14T01:00:35Z
 updated_at: 2024-08-15T15:53:44Z
 url: https://github.com/astral-sh/uv/pull/6076
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Always narrow markers by Python version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-14 01:00_
+_@charliermarsh_
 
 ## Summary
 

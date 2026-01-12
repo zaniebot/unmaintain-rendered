@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T20:42:37Z
 updated_at: 2025-01-30T06:03:07Z
 url: https://github.com/astral-sh/ruff/issues/15816
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP037 fix crashes when a terminal comment follows a literal
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-29 20:42_
+_@dscorbett_
 
 ### Description
 

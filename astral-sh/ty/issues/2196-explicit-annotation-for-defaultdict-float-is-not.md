@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-23T23:36:22Z
 updated_at: 2025-12-24T00:12:02Z
 url: https://github.com/astral-sh/ty/issues/2196
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # explicit annotation for `defaultdict(float)` is not accepted
 
 ---
 
-_Issue opened by @dimbleby on 2025-12-23 23:36_
+_@dimbleby_
 
 ### Summary
 

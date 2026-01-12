@@ -13,14 +13,14 @@ head: david/assert-never
 created_at: 2025-04-07T20:49:04Z
 updated_at: 2025-04-08T07:31:50Z
 url: https://github.com/astral-sh/ruff/pull/17287
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add support for `assert_never`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-07 20:49_
+_@sharkdp_
 
 ## Summary
 

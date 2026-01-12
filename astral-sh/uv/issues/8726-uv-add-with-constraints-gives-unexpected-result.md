@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T14:12:41Z
 updated_at: 2024-10-31T15:37:49Z
 url: https://github.com/astral-sh/uv/issues/8726
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # uv add with constraints gives unexpected result
 
 ---
 
-_Issue opened by @itrase on 2024-10-31 14:12_
+_@itrase_
 
 To reproduce (on uv 0.4.29)
 ```

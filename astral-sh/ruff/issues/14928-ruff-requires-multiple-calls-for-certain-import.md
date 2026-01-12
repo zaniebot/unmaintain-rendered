@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T04:01:02Z
 updated_at: 2024-12-12T07:00:46Z
 url: https://github.com/astral-sh/ruff/issues/14928
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff requires multiple calls for certain import configurations
 
 ---
 
-_Issue opened by @leep-frog on 2024-12-12 04:01_
+_@leep-frog_
 
 I noticed that I need to call ruff multiple times for the following configuration/code:
 

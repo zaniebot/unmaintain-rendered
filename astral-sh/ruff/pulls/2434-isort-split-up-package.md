@@ -12,14 +12,14 @@ head: isort-split-pkg
 created_at: 2023-02-01T08:05:21Z
 updated_at: 2023-02-01T12:17:37Z
 url: https://github.com/astral-sh/ruff/pull/2434
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # isort: split up package
 
 ---
 
-_Pull request opened by @akx on 2023-02-01 08:05_
+_@akx_
 
 Refactoring extracted from #2268 – figured it'd be better to review as stand-alone.
 

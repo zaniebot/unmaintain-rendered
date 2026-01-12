@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T09:14:55Z
 updated_at: 2024-05-15T19:07:23Z
 url: https://github.com/astral-sh/ruff/issues/11432
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # COM812 suppresses E501
 
 ---
 
-_Issue opened by @savagemindz on 2024-05-15 09:14_
+_@savagemindz_
 
 Visual Studio Code
 Version: 1.88.1 (Universal)

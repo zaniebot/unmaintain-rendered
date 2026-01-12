@@ -14,14 +14,14 @@ head: charlie/jupyter
 created_at: 2023-08-16T18:43:53Z
 updated_at: 2023-08-16T20:51:11Z
 url: https://github.com/astral-sh/ruff/pull/6628
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Respect .ipynb and .pyi sources when linting from stdin
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 18:43_
+_@charliermarsh_
 
 ## Summary
 

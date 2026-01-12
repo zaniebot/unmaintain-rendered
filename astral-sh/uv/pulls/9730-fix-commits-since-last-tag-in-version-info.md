@@ -13,14 +13,14 @@ head: version
 created_at: 2024-12-09T03:23:02Z
 updated_at: 2024-12-19T09:16:31Z
 url: https://github.com/astral-sh/uv/pull/9730
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Fix commits_since_last_tag in version info
 
 ---
 
-_Pull request opened by @j178 on 2024-12-09 03:23_
+_@j178_
 
 ## Summary
 

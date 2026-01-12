@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T15:15:26Z
 updated_at: 2025-06-26T16:09:17Z
 url: https://github.com/astral-sh/uv/issues/13863
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Cached venv in script mode
 
 ---
 
-_Issue opened by @lucharo on 2025-06-05 15:15_
+_@lucharo_
 
 I recently realised I could use `uv` for system scripts with shebangs and I absolutely love it for scripts I'm quickly iterating over, like:
 

@@ -13,14 +13,14 @@ head: charlie/dark
 created_at: 2023-06-22T19:57:00Z
 updated_at: 2023-06-22T20:33:25Z
 url: https://github.com/astral-sh/ruff/pull/5318
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add dark- and light-mode image modifiers for custom MkDocs themes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 19:57_
+_@charliermarsh_
 
 ## Summary
 

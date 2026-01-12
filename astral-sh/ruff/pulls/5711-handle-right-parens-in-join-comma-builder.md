@@ -13,14 +13,14 @@ head: right-parens-join-comma
 created_at: 2023-07-12T13:38:05Z
 updated_at: 2023-07-12T16:21:30Z
 url: https://github.com/astral-sh/ruff/pull/5711
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Handle right parens in join comma builder
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-12 13:38_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

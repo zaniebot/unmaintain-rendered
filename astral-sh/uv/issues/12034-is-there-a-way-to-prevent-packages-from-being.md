@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T09:10:47Z
 updated_at: 2025-03-10T16:24:45Z
 url: https://github.com/astral-sh/uv/issues/12034
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Is there a way to prevent packages from being installed from specified index when using pip interface?
 
 ---
 
-_Issue opened by @amitkma on 2025-03-07 09:10_
+_@amitkma_
 
 ### Question
 

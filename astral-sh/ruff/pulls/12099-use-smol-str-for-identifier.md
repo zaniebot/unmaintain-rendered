@@ -13,14 +13,14 @@ head: smol_str
 created_at: 2024-06-29T09:17:28Z
 updated_at: 2024-08-12T07:52:53Z
 url: https://github.com/astral-sh/ruff/pull/12099
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `smol_str` for Identifier
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-29 09:17_
+_@MichaReiser_
 
 One more time. Trying to use `smol_str` for `Identifier`s to avoid heap allocations for strings shorter than 24 characters. 
 

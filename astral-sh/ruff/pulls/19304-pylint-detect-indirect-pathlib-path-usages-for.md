@@ -14,14 +14,14 @@ head: fix-19294
 created_at: 2025-07-13T06:22:31Z
 updated_at: 2025-07-16T17:28:28Z
 url: https://github.com/astral-sh/ruff/pull/19304
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`pylint`] Detect indirect `pathlib.Path` usages for `unspecified-encoding` (PLW1514)
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-13 06:22_
+_@danparizher_
 
 ## Summary
 

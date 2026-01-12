@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T19:51:36Z
 updated_at: 2025-12-05T20:07:26Z
 url: https://github.com/astral-sh/ty/issues/1786
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Rename does not consider all `def/class` statements when rebinding a name
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-05 19:51_
+_@MeGaGiGaGon_
 
 ### Summary
 

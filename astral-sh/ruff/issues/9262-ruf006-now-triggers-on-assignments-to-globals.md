@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-23T19:04:27Z
 updated_at: 2023-12-23T21:33:52Z
 url: https://github.com/astral-sh/ruff/issues/9262
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF006 now triggers on assignments to globals
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-12-23 19:04_
+_@hauntsaninja_
 
 Since https://github.com/astral-sh/ruff/pull/9060, ruff now complains about:
 ```

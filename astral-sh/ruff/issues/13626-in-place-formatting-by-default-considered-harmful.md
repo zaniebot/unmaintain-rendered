@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T14:37:56Z
 updated_at: 2024-10-07T08:23:00Z
 url: https://github.com/astral-sh/ruff/issues/13626
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # In-place formatting by default considered harmful
 
 ---
 
-_Issue opened by @mainini on 2024-10-04 14:37_
+_@mainini_
 
 Hi!
 

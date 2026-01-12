@@ -12,14 +12,14 @@ head: charlie/bugbear
 created_at: 2022-10-26T16:01:22Z
 updated_at: 2022-10-26T16:01:28Z
 url: https://github.com/astral-sh/ruff/pull/473
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement B007 (unused loop control variable)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-26 16:01_
+_@charliermarsh_
 
 See: #389.
 

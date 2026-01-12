@@ -14,14 +14,14 @@ head: charlie/extras
 created_at: 2024-05-24T13:26:39Z
 updated_at: 2024-05-24T13:32:25Z
 url: https://github.com/astral-sh/uv/pull/3820
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Add JSON alias for `unsafe-any-match`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 13:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/3819.
 

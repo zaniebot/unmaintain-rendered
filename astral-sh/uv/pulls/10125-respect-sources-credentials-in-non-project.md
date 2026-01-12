@@ -13,14 +13,14 @@ head: charlie/creds
 created_at: 2024-12-23T19:06:15Z
 updated_at: 2024-12-23T19:25:39Z
 url: https://github.com/astral-sh/uv/pull/10125
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Respect sources credentials in non-project workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-23 19:06_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/docker-login-action-3.x
 created_at: 2025-05-12T02:05:24Z
 updated_at: 2025-05-12T06:26:24Z
 url: https://github.com/astral-sh/ruff/pull/18031
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # Update docker/login-action action to v3.4.0
 
 ---
 
-_Pull request opened by @renovate on 2025-05-12 02:05_
+_@renovate_
 
 This PR contains the following updates:
 

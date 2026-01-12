@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-05T13:46:08Z
 updated_at: 2024-03-12T21:11:09Z
 url: https://github.com/clap-rs/clap/issues/4746
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Empty pathbufs are no longer accepted by `default_value`
 
 ---
 
-_Issue opened by @mejrs on 2023-03-05 13:46_
+_@mejrs_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-04T00:09:16Z
 updated_at: 2024-07-05T23:47:13Z
 url: https://github.com/astral-sh/uv/issues/4795
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # PyCharm plugin potential trademark issues
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-07-04 00:09_
+_@InSyncWithFoo_
 
 I'm writing [a PyCharm plugin for uv](https://github.com/InSyncWithFoo/uv-for-pycharm) (barely functional as of yet), which I would like to eventually publish to JetBrains Marketplace under the same name (i.e. "<i>uv</i>"). Are there any trademark or relevant issues I need to know about?
 

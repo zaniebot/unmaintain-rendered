@@ -13,14 +13,14 @@ head: alex/pyi019-message
 created_at: 2025-02-02T21:07:49Z
 updated_at: 2025-02-03T14:24:00Z
 url: https://github.com/astral-sh/ruff/pull/15885
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pyi`] Rename `PYI019` and improve its diagnostic message
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-02 21:07_
+_@AlexWaygood_
 
 ## Summary
 

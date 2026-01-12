@@ -13,14 +13,14 @@ head: charlie/misc
 created_at: 2024-01-03T17:23:44Z
 updated_at: 2024-01-03T17:40:11Z
 url: https://github.com/astral-sh/ruff/pull/9383
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Misc. small tweaks from perusing modules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 17:23_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-23T10:32:16Z
 updated_at: 2025-12-03T05:24:11Z
 url: https://github.com/astral-sh/ruff/issues/21588
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unnecessary `list()` or comprehension in `Counter()`
 
 ---
 
-_Issue opened by @injust on 2025-11-23 10:32_
+_@injust_
 
 ### Summary
 

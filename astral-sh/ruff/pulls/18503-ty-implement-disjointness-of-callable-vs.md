@@ -14,14 +14,14 @@ head: cjm/callable-vs-specialform
 created_at: 2025-06-06T16:49:31Z
 updated_at: 2025-06-11T10:51:58Z
 url: https://github.com/astral-sh/ruff/pull/18503
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] implement disjointness of Callable vs SpecialForm
 
 ---
 
-_Pull request opened by @carljm on 2025-06-06 16:49_
+_@carljm_
 
 ## Summary
 

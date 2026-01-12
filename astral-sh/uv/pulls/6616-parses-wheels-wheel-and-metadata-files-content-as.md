@@ -14,14 +14,14 @@ head: fix/wheel-metadata-parsing
 created_at: 2024-08-25T19:56:23Z
 updated_at: 2024-08-25T22:31:20Z
 url: https://github.com/astral-sh/uv/pull/6616
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Parses wheels WHEEL and METADATA files content as email messages
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-08-25 19:56_
+_@Coruscant11_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

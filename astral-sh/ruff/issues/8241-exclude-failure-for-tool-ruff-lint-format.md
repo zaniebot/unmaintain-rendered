@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T05:27:44Z
 updated_at: 2023-10-27T00:03:42Z
 url: https://github.com/astral-sh/ruff/issues/8241
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Exclude failure for `tool.ruff[lint|format]`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-10-26 05:27_
+_@dhruvmanila_
 
 Detected here: https://github.com/astral-sh/ruff/pull/8240#issuecomment-1780379180
 

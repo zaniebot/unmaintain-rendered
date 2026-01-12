@@ -14,14 +14,14 @@ head: e2-tstrings
 created_at: 2025-07-15T14:40:28Z
 updated_at: 2025-07-15T14:56:24Z
 url: https://github.com/astral-sh/ruff/pull/19358
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [`pycodestyle`] Handle brace escapes for t-strings in logical lines
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-15 14:40_
+_@dylwil3_
 
 Tracks both f and t-strings in the logical line rules for `pycodestyle`.
 

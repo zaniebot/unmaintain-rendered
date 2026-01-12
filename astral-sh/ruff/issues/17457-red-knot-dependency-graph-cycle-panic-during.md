@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-18T04:15:16Z
 updated_at: 2025-04-18T17:28:27Z
 url: https://github.com/astral-sh/ruff/issues/17457
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] dependency graph cycle panic during member lookup
 
 ---
 
-_Issue opened by @skshetry on 2025-04-18 04:15_
+_@skshetry_
 
 ### Summary
 

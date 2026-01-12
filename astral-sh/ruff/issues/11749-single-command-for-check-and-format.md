@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T10:19:13Z
 updated_at: 2024-06-05T11:03:20Z
 url: https://github.com/astral-sh/ruff/issues/11749
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # single command for check and format
 
 ---
 
-_Issue opened by @DaniBodor on 2024-06-05 10:19_
+_@DaniBodor_
 
 Is there a single command to check both linting and formatting? 
 If not, this would be a nice addition in my mind. Not that it's a big deal to do it in two steps, but our CI only passes if both are correct, so basically whenever we do either, we do both.

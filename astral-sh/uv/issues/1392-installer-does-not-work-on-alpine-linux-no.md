@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T23:54:45Z
 updated_at: 2024-02-23T20:05:58Z
 url: https://github.com/astral-sh/uv/issues/1392
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Installer does not work on Alpine Linux: no package for `aarch64-unknown-linux-musl-dynamic`
 
 ---
 
-_Issue opened by @mgasner on 2024-02-15 23:54_
+_@mgasner_
 
 Are there plans to support Alpine?
 

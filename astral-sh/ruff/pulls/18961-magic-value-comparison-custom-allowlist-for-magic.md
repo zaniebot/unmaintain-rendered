@@ -12,14 +12,14 @@ head: allow_magic_values
 created_at: 2025-06-26T14:54:18Z
 updated_at: 2025-12-05T02:42:38Z
 url: https://github.com/astral-sh/ruff/pull/18961
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [magic-value-comparison] Custom allowlist for Magic Numbers (PLR2004)
 
 ---
 
-_Pull request opened by @DaniBodor on 2025-06-26 14:54_
+_@DaniBodor_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: alex/instance-attrs-todos
 created_at: 2025-02-05T15:29:23Z
 updated_at: 2025-02-05T15:33:39Z
 url: https://github.com/astral-sh/ruff/pull/15974
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Fix some instance-attribute TODOs around `ModuleType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-05 15:29_
+_@AlexWaygood_
 
 ## Summary
 

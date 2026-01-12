@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-27T11:45:21Z
 updated_at: 2024-06-28T01:24:23Z
 url: https://github.com/astral-sh/uv/issues/4585
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Allow `uv add` to specify optional dependency groups
 
 ---
 
-_Issue opened by @blueraft on 2024-06-27 11:45_
+_@blueraft_
 
 I didn't see an issue related to this so figured I'd create one.
 

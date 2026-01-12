@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-02T13:34:05Z
 updated_at: 2025-10-09T20:10:23Z
 url: https://github.com/astral-sh/ruff/issues/20680
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST003 false positives for path parameters that FastAPI doesn’t recognize
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-02 13:34_
+_@dscorbett_
 
 ### Summary
 

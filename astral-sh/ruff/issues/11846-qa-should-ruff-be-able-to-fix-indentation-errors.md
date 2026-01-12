@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-12T11:41:56Z
 updated_at: 2024-09-09T12:06:28Z
 url: https://github.com/astral-sh/ruff/issues/11846
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [QA] Should Ruff be able to fix indentation errors (E999) ?
 
 ---
 
-_Issue opened by @andrewcrook on 2024-06-12 11:41_
+_@andrewcrook_
 
 I have ruff setup in neovim as a LSP using `ruff server --preview` .
 However, if there is an indentation issue E999  in the code ruff cannot format or fix until all E999's have been manually fixed.

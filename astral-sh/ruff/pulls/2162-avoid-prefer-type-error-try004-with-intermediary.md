@@ -12,14 +12,14 @@ head: charlie/try
 created_at: 2023-01-25T18:00:55Z
 updated_at: 2023-01-25T18:01:02Z
 url: https://github.com/astral-sh/ruff/pull/2162
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid prefer-type-error (TRY004) with intermediary control flow
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 18:00_
+_@charliermarsh_
 
 Closes #2158.
 

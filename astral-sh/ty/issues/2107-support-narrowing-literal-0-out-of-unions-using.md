@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T11:12:25Z
 updated_at: 2025-12-19T12:03:35Z
 url: https://github.com/astral-sh/ty/issues/2107
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support narrowing `Literal[0]` out of unions using `<`, `<=`, `>` and `>=` checks
 
 ---
 
-_Issue opened by @The-Red-Dragons on 2025-12-19 11:12_
+_@The-Red-Dragons_
 
 ### Summary
 

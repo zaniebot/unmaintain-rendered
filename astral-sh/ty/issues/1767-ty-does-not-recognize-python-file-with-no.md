@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-05T08:43:11Z
 updated_at: 2025-12-05T08:44:33Z
 url: https://github.com/astral-sh/ty/issues/1767
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Ty does not recognize Python file with no extension and shebang #!/usr/bin/env python3 as a python file
 
 ---
 
-_Issue opened by @taladar on 2025-12-05 08:43_
+_@taladar_
 
 ### Summary
 

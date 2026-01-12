@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-23T13:36:35Z
 updated_at: 2024-04-08T02:50:25Z
 url: https://github.com/astral-sh/uv/issues/496
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Document the traits in distribution-types
 
 ---
 
-_Issue opened by @konstin on 2023-11-23 13:36_
+_@konstin_
 
 Especially document the guarantees (what is always unique and what is always the same) in `distribution_types::Identifier`
 

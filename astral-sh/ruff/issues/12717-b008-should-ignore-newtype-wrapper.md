@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T15:13:09Z
 updated_at: 2025-01-29T10:26:18Z
 url: https://github.com/astral-sh/ruff/issues/12717
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # B008 should ignore NewType wrapper
 
 ---
 
-_Issue opened by @mezuzza on 2024-08-06 15:13_
+_@mezuzza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

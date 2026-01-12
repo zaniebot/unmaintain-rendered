@@ -13,14 +13,14 @@ head: charlie/has
 created_at: 2023-06-13T15:51:58Z
 updated_at: 2023-06-13T16:22:11Z
 url: https://github.com/astral-sh/ruff/pull/5051
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `Scope#has` in lieu of `Scope#get`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 15:51_
+_@charliermarsh_
 
 ## Summary
 

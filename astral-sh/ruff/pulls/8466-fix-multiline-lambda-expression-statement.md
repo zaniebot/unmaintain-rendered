@@ -13,14 +13,14 @@ head: fix-multiline-statement-lambda
 created_at: 2023-11-03T08:03:13Z
 updated_at: 2023-11-05T14:35:25Z
 url: https://github.com/astral-sh/ruff/pull/8466
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix multiline lambda expression statement formating
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-11-03 08:03_
+_@MichaReiser_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: ag/submodule-caching
 created_at: 2025-07-17T18:07:26Z
 updated_at: 2025-07-18T15:54:28Z
 url: https://github.com/astral-sh/ruff/pull/19408
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Add caching for submodule completion suggestions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-17 18:07_
+_@BurntSushi_
 
 This change makes it so we aren't doing a directory traversal every time
 we ask for completions from a module. Specifically, submodules that

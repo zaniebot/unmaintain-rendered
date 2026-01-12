@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T13:39:02Z
 updated_at: 2023-02-23T16:58:42Z
 url: https://github.com/astral-sh/ruff/issues/3170
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Allow variadic annotation on `*args`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-23 13:39_
+_@charliermarsh_
 
 _Originally posted by @LeeeeT in https://github.com/charliermarsh/ruff/issues/2321#issuecomment-1441327112_
             

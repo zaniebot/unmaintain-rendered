@@ -13,14 +13,14 @@ head: zb/root-require
 created_at: 2024-01-19T00:02:18Z
 updated_at: 2024-01-19T17:17:43Z
 url: https://github.com/astral-sh/uv/pull/982
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Refer to the user instead of "root" when mentioning direct dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-19 00:02_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/857
 

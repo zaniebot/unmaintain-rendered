@@ -13,14 +13,14 @@ head: charlie/fix-comment
 created_at: 2023-09-28T18:38:33Z
 updated_at: 2023-09-28T18:49:14Z
 url: https://github.com/astral-sh/ruff/pull/7698
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Misc. follow-ups to single-element tuple patterns
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 18:38_
+_@charliermarsh_
 
 Just changes to internal comments and tests.
 

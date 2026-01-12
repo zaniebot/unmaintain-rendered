@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-17T03:23:07Z
 updated_at: 2023-01-12T03:31:29Z
 url: https://github.com/astral-sh/ruff/issues/218
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Suggest fixes to users
 
 ---
 
-_Issue opened by @cnpryer on 2022-09-17 03:23_
+_@cnpryer_
 
 Hi! Love this project. Looking forward to helping out in whatever way I can.
 

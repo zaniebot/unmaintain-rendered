@@ -13,14 +13,14 @@ head: alex/enum-nmtpl-type-expr-2
 created_at: 2025-05-06T09:51:46Z
 updated_at: 2025-05-06T10:02:56Z
 url: https://github.com/astral-sh/ruff/pull/17885
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Generalize special-casing for enums constructed with the functional syntax
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-06 09:51_
+_@AlexWaygood_
 
 ## Summary
 

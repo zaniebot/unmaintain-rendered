@@ -13,14 +13,14 @@ head: charlie/cleanup
 created_at: 2023-12-01T00:39:23Z
 updated_at: 2023-12-01T00:59:06Z
 url: https://github.com/astral-sh/ruff/pull/8932
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Apply some minor changes to `unnecessary-list-index-lookup`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 00:39_
+_@charliermarsh_
 
 ## Summary
 

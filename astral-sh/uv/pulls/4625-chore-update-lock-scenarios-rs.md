@@ -11,14 +11,14 @@ head: patch-3
 created_at: 2024-06-28T16:07:42Z
 updated_at: 2024-07-15T11:15:58Z
 url: https://github.com/astral-sh/uv/pull/4625
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # chore: update lock_scenarios.rs
 
 ---
 
-_Pull request opened by @eltociear on 2024-06-28 16:07_
+_@eltociear_
 
 
 

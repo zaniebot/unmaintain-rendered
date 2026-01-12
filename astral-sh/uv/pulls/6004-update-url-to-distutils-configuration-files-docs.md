@@ -14,14 +14,14 @@ head: distuils-docs-url
 created_at: 2024-08-11T10:57:38Z
 updated_at: 2024-08-19T10:54:06Z
 url: https://github.com/astral-sh/uv/pull/6004
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Update URL to distutils configuration files docs
 
 ---
 
-_Pull request opened by @edmorley on 2024-08-11 10:57_
+_@edmorley_
 
 ## Summary
 

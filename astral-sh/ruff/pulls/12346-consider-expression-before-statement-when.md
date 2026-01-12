@@ -13,14 +13,14 @@ head: charlie/expr-stmt
 created_at: 2024-07-16T14:43:51Z
 updated_at: 2024-07-16T15:00:41Z
 url: https://github.com/astral-sh/ruff/pull/12346
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Consider expression before statement when determining binding kind
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 14:43_
+_@charliermarsh_
 
 ## Summary
 

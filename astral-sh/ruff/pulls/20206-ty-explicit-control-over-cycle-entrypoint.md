@@ -13,14 +13,14 @@ head: david/fix-1111-2
 created_at: 2025-09-02T14:01:16Z
 updated_at: 2025-09-03T11:18:41Z
 url: https://github.com/astral-sh/ruff/pull/20206
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Explicit control over cycle entrypoint
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-02 14:01_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

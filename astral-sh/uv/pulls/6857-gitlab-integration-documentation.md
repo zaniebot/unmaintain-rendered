@@ -13,14 +13,14 @@ head: dockertag-docs
 created_at: 2024-08-30T09:53:57Z
 updated_at: 2024-10-01T18:34:50Z
 url: https://github.com/astral-sh/uv/pull/6857
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # GitLab Integration documentation
 
 ---
 
-_Pull request opened by @jvacek on 2024-08-30 09:53_
+_@jvacek_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

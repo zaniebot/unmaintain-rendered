@@ -14,14 +14,14 @@ head: david/dataclass-transformer-class-args
 created_at: 2025-11-14T15:18:24Z
 updated_at: 2025-11-15T16:47:50Z
 url: https://github.com/astral-sh/ruff/pull/21457
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Support class-arguments for dataclass transformers
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-14 15:18_
+_@sharkdp_
 
 ## Summary
 

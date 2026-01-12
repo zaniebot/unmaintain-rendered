@@ -13,14 +13,14 @@ head: david/hover-type-for-assignments
 created_at: 2025-05-01T09:44:06Z
 updated_at: 2025-05-07T15:20:08Z
 url: https://github.com/astral-sh/ruff/pull/17762
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] More informative hover-types for assignments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-01 09:44_
+_@sharkdp_
 
 ## Summary
 

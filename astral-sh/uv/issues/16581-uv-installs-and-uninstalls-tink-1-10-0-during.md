@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T15:52:57Z
 updated_at: 2025-11-03T16:53:23Z
 url: https://github.com/astral-sh/uv/issues/16581
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # uv installs and uninstalls tink==1.10.0 during each sync
 
 ---
 
-_Issue opened by @chadac on 2025-11-03 15:52_
+_@chadac_
 
 ### Summary
 

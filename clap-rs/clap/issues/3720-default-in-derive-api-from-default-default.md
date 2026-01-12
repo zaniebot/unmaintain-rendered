@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-11T20:15:26Z
 updated_at: 2022-05-11T20:28:23Z
 url: https://github.com/clap-rs/clap/issues/3720
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Default in derive API from Default::default()
 
 ---
 
-_Issue opened by @Shatur on 2022-05-11 20:15_
+_@Shatur_
 
 ### Please complete the following tasks
 

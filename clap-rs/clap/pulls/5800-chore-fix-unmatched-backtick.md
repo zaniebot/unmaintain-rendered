@@ -11,14 +11,14 @@ head: master
 created_at: 2024-11-01T08:58:12Z
 updated_at: 2025-05-30T12:37:07Z
 url: https://github.com/clap-rs/clap/pull/5800
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: Fix unmatched backtick
 
 ---
 
-_Pull request opened by @chengehe on 2024-11-01 08:58_
+_@chengehe_
 
 <!--
 Thanks for helping out!

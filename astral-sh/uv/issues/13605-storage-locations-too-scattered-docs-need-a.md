@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T22:41:11Z
 updated_at: 2025-09-14T14:19:58Z
 url: https://github.com/astral-sh/uv/issues/13605
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Storage locations too scattered. Docs need a dedicated section explaining this. 
 
 ---
 
-_Issue opened by @w-hc on 2025-05-22 22:41_
+_@w-hc_
 
 ### Summary
 

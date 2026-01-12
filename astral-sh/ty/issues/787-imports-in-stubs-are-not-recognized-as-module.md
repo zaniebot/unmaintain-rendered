@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T08:36:43Z
 updated_at: 2025-07-14T17:14:12Z
 url: https://github.com/astral-sh/ty/issues/787
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Imports in stubs are not recognized as module attributes
 
 ---
 
-_Issue opened by @zeevro on 2025-07-09 08:36_
+_@zeevro_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dhruv/UP018-other-literals
 created_at: 2023-07-23T09:37:04Z
 updated_at: 2023-07-24T01:39:54Z
 url: https://github.com/astral-sh/ruff/pull/6013
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add support for `int`, `float`, `bool` in `UP018`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-23 09:37_
+_@dhruvmanila_
 
 ## Summary
 

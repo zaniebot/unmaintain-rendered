@@ -13,14 +13,14 @@ head: charlie/cop
 created_at: 2025-02-17T03:21:14Z
 updated_at: 2025-02-17T03:29:46Z
 url: https://github.com/astral-sh/uv/pull/11571
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:53Z
 ```
 
 # Accept iterator in universal marker evaluation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-17 03:21_
+_@charliermarsh_
 
 ## Summary
 

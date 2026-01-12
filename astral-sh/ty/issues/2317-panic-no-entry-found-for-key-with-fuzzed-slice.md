@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-03T17:21:34Z
 updated_at: 2026-01-08T18:10:04Z
 url: https://github.com/astral-sh/ty/issues/2317
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # panic: `no entry found for key` with fuzzed slice expression
 
 ---
 
-_Issue opened by @correctmost on 2026-01-03 17:21_
+_@correctmost_
 
 ### Summary
 

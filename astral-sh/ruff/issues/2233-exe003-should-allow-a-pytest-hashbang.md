@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-26T22:04:43Z
 updated_at: 2023-01-26T22:32:24Z
 url: https://github.com/astral-sh/ruff/issues/2233
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # EXE003 should allow a pytest hashbang?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 22:04_
+_@spaceone_
 
 `EXE003` complains about the hashbang `#!/usr/bin/pytest-3` which is valid.
 

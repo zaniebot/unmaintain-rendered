@@ -13,14 +13,14 @@ head: salsa-3.0
 created_at: 2024-06-20T13:25:57Z
 updated_at: 2024-06-20T19:19:17Z
 url: https://github.com/astral-sh/ruff/pull/11952
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Upgrade to Salsa 3.0
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-20 13:25_
+_@MichaReiser_
 
 ## Summary
 

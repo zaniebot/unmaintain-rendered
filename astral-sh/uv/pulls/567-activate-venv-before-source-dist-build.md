@@ -12,14 +12,14 @@ head: konstin/activate-venv-before-build
 created_at: 2023-12-05T12:58:07Z
 updated_at: 2023-12-12T14:46:39Z
 url: https://github.com/astral-sh/uv/pull/567
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Activate venv before source dist build
 
 ---
 
-_Pull request opened by @konstin on 2023-12-05 12:58_
+_@konstin_
 
 Fixes #552
 

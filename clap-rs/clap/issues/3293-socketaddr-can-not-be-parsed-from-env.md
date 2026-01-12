@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-13T19:02:20Z
 updated_at: 2022-01-13T19:06:30Z
 url: https://github.com/clap-rs/clap/issues/3293
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `SocketAddr` can not be parsed from env
 
 ---
 
-_Issue opened by @benthillerkus on 2022-01-13 19:02_
+_@benthillerkus_
 
 ### Please complete the following tasks
 

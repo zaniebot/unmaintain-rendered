@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T22:17:33Z
 updated_at: 2025-03-26T20:01:23Z
 url: https://github.com/astral-sh/ruff/issues/11665
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] playground support
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:17_
+_@carljm_
 
 Add red-knot (multi-file) support to the ruff playground
 

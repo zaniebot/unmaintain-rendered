@@ -13,14 +13,14 @@ head: charlie/script-tree
 created_at: 2024-12-25T19:00:43Z
 updated_at: 2025-01-08T21:32:48Z
 url: https://github.com/astral-sh/uv/pull/10159
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Add `--script` support to `uv tree` for PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-25 19:00_
+_@charliermarsh_
 
 ## Summary
 

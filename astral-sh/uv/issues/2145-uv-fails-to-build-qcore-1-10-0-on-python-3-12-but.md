@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T06:24:32Z
 updated_at: 2024-09-14T00:46:17Z
 url: https://github.com/astral-sh/uv/issues/2145
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv fails to build qcore==1.10.0 on Python 3.12, but pip is happy to
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-04 06:24_
+_@hauntsaninja_
 
 ```
 (v312-ydmj) ~/tmp/v312 λ uv pip install 'qcore==1.10.0'

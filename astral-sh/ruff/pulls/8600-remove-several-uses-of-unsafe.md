@@ -13,14 +13,14 @@ head: ag/reduce-unsafe
 created_at: 2023-11-10T14:41:41Z
 updated_at: 2023-11-28T14:50:05Z
 url: https://github.com/astral-sh/ruff/pull/8600
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # remove several uses of `unsafe`
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-10 14:41_
+_@BurntSushi_
 
 This PR removes several uses of `unsafe`. I generally limited myself to low hanging fruit that I could see. There are still a few remaining uses of `unsafe` that looked a bit more difficult to remove (if possible at all). But this gets rid of a good chunk of them.
 

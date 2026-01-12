@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T13:27:55Z
 updated_at: 2025-05-10T20:48:09Z
 url: https://github.com/astral-sh/uv/issues/12918
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # uv source folders import error
 
 ---
 
-_Issue opened by @andriibdevicetotal on 2025-04-16 13:27_
+_@andriibdevicetotal_
 
 ### Summary
 

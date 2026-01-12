@@ -14,14 +14,14 @@ head: dunder-all-ranges
 created_at: 2024-03-22T13:23:54Z
 updated_at: 2024-03-22T18:38:41Z
 url: https://github.com/astral-sh/ruff/pull/10525
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Track ranges of names inside `__all__` definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-22 13:23_
+_@AlexWaygood_
 
 ## Summary
 

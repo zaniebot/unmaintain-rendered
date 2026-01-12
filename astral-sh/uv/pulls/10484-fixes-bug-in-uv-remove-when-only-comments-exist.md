@@ -13,14 +13,14 @@ head: fix-remove-comment-indent-bug
 created_at: 2025-01-10T23:21:44Z
 updated_at: 2025-01-11T01:07:03Z
 url: https://github.com/astral-sh/uv/pull/10484
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Fixes bug in `uv remove` when only comments exist
 
 ---
 
-_Pull request opened by @bnorick on 2025-01-10 23:21_
+_@bnorick_
 
 ## Summary
 

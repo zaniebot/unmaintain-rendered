@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T06:37:23Z
 updated_at: 2025-07-20T22:45:26Z
 url: https://github.com/astral-sh/uv/issues/14558
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # `uv pip install -e . --all-extras` errors out even if pyproject.toml is present
 
 ---
 
-_Issue opened by @akx on 2025-07-11 06:37_
+_@akx_
 
 ### Summary
 

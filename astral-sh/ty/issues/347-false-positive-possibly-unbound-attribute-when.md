@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-13T08:26:44Z
 updated_at: 2025-05-13T08:30:00Z
 url: https://github.com/astral-sh/ty/issues/347
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive: "possibly-unbound-attribute" when accessing attribute after if obj is not None guard
 
 ---
 
-_Issue opened by @romainbourdain on 2025-05-13 08:26_
+_@romainbourdain_
 
 ### Summary
 

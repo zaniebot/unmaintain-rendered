@@ -12,14 +12,14 @@ head: flake8-bugbear-more-immutable-funcs
 created_at: 2023-03-27T20:55:15Z
 updated_at: 2023-03-28T14:50:11Z
 url: https://github.com/astral-sh/ruff/pull/3764
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [flake8-bugbear] Add more immutable functions for `B008`
 
 ---
 
-_Pull request opened by @rouge8 on 2023-03-27 20:55_
+_@rouge8_
 
 - [flake8-bugbear] Allow `decimal.Decimal` in a function argument defaults for B008
 - [flake8-bugbear] Allow `datetime.date()`, `datetime.datetime()`, and `datetime.timedelta()` in a function argument defaults for B008

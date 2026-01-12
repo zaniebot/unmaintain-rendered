@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T17:31:13Z
 updated_at: 2024-08-01T17:31:22Z
 url: https://github.com/astral-sh/uv/issues/5698
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Use tabs for platform-specific commands in docs
 
 ---
 
-_Issue opened by @zanieb on 2024-08-01 17:31_
+_@zanieb_
 
 e.g. the install command should be tabbed with a default depending on the browser-detected platform
 

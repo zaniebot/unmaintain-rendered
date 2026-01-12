@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-18T10:51:30Z
 updated_at: 2025-05-18T12:08:06Z
 url: https://github.com/astral-sh/ty/issues/439
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # logging.StreamHandler(sys.stderr) triggers false no-matching-overload error in Pyright/ty
 
 ---
 
-_Issue opened by @Dheebz on 2025-05-18 10:51_
+_@Dheebz_
 
 ### Summary
 

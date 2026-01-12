@@ -12,14 +12,14 @@ head: charlie/relative
 created_at: 2023-02-07T00:39:13Z
 updated_at: 2023-02-07T02:07:47Z
 url: https://github.com/astral-sh/ruff/pull/2615
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Support relative paths for typing-modules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 00:39_
+_@charliermarsh_
 
 Closes #2613.
 

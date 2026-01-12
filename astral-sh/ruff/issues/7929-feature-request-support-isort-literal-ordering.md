@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-12T14:42:01Z
 updated_at: 2023-10-12T16:09:33Z
 url: https://github.com/astral-sh/ruff/issues/7929
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Feature Request: Support isort literal ordering
 
 ---
 
-_Issue opened by @kkirsche on 2023-10-12 14:42_
+_@kkirsche_
 
 This issue is to request support for isort's ordering action comments.
 

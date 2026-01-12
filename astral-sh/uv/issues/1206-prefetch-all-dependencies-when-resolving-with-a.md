@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-31T15:48:30Z
 updated_at: 2025-01-14T18:59:17Z
 url: https://github.com/astral-sh/uv/issues/1206
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Prefetch all dependencies when resolving with a lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-01-31 15:48_
+_@konstin_
 
 When resolve with a preexisting lockfile, we can reasonably assume that most packages and version will remain unchanged. We should prefetch all version maps (simple api requests) and requirements for all packages in the lockfile. The requirements will be a cache load most of the time since this data is immutable (for wheels on pypi).
 

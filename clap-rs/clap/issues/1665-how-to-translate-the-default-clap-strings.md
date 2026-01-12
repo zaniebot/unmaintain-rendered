@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-03T20:06:16Z
 updated_at: 2020-02-04T08:26:18Z
 url: https://github.com/clap-rs/clap/issues/1665
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # How to translate the default clap strings?
 
 ---
 
-_Issue opened by @silvioprog on 2020-02-03 20:06_
+_@silvioprog_
 
 Hi.
 

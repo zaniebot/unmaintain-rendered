@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T13:25:50Z
 updated_at: 2024-11-08T17:02:32Z
 url: https://github.com/astral-sh/uv/issues/7779
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Ability to choose the lowest supported Python version
 
 ---
 
-_Issue opened by @lengau on 2024-09-29 13:25_
+_@lengau_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

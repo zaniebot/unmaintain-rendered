@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T06:37:56Z
 updated_at: 2025-10-04T03:01:32Z
 url: https://github.com/astral-sh/uv/issues/11655
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # `uv init` fails to create .git directory or .gitignore file when inside git repo
 
 ---
 
-_Issue opened by @mason-fabel on 2025-02-20 06:37_
+_@mason-fabel_
 
 ### Summary
 When inside of a git repo, running `uv init my-project --vsc=git` does not create a `.git` directory or `.gitignore` file in `my-project`.

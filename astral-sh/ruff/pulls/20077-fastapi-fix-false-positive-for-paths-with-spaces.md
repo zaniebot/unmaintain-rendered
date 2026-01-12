@@ -14,14 +14,14 @@ head: fix-20060
 created_at: 2025-08-25T04:55:57Z
 updated_at: 2025-08-29T14:30:51Z
 url: https://github.com/astral-sh/ruff/pull/20077
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`fastapi`] Fix false positive for paths with spaces around parameters (`FAST003`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-25 04:55_
+_@danparizher_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/version-info-instance
 created_at: 2024-11-10T15:37:03Z
 updated_at: 2024-11-11T18:10:18Z
 url: https://github.com/astral-sh/ruff/pull/14244
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Infer `Literal` types from comparisons with `sys.version_info`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-10 15:37_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T12:20:44Z
 updated_at: 2025-10-07T13:49:17Z
 url: https://github.com/astral-sh/ty/issues/433
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Importing a type alias introduces `Unknown` as a possible type
 
 ---
 
-_Issue opened by @lucach on 2025-05-17 12:20_
+_@lucach_
 
 ### Summary
 

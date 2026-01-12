@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T08:35:27Z
 updated_at: 2025-03-12T08:07:49Z
 url: https://github.com/astral-sh/ruff/issues/16297
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF045 added in Ruff 0.9.7 should ignore `ClassVar` fields
 
 ---
 
-_Issue opened by @kkom on 2025-02-21 08:35_
+_@kkom_
 
 ### Description
 

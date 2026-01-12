@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T17:50:34Z
 updated_at: 2023-05-09T21:30:58Z
 url: https://github.com/astral-sh/ruff/issues/4318
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: `SIM105` autofix including (and not removing) inline comments
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-09 17:50_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

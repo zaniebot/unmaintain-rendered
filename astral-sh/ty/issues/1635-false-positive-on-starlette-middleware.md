@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-25T21:12:26Z
 updated_at: 2026-01-09T13:43:27Z
 url: https://github.com/astral-sh/ty/issues/1635
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # False positive on Starlette middleware registration
 
 ---
 
-_Issue opened by @Asaf31214 on 2025-11-25 21:12_
+_@Asaf31214_
 
 ### Summary
 

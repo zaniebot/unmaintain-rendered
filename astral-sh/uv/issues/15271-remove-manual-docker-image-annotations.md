@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T04:36:18Z
 updated_at: 2025-08-26T16:18:03Z
 url: https://github.com/astral-sh/uv/issues/15271
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Remove manual Docker image annotations
 
 ---
 
-_Issue opened by @zanieb on 2025-08-14 04:36_
+_@zanieb_
 
 Now that Depot supports these https://github.com/depot/build-push-action/pull/38 we can drop manual push of annotations (originally added in https://github.com/astral-sh/uv/pull/14165)
 

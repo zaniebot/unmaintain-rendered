@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T18:40:21Z
 updated_at: 2025-11-17T20:52:26Z
 url: https://github.com/astral-sh/ruff/issues/21389
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF012 warns on variable re-assignment within top level of class body
 
 ---
 
-_Issue opened by @anabelle2001 on 2025-11-11 18:40_
+_@anabelle2001_
 
 ### Summary
 

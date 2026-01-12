@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-09-03T20:41:27Z
 updated_at: 2023-09-04T09:57:05Z
 url: https://github.com/astral-sh/ruff/pull/7109
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Preserve parentheses around partial call chains
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 20:41_
+_@charliermarsh_
 
 ## Summary
 

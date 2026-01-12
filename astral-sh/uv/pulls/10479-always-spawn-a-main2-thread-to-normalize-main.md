@@ -13,14 +13,14 @@ head: gankra/stacked
 created_at: 2025-01-10T20:11:00Z
 updated_at: 2025-01-15T03:35:18Z
 url: https://github.com/astral-sh/uv/pull/10479
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Always spawn a main2 thread to normalize main stack size issues
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-10 20:11_
+_@Gankra_
 
 Also removes UV_STACK_SIZE and uses RUST_MIN_STACK instead, tweaking docs to reflect the differences.
 

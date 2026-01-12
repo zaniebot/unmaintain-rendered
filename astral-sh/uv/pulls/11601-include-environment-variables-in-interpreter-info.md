@@ -13,14 +13,14 @@ head: konsti/cache-python-interpreter-by-env-vars
 created_at: 2025-02-18T15:43:22Z
 updated_at: 2025-02-19T10:10:20Z
 url: https://github.com/astral-sh/uv/pull/11601
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Include environment variables in interpreter info caching
 
 ---
 
-_Pull request opened by @konstin on 2025-02-18 15:43_
+_@konstin_
 
 We want to use `sys.path` for package discovery (#2500, #9849). For that, we need to know the correct value of `sys.path`. `sys.path` is a runtime-changeable value, which gets influenced from a lot of different sources: Environment variables, CLI arguments, `.pth` files with scripting, `sys.path.append()` at runtime, a distributor patching Python, etc. We cannot capture them all accurately, especially since it's possible to change `sys.path` mid-execution. Instead, we do a best effort attempt at matching the user's expectation.
 

@@ -14,14 +14,14 @@ head: dcreager/coolable
 created_at: 2025-11-11T22:42:41Z
 updated_at: 2025-11-17T18:43:40Z
 url: https://github.com/astral-sh/ruff/pull/21392
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Constraint sets compare generic callables correctly
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-11 22:42_
+_@dcreager_
 
 Constraint sets can now track subtyping/assignability/etc of generic callables correctly. For instance:
 

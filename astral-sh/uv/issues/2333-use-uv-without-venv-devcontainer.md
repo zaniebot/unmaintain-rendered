@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T12:24:47Z
 updated_at: 2024-06-05T12:35:03Z
 url: https://github.com/astral-sh/uv/issues/2333
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Use UV without VENV (devcontainer)
 
 ---
 
-_Issue opened by @osbyrne on 2024-03-10 12:24_
+_@osbyrne_
 
 > uv pip install manim_automata
 

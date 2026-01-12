@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T20:17:21Z
 updated_at: 2025-05-10T20:20:44Z
 url: https://github.com/astral-sh/uv/issues/13381
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # uv add doesn't adds the exact package version to pyproject.toml or to a script
 
 ---
 
-_Issue opened by @me-kell on 2025-05-10 20:17_
+_@me-kell_
 
 ### Summary
 

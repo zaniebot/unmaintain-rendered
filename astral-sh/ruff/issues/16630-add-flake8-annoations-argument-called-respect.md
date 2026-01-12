@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T15:38:10Z
 updated_at: 2025-03-12T09:12:01Z
 url: https://github.com/astral-sh/ruff/issues/16630
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add flake8-annoations argument called respect-type-ignore
 
 ---
 
-_Issue opened by @martinResearch on 2025-03-11 15:38_
+_@martinResearch_
 
 ### Summary
 

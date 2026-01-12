@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T07:22:41Z
 updated_at: 2023-07-14T09:55:06Z
 url: https://github.com/astral-sh/ruff/issues/5605
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter generates invalid code with magic trailing comma in slice expression
 
 ---
 
-_Issue opened by @konstin on 2023-07-08 07:22_
+_@konstin_
 
 The formatter generates in valid code for [jhnnsrs/mikro-napari mikro_napari/models/representation.py:604-610](https://github.com/jhnnsrs/mikro-napari/blob/f0a47eb8d58420ea8d2cbec61e85a457cfb602ce/mikro_napari/models/representation.py#L604-L610).
 

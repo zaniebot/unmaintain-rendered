@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-07T21:59:14Z
 updated_at: 2024-02-08T04:25:20Z
 url: https://github.com/astral-sh/ruff/issues/9883
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # E712 fix silently breaks Pandas/Polars queries
 
 ---
 
-_Issue opened by @david-waterworth on 2024-02-07 21:59_
+_@david-waterworth_
 
 The following fragments
 

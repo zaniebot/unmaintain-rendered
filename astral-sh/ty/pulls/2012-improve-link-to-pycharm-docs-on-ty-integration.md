@@ -14,14 +14,14 @@ head: main
 created_at: 2025-12-17T14:03:16Z
 updated_at: 2025-12-17T14:09:07Z
 url: https://github.com/astral-sh/ty/pull/2012
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Improve link to PyCharm docs on ty integration
 
 ---
 
-_Pull request opened by @charliecloudberry on 2025-12-17 14:03_
+_@charliecloudberry_
 
 Remove the hardcoded docs version from PyCharm documentation link
 

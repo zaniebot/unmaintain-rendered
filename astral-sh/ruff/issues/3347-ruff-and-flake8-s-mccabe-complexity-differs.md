@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-04T21:06:07Z
 updated_at: 2023-03-14T18:40:35Z
 url: https://github.com/astral-sh/ruff/issues/3347
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff and Flake8's McCabe complexity differs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-04 21:06_
+_@charliermarsh_
 
 From Discord: https://gitlab.com/ppentchev/temp-20230302-ruff-complexity
 

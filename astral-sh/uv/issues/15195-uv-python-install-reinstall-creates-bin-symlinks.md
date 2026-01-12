@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-09T19:34:43Z
 updated_at: 2025-08-09T19:34:43Z
 url: https://github.com/astral-sh/uv/issues/15195
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv python install --reinstall creates bin symlinks to 3.14.0a5 over betas or rc
 
 ---
 
-_Issue opened by @geofft on 2025-08-09 19:34_
+_@geofft_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: fix/C419/preserve-comments
 created_at: 2023-04-25T19:18:58Z
 updated_at: 2023-05-13T16:39:10Z
 url: https://github.com/astral-sh/ruff/pull/4099
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Preserve whitespace around `ListComp` brackets in `C419`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-25 19:18_
+_@dhruvmanila_
 
 ## Summary
 

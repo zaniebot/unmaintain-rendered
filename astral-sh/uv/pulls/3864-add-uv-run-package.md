@@ -13,14 +13,14 @@ head: konsti/workspaces-run-in-different-package
 created_at: 2024-05-27T13:29:50Z
 updated_at: 2024-06-02T21:42:16Z
 url: https://github.com/astral-sh/uv/pull/3864
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Add `uv run --package`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-27 13:29_
+_@konstin_
 
 Add a `--package` option that allows switching the current project in the workspace. Wherever you are in a workspace, you should be able to run with any other project as root. This is the uv equivalent of `cargo run -p`.
 

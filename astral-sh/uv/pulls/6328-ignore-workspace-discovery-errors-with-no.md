@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2024-08-21T14:14:47Z
 updated_at: 2024-08-21T14:30:02Z
 url: https://github.com/astral-sh/uv/pull/6328
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Ignore workspace discovery errors with `--no-workspace`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-21 14:14_
+_@charliermarsh_
 
 ## Summary
 

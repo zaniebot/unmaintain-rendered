@@ -13,14 +13,14 @@ head: gankra/doc-groups-requires
 created_at: 2025-06-26T16:16:38Z
 updated_at: 2025-09-12T13:15:28Z
 url: https://github.com/astral-sh/uv/pull/14282
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # add docs for dependency group `requires-python`
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-26 16:16_
+_@Gankra_
 
 I specifically show more details than necessary in the example to make it more clear that this is *NOT* the normal dependency-groups table.
 

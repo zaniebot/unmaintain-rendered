@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-21T19:23:59Z
 updated_at: 2024-10-08T06:53:41Z
 url: https://github.com/astral-sh/uv/issues/7615
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Question regarding import for pkgs
 
 ---
 
-_Issue opened by @AnirudhG07 on 2024-09-21 19:23_
+_@AnirudhG07_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

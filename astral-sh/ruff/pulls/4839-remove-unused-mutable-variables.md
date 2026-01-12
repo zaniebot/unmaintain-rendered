@@ -12,14 +12,14 @@ head: internal/unused-mut
 created_at: 2023-06-03T21:17:51Z
 updated_at: 2023-06-03T21:46:51Z
 url: https://github.com/astral-sh/ruff/pull/4839
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove unused mutable variables
 
 ---
 
-_Pull request opened by @zanieb on 2023-06-03 21:17_
+_@zanieb_
 
 The nightly rust compiler warns on these `mut` variables that are not mutated.
 

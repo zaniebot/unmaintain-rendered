@@ -13,14 +13,14 @@ head: charlie/hashes
 created_at: 2024-05-14T17:15:24Z
 updated_at: 2024-05-14T17:34:33Z
 url: https://github.com/astral-sh/uv/pull/3581
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Explain hash tie-breaking in distribution comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 17:15_
+_@charliermarsh_
 
 _No description provided._
 

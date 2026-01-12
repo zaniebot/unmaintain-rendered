@@ -13,14 +13,14 @@ head: revert-5920-import-private-name
 created_at: 2024-01-16T08:28:35Z
 updated_at: 2024-01-16T10:01:35Z
 url: https://github.com/astral-sh/ruff/pull/9547
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Revert "[`pylint`] Implement `import-private-name` (`C2701`)"
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-16 08:28_
+_@MichaReiser_
 
 Reverts astral-sh/ruff#5920 because It's panicking in the pydantic benchmark run (see [astral-sh/ruff/actions/runs/7537305800/job/20516059364?pr=5920](https://github.com/astral-sh/ruff/actions/runs/7537305800/job/20516059364?pr=5920)).
 

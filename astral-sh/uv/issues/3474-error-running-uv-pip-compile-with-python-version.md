@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T22:30:13Z
 updated_at: 2024-05-09T14:45:05Z
 url: https://github.com/astral-sh/uv/issues/3474
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Error running uv pip compile with `--python-version` specified when Python 2 is on the PATH
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-08 22:30_
+_@notatallshaw-gts_
 
 I am looking to migrate some scripts I have at work to use uv, perhaps I am using the `--python-version` flag wrong, does a Python with that version need to be available on the PATH or can uv resolve without it?
 

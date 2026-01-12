@@ -13,14 +13,14 @@ head: dependabot/cargo/textwrap-0.16.1
 created_at: 2024-02-23T19:46:35Z
 updated_at: 2024-02-23T20:01:06Z
 url: https://github.com/astral-sh/uv/pull/1938
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Bump textwrap from 0.16.0 to 0.16.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-23 19:46_
+_@dependabot_
 
 Bumps [textwrap](https://github.com/mgeisler/textwrap) from 0.16.0 to 0.16.1.
 <details>

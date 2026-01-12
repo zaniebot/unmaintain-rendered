@@ -14,14 +14,14 @@ head: semantic-model-docs
 created_at: 2024-04-05T11:11:09Z
 updated_at: 2024-07-01T10:29:49Z
 url: https://github.com/astral-sh/ruff/pull/10788
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Improve internal documentation for the semantic model
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-05 11:11_
+_@AlexWaygood_
 
 ## Summary
 

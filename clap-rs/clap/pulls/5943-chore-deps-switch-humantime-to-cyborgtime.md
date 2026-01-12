@@ -12,14 +12,14 @@ head: cyborgtime
 created_at: 2025-03-08T14:21:11Z
 updated_at: 2025-03-08T19:40:00Z
 url: https://github.com/clap-rs/clap/pull/5943
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Switch humantime to cyborgtime
 
 ---
 
-_Pull request opened by @oherrala on 2025-03-08 14:21_
+_@oherrala_
 
 [`humantime`](https://crates.io/crates/humantime) crate seems to be unmaintained and [`cyborgtime`](https://crates.io/crates/cyborgtime) is forked from that. According to crates.io's stats clap is the most downloaded user of `humantime`. 
 

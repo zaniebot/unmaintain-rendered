@@ -11,14 +11,14 @@ head: add-trio-106-support
 created_at: 2023-11-03T12:49:35Z
 updated_at: 2023-11-04T13:35:01Z
 url: https://github.com/astral-sh/ruff/pull/8468
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add TRIO106 rule
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-11-03 12:49_
+_@karpetrosyan_
 
 ## Summary
 

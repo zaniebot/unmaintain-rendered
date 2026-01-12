@@ -13,14 +13,14 @@ head: charlie/fix
 created_at: 2023-11-11T23:28:41Z
 updated_at: 2023-11-11T23:55:09Z
 url: https://github.com/astral-sh/ruff/pull/8622
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Implement autofix for `multiple-spaces-after-keyword` and `multiple-spaces-before-keyword`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-11 23:28_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8312.
 

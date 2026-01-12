@@ -14,14 +14,14 @@ head: dcreager/fix-class-callable
 created_at: 2025-12-16T18:14:30Z
 updated_at: 2025-12-16T18:37:13Z
 url: https://github.com/astral-sh/ruff/pull/22011
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Don't use implicit superclass annotation when converting a class constructor into a `Callable`
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-16 18:14_
+_@dcreager_
 
 This fixes a bug @zsol found running ty against pyx. His original repro is:
 

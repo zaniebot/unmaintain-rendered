@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-07T15:08:22Z
 updated_at: 2024-11-25T13:12:29Z
 url: https://github.com/astral-sh/ruff/issues/14157
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Adapt the `fuzz-parser` script to fuzz red-knot too
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-07 15:08_
+_@AlexWaygood_
 
 We have a script here which proved very useful in discovering issues with our parser during the rewrite of the parser: https://github.com/astral-sh/ruff/tree/main/scripts/fuzz-parser. It generates random source-code snippets for Python that are guaranteed to be syntactically valid.
 

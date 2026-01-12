@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-26T07:25:15Z
 updated_at: 2023-10-01T08:27:30Z
 url: https://github.com/astral-sh/ruff/issues/6891
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules E712,F632 causes infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2023-08-26 07:25_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

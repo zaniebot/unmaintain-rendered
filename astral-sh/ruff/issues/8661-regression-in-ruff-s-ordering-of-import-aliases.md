@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-13T18:25:24Z
 updated_at: 2023-11-14T00:52:28Z
 url: https://github.com/astral-sh/ruff/issues/8661
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Regression in Ruff's ordering of import aliases with `force-sort-within-sections`
 
 ---
 
-_Issue opened by @cmsetzer on 2023-11-13 18:25_
+_@cmsetzer_
 
 It looks like #7963 introduced a regression in Ruff's ordering of certain import aliases when `force-sort-within-sections` is enabled. In version 0.1.3 and prior, Ruff and isort produced identical output under this setting.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-23T10:19:35Z
 updated_at: 2024-04-23T16:04:27Z
 url: https://github.com/astral-sh/ruff/issues/11103
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule to enforce usage of `from __future__ import annotations` when imports could be moved to type-checking block ?
 
 ---
 
-_Issue opened by @Greesb on 2024-04-23 10:19_
+_@Greesb_
 
 Hello wonderful developers !
 

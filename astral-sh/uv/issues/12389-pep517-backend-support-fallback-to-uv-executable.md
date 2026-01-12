@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T10:01:25Z
 updated_at: 2025-04-22T11:46:44Z
 url: https://github.com/astral-sh/uv/issues/12389
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # PEP517 backend: support fallback to `uv` executable?
 
 ---
 
-_Issue opened by @mgorny on 2025-03-22 10:01_
+_@mgorny_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-18T20:11:40Z
 updated_at: 2023-08-18T20:25:05Z
 url: https://github.com/astral-sh/ruff/issues/6685
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Question about SIM114, adding comment causes issue not to be detected
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-18 20:11_
+_@nth10sd_
 
 This testcase does not trigger SIM114:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T07:23:04Z
 updated_at: 2025-07-24T08:25:32Z
 url: https://github.com/astral-sh/uv/issues/9765
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # unit test / pytest slow down exponentially after migrating from poetry to uv
 
 ---
 
-_Issue opened by @parfaire on 2024-12-10 07:23_
+_@parfaire_
 
 hi first of all would like to thank everyone hardwork to build an amazing uv package manager.
 

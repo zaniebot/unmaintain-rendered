@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T23:47:11Z
 updated_at: 2025-10-19T04:29:52Z
 url: https://github.com/astral-sh/uv/issues/16325
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # `uv python install --no-bin` arg description is vague
 
 ---
 
-_Issue opened by @polarathene on 2025-10-15 23:47_
+_@polarathene_
 
 ### Summary
 

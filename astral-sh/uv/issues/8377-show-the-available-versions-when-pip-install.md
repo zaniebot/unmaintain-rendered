@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-20T06:39:33Z
 updated_at: 2024-10-20T06:39:33Z
 url: https://github.com/astral-sh/uv/issues/8377
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Show the available versions when `pip install package==x.y.z` is unsatisfiable due to version
 
 ---
 
-_Issue opened by @pantheraleo-7 on 2024-10-20 06:39_
+_@pantheraleo-7_
 
 `pip` displays the available versions.
 

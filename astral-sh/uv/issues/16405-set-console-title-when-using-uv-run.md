@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T07:18:26Z
 updated_at: 2025-10-23T19:57:44Z
 url: https://github.com/astral-sh/uv/issues/16405
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Set console title when using `uv run`
 
 ---
 
-_Issue opened by @moi90 on 2025-10-22 07:18_
+_@moi90_
 
 ### Summary
 

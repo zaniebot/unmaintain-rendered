@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-23T02:46:42Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/625
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Provide method to NOT wrap at any length
 
 ---
 
-_Issue opened by @kbknapp on 2016-08-23 02:46_
+_@kbknapp_
 
 Currently, clap wraps long help text lines at 120 chars if no term width can be determined (i.e. Windows). There should be a way for one to say, "Don't wrap at all" such as saying `App::set_term_width(0)` or something similar
 

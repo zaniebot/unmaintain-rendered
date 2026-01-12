@@ -13,14 +13,14 @@ head: charlie/min
 created_at: 2024-06-07T21:49:55Z
 updated_at: 2024-06-08T12:31:13Z
 url: https://github.com/astral-sh/uv/pull/4149
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Avoid pre-fetching for unbounded minimum versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-07 21:49_
+_@charliermarsh_
 
 ## Summary
 

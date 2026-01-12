@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T12:57:47Z
 updated_at: 2025-07-17T22:20:26Z
 url: https://github.com/astral-sh/uv/issues/5144
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `--python-preference only-system` uses managed interpreter if present in virtual environment
 
 ---
 
-_Issue opened by @konstin on 2024-07-17 12:57_
+_@konstin_
 
 When a venv from a managed toolchain exists, uv ignores `--python-preference only-system`.
 

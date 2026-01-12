@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T02:50:48Z
 updated_at: 2025-05-16T12:25:36Z
 url: https://github.com/astral-sh/uv/issues/13419
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Build backend: Capital letter are not supported
 
 ---
 
-_Issue opened by @followheart26 on 2025-05-13 02:50_
+_@followheart26_
 
 > It works with `module-root = ""`, we should accept `./`, too, though.
 > 

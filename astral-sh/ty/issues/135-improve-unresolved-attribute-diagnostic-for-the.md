@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-06T19:58:34Z
 updated_at: 2025-05-11T08:06:11Z
 url: https://github.com/astral-sh/ty/issues/135
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Improve `[unresolved-attribute]` diagnostic for the case of an invalid `__getattr__` method
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-06 19:58_
+_@AlexWaygood_
 
 For this code:
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-05T13:24:08Z
 updated_at: 2022-05-04T18:15:09Z
 url: https://github.com/clap-rs/clap/issues/3612
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Parser: unable to get multiple required fields using use_value_delimiter
 
 ---
 
-_Issue opened by @samueltardieu on 2022-04-05 13:24_
+_@samueltardieu_
 
 ### Please complete the following tasks
 

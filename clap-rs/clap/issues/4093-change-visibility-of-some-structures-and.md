@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-19T04:51:39Z
 updated_at: 2022-08-24T21:13:51Z
 url: https://github.com/clap-rs/clap/issues/4093
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Change visibility of some structures and functions for config-rs integration
 
 ---
 
-_Issue opened by @jgerrish on 2022-08-19 04:51_
+_@jgerrish_
 
 ### Please complete the following tasks
 

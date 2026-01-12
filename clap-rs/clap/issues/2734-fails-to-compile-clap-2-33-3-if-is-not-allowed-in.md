@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-22T03:37:29Z
 updated_at: 2021-08-31T10:02:09Z
 url: https://github.com/clap-rs/clap/issues/2734
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # fails to compile clap 2.33.3 -- `'if' is not allowed in a 'const fn'`
 
 ---
 
-_Issue opened by @jtmoon79 on 2021-08-22 03:37_
+_@jtmoon79_
 
 ### Please complete the following tasks
 

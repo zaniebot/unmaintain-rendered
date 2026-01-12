@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-20T12:55:13Z
 updated_at: 2025-10-30T14:38:58Z
 url: https://github.com/astral-sh/ty/issues/1404
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Failed exhaustiveness matching on type variable
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-20 12:55_
+_@sharkdp_
 
 Consider this example where we currently emit a false positive.
 

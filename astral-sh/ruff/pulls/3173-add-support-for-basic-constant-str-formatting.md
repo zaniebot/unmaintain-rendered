@@ -13,14 +13,14 @@ head: charlie/constants
 created_at: 2023-02-23T16:08:25Z
 updated_at: 2023-02-23T16:23:12Z
 url: https://github.com/astral-sh/ruff/pull/3173
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add support for basic `Constant::Str` formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 16:08_
+_@charliermarsh_
 
 This PR enables us to apply the proper quotation marks, including support for escapes. There are some significant TODOs, especially around implicit concatenations like:
 

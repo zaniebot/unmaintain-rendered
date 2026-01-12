@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T10:33:12Z
 updated_at: 2025-08-29T07:40:03Z
 url: https://github.com/astral-sh/uv/issues/10052
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # .h not found when building with `uv` but found when using pip and a virtual env
 
 ---
 
-_Issue opened by @MalcolmMielle on 2024-12-20 10:33_
+_@MalcolmMielle_
 
 I am trying to install the package `petsc4py`. When trying to build using uv I have the error:
 

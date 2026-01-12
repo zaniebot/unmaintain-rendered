@@ -13,14 +13,14 @@ head: alex/even-more-pth210
 created_at: 2024-12-06T12:47:45Z
 updated_at: 2024-12-10T23:54:01Z
 url: https://github.com/astral-sh/ruff/pull/14816
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Further simplifications to PTH210
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-06 12:47_
+_@AlexWaygood_
 
 See https://github.com/astral-sh/ruff/pull/14814/files#r1873272911
 

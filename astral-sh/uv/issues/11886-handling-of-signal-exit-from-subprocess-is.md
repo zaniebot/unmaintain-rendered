@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-01T22:48:29Z
 updated_at: 2025-03-03T16:07:57Z
 url: https://github.com/astral-sh/uv/issues/11886
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Handling of signal exit from subprocess is incorrect
 
 ---
 
-_Issue opened by @geofft on 2025-03-01 22:48_
+_@geofft_
 
 ### Summary
 

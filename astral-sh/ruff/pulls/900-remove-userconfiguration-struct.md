@@ -12,14 +12,14 @@ head: charlie/user
 created_at: 2022-11-25T03:38:50Z
 updated_at: 2022-11-25T03:39:08Z
 url: https://github.com/astral-sh/ruff/pull/900
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove UserConfiguration struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-25 03:38_
+_@charliermarsh_
 
 Now that we deferred pattern compilation to `Settings`, this is no longer necessary.
 

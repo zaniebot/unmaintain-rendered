@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-22T17:33:40Z
 updated_at: 2023-05-22T17:42:03Z
 url: https://github.com/astral-sh/ruff/issues/4586
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: `RET504` autofix
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-22 17:33_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

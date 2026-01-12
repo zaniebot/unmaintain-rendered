@@ -13,14 +13,14 @@ head: micha/convert-playground-to-workspace
 created_at: 2025-03-17T14:26:44Z
 updated_at: 2025-03-17T17:00:10Z
 url: https://github.com/astral-sh/ruff/pull/16806
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [refactor] Convert playground to an NPM workspace
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 14:26_
+_@MichaReiser_
 
 ## Summary
 

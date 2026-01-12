@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-19T06:58:50Z
 updated_at: 2024-01-12T22:40:49Z
 url: https://github.com/clap-rs/clap/issues/4231
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # [clap_mangen] Subcommand references in man pages miss prefix
 
 ---
 
-_Issue opened by @dnaka91 on 2022-09-19 06:58_
+_@dnaka91_
 
 ### Please complete the following tasks
 

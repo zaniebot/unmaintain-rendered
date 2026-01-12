@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-02T20:03:53Z
 updated_at: 2025-03-15T01:37:54Z
 url: https://github.com/astral-sh/uv/issues/6942
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Question: Does `uv` support multiple environments?
 
 ---
 
-_Issue opened by @asmith26 on 2024-09-02 20:03_
+_@asmith26_
 
 Hi there,
 

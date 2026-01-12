@@ -12,14 +12,14 @@ head: refactor-redirects
 created_at: 2023-01-23T08:46:01Z
 updated_at: 2023-01-24T14:26:19Z
 url: https://github.com/astral-sh/ruff/pull/2103
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor: Move redirects out of RuleCodePrefix 
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-23 08:46_
+_@not-my-profile_
 
 (See the 2nd commit message for an explanation & the reasoning.)
 

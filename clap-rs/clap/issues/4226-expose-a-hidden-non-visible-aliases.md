@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-18T14:13:24Z
 updated_at: 2022-09-28T16:18:10Z
 url: https://github.com/clap-rs/clap/issues/4226
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Expose a hidden(non-visible) aliases
 
 ---
 
-_Issue opened by @aobatact on 2022-09-18 14:13_
+_@aobatact_
 
 ### Please complete the following tasks
 

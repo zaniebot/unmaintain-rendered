@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-11T14:53:40Z
 updated_at: 2024-08-10T01:12:04Z
 url: https://github.com/astral-sh/uv/issues/4992
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Another example of duplicate packages with different versions using `--universal`
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-07-11 14:53_
+_@notatallshaw-gts_
 
 ```
 $ uv -V

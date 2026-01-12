@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T13:29:15Z
 updated_at: 2025-10-22T18:39:25Z
 url: https://github.com/astral-sh/uv/issues/15980
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Add version tag annotation to `aws-actions/configure-aws-credentials` pin
 
 ---
 
-_Issue opened by @zanieb on 2025-09-22 13:29_
+_@zanieb_
 
 We should pin this to a version tag, idk why we're on bare commits.
 

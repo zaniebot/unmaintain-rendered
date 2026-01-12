@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T14:08:27Z
 updated_at: 2025-12-17T14:40:29Z
 url: https://github.com/astral-sh/ty/issues/2014
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `invalid-method-override` error due to inconsistent third-party stubs
 
 ---
 
-_Issue opened by @LoicRiegel on 2025-12-17 14:08_
+_@LoicRiegel_
 
 ### Question
 

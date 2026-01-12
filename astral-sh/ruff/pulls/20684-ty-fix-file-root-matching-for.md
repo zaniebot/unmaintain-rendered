@@ -15,14 +15,14 @@ head: ag/fix-1277
 created_at: 2025-10-02T17:53:02Z
 updated_at: 2025-10-03T12:18:05Z
 url: https://github.com/astral-sh/ruff/pull/20684
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Fix file root matching for `/`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-02 17:53_
+_@BurntSushi_
 
 Previously, we would always add `/{*filepath}` as our wildcard to match
 descendant paths. But when the root is just `/` (as it can be in tests,

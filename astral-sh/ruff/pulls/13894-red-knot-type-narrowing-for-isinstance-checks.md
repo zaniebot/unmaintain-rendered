@@ -13,14 +13,14 @@ head: david/isinstance-narrowing
 created_at: 2024-10-23T14:11:33Z
 updated_at: 2024-10-23T18:51:36Z
 url: https://github.com/astral-sh/ruff/pull/13894
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Type narrowing for `isinstance` checks
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-23 14:11_
+_@sharkdp_
 
 ## Summary
 

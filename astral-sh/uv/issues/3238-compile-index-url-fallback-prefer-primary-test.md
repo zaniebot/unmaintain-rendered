@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T14:09:52Z
 updated_at: 2024-04-25T23:30:45Z
 url: https://github.com/astral-sh/uv/issues/3238
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `compile_index_url_fallback_prefer_primary` test doesn't seem to test anything
 
 ---
 
-_Issue opened by @mgorny on 2024-04-24 14:09_
+_@mgorny_
 
 The following test:
 

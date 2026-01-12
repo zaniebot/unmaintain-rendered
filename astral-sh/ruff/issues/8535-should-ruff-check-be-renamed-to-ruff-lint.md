@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-07T08:36:36Z
 updated_at: 2024-02-23T21:46:25Z
 url: https://github.com/astral-sh/ruff/issues/8535
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Should `ruff check` be renamed to `ruff lint`?
 
 ---
 
-_Issue opened by @thernstig on 2023-11-07 08:36_
+_@thernstig_
 
 This is a wild idea, but since Ruff is still in its `0.X` semver phase, maybe not a bad idea after all.
 

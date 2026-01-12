@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-24T06:02:09Z
 updated_at: 2024-12-24T12:59:07Z
 url: https://github.com/astral-sh/uv/issues/10138
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # no version of paddlepaddle{platform_system == 'Linux'}==3.0.0b1
 
 ---
 
-_Issue opened by @hongbo-miao on 2024-12-24 06:02_
+_@hongbo-miao_
 
 # Experiment 1
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T14:13:32Z
 updated_at: 2024-09-03T14:42:41Z
 url: https://github.com/clap-rs/clap/issues/5715
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Both Flags Print as `true`, it should print one `true` ant other `false`
 
 ---
 
-_Issue opened by @BiswajitThakur on 2024-09-03 14:13_
+_@BiswajitThakur_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: zb/freebsd-3
 created_at: 2024-12-04T05:22:35Z
 updated_at: 2024-12-04T05:33:11Z
 url: https://github.com/astral-sh/uv/pull/9628
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Fix FreeBSD test by avoiding expensive copy of the uv binary
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-04 05:22_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T17:00:32Z
 updated_at: 2024-09-08T00:14:03Z
 url: https://github.com/astral-sh/uv/issues/7035
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Special case error message when build fails on a very old package version
 
 ---
 
-_Issue opened by @zanieb on 2024-09-04 17:00_
+_@zanieb_
 
 1. We know very old package versions fail often fail to build due to outdated metadata and dependencies
 2. We generally know when a package version was published

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T09:25:19Z
 updated_at: 2024-11-20T14:54:14Z
 url: https://github.com/astral-sh/uv/issues/3454
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Incorrect locking with uv `--python-platform x86_64-apple-darwin`
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-05-08 09:25_
+_@hauntsaninja_
 
 ```
 λ cat r.in

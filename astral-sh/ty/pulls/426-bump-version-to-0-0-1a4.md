@@ -13,14 +13,14 @@ head: zb/0a4
 created_at: 2025-05-16T15:48:36Z
 updated_at: 2025-05-16T17:19:58Z
 url: https://github.com/astral-sh/ty/pull/426
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1a4
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-16 15:48_
+_@zanieb_
 
 _No description provided._
 

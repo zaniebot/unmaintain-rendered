@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T11:02:16Z
 updated_at: 2025-11-19T12:24:07Z
 url: https://github.com/astral-sh/uv/issues/16774
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # `uv build` includes `uv` version in wheel
 
 ---
 
-_Issue opened by @davidbrochart on 2025-11-19 11:02_
+_@davidbrochart_
 
 ### Question
 

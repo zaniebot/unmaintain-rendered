@@ -13,14 +13,14 @@ head: micha/extract-class-instance-from-types
 created_at: 2025-02-24T07:59:51Z
 updated_at: 2025-02-24T12:48:26Z
 url: https://github.com/astral-sh/ruff/pull/16337
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Extract class and instance types
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-24 07:59_
+_@MichaReiser_
 
 ## Summary
 

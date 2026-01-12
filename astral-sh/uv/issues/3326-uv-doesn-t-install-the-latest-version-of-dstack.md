@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-30T17:58:07Z
 updated_at: 2024-05-06T13:59:26Z
 url: https://github.com/astral-sh/uv/issues/3326
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # `uv` doesn't install the latest version of `dstack`
 
 ---
 
-_Issue opened by @peterschmidt85 on 2024-04-30 17:58_
+_@peterschmidt85_
 
 `uv` doesn't install the latest version of `dstack`
 

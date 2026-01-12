@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T14:07:42Z
 updated_at: 2024-09-17T14:17:50Z
 url: https://github.com/astral-sh/uv/issues/7460
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv run fails with Permission Denied error for non existing command / script in WSL when appendWindowsPath is enabled
 
 ---
 
-_Issue opened by @hille721 on 2024-09-17 14:07_
+_@hille721_
 
 When invoking `uv run` on a command or script which does not exist, I'm getting a permission denied error instead of an error message saying that the command / file does not exist: 
 

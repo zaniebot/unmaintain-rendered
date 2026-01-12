@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-01T17:40:14Z
 updated_at: 2024-10-30T12:43:56Z
 url: https://github.com/astral-sh/uv/pull/7851
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Add support for system-level `uv.toml` configuration
 
 ---
 
-_Pull request opened by @amjith on 2024-10-01 17:40_
+_@amjith_
 
 ## Summary
 

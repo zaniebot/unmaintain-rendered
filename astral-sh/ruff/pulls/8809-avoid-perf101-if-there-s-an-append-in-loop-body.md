@@ -13,14 +13,14 @@ head: dhruv/perf101
 created_at: 2023-11-21T16:00:19Z
 updated_at: 2023-11-21T21:35:43Z
 url: https://github.com/astral-sh/ruff/pull/8809
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid `PERF101` if there's an append in loop body
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-21 16:00_
+_@dhruvmanila_
 
 ## Summary
 

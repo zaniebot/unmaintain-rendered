@@ -13,14 +13,14 @@ head: charlie/de
 created_at: 2025-03-14T00:24:05Z
 updated_at: 2025-03-14T14:03:11Z
 url: https://github.com/astral-sh/uv/pull/12159
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Avoid replicating core-metadata field on `File` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-14 00:24_
+_@charliermarsh_
 
 ## Summary
 

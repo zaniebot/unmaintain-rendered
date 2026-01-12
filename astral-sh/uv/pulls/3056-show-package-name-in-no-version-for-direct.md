@@ -13,14 +13,14 @@ head: konsti/fix-3053
 created_at: 2024-04-16T07:51:01Z
 updated_at: 2024-04-16T07:57:14Z
 url: https://github.com/astral-sh/uv/pull/3056
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Show package name in no version for direct dependency error
 
 ---
 
-_Pull request opened by @konstin on 2024-04-16 07:51_
+_@konstin_
 
 Fixes #3053
 

@@ -12,14 +12,14 @@ head: unicode-normalize-identifiers
 created_at: 2024-03-13T12:20:15Z
 updated_at: 2024-03-14T17:42:41Z
 url: https://github.com/astral-sh/ruff/pull/10381
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Apply NFKC normalization to unicode identifiers when storing bindings in the semantic model
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-13 12:20_
+_@AlexWaygood_
 
 ## Summary
 

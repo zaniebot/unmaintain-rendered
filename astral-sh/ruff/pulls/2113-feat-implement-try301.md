@@ -12,14 +12,14 @@ head: feat/tryceratops-TRY301
 created_at: 2023-01-23T19:55:51Z
 updated_at: 2023-01-24T13:40:10Z
 url: https://github.com/astral-sh/ruff/pull/2113
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: implement TRY301
 
 ---
 
-_Pull request opened by @karpa4o4 on 2023-01-23 19:55_
+_@karpa4o4_
 
 #2056
 

@@ -13,14 +13,14 @@ head: konsti/fork-state
 created_at: 2024-07-01T08:31:53Z
 updated_at: 2024-07-08T14:06:32Z
 url: https://github.com/astral-sh/uv/pull/4683
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:23Z
 ```
 
 # Rename `SolveState` to `ForkState`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-01 08:31_
+_@konstin_
 
 It's hard to talk about solve state and resolver state, so i'm renaming them to fork state and resolver state, indicating the hierarchy between more directly.
 

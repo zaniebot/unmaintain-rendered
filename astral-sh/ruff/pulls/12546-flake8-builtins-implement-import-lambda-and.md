@@ -14,14 +14,14 @@ head: latyshev/A-4-5-6
 created_at: 2024-07-28T00:24:38Z
 updated_at: 2025-06-10T20:46:11Z
 url: https://github.com/astral-sh/ruff/pull/12546
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`flake8-builtins`] Implement import, lambda, and module shadowing
 
 ---
 
-_Pull request opened by @alex-700 on 2024-07-28 00:24_
+_@alex-700_
 
 …-shadowing
 

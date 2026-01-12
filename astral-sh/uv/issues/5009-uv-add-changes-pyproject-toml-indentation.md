@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-12T14:29:08Z
 updated_at: 2024-07-15T23:13:24Z
 url: https://github.com/astral-sh/uv/issues/5009
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv add` changes pyproject.toml indentation
 
 ---
 
-_Issue opened by @konstin on 2024-07-12 14:29_
+_@konstin_
 
 When using `uv add` on a `project.dependencies` with indentation 2, it changes the indentation to 4 for the entire list, creating a big diff. `uv add` should instead respect the existing indentation.
 

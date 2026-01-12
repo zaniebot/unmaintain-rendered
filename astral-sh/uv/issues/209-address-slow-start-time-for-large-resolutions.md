@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T19:18:27Z
 updated_at: 2023-12-28T16:49:13Z
 url: https://github.com/astral-sh/uv/issues/209
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Address slow start-time for large resolutions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 19:18_
+_@charliermarsh_
 
 If you try to resolve `./scripts/resolve/pypi_top_8k_flat.txt`, there's like a 1 second delay at the start of the resolution. The issue is that we kick off requests eagerly for all 8,000 packages, and then we wait for the first package in `potential_packages` to be available. If that first package (which isn't guaranteed to match the order of the initial requirements) is deep in the list, we end up waiting a long time.
 

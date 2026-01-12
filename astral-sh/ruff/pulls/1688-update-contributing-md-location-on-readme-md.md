@@ -12,14 +12,14 @@ head: fix-readme
 created_at: 2023-01-06T13:02:39Z
 updated_at: 2023-01-06T13:06:03Z
 url: https://github.com/astral-sh/ruff/pull/1688
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Update `CONTRIBUTING.md` location on `README.md`
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-06 13:02_
+_@saadmk11_
 
 _No description provided._
 

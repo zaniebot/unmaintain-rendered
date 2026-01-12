@@ -13,14 +13,14 @@ head: micha/cache-source-type
 created_at: 2025-05-01T06:33:21Z
 updated_at: 2025-05-01T06:51:55Z
 url: https://github.com/astral-sh/ruff/pull/17756
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Cache source type during semanic index building
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-01 06:33_
+_@MichaReiser_
 
 ## Summary
 

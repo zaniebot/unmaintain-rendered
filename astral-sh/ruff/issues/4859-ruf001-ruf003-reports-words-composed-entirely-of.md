@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-05T07:49:23Z
 updated_at: 2023-06-06T00:55:56Z
 url: https://github.com/astral-sh/ruff/issues/4859
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF001-RUF003 reports words composed entirely of non-ascii characters
 
 ---
 
-_Issue opened by @Fogapod on 2023-06-05 07:49_
+_@Fogapod_
 
 It looks like https://github.com/charliermarsh/ruff/pull/4552 attempted to partially fix this but there are still a lot of false positives.
 

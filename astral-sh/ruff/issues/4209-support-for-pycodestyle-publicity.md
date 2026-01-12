@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-03T14:54:21Z
 updated_at: 2023-05-04T14:53:20Z
 url: https://github.com/astral-sh/ruff/issues/4209
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support for pycodestyle publicity
 
 ---
 
-_Issue opened by @henryborchers on 2023-05-03 14:54_
+_@henryborchers_
 
 Maybe I'm missing something. In pydocstyle, D1xx checks are only for items that are considered to be public. If  __all__ is set at in the module, only those classes, function, etc are checked.  (see https://www.pydocstyle.org/en/2.1.1/error_codes.html#publicity)
 

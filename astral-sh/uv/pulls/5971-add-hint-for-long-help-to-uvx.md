@@ -14,14 +14,14 @@ head: zb/uvx-help-long
 created_at: 2024-08-09T18:17:29Z
 updated_at: 2024-08-09T18:24:39Z
 url: https://github.com/astral-sh/uv/pull/5971
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Add hint for long help to `uvx`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 18:17_
+_@zanieb_
 
 _No description provided._
 

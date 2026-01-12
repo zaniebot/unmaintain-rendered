@@ -13,14 +13,14 @@ head: formatter-panic-unary-comment
 created_at: 2025-09-21T17:08:35Z
 updated_at: 2025-11-18T15:50:07Z
 url: https://github.com/astral-sh/ruff/pull/20494
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`ruff`] Fix panic when comments appear between unary operators and operands
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-21 17:08_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

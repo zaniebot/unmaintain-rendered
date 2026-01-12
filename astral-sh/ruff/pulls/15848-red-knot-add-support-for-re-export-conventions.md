@@ -13,14 +13,14 @@ head: dhruv/re-export
 created_at: 2025-01-31T12:14:33Z
 updated_at: 2025-05-07T15:22:53Z
 url: https://github.com/astral-sh/ruff/pull/15848
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Add support for re-export conventions for imports
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-31 12:14_
+_@dhruvmanila_
 
 ## Summary
 

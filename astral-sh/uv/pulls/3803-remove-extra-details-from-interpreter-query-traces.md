@@ -13,14 +13,14 @@ head: zb/fixup-1
 created_at: 2024-05-23T21:18:41Z
 updated_at: 2024-05-23T23:18:06Z
 url: https://github.com/astral-sh/uv/pull/3803
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Remove extra details from interpreter query traces
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 21:18_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/uv/pull/3797/commits/8f135c26f46c6fa84ac534a775c5212a0981690a
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-01T17:12:15Z
 updated_at: 2023-02-01T20:26:04Z
 url: https://github.com/astral-sh/ruff/issues/2447
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Union not auto-fixed when inside generic
 
 ---
 
-_Issue opened by @phillipuniverse on 2023-02-01 17:12_
+_@phillipuniverse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: alex/even-more-class-disambiguation
 created_at: 2025-10-07T23:31:55Z
 updated_at: 2025-10-08T17:27:42Z
 url: https://github.com/astral-sh/ruff/pull/20756
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Disambiguate classes that live in different modules but have the same fully qualified names
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-07 23:31_
+_@AlexWaygood_
 
 ## Summary
 

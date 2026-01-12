@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-25T11:51:19Z
 updated_at: 2024-09-25T16:01:45Z
 url: https://github.com/astral-sh/uv/issues/7684
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # python.org's -intel64 suffix confuses uv pip
 
 ---
 
-_Issue opened by @hynek on 2024-09-25 11:51_
+_@hynek_
 
 So this might sound a bit special, but I suspect there's more then the one of me.
 

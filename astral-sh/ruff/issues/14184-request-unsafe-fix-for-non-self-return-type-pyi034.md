@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T00:59:26Z
 updated_at: 2024-11-09T02:11:39Z
 url: https://github.com/astral-sh/ruff/issues/14184
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: Unsafe fix for `non-self-return-type`/`PYI034`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-08 00:59_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

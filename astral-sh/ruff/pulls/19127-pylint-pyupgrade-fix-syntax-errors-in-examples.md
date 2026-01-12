@@ -13,14 +13,14 @@ head: make-examples-valid-code
 created_at: 2025-07-03T16:16:56Z
 updated_at: 2025-07-04T18:47:07Z
 url: https://github.com/astral-sh/ruff/pull/19127
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [`pylint`, `pyupgrade`] Fix syntax errors in examples (`PLW1501`, `UP028`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-03 16:16_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

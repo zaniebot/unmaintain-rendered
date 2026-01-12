@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-12T16:29:08Z
 updated_at: 2022-11-12T16:39:10Z
 url: https://github.com/astral-sh/ruff/issues/699
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Deletions need to avoid creating unused blocks
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 16:29_
+_@charliermarsh_
 
 We used to handle this, but I think it got lost in a refactor.
 

@@ -11,14 +11,14 @@ head: Issue-21494
 created_at: 2025-11-20T15:49:52Z
 updated_at: 2025-11-21T15:03:24Z
 url: https://github.com/astral-sh/ruff/pull/21540
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [pyflakes] Treat function-scope bare annotations as locals per PEP 526 (F821)
 
 ---
 
-_Pull request opened by @Ruchir28 on 2025-11-20 15:49_
+_@Ruchir28_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

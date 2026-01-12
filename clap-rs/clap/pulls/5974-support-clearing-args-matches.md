@@ -12,14 +12,14 @@ head: support-clearing-args-matches
 created_at: 2025-04-17T15:43:33Z
 updated_at: 2025-04-18T19:08:10Z
 url: https://github.com/clap-rs/clap/pull/5974
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support clearing args matches
 
 ---
 
-_Pull request opened by @kryvashek on 2025-04-17 15:43_
+_@kryvashek_
 
 Resolves https://github.com/clap-rs/clap/issues/5973.
 

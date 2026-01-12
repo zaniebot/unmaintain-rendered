@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T05:12:54Z
 updated_at: 2023-06-08T00:40:01Z
 url: https://github.com/astral-sh/ruff/issues/4920
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # git submodule files not being excluded
 
 ---
 
-_Issue opened by @mckib2 on 2023-06-07 05:12_
+_@mckib2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

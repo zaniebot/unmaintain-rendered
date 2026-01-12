@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T18:04:53Z
 updated_at: 2025-01-31T18:21:44Z
 url: https://github.com/astral-sh/uv/issues/8344
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Installing PyTorch: An index URL could not be queried
 
 ---
 
-_Issue opened by @Leon0402 on 2024-10-18 18:04_
+_@Leon0402_
 
 Setup is: 
 ```

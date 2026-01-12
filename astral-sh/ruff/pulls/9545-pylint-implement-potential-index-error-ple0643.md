@@ -14,14 +14,14 @@ head: add-PLE0643
 created_at: 2024-01-16T07:56:38Z
 updated_at: 2024-01-21T04:07:04Z
 url: https://github.com/astral-sh/ruff/pull/9545
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Implement `potential-index-error` (`PLE0643`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-16 07:56_
+_@diceroll123_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-12-12T04:54:36Z
 updated_at: 2025-06-10T15:35:15Z
 url: https://github.com/clap-rs/clap/issues/1126
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Question/Feature request: Any way to do required_ifs "flags exists".
 
 ---
 
-_Issue opened by @8176135 on 2017-12-12 04:54_
+_@8176135_
 
 Clap version: 2.29.0
 

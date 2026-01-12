@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T10:53:39Z
 updated_at: 2024-07-17T21:25:32Z
 url: https://github.com/astral-sh/uv/issues/3305
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Implied "--require-hashes"?
 
 ---
 
-_Issue opened by @helderco on 2024-04-29 10:53_
+_@helderco_
 
 It's great to have the new `--require-hashes` option, but can it be implied if installing from a requirements file with hashes?
 

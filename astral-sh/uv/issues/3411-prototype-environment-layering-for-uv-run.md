@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T16:19:26Z
 updated_at: 2024-05-08T21:24:25Z
 url: https://github.com/astral-sh/uv/issues/3411
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Prototype environment layering for `uv run`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-06 16:19_
+_@charliermarsh_
 
 Based on some ideas @zanieb and I discussed in Discord.
 

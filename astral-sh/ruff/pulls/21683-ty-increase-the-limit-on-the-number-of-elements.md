@@ -13,14 +13,14 @@ head: faster-literal-type-convergence
 created_at: 2025-11-28T18:41:02Z
 updated_at: 2025-12-05T04:31:02Z
 url: https://github.com/astral-sh/ruff/pull/21683
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] increase the limit on the number of elements in a non-recursively defined literal union
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-28 18:41_
+_@mtshiba_
 
 ## Summary
 

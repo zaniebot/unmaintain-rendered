@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-31T16:54:41Z
 updated_at: 2020-07-31T20:04:06Z
 url: https://github.com/clap-rs/clap/issues/2042
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Can't compile with 3.0.0-beta.1: "error: linking with `cc` failed: exit code: 1 [...]"
 
 ---
 
-_Issue opened by @bbergeron0 on 2020-07-31 16:54_
+_@bbergeron0_
 
 When trying to build a project using "3.0.0-beta.1", I get the following error:
 

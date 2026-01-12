@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T03:32:15Z
 updated_at: 2023-02-21T18:10:32Z
 url: https://github.com/astral-sh/ruff/issues/3082
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Auto fix PT018 breaks indentation
 
 ---
 
-_Issue opened by @janosh on 2023-02-21 03:32_
+_@janosh_
 
 Before:
 

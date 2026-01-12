@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-04T18:17:13Z
 updated_at: 2022-01-11T17:10:36Z
 url: https://github.com/clap-rs/clap/issues/3254
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # new `arg!` macro throws a lot of clippy nursery debug_assert_with_mut_call lints
 
 ---
 
-_Issue opened by @TDHolmes on 2022-01-04 18:17_
+_@TDHolmes_
 
 ### Please complete the following tasks
 

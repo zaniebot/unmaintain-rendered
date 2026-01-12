@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T18:13:33Z
 updated_at: 2026-01-09T15:37:53Z
 url: https://github.com/astral-sh/ty/issues/2402
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stack overflow for recursive type
 
 ---
 
-_Issue opened by @chebee7i on 2026-01-08 18:13_
+_@chebee7i_
 
 ### Summary
 

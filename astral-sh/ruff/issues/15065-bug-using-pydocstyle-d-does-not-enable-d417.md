@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T13:55:53Z
 updated_at: 2025-01-25T10:54:00Z
 url: https://github.com/astral-sh/ruff/issues/15065
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # bug: using pydocstyle (D) does not enable D417
 
 ---
 
-_Issue opened by @BenjPetr on 2024-12-19 13:55_
+_@BenjPetr_
 
 ### Description of the bug
 selecting pydocstyle (D) does not enable D417

@@ -13,14 +13,14 @@ head: david/first-type-argument-should-be-str
 created_at: 2025-04-03T08:55:18Z
 updated_at: 2025-04-03T13:45:09Z
 url: https://github.com/astral-sh/ruff/pull/17168
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Three-argument type-calls take 'str' as the first argument
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-03 08:55_
+_@sharkdp_
 
 ## Summary
 

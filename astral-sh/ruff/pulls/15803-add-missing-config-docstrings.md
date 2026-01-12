@@ -13,14 +13,14 @@ head: 4551-add-missing-config-docstrings
 created_at: 2025-01-29T02:08:21Z
 updated_at: 2025-01-29T03:39:56Z
 url: https://github.com/astral-sh/ruff/pull/15803
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add missing config docstrings
 
 ---
 
-_Pull request opened by @mishamsk on 2025-01-29 02:08_
+_@mishamsk_
 
 ## Summary
 

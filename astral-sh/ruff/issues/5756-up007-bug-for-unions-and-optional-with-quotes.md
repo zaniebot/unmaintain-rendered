@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-14T03:38:48Z
 updated_at: 2023-07-15T19:00:17Z
 url: https://github.com/astral-sh/ruff/issues/5756
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP007 - Bug for Unions and Optional with Quotes Inside Brackets
 
 ---
 
-_Issue opened by @max-muoto on 2023-07-14 03:38_
+_@max-muoto_
 
 ## Bug Description
 

@@ -12,14 +12,14 @@ head: charlie/pydocstyle
 created_at: 2022-10-14T17:12:26Z
 updated_at: 2022-10-14T17:26:37Z
 url: https://github.com/astral-sh/ruff/pull/429
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement D206, D207, and D208
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-14 17:12_
+_@charliermarsh_
 
 See: #274.
 

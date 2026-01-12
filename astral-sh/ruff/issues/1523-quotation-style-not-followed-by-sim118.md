@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-01T03:02:45Z
 updated_at: 2023-01-01T21:52:51Z
 url: https://github.com/astral-sh/ruff/issues/1523
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Quotation style not followed by `SIM118`
 
 ---
 
-_Issue opened by @thomasdesr on 2023-01-01 03:02_
+_@thomasdesr_
 
 I saw https://github.com/charliermarsh/ruff/pull/1413 merged and re-ran but SIM118 seems to still be generating single quotes.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T10:34:59Z
 updated_at: 2025-03-20T11:07:17Z
 url: https://github.com/astral-sh/uv/issues/12337
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # `sync` `--no-install-package=foo --inexact` removes `foo`.
 
 ---
 
-_Issue opened by @sanmai-NL on 2025-03-20 10:34_
+_@sanmai-NL_
 
 ### Summary
 

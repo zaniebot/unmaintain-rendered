@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-25T17:24:51Z
 updated_at: 2025-06-20T19:04:52Z
 url: https://github.com/astral-sh/ruff/issues/18298
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PYI041 fixes `None | int | None | float` to `None | None | float`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-25 17:24_
+_@dscorbett_
 
 ### Summary
 

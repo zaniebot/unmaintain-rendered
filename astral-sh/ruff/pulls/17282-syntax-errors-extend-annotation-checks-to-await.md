@@ -14,14 +14,14 @@ head: brent/syn-await-in-annotations
 created_at: 2025-04-07T16:55:23Z
 updated_at: 2025-04-08T12:55:45Z
 url: https://github.com/astral-sh/ruff/pull/17282
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] Extend annotation checks to `await`
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-07 16:55_
+_@ntBre_
 
 Summary
 --

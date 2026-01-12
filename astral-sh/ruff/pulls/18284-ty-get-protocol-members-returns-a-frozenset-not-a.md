@@ -13,14 +13,14 @@ head: alex/proto-members-frozenset
 created_at: 2025-05-23T23:17:37Z
 updated_at: 2025-05-24T13:53:26Z
 url: https://github.com/astral-sh/ruff/pull/18284
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] `get_protocol_members` returns a frozenset, not a tuple
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-23 23:17_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: deduplicate-input-files
 created_at: 2025-08-26T19:42:01Z
 updated_at: 2025-09-19T18:40:23Z
 url: https://github.com/astral-sh/ruff/pull/20105
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # Deduplicate input paths
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-08-26 19:42_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

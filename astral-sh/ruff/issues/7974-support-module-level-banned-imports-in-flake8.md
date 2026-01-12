@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-16T04:33:17Z
 updated_at: 2023-10-16T13:34:41Z
 url: https://github.com/astral-sh/ruff/issues/7974
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # support module-level banned imports in `flake8-tidy-imports.banned-api`
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-16 04:33_
+_@DetachHead_
 
 i wrote a pylint plugin to enforce certain rules about which modules can import each other within my project: https://github.com/detachhead/pylint-module-boundaries
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-05-20T23:42:34Z
 updated_at: 2023-10-09T20:51:46Z
 url: https://github.com/astral-sh/ruff/pull/4554
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Starlite -> Litestar
 
 ---
 
-_Pull request opened by @JacobCoffee on 2023-05-20 23:42_
+_@JacobCoffee_
 
 Update to 2023 branding
 

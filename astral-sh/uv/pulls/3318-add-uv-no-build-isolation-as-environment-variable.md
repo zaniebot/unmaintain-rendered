@@ -13,14 +13,14 @@ head: no-build-isolation-env-var
 created_at: 2024-04-30T03:57:22Z
 updated_at: 2024-04-30T13:29:16Z
 url: https://github.com/astral-sh/uv/pull/3318
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Add `UV_NO_BUILD_ISOLATION` as environment variable
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-04-30 03:57_
+_@flyaroundme_
 
 ## Summary
 Hi! Added `UV_NO_BUILD_ISOLATION` as a boolean environment variable for the `--no-build-isolation` command-line option.

@@ -13,14 +13,14 @@ head: charlie/fork
 created_at: 2024-11-05T19:23:53Z
 updated_at: 2024-11-06T13:46:56Z
 url: https://github.com/astral-sh/uv/pull/8839
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Respect fork markers in `--resolution-mode=lowest-direct`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-05 19:23_
+_@charliermarsh_
 
 ## Summary
 

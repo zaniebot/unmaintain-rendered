@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T21:46:55Z
 updated_at: 2025-10-29T21:22:40Z
 url: https://github.com/astral-sh/ty/issues/1448
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Self is not inferred for properties
 
 ---
 
-_Issue opened by @vlashada on 2025-10-27 21:46_
+_@vlashada_
 
 ### Summary
 

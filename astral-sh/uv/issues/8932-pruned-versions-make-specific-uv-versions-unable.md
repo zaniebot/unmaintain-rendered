@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T11:37:43Z
 updated_at: 2024-11-08T15:18:38Z
 url: https://github.com/astral-sh/uv/issues/8932
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Pruned versions make specific uv versions unable to compile
 
 ---
 
-_Issue opened by @Flamefire on 2024-11-08 11:37_
+_@Flamefire_
 
 I recently tried to recompile uv 0.2.30 (for testing) which has a dependency on reqwest-middleware and reqwest-retry:  
 https://github.com/astral-sh/uv/blob/0.2.30/Cargo.lock#L3123

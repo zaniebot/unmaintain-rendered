@@ -12,14 +12,14 @@ head: fix-docker-docs
 created_at: 2024-01-04T13:16:25Z
 updated_at: 2024-01-04T15:50:51Z
 url: https://github.com/astral-sh/uv/pull/774
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Fix docker contributing instructions
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 13:16_
+_@konstin_
 
 _No description provided._
 

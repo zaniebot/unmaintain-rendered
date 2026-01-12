@@ -12,14 +12,14 @@ head: charlie/play
 created_at: 2023-01-03T03:40:35Z
 updated_at: 2023-01-03T03:40:39Z
 url: https://github.com/astral-sh/ruff/pull/1583
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add a link to GitHub from the playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-03 03:40_
+_@charliermarsh_
 
 _No description provided._
 

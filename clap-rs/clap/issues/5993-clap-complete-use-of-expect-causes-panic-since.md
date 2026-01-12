@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-08T15:09:56Z
 updated_at: 2025-05-27T17:24:35Z
 url: https://github.com/clap-rs/clap/issues/5993
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [clap_complete] use of expect causes panic since writing to stdout may fail
 
 ---
 
-_Issue opened by @gtema on 2025-05-08 15:09_
+_@gtema_
 
 ### Please complete the following tasks
 

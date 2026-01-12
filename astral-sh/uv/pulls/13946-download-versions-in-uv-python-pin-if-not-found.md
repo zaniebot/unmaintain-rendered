@@ -13,14 +13,14 @@ head: zb/pin-download
 created_at: 2025-06-10T13:08:22Z
 updated_at: 2025-06-10T15:56:23Z
 url: https://github.com/astral-sh/uv/pull/13946
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Download versions in `uv python pin` if not found
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-10 13:08_
+_@zanieb_
 
 As another follow-up in the vein of https://github.com/astral-sh/uv/pull/13944, I noticed `uv python pin` doesn't download Python versions, which is a bit weird because we'll warn it's not found.
 

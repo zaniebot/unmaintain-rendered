@@ -12,14 +12,14 @@ head: charlie/tally
 created_at: 2024-01-31T06:30:12Z
 updated_at: 2024-01-31T15:48:29Z
 url: https://github.com/astral-sh/uv/pull/1203
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Report number of bytes deleted when clearing cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 06:30_
+_@charliermarsh_
 
 ## Summary
 

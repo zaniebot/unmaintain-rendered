@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-28T12:05:55Z
 updated_at: 2024-07-15T15:55:00Z
 url: https://github.com/astral-sh/uv/issues/4612
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv` fails to connect to private index with mTLS enabled
 
 ---
 
-_Issue opened by @CJSmith-0141 on 2024-06-28 12:05_
+_@CJSmith-0141_
 
 Having set all the following environment variables, my expectation is that `uv` would behave the same way as `pip` when running `uv pip install .`
 

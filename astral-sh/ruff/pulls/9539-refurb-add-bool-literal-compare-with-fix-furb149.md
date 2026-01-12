@@ -12,14 +12,14 @@ head: add-FURB149
 created_at: 2024-01-15T22:57:16Z
 updated_at: 2024-03-28T14:07:28Z
 url: https://github.com/astral-sh/ruff/pull/9539
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`refurb`] - add `bool-literal-compare` with fix (`FURB149`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-15 22:57_
+_@diceroll123_
 
 ## Summary
 

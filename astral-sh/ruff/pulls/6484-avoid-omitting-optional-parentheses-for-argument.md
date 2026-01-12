@@ -13,14 +13,14 @@ head: charlie/compare
 created_at: 2023-08-10T19:37:38Z
 updated_at: 2023-08-11T18:24:21Z
 url: https://github.com/astral-sh/ruff/pull/6484
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid omitting optional parentheses for argument-less parentheses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-10 19:37_
+_@charliermarsh_
 
 ## Summary
 

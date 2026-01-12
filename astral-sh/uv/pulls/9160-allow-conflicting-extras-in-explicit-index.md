@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-11-16T02:46:45Z
 updated_at: 2024-11-19T13:44:44Z
 url: https://github.com/astral-sh/uv/pull/9160
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Allow conflicting extras in explicit index assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-16 02:46_
+_@charliermarsh_
 
 ## Summary
 

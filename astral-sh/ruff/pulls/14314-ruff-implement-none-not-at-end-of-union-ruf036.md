@@ -14,14 +14,14 @@ head: none-not-at-end-of-union
 created_at: 2024-11-13T11:48:39Z
 updated_at: 2024-11-14T18:37:13Z
 url: https://github.com/astral-sh/ruff/pull/14314
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Implement `none-not-at-end-of-union` (`RUF036`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-13 11:48_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

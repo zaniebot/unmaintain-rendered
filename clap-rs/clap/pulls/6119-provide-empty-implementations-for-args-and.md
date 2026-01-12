@@ -12,14 +12,14 @@ head: empty-impl
 created_at: 2025-09-02T16:03:43Z
 updated_at: 2025-09-02T17:00:40Z
 url: https://github.com/clap-rs/clap/pull/6119
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Provide empty implementations for Args and Subcommand
 
 ---
 
-_Pull request opened by @alexkazik on 2025-09-02 16:03_
+_@alexkazik_
 
 Fixes #6117
 

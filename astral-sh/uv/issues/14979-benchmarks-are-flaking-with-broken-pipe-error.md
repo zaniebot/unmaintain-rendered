@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T15:42:57Z
 updated_at: 2025-07-30T15:43:02Z
 url: https://github.com/astral-sh/uv/issues/14979
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Benchmarks are flaking with broken pipe error
 
 ---
 
-_Issue opened by @zanieb on 2025-07-30 15:42_
+_@zanieb_
 
 ```
 Measured: crates/uv-bench/benches/uv.rs::uv::resolve_warm_jupyter_universal::resolve_warm_jupyter_universal

@@ -12,14 +12,14 @@ head: ag/fork-map-simplification
 created_at: 2024-10-29T17:26:18Z
 updated_at: 2024-10-29T17:38:24Z
 url: https://github.com/astral-sh/uv/pull/8672
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # uv-resolver: simplify case analysis in ForkMap::get
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-10-29 17:26_
+_@BurntSushi_
 
 Previously, when doing a `uv pip` resolution, we would only return the
 first entry in the map. But there should only ever be one entry, or else

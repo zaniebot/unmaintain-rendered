@@ -12,14 +12,14 @@ head: charlie/macro
 created_at: 2023-05-12T20:50:01Z
 updated_at: 2023-05-12T21:20:31Z
 url: https://github.com/astral-sh/ruff/pull/4402
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Replace `macro_rules!` visitors with dedicated methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-12 20:50_
+_@charliermarsh_
 
 These aren't necessary. It's simpler to use methods.
 

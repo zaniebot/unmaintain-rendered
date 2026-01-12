@@ -13,14 +13,14 @@ head: charlie/env
 created_at: 2025-09-12T16:08:56Z
 updated_at: 2025-09-12T22:11:53Z
 url: https://github.com/astral-sh/uv/pull/15815
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Allow escaping spaces in --env-file handling
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-12 16:08_
+_@charliermarsh_
 
 ## Summary
 

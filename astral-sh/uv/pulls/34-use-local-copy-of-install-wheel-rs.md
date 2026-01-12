@@ -12,14 +12,14 @@ head: charlie/install-wheel-fix
 created_at: 2023-10-07T01:13:09Z
 updated_at: 2023-10-07T01:43:56Z
 url: https://github.com/astral-sh/uv/pull/34
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Use local copy of `install-wheel-rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 01:13_
+_@charliermarsh_
 
 This PR modifies the `install-wheel-rs` (and a few other crates) to get everything playing nicely. Specifically, CI should pass, and all these crates now use workspace dependencies between one another.
 

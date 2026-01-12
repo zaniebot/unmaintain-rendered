@@ -13,14 +13,14 @@ head: charlie/install
 created_at: 2024-03-07T02:37:54Z
 updated_at: 2024-03-07T04:35:23Z
 url: https://github.com/astral-sh/uv/pull/2259
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Close `RECORD` after reading entries during uninstall
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 02:37_
+_@charliermarsh_
 
 ## Summary
 

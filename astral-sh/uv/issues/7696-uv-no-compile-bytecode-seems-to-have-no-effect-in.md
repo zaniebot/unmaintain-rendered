@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T07:09:21Z
 updated_at: 2024-09-26T13:52:11Z
 url: https://github.com/astral-sh/uv/issues/7696
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv `--no-compile-bytecode` seems to have no effect in Docker build
 
 ---
 
-_Issue opened by @akx on 2024-09-26 07:09_
+_@akx_
 
 Given a minimal Dockerfile
 

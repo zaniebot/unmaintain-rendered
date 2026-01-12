@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-31T12:19:18Z
 updated_at: 2024-05-18T03:13:07Z
 url: https://github.com/astral-sh/uv/issues/1205
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Adjust concurrent task limits
 
 ---
 
-_Issue opened by @konstin on 2024-01-31 12:19_
+_@konstin_
 
 We set limits to the number of concurrent tasks in a number of places. We should revisit them and decide whether these number are good. Increasing them may speed up puffin, but setting them too high may also lead to losses due to synchronization or problems for registries such as pypi 
 

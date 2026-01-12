@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-23T22:11:15Z
 updated_at: 2025-05-07T15:21:04Z
 url: https://github.com/astral-sh/ruff/issues/17595
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Failed to narrow in nested function
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-23 22:11_
+_@dhruvmanila_
 
 ### Summary
 

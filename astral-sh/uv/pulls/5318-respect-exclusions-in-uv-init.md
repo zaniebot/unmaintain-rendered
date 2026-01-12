@@ -14,14 +14,14 @@ head: charlie/exclude
 created_at: 2024-07-23T00:06:13Z
 updated_at: 2024-07-23T00:15:18Z
 url: https://github.com/astral-sh/uv/pull/5318
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Respect exclusions in `uv init`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-23 00:06_
+_@charliermarsh_
 
 ## Summary
 

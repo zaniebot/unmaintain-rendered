@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-10-28T01:26:20Z
 updated_at: 2024-10-28T02:01:21Z
 url: https://github.com/astral-sh/uv/pull/8627
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Update CLI documentation for `--cache-dir`
 
 ---
 
-_Pull request opened by @simonw on 2024-10-28 01:26_
+_@simonw_
 
 Refs:
 - #8626

@@ -14,14 +14,14 @@ head: cjm/recta
 created_at: 2025-08-07T12:39:01Z
 updated_at: 2025-08-12T16:07:47Z
 url: https://github.com/astral-sh/ruff/pull/19805
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] support recursive type aliases
 
 ---
 
-_Pull request opened by @carljm on 2025-08-07 12:39_
+_@carljm_
 
 ## Summary
 

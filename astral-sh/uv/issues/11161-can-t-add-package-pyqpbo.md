@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-02T09:39:24Z
 updated_at: 2025-02-02T13:47:00Z
 url: https://github.com/astral-sh/uv/issues/11161
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Can't add package (pyqpbo)
 
 ---
 
-_Issue opened by @noamgot on 2025-02-02 09:39_
+_@noamgot_
 
 ### Summary
 

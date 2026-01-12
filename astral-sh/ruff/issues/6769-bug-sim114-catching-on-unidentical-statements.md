@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-22T12:06:06Z
 updated_at: 2023-08-22T12:09:07Z
 url: https://github.com/astral-sh/ruff/issues/6769
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # BUG: SIM114 Catching on unidentical statements
 
 ---
 
-_Issue opened by @colin99d on 2023-08-22 12:06_
+_@colin99d_
 
 ```
     if statement == "balance-sheet":

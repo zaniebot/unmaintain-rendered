@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T02:46:20Z
 updated_at: 2024-10-04T05:13:29Z
 url: https://github.com/astral-sh/ruff/issues/13414
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Potential false positive for `undocumented-param` (`D417)`
 
 ---
 
-_Issue opened by @harupy on 2024-09-20 02:46_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

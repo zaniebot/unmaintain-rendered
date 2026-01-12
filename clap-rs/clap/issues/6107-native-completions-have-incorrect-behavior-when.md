@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-08-19T13:31:55Z
 updated_at: 2025-09-08T23:07:23Z
 url: https://github.com/clap-rs/clap/issues/6107
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Native completions have incorrect behavior when completing in the middle with `sudo`
 
 ---
 
-_Issue opened by @epage on 2025-08-19 13:31_
+_@epage_
 
 ### Problem
 

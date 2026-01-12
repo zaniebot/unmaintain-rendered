@@ -12,14 +12,14 @@ head: konsti/consider-unpacked-source-dist
 created_at: 2023-12-04T14:59:28Z
 updated_at: 2023-12-06T11:37:57Z
 url: https://github.com/astral-sh/uv/pull/545
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 #  Add test for cache source dist installing 
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 14:59_
+_@konstin_
 
 The code changes are outdated, now it's only adding a test
 

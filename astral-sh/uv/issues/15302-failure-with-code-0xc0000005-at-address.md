@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T11:20:56Z
 updated_at: 2025-08-15T12:20:15Z
 url: https://github.com/astral-sh/uv/issues/15302
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Failure with `code 0xC0000005 at address 0x18000c274` on Windows
 
 ---
 
-_Issue opened by @babeloo on 2025-08-15 11:20_
+_@babeloo_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-03-09T15:19:33Z
 updated_at: 2021-03-09T16:32:12Z
 url: https://github.com/clap-rs/clap/issues/2397
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # is_present returns wrong args
 
 ---
 
-_Issue opened by @clark-ja on 2021-03-09 15:19_
+_@clark-ja_
 
 ### Please complete the following tasks
 

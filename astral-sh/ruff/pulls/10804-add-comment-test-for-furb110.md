@@ -14,14 +14,14 @@ head: charlie/fu
 created_at: 2024-04-06T16:42:39Z
 updated_at: 2024-04-06T16:55:34Z
 url: https://github.com/astral-sh/ruff/pull/10804
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add comment test for `FURB110`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-06 16:42_
+_@charliermarsh_
 
 _No description provided._
 

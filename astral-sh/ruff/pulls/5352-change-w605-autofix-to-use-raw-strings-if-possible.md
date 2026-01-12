@@ -12,14 +12,14 @@ head: w605-raw-string
 created_at: 2023-06-24T20:26:09Z
 updated_at: 2023-06-25T21:38:49Z
 url: https://github.com/astral-sh/ruff/pull/5352
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Change W605 autofix to use raw strings if possible
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-06-24 20:26_
+_@hauntsaninja_
 
 Fixes #5061
 

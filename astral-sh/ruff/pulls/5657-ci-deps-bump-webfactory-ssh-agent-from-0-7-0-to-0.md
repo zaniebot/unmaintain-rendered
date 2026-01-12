@@ -13,14 +13,14 @@ head: dependabot/github_actions/webfactory/ssh-agent-0.8.0
 created_at: 2023-07-10T16:42:17Z
 updated_at: 2023-07-10T17:10:27Z
 url: https://github.com/astral-sh/ruff/pull/5657
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # ci(deps): bump webfactory/ssh-agent from 0.7.0 to 0.8.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-07-10 16:42_
+_@dependabot_
 
 Bumps [webfactory/ssh-agent](https://github.com/webfactory/ssh-agent) from 0.7.0 to 0.8.0.
 <details>

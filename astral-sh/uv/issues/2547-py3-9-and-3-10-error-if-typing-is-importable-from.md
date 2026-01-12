@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T18:40:54Z
 updated_at: 2024-03-20T02:56:04Z
 url: https://github.com/astral-sh/uv/issues/2547
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # py3.9 and 3.10 error if typing is importable from cwd
 
 ---
 
-_Issue opened by @raylu on 2024-03-19 18:40_
+_@raylu_
 
 ```
 $ docker run -it --rm python:3.10-slim bash

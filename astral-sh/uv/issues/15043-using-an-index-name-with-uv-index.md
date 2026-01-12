@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-03T19:14:41Z
 updated_at: 2025-09-23T13:07:55Z
 url: https://github.com/astral-sh/uv/issues/15043
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Using an index name with UV_INDEX
 
 ---
 
-_Issue opened by @tonnico on 2025-08-03 19:14_
+_@tonnico_
 
 ### Summary
 

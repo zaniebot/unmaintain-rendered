@@ -15,14 +15,14 @@ head: micha/increase-receive-timeout
 created_at: 2025-11-14T11:34:22Z
 updated_at: 2025-11-14T12:15:24Z
 url: https://github.com/astral-sh/ruff/pull/21448
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Increase default receive timeout in tests to 10s
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-14 11:34_
+_@MichaReiser_
 
 ## Summary
 

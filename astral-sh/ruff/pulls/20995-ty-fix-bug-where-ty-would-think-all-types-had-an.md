@@ -14,14 +14,14 @@ head: alex/mro-attr
 created_at: 2025-10-20T13:12:09Z
 updated_at: 2025-10-27T11:31:47Z
 url: https://github.com/astral-sh/ruff/pull/20995
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Fix bug where ty would think all types had an `__mro__` attribute
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-20 13:12_
+_@AlexWaygood_
 
 ## Summary
 

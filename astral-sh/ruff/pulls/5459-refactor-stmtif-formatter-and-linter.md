@@ -13,14 +13,14 @@ head: refator-if-statement-formatter
 created_at: 2023-07-01T20:23:47Z
 updated_at: 2023-07-18T11:51:51Z
 url: https://github.com/astral-sh/ruff/pull/5459
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor `StmtIf`: Formatter and Linter
 
 ---
 
-_Pull request opened by @konstin on 2023-07-01 20:23_
+_@konstin_
 
 ## Summary
 

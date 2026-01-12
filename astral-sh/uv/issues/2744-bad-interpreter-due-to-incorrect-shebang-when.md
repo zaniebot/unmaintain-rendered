@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-31T23:47:22Z
 updated_at: 2025-03-09T15:04:20Z
 url: https://github.com/astral-sh/uv/issues/2744
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Bad interpreter due to incorrect shebang when running scripts from setuptools setup scripts
 
 ---
 
-_Issue opened by @hodeinavarro on 2024-03-31 23:47_
+_@hodeinavarro_
 
 # Issue
 Executing a bin installed from "scripts" tag at `setup` from setuptools errors

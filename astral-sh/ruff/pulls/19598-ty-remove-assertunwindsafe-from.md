@@ -15,14 +15,14 @@ head: micha/assert-unwind-background-api
 created_at: 2025-07-28T13:17:07Z
 updated_at: 2025-07-28T13:30:17Z
 url: https://github.com/astral-sh/ruff/pull/19598
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Remove `AssertUnwindSafe` from `BackgroundRequestHandler` api
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-28 13:17_
+_@MichaReiser_
 
 ## Summary
 

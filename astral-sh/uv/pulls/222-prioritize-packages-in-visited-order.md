@@ -13,14 +13,14 @@ head: charlie/priority
 created_at: 2023-10-30T00:07:44Z
 updated_at: 2023-10-30T00:48:37Z
 url: https://github.com/astral-sh/uv/pull/222
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Prioritize packages in visited order
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 00:07_
+_@charliermarsh_
 
 This has a pretty significant impact on large resolutions:
 

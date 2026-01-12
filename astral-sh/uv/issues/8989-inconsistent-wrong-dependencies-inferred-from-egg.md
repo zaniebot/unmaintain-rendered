@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T14:33:50Z
 updated_at: 2025-02-12T18:04:29Z
 url: https://github.com/astral-sh/uv/issues/8989
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Inconsistent/wrong dependencies inferred from egg-info in sdist
 
 ---
 
-_Issue opened by @zeevro on 2024-11-10 14:33_
+_@zeevro_
 
 `uv` tries to find static metadata so eagerly, it will use weird egg-info files that somehow found their way into sdists. However, these may conflict with the `setup.py` contents. I think there should be a way to tell `uv` to ignore these and run the build-backend to get the metadata - even on `uv lock` and the like.
 

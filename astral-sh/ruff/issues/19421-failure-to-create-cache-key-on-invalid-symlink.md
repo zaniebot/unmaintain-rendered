@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T11:47:42Z
 updated_at: 2025-07-18T12:01:14Z
 url: https://github.com/astral-sh/ruff/issues/19421
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Failure to create cache key on invalid symlink
 
 ---
 
-_Issue opened by @kdeldycke on 2025-07-18 11:47_
+_@kdeldycke_
 
 ### Summary
 

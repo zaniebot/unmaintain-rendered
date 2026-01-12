@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T21:28:52Z
 updated_at: 2026-01-09T15:37:44Z
 url: https://github.com/astral-sh/ty/issues/1670
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Non deterministic diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-28 21:28_
+_@MichaReiser_
 
 ### Summary
 

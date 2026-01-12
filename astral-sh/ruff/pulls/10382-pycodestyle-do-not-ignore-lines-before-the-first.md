@@ -13,14 +13,14 @@ head: hoel/blank-lines-handle-first-line
 created_at: 2024-03-13T13:18:47Z
 updated_at: 2024-03-14T12:26:25Z
 url: https://github.com/astral-sh/ruff/pull/10382
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pycodestyle`] Do not ignore lines before the first logical line in blank lines rules.
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-13 13:18_
+_@hoel-bagard_
 
 ## Summary
 

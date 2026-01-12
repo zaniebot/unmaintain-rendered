@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T00:21:50Z
 updated_at: 2025-05-11T13:16:23Z
 url: https://github.com/astral-sh/ruff/issues/9767
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # new rule - useless if statement
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-02 00:21_
+_@DetachHead_
 
 ruff should be able to detect if the code on both sides of an if statement are identical, and report it as unnecessary 
 ```py

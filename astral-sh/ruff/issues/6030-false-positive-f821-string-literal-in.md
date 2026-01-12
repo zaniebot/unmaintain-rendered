@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-24T13:59:19Z
 updated_at: 2023-07-24T15:09:42Z
 url: https://github.com/astral-sh/ruff/issues/6030
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive F821: string Literal in combintation with future import
 
 ---
 
-_Issue opened by @twoertwein on 2023-07-24 13:59_
+_@twoertwein_
 
 I believe this was not triggered with 0.0.278 but is triggered with 0.0.280
 ```py

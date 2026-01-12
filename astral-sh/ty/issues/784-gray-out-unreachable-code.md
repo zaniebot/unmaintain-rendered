@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T16:02:47Z
 updated_at: 2025-11-14T08:39:44Z
 url: https://github.com/astral-sh/ty/issues/784
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Gray out unreachable code
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-08 16:02_
+_@MichaReiser_
 
 This can be done by creating a diagnostic with the `UnnecessaryCode` tag. 
 

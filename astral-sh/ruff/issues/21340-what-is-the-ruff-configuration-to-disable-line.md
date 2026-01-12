@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T15:13:47Z
 updated_at: 2025-11-08T15:56:20Z
 url: https://github.com/astral-sh/ruff/issues/21340
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # What is the Ruff configuration to disable line wrapping?
 
 ---
 
-_Issue opened by @cos4ni2s on 2025-11-08 15:13_
+_@cos4ni2s_
 
 ### Question
 

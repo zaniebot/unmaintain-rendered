@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2025-03-13T23:57:24Z
 updated_at: 2025-03-14T00:41:45Z
 url: https://github.com/astral-sh/uv/pull/12158
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Remove extraneous script packages in `uv sync --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-13 23:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/upgrade-constraint
 created_at: 2024-11-23T01:25:12Z
 updated_at: 2024-11-25T22:22:32Z
 url: https://github.com/astral-sh/uv/pull/9375
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Enable constraints in `uv tool upgrade` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-23 01:25_
+_@charliermarsh_
 
 ## Summary
 

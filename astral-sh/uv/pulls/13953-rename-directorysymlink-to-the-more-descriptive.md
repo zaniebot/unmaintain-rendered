@@ -13,14 +13,14 @@ head: jtfm/rename-directory-symlink
 created_at: 2025-06-10T18:33:33Z
 updated_at: 2025-06-10T18:52:09Z
 url: https://github.com/astral-sh/uv/pull/13953
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Rename `DirectorySymlink` to the more descriptive `PythonMinorVersionLink`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-10 18:33_
+_@jtfmumm_
 
 The `DirectorySymlink` struct assumes that it will be a Python minor version link, so this renaming makes the intention clearer.
 

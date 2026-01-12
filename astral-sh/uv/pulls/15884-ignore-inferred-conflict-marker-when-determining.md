@@ -13,14 +13,14 @@ head: zb/lock-conflict-transitive
 created_at: 2025-09-16T02:30:10Z
 updated_at: 2025-09-16T02:38:02Z
 url: https://github.com/astral-sh/uv/pull/15884
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Ignore inferred conflict marker when determining if lockfile is up-to-date
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-16 02:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15869
 

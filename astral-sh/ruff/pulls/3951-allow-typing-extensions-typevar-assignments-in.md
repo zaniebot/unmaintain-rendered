@@ -12,14 +12,14 @@ head: charlie/ext
 created_at: 2023-04-12T20:39:05Z
 updated_at: 2023-04-12T21:30:17Z
 url: https://github.com/astral-sh/ruff/pull/3951
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Allow `typing_extensions.TypeVar` assignments in `.pyi` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-12 20:39_
+_@charliermarsh_
 
 We're still not quite in full compliance with flake8-pyi (the excellent comment [here](https://github.com/charliermarsh/ruff/pull/3861#issuecomment-1494889518) from Alex Waygood outlines flake8-pyi's strategy), but this is definitely an improvement and an oversight as-is.
 

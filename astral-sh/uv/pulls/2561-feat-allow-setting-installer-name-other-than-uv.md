@@ -12,14 +12,14 @@ head: set-installer-name
 created_at: 2024-03-20T10:19:05Z
 updated_at: 2024-03-20T14:51:38Z
 url: https://github.com/astral-sh/uv/pull/2561
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # feat: allow setting installer name other than `uv`
 
 ---
 
-_Pull request opened by @wolfv on 2024-03-20 10:19_
+_@wolfv_
 
 ## Summary
 

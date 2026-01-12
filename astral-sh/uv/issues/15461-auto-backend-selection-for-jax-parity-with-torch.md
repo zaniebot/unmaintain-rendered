@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T18:24:38Z
 updated_at: 2025-08-26T15:19:44Z
 url: https://github.com/astral-sh/uv/issues/15461
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Auto backend selection for JAX (parity with --torch-backend=auto)
 
 ---
 
-_Issue opened by @nkiyohara on 2025-08-22 18:24_
+_@nkiyohara_
 
 ### Summary
 

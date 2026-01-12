@@ -13,14 +13,14 @@ head: zb/install-bin
 created_at: 2025-06-11T22:29:47Z
 updated_at: 2025-06-12T10:02:52Z
 url: https://github.com/astral-sh/uv/pull/13978
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Update the CLI help and reference to include references to the Python bin directory
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-11 22:29_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13977
 

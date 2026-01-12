@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-03-20T10:38:55Z
 updated_at: 2024-03-20T13:30:53Z
 url: https://github.com/astral-sh/ruff/pull/10488
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix error message for rule C400
 
 ---
 
-_Pull request opened by @VascoSch92 on 2024-03-20 10:38_
+_@VascoSch92_
 
 Fix a typos in the error message of rule C400
 

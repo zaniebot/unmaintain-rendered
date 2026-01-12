@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T19:24:33Z
 updated_at: 2024-11-08T19:24:33Z
 url: https://github.com/astral-sh/uv/issues/8954
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Docker build workflow does not allow pre-releases
 
 ---
 
-_Issue opened by @zanieb on 2024-11-08 19:24_
+_@zanieb_
 
 We can't build pre-release Docker images for uv because there's a tag consistency check 
 

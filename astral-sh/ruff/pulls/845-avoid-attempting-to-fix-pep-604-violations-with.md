@@ -12,14 +12,14 @@ head: charlie/U007
 created_at: 2022-11-21T02:41:49Z
 updated_at: 2022-11-21T02:41:56Z
 url: https://github.com/astral-sh/ruff/pull/845
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid attempting to fix PEP 604 violations with deferred annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-21 02:41_
+_@charliermarsh_
 
 We now avoid fixing or flagging annotations like `Union["Foo", "Bar"]`. We _also_ avoid fixing or flagging annotations like `"Union[Foo, Bar]"`. These are safer behaviors and also mimic `pyupgrade`.
 

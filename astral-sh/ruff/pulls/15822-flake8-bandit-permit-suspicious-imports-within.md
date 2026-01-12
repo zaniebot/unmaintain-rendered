@@ -14,14 +14,14 @@ head: s4-ignore-stubs
 created_at: 2025-01-30T01:24:35Z
 updated_at: 2025-01-30T16:48:37Z
 url: https://github.com/astral-sh/ruff/pull/15822
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-bandit`] Permit suspicious imports within stub files (`S4`)
 
 ---
 
-_Pull request opened by @tjkuson on 2025-01-30 01:24_
+_@tjkuson_
 
 ## Summary
 

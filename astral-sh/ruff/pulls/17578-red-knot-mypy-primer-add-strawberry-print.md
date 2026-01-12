@@ -14,14 +14,14 @@ head: david/mypy_primer_add-strawberry
 created_at: 2025-04-23T08:51:14Z
 updated_at: 2025-04-23T08:57:13Z
 url: https://github.com/astral-sh/ruff/pull/17578
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] mypy_primer: add strawberry, print compilation errors to stderr
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-23 08:51_
+_@sharkdp_
 
 ## Summary
 

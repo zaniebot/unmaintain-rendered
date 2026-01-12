@@ -13,14 +13,14 @@ head: zb/singleton-no-version
 created_at: 2024-01-09T18:08:29Z
 updated_at: 2024-01-09T21:09:53Z
 url: https://github.com/astral-sh/uv/pull/855
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Improve error messages when there are no versions of a singleton range
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-09 18:08_
+_@zanieb_
 
 _No description provided._
 

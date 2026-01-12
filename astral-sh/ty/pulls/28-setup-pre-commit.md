@@ -12,14 +12,14 @@ head: setup-pre-commit
 created_at: 2025-05-05T14:25:15Z
 updated_at: 2025-07-08T10:39:19Z
 url: https://github.com/astral-sh/ty/pull/28
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Setup pre-commit
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 14:25_
+_@MichaReiser_
 
 Setup pre-commit. Mostly copy pasted from Ruff
 

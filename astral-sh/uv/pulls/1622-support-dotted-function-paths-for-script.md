@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-18T02:28:54Z
 updated_at: 2024-02-19T12:46:47Z
 url: https://github.com/astral-sh/uv/pull/1622
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Support dotted function paths for script entrypoints
 
 ---
 
-_Pull request opened by @markmmm on 2024-02-18 02:28_
+_@markmmm_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

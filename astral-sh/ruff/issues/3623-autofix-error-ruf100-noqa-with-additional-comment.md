@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T11:29:45Z
 updated_at: 2023-03-20T15:09:28Z
 url: https://github.com/astral-sh/ruff/issues/3623
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] RUF100 noqa with additional comment
 
 ---
 
-_Issue opened by @araffin on 2023-03-20 11:29_
+_@araffin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

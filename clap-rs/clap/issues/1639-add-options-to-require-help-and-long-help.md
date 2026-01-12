@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-01-21T07:45:58Z
 updated_at: 2020-02-10T18:09:08Z
 url: https://github.com/clap-rs/clap/issues/1639
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add options to require `help` and `long_help`
 
 ---
 
-_Issue opened by @casey on 2020-01-21 07:45_
+_@casey_
 
 I like to add `help` strings, and sometimes `long_help` strings to all of my arguments, but I often forget.
 

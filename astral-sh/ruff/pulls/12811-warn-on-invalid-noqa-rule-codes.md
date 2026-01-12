@@ -13,14 +13,14 @@ head: charlie/warn
 created_at: 2024-08-11T23:24:16Z
 updated_at: 2025-03-07T10:30:50Z
 url: https://github.com/astral-sh/ruff/pull/12811
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Warn on invalid `# noqa` rule codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-11 23:24_
+_@charliermarsh_
 
 ## Summary
 

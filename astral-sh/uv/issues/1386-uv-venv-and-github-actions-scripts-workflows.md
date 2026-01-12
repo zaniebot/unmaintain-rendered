@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T23:37:23Z
 updated_at: 2025-04-20T23:42:40Z
 url: https://github.com/astral-sh/uv/issues/1386
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # `uv venv` and github actions scripts / workflows
 
 ---
 
-_Issue opened by @strickvl on 2024-02-15 23:37_
+_@strickvl_
 
 Having trouble converting our pre-existing CI workflows / scripts to use `uv`, as you can see [here](https://github.com/zenml-io/zenml/actions/runs/7923609857/job/21633667697?pr=2442). Problem relates to the virtual environments which don't seem to be retained between workflow steps.
 

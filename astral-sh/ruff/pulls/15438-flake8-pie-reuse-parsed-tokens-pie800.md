@@ -13,14 +13,14 @@ head: PIE800
 created_at: 2025-01-12T00:14:31Z
 updated_at: 2025-01-13T09:14:05Z
 url: https://github.com/astral-sh/ruff/pull/15438
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-pie`] Reuse parsed tokens (`PIE800`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-12 00:14_
+_@InSyncWithFoo_
 
 ## Summary
 

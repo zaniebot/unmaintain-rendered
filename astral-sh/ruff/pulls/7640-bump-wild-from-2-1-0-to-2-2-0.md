@@ -13,14 +13,14 @@ head: dependabot/cargo/wild-2.2.0
 created_at: 2023-09-25T08:54:42Z
 updated_at: 2023-09-25T09:12:32Z
 url: https://github.com/astral-sh/ruff/pull/7640
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump wild from 2.1.0 to 2.2.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-25 08:54_
+_@dependabot_
 
 Bumps [wild](https://gitlab.com/kornelski/wild) from 2.1.0 to 2.2.0.
 <details>

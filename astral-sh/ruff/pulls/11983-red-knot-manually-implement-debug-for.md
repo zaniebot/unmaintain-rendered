@@ -13,14 +13,14 @@ head: vendored-filesystem-convenience
 created_at: 2024-06-22T14:13:26Z
 updated_at: 2024-06-23T13:25:57Z
 url: https://github.com/astral-sh/ruff/pull/11983
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Manually implement `Debug` for `VendoredFileSystem`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-22 14:13_
+_@AlexWaygood_
 
 I temporarily added this in a PR to my fork so I could debug some test failures on Windows that were a result of paths not being normalized when the zip archive was being created at build time. It seems like it could be a useful method to have around generally, in case we need to debug similar issues in the future.
 

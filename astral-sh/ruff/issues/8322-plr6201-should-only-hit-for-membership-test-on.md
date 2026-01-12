@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-29T08:22:45Z
 updated_at: 2025-01-28T19:13:24Z
 url: https://github.com/astral-sh/ruff/issues/8322
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PLR6201 should only hit for membership test on constant collections
 
 ---
 
-_Issue opened by @LefterisJP on 2023-10-29 08:22_
+_@LefterisJP_
 
 ### Ruff version
 

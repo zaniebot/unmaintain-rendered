@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T08:41:49Z
 updated_at: 2025-10-16T21:36:07Z
 url: https://github.com/astral-sh/ty/issues/1315
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty never completes checking astropy (looks like a runaway memory leak)
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-10-07 08:41_
+_@neutrinoceros_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: quote
 created_at: 2024-07-24T02:43:02Z
 updated_at: 2024-07-24T04:28:26Z
 url: https://github.com/astral-sh/uv/pull/5393
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Remove an extra quote in `sync-python-releaes.yml`
 
 ---
 
-_Pull request opened by @j178 on 2024-07-24 02:43_
+_@j178_
 
 _No description provided._
 

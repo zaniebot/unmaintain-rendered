@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T12:48:28Z
 updated_at: 2024-05-31T15:24:16Z
 url: https://github.com/astral-sh/ruff/issues/11636
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `object.__setattr__`  triggering PLC2801 outside of dunder methods
 
 ---
 
-_Issue opened by @my1e5 on 2024-05-31 12:48_
+_@my1e5_
 
 Related to [false positive on PLC2801 "unnecessary dunder... for __setattr__" #9584](https://github.com/astral-sh/ruff/issues/9584)
 

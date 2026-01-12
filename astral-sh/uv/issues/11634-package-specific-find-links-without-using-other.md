@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T19:18:50Z
 updated_at: 2025-03-26T01:14:45Z
 url: https://github.com/astral-sh/uv/issues/11634
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # Package-specific find-links, without using other indices
 
 ---
 
-_Issue opened by @JWCS on 2025-02-19 19:18_
+_@JWCS_
 
 ### Question
 

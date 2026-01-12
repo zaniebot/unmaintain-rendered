@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-24T11:51:58Z
 updated_at: 2024-06-24T11:57:28Z
 url: https://github.com/astral-sh/ruff/issues/12014
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Deprecate or un-deprecate `extend-ignore` and `extend-unfixable`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-24 11:51_
+_@MichaReiser_
 
 The `extend-ignore` and `extend-unfixable` options are documented as deprecated but they're still widely used. [@charliermarsh argues](https://github.com/astral-sh/ruff/pull/12007) that he would add the settings if they didn't exist today (for flake8 compact?).
 

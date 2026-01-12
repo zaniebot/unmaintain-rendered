@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T23:02:34Z
 updated_at: 2025-01-13T08:36:53Z
 url: https://github.com/astral-sh/uv/issues/10185
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`
 
 ---
 
-_Issue opened by @Matiiss on 2024-12-26 23:02_
+_@Matiiss_
 
 I am aware that this is a documented quirk:
 > On Linux, our distributions are built in containers. The container has a custom build of Clang in a custom filesystem location. And Python is installed to the prefix /install. So you may see references to /install in Linux distributions.

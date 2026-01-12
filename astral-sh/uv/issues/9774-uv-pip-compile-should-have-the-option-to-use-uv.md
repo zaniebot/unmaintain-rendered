@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T14:44:06Z
 updated_at: 2025-05-02T11:41:32Z
 url: https://github.com/astral-sh/uv/issues/9774
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv pip compile` should have the option to use `uv.lock` as constraints file
 
 ---
 
-_Issue opened by @fnep on 2024-12-10 14:44_
+_@fnep_
 
 We use the `pyproject.toml` to maintain dependencies of our project (which is not a library, but a product using libraries). 
 

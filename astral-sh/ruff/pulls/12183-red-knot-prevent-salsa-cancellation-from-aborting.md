@@ -13,14 +13,14 @@ head: salsa-cancelled
 created_at: 2024-07-04T09:13:44Z
 updated_at: 2024-07-09T13:52:47Z
 url: https://github.com/astral-sh/ruff/pull/12183
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Prevent salsa cancellation from aborting the program
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-04 09:13_
+_@MichaReiser_
 
 ## Summary
 

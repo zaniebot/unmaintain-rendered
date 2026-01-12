@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-14T07:40:14Z
 updated_at: 2025-09-11T16:43:21Z
 url: https://github.com/astral-sh/ruff/issues/10409
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ARG002 on callbacks
 
 ---
 
-_Issue opened by @matthiasverstraete on 2024-03-14 07:40_
+_@matthiasverstraete_
 
 Hi,
 

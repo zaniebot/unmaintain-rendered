@@ -14,14 +14,14 @@ head: dhruv/node-range
 created_at: 2024-04-19T10:09:37Z
 updated_at: 2024-04-19T11:46:28Z
 url: https://github.com/astral-sh/ruff/pull/11032
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Use empty range when there's "gap" in token source
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-19 10:09_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2024-12-10T02:37:03Z
 updated_at: 2024-12-10T02:53:29Z
 url: https://github.com/astral-sh/uv/pull/9761
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Show a dedicated error for missing subdirectories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-10 02:37_
+_@charliermarsh_
 
 
 ## Summary

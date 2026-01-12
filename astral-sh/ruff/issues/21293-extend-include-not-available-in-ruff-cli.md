@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T04:30:49Z
 updated_at: 2025-11-06T20:01:09Z
 url: https://github.com/astral-sh/ruff/issues/21293
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # --extend-include not available in ruff CLI ?
 
 ---
 
-_Issue opened by @moshekaplan on 2025-11-06 04:30_
+_@moshekaplan_
 
 I am running ruff 0.14.3 on Windows 11 x64.
 ```

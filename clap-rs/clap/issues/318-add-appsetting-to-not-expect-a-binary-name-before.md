@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-10-13T18:35:01Z
 updated_at: 2015-10-29T07:02:08Z
 url: https://github.com/clap-rs/clap/issues/318
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add AppSetting to NOT expect a binary  name before args
 
 ---
 
-_Issue opened by @kbknapp on 2015-10-13 18:35_
+_@kbknapp_
 
 There are times when you may want to match over and over against valid args, but the binary name may not precede the args (think daemons, interactive CLIs, etc.)
 

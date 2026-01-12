@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-25T16:37:55Z
 updated_at: 2025-03-23T08:06:28Z
 url: https://github.com/astral-sh/ruff/issues/15741
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add support for configuring indent-width from user settings in VSCode
 
 ---
 
-_Issue opened by @xabru on 2025-01-25 16:37_
+_@xabru_
 
 ### Description
 

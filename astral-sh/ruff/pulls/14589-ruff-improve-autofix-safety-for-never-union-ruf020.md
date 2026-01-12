@@ -13,14 +13,14 @@ head: ruf020-fix-syntax-error
 created_at: 2024-11-25T17:09:53Z
 updated_at: 2024-11-25T17:50:41Z
 url: https://github.com/astral-sh/ruff/pull/14589
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Improve autofix safety for `never-union` (RUF020)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-25 17:09_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

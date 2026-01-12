@@ -13,14 +13,14 @@ head: charlie/x86
 created_at: 2025-01-17T19:29:59Z
 updated_at: 2025-01-21T15:01:21Z
 url: https://github.com/astral-sh/uv/pull/10722
-synced_at: 2026-01-10T11:45:06Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Omit variant when detecting compatible Python installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 19:29_
+_@charliermarsh_
 
 ## Summary
 

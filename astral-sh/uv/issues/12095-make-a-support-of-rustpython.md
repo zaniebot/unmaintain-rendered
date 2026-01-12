@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T14:39:43Z
 updated_at: 2025-03-17T14:37:39Z
 url: https://github.com/astral-sh/uv/issues/12095
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Make a support of RustPython
 
 ---
 
-_Issue opened by @zhangxuan2011 on 2025-03-10 14:39_
+_@zhangxuan2011_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: supress
 created_at: 2024-01-01T14:08:27Z
 updated_at: 2024-01-02T08:21:35Z
 url: https://github.com/astral-sh/ruff/pull/9346
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix typos found by codespell
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-01-01 14:08_
+_@DimitriPapadopoulos_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-20T13:06:39Z
 updated_at: 2025-04-21T02:07:49Z
 url: https://github.com/astral-sh/uv/issues/12988
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Improve UX when `uv add` or `uv sync` are run in a directory with no `pyproject.toml`
 
 ---
 
-_Issue opened by @edmorley on 2025-04-20 13:06_
+_@edmorley_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: david/type-level-api
 created_at: 2024-12-22T23:05:32Z
 updated_at: 2025-01-08T21:24:34Z
 url: https://github.com/astral-sh/ruff/pull/15103
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] `knot_extensions` Python API
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-22 23:05_
+_@sharkdp_
 
 ## Summary
 

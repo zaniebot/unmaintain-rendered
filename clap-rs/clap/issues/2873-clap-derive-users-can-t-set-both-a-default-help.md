@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-14T17:35:27Z
 updated_at: 2021-10-15T08:42:55Z
 url: https://github.com/clap-rs/clap/issues/2873
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_derive users can't set both a default `help_heading` and an arg-specific `help_heading`
 
 ---
 
-_Issue opened by @epage on 2021-10-14 17:35_
+_@epage_
 
 ### Please complete the following tasks
 

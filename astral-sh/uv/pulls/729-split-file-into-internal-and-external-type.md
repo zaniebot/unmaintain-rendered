@@ -12,14 +12,14 @@ head: charlie/split-file
 created_at: 2023-12-25T20:04:19Z
 updated_at: 2023-12-25T20:42:29Z
 url: https://github.com/astral-sh/uv/pull/729
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Split `File` into internal and external type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-25 20:04_
+_@charliermarsh_
 
 ## Summary
 

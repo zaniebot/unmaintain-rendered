@@ -11,14 +11,14 @@ head: konsti/more-windows-tests
 created_at: 2024-01-26T13:40:00Z
 updated_at: 2024-04-29T13:02:05Z
 url: https://github.com/astral-sh/uv/pull/1122
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # More windows compatibility filters
 
 ---
 
-_Pull request opened by @konstin on 2024-01-26 13:40_
+_@konstin_
 
 Add windows compatibility filters that filter out windows only deps and reduce the package count appropriately and use normalized path display in tests to ensure a UNC `\\?\` prefix doesn't cause a mismatch. This significantly reduces the number of failing windows tests.
 

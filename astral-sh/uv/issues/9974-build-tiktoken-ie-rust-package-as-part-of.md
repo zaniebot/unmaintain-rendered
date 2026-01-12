@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T16:26:44Z
 updated_at: 2025-01-28T15:47:12Z
 url: https://github.com/astral-sh/uv/issues/9974
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Build tiktoken (ie. Rust package) as part of workspace
 
 ---
 
-_Issue opened by @foges on 2024-12-17 16:26_
+_@foges_
 
 I'm trying to add the [tiktoken](https://github.com/openai/tiktoken) source code as a package in my `uv` workspace. It's available through pip, but I need to make some local modifications. The core of `tiktoken` is written in Rust and has a `setup.py` compile step. Things I've tried:
 

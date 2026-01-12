@@ -13,14 +13,14 @@ head: konsti/retry-policies-0.5
 created_at: 2025-12-18T10:44:14Z
 updated_at: 2025-12-18T10:59:17Z
 url: https://github.com/astral-sh/uv/pull/17170
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Update retry-policies to 0.5.1
 
 ---
 
-_Pull request opened by @konstin on 2025-12-18 10:44_
+_@konstin_
 
 Fixes #17169
 

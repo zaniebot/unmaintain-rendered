@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T11:59:25Z
 updated_at: 2025-02-13T14:47:53Z
 url: https://github.com/astral-sh/uv/issues/11475
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Support for Retrieving Project Version (Equivalent to poetry version)
 
 ---
 
-_Issue opened by @shoaibkhanz on 2025-02-13 11:59_
+_@shoaibkhanz_
 
 ### Question
 

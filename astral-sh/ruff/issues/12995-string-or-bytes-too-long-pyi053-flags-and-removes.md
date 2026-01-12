@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T17:40:00Z
 updated_at: 2024-12-06T00:48:56Z
 url: https://github.com/astral-sh/ruff/issues/12995
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type
 
 ---
 
-_Issue opened by @Avasam on 2024-08-19 17:40_
+_@Avasam_
 
 In the example reproduction below, 
 

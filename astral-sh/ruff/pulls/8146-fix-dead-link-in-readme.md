@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-23T15:27:02Z
 updated_at: 2023-10-23T15:56:54Z
 url: https://github.com/astral-sh/ruff/pull/8146
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix dead link in README
 
 ---
 
-_Pull request opened by @siboehm on 2023-10-23 15:27_
+_@siboehm_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

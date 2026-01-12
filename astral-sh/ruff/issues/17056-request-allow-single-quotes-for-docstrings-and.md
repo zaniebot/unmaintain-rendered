@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-29T12:57:40Z
 updated_at: 2025-08-30T09:31:38Z
 url: https://github.com/astral-sh/ruff/issues/17056
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Request: Allow single quotes for docstrings and configurable blank lines rather than strict PEP8 enforcement
 
 ---
 
-_Issue opened by @lethalbit on 2025-03-29 12:57_
+_@lethalbit_
 
 ### Summary
 

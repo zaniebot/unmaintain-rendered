@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T19:22:06Z
 updated_at: 2025-09-14T11:39:59Z
 url: https://github.com/astral-sh/uv/issues/14137
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Support reading dynamic project version with `uv version`
 
 ---
 
-_Issue opened by @BartSchuurmans on 2025-06-18 19:22_
+_@BartSchuurmans_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: alex/starred-tuples-2
 created_at: 2026-01-11T16:35:18Z
 updated_at: 2026-01-12T12:33:38Z
 url: https://github.com/astral-sh/ruff/pull/22503
-synced_at: 2026-01-12T12:59:59Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Fix `@Todo` type for starred expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-11 16:35_
+_@AlexWaygood_
 
 ## Summary
 

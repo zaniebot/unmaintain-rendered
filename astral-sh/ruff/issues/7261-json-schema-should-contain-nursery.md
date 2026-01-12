@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-10T16:22:07Z
 updated_at: 2023-09-14T18:09:37Z
 url: https://github.com/astral-sh/ruff/issues/7261
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # JSON schema should contain `"NURSERY"`
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-10 16:22_
+_@bersbersbers_
 
 `"NURSERY"` is missing here
 https://github.com/astral-sh/ruff/blob/9cb5ce750e9dead53eb8235e8cfb7cff653a1cd2/ruff.schema.json#L1683-L2754

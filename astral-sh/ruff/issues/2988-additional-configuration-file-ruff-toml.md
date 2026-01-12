@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-17T14:20:18Z
 updated_at: 2023-02-24T23:14:28Z
 url: https://github.com/astral-sh/ruff/issues/2988
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Additional configuration file `.ruff.toml`
 
 ---
 
-_Issue opened by @s0undt3ch on 2023-02-17 14:20_
+_@s0undt3ch_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

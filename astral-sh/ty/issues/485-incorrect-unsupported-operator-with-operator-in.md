@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-22T08:30:24Z
 updated_at: 2025-05-23T10:55:18Z
 url: https://github.com/astral-sh/ty/issues/485
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect `unsupported-operator` with operator `in` on types `str` and `T & str`
 
 ---
 
-_Issue opened by @shilch on 2025-05-22 08:30_
+_@shilch_
 
 ### Summary
 

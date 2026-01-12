@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-30T14:30:59Z
 updated_at: 2025-06-30T10:05:33Z
 url: https://github.com/astral-sh/uv/issues/11097
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # uv fails on HTTP redirects with authentication
 
 ---
 
-_Issue opened by @bra-fsn on 2025-01-30 14:30_
+_@bra-fsn_
 
 ### Summary
 

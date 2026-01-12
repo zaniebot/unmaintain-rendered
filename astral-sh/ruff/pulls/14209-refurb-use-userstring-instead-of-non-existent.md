@@ -13,14 +13,14 @@ head: userstring
 created_at: 2024-11-08T18:49:39Z
 updated_at: 2024-11-09T05:48:46Z
 url: https://github.com/astral-sh/ruff/pull/14209
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`refurb`] Use `UserString` instead of non-existent `UserStr`
 
 ---
 
-_Pull request opened by @nijel on 2024-11-08 18:49_
+_@nijel_
 
 
 

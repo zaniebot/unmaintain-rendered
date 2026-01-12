@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T19:11:40Z
 updated_at: 2025-06-24T12:25:17Z
 url: https://github.com/astral-sh/ruff/issues/18651
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Unnecessary `crate::` prefixes in `crates/ruff_python_ast/generated.rs`
 
 ---
 
-_Issue opened by @chirizxc on 2025-06-12 19:11_
+_@chirizxc_
 
 > there's also a question about [ruff_python_ast/src/generated.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/generated.rs) file ![изображение](https://private-user-images.githubusercontent.com/109767616/454415857-a3ba28ec-3ae2-4698-9037-dd322b33e162.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDk3NDk4NDgsIm5iZiI6MTc0OTc0OTU0OCwicGF0aCI6Ii8xMDk3Njc2MTYvNDU0NDE1ODU3LWEzYmEyOGVjLTNhZTItNDY5OC05MDM3LWRkMzIyYjMzZTE2Mi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNjEyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDYxMlQxNzMyMjhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zZjBjNzgyZjIyYzhlMjkwMTQxYmI5MzU2OTYwZjZjYzg3MDI0MDgwZDI1NjUxMzJiZjllMzgwNDYwM2FhNjYzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.I_VCJxgt8BZUJ1xaFWKyVcgtMCxA-WCvp0LDwG6Kf1M)
 > 

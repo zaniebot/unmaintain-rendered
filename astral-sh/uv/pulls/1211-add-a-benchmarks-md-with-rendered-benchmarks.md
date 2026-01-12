@@ -13,14 +13,14 @@ head: charlie/bench
 created_at: 2024-01-31T18:59:11Z
 updated_at: 2024-01-31T20:19:36Z
 url: https://github.com/astral-sh/uv/pull/1211
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Add a `BENCHMARKS.md` with rendered benchmarks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 18:59_
+_@charliermarsh_
 
 As a precursor to the release, I want to include a structured document with detailed benchmarks.
 

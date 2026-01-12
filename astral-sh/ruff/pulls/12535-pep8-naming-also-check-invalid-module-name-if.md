@@ -12,14 +12,14 @@ head: N999-without-package
 created_at: 2024-07-26T16:21:04Z
 updated_at: 2024-08-01T21:23:58Z
 url: https://github.com/astral-sh/ruff/pull/12535
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [pep8-naming] Also check invalid-module-name if file is not in package (N999)
 
 ---
 
-_Pull request opened by @AlexElvers on 2024-07-26 16:21_
+_@AlexElvers_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/no-project-run
 created_at: 2024-08-22T22:04:15Z
 updated_at: 2024-09-03T22:17:29Z
 url: https://github.com/astral-sh/uv/pull/6466
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Add tip for using `uv run --no-project`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 22:04_
+_@zanieb_
 
 A little uncertain if this is the place for this
 

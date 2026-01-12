@@ -14,14 +14,14 @@ head: fix-pyi030-union-issue
 created_at: 2024-10-13T05:36:48Z
 updated_at: 2024-10-13T10:33:03Z
 url: https://github.com/astral-sh/ruff/pull/13727
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`flake8-pyi`] - fix dropped exprs in `PYI030` autofix
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-10-13 05:36_
+_@diceroll123_
 
 ## Summary
 

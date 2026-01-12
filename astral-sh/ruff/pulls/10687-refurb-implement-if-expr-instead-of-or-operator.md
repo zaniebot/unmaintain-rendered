@@ -14,14 +14,14 @@ head: add-furb110
 created_at: 2024-04-01T03:02:32Z
 updated_at: 2024-04-06T16:45:57Z
 url: https://github.com/astral-sh/ruff/pull/10687
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`refurb`] Implement `if-expr-instead-of-or-operator` (`FURB110`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-04-01 03:02_
+_@diceroll123_
 
 ## Summary
 

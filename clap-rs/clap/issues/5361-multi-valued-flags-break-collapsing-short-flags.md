@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-17T12:40:41Z
 updated_at: 2024-02-20T01:40:47Z
 url: https://github.com/clap-rs/clap/issues/5361
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Multi valued flags break collapsing short flags
 
 ---
 
-_Issue opened by @BenWiederhake on 2024-02-17 12:40_
+_@BenWiederhake_
 
 ### Please complete the following tasks
 

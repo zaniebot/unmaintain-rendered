@@ -12,14 +12,14 @@ head: codeman/19173
 created_at: 2025-07-24T17:55:23Z
 updated_at: 2025-09-29T13:56:28Z
 url: https://github.com/astral-sh/ruff/pull/19533
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # upgrade to schemars 1.0.0
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-24 17:55_
+_@CodeMan62_
 
 ## Summary
 closes #19173 

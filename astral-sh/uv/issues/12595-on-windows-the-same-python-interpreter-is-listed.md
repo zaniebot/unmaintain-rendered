@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T06:36:39Z
 updated_at: 2025-04-07T18:59:00Z
 url: https://github.com/astral-sh/uv/issues/12595
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # On Windows, the same Python interpreter is listed twice with different folder name case
 
 ---
 
-_Issue opened by @ArneBachmannDLR on 2025-04-01 06:36_
+_@ArneBachmannDLR_
 
 ### Summary
 

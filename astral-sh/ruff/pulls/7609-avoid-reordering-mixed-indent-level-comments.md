@@ -14,14 +14,14 @@ head: charlie/comment-placement
 created_at: 2023-09-22T19:09:07Z
 updated_at: 2023-09-22T22:12:32Z
 url: https://github.com/astral-sh/ruff/pull/7609
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid reordering mixed-indent-level comments after branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-22 19:09_
+_@charliermarsh_
 
 ## Summary
 

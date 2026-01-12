@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-12-06T08:54:11Z
 updated_at: 2020-02-01T19:13:05Z
 url: https://github.com/clap-rs/clap/issues/1393
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Arguments with same index should give a compile time error
 
 ---
 
-_Issue opened by @JadedBlueEyes on 2018-12-06 08:54_
+_@JadedBlueEyes_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

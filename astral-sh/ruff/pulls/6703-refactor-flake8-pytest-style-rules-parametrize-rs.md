@@ -13,14 +13,14 @@ head: refactor-parametrize
 created_at: 2023-08-20T13:49:04Z
 updated_at: 2023-08-20T14:50:36Z
 url: https://github.com/astral-sh/ruff/pull/6703
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Refactor `flake8_pytest_style/rules/parametrize.rs`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-20 13:49_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

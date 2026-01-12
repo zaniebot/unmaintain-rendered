@@ -14,14 +14,14 @@ head: charlie/b
 created_at: 2024-07-04T18:07:08Z
 updated_at: 2024-07-05T21:58:35Z
 url: https://github.com/astral-sh/uv/pull/4818
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Bold durations in CLI messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-04 18:07_
+_@charliermarsh_
 
 I guess the `.bold()` on the preceding text causes the `.dimmed()` to... stop?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-11T00:47:54Z
 updated_at: 2025-04-11T08:39:50Z
 url: https://github.com/astral-sh/ruff/issues/17344
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff lint --fix` adds superfluous-seeming blank line to start of file when using isort and flake8 rules together
 
 ---
 
-_Issue opened by @relrod on 2025-04-11 00:47_
+_@relrod_
 
 ### Summary
 

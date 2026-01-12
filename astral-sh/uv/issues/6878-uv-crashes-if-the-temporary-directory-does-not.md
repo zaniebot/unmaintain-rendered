@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T16:30:32Z
 updated_at: 2024-09-03T23:18:07Z
 url: https://github.com/astral-sh/uv/issues/6878
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv crashes if the temporary directory does not exists
 
 ---
 
-_Issue opened by @gaborbernat on 2024-08-30 16:30_
+_@gaborbernat_
 
 ```shell
 ❯ uv venv -p 3.12

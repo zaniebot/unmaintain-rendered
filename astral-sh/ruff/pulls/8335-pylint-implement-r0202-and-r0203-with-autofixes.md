@@ -14,14 +14,14 @@ head: autofix-R0202-and-R0203
 created_at: 2023-10-30T02:54:03Z
 updated_at: 2023-11-30T22:18:15Z
 url: https://github.com/astral-sh/ruff/pull/8335
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [pylint] - implement R0202 and R0203 with autofixes
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-30 02:54_
+_@diceroll123_
 
 ## Summary
 

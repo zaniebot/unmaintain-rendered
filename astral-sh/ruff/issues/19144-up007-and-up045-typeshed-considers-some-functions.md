@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T13:48:24Z
 updated_at: 2025-07-07T13:43:36Z
 url: https://github.com/astral-sh/ruff/issues/19144
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP007 and UP045: typeshed considers some functions to be classes
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-04 13:48_
+_@dscorbett_
 
 ### Summary
 

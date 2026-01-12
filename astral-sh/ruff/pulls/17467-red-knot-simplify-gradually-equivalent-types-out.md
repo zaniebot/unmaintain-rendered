@@ -13,14 +13,14 @@ head: cjm/simplifygradual
 created_at: 2025-04-18T18:11:08Z
 updated_at: 2025-04-18T22:08:59Z
 url: https://github.com/astral-sh/ruff/pull/17467
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] simplify gradually-equivalent types out of unions and intersections
 
 ---
 
-_Pull request opened by @carljm on 2025-04-18 18:11_
+_@carljm_
 
 ## Summary
 

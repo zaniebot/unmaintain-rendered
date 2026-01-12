@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-12T16:56:31Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/775
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Names of missing required arguments are always colorized
 
 ---
 
-_Issue opened by @dotdash on 2016-12-12 16:56_
+_@dotdash_
 
 ### Affected Version of clap
 

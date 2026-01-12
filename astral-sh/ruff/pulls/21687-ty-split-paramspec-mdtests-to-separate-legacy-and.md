@@ -14,14 +14,14 @@ head: dhruv/split-pararmspec-mdtest
 created_at: 2025-11-29T06:42:18Z
 updated_at: 2025-11-29T06:49:40Z
 url: https://github.com/astral-sh/ruff/pull/21687
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Split `ParamSpec` mdtests to separate legacy and PEP 695 tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-29 06:42_
+_@dhruvmanila_
 
 ## Summary
 

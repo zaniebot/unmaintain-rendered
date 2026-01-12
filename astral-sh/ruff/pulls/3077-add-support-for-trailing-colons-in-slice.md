@@ -13,14 +13,14 @@ head: charlie/formatter
 created_at: 2023-02-20T23:21:33Z
 updated_at: 2023-02-20T23:24:34Z
 url: https://github.com/astral-sh/ruff/pull/3077
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add support for trailing colons in slice expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 23:21_
+_@charliermarsh_
 
 Black retains the trailing colon in `slice[:-1:]`. (Note that `slice[:-1]` produces an identical AST.)
 

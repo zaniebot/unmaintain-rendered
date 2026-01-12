@@ -12,14 +12,14 @@ head: charlie/abs
 created_at: 2022-09-16T10:18:03Z
 updated_at: 2022-09-20T02:32:32Z
 url: https://github.com/astral-sh/ruff/pull/213
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use absolute paths for exclusion matching
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-16 10:18_
+_@charliermarsh_
 
 Resolves #211.
 

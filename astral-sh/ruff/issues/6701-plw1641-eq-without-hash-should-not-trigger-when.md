@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-20T10:16:12Z
 updated_at: 2023-08-21T23:51:23Z
 url: https://github.com/astral-sh/ruff/issues/6701
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PLW1641/`eq-without-hash` should not trigger when explicitly setting `__hash__ = None`
 
 ---
 
-_Issue opened by @bluetech on 2023-08-20 10:16_
+_@bluetech_
 
 Given
 

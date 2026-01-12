@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T10:52:22Z
 updated_at: 2025-03-17T21:12:23Z
 url: https://github.com/astral-sh/uv/issues/12038
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # running `uv pip install .` should systematically reinstall the package
 
 ---
 
-_Issue opened by @12rambau on 2025-03-07 10:52_
+_@12rambau_
 
 ### Summary
 

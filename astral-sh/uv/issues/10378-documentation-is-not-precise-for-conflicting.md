@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T21:21:49Z
 updated_at: 2025-01-23T00:09:50Z
 url: https://github.com/astral-sh/uv/issues/10378
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Documentation is not precise for conflicting groups
 
 ---
 
-_Issue opened by @vmgustavo on 2025-01-07 21:21_
+_@vmgustavo_
 
 Here: https://docs.astral.sh/uv/reference/settings/#conflicts
 

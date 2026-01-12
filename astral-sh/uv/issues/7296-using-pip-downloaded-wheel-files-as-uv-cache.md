@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-11T15:54:31Z
 updated_at: 2025-09-04T05:04:59Z
 url: https://github.com/astral-sh/uv/issues/7296
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Using pip downloaded wheel files as uv cache 
 
 ---
 
-_Issue opened by @daler-rahimov on 2024-09-11 15:54_
+_@daler-rahimov_
 
 I'm trying to use existing wheel files in `uv sync`, but I'm not able to. Here is a situation I have: I'm on a machine with a very slow internet connection, and I'm trying to limit data usage as much as possible. There are existing wheel files downloaded with `pip download --dest [path-to-pip-cache] ...` that I want `uv` to check before it goes to PyPi.
 

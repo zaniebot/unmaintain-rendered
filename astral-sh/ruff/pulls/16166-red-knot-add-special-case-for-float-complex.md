@@ -13,14 +13,14 @@ head: cjm/intfloat
 created_at: 2025-02-14T16:58:57Z
 updated_at: 2025-02-14T20:24:13Z
 url: https://github.com/astral-sh/ruff/pull/16166
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] add special case for float/complex
 
 ---
 
-_Pull request opened by @carljm on 2025-02-14 16:58_
+_@carljm_
 
 When adjusting the existing tests, I aimed to avoid dealing with the special case in other tests if it's not necessary to do so (that is, avoid using `float` and `complex` as examples where we just need "some type"), and keep the tests for the special case mostly collected in the mdtest dedicated to that purpose.
 

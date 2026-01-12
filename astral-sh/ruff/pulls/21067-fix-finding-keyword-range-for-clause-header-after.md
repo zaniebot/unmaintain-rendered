@@ -14,14 +14,14 @@ head: clause-semicolon
 created_at: 2025-10-24T17:34:29Z
 updated_at: 2025-10-27T14:52:18Z
 url: https://github.com/astral-sh/ruff/pull/21067
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Fix finding keyword range for clause header after statement ending with semicolon
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-24 17:34_
+_@dylwil3_
 
 When formatting clause headers for clauses that are not their own node, like an `else` clause or `finally` clause, we begin searching for the keyword at the end of the previous statement. However, if the previous statement ended in a semicolon this caused a panic because we only expected trivia between the end of the last statement and the keyword.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T18:17:54Z
 updated_at: 2024-12-27T18:20:56Z
 url: https://github.com/astral-sh/uv/issues/10177
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Share UV projects to team after init built
 
 ---
 
-_Issue opened by @thinhs107 on 2024-12-26 18:17_
+_@thinhs107_
 
 Hello,
 

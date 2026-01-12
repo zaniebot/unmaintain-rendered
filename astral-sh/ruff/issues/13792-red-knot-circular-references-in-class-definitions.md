@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T11:15:50Z
 updated_at: 2025-03-12T12:41:42Z
 url: https://github.com/astral-sh/ruff/issues/13792
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] circular references in class definitions panic
 
 ---
 
-_Issue opened by @rtpg on 2024-10-17 11:15_
+_@rtpg_
 
 ```
 class C(list[C]): ...

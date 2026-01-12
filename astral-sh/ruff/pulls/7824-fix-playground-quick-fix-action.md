@@ -13,14 +13,14 @@ head: dhruv/playground-fix
 created_at: 2023-10-05T05:57:26Z
 updated_at: 2023-10-05T06:11:19Z
 url: https://github.com/astral-sh/ruff/pull/7824
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix playground `Quick Fix` action
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-05 05:57_
+_@dhruvmanila_
 
 ## Summary
 

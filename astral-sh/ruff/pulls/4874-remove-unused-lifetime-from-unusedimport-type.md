@@ -13,14 +13,14 @@ head: charlie/life
 created_at: 2023-06-05T19:00:03Z
 updated_at: 2023-06-05T19:32:13Z
 url: https://github.com/astral-sh/ruff/pull/4874
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove unused lifetime from UnusedImport type alias
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 19:00_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: pass
 created_at: 2023-09-28T14:35:48Z
 updated_at: 2023-09-29T10:11:30Z
 url: https://github.com/astral-sh/ruff/pull/7697
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Extend `unnecessary-pass` (`PIE790`) to trigger on all unnecessary `pass` statements
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-28 14:35_
+_@tjkuson_
 
 ## Summary
 

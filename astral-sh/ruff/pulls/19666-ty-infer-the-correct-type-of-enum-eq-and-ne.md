@@ -14,14 +14,14 @@ head: correct-enum-eq
 created_at: 2025-07-31T18:05:01Z
 updated_at: 2025-11-06T11:48:18Z
 url: https://github.com/astral-sh/ruff/pull/19666
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Infer the correct type of Enum `__eq__` and `__ne__` comparisions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-31 18:05_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

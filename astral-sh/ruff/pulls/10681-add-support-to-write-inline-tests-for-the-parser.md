@@ -14,14 +14,14 @@ head: dhruv/inline-tests
 created_at: 2024-03-31T10:36:49Z
 updated_at: 2024-04-02T12:10:28Z
 url: https://github.com/astral-sh/ruff/pull/10681
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add support to write inline tests for the parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-31 10:36_
+_@dhruvmanila_
 
 ## Summary
 

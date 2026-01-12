@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-13T03:34:54Z
 updated_at: 2024-07-13T04:24:36Z
 url: https://github.com/astral-sh/uv/issues/5031
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv pip compile` should exclude `--upgrade-package` in the header
 
 ---
 
-_Issue opened by @skshetry on 2024-07-13 03:34_
+_@skshetry_
 
 `uv pip compile` does not seem to ignore `--upgrade-package` command, whereas `pip-compile` seems to exclude it in the header.
 

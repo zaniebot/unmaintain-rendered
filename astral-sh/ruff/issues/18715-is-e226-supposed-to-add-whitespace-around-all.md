@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T07:26:49Z
 updated_at: 2025-07-24T12:01:08Z
 url: https://github.com/astral-sh/ruff/issues/18715
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Is E226 supposed to add whitespace around all plus signs, even in list slices?
 
 ---
 
-_Issue opened by @kaddkaka on 2025-06-17 07:26_
+_@kaddkaka_
 
 ### Question
 

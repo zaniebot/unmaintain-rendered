@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-31T12:15:40Z
 updated_at: 2024-12-31T15:51:52Z
 url: https://github.com/astral-sh/uv/issues/10250
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Using `uv`, how can I install a virtualenv with the editable dependencies copied into the virtualenv instead of a .pth file?
 
 ---
 
-_Issue opened by @vf-jabadia on 2024-12-31 12:15_
+_@vf-jabadia_
 
 My understanding from reading the docs is that `uv sync --no-editable` should copy the sources of editable dependencies into the `.venv` site-packages.
 

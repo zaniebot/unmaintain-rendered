@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T16:38:42Z
 updated_at: 2024-11-08T17:03:10Z
 url: https://github.com/astral-sh/uv/issues/5609
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Support resolution strategy for python version 
 
 ---
 
-_Issue opened by @T-256 on 2024-07-30 16:38_
+_@T-256_
 
 Here is what I can suggest:
 

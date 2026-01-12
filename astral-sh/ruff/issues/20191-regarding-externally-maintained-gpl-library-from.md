@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T07:42:34Z
 updated_at: 2025-09-04T10:51:41Z
 url: https://github.com/astral-sh/ruff/issues/20191
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Regarding externally maintained GPL library from which parts of the Software is derived
 
 ---
 
-_Issue opened by @rahulmohang on 2025-09-01 07:42_
+_@rahulmohang_
 
 Hi, 
 

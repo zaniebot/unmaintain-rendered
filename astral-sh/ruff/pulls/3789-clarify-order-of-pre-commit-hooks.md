@@ -13,14 +13,14 @@ head: charlie/pre-commit
 created_at: 2023-03-28T23:08:58Z
 updated_at: 2023-03-28T23:33:41Z
 url: https://github.com/astral-sh/ruff/pull/3789
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Clarify order of `pre-commit` hooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 23:08_
+_@charliermarsh_
 
 See: #3784.
 

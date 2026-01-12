@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-11T19:11:40Z
 updated_at: 2024-08-28T06:04:52Z
 url: https://github.com/astral-sh/ruff/issues/7282
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Separate stable and preview benchmarks
 
 ---
 
-_Issue opened by @zanieb on 2023-09-11 19:11_
+_@zanieb_
 
 Prompted by discussion at https://github.com/astral-sh/ruff/issues/7208#issuecomment-1709263037
 

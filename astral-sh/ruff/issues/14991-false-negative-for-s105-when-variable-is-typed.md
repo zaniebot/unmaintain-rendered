@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-15T19:09:58Z
 updated_at: 2024-12-20T08:12:31Z
 url: https://github.com/astral-sh/ruff/issues/14991
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False negative for S105 when variable is typed
 
 ---
 
-_Issue opened by @zxdavb on 2024-12-15 19:09_
+_@zxdavb_
 
 I note that `ruff check` detects the following:
 ```python

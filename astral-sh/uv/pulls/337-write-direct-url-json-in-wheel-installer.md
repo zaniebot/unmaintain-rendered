@@ -12,14 +12,14 @@ head: charlie/direct-url
 created_at: 2023-11-06T16:27:27Z
 updated_at: 2023-11-06T17:09:30Z
 url: https://github.com/astral-sh/uv/pull/337
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Write `direct_url.json` in wheel installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 16:27_
+_@charliermarsh_
 
 ## Summary
 

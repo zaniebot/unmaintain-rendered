@@ -12,14 +12,14 @@ head: chore/redundant-inp001-setup
 created_at: 2023-02-13T07:54:47Z
 updated_at: 2023-02-13T17:11:07Z
 url: https://github.com/astral-sh/ruff/pull/2846
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove no longer needed `setup.py` `INP001` ignore
 
 ---
 
-_Pull request opened by @scop on 2023-02-13 07:54_
+_@scop_
 
 No longer needed since dd0145624b7d7664239186cb01304669b557563c, #2565.
 

@@ -12,14 +12,14 @@ head: charlie/io-open
 created_at: 2023-03-21T15:25:41Z
 updated_at: 2023-03-21T15:51:17Z
 url: https://github.com/astral-sh/ruff/pull/3650
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid attempting infinite open fix with re-bound builtin
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-21 15:25_
+_@charliermarsh_
 
 ## Summary
 

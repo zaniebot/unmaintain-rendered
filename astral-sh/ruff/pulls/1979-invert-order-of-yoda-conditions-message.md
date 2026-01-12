@@ -12,14 +12,14 @@ head: charlie/invert
 created_at: 2023-01-18T23:27:21Z
 updated_at: 2023-01-18T23:27:37Z
 url: https://github.com/astral-sh/ruff/pull/1979
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Invert order of yoda-conditions message
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 23:27_
+_@charliermarsh_
 
 The suggestion was wrong!
 

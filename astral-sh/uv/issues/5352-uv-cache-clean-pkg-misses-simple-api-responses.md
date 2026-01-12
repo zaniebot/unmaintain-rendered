@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T17:17:30Z
 updated_at: 2024-07-23T17:42:52Z
 url: https://github.com/astral-sh/uv/issues/5352
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv cache clean pkg` misses simple API responses for alternate indexes
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-23 17:17_
+_@charliermarsh_
 
 _No description provided._
 

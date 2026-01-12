@@ -12,14 +12,14 @@ head: charlie/schema
 created_at: 2023-07-07T02:26:44Z
 updated_at: 2023-07-07T05:20:19Z
 url: https://github.com/astral-sh/ruff/pull/5576
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update JSON schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-07 02:26_
+_@charliermarsh_
 
 Confused as to how this got merged, but... oh well.
 

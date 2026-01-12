@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T09:52:45Z
 updated_at: 2025-09-23T12:42:56Z
 url: https://github.com/astral-sh/ruff/issues/20464
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Usage of ruff possibly not allowed in the context of regulated open source projects (e.g. Eclipse Foundation Development Process)
 
 ---
 
-_Issue opened by @benjamin-arfa on 2025-09-18 09:52_
+_@benjamin-arfa_
 
 ### Question
 

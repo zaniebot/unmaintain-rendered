@@ -13,14 +13,14 @@ head: zb/redirect-rfc
 created_at: 2025-04-22T03:26:32Z
 updated_at: 2025-04-24T13:01:40Z
 url: https://github.com/astral-sh/uv/pull/13040
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Implement RFC 7231 compliant relative URI and fragment handling in redirects
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-22 03:26_
+_@zanieb_
 
 https://github.com/astral-sh/uv/issues/13037 prompted me to start speculating on possible failure paths, and I found some cases we're not implementing the specification here?
 

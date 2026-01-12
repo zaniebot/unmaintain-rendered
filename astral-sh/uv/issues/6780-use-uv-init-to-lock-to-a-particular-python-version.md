@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T22:26:00Z
 updated_at: 2024-08-29T14:56:34Z
 url: https://github.com/astral-sh/uv/issues/6780
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Use `uv init` to lock to a particular Python version
 
 ---
 
-_Issue opened by @SamEdwardes on 2024-08-28 22:26_
+_@SamEdwardes_
 
 First of all, awesome work uv team! I am really enjoying using uv :)
 

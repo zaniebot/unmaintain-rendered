@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-14T09:20:18Z
 updated_at: 2024-09-14T09:26:40Z
 url: https://github.com/astral-sh/ruff/issues/13351
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Bug: False format for list slicing with self.x as index
 
 ---
 
-_Issue opened by @CareF on 2024-09-14 09:20_
+_@CareF_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

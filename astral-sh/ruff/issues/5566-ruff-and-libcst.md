@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-06T16:34:14Z
 updated_at: 2023-08-31T19:07:41Z
 url: https://github.com/astral-sh/ruff/issues/5566
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `ruff` and `libcst`
 
 ---
 
-_Issue opened by @kloczek on 2023-07-06 16:34_
+_@kloczek_
 
 On building `ruff` I found that it want submodule with libcst
 ```console

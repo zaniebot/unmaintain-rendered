@@ -13,14 +13,14 @@ head: david/lsp-features
 created_at: 2025-12-15T19:28:28Z
 updated_at: 2025-12-16T14:11:12Z
 url: https://github.com/astral-sh/ty/pull/1900
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Document IDE / editor features
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-15 19:28_
+_@sharkdp_
 
 **[Rendered view](https://shark.fish/ty-lsp-features/features/editor/)**
 

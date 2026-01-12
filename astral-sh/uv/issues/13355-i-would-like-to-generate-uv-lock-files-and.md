@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T21:22:08Z
 updated_at: 2025-05-12T19:34:24Z
 url: https://github.com/astral-sh/uv/issues/13355
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # I would like to generate `uv` lock files and exclude optional dependencies. `uv sync` and `uv lock` don't seem to offer this
 
 ---
 
-_Issue opened by @andres-ito-traversal on 2025-05-08 21:22_
+_@andres-ito-traversal_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-13T15:36:42Z
 updated_at: 2024-05-16T02:17:06Z
 url: https://github.com/astral-sh/ruff/issues/11408
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR0912 seems to overcount branches
 
 ---
 
-_Issue opened by @jaap3 on 2024-05-13 15:36_
+_@jaap3_
 
 ruff 0.4.4 triggers `PLR0912 Too many branches (13 > 12)` on this code snippet:
 

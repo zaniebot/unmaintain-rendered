@@ -13,14 +13,14 @@ head: konsti/codspeed-walltime
 created_at: 2025-10-06T16:01:50Z
 updated_at: 2025-10-06T16:58:07Z
 url: https://github.com/astral-sh/uv/pull/16140
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # Use walltime for codspeed
 
 ---
 
-_Pull request opened by @konstin on 2025-10-06 16:01_
+_@konstin_
 
 The docs imply that this works with Rust now?
 

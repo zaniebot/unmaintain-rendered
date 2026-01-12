@@ -11,14 +11,14 @@ head: main
 created_at: 2025-10-11T05:19:06Z
 updated_at: 2025-10-22T19:27:54Z
 url: https://github.com/astral-sh/uv/pull/16249
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:11Z
 ```
 
 # Add `--no-wait` argument for the `run` command to not wait for spawned process to finish
 
 ---
 
-_Pull request opened by @CrendKing on 2025-10-11 05:19_
+_@CrendKing_
 
 Here is an unsolicited attempt to implement the feature to `uv run` a script and make `uv` exit immediately without waiting for the spawned `python` process to finish.
 

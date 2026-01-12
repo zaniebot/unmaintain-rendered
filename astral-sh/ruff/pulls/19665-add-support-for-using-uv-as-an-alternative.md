@@ -14,14 +14,14 @@ head: zb/format-uv
 created_at: 2025-07-31T17:45:28Z
 updated_at: 2025-09-09T15:09:55Z
 url: https://github.com/astral-sh/ruff/pull/19665
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Add support for using uv as an alternative formatter backend
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-31 17:45_
+_@zanieb_
 
 This adds a new `backend: internal | uv` option to the LSP `FormatOptions` allowing users to perform document and range formatting operations though uv. The idea here is to prototype a solution for users to transition to a `uv format` command without encountering version mismatches (and consequently, formatting differences) between the LSP's version of `ruff` and uv's version of `ruff`.
 

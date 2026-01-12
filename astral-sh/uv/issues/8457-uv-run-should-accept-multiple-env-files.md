@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T14:21:34Z
 updated_at: 2024-10-22T15:24:52Z
 url: https://github.com/astral-sh/uv/issues/8457
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # `uv run` should accept multiple `.env` files
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-22 14:21_
+_@charliermarsh_
 
 _No description provided._
 

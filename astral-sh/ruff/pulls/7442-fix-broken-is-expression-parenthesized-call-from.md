@@ -13,14 +13,14 @@ head: charlie/arg
 created_at: 2023-09-16T17:13:40Z
 updated_at: 2023-09-16T17:24:40Z
 url: https://github.com/astral-sh/ruff/pull/7442
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix broken `is_expression_parenthesized` call from rebase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-16 17:13_
+_@charliermarsh_
 
 _No description provided._
 

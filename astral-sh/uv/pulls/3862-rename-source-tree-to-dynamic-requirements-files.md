@@ -13,14 +13,14 @@ head: konsti/dynamic-requirements-files
 created_at: 2024-05-27T10:44:05Z
 updated_at: 2024-06-01T20:05:50Z
 url: https://github.com/astral-sh/uv/pull/3862
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Rename source tree to dynamic requirements files
 
 ---
 
-_Pull request opened by @konstin on 2024-05-27 10:44_
+_@konstin_
 
 The function of `source_trees` got me confused a good bit since the term sounds like we're installing the package, not just reading requirements from it. I'm trying to make this clearer by renaming them to `dynamic_requirements_files`.
 

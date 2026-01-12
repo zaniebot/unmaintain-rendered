@@ -13,14 +13,14 @@ head: zb/dep-bot
 created_at: 2025-05-27T22:01:45Z
 updated_at: 2025-05-28T09:10:17Z
 url: https://github.com/astral-sh/uv/pull/13692
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Add example of enabling Dependabot
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-27 22:01_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/13690
 

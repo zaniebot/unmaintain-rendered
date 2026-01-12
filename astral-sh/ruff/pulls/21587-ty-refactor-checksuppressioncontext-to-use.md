@@ -14,14 +14,14 @@ head: micha/suppressions-diagnostic-guard
 created_at: 2025-11-23T10:25:01Z
 updated_at: 2025-11-25T10:54:44Z
 url: https://github.com/astral-sh/ruff/pull/21587
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Refactor `CheckSuppressionContext` to use `DiagnosticGuard`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-23 10:25_
+_@MichaReiser_
 
 ## Summary
 

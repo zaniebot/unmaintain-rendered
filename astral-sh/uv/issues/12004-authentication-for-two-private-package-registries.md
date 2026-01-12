@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-06T13:25:47Z
 updated_at: 2025-04-02T17:30:04Z
 url: https://github.com/astral-sh/uv/issues/12004
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # authentication for two private package registries: unexpected urls
 
 ---
 
-_Issue opened by @dd-ssc on 2025-03-06 13:25_
+_@dd-ssc_
 
 ## TL;DR
 

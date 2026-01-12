@@ -14,14 +14,14 @@ head: fix-vendored-file-back-button
 created_at: 2025-07-25T14:08:14Z
 updated_at: 2025-07-26T18:33:40Z
 url: https://github.com/astral-sh/ruff/pull/19557
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Support stdlib files in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-25 14:08_
+_@MichaReiser_
 
 ## Summary
 

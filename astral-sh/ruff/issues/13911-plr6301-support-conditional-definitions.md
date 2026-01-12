@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-24T13:59:10Z
 updated_at: 2024-10-24T14:31:38Z
 url: https://github.com/astral-sh/ruff/issues/13911
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLR6301: Support conditional definitions
 
 ---
 
-_Issue opened by @ofek on 2024-10-24 13:59_
+_@ofek_
 
 It would be nice if a single branch making use of `self` could remove the check for the others.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T06:54:10Z
 updated_at: 2025-06-20T06:58:21Z
 url: https://github.com/astral-sh/ruff/issues/18817
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Fix that causes `SyntaxError` is not reverted if the error is version dependent
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 06:54_
+_@MeGaGiGaGon_
 
 ### Summary
 

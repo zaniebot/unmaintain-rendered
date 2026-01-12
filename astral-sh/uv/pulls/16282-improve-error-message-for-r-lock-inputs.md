@@ -11,14 +11,14 @@ head: Arkenstone/uv_lockfile_helper
 created_at: 2025-10-13T13:11:37Z
 updated_at: 2025-10-15T07:41:23Z
 url: https://github.com/astral-sh/uv/pull/16282
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Improve error message for -r *.lock inputs
 
 ---
 
-_Pull request opened by @Arkenstone999 on 2025-10-13 13:11_
+_@Arkenstone999_
 
 Summary
 

@@ -13,14 +13,14 @@ head: charlie/scripts
 created_at: 2024-03-27T14:35:47Z
 updated_at: 2024-03-27T14:46:39Z
 url: https://github.com/astral-sh/uv/pull/2690
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Use Scripts folder for virtualenv activation prompt
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 14:35_
+_@charliermarsh_
 
 ## Summary
 

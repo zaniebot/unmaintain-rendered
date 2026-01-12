@@ -14,14 +14,14 @@ head: david/public-types
 created_at: 2025-06-18T13:17:42Z
 updated_at: 2025-06-26T10:24:42Z
 url: https://github.com/astral-sh/ruff/pull/18750
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [ty] Infer nonlocal types as unions of all reachable bindings
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-18 13:17_
+_@sharkdp_
 
 ## Summary
 

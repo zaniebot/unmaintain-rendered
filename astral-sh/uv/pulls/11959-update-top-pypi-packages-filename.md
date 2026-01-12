@@ -13,14 +13,14 @@ head: 30-days
 created_at: 2025-03-04T19:08:34Z
 updated_at: 2025-03-05T06:36:08Z
 url: https://github.com/astral-sh/uv/pull/11959
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Update top-pypi-packages filename
 
 ---
 
-_Pull request opened by @hugovk on 2025-03-04 19:08_
+_@hugovk_
 
 
 <!--

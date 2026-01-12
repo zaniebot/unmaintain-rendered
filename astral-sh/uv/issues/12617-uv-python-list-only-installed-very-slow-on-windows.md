@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T02:19:57Z
 updated_at: 2025-04-02T14:57:16Z
 url: https://github.com/astral-sh/uv/issues/12617
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # `uv python list --only-installed` very slow on windows
 
 ---
 
-_Issue opened by @karthiknadig on 2025-04-02 02:19_
+_@karthiknadig_
 
 ### Summary
 

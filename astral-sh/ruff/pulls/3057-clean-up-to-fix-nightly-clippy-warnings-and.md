@@ -12,14 +12,14 @@ head: dedent
 created_at: 2023-02-20T13:03:26Z
 updated_at: 2023-02-21T09:12:33Z
 url: https://github.com/astral-sh/ruff/pull/3057
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # clean up to fix nightly clippy warnings and dedents
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-20 13:03_
+_@youknowone_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: refactor-AIR301-AIR311
 created_at: 2025-05-08T10:12:15Z
 updated_at: 2025-05-14T15:10:15Z
 url: https://github.com/astral-sh/ruff/pull/17941
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [`airflow`] Get rid of `Replacement::Name` and replace them with `Replacement::AutoImport` for enabling auto fixing (`AIR301`, `AIR311`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-08 10:12_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

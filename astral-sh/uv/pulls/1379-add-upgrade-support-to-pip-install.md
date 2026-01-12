@@ -13,14 +13,14 @@ head: zb/upgrade-pip-install
 created_at: 2024-02-15T23:08:02Z
 updated_at: 2024-02-16T01:25:29Z
 url: https://github.com/astral-sh/uv/pull/1379
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add `--upgrade` support to `pip install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 23:08_
+_@zanieb_
 
 Adds support for `--upgrade` — similar to `--reinstall`.
 

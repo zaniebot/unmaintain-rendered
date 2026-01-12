@@ -13,14 +13,14 @@ head: micha/remove-changed-files
 created_at: 2025-03-17T07:15:10Z
 updated_at: 2025-03-17T07:20:11Z
 url: https://github.com/astral-sh/ruff/pull/16788
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [ci]: Remove changed files actions
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 07:15_
+_@MichaReiser_
 
 ## Summary
 

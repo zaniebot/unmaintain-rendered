@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T17:23:46Z
 updated_at: 2025-03-04T14:29:38Z
 url: https://github.com/astral-sh/uv/issues/10784
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Hint use of `uv run` if `uvx` is given a script path
 
 ---
 
-_Issue opened by @zanieb on 2025-01-20 17:23_
+_@zanieb_
 
 As described in https://github.com/astral-sh/uv/issues/10695 — we attempt to install a package matching the normalized name which is surprising.
 

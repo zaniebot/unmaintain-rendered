@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T06:38:04Z
 updated_at: 2025-10-07T11:35:21Z
 url: https://github.com/astral-sh/ruff/issues/20735
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [feature request] external dependencies in `ruff analyze graph`?
 
 ---
 
-_Issue opened by @gwdekker on 2025-10-07 06:38_
+_@gwdekker_
 
 `ruff analyze graph` is amazing! What do you guys think about adding external dependencies as well? I found some prior art here: https://grimp.readthedocs.io/en/stable/usage.html, and I am pretty sure I saw the maintainer of that package (@seddonym) here on the issue tracker as well - so there might be some good collaboration opportunity here. Thanks!
 

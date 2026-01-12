@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T18:45:12Z
 updated_at: 2023-12-24T21:57:01Z
 url: https://github.com/astral-sh/uv/issues/706
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Display better error when index does not support requested format
 
 ---
 
-_Issue opened by @zanieb on 2023-12-19 18:45_
+_@zanieb_
 
 I haven't found an example index that returns the correct response type yet, but in theory content negotiation will result in a 406 or 415 if the requested response format is not supported e.g. https://github.com/devpi/devpi/issues/1020
 

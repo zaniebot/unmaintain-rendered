@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-03T21:53:07Z
 updated_at: 2023-03-03T22:22:16Z
 url: https://github.com/astral-sh/ruff/issues/3326
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Gate PEP 646 `isinstance` checks on Python version
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-03 21:53_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/pull/3280#issuecomment-1454171687.
 

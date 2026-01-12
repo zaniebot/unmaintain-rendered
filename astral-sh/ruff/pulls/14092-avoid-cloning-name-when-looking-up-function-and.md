@@ -14,14 +14,14 @@ head: micha/lookup-name
 created_at: 2024-11-04T14:44:17Z
 updated_at: 2024-11-04T20:18:13Z
 url: https://github.com/astral-sh/ruff/pull/14092
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Avoid cloning `Name` when looking up function and class types
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-04 14:44_
+_@MichaReiser_
 
 ## Summary
 

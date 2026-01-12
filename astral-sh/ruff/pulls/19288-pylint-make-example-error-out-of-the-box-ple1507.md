@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2025-07-11T17:49:48Z
 updated_at: 2025-07-11T21:09:55Z
 url: https://github.com/astral-sh/ruff/pull/19288
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`pylint`] Make example error out-of-the-box (`PLE1507`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-11 17:49_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

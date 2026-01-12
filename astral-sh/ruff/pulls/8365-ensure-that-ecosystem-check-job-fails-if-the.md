@@ -13,14 +13,14 @@ head: zanie/ecosystem-fail
 created_at: 2023-10-30T20:24:05Z
 updated_at: 2023-10-31T00:48:39Z
 url: https://github.com/astral-sh/ruff/pull/8365
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Ensure that ecosystem check job fails if the tooling encounters an unexpected error
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-30 20:24_
+_@zanieb_
 
 Previously, `| tee` would hide bad exit codes from `ruff-ecosystem ...`
 

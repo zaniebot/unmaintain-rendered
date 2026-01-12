@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-14T14:58:11Z
 updated_at: 2024-10-17T08:04:33Z
 url: https://github.com/astral-sh/ruff/issues/13752
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [C416 unnecessary-comprehension] Suggests a fix leading to RecursionError
 
 ---
 
-_Issue opened by @echoix on 2024-10-14 14:58_
+_@echoix_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

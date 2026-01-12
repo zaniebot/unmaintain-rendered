@@ -13,14 +13,14 @@ head: konsti/fix-gh11217
 created_at: 2025-02-26T15:37:02Z
 updated_at: 2025-03-03T14:46:01Z
 url: https://github.com/astral-sh/uv/pull/11801
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Discover registry PEP 514 Pythons cross 32/64-bit
 
 ---
 
-_Pull request opened by @konstin on 2025-02-26 15:37_
+_@konstin_
 
 Fixes #11217
 

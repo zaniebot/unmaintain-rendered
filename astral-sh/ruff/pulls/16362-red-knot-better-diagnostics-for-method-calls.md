@@ -13,14 +13,14 @@ head: david/diagnostics-for-method-calls
 created_at: 2025-02-25T08:35:53Z
 updated_at: 2025-02-25T14:17:51Z
 url: https://github.com/astral-sh/ruff/pull/16362
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Better diagnostics for method calls
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-25 08:35_
+_@sharkdp_
 
 ## Summary
 

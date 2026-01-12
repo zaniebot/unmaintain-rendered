@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T08:37:00Z
 updated_at: 2025-09-05T23:25:21Z
 url: https://github.com/astral-sh/ty/issues/402
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Zed Language Server
 
 ---
 
-_Issue opened by @isonovio on 2025-05-15 08:37_
+_@isonovio_
 
 ### Summary
 

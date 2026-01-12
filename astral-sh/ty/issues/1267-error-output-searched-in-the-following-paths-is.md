@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-27T01:31:00Z
 updated_at: 2025-10-16T11:18:10Z
 url: https://github.com/astral-sh/ty/issues/1267
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Error output "Searched in the following paths..." is very long when using bazel
 
 ---
 
-_Issue opened by @jasonprado on 2025-09-27 01:31_
+_@jasonprado_
 
 ### Summary
 

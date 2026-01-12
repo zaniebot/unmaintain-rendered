@@ -13,14 +13,14 @@ head: zb/pytorch-up
 created_at: 2025-03-18T17:54:09Z
 updated_at: 2025-03-18T18:05:12Z
 url: https://github.com/astral-sh/uv/pull/12294
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Update pytorch test snapshot
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-18 17:54_
+_@zanieb_
 
 _No description provided._
 

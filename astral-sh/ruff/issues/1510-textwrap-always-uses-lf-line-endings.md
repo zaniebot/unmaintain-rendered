@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T12:41:23Z
 updated_at: 2023-05-31T16:35:24Z
 url: https://github.com/astral-sh/ruff/issues/1510
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `textwrap` always uses LF line endings
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-31 12:41_
+_@charliermarsh_
 
 See #1504.
 

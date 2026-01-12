@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T13:42:44Z
 updated_at: 2023-11-09T04:13:26Z
 url: https://github.com/astral-sh/ruff/issues/8472
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # INP001 appears/disappears depending on the current directory
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-11-03 13:42_
+_@DimitriPapadopoulos_
 
 When checking a single file, the [INP001](https://docs.astral.sh/ruff/rules/implicit-namespace-package/) error message appears/disappears depending on whether we run ruff from the directory containing the Python file or not:
 * ```

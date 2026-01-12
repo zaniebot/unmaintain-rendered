@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-14T08:54:06Z
 updated_at: 2024-10-14T14:44:42Z
 url: https://github.com/astral-sh/uv/issues/8169
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # `requires-python` without `*` caused missing wheels in `uv.lock`
 
 ---
 
-_Issue opened by @ringsaturn on 2024-10-14 08:54_
+_@ringsaturn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

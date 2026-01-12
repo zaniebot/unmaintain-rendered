@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-09T19:08:26Z
 updated_at: 2023-11-11T15:15:31Z
 url: https://github.com/astral-sh/ruff/issues/8589
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Catch `variable is []`
 
 ---
 
-_Issue opened by @francorbacho on 2023-11-09 19:08_
+_@francorbacho_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-22T07:53:29Z
 updated_at: 2025-03-22T09:48:58Z
 url: https://github.com/astral-sh/ruff/issues/16909
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Catch string format requires a mapping
 
 ---
 
-_Issue opened by @lovetox on 2025-03-22 07:53_
+_@lovetox_
 
 ### Summary
 

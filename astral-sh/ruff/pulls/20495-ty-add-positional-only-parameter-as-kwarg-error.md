@@ -14,14 +14,14 @@ head: positional-only-parameter-as-kwarg-diagnostic
 created_at: 2025-09-21T18:54:15Z
 updated_at: 2025-09-23T14:10:45Z
 url: https://github.com/astral-sh/ruff/pull/20495
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Add positional-only-parameter-as-kwarg error
 
 ---
 
-_Pull request opened by @fgiacome on 2025-09-21 18:54_
+_@fgiacome_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

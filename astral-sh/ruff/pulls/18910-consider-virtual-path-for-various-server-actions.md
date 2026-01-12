@@ -13,14 +13,14 @@ head: dhruv/server-virtual-path
 created_at: 2025-06-24T08:48:30Z
 updated_at: 2025-06-24T12:30:48Z
 url: https://github.com/astral-sh/ruff/pull/18910
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Consider virtual path for various server actions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-24 08:48_
+_@dhruvmanila_
 
 ## Summary
 

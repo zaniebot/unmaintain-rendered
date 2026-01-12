@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-03T02:16:11Z
 updated_at: 2024-12-03T03:00:35Z
 url: https://github.com/astral-sh/uv/issues/9592
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Function request: Dependency installation in virtual environment using soft connection
 
 ---
 
-_Issue opened by @silent-rain on 2024-12-03 02:16_
+_@silent-rain_
 
 ## Current Status
 

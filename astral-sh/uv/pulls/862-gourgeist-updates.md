@@ -12,14 +12,14 @@ head: konsti/gourgeist-fixes
 created_at: 2024-01-09T22:57:56Z
 updated_at: 2024-01-09T23:04:17Z
 url: https://github.com/astral-sh/uv/pull/862
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Gourgeist updates
 
 ---
 
-_Pull request opened by @konstin on 2024-01-09 22:57_
+_@konstin_
 
 * Use caching again
 * Make clap feature only required for the cli/bin optional

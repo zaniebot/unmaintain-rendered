@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T12:25:26Z
 updated_at: 2025-04-28T08:31:37Z
 url: https://github.com/astral-sh/ruff/issues/17117
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Don’t flag “await outside async function” for notebooks
 
 ---
 
-_Issue opened by @ctcjab on 2025-04-01 12:25_
+_@ctcjab_
 
 ### Summary
 

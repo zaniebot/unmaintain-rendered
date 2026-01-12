@@ -12,14 +12,14 @@ head: upgrade-maturin
 created_at: 2022-11-21T05:02:59Z
 updated_at: 2022-11-21T15:01:04Z
 url: https://github.com/astral-sh/ruff/pull/846
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Upgrade maturin to 0.14
 
 ---
 
-_Pull request opened by @messense on 2022-11-21 05:02_
+_@messense_
 
 _No description provided._
 

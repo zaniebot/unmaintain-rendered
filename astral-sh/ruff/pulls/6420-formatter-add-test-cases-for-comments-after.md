@@ -13,14 +13,14 @@ head: opening_parentheses_comments_test_file
 created_at: 2023-08-08T09:01:51Z
 updated_at: 2023-08-10T08:55:23Z
 url: https://github.com/astral-sh/ruff/pull/6420
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Formatter: Add test cases for comments after opening parentheses
 
 ---
 
-_Pull request opened by @konstin on 2023-08-08 09:01_
+_@konstin_
 
 **Summary** I collected all examples of end-of-line comments after opening parentheses that i could think of so we get a comprehensive view at the state of their formatting (#6390).
 

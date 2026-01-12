@@ -13,14 +13,14 @@ head: zb/fix-project-requires-python
 created_at: 2024-06-10T20:11:21Z
 updated_at: 2024-06-11T01:53:54Z
 url: https://github.com/astral-sh/uv/pull/4216
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Refactor project interpreter request for `requires-python` specifiers
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 20:11_
+_@zanieb_
 
 Refactor following #4214 to avoid parsing the specifiers again
 

@@ -12,14 +12,14 @@ head: zb/bump-pubgrub-2
 created_at: 2023-12-01T19:29:58Z
 updated_at: 2023-12-04T15:09:31Z
 url: https://github.com/astral-sh/uv/pull/525
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Bump pubgrub for latest upstream
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-01 19:29_
+_@zanieb_
 
 https://github.com/pubgrub-rs/pubgrub/pull/157
 

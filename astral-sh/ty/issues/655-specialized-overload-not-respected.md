@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-14T10:04:27Z
 updated_at: 2025-06-17T02:24:40Z
 url: https://github.com/astral-sh/ty/issues/655
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Specialized `@overload` not respected
 
 ---
 
-_Issue opened by @galah92 on 2025-06-14 10:04_
+_@galah92_
 
 ### Summary
 

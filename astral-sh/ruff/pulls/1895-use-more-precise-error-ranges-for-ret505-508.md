@@ -12,14 +12,14 @@ head: fix-RET-range
 created_at: 2023-01-15T16:30:35Z
 updated_at: 2023-01-15T18:54:24Z
 url: https://github.com/astral-sh/ruff/pull/1895
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Use more precise error ranges for RET505~508
 
 ---
 
-_Pull request opened by @harupy on 2023-01-15 16:30_
+_@harupy_
 
 Fix:
 

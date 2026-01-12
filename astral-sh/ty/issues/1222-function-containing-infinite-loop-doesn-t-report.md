@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-20T15:22:35Z
 updated_at: 2025-09-22T23:42:09Z
 url: https://github.com/astral-sh/ty/issues/1222
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # function containing infinite loop doesn't report any warning
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 15:22_
+_@KotlinIsland_
 
 ### Summary
 

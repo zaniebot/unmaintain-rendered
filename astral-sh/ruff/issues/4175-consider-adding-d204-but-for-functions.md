@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-01T23:43:14Z
 updated_at: 2023-06-28T23:59:20Z
 url: https://github.com/astral-sh/ruff/issues/4175
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider adding `D204` but for functions
 
 ---
 
-_Issue opened by @CobaltCause on 2023-05-01 23:43_
+_@CobaltCause_
 
 This would allow for enforcing uniformity between function and class docstrings so they both look like this:
 

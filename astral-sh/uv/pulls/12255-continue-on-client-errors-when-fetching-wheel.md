@@ -13,14 +13,14 @@ head: charlie/continue
 created_at: 2025-03-18T01:09:17Z
 updated_at: 2025-10-02T18:09:37Z
 url: https://github.com/astral-sh/uv/pull/12255
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Continue on client errors when fetching wheel metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 01:09_
+_@charliermarsh_
 
 ## Summary
 

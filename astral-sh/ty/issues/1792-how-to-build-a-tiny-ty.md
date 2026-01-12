@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-06T16:47:57Z
 updated_at: 2025-12-06T17:28:09Z
 url: https://github.com/astral-sh/ty/issues/1792
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # How to build a tiny `ty`?
 
 ---
 
-_Issue opened by @lmmx on 2025-12-06 16:47_
+_@lmmx_
 
 ### Question
 

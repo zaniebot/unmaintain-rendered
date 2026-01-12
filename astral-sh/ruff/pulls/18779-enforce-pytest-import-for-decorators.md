@@ -13,14 +13,14 @@ head: charlie/pt
 created_at: 2025-06-19T02:47:28Z
 updated_at: 2025-06-19T09:55:44Z
 url: https://github.com/astral-sh/ruff/pull/18779
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Enforce `pytest` import for decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-19 02:47_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: refurb/furb132
 created_at: 2023-08-26T20:32:08Z
 updated_at: 2023-08-29T10:29:26Z
 url: https://github.com/astral-sh/ruff/pull/6904
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [refurb] Implement `check-and-remove-from-set` rule (`FURB132`)
 
 ---
 
-_Pull request opened by @SavchenkoValeriy on 2023-08-26 20:32_
+_@SavchenkoValeriy_
 
 ## Summary
 

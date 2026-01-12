@@ -13,14 +13,14 @@ head: zb/dylib
 created_at: 2025-07-24T11:44:38Z
 updated_at: 2025-07-24T22:26:34Z
 url: https://github.com/astral-sh/uv/pull/14869
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Do not replace the Python dylib on macOS if `install_name_tool` fails
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 11:44_
+_@zanieb_
 
 Attempts to workaround #14843
 

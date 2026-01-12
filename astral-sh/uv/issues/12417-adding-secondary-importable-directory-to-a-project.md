@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T01:58:20Z
 updated_at: 2025-03-25T02:39:38Z
 url: https://github.com/astral-sh/uv/issues/12417
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Adding Secondary Importable Directory To A Project
 
 ---
 
-_Issue opened by @AyhamSaffar on 2025-03-24 01:58_
+_@AyhamSaffar_
 
 ### Question
 

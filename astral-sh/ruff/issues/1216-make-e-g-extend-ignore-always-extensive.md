@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T17:12:09Z
 updated_at: 2022-12-15T01:22:41Z
 url: https://github.com/astral-sh/ruff/issues/1216
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Make (e.g.) `--extend-ignore` always-extensive
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 17:12_
+_@charliermarsh_
 
 If a `pyproject.toml` file has an `extend-ignore`, and you provide `--extend-ignore` on the command-line, they should be "additive".
 

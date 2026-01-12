@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T18:22:44Z
 updated_at: 2024-09-28T20:04:28Z
 url: https://github.com/astral-sh/uv/issues/6920
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Fix meta tags etc. to avoid showing Ruff metadata in SERPs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-01 18:22_
+_@charliermarsh_
 
 ![Screenshot 2024-09-01 at 2 21 43 PM](https://github.com/user-attachments/assets/8731cac6-260b-4c81-afde-1c5aa0bdae68)
 

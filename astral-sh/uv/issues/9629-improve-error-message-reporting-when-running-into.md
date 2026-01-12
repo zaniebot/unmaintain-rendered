@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T05:48:38Z
 updated_at: 2025-01-23T04:45:22Z
 url: https://github.com/astral-sh/uv/issues/9629
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Improve error message reporting when running into a certificate issue
 
 ---
 
-_Issue opened by @kdheepak on 2024-12-04 05:48_
+_@kdheepak_
 
 A colleague of mine ran into this issue when installing a package with `uv`.
 

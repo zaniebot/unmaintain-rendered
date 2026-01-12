@@ -13,14 +13,14 @@ head: pre-commit
 created_at: 2024-02-16T12:44:39Z
 updated_at: 2024-02-17T17:16:56Z
 url: https://github.com/astral-sh/uv/pull/1487
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Fix typos & add pre-commit configuration
 
 ---
 
-_Pull request opened by @akx on 2024-02-16 12:44_
+_@akx_
 
 The pre-commit configuration was adapted from Ruff's.
 

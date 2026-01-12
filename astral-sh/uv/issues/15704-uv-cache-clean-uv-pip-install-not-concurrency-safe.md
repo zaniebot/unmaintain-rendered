@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-06T07:38:09Z
 updated_at: 2025-09-19T08:46:16Z
 url: https://github.com/astral-sh/uv/issues/15704
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # uv cache clean / uv pip install not concurrency safe?
 
 ---
 
-_Issue opened by @tiran on 2025-09-06 07:38_
+_@tiran_
 
 ### Summary
 

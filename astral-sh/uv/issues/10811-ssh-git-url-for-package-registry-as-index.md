@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T12:40:38Z
 updated_at: 2025-01-21T14:23:08Z
 url: https://github.com/astral-sh/uv/issues/10811
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # SSH git url for package registry as index
 
 ---
 
-_Issue opened by @ricardogaspar2 on 2025-01-21 12:40_
+_@ricardogaspar2_
 
 hey there 👋  @charliermarsh @gcamargo1 
 Based on the feature https://github.com/astral-sh/uv/issues/1378

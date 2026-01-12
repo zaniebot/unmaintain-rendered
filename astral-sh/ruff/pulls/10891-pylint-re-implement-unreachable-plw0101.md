@@ -14,14 +14,14 @@ head: unreachable
 created_at: 2024-04-11T22:36:41Z
 updated_at: 2025-01-03T05:20:43Z
 url: https://github.com/astral-sh/ruff/pull/10891
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Re-implement `unreachable` (`PLW0101`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-11 22:36_
+_@augustelalande_
 
 ## Summary
 

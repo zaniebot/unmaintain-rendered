@@ -13,14 +13,14 @@ head: jjb-organize-operator-precedence
 created_at: 2025-02-14T14:26:21Z
 updated_at: 2025-03-18T05:34:05Z
 url: https://github.com/astral-sh/ruff/pull/16162
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [internal] Move Linter `OperatorPrecedence` into `ruff_python_ast` crate
 
 ---
 
-_Pull request opened by @junhsonjb on 2025-02-14 14:26_
+_@junhsonjb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

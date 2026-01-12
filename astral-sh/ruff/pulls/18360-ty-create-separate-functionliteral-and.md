@@ -14,14 +14,14 @@ head: dcreager/function-separation
 created_at: 2025-05-29T01:27:48Z
 updated_at: 2025-06-03T14:59:33Z
 url: https://github.com/astral-sh/ruff/pull/18360
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Create separate `FunctionLiteral` and `FunctionType` types
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-29 01:27_
+_@dcreager_
 
 This updates our representation of functions to more closely match our representation of classes.
 

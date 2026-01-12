@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-26T17:53:47Z
 updated_at: 2025-11-12T07:54:16Z
 url: https://github.com/astral-sh/ty/issues/1263
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Pressing esc in the playground reverts file contents
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-26 17:53_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: change-code-flake8-blind-except
 created_at: 2022-11-18T18:14:31Z
 updated_at: 2022-12-01T17:15:21Z
 url: https://github.com/astral-sh/ruff/pull/808
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Change error code of flake8-blind-except
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-18 18:14_
+_@JonathanPlasse_
 
 _No description provided._
 

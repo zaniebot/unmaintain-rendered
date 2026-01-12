@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-14T15:24:05Z
 updated_at: 2025-02-14T21:05:10Z
 url: https://github.com/astral-sh/ruff/issues/16164
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Suggestion: Sort linter rules in docs
 
 ---
 
-_Issue opened by @xymy on 2025-02-14 15:24_
+_@xymy_
 
 ### Description
 

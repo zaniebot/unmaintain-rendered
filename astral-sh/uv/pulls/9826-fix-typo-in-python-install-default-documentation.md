@@ -13,14 +13,14 @@ head: zb/tyasfs
 created_at: 2024-12-11T22:49:34Z
 updated_at: 2025-12-29T23:54:52Z
 url: https://github.com/astral-sh/uv/pull/9826
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Fix typo in `python install --default` documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-11 22:49_
+_@zanieb_
 
 _No description provided._
 

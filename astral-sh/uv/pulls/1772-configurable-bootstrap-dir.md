@@ -13,14 +13,14 @@ head: konsti/configurable-bootstrap-dir
 created_at: 2024-02-20T17:39:11Z
 updated_at: 2024-02-21T12:46:24Z
 url: https://github.com/astral-sh/uv/pull/1772
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Configurable bootstrap dir
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 17:39_
+_@konstin_
 
 Add a `UV_BOOTSTRAP_DIR` option to configure the python bootstrap directory. This is helpful when working across multiple platforms in a single IDE session.
 

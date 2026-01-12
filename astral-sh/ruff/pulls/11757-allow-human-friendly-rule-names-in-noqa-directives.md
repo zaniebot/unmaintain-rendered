@@ -12,14 +12,14 @@ head: human-friendly-names
 created_at: 2024-06-05T16:49:06Z
 updated_at: 2024-12-30T10:08:05Z
 url: https://github.com/astral-sh/ruff/pull/11757
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # allow human-friendly rule names in noqa directives
 
 ---
 
-_Pull request opened by @sd-collins on 2024-06-05 16:49_
+_@sd-collins_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

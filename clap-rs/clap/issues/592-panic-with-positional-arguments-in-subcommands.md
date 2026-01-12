@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-23T15:50:44Z
 updated_at: 2016-08-24T14:15:23Z
 url: https://github.com/clap-rs/clap/issues/592
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Panic with positional arguments in subcommands
 
 ---
 
-_Issue opened by @guiniol on 2016-07-23 15:50_
+_@guiniol_
 
 Positional arguments in subcommands make the program panic.
 This can be reproduced by modifying the first example in the README to move `INPUT` to be a positional argument of the `test` subcommand.

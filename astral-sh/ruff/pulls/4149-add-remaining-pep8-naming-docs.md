@@ -13,14 +13,14 @@ head: pep8-naming-docs
 created_at: 2023-04-29T10:44:06Z
 updated_at: 2023-05-10T14:55:07Z
 url: https://github.com/astral-sh/ruff/pull/4149
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add remaining `pep8-naming` docs
 
 ---
 
-_Pull request opened by @calumy on 2023-04-29 10:44_
+_@calumy_
 
 Adds the remaining documentation for the pep8-naming rules.
 

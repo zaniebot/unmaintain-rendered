@@ -13,14 +13,14 @@ head: charlie/ver
 created_at: 2025-06-29T19:21:37Z
 updated_at: 2025-06-29T19:30:53Z
 url: https://github.com/astral-sh/uv/pull/14352
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Allow `alpha`, `beta`, and `rc` prefixes in tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-29 19:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/cache-dir
 created_at: 2023-12-02T00:14:17Z
 updated_at: 2023-12-02T00:37:52Z
 url: https://github.com/astral-sh/uv/pull/526
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Add CACHEDIR and .gitignore tags to cache directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-02 00:14_
+_@charliermarsh_
 
 ## Summary
 

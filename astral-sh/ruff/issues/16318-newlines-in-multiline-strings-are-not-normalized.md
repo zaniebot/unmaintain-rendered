@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T18:21:02Z
 updated_at: 2025-02-24T11:12:57Z
 url: https://github.com/astral-sh/ruff/issues/16318
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Newlines in multiline strings are not normalized to line feeds
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-22 18:21_
+_@dscorbett_
 
 ### Description
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-24T12:38:27Z
 updated_at: 2024-10-24T19:01:48Z
 url: https://github.com/astral-sh/uv/issues/8526
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # support `uv pip list --not-required`
 
 ---
 
-_Issue opened by @chirizxc on 2024-10-24 12:38_
+_@chirizxc_
 
 **Version**: uv 0.4.26 (1b9b9d56b 2024-10-23)
 **OS**: windows 10

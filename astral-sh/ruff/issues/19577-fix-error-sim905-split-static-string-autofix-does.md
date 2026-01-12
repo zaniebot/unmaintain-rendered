@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-27T16:50:59Z
 updated_at: 2025-08-03T16:31:30Z
 url: https://github.com/astral-sh/ruff/issues/19577
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Fix error] `SIM905` (split-static-string) autofix does not work with embeded quotes
 
 ---
 
-_Issue opened by @tdulcet on 2025-07-27 16:50_
+_@tdulcet_
 
 **Input**:
 ```py

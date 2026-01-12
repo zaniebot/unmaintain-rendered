@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T08:40:33Z
 updated_at: 2024-03-13T17:31:57Z
 url: https://github.com/astral-sh/ruff/issues/10223
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PGH005: False positive in case of `requests-mock` fixture `called_once` property/attribute
 
 ---
 
-_Issue opened by @Taragolis on 2024-03-04 08:40_
+_@Taragolis_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T12:25:57Z
 updated_at: 2025-01-29T16:38:19Z
 url: https://github.com/astral-sh/uv/issues/10390
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # File restructuring needs a manual sync --reinstall?
 
 ---
 
-_Issue opened by @cgravill on 2025-01-08 12:25_
+_@cgravill_
 
 We're restructuring some of our packages with a `src/` layout and we've had some friction with moving modules not being found unless we do a manual `uv sync --resinstall`. I wondered if that's expected or might be something that can be handled?
 

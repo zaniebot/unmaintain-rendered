@@ -12,14 +12,14 @@ head: charlie/F406
 created_at: 2022-09-12T20:47:27Z
 updated_at: 2022-09-12T20:47:31Z
 url: https://github.com/astral-sh/ruff/pull/172
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F406
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-12 20:47_
+_@charliermarsh_
 
 _No description provided._
 

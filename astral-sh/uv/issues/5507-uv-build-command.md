@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-27T10:58:03Z
 updated_at: 2024-09-06T00:41:41Z
 url: https://github.com/astral-sh/uv/issues/5507
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv build` command?
 
 ---
 
-_Issue opened by @nekitdev on 2024-07-27 10:58_
+_@nekitdev_
 
 I've searched through issues in this repository but I couldn't find anything concrete.
 What's the progress/roadmap for this command? The only time I've seen it mentioned is in the [blog](https://astral.sh/blog/uv).

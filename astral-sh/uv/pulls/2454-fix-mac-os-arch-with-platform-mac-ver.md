@@ -13,14 +13,14 @@ head: konsti/i386-is-x86
 created_at: 2024-03-14T12:28:23Z
 updated_at: 2024-03-14T12:37:46Z
 url: https://github.com/astral-sh/uv/pull/2454
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 #  Fix mac os arch with `platform.mac_ver()`
 
 ---
 
-_Pull request opened by @konstin on 2024-03-14 12:28_
+_@konstin_
 
 Fixes #2450, see https://github.com/konstin/typeshed-stats/actions/runs/8280420121
 

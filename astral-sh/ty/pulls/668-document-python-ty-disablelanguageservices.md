@@ -13,14 +13,14 @@ head: dhruv/disable-language-services
 created_at: 2025-06-17T08:30:15Z
 updated_at: 2025-06-18T06:28:45Z
 url: https://github.com/astral-sh/ty/pull/668
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Document `python.ty.disableLanguageServices`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-17 08:30_
+_@dhruvmanila_
 
 This PR documents the new option `python.ty.disableLanguageServices`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T14:57:55Z
 updated_at: 2025-08-04T18:34:09Z
 url: https://github.com/astral-sh/ruff/issues/19688
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Set `Annotation::is_file_level` in affected lint rules
 
 ---
 
-_Issue opened by @ntBre on 2025-08-01 14:57_
+_@ntBre_
 
 The below is in reference to this check added in #19653:
 

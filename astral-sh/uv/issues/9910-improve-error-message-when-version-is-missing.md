@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T12:31:00Z
 updated_at: 2024-12-15T15:27:44Z
 url: https://github.com/astral-sh/uv/issues/9910
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Improve error message when `version` is missing from `pyproject.toml`
 
 ---
 
-_Issue opened by @edmorley on 2024-12-15 12:31_
+_@edmorley_
 
 The [pyproject.toml spec](https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table) says two fields under the `[project]` table are mandatory: `name` and `version` (unless `version` is declared as [dynamic](https://packaging.python.org/en/latest/specifications/pyproject-toml/#dynamic))
 

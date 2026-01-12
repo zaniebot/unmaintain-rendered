@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-23T08:36:34Z
 updated_at: 2023-08-23T08:49:51Z
 url: https://github.com/astral-sh/ruff/issues/6805
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [I001] Is this a bug?
 
 ---
 
-_Issue opened by @harupy on 2023-08-23 08:36_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

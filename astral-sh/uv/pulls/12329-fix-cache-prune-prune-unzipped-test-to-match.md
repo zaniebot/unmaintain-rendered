@@ -11,14 +11,14 @@ head: fix-cache-prune-snapshot
 created_at: 2025-03-20T07:30:12Z
 updated_at: 2025-03-20T07:40:00Z
 url: https://github.com/astral-sh/uv/pull/12329
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Fix cache_prune::prune_unzipped test to match updated error message format
 
 ---
 
-_Pull request opened by @chhoumann on 2025-03-20 07:30_
+_@chhoumann_
 
 ## Summary
 

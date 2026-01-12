@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-17T14:19:32Z
 updated_at: 2025-11-20T21:15:30Z
 url: https://github.com/astral-sh/ty/issues/1387
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Implement structural assignability for `TypedDict`s
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-17 14:19_
+_@sharkdp_
 
 See https://typing.python.org/en/latest/spec/typeddict.html#subtyping-and-assignability
 

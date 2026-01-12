@@ -14,14 +14,14 @@ head: add-autofix-for-SIM114
 created_at: 2024-01-20T09:41:03Z
 updated_at: 2024-01-22T04:45:45Z
 url: https://github.com/astral-sh/ruff/pull/9591
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-simplify`] Add fix for `if-with-same-arms` (`SIM114`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-20 09:41_
+_@diceroll123_
 
 ## Summary
 

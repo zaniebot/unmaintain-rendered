@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-12T06:55:39Z
 updated_at: 2024-04-15T14:46:10Z
 url: https://github.com/astral-sh/uv/issues/3009
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Cache is invalidated on token renewal
 
 ---
 
-_Issue opened by @jvdw-synth on 2024-04-12 06:55_
+_@jvdw-synth_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

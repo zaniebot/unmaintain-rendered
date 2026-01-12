@@ -13,14 +13,14 @@ head: cjm/boundcycle
 created_at: 2025-12-04T21:55:06Z
 updated_at: 2025-12-04T23:17:59Z
 url: https://github.com/astral-sh/ruff/pull/21800
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] normalize typevar bounds/constraints in cycles
 
 ---
 
-_Pull request opened by @carljm on 2025-12-04 21:55_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1587
 

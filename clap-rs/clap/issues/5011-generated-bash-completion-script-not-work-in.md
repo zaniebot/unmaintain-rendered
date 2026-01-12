@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-15T09:50:25Z
 updated_at: 2023-07-18T02:19:39Z
 url: https://github.com/clap-rs/clap/issues/5011
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Generated bash completion script not work in POSIX mode
 
 ---
 
-_Issue opened by @hehaoqian on 2023-07-15 09:50_
+_@hehaoqian_
 
 ### Please complete the following tasks
 

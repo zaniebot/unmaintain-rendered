@@ -12,14 +12,14 @@ head: renovate/windows-core-0.x
 created_at: 2025-06-16T02:19:18Z
 updated_at: 2025-06-16T09:06:50Z
 url: https://github.com/astral-sh/uv/pull/14064
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Update Rust crate windows-core to 0.61.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 02:19_
+_@renovate_
 
 This PR contains the following updates:
 

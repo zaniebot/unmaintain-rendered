@@ -13,14 +13,14 @@ head: zb/dedup
 created_at: 2024-09-10T18:33:49Z
 updated_at: 2024-09-10T18:41:33Z
 url: https://github.com/astral-sh/uv/pull/7267
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Deduplicate implementation for `python_installation_from_directory`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 18:33_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/pd
 created_at: 2023-08-16T20:56:06Z
 updated_at: 2023-08-16T21:22:52Z
 url: https://github.com/astral-sh/ruff/pull/6631
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Don't detect `pandas#values` for stores, deletes, or class accesses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 20:56_
+_@charliermarsh_
 
 ## Summary
 

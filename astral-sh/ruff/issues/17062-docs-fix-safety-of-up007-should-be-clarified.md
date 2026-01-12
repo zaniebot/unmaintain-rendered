@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T10:43:22Z
 updated_at: 2025-04-09T08:21:56Z
 url: https://github.com/astral-sh/ruff/issues/17062
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # docs: fix safety of `UP007` should be clarified
 
 ---
 
-_Issue opened by @pjonsson on 2025-03-30 10:43_
+_@pjonsson_
 
 ### Summary
 

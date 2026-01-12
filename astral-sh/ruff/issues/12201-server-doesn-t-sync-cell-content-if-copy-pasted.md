@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T16:41:45Z
 updated_at: 2024-07-05T11:40:01Z
 url: https://github.com/astral-sh/ruff/issues/12201
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Server doesn't sync cell content if copy-pasted directly
 
 ---
 
-_Issue opened by @matrs on 2024-07-03 16:41_
+_@matrs_
 
 I've been using the ruff server the last days without problems (for linting and formatting), and suddenly this message appeared in `vscode`:
 >The Ruff language server exited with a panic. See the logs for more details. 

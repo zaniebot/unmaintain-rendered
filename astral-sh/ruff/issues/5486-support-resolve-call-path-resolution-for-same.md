@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T17:30:49Z
 updated_at: 2023-11-09T03:38:08Z
 url: https://github.com/astral-sh/ruff/issues/5486
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support `resolve_call_path` resolution for same-file definitions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-03 17:30_
+_@charliermarsh_
 
 If a user specifies a `classmethod` decorator or other setting based on a call path, we only respect that call path when the decorator is _imported_.
 

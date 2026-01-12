@@ -11,14 +11,14 @@ head: bad-numeric-literal-format
 created_at: 2024-11-17T19:22:30Z
 updated_at: 2024-11-19T12:31:18Z
 url: https://github.com/astral-sh/ruff/pull/14407
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Implement black's `bad-numeric-literal-format`
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-17 19:22_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: chore/move-out-of-deprecated-renovate-options
 created_at: 2024-10-09T19:38:45Z
 updated_at: 2024-10-09T19:48:52Z
 url: https://github.com/astral-sh/uv/pull/8055
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # chore(renovate): move out of deprecated options
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-10-09 19:38_
+_@mkniewallner_
 
 ## Summary
 

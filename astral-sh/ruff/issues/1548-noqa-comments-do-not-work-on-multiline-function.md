@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T09:02:52Z
 updated_at: 2023-01-03T10:26:20Z
 url: https://github.com/astral-sh/ruff/issues/1548
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # noqa comments do not work on multiline function signatures
 
 ---
 
-_Issue opened by @marscher on 2023-01-02 09:02_
+_@marscher_
 
 Ruff-0.0.204 accepts `noqa` selector comments if the signature is contained in one line. But it fails if the signature gets wrapped along multiple lines. The latter sometimes happens for long parameters lists leading to too long lines.
 

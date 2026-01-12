@@ -13,14 +13,14 @@ head: jane/server/snapshot/editor-settings
 created_at: 2024-06-19T03:34:03Z
 updated_at: 2024-07-23T07:35:45Z
 url: https://github.com/astral-sh/ruff/pull/11935
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Implement settings resolution snapshot tests
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-19 03:34_
+_@snowsignal_
 
 ## Summary
 

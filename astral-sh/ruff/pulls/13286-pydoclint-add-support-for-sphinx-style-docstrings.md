@@ -13,14 +13,14 @@ head: sphinx
 created_at: 2024-09-08T21:00:58Z
 updated_at: 2025-10-12T06:26:55Z
 url: https://github.com/astral-sh/ruff/pull/13286
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pydoclint`] Add support for Sphinx-style docstrings in the `pydoclint` rules.
 
 ---
 
-_Pull request opened by @augustelalande on 2024-09-08 21:00_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

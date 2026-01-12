@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-30T05:19:00Z
 updated_at: 2022-12-30T13:17:14Z
 url: https://github.com/astral-sh/ruff/issues/1464
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Latest release error
 
 ---
 
-_Issue opened by @ofek on 2022-12-30 05:19_
+_@ofek_
 
 https://github.com/pypa/hatch/actions/runs/3804943026/jobs/6472530377
 

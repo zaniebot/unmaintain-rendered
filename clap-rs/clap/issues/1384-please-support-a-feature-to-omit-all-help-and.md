@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-11-18T10:10:11Z
 updated_at: 2022-09-19T19:16:38Z
 url: https://github.com/clap-rs/clap/issues/1384
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Please support a feature to omit all help and messages
 
 ---
 
-_Issue opened by @joshtriplett on 2018-11-18 10:10_
+_@joshtriplett_
 
 For the purposes of reducing binary size, I'd love to have a new default feature flag for `clap` (that projects could then disable) that would omit generated `--help` and all friendly error/constraint messages, and minimize error reporting to just "Invalid arguments" or similar. That would help for embedded use cases that may want to reduce the sizes of binaries used in scripting, without regard to human invocations of those binaries.
 

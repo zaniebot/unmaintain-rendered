@@ -13,14 +13,14 @@ head: charlie/future-runtime
 created_at: 2023-02-11T17:43:02Z
 updated_at: 2023-02-11T17:44:17Z
 url: https://github.com/astral-sh/ruff/pull/2774
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Don't treat all future import accesses as non-runtime
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 17:43_
+_@charliermarsh_
 
 This was just an oversight and misunderstanding on my part. We had some helpful tests, but I misunderstood the "right" behavior so thought they were passing.
 

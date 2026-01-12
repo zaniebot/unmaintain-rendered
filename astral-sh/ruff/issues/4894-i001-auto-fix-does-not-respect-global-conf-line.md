@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-06T07:01:33Z
 updated_at: 2023-06-07T03:44:56Z
 url: https://github.com/astral-sh/ruff/issues/4894
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # I001: Auto-fix does not respect global conf `line-length`
 
 ---
 
-_Issue opened by @pespinel on 2023-06-06 07:01_
+_@pespinel_
 
 The I001 auto-fix does not respect the global line-length ruff config.
 

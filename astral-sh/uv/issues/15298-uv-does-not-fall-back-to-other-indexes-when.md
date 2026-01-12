@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T06:45:49Z
 updated_at: 2025-08-28T07:22:11Z
 url: https://github.com/astral-sh/uv/issues/15298
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # UV does not fall back to other indexes when package lacks platform-compatible wheels
 
 ---
 
-_Issue opened by @tejal567 on 2025-08-15 06:45_
+_@tejal567_
 
 ### Summary
 

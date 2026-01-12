@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T13:37:48Z
 updated_at: 2026-01-09T23:52:07Z
 url: https://github.com/astral-sh/uv/issues/16386
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Fail to install torchvision 0.24 for CPU using accelerator extras (because no wheels for manylinux x86_64 can be found)
 
 ---
 
-_Issue opened by @nathanpainchaud on 2025-10-21 13:37_
+_@nathanpainchaud_
 
 ### Summary
 

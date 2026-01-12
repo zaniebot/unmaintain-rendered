@@ -13,14 +13,14 @@ head: dcreager/module-resolution
 created_at: 2024-12-12T20:37:25Z
 updated_at: 2024-12-16T21:15:43Z
 url: https://github.com/astral-sh/ruff/pull/14946
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Bind top-most parent when importing nested module
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-12 20:37_
+_@dcreager_
 
 When importing a nested module, we were correctly creating a binding for the top-most parent, but we were binding that to the nested module, not to that parent module.  Moreover, we weren't treating those submodules as members of their containing parents.  This PR addresses both issues, so that nested imports work as expected.
 

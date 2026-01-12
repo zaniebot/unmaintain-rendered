@@ -12,14 +12,14 @@ head: ag/reveal-what-is-hidden
 created_at: 2024-08-20T18:52:15Z
 updated_at: 2024-09-03T22:41:16Z
 url: https://github.com/astral-sh/uv/pull/6268
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # refactor requires-python marker simplification
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-20 18:52_
+_@BurntSushi_
 
 This commit refactors how deal with `requires-python` so that instead of
 simplifying markers of dependencies inside the resolver, we do it at the

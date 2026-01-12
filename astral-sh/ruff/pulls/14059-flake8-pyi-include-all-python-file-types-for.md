@@ -14,14 +14,14 @@ head: pyi006-and-pyi066-for-py-files
 created_at: 2024-11-02T23:25:51Z
 updated_at: 2024-11-03T11:47:36Z
 url: https://github.com/astral-sh/ruff/pull/14059
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`flake8-pyi`] - include all python file types for `PYI006` and `PYI066`
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-02 23:25_
+_@diceroll123_
 
 ## Summary
 

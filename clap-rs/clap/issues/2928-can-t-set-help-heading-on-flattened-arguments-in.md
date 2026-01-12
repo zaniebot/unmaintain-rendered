@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-23T16:09:21Z
 updated_at: 2021-10-25T00:40:22Z
 url: https://github.com/clap-rs/clap/issues/2928
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Can't set help_heading on flattened arguments in `clap_derive`
 
 ---
 
-_Issue opened by @epage on 2021-10-23 16:09_
+_@epage_
 
 ### Please complete the following tasks
 

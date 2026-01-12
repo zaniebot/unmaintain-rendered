@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-09T02:28:34Z
 updated_at: 2024-06-10T01:43:00Z
 url: https://github.com/astral-sh/uv/issues/4169
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # [request] uv pip install -r pyproject.toml[optional_deps]
 
 ---
 
-_Issue opened by @gmankab on 2024-06-09 02:28_
+_@gmankab_
 
 ### feature request
 

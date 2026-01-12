@@ -14,14 +14,14 @@ head: use-implicit-booleaness
 created_at: 2024-11-13T08:37:57Z
 updated_at: 2024-11-26T19:30:18Z
 url: https://github.com/astral-sh/ruff/pull/14309
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # `[pylint]` Implement `len-test` (`PLC1802`)
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-13 08:37_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zed_settings
 created_at: 2024-12-10T17:55:10Z
 updated_at: 2024-12-12T07:14:56Z
 url: https://github.com/astral-sh/ruff/pull/14894
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Add LSP settings example for Zed editor
 
 ---
 
-_Pull request opened by @notpeter on 2024-12-10 17:55_
+_@notpeter_
 
 ## Summary
 

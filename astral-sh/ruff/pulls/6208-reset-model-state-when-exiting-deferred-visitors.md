@@ -13,14 +13,14 @@ head: charlie/order
 created_at: 2023-07-31T19:37:14Z
 updated_at: 2023-07-31T20:05:52Z
 url: https://github.com/astral-sh/ruff/pull/6208
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Reset model state when exiting deferred visitors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-31 19:37_
+_@charliermarsh_
 
 ## Summary
 

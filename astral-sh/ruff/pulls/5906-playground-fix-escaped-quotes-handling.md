@@ -13,14 +13,14 @@ head: escape-quotes-in-formatter-ir
 created_at: 2023-07-20T07:28:54Z
 updated_at: 2023-07-20T09:49:28Z
 url: https://github.com/astral-sh/ruff/pull/5906
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Playground: Fix escaped quotes handling
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 07:28_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

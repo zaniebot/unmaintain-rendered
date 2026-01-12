@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T09:18:09Z
 updated_at: 2025-04-23T23:42:59Z
 url: https://github.com/astral-sh/uv/issues/12830
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Unexpected behavior when handling signals
 
 ---
 
-_Issue opened by @bustbr on 2025-04-11 09:18_
+_@bustbr_
 
 ### Summary
 

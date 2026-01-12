@@ -13,14 +13,14 @@ head: contribute
 created_at: 2024-10-03T03:11:59Z
 updated_at: 2024-10-22T11:25:59Z
 url: https://github.com/astral-sh/uv/pull/7882
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Add snapshot testing to contribution guide
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 03:11_
+_@j178_
 
 ## Summary
 

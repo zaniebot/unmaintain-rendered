@@ -13,14 +13,14 @@ head: dhruv/refactor-bandit-match
 created_at: 2025-01-20T09:11:00Z
 updated_at: 2025-01-20T09:21:22Z
 url: https://github.com/astral-sh/ruff/pull/15609
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Avoid large closure to make `rustfmt` work
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-20 09:11_
+_@dhruvmanila_
 
 ## Summary
 

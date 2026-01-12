@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T15:49:07Z
 updated_at: 2025-02-10T18:55:28Z
 url: https://github.com/astral-sh/uv/issues/11388
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `tool.uv.sources` not respected for transitive dependencies
 
 ---
 
-_Issue opened by @zmeir on 2025-02-10 15:49_
+_@zmeir_
 
 ### Summary
 

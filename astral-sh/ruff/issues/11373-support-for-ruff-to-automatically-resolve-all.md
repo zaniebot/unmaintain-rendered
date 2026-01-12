@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-11T22:55:11Z
 updated_at: 2024-05-12T08:28:21Z
 url: https://github.com/astral-sh/ruff/issues/11373
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Support for ruff to automatically resolve `__all__` statements.
 
 ---
 
-_Issue opened by @leaver2000 on 2024-05-11 22:55_
+_@leaver2000_
 
 It would be very useful and appreciated if there was an option to have `ruff` automatically resolve the `__all__` statement. A configuration might look something like...
 

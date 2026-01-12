@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-15T11:33:28Z
 updated_at: 2025-05-30T20:16:36Z
 url: https://github.com/astral-sh/uv/issues/6105
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Bytecode compilation hangs non-deterministically hangs in QEMU aarch64 docker
 
 ---
 
-_Issue opened by @nijel on 2024-08-15 11:33_
+_@nijel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

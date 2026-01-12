@@ -12,14 +12,14 @@ head: renovate/pyo3-maturin-action-digest
 created_at: 2025-03-17T02:23:44Z
 updated_at: 2025-03-18T16:01:24Z
 url: https://github.com/astral-sh/uv/pull/12212
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Update PyO3/maturin-action digest to ac4fe6e - abandoned
 
 ---
 
-_Pull request opened by @renovate on 2025-03-17 02:23_
+_@renovate_
 
 This PR contains the following updates:
 

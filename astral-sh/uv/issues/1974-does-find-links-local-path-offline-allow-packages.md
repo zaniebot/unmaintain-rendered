@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-25T22:20:44Z
 updated_at: 2024-02-25T23:11:10Z
 url: https://github.com/astral-sh/uv/issues/1974
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Does `--find-links <local-path> --offline` allow packages to be used?
 
 ---
 
-_Issue opened by @zanieb on 2024-02-25 22:20_
+_@zanieb_
 
 Does `uv` pull packages from e.g. a `--find-links .../site-packages` when `--offline` is used? I don't think so, I think it only reads from the cache — but it should allow loading from local paths right?
 

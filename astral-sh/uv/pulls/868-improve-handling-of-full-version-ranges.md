@@ -13,14 +13,14 @@ head: zb/full
 created_at: 2024-01-10T05:34:45Z
 updated_at: 2024-01-10T21:03:56Z
 url: https://github.com/astral-sh/uv/pull/868
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Improve handling of "full" version ranges
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 05:34_
+_@zanieb_
 
 Reduces the number of implementation branches handling `Range:full`, deferring it to `PackageRange`.
 Improves some user-facing messages, e.g. saying `all versions of <package>` instead of `<package>*`.

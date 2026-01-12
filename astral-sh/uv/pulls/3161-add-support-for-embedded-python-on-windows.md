@@ -14,14 +14,14 @@ head: charlie/embed
 created_at: 2024-04-20T15:52:41Z
 updated_at: 2024-04-22T21:04:02Z
 url: https://github.com/astral-sh/uv/pull/3161
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Add support for embedded Python on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-20 15:52_
+_@charliermarsh_
 
 ## Summary
 

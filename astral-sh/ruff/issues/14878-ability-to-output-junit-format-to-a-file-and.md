@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-09T15:40:04Z
 updated_at: 2024-12-09T15:47:57Z
 url: https://github.com/astral-sh/ruff/issues/14878
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ability to output junit format to a file and retain default output to standard out.
 
 ---
 
-_Issue opened by @martinka on 2024-12-09 15:40_
+_@martinka_
 
 We attempt to use the same Makefile for both our dev environments and our CI pipelines.  We would like junit reporting for the CI pipelines but its not particularly human readable.  We have been able to configure other linters  to emit a file in junit while having the stdout still be human readable.  Effective this would change the output-format setting to a list and allow setting a file with the formatter.  An Example of how this is handled in pylint is `output-format="text,junit:build/junit-pylint.xml` 
 

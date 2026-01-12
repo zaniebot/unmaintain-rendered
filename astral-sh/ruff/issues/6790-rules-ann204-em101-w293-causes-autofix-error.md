@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T18:44:28Z
 updated_at: 2023-08-23T03:35:47Z
 url: https://github.com/astral-sh/ruff/issues/6790
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules ANN204, EM101, W293 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-22 18:44_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

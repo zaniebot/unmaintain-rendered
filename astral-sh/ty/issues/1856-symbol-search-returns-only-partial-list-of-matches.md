@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T17:44:31Z
 updated_at: 2025-12-12T12:29:30Z
 url: https://github.com/astral-sh/ty/issues/1856
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # symbol search returns only partial list of matches
 
 ---
 
-_Issue opened by @insane-dreamer on 2025-12-11 17:44_
+_@insane-dreamer_
 
 ### Summary
 

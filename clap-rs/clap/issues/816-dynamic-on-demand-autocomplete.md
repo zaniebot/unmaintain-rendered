@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-14T02:18:15Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/816
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Dynamic, on-demand autocomplete
 
 ---
 
-_Issue opened by @Xion on 2017-01-14 02:18_
+_@Xion_
 
 In Python, there is a package called [argcomplete](https://pypi.python.org/pypi/argcomplete) which provides very flexible autocompletion for apps that use the standard argparse module. What it allows is to implement a custom completion provider: essentially a piece of your own code that's executed when the the binary is invoked in a Special Way (tm) by the shell-specific completion script.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-27T11:34:11Z
 updated_at: 2022-05-04T21:47:33Z
 url: https://github.com/clap-rs/clap/issues/3222
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Incorrectly splitting a URL (when wrapping)
 
 ---
 
-_Issue opened by @kinnison on 2021-12-27 11:34_
+_@kinnison_
 
 ### Please complete the following tasks
 

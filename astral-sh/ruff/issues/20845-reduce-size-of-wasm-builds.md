@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T14:21:53Z
 updated_at: 2025-10-15T09:28:54Z
 url: https://github.com/astral-sh/ruff/issues/20845
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Reduce size of WASM builds
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2025-10-13 14:21_
+_@AbdealiLoKo_
 
 ### Question
 

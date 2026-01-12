@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T00:33:30Z
 updated_at: 2024-09-09T00:54:01Z
 url: https://github.com/astral-sh/uv/issues/6289
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # FR: A way to set the minimum python version for a virtual workspace
 
 ---
 
-_Issue opened by @ilyagr on 2024-08-21 00:33_
+_@ilyagr_
 
 I set up a virtual workspace to run MkDocs as discussed [here](https://github.com/astral-sh/rye/discussions/1342#discussioncomment-10401062); the config is the same is in #6288 (which I worked around by not running `uv lock`).
 

@@ -13,14 +13,14 @@ head: update-fuzzed-deps
 created_at: 2025-05-15T06:07:21Z
 updated_at: 2025-05-15T14:47:37Z
 url: https://github.com/astral-sh/ruff/pull/18113
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # Bump `py-fuzzer` Dependencies
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-15 06:07_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

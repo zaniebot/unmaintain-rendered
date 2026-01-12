@@ -13,14 +13,14 @@ head: PLE0117
 created_at: 2025-10-22T17:10:45Z
 updated_at: 2025-11-05T19:20:22Z
 url: https://github.com/astral-sh/ruff/pull/21032
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [syntax-error]: no binding for nonlocal  PLE0117 as a semantic syntax error
 
 ---
 
-_Pull request opened by @11happy on 2025-10-22 17:10_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dhruv/notebook-one-indexed
 created_at: 2023-10-11T17:36:33Z
 updated_at: 2023-10-13T00:53:51Z
 url: https://github.com/astral-sh/ruff/pull/7921
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use `OneIndexed` in `NotebookIndex`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-11 17:36_
+_@dhruvmanila_
 
 ## Summary
 

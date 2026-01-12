@@ -13,14 +13,14 @@ head: issue-6984
 created_at: 2023-08-29T17:35:36Z
 updated_at: 2023-08-29T21:08:08Z
 url: https://github.com/astral-sh/ruff/pull/6986
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # docs: :memo: Updating the example for `assert(S101)`
 
 ---
 
-_Pull request opened by @Anselmoo on 2023-08-29 17:35_
+_@Anselmoo_
 
 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T13:32:45Z
 updated_at: 2025-01-13T10:18:52Z
 url: https://github.com/astral-sh/uv/issues/10425
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # `uv pip install --require-hashes` fails when (transitive) dependencies aren't pinned to latest version
 
 ---
 
-_Issue opened by @cpswan on 2025-01-09 13:32_
+_@cpswan_
 
 uv version 0.5.16
 

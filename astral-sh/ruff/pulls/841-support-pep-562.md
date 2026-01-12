@@ -12,14 +12,14 @@ head: charlie/PEP562
 created_at: 2022-11-20T22:55:47Z
 updated_at: 2022-11-20T22:55:58Z
 url: https://github.com/astral-sh/ruff/pull/841
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Support PEP 562
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-20 22:55_
+_@charliermarsh_
 
 Resolves https://github.com/charliermarsh/ruff/issues/840.
 

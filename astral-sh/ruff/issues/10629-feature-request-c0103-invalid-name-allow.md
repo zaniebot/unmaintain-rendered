@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-27T15:26:34Z
 updated_at: 2024-04-04T09:17:48Z
 url: https://github.com/astral-sh/ruff/issues/10629
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature Request : C0103/invalid-name: Allow specifying valid variable and constant patterns with regular expressions.
 
 ---
 
-_Issue opened by @astrowonk on 2024-03-27 15:26_
+_@astrowonk_
 
 This is similar to the closed #7660. As noted in that issue, Pylint lets you **define your own regex for acceptable variable and constant names* (enforcing snake_case  for example, or variable length,or both):
 

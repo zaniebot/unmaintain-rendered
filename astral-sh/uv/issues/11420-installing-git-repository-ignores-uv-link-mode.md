@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-11T12:53:32Z
 updated_at: 2025-02-12T00:42:15Z
 url: https://github.com/astral-sh/uv/issues/11420
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # installing git repository ignores UV_LINK_MODE, breaks on some filesystems
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-02-11 12:53_
+_@PhilipVinc_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T07:05:03Z
 updated_at: 2024-08-06T20:26:05Z
 url: https://github.com/astral-sh/ruff/issues/12710
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False positive hardcoded-sql-expression (S608)
 
 ---
 
-_Issue opened by @mats-erik on 2024-08-06 07:05_
+_@mats-erik_
 
 Ruff (0.5.6) gives false positives for list concatenation if the added list contains sql, even if there is no string formatting done.
 Other bug reports for false positives don't concern lists.

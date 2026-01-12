@@ -13,14 +13,14 @@ head: brent/bump-libcst
 created_at: 2025-09-09T21:09:23Z
 updated_at: 2025-09-09T21:34:34Z
 url: https://github.com/astral-sh/ruff/pull/20321
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # Bump LibCST to 1.8.4
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-09 21:09_
+_@ntBre_
 
 This should fix the fuzz build on `main`. They added support for t-strings, which made one of our matches non-exhaustive.
 

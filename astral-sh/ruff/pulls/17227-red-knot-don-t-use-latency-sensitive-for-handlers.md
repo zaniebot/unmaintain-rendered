@@ -14,14 +14,14 @@ head: micha/lsp-not-sensitive
 created_at: 2025-04-06T08:00:49Z
 updated_at: 2025-04-08T06:33:32Z
 url: https://github.com/astral-sh/ruff/pull/17227
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Don't use latency-sensitive for handlers
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-06 08:00_
+_@MichaReiser_
 
 ## Summary
 

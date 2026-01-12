@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-01T10:25:23Z
 updated_at: 2025-10-01T13:51:55Z
 url: https://github.com/astral-sh/ty/issues/1293
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Accessing Enum value when values are repeated results in incorrect `unresolved-attribute` error
 
 ---
 
-_Issue opened by @MatthewCane on 2025-10-01 10:25_
+_@MatthewCane_
 
 ### Summary
 

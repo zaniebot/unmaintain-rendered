@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T04:33:55Z
 updated_at: 2025-08-21T11:20:31Z
 url: https://github.com/astral-sh/uv/issues/15270
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Drop publish of Debian bookworm Docker images
 
 ---
 
-_Issue opened by @zanieb on 2025-08-14 04:33_
+_@zanieb_
 
 Following #15269 
 

@@ -12,14 +12,14 @@ head: if-to-dict
 created_at: 2023-02-11T15:43:52Z
 updated_at: 2023-02-20T20:01:00Z
 url: https://github.com/astral-sh/ruff/pull/2767
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-simplify`]: if-to-dict
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-11 15:43_
+_@colin99d_
 
 Closes #998 
 

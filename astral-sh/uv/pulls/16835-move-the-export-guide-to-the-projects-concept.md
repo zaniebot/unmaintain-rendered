@@ -13,14 +13,14 @@ head: zb/export-guide
 created_at: 2025-11-24T15:11:48Z
 updated_at: 2025-11-24T16:39:54Z
 url: https://github.com/astral-sh/uv/pull/16835
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Move the "Export" guide to the projects concept section
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-24 15:11_
+_@zanieb_
 
 I consider this a bit too advanced to be in the top-level guides
 

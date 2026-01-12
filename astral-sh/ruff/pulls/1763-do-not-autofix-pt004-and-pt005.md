@@ -12,14 +12,14 @@ head: do-not-autofix-PT004-and-PT005
 created_at: 2023-01-10T04:34:06Z
 updated_at: 2023-01-10T12:30:33Z
 url: https://github.com/astral-sh/ruff/pull/1763
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Do not autofix PT004 and PT005
 
 ---
 
-_Pull request opened by @harupy on 2023-01-10 04:34_
+_@harupy_
 
 As @edgarrmondragon commented in https://github.com/charliermarsh/ruff/pull/1740#issuecomment-1376230550, just renaming fixture doesn't work. 
 

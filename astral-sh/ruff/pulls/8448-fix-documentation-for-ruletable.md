@@ -13,14 +13,14 @@ head: zanie/rule-table-doc
 created_at: 2023-11-02T15:55:15Z
 updated_at: 2023-11-02T16:11:05Z
 url: https://github.com/astral-sh/ruff/pull/8448
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix documentation for `RuleTable`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 15:55_
+_@zanieb_
 
 _No description provided._
 

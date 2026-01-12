@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T21:32:05Z
 updated_at: 2025-09-18T13:21:32Z
 url: https://github.com/astral-sh/uv/issues/13790
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Setting an environment variable changes help display of bare `uv`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-02 21:32_
+_@zanieb_
 
 As reported in #13789
 

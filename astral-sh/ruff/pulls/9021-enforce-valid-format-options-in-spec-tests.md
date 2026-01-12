@@ -13,14 +13,14 @@ head: enforce-valid-format-options
 created_at: 2023-12-06T07:03:56Z
 updated_at: 2023-12-06T07:20:39Z
 url: https://github.com/astral-sh/ruff/pull/9021
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Enforce valid format options in spec tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-06 07:03_
+_@MichaReiser_
 
 ## Summary
 

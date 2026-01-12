@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T08:55:38Z
 updated_at: 2025-04-11T08:58:49Z
 url: https://github.com/astral-sh/uv/issues/12829
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Allow the lock file to be based on solely one platform
 
 ---
 
-_Issue opened by @JerBouma on 2025-04-11 08:55_
+_@JerBouma_
 
 ### Summary
 

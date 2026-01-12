@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-21T13:48:38Z
 updated_at: 2024-04-23T20:34:21Z
 url: https://github.com/clap-rs/clap/issues/4853
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap suggests hidden subcommands in "similar subcommand" error hints
 
 ---
 
-_Issue opened by @yshui on 2023-04-21 13:48_
+_@yshui_
 
 ### Please complete the following tasks
 

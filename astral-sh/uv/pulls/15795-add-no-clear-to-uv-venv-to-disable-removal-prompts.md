@@ -13,14 +13,14 @@ head: hvh/add-no-clear-option
 created_at: 2025-09-11T16:43:19Z
 updated_at: 2025-09-16T13:24:57Z
 url: https://github.com/astral-sh/uv/pull/15795
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Add `--no-clear` to `uv venv` to disable removal prompts
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-11 16:43_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: charlie/cache-editable
 created_at: 2024-07-24T20:23:06Z
 updated_at: 2024-07-25T13:45:55Z
 url: https://github.com/astral-sh/uv/pull/5423
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Cache metadata for source tree dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 20:23_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: flake8-simplify-sim105
 created_at: 2023-01-04T03:11:16Z
 updated_at: 2023-01-04T13:13:26Z
 url: https://github.com/astral-sh/ruff/pull/1621
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement flake8-simplify SIM105 rule
 
 ---
 
-_Pull request opened by @messense on 2023-01-04 03:11_
+_@messense_
 
 Ref #998
 

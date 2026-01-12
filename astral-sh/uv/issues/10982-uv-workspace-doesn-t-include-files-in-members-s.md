@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T10:47:13Z
 updated_at: 2025-02-06T22:19:29Z
 url: https://github.com/astral-sh/uv/issues/10982
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # uv workspace doesn't include files in members's include key
 
 ---
 
-_Issue opened by @ClementWalter on 2025-01-27 10:47_
+_@ClementWalter_
 
 ### Summary
 

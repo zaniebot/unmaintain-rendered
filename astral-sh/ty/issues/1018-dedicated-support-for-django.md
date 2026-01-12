@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-16T04:16:20Z
 updated_at: 2026-01-08T18:19:26Z
 url: https://github.com/astral-sh/ty/issues/1018
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # dedicated support for Django
 
 ---
 
-_Issue opened by @aaschenbrener on 2025-08-16 04:16_
+_@aaschenbrener_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/check
 created_at: 2024-03-15T18:21:09Z
 updated_at: 2024-03-18T17:49:12Z
 url: https://github.com/astral-sh/uv/pull/2480
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Tweak `uv pip check` output for consistency with other interfaces
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-15 18:21_
+_@zanieb_
 
 _No description provided._
 

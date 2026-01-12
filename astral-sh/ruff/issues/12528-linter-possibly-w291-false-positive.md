@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T12:42:04Z
 updated_at: 2024-07-29T09:24:43Z
 url: https://github.com/astral-sh/ruff/issues/12528
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Linter: possibly W291 false positive
 
 ---
 
-_Issue opened by @minusf on 2024-07-26 12:42_
+_@minusf_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

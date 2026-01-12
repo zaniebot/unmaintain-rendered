@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T06:37:18Z
 updated_at: 2025-06-26T17:33:02Z
 url: https://github.com/astral-sh/uv/issues/14268
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # uv sync fails to install torch due to platform mismatch (manylinux_2_27_x86_64 vs manylinux_2_28_x86_64)
 
 ---
 
-_Issue opened by @Lastsource on 2025-06-26 06:37_
+_@Lastsource_
 
 ### Question
 

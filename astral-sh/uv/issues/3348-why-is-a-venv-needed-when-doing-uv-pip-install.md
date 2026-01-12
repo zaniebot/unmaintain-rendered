@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-03T14:32:16Z
 updated_at: 2024-05-04T01:39:31Z
 url: https://github.com/astral-sh/uv/issues/3348
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Why is a venv needed when doing uv pip install --target ?
 
 ---
 
-_Issue opened by @gotcha on 2024-05-03 14:32_
+_@gotcha_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ head: debug-424-ci
 created_at: 2023-11-15T08:40:01Z
 updated_at: 2023-11-28T16:27:20Z
 url: https://github.com/astral-sh/uv/pull/427
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Debug #424 CI
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 08:40_
+_@konstin_
 
 _No description provided._
 

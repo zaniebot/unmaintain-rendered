@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T14:40:50Z
 updated_at: 2025-07-19T17:38:04Z
 url: https://github.com/clap-rs/clap/issues/5093
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow customizing styling of `[default]`, `[possible values]`, `[env]` in arg description
 
 ---
 
-_Issue opened by @epage on 2023-08-28 14:40_
+_@epage_
 
 ### Please complete the following tasks
 

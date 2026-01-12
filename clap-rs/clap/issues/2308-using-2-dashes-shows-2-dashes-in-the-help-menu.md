@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-01-22T19:30:26Z
 updated_at: 2021-02-06T16:50:46Z
 url: https://github.com/clap-rs/clap/issues/2308
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Using >2 dashes shows 2 dashes in the help menu.
 
 ---
 
-_Issue opened by @g-w1 on 2021-01-22 19:30_
+_@g-w1_
 
 ### Make sure you completed the following tasks
 

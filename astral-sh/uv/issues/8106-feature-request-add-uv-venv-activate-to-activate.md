@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T19:47:38Z
 updated_at: 2024-10-24T12:23:37Z
 url: https://github.com/astral-sh/uv/issues/8106
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # [Feature Request] Add `uv venv --activate` to activate virtual environment after creation
 
 ---
 
-_Issue opened by @imbev on 2024-10-10 19:47_
+_@imbev_
 
 I suggest that uv add an `--activate` option to the `uv venv` command. This option would automatically activate the virtual environment after creating it.
 

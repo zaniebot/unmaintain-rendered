@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T18:36:40Z
 updated_at: 2026-01-06T17:07:07Z
 url: https://github.com/astral-sh/uv/issues/15286
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Why does `uv version --bump` sync?
 
 ---
 
-_Issue opened by @fabiopicchi on 2025-08-14 18:36_
+_@fabiopicchi_
 
 ### Question
 

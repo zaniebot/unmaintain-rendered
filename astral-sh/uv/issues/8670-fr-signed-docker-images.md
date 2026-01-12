@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T17:09:50Z
 updated_at: 2025-01-31T15:00:24Z
 url: https://github.com/astral-sh/uv/issues/8670
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # FR: signed docker images
 
 ---
 
-_Issue opened by @mjpieters on 2024-10-29 17:09_
+_@mjpieters_
 
 We'd appreciate it greatly if the docker images produced for uv were signed.
 

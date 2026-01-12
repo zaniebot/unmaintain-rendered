@@ -13,14 +13,14 @@ head: zb/uvx-test
 created_at: 2025-01-21T20:40:15Z
 updated_at: 2025-01-22T16:44:57Z
 url: https://github.com/astral-sh/uv/pull/10824
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Move smoke tests into dedicated jobs and build `uvx` explicitly
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 20:40_
+_@zanieb_
 
 In the interest of expanding these tests and debugging weird behaviors, I've moved the smoke tests out of the `cargo test` job and into dedicated `smoke test` jobs. We explicitly build `uvx` in the `build binary` jobs instead of relying on the implicit build for the test run.
 

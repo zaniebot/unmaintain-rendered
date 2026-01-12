@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T04:07:37Z
 updated_at: 2025-02-19T05:35:16Z
 url: https://github.com/astral-sh/ruff/issues/16244
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Upgrade the host machine for the release workflow
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-19 04:07_
+_@dhruvmanila_
 
 ### Description
 

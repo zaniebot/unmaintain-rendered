@@ -12,14 +12,14 @@ head: fix-20809
 created_at: 2025-10-15T03:31:44Z
 updated_at: 2025-10-27T09:25:38Z
 url: https://github.com/astral-sh/ruff/pull/20880
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [`flake8-todos`] Extend TD003 to allow Jira-style issue IDs on the same line (`TD003`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-15 03:31_
+_@danparizher_
 
 ## Summary
 

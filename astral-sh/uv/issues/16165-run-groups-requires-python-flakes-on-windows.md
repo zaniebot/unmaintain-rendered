@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T21:44:20Z
 updated_at: 2025-11-28T09:41:09Z
 url: https://github.com/astral-sh/uv/issues/16165
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # `run_groups_requires_python` flakes on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-10-07 21:44_
+_@zanieb_
 
 ``` 
     thread 'run::run_groups_requires_python' panicked at crates\uv\tests\it\run.rs:5113:5:

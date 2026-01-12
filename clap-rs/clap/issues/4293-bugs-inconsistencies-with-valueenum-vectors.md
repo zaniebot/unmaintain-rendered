@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-29T21:11:56Z
 updated_at: 2022-09-29T21:23:27Z
 url: https://github.com/clap-rs/clap/issues/4293
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Bugs & Inconsistencies with ValueEnum Vectors
 
 ---
 
-_Issue opened by @ttytm on 2022-09-29 21:11_
+_@ttytm_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: add_to_up30
 created_at: 2023-02-04T15:15:29Z
 updated_at: 2023-02-04T22:35:15Z
 url: https://github.com/astral-sh/ruff/pull/2568
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Allows UP030 to work better with *args and **kwargs
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-04 15:15_
+_@colin99d_
 
 Fixes #2448
 

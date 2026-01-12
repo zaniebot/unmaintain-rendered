@@ -13,14 +13,14 @@ head: pilleye/md-relative-line-number
 created_at: 2024-10-18T05:02:23Z
 updated_at: 2024-10-22T13:24:27Z
 url: https://github.com/astral-sh/ruff/pull/13804
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet
 
 ---
 
-_Pull request opened by @pilleye on 2024-10-18 05:02_
+_@pilleye_
 
 Summary: Adds absolute line numbers to mdtest (fixes #13798)
 

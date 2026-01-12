@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T11:14:09Z
 updated_at: 2024-09-27T02:46:08Z
 url: https://github.com/astral-sh/uv/issues/7705
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Add `uv build --all` option
 
 ---
 
-_Issue opened by @inbalzelig-ugi on 2024-09-26 11:14_
+_@inbalzelig-ugi_
 
 Hi, I want to move from rye to uv. In rye, there is a `rye build --all ` option to build all members in a workspace without passing the members' names one by one. 
 Current options in uv are:

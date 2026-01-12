@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T12:40:00Z
 updated_at: 2025-01-31T14:19:37Z
 url: https://github.com/astral-sh/ruff/issues/15849
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Panic in `PYI019` autofix
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-31 12:40_
+_@AlexWaygood_
 
 ### Description
 

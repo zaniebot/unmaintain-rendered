@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:22:25Z
 updated_at: 2025-05-17T17:06:13Z
 url: https://github.com/astral-sh/ty/issues/84
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Watch for changed files in LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:22_
+_@MichaReiser_
 
 The server currently watches for changes to open files. However, it doesn't watch for external changes (e.g. from a `git pull`)
 

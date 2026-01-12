@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-15T17:32:10Z
 updated_at: 2025-10-15T19:10:09Z
 url: https://github.com/astral-sh/uv/issues/16319
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # torch-backend needs to be updated to support cu130
 
 ---
 
-_Issue opened by @rajesh-s on 2025-10-15 17:32_
+_@rajesh-s_
 
 https://github.com/astral-sh/uv/blob/83635a6c4509ac2730f5a3bd80e4a75ce52eca31/crates/uv-torch/src/backend.rs#L59
 

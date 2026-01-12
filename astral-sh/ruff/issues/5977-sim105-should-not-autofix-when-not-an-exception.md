@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T13:24:13Z
 updated_at: 2023-07-22T18:36:48Z
 url: https://github.com/astral-sh/ruff/issues/5977
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `SIM105` should not autofix when not an exception (`B030`)
 
 ---
 
-_Issue opened by @sbrugman on 2023-07-22 13:24_
+_@sbrugman_
 
 ```python
 try:

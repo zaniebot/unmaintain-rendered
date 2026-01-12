@@ -14,14 +14,14 @@ head: charlie/err
 created_at: 2025-04-04T12:51:09Z
 updated_at: 2025-04-24T20:31:26Z
 url: https://github.com/astral-sh/uv/pull/12671
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Make `--frozen` and `--no-sources` conflicting options
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-04 12:51_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T23:31:50Z
 updated_at: 2023-03-11T21:01:16Z
 url: https://github.com/astral-sh/ruff/issues/3446
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] index out of bounds in locator.rs
 
 ---
 
-_Issue opened by @krpatter-intc on 2023-03-10 23:31_
+_@krpatter-intc_
 
 I've got a particular buggy repo where I end up getting a crash here:
 

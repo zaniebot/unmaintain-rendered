@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T06:51:39Z
 updated_at: 2025-12-22T14:14:14Z
 url: https://github.com/astral-sh/ruff/issues/22135
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # S101 assert can be used in testing.
 
 ---
 
-_Issue opened by @bytepure on 2025-12-22 06:51_
+_@bytepure_
 
 ### Summary
 

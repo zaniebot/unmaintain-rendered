@@ -13,14 +13,14 @@ head: sid/unset-git-cred-helper
 created_at: 2025-11-30T01:31:47Z
 updated_at: 2025-12-01T11:41:22Z
 url: https://github.com/astral-sh/uv/pull/16895
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Isolating test from accessing global git credential helper config
 
 ---
 
-_Pull request opened by @sid-38 on 2025-11-30 01:31_
+_@sid-38_
 
 ## Summary
 Resolves: https://github.com/astral-sh/uv/issues/1980

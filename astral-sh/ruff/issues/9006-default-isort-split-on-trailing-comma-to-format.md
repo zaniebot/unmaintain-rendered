@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-05T09:10:26Z
 updated_at: 2025-06-23T22:50:48Z
 url: https://github.com/astral-sh/ruff/issues/9006
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Default `isort.split-on-trailing-comma` to `format.skip-magic-trailing-comma`
 
 ---
 
-_Issue opened by @sbrugman on 2023-12-05 09:10_
+_@sbrugman_
 
 For our [`PyCodeHash`](https://github.com/pycodehash/pycodehash/blob/main/pyproject.toml) project we have [turned magic trailing comma off](https://github.com/psf/black/issues/2135):
 ```toml

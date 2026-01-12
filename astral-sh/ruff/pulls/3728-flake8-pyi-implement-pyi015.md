@@ -13,14 +13,14 @@ head: add-pyi015
 created_at: 2023-03-25T11:52:57Z
 updated_at: 2023-03-25T15:55:15Z
 url: https://github.com/astral-sh/ruff/pull/3728
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8-pyi`] Implement `PYI015`
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-25 11:52_
+_@JonathanPlasse_
 
 ```console
 ❯ cargo run -p ruff_cli -- check --no-cache crates/ruff/resources/test/fixtures/flake8_pyi/PYI015.pyi --select=PYI015

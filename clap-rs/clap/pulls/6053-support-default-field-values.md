@@ -12,14 +12,14 @@ head: default_field_values
 created_at: 2025-06-30T16:34:37Z
 updated_at: 2025-06-30T16:34:37Z
 url: https://github.com/clap-rs/clap/pull/6053
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support default field values
 
 ---
 
-_Pull request opened by @DJMcNab on 2025-06-30 16:34_
+_@DJMcNab_
 
 This uses my fork of syn defined at https://github.com/dtolnay/syn/pull/1870, and is intended to validate that. This PR is not necessarily intended to merged/reviewed, as things stand. In particular, if the syn PR is never merged, this won't be the right solution.
 

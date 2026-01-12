@@ -14,14 +14,14 @@ head: deprecated_context_variable_airflow
 created_at: 2024-12-26T08:14:27Z
 updated_at: 2025-02-01T00:02:25Z
 url: https://github.com/astral-sh/ruff/pull/15144
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`airflow`] Update `AIR302` to check for deprecated context keys
 
 ---
 
-_Pull request opened by @sunank200 on 2024-12-26 08:14_
+_@sunank200_
 
 **Summary**
 

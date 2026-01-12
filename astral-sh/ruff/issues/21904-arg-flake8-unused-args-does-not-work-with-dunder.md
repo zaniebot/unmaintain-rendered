@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T19:59:11Z
 updated_at: 2025-12-11T08:41:51Z
 url: https://github.com/astral-sh/ruff/issues/21904
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # ARG flake8-unused-args does not work with dunder methods
 
 ---
 
-_Issue opened by @alexruddick-grantek on 2025-12-10 19:59_
+_@alexruddick-grantek_
 
 ### Summary
 

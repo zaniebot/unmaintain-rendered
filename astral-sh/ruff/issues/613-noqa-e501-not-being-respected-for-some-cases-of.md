@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-05T22:33:10Z
 updated_at: 2022-11-06T09:20:08Z
 url: https://github.com/astral-sh/ruff/issues/613
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # noqa E501 not being respected for some cases of long lines
 
 ---
 
-_Issue opened by @LefterisJP on 2022-11-05 22:33_
+_@LefterisJP_
 
 I have noticed that `noqa: E501` is not respected for some long line cases. I can't really understand which cases that is. For `line-length=99` though this one for example is an interesting one:
 

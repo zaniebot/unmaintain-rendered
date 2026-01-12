@@ -13,14 +13,14 @@ head: charlie/match
 created_at: 2025-09-04T02:34:36Z
 updated_at: 2025-09-04T12:34:55Z
 url: https://github.com/astral-sh/uv/pull/15671
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Avoid erroring when `match-runtime` target is optional
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-04 02:34_
+_@charliermarsh_
 
 
 ## Summary

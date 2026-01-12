@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T12:52:16Z
 updated_at: 2024-08-27T14:02:10Z
 url: https://github.com/astral-sh/uv/issues/6684
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Use relative paths in pyproject.toml for path dependencies
 
 ---
 
-_Issue opened by @harrymconner on 2024-08-27 12:52_
+_@harrymconner_
 
 My company organizes its python code in a monorepo, and the recent addition of relative paths in lockfiles (#6490) convinced me to switch to uv! I was wondering if it would also be possible to use relative paths in the pyproject.toml file when `uv add`-ing path dependencies? Here is the repo structure for reference:
 ```

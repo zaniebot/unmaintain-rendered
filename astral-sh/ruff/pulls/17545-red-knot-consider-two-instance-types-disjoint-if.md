@@ -13,14 +13,14 @@ head: alex/instance-disjointness
 created_at: 2025-04-22T11:58:43Z
 updated_at: 2025-04-22T14:14:12Z
 url: https://github.com/astral-sh/ruff/pull/17545
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Consider two instance types disjoint if the underlying classes have disjoint metaclasses
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-22 11:58_
+_@AlexWaygood_
 
 ## Summary
 

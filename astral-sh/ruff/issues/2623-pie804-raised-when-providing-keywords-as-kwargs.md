@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T11:53:45Z
 updated_at: 2023-02-07T16:25:12Z
 url: https://github.com/astral-sh/ruff/issues/2623
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PIE804 raised when providing keywords as kwargs
 
 ---
 
-_Issue opened by @153957 on 2023-02-07 11:53_
+_@153957_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

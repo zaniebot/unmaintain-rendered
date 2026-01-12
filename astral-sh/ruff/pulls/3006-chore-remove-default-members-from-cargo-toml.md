@@ -12,14 +12,14 @@ head: chore/default-members
 created_at: 2023-02-18T10:24:42Z
 updated_at: 2023-02-19T15:21:42Z
 url: https://github.com/astral-sh/ruff/pull/3006
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # chore: Remove `default_members` from `Cargo.toml`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-02-18 10:24_
+_@MichaReiser_
 
 This PR removes the `default_members` from the workspace configuration. 
 

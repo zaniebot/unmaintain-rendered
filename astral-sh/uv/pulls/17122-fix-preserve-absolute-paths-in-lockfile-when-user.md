@@ -11,14 +11,14 @@ head: fix/preserve-absolute-find-links-path
 created_at: 2025-12-13T10:21:39Z
 updated_at: 2025-12-17T11:01:47Z
 url: https://github.com/astral-sh/uv/pull/17122
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # fix: preserve absolute paths in lockfile when user specifies absolute find-links
 
 ---
 
-_Pull request opened by @majiayu000 on 2025-12-13 10:21_
+_@majiayu000_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/semantic-model-docstring
 created_at: 2024-02-12T19:09:57Z
 updated_at: 2024-02-13T04:32:23Z
 url: https://github.com/astral-sh/ruff/pull/9960
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Make semantic model aware of docstring
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-12 19:09_
+_@dhruvmanila_
 
 ## Summary
 

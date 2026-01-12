@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T17:12:23Z
 updated_at: 2025-06-11T19:08:23Z
 url: https://github.com/astral-sh/uv/issues/13972
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Uninstallation of uv
 
 ---
 
-_Issue opened by @keremcozin on 2025-06-11 17:12_
+_@keremcozin_
 
 ### Summary
 

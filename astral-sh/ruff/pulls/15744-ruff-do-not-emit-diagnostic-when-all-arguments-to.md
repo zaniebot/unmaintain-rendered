@@ -15,14 +15,14 @@ head: RUF058
 created_at: 2025-01-25T18:32:41Z
 updated_at: 2025-01-25T18:46:04Z
 url: https://github.com/astral-sh/ruff/pull/15744
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] Do not emit diagnostic when all arguments to `zip()` are variadic (`RUF058`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-25 18:32_
+_@InSyncWithFoo_
 
 ## Summary
 

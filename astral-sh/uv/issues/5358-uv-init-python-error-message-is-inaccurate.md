@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T17:59:45Z
 updated_at: 2024-07-23T19:01:10Z
 url: https://github.com/astral-sh/uv/issues/5358
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # ``uv init --python``  error message is inaccurate.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-23 17:59_
+_@FishAlchemist_
 
 **uv version:** build from source 5f1f9c82
 **operating system:** Windows 11 23H2 x86-64

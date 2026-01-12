@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T10:13:25Z
 updated_at: 2024-06-26T09:02:47Z
 url: https://github.com/astral-sh/ruff/issues/9994
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # bandit check seems to link arguments not function call
 
 ---
 
-_Issue opened by @Borda on 2024-02-15 10:13_
+_@Borda_
 
 It seems that Ruff reports wrong lines for this bandit issue
 ```py

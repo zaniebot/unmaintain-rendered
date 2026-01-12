@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-14T22:39:04Z
 updated_at: 2025-01-02T14:42:11Z
 url: https://github.com/astral-sh/uv/issues/7401
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Completion should fall back to default shell completion behavior when input does not match  
 
 ---
 
-_Issue opened by @dandavison on 2024-09-14 22:39_
+_@dandavison_
 
 I'm using zsh. Given a file `./hello.py`, I think that e.g. `uv run python he<TAB>` should complete to `uv run python hello.py` (assuming that no other paths match `./he*`). I.e., I think that `uv`'s completion should fall back to some appropriate "normal shell completion" behavior when the input cannot be completed in a uv-specific way.
 

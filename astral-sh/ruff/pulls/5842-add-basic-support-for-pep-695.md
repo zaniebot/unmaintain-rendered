@@ -12,14 +12,14 @@ head: deps/parser
 created_at: 2023-07-17T21:38:41Z
 updated_at: 2023-07-18T17:49:32Z
 url: https://github.com/astral-sh/ruff/pull/5842
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add basic support for PEP 695
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-17 21:38_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ruff/issues/5062
 

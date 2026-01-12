@@ -13,14 +13,14 @@ head: fix/detect-more-S507-misusages
 created_at: 2023-09-25T21:51:20Z
 updated_at: 2023-09-28T21:42:23Z
 url: https://github.com/astral-sh/ruff/pull/7661
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # fix(rules): improve S507 detection
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-09-25 21:51_
+_@mkniewallner_
 
 ## Summary
 

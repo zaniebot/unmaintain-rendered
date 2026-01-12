@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T20:58:56Z
 updated_at: 2025-01-31T11:34:58Z
 url: https://github.com/astral-sh/ruff/issues/15776
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB168 false negative and false positives
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-27 20:58_
+_@dscorbett_
 
 ### Description
 

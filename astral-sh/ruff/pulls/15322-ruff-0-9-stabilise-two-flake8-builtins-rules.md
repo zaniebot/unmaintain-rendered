@@ -13,14 +13,14 @@ head: alex/flake8-builtins-stabilisations
 created_at: 2025-01-07T16:02:03Z
 updated_at: 2025-01-08T12:54:59Z
 url: https://github.com/astral-sh/ruff/pull/15322
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [ruff-0.9] Stabilise two `flake8-builtins` rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-07 16:02_
+_@AlexWaygood_
 
 ## Summary
 

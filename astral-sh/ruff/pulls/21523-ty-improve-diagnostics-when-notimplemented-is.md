@@ -14,14 +14,14 @@ head: alex/notimplemented-hint
 created_at: 2025-11-19T13:20:47Z
 updated_at: 2025-11-19T19:27:14Z
 url: https://github.com/astral-sh/ruff/pull/21523
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Improve diagnostics when `NotImplemented` is called
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-19 13:20_
+_@AlexWaygood_
 
 ## Summary
 

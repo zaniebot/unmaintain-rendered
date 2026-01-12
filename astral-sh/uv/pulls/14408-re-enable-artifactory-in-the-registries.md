@@ -13,14 +13,14 @@ head: jtfm/restore-artifactory-test
 created_at: 2025-07-02T07:12:54Z
 updated_at: 2025-07-02T11:50:38Z
 url: https://github.com/astral-sh/uv/pull/14408
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Re-enable Artifactory in the registries integration test
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-02 07:12_
+_@jtfmumm_
 
 Having worked out the account issue, I've re-enabled Artifactory in the registries test.
 

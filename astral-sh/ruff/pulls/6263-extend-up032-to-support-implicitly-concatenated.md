@@ -12,14 +12,14 @@ head: UP032-implicit
 created_at: 2023-08-02T06:20:16Z
 updated_at: 2023-08-02T19:31:02Z
 url: https://github.com/astral-sh/ruff/pull/6263
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Extend `UP032` to support implicitly concatenated strings
 
 ---
 
-_Pull request opened by @harupy on 2023-08-02 06:20_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

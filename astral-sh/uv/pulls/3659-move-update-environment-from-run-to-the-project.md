@@ -13,14 +13,14 @@ head: zb/move-update-env
 created_at: 2024-05-19T19:35:22Z
 updated_at: 2024-05-20T01:48:25Z
 url: https://github.com/astral-sh/uv/pull/3659
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # Move `update_environment` from `run` to the `project` namespace
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-19 19:35_
+_@zanieb_
 
 Prompted by https://github.com/astral-sh/uv/pull/3657#discussion_r1606041239
 

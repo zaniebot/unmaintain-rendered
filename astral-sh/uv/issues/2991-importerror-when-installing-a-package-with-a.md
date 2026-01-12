@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T12:57:51Z
 updated_at: 2024-04-11T17:19:53Z
 url: https://github.com/astral-sh/uv/issues/2991
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # ImportError when installing a package with a dependency on another package even though the required package is installed
 
 ---
 
-_Issue opened by @AlessandroPomponio on 2024-04-11 12:57_
+_@AlessandroPomponio_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

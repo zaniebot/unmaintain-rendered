@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T18:19:46Z
 updated_at: 2024-07-17T20:29:50Z
 url: https://github.com/astral-sh/uv/issues/5120
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv lock` rejects wheels from the PyTorch index
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 18:19_
+_@charliermarsh_
 
 These don't have hashes, so the lockfile rejects them. We either need to loosen that constraint, or compute hashes for all wheels from indexes that lack them.
 

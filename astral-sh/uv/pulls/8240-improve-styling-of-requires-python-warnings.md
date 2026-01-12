@@ -13,14 +13,14 @@ head: zb/requires-python-value
 created_at: 2024-10-16T04:11:48Z
 updated_at: 2024-10-16T18:08:23Z
 url: https://github.com/astral-sh/uv/pull/8240
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Improve styling of `requires-python` warnings
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 04:11_
+_@zanieb_
 
 Extends #7959
 

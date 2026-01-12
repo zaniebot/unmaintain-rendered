@@ -12,14 +12,14 @@ head: jack/env_cache_key
 created_at: 2025-07-01T19:59:46Z
 updated_at: 2025-07-02T19:40:20Z
 url: https://github.com/astral-sh/uv/pull/14403
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Includes `sys.prefix` in cached environment keys to avoid `--with` collisions across projects
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-01 19:59_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/uv/issues/12889.
 

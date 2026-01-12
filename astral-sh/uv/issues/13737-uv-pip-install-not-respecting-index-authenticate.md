@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T17:49:07Z
 updated_at: 2025-06-02T00:20:57Z
 url: https://github.com/astral-sh/uv/issues/13737
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv pip install` not respecting `index.authenticate` on followup requests
 
 ---
 
-_Issue opened by @JoshuaHassler on 2025-05-30 17:49_
+_@JoshuaHassler_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/check-hashes-ii
 created_at: 2024-04-05T03:00:51Z
 updated_at: 2024-04-12T13:40:08Z
 url: https://github.com/astral-sh/uv/pull/2830
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Filter out mismatching registry hashes in the resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 03:00_
+_@charliermarsh_
 
 ## Summary
 

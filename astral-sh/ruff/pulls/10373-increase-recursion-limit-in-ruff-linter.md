@@ -12,14 +12,14 @@ head: zb/recursion
 created_at: 2024-03-12T22:41:36Z
 updated_at: 2024-03-19T13:15:23Z
 url: https://github.com/astral-sh/ruff/pull/10373
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Increase recursion limit in `ruff_linter`
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 22:41_
+_@zanieb_
 
 See https://github.com/astral-sh/ruff/pull/10325#issuecomment-1992596557 for motivation. I'm not sure of the implications of the change.
 

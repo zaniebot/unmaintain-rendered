@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T18:52:37Z
 updated_at: 2023-12-20T10:53:50Z
 url: https://github.com/astral-sh/uv/issues/707
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Panic when `requires-python` is missing from JSON responses
 
 ---
 
-_Issue opened by @zanieb on 2023-12-19 18:52_
+_@zanieb_
 
 ```
 error: Received some unexpected JSON from http://localhost:3141/root/pypi/+simple/markupsafe/?format=application/vnd.pypi.simple.v1+json

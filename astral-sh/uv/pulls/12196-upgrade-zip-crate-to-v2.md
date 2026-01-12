@@ -14,14 +14,14 @@ head: charlie/z
 created_at: 2025-03-15T20:59:06Z
 updated_at: 2025-03-16T23:58:12Z
 url: https://github.com/astral-sh/uv/pull/12196
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Upgrade zip crate to v2
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-15 20:59_
+_@charliermarsh_
 
 Closes #12195.
 

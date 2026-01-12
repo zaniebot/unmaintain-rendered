@@ -13,14 +13,14 @@ head: needless-error-checking
 created_at: 2024-03-12T20:57:08Z
 updated_at: 2025-05-08T21:29:13Z
 url: https://github.com/astral-sh/ruff/pull/10372
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove f-string `UnclosedLbrace` error checking from the lexer
 
 ---
 
-_Pull request opened by @LaBatata101 on 2024-03-12 20:57_
+_@LaBatata101_
 
 This error check is already handled by the new parser. For some reason the parser gets stuck when parsing f-strings with an unclosed brace, e.g. `f'{'`.
 

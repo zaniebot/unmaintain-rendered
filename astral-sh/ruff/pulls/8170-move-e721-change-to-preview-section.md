@@ -13,14 +13,14 @@ head: zanie/fixup-changelog
 created_at: 2023-10-24T16:00:09Z
 updated_at: 2023-10-24T16:09:38Z
 url: https://github.com/astral-sh/ruff/pull/8170
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Move E721 change to preview section
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 16:00_
+_@zanieb_
 
 _No description provided._
 

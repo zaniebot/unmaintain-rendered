@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T12:56:48Z
 updated_at: 2024-04-19T14:45:39Z
 url: https://github.com/astral-sh/ruff/issues/11037
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Panic] Ruff VSCode extension crashes every time the word `def` is written in a class
 
 ---
 
-_Issue opened by @lmanc on 2024-04-19 12:56_
+_@lmanc_
 
 Hi, today while using the Ruff VSCode extension, Ruff crashed with the following message:
 

@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-09-10T13:20:06Z
 updated_at: 2024-09-10T13:27:46Z
 url: https://github.com/astral-sh/uv/pull/7254
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Remove workspace root for single-member workspace with `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 13:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: fix/furb164-detect-exotic-float-literals
 created_at: 2025-06-24T20:41:49Z
 updated_at: 2025-06-25T08:57:43Z
 url: https://github.com/astral-sh/ruff/pull/18925
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`refurb`] Detect more exotic float literals in `FURB164`
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-24 20:41_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

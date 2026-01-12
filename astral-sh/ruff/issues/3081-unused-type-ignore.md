@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-21T03:05:54Z
 updated_at: 2023-02-28T22:42:46Z
 url: https://github.com/astral-sh/ruff/issues/3081
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # unused-type-ignore
 
 ---
 
-_Issue opened by @janosh on 2023-02-21 03:05_
+_@janosh_
 
 Very tall ask considering I don't see how to do this without depending on `mypy` but wanted to at least float the suggestion.
 

@@ -13,14 +13,14 @@ head: py-fetch
 created_at: 2025-02-19T03:50:17Z
 updated_at: 2025-02-20T14:37:43Z
 url: https://github.com/astral-sh/uv/pull/11614
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Make fetching github releases faster
 
 ---
 
-_Pull request opened by @j178 on 2025-02-19 03:50_
+_@j178_
 
 I noticed that the latest two `sync-python-releases` jobs failed due to `httpx.RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)`.
 

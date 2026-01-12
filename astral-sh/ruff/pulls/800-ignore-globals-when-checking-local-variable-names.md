@@ -12,14 +12,14 @@ head: charlie/ignore-globals
 created_at: 2022-11-17T22:14:32Z
 updated_at: 2022-11-17T22:19:02Z
 url: https://github.com/astral-sh/ruff/pull/800
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Ignore globals when checking local variable names
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 22:14_
+_@charliermarsh_
 
 Resolves #799.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-07-11T21:48:01Z
 updated_at: 2022-09-26T12:52:19Z
 url: https://github.com/clap-rs/clap/issues/3907
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # With derive(ValueEnum), the rename_all attribute is silently ignored when the value is not a string literal
 
 ---
 
-_Issue opened by @jturner314-nrl on 2022-07-11 21:48_
+_@jturner314-nrl_
 
 ### Please complete the following tasks
 

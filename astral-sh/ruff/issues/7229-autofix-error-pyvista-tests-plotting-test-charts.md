@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-07T21:30:24Z
 updated_at: 2023-09-07T23:20:58Z
 url: https://github.com/astral-sh/ruff/issues/7229
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Autofix error] `pyvista/tests/plotting/test_charts.py`
 
 ---
 
-_Issue opened by @eggplants on 2023-09-07 21:30_
+_@eggplants_
 
 I encountered an autofix error when I try to introduce ruff into [pyvista](https://github.com/pyvista/pyvista).
 

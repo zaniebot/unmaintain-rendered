@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-06T07:07:59Z
 updated_at: 2024-10-14T18:23:12Z
 url: https://github.com/astral-sh/uv/issues/7947
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Docker integration: Suggest COPYing `uvx` in addition to `uv`
 
 ---
 
-_Issue opened by @salty-horse on 2024-10-06 07:07_
+_@salty-horse_
 
 The [Docker integration guide](https://docs.astral.sh/uv/guides/integration/docker/) suggests "copying the binary from the official distroless Docker image":
 ```

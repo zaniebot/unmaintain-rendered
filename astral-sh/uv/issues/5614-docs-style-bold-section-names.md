@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T17:24:41Z
 updated_at: 2024-07-30T18:00:16Z
 url: https://github.com/astral-sh/uv/issues/5614
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # docs(style): Bold section names
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 17:24_
+_@zanieb_
 
 It'd be nice to bold the sections, e.g. "Introduction" and "Getting Started" in
 

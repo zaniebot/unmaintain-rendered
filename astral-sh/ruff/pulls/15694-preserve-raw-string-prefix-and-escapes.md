@@ -14,14 +14,14 @@ head: brent/raw-string
 created_at: 2025-01-23T15:40:25Z
 updated_at: 2025-01-23T17:12:13Z
 url: https://github.com/astral-sh/ruff/pull/15694
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Preserve raw string prefix and escapes
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-23 15:40_
+_@ntBre_
 
 ## Summary
 

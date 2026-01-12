@@ -14,14 +14,14 @@ head: unnecessary-nested-literal
 created_at: 2024-11-13T16:20:51Z
 updated_at: 2024-11-27T10:03:34Z
 url: https://github.com/astral-sh/ruff/pull/14323
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Implement `unnecessary-nested-literal` (`RUF041`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-13 16:20_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

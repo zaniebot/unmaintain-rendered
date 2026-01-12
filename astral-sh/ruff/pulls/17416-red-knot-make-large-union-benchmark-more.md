@@ -13,14 +13,14 @@ head: cjm/bigunionbench
 created_at: 2025-04-16T00:36:20Z
 updated_at: 2025-04-16T01:04:58Z
 url: https://github.com/astral-sh/ruff/pull/17416
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] make large-union benchmark more challenging
 
 ---
 
-_Pull request opened by @carljm on 2025-04-16 00:36_
+_@carljm_
 
 ## Summary
 

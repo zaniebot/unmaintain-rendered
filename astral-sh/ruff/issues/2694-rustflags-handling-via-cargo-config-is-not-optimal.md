@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T20:02:54Z
 updated_at: 2024-07-26T02:13:36Z
 url: https://github.com/astral-sh/ruff/issues/2694
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RUSTFLAGS handling via cargo config is not optimal.
 
 ---
 
-_Issue opened by @gyakovlev on 2023-02-09 20:02_
+_@gyakovlev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

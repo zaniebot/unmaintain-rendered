@@ -14,14 +14,14 @@ head: charlie/own
 created_at: 2025-12-06T03:04:13Z
 updated_at: 2025-12-10T09:12:20Z
 url: https://github.com/astral-sh/ruff/pull/21820
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Respect `kw_only` from parent class
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-06 03:04_
+_@charliermarsh_
 
 ## Summary
 

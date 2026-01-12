@@ -12,14 +12,14 @@ head: add-pre-commit-in-ci
 created_at: 2023-03-24T02:01:13Z
 updated_at: 2023-03-24T22:32:52Z
 url: https://github.com/astral-sh/ruff/pull/3707
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add pre-commit in CI
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 02:01_
+_@JonathanPlasse_
 
 - Close #3612
 - Depends on #3706 to run successfully.

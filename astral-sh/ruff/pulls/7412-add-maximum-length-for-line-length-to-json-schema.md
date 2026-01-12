@@ -13,14 +13,14 @@ head: zanie/schema-linewidth
 created_at: 2023-09-15T17:11:43Z
 updated_at: 2023-09-22T22:16:16Z
 url: https://github.com/astral-sh/ruff/pull/7412
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add maximum length for `line-length` to JSON schema
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-15 17:11_
+_@zanieb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

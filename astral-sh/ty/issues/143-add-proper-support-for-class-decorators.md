@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T07:28:48Z
 updated_at: 2026-01-08T08:31:25Z
 url: https://github.com/astral-sh/ty/issues/143
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add proper support for class decorators
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-02 07:28_
+_@sharkdp_
 
 Similar to function decorators implemented in https://github.com/astral-sh/ruff/pull/17017, we need to support class decorators properly.
 

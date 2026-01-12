@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-31T08:47:45Z
 updated_at: 2024-08-02T09:14:36Z
 url: https://github.com/astral-sh/ruff/issues/12591
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Conflict `ASYNC110`-noqa and false-positive `RUF100` 
 
 ---
 
-_Issue opened by @Olegt0rr on 2024-07-31 08:47_
+_@Olegt0rr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

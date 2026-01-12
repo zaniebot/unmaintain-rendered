@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-13T22:24:48Z
 updated_at: 2025-08-18T15:42:49Z
 url: https://github.com/astral-sh/uv/issues/12155
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # `uv python list` breaks when used from within WSL when Python installed via `pyenv-win`
 
 ---
 
-_Issue opened by @brysonwu on 2025-03-13 22:24_
+_@brysonwu_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-16T12:09:49Z
 updated_at: 2023-08-16T14:51:45Z
 url: https://github.com/astral-sh/ruff/issues/6614
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Strict check for google docstrings
 
 ---
 
-_Issue opened by @urtow on 2023-08-16 12:09_
+_@urtow_
 
 ruff version:
 

@@ -12,14 +12,14 @@ head: typos
 created_at: 2023-01-03T10:02:14Z
 updated_at: 2023-01-03T12:06:44Z
 url: https://github.com/astral-sh/ruff/pull/1590
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix several typos in README
 
 ---
 
-_Pull request opened by @jvstme on 2023-01-03 10:02_
+_@jvstme_
 
 This PR fixes a few minor typos in README.md
 

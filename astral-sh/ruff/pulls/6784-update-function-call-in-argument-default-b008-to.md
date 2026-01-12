@@ -13,14 +13,14 @@ head: rule/b008-ignore-immutable
 created_at: 2023-08-22T17:31:49Z
 updated_at: 2023-08-24T16:13:00Z
 url: https://github.com/astral-sh/ruff/pull/6784
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update `function-call-in-argument-default` (`B008`) to ignore arguments with immutable annotations
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 17:31_
+_@zanieb_
 
 Extends #6781 
 Part of https://github.com/astral-sh/ruff/issues/3762

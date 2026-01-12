@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T16:57:37Z
 updated_at: 2024-11-07T17:46:10Z
 url: https://github.com/astral-sh/ruff/issues/14112
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # auto-fixing `UP006` yield in errors for python 3.9 and 3.10
 
 ---
 
-_Issue opened by @Borda on 2024-11-05 16:57_
+_@Borda_
 
 not sure how much it is a bug or just bad user expectations.
 We are performing a bump of min Python version from Python 3.8 to 3.9 so we have updated the Ruff configuration `target-version = "py39"` and running auto fixing which does not fix almost any `List` or `Dict` annotation and suggests enabling `--unsafe-fixes`... which I did but that covers annotation which is not runnable for example `List[torch.Tensor]` converts to `list[torch.Tensor]` which crashes in runtime with

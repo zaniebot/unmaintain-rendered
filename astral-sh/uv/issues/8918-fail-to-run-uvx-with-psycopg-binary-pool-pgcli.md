@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T05:22:35Z
 updated_at: 2024-11-08T20:13:32Z
 url: https://github.com/astral-sh/uv/issues/8918
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # fail to run  `uvx --with="psycopg[binary,pool]" pgcli --help` after upgrade to 0.5.0
 
 ---
 
-_Issue opened by @zuisong on 2024-11-08 05:22_
+_@zuisong_
 
 ```
 ❯ uvx --with="psycopg[binary,pool]" pgcli --help

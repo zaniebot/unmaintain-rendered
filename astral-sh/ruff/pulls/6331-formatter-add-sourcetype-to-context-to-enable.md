@@ -13,14 +13,14 @@ head: add-source-type-option
 created_at: 2023-08-04T07:37:21Z
 updated_at: 2023-08-04T23:28:02Z
 url: https://github.com/astral-sh/ruff/pull/6331
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Formatter: Add SourceType to context to enable special formatting for stub files
 
 ---
 
-_Pull request opened by @konstin on 2023-08-04 07:37_
+_@konstin_
 
 **Summary** This adds the information whether we're in a .py python source file or in a .pyi stub file to enable people working on #5822 and related issues.
 

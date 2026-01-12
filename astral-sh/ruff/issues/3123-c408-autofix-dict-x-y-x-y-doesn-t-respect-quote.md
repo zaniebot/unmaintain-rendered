@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T13:37:30Z
 updated_at: 2023-02-22T15:26:47Z
 url: https://github.com/astral-sh/ruff/issues/3123
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # C408 autofix `dict(x=y)` -> `{"x": y}` doesn't respect quote style
 
 ---
 
-_Issue opened by @bluetech on 2023-02-22 13:37_
+_@bluetech_
 
 It always uses `"` style:
 

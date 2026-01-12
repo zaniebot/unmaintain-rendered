@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T00:01:14Z
 updated_at: 2025-06-23T16:42:37Z
 url: https://github.com/astral-sh/uv/issues/13876
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # uv pip install -r requirements.txt should always reinstall packages with a specified path
 
 ---
 
-_Issue opened by @danra on 2025-06-06 00:01_
+_@danra_
 
 ### Summary
 

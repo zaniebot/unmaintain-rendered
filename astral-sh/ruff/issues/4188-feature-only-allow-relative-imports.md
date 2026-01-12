@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-02T12:19:24Z
 updated_at: 2025-06-20T14:32:53Z
 url: https://github.com/astral-sh/ruff/issues/4188
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [FEATURE] Only allow relative imports
 
 ---
 
-_Issue opened by @Kludex on 2023-05-02 12:19_
+_@Kludex_
 
 I've created https://github.com/Kludex/only-relative-import/ (only lints for now), but it's more comfortable to have it here. Would it be possible?
 

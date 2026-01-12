@@ -13,14 +13,14 @@ head: charlie/attr
 created_at: 2023-06-29T01:42:50Z
 updated_at: 2023-06-29T02:18:41Z
 url: https://github.com/astral-sh/ruff/pull/5431
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use `matches!` for reserved attribute lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-29 01:42_
+_@charliermarsh_
 
 _No description provided._
 

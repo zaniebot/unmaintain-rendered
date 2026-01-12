@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-03-24T16:09:55Z
 updated_at: 2025-03-24T16:37:40Z
 url: https://github.com/astral-sh/uv/pull/12438
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Show a dedicated hint for `setuptools` dash-separator change
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-24 16:09_
+_@charliermarsh_
 
 ## Summary
 

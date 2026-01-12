@@ -12,14 +12,14 @@ head: pycode-style-rules-dir
 created_at: 2023-01-24T12:27:48Z
 updated_at: 2023-01-24T15:02:16Z
 url: https://github.com/astral-sh/ruff/pull/2123
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move pycodestyle rules into individual files
 
 ---
 
-_Pull request opened by @ericroberts on 2023-01-24 12:27_
+_@ericroberts_
 
 As discussed in https://github.com/charliermarsh/ruff/pull/2038 the project is moving to a model where every rule gets its own file.
 

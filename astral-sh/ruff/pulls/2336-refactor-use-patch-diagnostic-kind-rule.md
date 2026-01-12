@@ -12,14 +12,14 @@ head: refactor-rule
 created_at: 2023-01-30T00:53:35Z
 updated_at: 2023-01-30T02:16:56Z
 url: https://github.com/astral-sh/ruff/pull/2336
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # refactor: use `patch(diagnostic.kind.rule())`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 00:53_
+_@sbrugman_
 
 Use the `checker.patch(diagnostic.kind.rule())` to prevent mismatch with the diagnostic.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T07:04:26Z
 updated_at: 2024-08-17T14:37:00Z
 url: https://github.com/astral-sh/ruff/issues/11527
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff: Lint failed - error: Ruff crashed.
 
 ---
 
-_Issue opened by @david-waterworth on 2024-05-24 07:04_
+_@david-waterworth_
 
 I got this message as a 'pop-up' from vscode
 ```

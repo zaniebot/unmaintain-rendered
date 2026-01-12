@@ -15,14 +15,14 @@ head: doc2xx
 created_at: 2024-07-24T04:43:55Z
 updated_at: 2024-08-02T17:08:00Z
 url: https://github.com/astral-sh/ruff/pull/12485
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Add `docstring-missing-returns` amd `docstring-extraneous-returns` (`DOC201`, `DOC202`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-07-24 04:43_
+_@augustelalande_
 
 ## Summary
 

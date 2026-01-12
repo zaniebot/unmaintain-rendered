@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T14:32:33Z
 updated_at: 2025-05-20T13:30:11Z
 url: https://github.com/astral-sh/uv/issues/13538
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Using uv run somefile.py and python somefile.py behave differently
 
 ---
 
-_Issue opened by @DigitalMechanic on 2025-05-19 14:32_
+_@DigitalMechanic_
 
 ### Question
 

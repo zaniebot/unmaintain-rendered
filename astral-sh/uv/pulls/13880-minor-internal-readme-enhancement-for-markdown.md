@@ -13,14 +13,14 @@ head: yury/format-pep440-features
 created_at: 2025-06-06T05:08:16Z
 updated_at: 2025-06-06T13:45:43Z
 url: https://github.com/astral-sh/uv/pull/13880
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Minor internal README enhancement for Markdown list in PEP440
 
 ---
 
-_Pull request opened by @yury-fedotov on 2025-06-06 05:08_
+_@yury-fedotov_
 
 - Define all list elements using `-`: it used to be a mix of `*` and `-`. `-` is what Prettier linter formats it to by default.
 - Removed unnecessary blank line between 2 list elements. Other elements were stitched together without blank lines in between.

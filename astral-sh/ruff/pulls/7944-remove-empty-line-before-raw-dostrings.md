@@ -11,14 +11,14 @@ head: Remove_empty_line_before_raw_dostrings
 created_at: 2023-10-13T14:05:18Z
 updated_at: 2023-10-16T07:38:41Z
 url: https://github.com/astral-sh/ruff/pull/7944
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove empty line before raw dostrings
 
 ---
 
-_Pull request opened by @konstin on 2023-10-13 14:05_
+_@konstin_
 
 **Summary** This fixes a deviation with black where black would remove empty lines before raw docstrings for some reason.
 

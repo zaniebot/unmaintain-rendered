@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-07-16T00:29:13Z
 updated_at: 2025-07-17T13:17:42Z
 url: https://github.com/astral-sh/uv/pull/14643
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Upgrade GraalPy to 24.2.2
 
 ---
 
-_Pull request opened by @github-actions on 2025-07-16 00:29_
+_@github-actions_
 
 Automated update for Python releases.
 

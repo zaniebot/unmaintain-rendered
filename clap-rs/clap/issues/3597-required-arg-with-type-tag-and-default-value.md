@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-31T21:45:42Z
 updated_at: 2022-04-01T12:16:26Z
 url: https://github.com/clap-rs/clap/issues/3597
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Required arg with <TYPE> tag and default value always errors in debug build but never in release
 
 ---
 
-_Issue opened by @nbvdkamp on 2022-03-31 21:45_
+_@nbvdkamp_
 
 ### Please complete the following tasks
 

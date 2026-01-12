@@ -14,14 +14,14 @@ head: charlie/ex
 created_at: 2024-07-22T18:38:19Z
 updated_at: 2024-07-22T18:46:58Z
 url: https://github.com/astral-sh/uv/pull/5305
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Make tool install robust to malformed receipts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 18:38_
+_@charliermarsh_
 
 ## Summary
 

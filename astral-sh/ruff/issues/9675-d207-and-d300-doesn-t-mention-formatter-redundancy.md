@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-29T15:06:52Z
 updated_at: 2024-12-28T23:45:02Z
 url: https://github.com/astral-sh/ruff/issues/9675
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # D207 and D300 doesn't mention formatter redundancy
 
 ---
 
-_Issue opened by @trag1c on 2024-01-29 15:06_
+_@trag1c_
 
 Both [D207](https://docs.astral.sh/ruff/rules/under-indentation/) and [D208](https://docs.astral.sh/ruff/rules/over-indentation/) seem to be affected by the formatter, yet only D208 documents that behavior. Are there any cases in which D208 violations won't get formatted correctly or is this just an oversight?
 

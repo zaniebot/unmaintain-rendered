@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T16:13:05Z
 updated_at: 2023-10-20T17:38:01Z
 url: https://github.com/astral-sh/ruff/issues/8096
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PLR6201 autofix is unsafe without type information
 
 ---
 
-_Issue opened by @Avasam on 2023-10-20 16:13_
+_@Avasam_
 
 Non-hashable entries should not be put in a set.
 See the following minimal reproduction:

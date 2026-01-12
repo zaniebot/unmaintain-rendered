@@ -13,14 +13,14 @@ head: printer-reserve-buffer-upfront
 created_at: 2023-08-14T07:08:26Z
 updated_at: 2023-08-14T12:45:33Z
 url: https://github.com/astral-sh/ruff/pull/6550
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Printer: Reserve buffer upfront
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-14 07:08_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

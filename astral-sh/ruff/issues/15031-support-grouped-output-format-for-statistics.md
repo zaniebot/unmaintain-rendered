@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T08:52:54Z
 updated_at: 2025-12-24T07:42:40Z
 url: https://github.com/astral-sh/ruff/issues/15031
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Support `grouped` output format for `--statistics`
 
 ---
 
-_Issue opened by @un-pogaz on 2024-12-17 08:52_
+_@un-pogaz_
 
 Actualy, if your use the option --statistics to `ruff check`, Ruff will output the list of all rules violations but never specifie wich file has the errors. And if your don't use the option --statistics, Ruff generate a output that will content each singular rule violation, which can quickly become particularly unreadable.
 

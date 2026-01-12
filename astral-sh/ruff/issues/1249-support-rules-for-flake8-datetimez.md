@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T17:44:28Z
 updated_at: 2023-06-05T15:52:27Z
 url: https://github.com/astral-sh/ruff/issues/1249
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support rules for flake8-datetimez
 
 ---
 
-_Issue opened by @Yasu-umi on 2022-12-15 17:44_
+_@Yasu-umi_
 
 https://github.com/pjknkda/flake8-datetimez
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T14:26:54Z
 updated_at: 2025-02-03T07:35:32Z
 url: https://github.com/astral-sh/ruff/issues/15500
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] `--exit-zero`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:26_
+_@MichaReiser_
 
 Exit with zero even when there are (error) diagnostics.
 

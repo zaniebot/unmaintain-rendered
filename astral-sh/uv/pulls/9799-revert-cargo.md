@@ -12,14 +12,14 @@ head: charlie/revert
 created_at: 2024-12-11T02:49:06Z
 updated_at: 2024-12-11T02:59:32Z
 url: https://github.com/astral-sh/uv/pull/9799
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Revert Cargo
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-11 02:49_
+_@charliermarsh_
 
 _No description provided._
 

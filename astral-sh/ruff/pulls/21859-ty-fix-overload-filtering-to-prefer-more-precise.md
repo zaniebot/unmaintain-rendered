@@ -14,14 +14,14 @@ head: dhruv/fix-overload-filtering
 created_at: 2025-12-09T05:49:19Z
 updated_at: 2025-12-09T14:59:37Z
 url: https://github.com/astral-sh/ruff/pull/21859
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Fix overload filtering to prefer more "precise" match
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-09 05:49_
+_@dhruvmanila_
 
 ## Summary
 

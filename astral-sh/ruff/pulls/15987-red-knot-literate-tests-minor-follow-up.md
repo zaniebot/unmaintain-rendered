@@ -14,14 +14,14 @@ head: david/literate-test-follow-up
 created_at: 2025-02-06T07:11:58Z
 updated_at: 2025-02-25T17:49:39Z
 url: https://github.com/astral-sh/ruff/pull/15987
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Literate tests: minor follow-up
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-06 07:11_
+_@sharkdp_
 
 ## Summary
 

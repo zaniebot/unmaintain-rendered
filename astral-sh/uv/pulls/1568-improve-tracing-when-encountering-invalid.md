@@ -14,14 +14,14 @@ head: zb/requires-python-skip
 created_at: 2024-02-17T03:58:40Z
 updated_at: 2024-02-17T12:40:14Z
 url: https://github.com/astral-sh/uv/pull/1568
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Improve tracing when encountering invalid `requires-python` values
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-17 03:58_
+_@zanieb_
 
 Unsure what the easiest way to test this is, it is hard to publish invalid requires-python specifiers with hatchling
 

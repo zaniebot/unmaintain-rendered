@@ -13,14 +13,14 @@ head: charlie/log
 created_at: 2024-02-23T02:18:09Z
 updated_at: 2024-02-23T02:25:22Z
 url: https://github.com/astral-sh/uv/pull/1894
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Add #1835 to the changelog
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 02:18_
+_@charliermarsh_
 
 _No description provided._
 

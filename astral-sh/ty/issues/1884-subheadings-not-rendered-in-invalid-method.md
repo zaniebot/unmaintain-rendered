@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T16:07:20Z
 updated_at: 2025-12-15T05:23:28Z
 url: https://github.com/astral-sh/ty/issues/1884
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Subheadings not rendered in `invalid-method-override` documentation
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-14 16:07_
+_@AlexWaygood_
 
 Our [docs for `invalid-method-override`](https://docs.astral.sh/ty/reference/rules/#invalid-method-override) are longer than the docs for most of our rules. I wanted to make them high-quality, because I expect that many users won't have heard of the Liskov Substitution Principle, and it's useful to have a good explanation of why it's important for us to link to.
 

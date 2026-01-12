@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-05T00:32:18Z
 updated_at: 2024-08-06T17:46:38Z
 url: https://github.com/astral-sh/ruff/issues/3350
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Incorrect suggestion for SIM208
 
 ---
 
-_Issue opened by @dosisod on 2023-03-05 00:32_
+_@dosisod_
 
 The `SIM208` rule should be updated to only emit errors for `not not x` in boolean contexts, since changing `not not x` to just `x` can cause different results. When used in a non-boolean context, `bool(x)` should be used instead to ensure it results in a boolean type.
 

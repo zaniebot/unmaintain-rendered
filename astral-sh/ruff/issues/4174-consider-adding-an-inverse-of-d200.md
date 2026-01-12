@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-01T21:59:28Z
 updated_at: 2023-07-04T22:37:43Z
 url: https://github.com/astral-sh/ruff/issues/4174
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider adding an inverse of `D200`
 
 ---
 
-_Issue opened by @CobaltCause on 2023-05-01 21:59_
+_@CobaltCause_
 
 `D200` enforces that single-line docstrings must fit on a single line. Personally, I prefer `D213` over `D212`, and so `D200` will cause unnecessary diffs when a description is added. I'd like a lint that enforces that docstrings are *always* multiline to reduce this noise and keep things consistent.
 

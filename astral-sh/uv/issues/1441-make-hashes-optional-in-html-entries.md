@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T06:15:17Z
 updated_at: 2024-02-16T06:42:23Z
 url: https://github.com/astral-sh/uv/issues/1441
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Make hashes optional in HTML entries
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-16 06:15_
+_@charliermarsh_
 
 i'm running devpi and don't have fragments at all which results in
 

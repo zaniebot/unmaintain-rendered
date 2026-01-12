@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-15T03:03:08Z
 updated_at: 2023-01-15T04:19:30Z
 url: https://github.com/astral-sh/ruff/issues/1882
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # RUF100: have option to require codes, but for codes to be unknown to `ruff`
 
 ---
 
-_Issue opened by @eriknw on 2023-01-15 03:03_
+_@eriknw_
 
 This would allow `ruff` to "play nicely" with other linters that projects are still using as they're transitioning to `ruff`.
 

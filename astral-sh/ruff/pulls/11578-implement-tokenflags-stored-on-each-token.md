@@ -13,14 +13,14 @@ head: dhruv/token-flags
 created_at: 2024-05-28T06:32:36Z
 updated_at: 2024-05-29T06:13:03Z
 url: https://github.com/astral-sh/ruff/pull/11578
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Implement `TokenFlags` stored on each `Token`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-28 06:32_
+_@dhruvmanila_
 
 ## Summary
 

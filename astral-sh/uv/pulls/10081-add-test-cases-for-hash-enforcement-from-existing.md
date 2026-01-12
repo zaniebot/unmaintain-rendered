@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2024-12-21T14:38:37Z
 updated_at: 2024-12-21T14:53:40Z
 url: https://github.com/astral-sh/uv/pull/10081
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Add test cases for hash enforcement from existing uv.lock
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 14:38_
+_@charliermarsh_
 
 _No description provided._
 

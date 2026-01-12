@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T13:05:10Z
 updated_at: 2024-06-08T14:16:01Z
 url: https://github.com/astral-sh/uv/issues/1586
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Installing with `uv` doesn't setup cli entrypoints with pyenv
 
 ---
 
-_Issue opened by @aodj on 2024-02-17 13:05_
+_@aodj_
 
 Pretty straightforward, I wanted to start using `ruff` and `uv` but when I installed `uv` then `ruff` I didn't get a `ruff` executable as expected. I ended up reinstalling it with `pip` which setup whatever entrypoint was missing.
 

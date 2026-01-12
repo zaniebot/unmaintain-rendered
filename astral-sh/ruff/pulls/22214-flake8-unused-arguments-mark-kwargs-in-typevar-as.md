@@ -13,14 +13,14 @@ head: typevar_does_not_recognize_kwargs_for_arg001
 created_at: 2025-12-26T22:26:23Z
 updated_at: 2025-12-31T16:07:56Z
 url: https://github.com/astral-sh/ruff/pull/22214
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`flake8-unused-arguments`] Mark `**kwargs` in `TypeVar` as used (`ARG001`)
 
 ---
 
-_Pull request opened by @ValdonVitija on 2025-12-26 22:26_
+_@ValdonVitija_
 
 ## Summary
 

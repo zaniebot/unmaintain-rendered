@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-05-29T15:27:34Z
 updated_at: 2024-05-29T15:42:50Z
 url: https://github.com/astral-sh/uv/pull/3908
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Create distinct graph nodes for each package extra
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 15:27_
+_@charliermarsh_
 
 ## Summary
 

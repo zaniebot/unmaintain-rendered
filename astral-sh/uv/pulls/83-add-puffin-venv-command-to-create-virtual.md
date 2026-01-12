@@ -12,14 +12,14 @@ head: charlie/venv
 created_at: 2023-10-10T17:39:07Z
 updated_at: 2023-10-10T17:46:26Z
 url: https://github.com/astral-sh/uv/pull/83
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Add `puffin venv` command to create virtual environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 17:39_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/58.
 

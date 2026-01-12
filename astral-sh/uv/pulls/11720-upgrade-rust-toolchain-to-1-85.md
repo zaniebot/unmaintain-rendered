@@ -13,14 +13,14 @@ head: rust1.85
 created_at: 2025-02-23T00:17:58Z
 updated_at: 2025-03-03T21:40:02Z
 url: https://github.com/astral-sh/uv/pull/11720
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # Upgrade Rust toolchain to 1.85
 
 ---
 
-_Pull request opened by @samypr100 on 2025-02-23 00:17_
+_@samypr100_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: zb/dev-filters
 created_at: 2025-01-15T21:29:27Z
 updated_at: 2025-01-16T18:07:13Z
 url: https://github.com/astral-sh/uv/pull/10651
-synced_at: 2026-01-10T11:45:02Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Improve performance of our test drive in Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 21:29_
+_@zanieb_
 
 Previously, we couldn't use a DevDrive (https://github.com/astral-sh/uv/pull/3522#issuecomment-2111448930) because our Windows version was not sufficient.
 

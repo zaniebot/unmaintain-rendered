@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T14:19:03Z
 updated_at: 2025-06-04T15:26:03Z
 url: https://github.com/astral-sh/uv/issues/13837
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # error while loading shared libraries: $ORIGIN/../lib/libpython3.12.so.1.0: DST not allowed in SUID/SGID programs
 
 ---
 
-_Issue opened by @eg-b on 2025-06-04 14:19_
+_@eg-b_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: charlie/rel
 created_at: 2023-07-26T04:06:57Z
 updated_at: 2023-07-26T04:34:38Z
 url: https://github.com/astral-sh/ruff/pull/6084
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove relative import handling from `BindingKind::Import` case
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-26 04:06_
+_@charliermarsh_
 
 ## Summary
 

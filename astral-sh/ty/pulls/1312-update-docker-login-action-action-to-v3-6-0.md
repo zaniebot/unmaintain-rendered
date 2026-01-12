@@ -13,14 +13,14 @@ head: renovate/docker-login-action-3.x
 created_at: 2025-10-06T01:36:06Z
 updated_at: 2025-10-06T06:17:54Z
 url: https://github.com/astral-sh/ty/pull/1312
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update docker/login-action action to v3.6.0
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 01:36_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

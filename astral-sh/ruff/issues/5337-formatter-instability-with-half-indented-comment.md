@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-06-23T16:25:47Z
 updated_at: 2023-08-16T07:09:51Z
 url: https://github.com/astral-sh/ruff/issues/5337
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter instability with half-indented comment
 
 ---
 
-_Issue opened by @konstin on 2023-06-23 16:25_
+_@konstin_
 
 Currently, there is only one case in cpython where the formatter formats something different on the second pass compared to the first pass:
 

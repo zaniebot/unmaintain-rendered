@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-09T15:42:23Z
 updated_at: 2023-03-28T16:48:36Z
 url: https://github.com/clap-rs/clap/issues/2836
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Stablize `App::replace` Tracking Issue
 
 ---
 
-_Issue opened by @epage on 2021-10-09 15:42_
+_@epage_
 
 Original request: #1603
 

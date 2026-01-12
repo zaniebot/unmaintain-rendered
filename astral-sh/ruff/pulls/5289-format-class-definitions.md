@@ -14,14 +14,14 @@ head: format-class-def
 created_at: 2023-06-22T08:07:30Z
 updated_at: 2023-06-22T12:20:43Z
 url: https://github.com/astral-sh/ruff/pull/5289
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format `class` definitions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-22 08:07_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

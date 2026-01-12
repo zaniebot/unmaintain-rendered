@@ -14,14 +14,14 @@ head: zb/tool-run-version
 created_at: 2024-06-26T23:04:23Z
 updated_at: 2024-06-27T10:50:17Z
 url: https://github.com/astral-sh/uv/pull/4572
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Add support for specifying `name@version` in `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-26 23:04_
+_@zanieb_
 
 Instead of requiring `uv tool run --from package==version command` we support `uv tool run command@version` shorthand.
 

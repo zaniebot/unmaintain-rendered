@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T08:26:59Z
 updated_at: 2025-09-24T09:13:55Z
 url: https://github.com/astral-sh/uv/issues/14705
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Deploy Azure Devops pipeline extension to use Python service connections
 
 ---
 
-_Issue opened by @VBA-N7 on 2025-07-18 08:26_
+_@VBA-N7_
 
 ### Summary
 

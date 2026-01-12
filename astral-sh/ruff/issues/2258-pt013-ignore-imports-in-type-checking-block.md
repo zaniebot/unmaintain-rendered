@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T14:51:43Z
 updated_at: 2023-05-18T16:02:55Z
 url: https://github.com/astral-sh/ruff/issues/2258
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `PT013`: Ignore imports in `TYPE_CHECKING` block?
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-27 14:51_
+_@ngnpope_
 
 Consider the following:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T02:35:50Z
 updated_at: 2026-01-12T02:12:43Z
 url: https://github.com/astral-sh/uv/issues/17331
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Windows: `uv tool update-shell` saves but does not apply PATH change
 
 ---
 
-_Issue opened by @thedewi on 2026-01-06 02:35_
+_@thedewi_
 
 ### Summary
 

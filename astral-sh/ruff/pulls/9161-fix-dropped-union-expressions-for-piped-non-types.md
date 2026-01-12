@@ -13,14 +13,14 @@ head: fix-pyi055
 created_at: 2023-12-16T12:14:17Z
 updated_at: 2023-12-16T20:58:32Z
 url: https://github.com/astral-sh/ruff/pull/9161
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix dropped union expressions for piped non-types in `PYI055` autofix
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-16 12:14_
+_@diceroll123_
 
 ## Summary
 

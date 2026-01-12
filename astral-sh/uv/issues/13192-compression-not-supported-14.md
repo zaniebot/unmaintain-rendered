@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T12:25:55Z
 updated_at: 2025-05-06T08:38:43Z
 url: https://github.com/astral-sh/uv/issues/13192
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # compression not supported: 14
 
 ---
 
-_Issue opened by @yourlogarithm on 2025-04-29 12:25_
+_@yourlogarithm_
 
 ### Summary
 

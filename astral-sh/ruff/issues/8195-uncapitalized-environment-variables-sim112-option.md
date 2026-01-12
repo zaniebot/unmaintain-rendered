@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T02:21:57Z
 updated_at: 2024-11-15T07:29:37Z
 url: https://github.com/astral-sh/ruff/issues/8195
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `uncapitalized-environment-variables` (`SIM112`) - option to specify variable names to ignore
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-25 02:21_
+_@DetachHead_
 
 there are some environment variables in our project that we do not control the capitalization of, it would be nice if there was an option to ignore certain variables
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-22T00:28:49Z
 updated_at: 2023-07-23T17:18:27Z
 url: https://github.com/astral-sh/ruff/issues/5960
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `PGH003` doesn't detect violation if another suppression on that line does include a code
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-22 00:28_
+_@tylerlaprade_
 
 The following code should be considered invalid because `# pyright: ignore` does not have a code. However, because `# noqa` has a code, the line doesn't get flagged.
 ```

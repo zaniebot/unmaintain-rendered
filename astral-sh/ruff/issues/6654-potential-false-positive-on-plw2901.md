@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-17T16:36:58Z
 updated_at: 2023-08-17T19:18:11Z
 url: https://github.com/astral-sh/ruff/issues/6654
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Potential false positive on PLW2901
 
 ---
 
-_Issue opened by @petermattia on 2023-08-17 16:36_
+_@petermattia_
 
 I _think_ this should be considered a false positive, but not sure. Technically, yes, I am re-defining the variable and violating the rule, but I think this is a fair use case.
 

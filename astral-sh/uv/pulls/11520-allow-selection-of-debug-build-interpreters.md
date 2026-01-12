@@ -13,14 +13,14 @@ head: zb/debug
 created_at: 2025-02-14T20:24:36Z
 updated_at: 2025-09-12T13:32:23Z
 url: https://github.com/astral-sh/uv/pull/11520
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Allow selection of debug build interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-14 20:24_
+_@zanieb_
 
 Extends the `PythonVariant` logic to support interpreters with the debug flag enabled.
 

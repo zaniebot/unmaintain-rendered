@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T15:24:37Z
 updated_at: 2023-10-20T15:29:47Z
 url: https://github.com/astral-sh/ruff/issues/8093
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Latest versions do no catch errors
 
 ---
 
-_Issue opened by @mskrip on 2023-10-20 15:24_
+_@mskrip_
 
 I tested this only on the line-length violation, but on multiple `ruff` versions (see below)
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-03T12:24:16Z
 updated_at: 2026-01-03T12:32:38Z
 url: https://github.com/astral-sh/ty/issues/2315
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Losing generic type information when using list on Iterable
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-03 12:24_
+_@AndBoyS_
 
 ### Summary
 

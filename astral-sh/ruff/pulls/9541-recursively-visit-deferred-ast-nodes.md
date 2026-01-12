@@ -13,14 +13,14 @@ head: charlie/deferred
 created_at: 2024-01-16T01:12:53Z
 updated_at: 2024-01-16T01:34:39Z
 url: https://github.com/astral-sh/ruff/pull/9541
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Recursively visit deferred AST nodes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 01:12_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

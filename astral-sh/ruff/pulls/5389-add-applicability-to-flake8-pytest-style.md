@@ -12,14 +12,14 @@ head: applicability_flake8_pytest_style
 created_at: 2023-06-27T13:41:03Z
 updated_at: 2023-06-27T16:39:58Z
 url: https://github.com/astral-sh/ruff/pull/5389
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add applicability to flake8_pytest_style
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-27 13:41_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

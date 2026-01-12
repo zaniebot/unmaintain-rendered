@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T11:14:39Z
 updated_at: 2025-03-24T11:28:04Z
 url: https://github.com/astral-sh/ruff/issues/16945
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Configuring for Neovim - invalid client settings
 
 ---
 
-_Issue opened by @jacanchaplais on 2025-03-24 11:14_
+_@jacanchaplais_
 
 ### Question
 

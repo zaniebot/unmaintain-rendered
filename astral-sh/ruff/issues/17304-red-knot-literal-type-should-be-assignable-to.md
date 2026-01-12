@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T07:51:02Z
 updated_at: 2025-05-07T15:19:51Z
 url: https://github.com/astral-sh/ruff/issues/17304
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] `Literal[type]` should be assignable to `(object, /) -> type`
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-09 07:51_
+_@sharkdp_
 
 Not sure if this is because we have missing support for overloads, or if it's just something that needs to be modeled in the subtype relationships for `Callable`, but it seems like this should succeed:
 

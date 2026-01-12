@@ -13,14 +13,14 @@ head: charlie/implicit-imports
 created_at: 2023-06-28T18:44:47Z
 updated_at: 2023-06-28T19:15:35Z
 url: https://github.com/astral-sh/ruff/pull/5427
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add dedicated `struct` for implicit imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-28 18:44_
+_@charliermarsh_
 
 ## Summary
 

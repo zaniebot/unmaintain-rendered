@@ -13,14 +13,14 @@ head: charlie/submodule
 created_at: 2023-07-30T22:08:46Z
 updated_at: 2023-07-30T22:32:53Z
 url: https://github.com/astral-sh/ruff/pull/6182
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid falsely marking non-submodules as submodule aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-30 22:08_
+_@charliermarsh_
 
 ## Summary
 

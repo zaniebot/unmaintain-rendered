@@ -12,14 +12,14 @@ head: poc-of-assert-formatting
 created_at: 2023-08-24T17:35:26Z
 updated_at: 2023-10-18T08:43:11Z
 url: https://github.com/astral-sh/ruff/pull/6857
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # POC of assert formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-24 17:35_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

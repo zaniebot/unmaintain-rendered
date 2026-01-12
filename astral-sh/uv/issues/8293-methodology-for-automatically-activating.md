@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-17T15:47:03Z
 updated_at: 2024-10-17T16:12:47Z
 url: https://github.com/astral-sh/uv/issues/8293
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Methodology for Automatically Activating/Deactivating venvs When Changing Directories in a “uv-owned” Project
 
 ---
 
-_Issue opened by @metersk on 2024-10-17 15:47_
+_@metersk_
 
 I often forget to name my virtual environments, so my prompt always displays `.venv ❯` when I’m in a `uv` project. Occasionally, I’ll `cd` into another `uv` project without realizing that the previous virtual environment is still active.
 

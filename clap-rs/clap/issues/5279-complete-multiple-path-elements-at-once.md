@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-02T19:58:34Z
 updated_at: 2025-08-28T17:11:23Z
 url: https://github.com/clap-rs/clap/issues/5279
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Complete multiple path elements at once
 
 ---
 
-_Issue opened by @epage on 2024-01-02 19:58_
+_@epage_
 
 #3166 is adding Rust-implemented completions.  In reviewing nu's changelog, they added support for offering `./target/debug/incremental` as a completion for `tar/de/inc` (see https://www.nushell.sh/blog/2023-10-17-nushell_0_86.html#improving-the-completions-in-the-repl-toc).  It could be really nice for us to include that as well.
 

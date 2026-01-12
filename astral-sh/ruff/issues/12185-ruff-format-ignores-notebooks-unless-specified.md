@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-04T09:41:08Z
 updated_at: 2024-07-04T11:39:13Z
 url: https://github.com/astral-sh/ruff/issues/12185
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff format ignores notebooks unless specified
 
 ---
 
-_Issue opened by @Wazarr on 2024-07-04 09:41_
+_@Wazarr_
 
 Hi,
 

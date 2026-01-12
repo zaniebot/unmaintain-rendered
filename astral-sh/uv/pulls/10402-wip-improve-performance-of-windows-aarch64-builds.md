@@ -13,14 +13,14 @@ head: zb/speedup-aarch64
 created_at: 2025-01-08T17:48:16Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/10402
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # WIP: Improve performance of windows-aarch64 builds
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-08 17:48_
+_@zanieb_
 
 Extending #10306 — trying to reach an acceptable perf
 

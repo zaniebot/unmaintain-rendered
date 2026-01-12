@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-24T14:00:30Z
 updated_at: 2025-12-04T18:44:08Z
 url: https://github.com/astral-sh/uv/issues/16833
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Make "uv self update" friendlier
 
 ---
 
-_Issue opened by @ichoosetoaccept on 2025-11-24 14:00_
+_@ichoosetoaccept_
 
 ### Summary
 

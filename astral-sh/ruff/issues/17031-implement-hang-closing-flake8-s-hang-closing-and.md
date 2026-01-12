@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-28T07:57:17Z
 updated_at: 2025-03-28T15:17:37Z
 url: https://github.com/astral-sh/ruff/issues/17031
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Implement hang closing (`flake8`'s `hang_closing` and `E123`/`E133`)
 
 ---
 
-_Issue opened by @andrei-korshikov on 2025-03-28 07:57_
+_@andrei-korshikov_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dict-iter-without-items
 created_at: 2024-02-05T21:55:16Z
 updated_at: 2024-02-19T14:31:08Z
 url: https://github.com/astral-sh/ruff/pull/9845
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Add PLE1141 `DictIterMissingItems`
 
 ---
 
-_Pull request opened by @DanielNoord on 2024-02-05 21:55_
+_@DanielNoord_
 
 ## Summary
 

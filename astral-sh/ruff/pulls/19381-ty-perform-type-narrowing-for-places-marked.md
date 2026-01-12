@@ -14,14 +14,14 @@ head: jack/global_place_narrowing
 created_at: 2025-07-16T01:40:15Z
 updated_at: 2025-07-22T23:42:12Z
 url: https://github.com/astral-sh/ruff/pull/19381
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] perform type narrowing for places marked `global` too
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-16 01:40_
+_@oconnor663_
 
 This fixes a bug reported at:
 https://github.com/astral-sh/ty/issues/311#issuecomment-3070834132

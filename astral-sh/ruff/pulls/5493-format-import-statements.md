@@ -12,14 +12,14 @@ head: format_imports
 created_at: 2023-07-03T20:13:16Z
 updated_at: 2023-07-04T07:25:41Z
 url: https://github.com/astral-sh/ruff/pull/5493
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format import statements
 
 ---
 
-_Pull request opened by @konstin on 2023-07-03 20:13_
+_@konstin_
 
 ## Summary
 

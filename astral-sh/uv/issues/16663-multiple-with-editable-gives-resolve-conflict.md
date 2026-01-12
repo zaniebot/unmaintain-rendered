@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-10T10:39:21Z
 updated_at: 2025-11-13T10:47:49Z
 url: https://github.com/astral-sh/uv/issues/16663
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Multiple `--with-editable` gives resolve conflict
 
 ---
 
-_Issue opened by @tpgillam on 2025-11-10 10:39_
+_@tpgillam_
 
 Using uv 0.9.8.
 

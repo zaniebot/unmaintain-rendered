@@ -13,14 +13,14 @@ head: yorickvp/unsafe-any-match
 created_at: 2024-04-19T10:24:07Z
 updated_at: 2024-07-22T14:08:56Z
 url: https://github.com/astral-sh/uv/pull/3138
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Implement `--index-strategy unsafe-best-match`
 
 ---
 
-_Pull request opened by @yorickvP on 2024-04-19 10:24_
+_@yorickvP_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

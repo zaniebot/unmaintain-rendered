@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-20T10:52:43Z
 updated_at: 2024-12-09T05:21:52Z
 url: https://github.com/astral-sh/ruff/issues/14483
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Can `offset_encoding` for Ruff be configured in Neovim?
 
 ---
 
-_Issue opened by @Shinzu on 2024-11-20 10:52_
+_@Shinzu_
 
 Hello,
 

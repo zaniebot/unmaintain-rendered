@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T03:19:01Z
 updated_at: 2025-01-10T03:35:49Z
 url: https://github.com/astral-sh/uv/issues/10455
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # `uv sync` does not read `link-mode` from  `$CONFIG_DIR/uv.toml`
 
 ---
 
-_Issue opened by @nikvaessen on 2025-01-10 03:19_
+_@nikvaessen_
 
 My `uv.toml` at `~/.config/uv/uv.toml`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-23T22:28:20Z
 updated_at: 2024-06-24T20:08:13Z
 url: https://github.com/astral-sh/uv/issues/4455
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Enable conversion from `InstallerResolverSettings` to `InstallerSettings`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-23 22:28_
+_@charliermarsh_
 
 This would save some destructuring in the `uv run` method signatures.
 

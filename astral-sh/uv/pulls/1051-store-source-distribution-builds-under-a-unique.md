@@ -12,14 +12,14 @@ head: charlie/id
 created_at: 2024-01-22T22:33:47Z
 updated_at: 2024-01-23T19:49:12Z
 url: https://github.com/astral-sh/uv/pull/1051
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Store source distribution builds under a unique manifest ID
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 22:33_
+_@charliermarsh_
 
 ## Summary
 

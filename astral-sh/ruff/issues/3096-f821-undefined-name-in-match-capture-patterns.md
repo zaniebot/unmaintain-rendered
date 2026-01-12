@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T21:29:11Z
 updated_at: 2023-02-21T22:04:11Z
 url: https://github.com/astral-sh/ruff/issues/3096
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `F821: Undefined name` in `match` capture patterns
 
 ---
 
-_Issue opened by @mikeroll on 2023-02-21 21:29_
+_@mikeroll_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

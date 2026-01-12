@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-03T18:04:38Z
 updated_at: 2023-01-03T18:38:16Z
 url: https://github.com/astral-sh/ruff/issues/1606
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # RET504 potential false-positive
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-03 18:04_
+_@twoertwein_
 
 flake8-return behaves the same as ruff in the following example:
 

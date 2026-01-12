@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-09T09:07:23Z
 updated_at: 2025-11-10T15:26:14Z
 url: https://github.com/astral-sh/uv/issues/16651
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # `torch-tb-profiler==0.4.3` fails to install when specifying  `--torch-backend`
 
 ---
 
-_Issue opened by @lalith-AE30 on 2025-11-09 09:07_
+_@lalith-AE30_
 
 ### Summary
 

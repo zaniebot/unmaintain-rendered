@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-06T11:35:47Z
 updated_at: 2025-02-08T18:04:47Z
 url: https://github.com/astral-sh/ruff/issues/6372
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add autofix for import convention's `banned-from` rule
 
 ---
 
-_Issue opened by @divaltor on 2023-08-06 11:35_
+_@divaltor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

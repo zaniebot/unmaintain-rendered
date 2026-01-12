@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-28T10:53:20Z
 updated_at: 2023-07-28T15:44:30Z
 url: https://github.com/astral-sh/ruff/issues/6147
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive with RUF100 and E501
 
 ---
 
-_Issue opened by @Julian on 2023-07-28 10:53_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

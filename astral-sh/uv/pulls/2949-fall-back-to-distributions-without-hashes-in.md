@@ -13,14 +13,14 @@ head: charlie/check-hashes-v
 created_at: 2024-04-09T23:12:11Z
 updated_at: 2024-04-10T19:19:48Z
 url: https://github.com/astral-sh/uv/pull/2949
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Fall back to distributions without hashes in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 23:12_
+_@charliermarsh_
 
 ## Summary
 

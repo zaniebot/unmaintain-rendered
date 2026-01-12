@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-21T09:37:00Z
 updated_at: 2025-05-21T15:26:25Z
 url: https://github.com/astral-sh/ty/issues/470
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred
 
 ---
 
-_Issue opened by @PKizzle on 2025-05-21 09:37_
+_@PKizzle_
 
 I have encountered a language server crash on Linux with a previous version of  the ty VSCode extension. Therefore, I am not sure whether this has already been addressed in 2025.11.11402026.
 

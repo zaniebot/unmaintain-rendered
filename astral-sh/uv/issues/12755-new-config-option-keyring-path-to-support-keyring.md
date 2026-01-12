@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T19:23:09Z
 updated_at: 2025-12-10T09:32:06Z
 url: https://github.com/astral-sh/uv/issues/12755
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # New config option `keyring-path` to support keyring
 
 ---
 
-_Issue opened by @kevinli1993 on 2025-04-08 19:23_
+_@kevinli1993_
 
 ### Summary
 

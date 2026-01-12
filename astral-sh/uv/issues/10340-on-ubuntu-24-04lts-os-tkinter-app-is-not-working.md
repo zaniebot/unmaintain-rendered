@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-07T06:34:46Z
 updated_at: 2025-09-08T14:59:34Z
 url: https://github.com/astral-sh/uv/issues/10340
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # On ubuntu 24.04LTS OS tkinter app is not working other than system python version install using uv python install
 
 ---
 
-_Issue opened by @learncodingforweb on 2025-01-07 06:34_
+_@learncodingforweb_
 
 ```
 uname -a

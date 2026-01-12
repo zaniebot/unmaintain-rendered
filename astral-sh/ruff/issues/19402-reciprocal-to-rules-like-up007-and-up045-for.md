@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T15:00:14Z
 updated_at: 2025-07-17T15:28:36Z
 url: https://github.com/astral-sh/ruff/issues/19402
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Reciprocal to rules like UP007 and UP045 for preserving native type annotation syntax
 
 ---
 
-_Issue opened by @smroels on 2025-07-17 15:00_
+_@smroels_
 
 ### Summary
 

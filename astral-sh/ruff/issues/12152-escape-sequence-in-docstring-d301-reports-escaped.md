@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-02T14:54:29Z
 updated_at: 2024-07-18T22:36:15Z
 url: https://github.com/astral-sh/ruff/issues/12152
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # escape-sequence-in-docstring (D301) reports escaped docstrings within docstrings
 
 ---
 
-_Issue opened by @tjkuson on 2024-07-02 14:54_
+_@tjkuson_
 
 Running
 

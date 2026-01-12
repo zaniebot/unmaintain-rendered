@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T21:16:19Z
 updated_at: 2024-10-11T00:33:54Z
 url: https://github.com/astral-sh/ruff/issues/13708
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Extremely verbose `mdtest` output if a revealed type is not what is expected
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-10 21:16_
+_@AlexWaygood_
 
 If you have a `# revealed` assertion on a line in an `mdtest`, and the revealed type is not what you are asserting, the output is something like this:
 

@@ -11,14 +11,14 @@ head: fix-panic-unsorted-multi-edit-fix
 created_at: 2023-05-03T14:56:33Z
 updated_at: 2023-07-24T15:01:42Z
 url: https://github.com/astral-sh/ruff/pull/4210
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix panic when applying fixes with unsorted edits
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-03 14:56_
+_@MichaReiser_
 
 I'm undecided whether this is the proper fix or if we should rather change `Fix` to store a `BTreeSet` and sort the edits by the start location. But even then, there's still the possibility that two edits in a single `Fix` overlap, causing a panic. 
 

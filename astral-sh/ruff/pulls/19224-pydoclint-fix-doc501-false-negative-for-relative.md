@@ -11,14 +11,14 @@ head: fix-19219
 created_at: 2025-07-09T02:07:17Z
 updated_at: 2025-08-20T20:24:07Z
 url: https://github.com/astral-sh/ruff/pull/19224
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`pydoclint`] Fix DOC501 false negative for relative import exceptions
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-09 02:07_
+_@danparizher_
 
 ## Summary
 

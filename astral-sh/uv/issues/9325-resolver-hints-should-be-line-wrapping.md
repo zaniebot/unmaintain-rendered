@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T15:16:14Z
 updated_at: 2024-11-21T16:01:09Z
 url: https://github.com/astral-sh/uv/issues/9325
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Resolver hints should be line-wrapping
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-21 15:16_
+_@charliermarsh_
 
 Kind of a note-to-self, I can't remember if these should be wrapping:
 

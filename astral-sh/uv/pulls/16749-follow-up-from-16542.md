@@ -12,14 +12,14 @@ head: followup-16542
 created_at: 2025-11-15T21:11:34Z
 updated_at: 2025-11-15T21:14:15Z
 url: https://github.com/astral-sh/uv/pull/16749
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Follow-up from #16542
 
 ---
 
-_Pull request opened by @MeitarR on 2025-11-15 21:11_
+_@MeitarR_
 
 https://github.com/astral-sh/uv/pull/16542#discussion_r2522906275
 

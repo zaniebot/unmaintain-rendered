@@ -14,14 +14,14 @@ head: fix-RUF037
 created_at: 2025-06-22T13:54:58Z
 updated_at: 2025-06-24T13:01:09Z
 url: https://github.com/astral-sh/ruff/pull/18862
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`ruff`] Trigger `RUF037` for empty string and byte strings
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-22 13:54_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

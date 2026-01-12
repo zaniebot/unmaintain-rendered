@@ -13,14 +13,14 @@ head: renovate/cargo-bins-cargo-binstall-1.x
 created_at: 2025-08-11T01:15:35Z
 updated_at: 2025-08-11T06:33:32Z
 url: https://github.com/astral-sh/ruff/pull/19855
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # Update cargo-bins/cargo-binstall action to v1.14.4
 
 ---
 
-_Pull request opened by @renovate on 2025-08-11 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

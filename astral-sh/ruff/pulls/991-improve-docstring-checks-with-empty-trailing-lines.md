@@ -12,14 +12,14 @@ head: charlie/doc
 created_at: 2022-12-02T00:54:49Z
 updated_at: 2022-12-02T01:15:45Z
 url: https://github.com/astral-sh/ruff/pull/991
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve docstring checks with empty trailing lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-02 00:54_
+_@charliermarsh_
 
 Resolves #986.
 

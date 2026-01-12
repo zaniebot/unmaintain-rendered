@@ -13,14 +13,14 @@ head: konsti/full-error-message
 created_at: 2025-05-14T12:32:22Z
 updated_at: 2025-05-15T12:36:11Z
 url: https://github.com/astral-sh/uv/pull/13451
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Issue template: Please include the complete error message
 
 ---
 
-_Pull request opened by @konstin on 2025-05-14 12:32_
+_@konstin_
 
 We're getting a number of user reports where we could have helped if we were just seeing the full error message. If we're not getting an MRE, we should at least urge users to copy the _full_ error they see on screen.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T21:15:27Z
 updated_at: 2023-10-24T23:44:03Z
 url: https://github.com/astral-sh/ruff/issues/7322
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: wrapping with annotation only and comment
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-12 21:15_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

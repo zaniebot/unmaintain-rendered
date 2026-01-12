@@ -13,14 +13,14 @@ head: sq-S1244
 created_at: 2025-09-25T21:12:22Z
 updated_at: 2026-01-09T17:36:22Z
 url: https://github.com/astral-sh/ruff/pull/20585
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [`ruff`] New rule float-comparison (`RUF070`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-09-25 21:12_
+_@chirizxc_
 
 ## Summary
 

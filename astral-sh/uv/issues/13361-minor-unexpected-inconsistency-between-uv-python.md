@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T06:51:31Z
 updated_at: 2025-05-09T06:55:04Z
 url: https://github.com/astral-sh/uv/issues/13361
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # minor unexpected inconsistency between `uv python install X` and `uv seed -p X`
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-09 06:51_
+_@dimaqq_
 
 ### Summary
 

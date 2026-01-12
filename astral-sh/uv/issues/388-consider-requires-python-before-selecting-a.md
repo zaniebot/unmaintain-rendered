@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T14:34:50Z
 updated_at: 2023-11-13T16:14:09Z
 url: https://github.com/astral-sh/uv/issues/388
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Consider requires-python before selecting a source distribution
 
 ---
 
-_Issue opened by @konstin on 2023-11-10 14:34_
+_@konstin_
 
 Currently installing pandas fails on python 3.8 because we're trying to install pandas 2.1.2 from pandas-2.1.2.tar.gz, but pandas only support python 3.9+ in this version, so we fail trying to build the sdist, while pip directly picks pandas 1.24.4 which even has a wheel
 

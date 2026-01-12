@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T06:16:57Z
 updated_at: 2025-10-24T08:27:35Z
 url: https://github.com/astral-sh/uv/issues/13589
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # using uv workspaces in flat layouts (e.g. monorepos)
 
 ---
 
-_Issue opened by @MartyMcFlyInTheSky on 2025-05-22 06:16_
+_@MartyMcFlyInTheSky_
 
 ### Question
 

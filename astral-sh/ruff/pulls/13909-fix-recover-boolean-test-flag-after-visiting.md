@@ -13,14 +13,14 @@ head: bool-test-scope-fix
 created_at: 2024-10-24T12:40:35Z
 updated_at: 2024-11-05T19:55:49Z
 url: https://github.com/astral-sh/ruff/pull/13909
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix: Recover boolean test flag after visiting subexpressions
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-10-24 12:40_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To assist with the review, please ensure:

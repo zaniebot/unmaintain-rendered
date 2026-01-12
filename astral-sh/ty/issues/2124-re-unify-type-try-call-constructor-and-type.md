@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T23:31:21Z
 updated_at: 2025-12-19T23:31:21Z
 url: https://github.com/astral-sh/ty/issues/2124
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # re-unify `Type::try_call_constructor` and `Type::bindings`
 
 ---
 
-_Issue opened by @carljm on 2025-12-19 23:31_
+_@carljm_
 
 We currently do some extensive special-casing in `TypeInferenceBuilder::infer_call_expression_impl`, much of which dates back to working around limitations we no longer have, and can/should now be removed. Part of this special-casing is a dedicated path for constructor calls (`Type::try_call_constructor`), which doesn't use the bindings that would be returned by `Type::bindings` for the same type -- so it's not consistent with what happens if you use `Type::try_call`. This leads to bugs like https://github.com/astral-sh/ty/issues/1446
 

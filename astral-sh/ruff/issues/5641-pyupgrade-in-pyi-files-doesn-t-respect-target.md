@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-10T11:27:06Z
 updated_at: 2023-07-10T13:40:42Z
 url: https://github.com/astral-sh/ruff/issues/5641
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # pyupgrade in pyi files doesn't respect target-version
 
 ---
 
-_Issue opened by @trim21 on 2023-07-10 11:27_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

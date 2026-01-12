@@ -13,14 +13,14 @@ head: jack/nonlocal_deferred_function_bodies
 created_at: 2025-07-10T23:55:39Z
 updated_at: 2025-08-08T03:59:46Z
 url: https://github.com/astral-sh/ruff/pull/19271
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # WIP: try to defer walking function bodies in SemanticIndexBuilder
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-10 23:55_
+_@oconnor663_
 
 This PR is on top of https://github.com/astral-sh/ruff/pull/19112. @MichaReiser [suggested](https://github.com/astral-sh/ruff/pull/19112#pullrequestreview-3004188327) taking a shot at deferred walking of function bodies. This draft PR currently contains two commits. The first moves the `InvalidNonlocal` check into `SemanticIndexBuilder`. As expected, this makes one test case in `nonlocal.md` start failing, the one that relies on seeing bindings in outer scopes before checking `nonlocal` statements in inner scopes, basically this:
 ```py

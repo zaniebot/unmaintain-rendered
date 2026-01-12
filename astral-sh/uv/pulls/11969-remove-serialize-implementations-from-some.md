@@ -13,14 +13,14 @@ head: charlie/ser
 created_at: 2025-03-05T02:43:20Z
 updated_at: 2025-03-05T02:55:58Z
 url: https://github.com/astral-sh/uv/pull/11969
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Remove `Serialize` implementations from some settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-05 02:43_
+_@charliermarsh_
 
 ## Summary
 

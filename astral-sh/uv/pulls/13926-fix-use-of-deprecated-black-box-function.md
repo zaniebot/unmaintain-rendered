@@ -13,14 +13,14 @@ head: zb/fix-bb
 created_at: 2025-06-09T16:48:54Z
 updated_at: 2025-06-09T16:57:28Z
 url: https://github.com/astral-sh/uv/pull/13926
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Fix use of deprecated `black_box` function
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-09 16:48_
+_@zanieb_
 
 _No description provided._
 

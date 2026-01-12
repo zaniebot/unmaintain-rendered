@@ -13,14 +13,14 @@ head: charlie/build-tag
 created_at: 2024-12-06T13:24:07Z
 updated_at: 2024-12-06T14:32:22Z
 url: https://github.com/astral-sh/uv/pull/9680
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Add test coverage for build tag prioritization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-06 13:24_
+_@charliermarsh_
 
 ## Summary
 

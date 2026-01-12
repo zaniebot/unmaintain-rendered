@@ -14,14 +14,14 @@ head: david/fix-1607-
 created_at: 2025-11-21T13:29:23Z
 updated_at: 2025-11-24T09:18:59Z
 url: https://github.com/astral-sh/ruff/pull/21557
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Allow specialization of generic classes with TypeVar instances
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-21 13:29_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

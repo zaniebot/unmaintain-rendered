@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-09T22:20:12Z
 updated_at: 2025-02-11T16:37:36Z
 url: https://github.com/astral-sh/ruff/issues/16056
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `--show-settings` should not search for config files when used with `--isolated`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-02-09 22:20_
+_@InSyncWithFoo_
 
 Minimal reproducible example:
 

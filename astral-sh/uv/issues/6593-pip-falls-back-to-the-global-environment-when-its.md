@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-24T22:18:19Z
 updated_at: 2025-02-19T21:17:55Z
 url: https://github.com/astral-sh/uv/issues/6593
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `pip` falls back to the global environment when it’s not installed in the `uv` virtual environment
 
 ---
 
-_Issue opened by @FBen3 on 2024-08-24 22:18_
+_@FBen3_
 
 platform: `macOS Sonoma`
 uv version: `uv 0.3.1 (be17d132a 2024-08-21)`

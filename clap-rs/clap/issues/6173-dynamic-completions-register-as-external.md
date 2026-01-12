@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-01T19:28:40Z
 updated_at: 2025-11-05T17:00:51Z
 url: https://github.com/clap-rs/clap/issues/6173
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # dynamic completions: register as external subcommand
 
 ---
 
-_Issue opened by @jakobhellermann on 2025-11-01 19:28_
+_@jakobhellermann_
 
 ### Please complete the following tasks
 

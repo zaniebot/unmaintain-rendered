@@ -13,14 +13,14 @@ head: charlie/transitive
 created_at: 2024-11-30T14:31:04Z
 updated_at: 2024-12-01T13:42:28Z
 url: https://github.com/astral-sh/uv/pull/9540
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Avoid adding non-extra package with extra dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-30 14:31_
+_@charliermarsh_
 
 ## Summary
 

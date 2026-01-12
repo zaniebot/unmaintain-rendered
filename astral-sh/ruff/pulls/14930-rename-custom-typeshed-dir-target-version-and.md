@@ -13,14 +13,14 @@ head: micha/rename-some-cli-options
 created_at: 2024-12-12T10:45:30Z
 updated_at: 2024-12-13T08:24:07Z
 url: https://github.com/astral-sh/ruff/pull/14930
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Rename `custom-typeshed-dir`, `target-version` and `current-directory` CLI options
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-12 10:45_
+_@MichaReiser_
 
 ## Summary
 

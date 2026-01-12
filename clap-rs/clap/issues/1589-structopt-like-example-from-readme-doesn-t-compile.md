@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-10-30T09:25:22Z
 updated_at: 2019-10-31T01:54:38Z
 url: https://github.com/clap-rs/clap/issues/1589
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Structopt-like example from README doesn't compile
 
 ---
 
-_Issue opened by @ghost on 2019-10-30 09:25_
+_@ghost_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -13,14 +13,14 @@ head: david/contributing-guide-update
 created_at: 2025-05-13T09:08:46Z
 updated_at: 2025-05-13T09:36:38Z
 url: https://github.com/astral-sh/ty/pull/348
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Contributing guide: clarifications and link
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-13 09:08_
+_@sharkdp_
 
 ## Summary
 

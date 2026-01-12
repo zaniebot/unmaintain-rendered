@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-07-07T23:00:07Z
 updated_at: 2025-07-08T14:34:51Z
 url: https://github.com/astral-sh/ruff/pull/19191
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [`pycodestyle`] Make example error out-of-the-box (`E272`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-07 23:00_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

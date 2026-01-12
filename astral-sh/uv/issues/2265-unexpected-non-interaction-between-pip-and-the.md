@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-07T07:04:26Z
 updated_at: 2024-03-07T14:16:47Z
 url: https://github.com/astral-sh/uv/issues/2265
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Unexpected non-interaction between pip and the virtual environment from uv
 
 ---
 
-_Issue opened by @grjzwaan on 2024-03-07 07:04_
+_@grjzwaan_
 
 I created a virtual environment with `uv`, activated it and then I used `pip list -u` without thinking: the results were unexpected. It took me a while to figure out what was going wrong.
 

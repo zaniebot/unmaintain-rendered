@@ -15,14 +15,14 @@ head: micha/fix-completion-at-end-of-file
 created_at: 2025-10-20T12:25:47Z
 updated_at: 2025-10-21T09:36:29Z
 url: https://github.com/astral-sh/ruff/pull/20993
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Fix completions at end of file
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-20 12:25_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ty/issues/1392

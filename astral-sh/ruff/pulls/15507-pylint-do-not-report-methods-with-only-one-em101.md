@@ -14,14 +14,14 @@ head: PLR6301
 created_at: 2025-01-15T16:05:25Z
 updated_at: 2025-01-17T12:53:53Z
 url: https://github.com/astral-sh/ruff/pull/15507
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pylint`] Do not report methods with only one `EM101`-compatible `raise` (`PLR6301`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-15 16:05_
+_@InSyncWithFoo_
 
 ## Summary
 

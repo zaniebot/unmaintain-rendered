@@ -12,14 +12,14 @@ head: rule/type-alias-to-type
 created_at: 2023-08-02T23:44:23Z
 updated_at: 2023-08-09T02:10:53Z
 url: https://github.com/astral-sh/ruff/pull/6289
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add rule to upgrade type alias annotations to keyword (UP040)
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-02 23:44_
+_@zanieb_
 
 Adds rule to convert type aliases defined with annotations i.e. `x: TypeAlias = int` to the new PEP-695 syntax e.g. `type x = int`.
 

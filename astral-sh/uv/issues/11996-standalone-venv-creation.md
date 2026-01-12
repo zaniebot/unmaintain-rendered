@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T05:25:01Z
 updated_at: 2025-03-06T16:10:55Z
 url: https://github.com/astral-sh/uv/issues/11996
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # standalone venv creation
 
 ---
 
-_Issue opened by @HernandoR on 2025-03-06 05:25_
+_@HernandoR_
 
 ### Question
 

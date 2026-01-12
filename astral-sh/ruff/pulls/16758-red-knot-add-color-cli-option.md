@@ -13,14 +13,14 @@ head: micha/color-cli-option2
 created_at: 2025-03-14T18:49:08Z
 updated_at: 2025-03-17T10:12:15Z
 url: https://github.com/astral-sh/ruff/pull/16758
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Add `--color` CLI option
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-14 18:49_
+_@MichaReiser_
 
 ## Summary
 

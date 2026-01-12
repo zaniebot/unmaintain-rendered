@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-27T03:15:52Z
 updated_at: 2025-12-22T16:18:13Z
 url: https://github.com/astral-sh/uv/issues/14305
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Failed to build anyio; command `hg root` timed out after 40 seconds on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-06-27 03:15_
+_@zanieb_
 
 The test cases
  

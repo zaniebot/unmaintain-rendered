@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T19:49:33Z
 updated_at: 2024-10-15T09:27:34Z
 url: https://github.com/astral-sh/uv/issues/8017
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # `test_prepare_metadata` hash changes on uv version bump
 
 ---
 
-_Issue opened by @zanieb on 2024-10-08 19:49_
+_@zanieb_
 
 See failure at https://github.com/astral-sh/uv/actions/runs/11242534493/job/31256449318?pr=8016 and fix at https://github.com/astral-sh/uv/pull/8016/commits/6a7c2962143be7b238e57d96554c5572cec186bd
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T10:01:36Z
 updated_at: 2024-02-01T15:43:07Z
 url: https://github.com/clap-rs/clap/issues/5335
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Argument conflict ignored on `global`s specified at different levels
 
 ---
 
-_Issue opened by @abesto on 2024-02-01 10:01_
+_@abesto_
 
 ### Please complete the following tasks
 

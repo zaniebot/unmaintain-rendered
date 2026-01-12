@@ -13,14 +13,14 @@ head: charlie/sort
 created_at: 2023-10-26T20:44:28Z
 updated_at: 2023-10-26T20:50:57Z
 url: https://github.com/astral-sh/uv/pull/210
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Sort wheels by size when downloading and zipping
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 20:44_
+_@charliermarsh_
 
 I just learned about this from PackagingCon, and locally, it shows a nice speedup:
 

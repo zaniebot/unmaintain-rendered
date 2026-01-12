@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-08T15:56:41Z
 updated_at: 2025-02-20T00:14:05Z
 url: https://github.com/astral-sh/uv/issues/9721
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Caused by: The cloud operation cannot be performed on a file with incompatible hardlinks. (os error 396)
 
 ---
 
-_Issue opened by @ananthanarayanan431 on 2024-12-08 15:56_
+_@ananthanarayanan431_
 
 C:\Users\anant\OneDrive\Desktop\Agent python\chatbot-agent>uv add ruff
 Resolved 38 packages in 349ms

@@ -13,14 +13,14 @@ head: konsti/package-venv-with-python-prefix
 created_at: 2024-01-23T16:44:38Z
 updated_at: 2024-01-24T11:22:49Z
 url: https://github.com/astral-sh/uv/pull/1066
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # No python prefix in packse scenarios
 
 ---
 
-_Pull request opened by @konstin on 2024-01-23 16:44_
+_@konstin_
 
 In windows, `python3.9` and `python3.11` are not in `PATH`. Instead, we should pass only the python version to `puffin venv -p` in packse scenarios (#1039).
 

@@ -13,14 +13,14 @@ head: format-expr-slice
 created_at: 2023-06-13T10:36:23Z
 updated_at: 2023-06-21T15:29:33Z
 url: https://github.com/astral-sh/ruff/pull/5047
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format Slice Expressions
 
 ---
 
-_Pull request opened by @konstin on 2023-06-13 10:36_
+_@konstin_
 
 This formats slice expressions and subscript expressions.
 

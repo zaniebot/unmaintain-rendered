@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T19:12:29Z
 updated_at: 2025-05-27T20:02:06Z
 url: https://github.com/astral-sh/uv/issues/13687
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Could `uv pip compile` please be made to obey `default-groups`?
 
 ---
 
-_Issue opened by @coredumperror on 2025-05-27 19:12_
+_@coredumperror_
 
 ### Summary
 

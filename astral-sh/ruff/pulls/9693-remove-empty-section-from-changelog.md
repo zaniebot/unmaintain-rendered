@@ -13,14 +13,14 @@ head: charlie/change
 created_at: 2024-01-30T00:49:21Z
 updated_at: 2024-01-30T01:31:27Z
 url: https://github.com/astral-sh/ruff/pull/9693
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove empty section from changelog
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 00:49_
+_@charliermarsh_
 
 _No description provided._
 

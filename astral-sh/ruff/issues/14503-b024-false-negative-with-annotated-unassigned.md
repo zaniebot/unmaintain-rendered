@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-20T20:59:10Z
 updated_at: 2024-11-20T21:13:55Z
 url: https://github.com/astral-sh/ruff/issues/14503
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B024: false negative with annotated, unassigned instance variables of a class
 
 ---
 
-_Issue opened by @cmp0xff on 2024-11-20 20:59_
+_@cmp0xff_
 
 This issue derives from https://github.com/astral-sh/ruff/issues/14455#issuecomment-2489472624.
 

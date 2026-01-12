@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T11:34:20Z
 updated_at: 2025-12-31T20:09:34Z
 url: https://github.com/astral-sh/ty/issues/1049
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support the functional syntax for NamedTuples
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-08-19 11:34_
+_@AlexWaygood_
 
 Ty now supports most features of `NamedTuple`s defined via the class-based syntax (https://github.com/astral-sh/ty/issues/545). However, we do not yet have full support for namedtuples defined using the function-call syntax. I suggest that we hold off on this until work on https://github.com/astral-sh/ty/issues/742 is complete, as some refactoring that needs to be done for that issue will likely be helpful for this issue.
 

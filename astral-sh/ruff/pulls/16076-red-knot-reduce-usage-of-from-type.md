@@ -13,14 +13,14 @@ head: alex/simplify-symbol-usage
 created_at: 2025-02-10T13:47:25Z
 updated_at: 2025-02-11T11:09:38Z
 url: https://github.com/astral-sh/ruff/pull/16076
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Reduce usage of `From<Type>` implementations when working with `Symbol`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-10 13:47_
+_@AlexWaygood_
 
 ## Summary
 

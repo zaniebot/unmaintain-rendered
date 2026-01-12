@@ -13,14 +13,14 @@ head: charlie/flat-index
 created_at: 2024-06-10T01:33:44Z
 updated_at: 2024-06-10T01:42:52Z
 url: https://github.com/astral-sh/uv/pull/4183
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Respect `--find-links` in `lock` and `sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 01:33_
+_@charliermarsh_
 
 ## Summary
 

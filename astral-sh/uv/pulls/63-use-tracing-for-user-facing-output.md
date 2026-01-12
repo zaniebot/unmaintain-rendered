@@ -12,14 +12,14 @@ head: charlie/tracing
 created_at: 2023-10-08T19:42:45Z
 updated_at: 2023-10-08T19:46:08Z
 url: https://github.com/astral-sh/uv/pull/63
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Use `tracing` for user-facing output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-08 19:42_
+_@charliermarsh_
 
 The setup is now as follows:
 

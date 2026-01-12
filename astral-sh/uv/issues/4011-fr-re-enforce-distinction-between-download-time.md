@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T07:55:53Z
 updated_at: 2024-06-18T18:38:19Z
 url: https://github.com/astral-sh/uv/issues/4011
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # FR: re-enforce distinction between download time and build time
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-06-04 07:55_
+_@neutrinoceros_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

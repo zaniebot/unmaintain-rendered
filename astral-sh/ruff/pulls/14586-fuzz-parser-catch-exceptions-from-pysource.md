@@ -14,14 +14,14 @@ head: fuzzer-catch-exceptions
 created_at: 2024-11-25T15:09:11Z
 updated_at: 2024-11-28T13:28:47Z
 url: https://github.com/astral-sh/ruff/pull/14586
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # fuzz-parser: catch exceptions from `pysource-minimize`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-25 15:09_
+_@AlexWaygood_
 
 ## Summary
 

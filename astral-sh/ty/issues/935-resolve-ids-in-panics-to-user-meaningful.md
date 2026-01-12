@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-04T15:14:06Z
 updated_at: 2025-08-04T17:33:33Z
 url: https://github.com/astral-sh/ty/issues/935
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Resolve ids in panics to user-meaningful information
 
 ---
 
-_Issue opened by @lf- on 2025-08-04 15:14_
+_@lf-_
 
 Say you're having ty get sad about a recursive type (#256): the panic message is quite unhelpful as it doesn't tell you anything that could lead to figuring out the provenance of the problem objects:
 

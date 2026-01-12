@@ -14,14 +14,14 @@ head: charlie/build-isolation
 created_at: 2024-03-07T02:19:17Z
 updated_at: 2024-03-07T14:04:03Z
 url: https://github.com/astral-sh/uv/pull/2258
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Add support for `--no-build-isolation`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 02:19_
+_@charliermarsh_
 
 ## Summary
 

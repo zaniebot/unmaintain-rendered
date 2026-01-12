@@ -13,14 +13,14 @@ head: feat/custom_client
 created_at: 2024-02-20T10:46:39Z
 updated_at: 2024-02-20T14:50:18Z
 url: https://github.com/astral-sh/uv/pull/1745
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # feat: allow passing in a custom reqwest Client
 
 ---
 
-_Pull request opened by @baszalmstra on 2024-02-20 10:46_
+_@baszalmstra_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

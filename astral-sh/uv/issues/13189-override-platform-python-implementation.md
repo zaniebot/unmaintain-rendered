@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T07:28:03Z
 updated_at: 2025-04-29T08:57:22Z
 url: https://github.com/astral-sh/uv/issues/13189
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Override platform_python_implementation
 
 ---
 
-_Issue opened by @KDanisme on 2025-04-29 07:28_
+_@KDanisme_
 
 ### Question
 

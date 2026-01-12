@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T18:52:57Z
 updated_at: 2025-10-03T01:22:14Z
 url: https://github.com/astral-sh/ruff/issues/19016
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Cleanup Ruff's CLI tests
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-28 18:52_
+_@MichaReiser_
 
 Ruff's CLI integration tests (`crates/ruff/tests`) contain a lot of shared boilerplate code (shared between test functions but also test files). We should try to extract those into a more reusable testing infra. I think ty's CLI test infra works pretty well and we should try if we can use the same structure for ruff. 
 

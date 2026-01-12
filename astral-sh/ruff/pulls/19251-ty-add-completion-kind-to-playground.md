@@ -14,14 +14,14 @@ head: micha/completion-kind-playground
 created_at: 2025-07-10T07:36:33Z
 updated_at: 2025-07-10T07:42:25Z
 url: https://github.com/astral-sh/ruff/pull/19251
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Add completion kind to playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-10 07:36_
+_@MichaReiser_
 
 ## Summary
 

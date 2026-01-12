@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T09:48:07Z
 updated_at: 2024-11-11T09:50:10Z
 url: https://github.com/astral-sh/ruff/issues/14243
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff format doesn't sort imports, nothing changed (E402)
 
 ---
 
-_Issue opened by @zakimimit on 2024-11-10 09:48_
+_@zakimimit_
 
 Hello 
 

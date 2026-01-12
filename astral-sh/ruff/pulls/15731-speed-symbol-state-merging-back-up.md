@@ -12,14 +12,14 @@ head: dcreager/merge-speedup
 created_at: 2025-01-24T20:20:46Z
 updated_at: 2025-01-24T21:08:21Z
 url: https://github.com/astral-sh/ruff/pull/15731
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Speed symbol state merging back up
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-24 20:20_
+_@dcreager_
 
 This is a follow-up to #15702 that hopefully claws back the 1% performance regression.  Assuming it works, the trick is to iterate over the constraints vectors via mut reference (aka a single pointer), so that we're not copying `BitSet`s into and out of the zip tuples as we iterate.  We use `std::mem::take` as a poor-man's move constructor only at the very end, when we're ready to emplace it into the result.  (C++ idioms intended! :smile:)
 

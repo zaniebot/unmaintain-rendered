@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-28T04:36:05Z
 updated_at: 2023-01-28T12:16:25Z
 url: https://github.com/astral-sh/ruff/issues/2290
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # small README formatting typo
 
 ---
 
-_Issue opened by @the-matt-morris on 2023-01-28 04:36_
+_@the-matt-morris_
 
 First of all...this library is just amazing.  Thank you for the hard work to make this happen.
 

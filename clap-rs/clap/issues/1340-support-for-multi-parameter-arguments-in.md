@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-10T05:15:29Z
 updated_at: 2020-02-02T05:19:41Z
 url: https://github.com/clap-rs/clap/issues/1340
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for multi-parameter arguments in "structupt mode"
 
 ---
 
-_Issue opened by @jansol on 2018-09-10 05:15_
+_@jansol_
 
 There should be an easy way to implement arguments that require multiple parameters, for à la `--color 0.5 0.5 1.0`.
 

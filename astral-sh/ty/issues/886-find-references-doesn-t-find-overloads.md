@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-25T01:52:19Z
 updated_at: 2026-01-10T16:28:24Z
 url: https://github.com/astral-sh/ty/issues/886
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # "Find references" doesn't find overloads
 
 ---
 
-_Issue opened by @UnboundVariable on 2025-07-25 01:52_
+_@UnboundVariable_
 
 ### Summary
 

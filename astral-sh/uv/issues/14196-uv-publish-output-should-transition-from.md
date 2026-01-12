@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-22T01:12:03Z
 updated_at: 2025-06-27T08:41:37Z
 url: https://github.com/astral-sh/uv/issues/14196
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `uv publish` output should transition from "Uploading" to "Uploaded
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-22 01:12_
+_@charliermarsh_
 
 Similar to "Building" and "Built", once the upload completes, the output message should get updated.
 

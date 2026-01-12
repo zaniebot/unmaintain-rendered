@@ -13,14 +13,14 @@ head: dhruv/avoid-undeclared-path
 created_at: 2024-12-13T13:42:15Z
 updated_at: 2024-12-17T04:19:41Z
 url: https://github.com/astral-sh/ruff/pull/14958
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Avoid undeclared path when raising conflicting declarations
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-13 13:42_
+_@dhruvmanila_
 
 ## Summary
 

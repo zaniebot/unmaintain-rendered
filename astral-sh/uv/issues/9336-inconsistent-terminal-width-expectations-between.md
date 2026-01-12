@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T20:34:17Z
 updated_at: 2024-11-26T10:07:54Z
 url: https://github.com/astral-sh/uv/issues/9336
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Inconsistent terminal width expectations between `built_by_uv_editable-2` and help tests
 
 ---
 
-_Issue opened by @mgorny on 2024-11-21 20:34_
+_@mgorny_
 
 Hit it with 0.5.4 and a513301b7a0a5d1dd840868ccfb82f49cbdbcd48.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-06-13T08:58:42Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/988
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Is it possible to support arg specifiers?
 
 ---
 
-_Issue opened by @lu-zero on 2017-06-13 08:58_
+_@lu-zero_
 
 I'm trying to write a cli tool that is compatible with `avconv`.
 

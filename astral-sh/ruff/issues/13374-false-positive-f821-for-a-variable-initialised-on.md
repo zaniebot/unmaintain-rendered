@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-17T08:25:58Z
 updated_at: 2024-09-17T15:32:53Z
 url: https://github.com/astral-sh/ruff/issues/13374
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positive F821 for a variable initialised on the first line of %%timeit (Jupyter notebook)
 
 ---
 
-_Issue opened by @vitawasalreadytaken on 2024-09-17 08:25_
+_@vitawasalreadytaken_
 
 Hi, I've searched for "timeit F821", seen #7908 and understand that ruff should ignore magic cells. Strangely though, I'm getting F821 Undefined name on a magic cell where there is a variable defined on the first (initialisation) line and used on the subsequent lines.
 

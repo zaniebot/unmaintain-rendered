@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T11:26:12Z
 updated_at: 2025-11-07T06:34:51Z
 url: https://github.com/astral-sh/uv/issues/16372
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # `uv pip compile` is pinning cyclic dependecies to oldest released version
 
 ---
 
-_Issue opened by @Czaki on 2025-10-20 11:26_
+_@Czaki_
 
 ### Summary
 

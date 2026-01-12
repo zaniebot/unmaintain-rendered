@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T06:30:42Z
 updated_at: 2024-10-23T13:17:33Z
 url: https://github.com/astral-sh/uv/issues/8488
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Confusing failure to deserialize cache entry when running older uv with uv
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-10-23 06:30_
+_@adamtheturtle_
 
 The error I see:
 

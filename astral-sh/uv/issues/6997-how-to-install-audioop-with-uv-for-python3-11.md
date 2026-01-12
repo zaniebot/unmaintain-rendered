@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T07:42:40Z
 updated_at: 2024-09-14T00:43:42Z
 url: https://github.com/astral-sh/uv/issues/6997
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # How to install audioop with uv for python3.11 ?
 
 ---
 
-_Issue opened by @munishkhatri720 on 2024-09-04 07:42_
+_@munishkhatri720_
 
 uv Version : `uv 0.4.2 (736ccb950 2024-09-01)`
 Python Version : 3.11.8 

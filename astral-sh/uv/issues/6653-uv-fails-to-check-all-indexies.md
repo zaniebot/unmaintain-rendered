@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T20:24:37Z
 updated_at: 2024-08-26T23:31:46Z
 url: https://github.com/astral-sh/uv/issues/6653
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv fails to check all indexies
 
 ---
 
-_Issue opened by @theunkn0wn1 on 2024-08-26 20:24_
+_@theunkn0wn1_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

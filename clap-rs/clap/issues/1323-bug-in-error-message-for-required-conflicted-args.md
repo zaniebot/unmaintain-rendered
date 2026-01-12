@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-07-20T18:09:03Z
 updated_at: 2020-12-12T12:18:53Z
 url: https://github.com/clap-rs/clap/issues/1323
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug in error message for required conflicted args
 
 ---
 
-_Issue opened by @kpp on 2018-07-20 18:09_
+_@kpp_
 
 ### Rust Version
 

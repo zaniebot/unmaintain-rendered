@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-22T08:33:11Z
 updated_at: 2025-08-25T09:43:05Z
 url: https://github.com/astral-sh/ty/issues/868
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Overload argument type expansion leads to combinatoric explosion
 
 ---
 
-_Issue opened by @qarmin on 2025-07-22 08:33_
+_@qarmin_
 
 Minimized file content(this takes ~4GB ram on my computer, original file(attached also at the bottom) takes more than 20GB)
 

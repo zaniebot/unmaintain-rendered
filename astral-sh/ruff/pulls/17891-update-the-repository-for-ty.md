@@ -14,14 +14,14 @@ head: gankra/urlfix
 created_at: 2025-05-06T14:51:13Z
 updated_at: 2025-05-06T16:03:40Z
 url: https://github.com/astral-sh/ruff/pull/17891
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # update the repository for ty
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-06 14:51_
+_@Gankra_
 
 This metadata is used by cargo-dist for artifact URLs (in curl-sh expressions)
 

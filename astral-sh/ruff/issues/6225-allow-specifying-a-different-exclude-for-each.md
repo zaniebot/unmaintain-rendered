@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T06:51:01Z
 updated_at: 2023-08-02T04:24:29Z
 url: https://github.com/astral-sh/ruff/issues/6225
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # allow specifying a different `exclude` for each rule category
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-01 06:51_
+_@DetachHead_
 
 in my project, i don't want the pydocstyle `D` errors to appear in files matching a certain pattern (eg. so that internal modules do not require documentation).
 

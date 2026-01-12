@@ -12,14 +12,14 @@ head: charlie/compact
 created_at: 2022-12-04T03:40:53Z
 updated_at: 2022-12-04T03:43:01Z
 url: https://github.com/astral-sh/ruff/pull/1019
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add backwards compatible redirect map for `U`-to-`UP` rename
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 03:40_
+_@charliermarsh_
 
 Resolves: #1002.
 

@@ -13,14 +13,14 @@ head: dist-reupstream
 created_at: 2025-09-12T00:47:12Z
 updated_at: 2025-09-27T22:38:41Z
 url: https://github.com/astral-sh/uv/pull/15798
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Re-upstream to dist to axodotdev/cargo-dist
 
 ---
 
-_Pull request opened by @samypr100 on 2025-09-12 00:47_
+_@samypr100_
 
 ## Summary
 

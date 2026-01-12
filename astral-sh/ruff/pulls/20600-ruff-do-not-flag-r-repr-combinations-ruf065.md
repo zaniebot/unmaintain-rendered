@@ -14,14 +14,14 @@ head: fix-20583
 created_at: 2025-09-27T04:59:41Z
 updated_at: 2025-09-30T19:53:30Z
 url: https://github.com/astral-sh/ruff/pull/20600
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [`ruff`] Do not flag `%r` + `repr()` combinations (`RUF065`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-27 04:59_
+_@danparizher_
 
 ## Summary
 

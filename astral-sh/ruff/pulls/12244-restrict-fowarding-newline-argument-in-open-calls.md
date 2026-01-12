@@ -12,14 +12,14 @@ head: evanrittenhouse/12223
 created_at: 2024-07-08T14:06:37Z
 updated_at: 2024-07-09T15:40:13Z
 url: https://github.com/astral-sh/ruff/pull/12244
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Restrict fowarding `newline` argument in `open()` calls to Python versions >= 3.10
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2024-07-08 14:06_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

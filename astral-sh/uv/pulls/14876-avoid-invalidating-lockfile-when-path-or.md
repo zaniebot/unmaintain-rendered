@@ -13,14 +13,14 @@ head: charlie/explicit
 created_at: 2025-07-24T19:47:42Z
 updated_at: 2025-07-25T12:18:30Z
 url: https://github.com/astral-sh/uv/pull/14876
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Avoid invalidating lockfile when path or workspace dependencies define explicit indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-24 19:47_
+_@charliermarsh_
 
 ## Summary
 

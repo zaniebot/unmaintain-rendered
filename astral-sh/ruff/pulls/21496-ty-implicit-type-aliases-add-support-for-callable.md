@@ -14,14 +14,14 @@ head: david/implicit-type-aliases-callable
 created_at: 2025-11-17T08:17:37Z
 updated_at: 2025-11-18T08:06:07Z
 url: https://github.com/astral-sh/ruff/pull/21496
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Implicit type aliases: Add support for `Callable`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-17 08:17_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-02-20T20:15:30Z
 updated_at: 2021-02-20T21:15:13Z
 url: https://github.com/clap-rs/clap/issues/2355
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Unclear instructions for `app_from_crate!`
 
 ---
 
-_Issue opened by @xaocon on 2021-02-20 20:15_
+_@xaocon_
 
 ### Clap version
 

@@ -12,14 +12,14 @@ head: fix-toc
 created_at: 2022-12-04T10:37:50Z
 updated_at: 2023-04-30T19:47:23Z
 url: https://github.com/astral-sh/ruff/pull/1030
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix Table of Contents
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-12-04 10:37_
+_@JonathanPlasse_
 
 _No description provided._
 

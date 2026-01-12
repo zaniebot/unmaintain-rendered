@@ -13,14 +13,14 @@ head: referable-implicit-attr
 created_at: 2025-12-06T09:30:10Z
 updated_at: 2025-12-06T14:59:39Z
 url: https://github.com/astral-sh/ruff/pull/21822
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] use "referable" definitions in implicit attribute inference
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-06 09:30_
+_@mtshiba_
 
 ## Summary
 

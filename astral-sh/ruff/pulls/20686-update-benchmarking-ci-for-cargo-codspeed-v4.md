@@ -13,14 +13,14 @@ head: brent/codspeed-v4
 created_at: 2025-10-02T18:25:30Z
 updated_at: 2025-10-02T18:56:29Z
 url: https://github.com/astral-sh/ruff/pull/20686
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Update benchmarking CI for cargo-codspeed v4
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-02 18:25_
+_@ntBre_
 
 Summary
 --

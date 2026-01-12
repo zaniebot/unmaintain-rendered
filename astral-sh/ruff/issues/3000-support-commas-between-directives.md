@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-17T23:23:38Z
 updated_at: 2023-02-17T23:24:17Z
 url: https://github.com/astral-sh/ruff/issues/3000
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support commas between directives
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-02-17 23:23_
+_@NeilGirdhar_
 
 It would a bit nicer to support semicolons between directives:
 ```python

@@ -13,14 +13,14 @@ head: cargo-insta-force-update
 created_at: 2025-12-30T23:13:14Z
 updated_at: 2026-01-05T15:55:49Z
 url: https://github.com/astral-sh/ruff/pull/22313
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] `cargo insta test --force-update-snapshots`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-30 23:13_
+_@oconnor663_
 
 Snapshot tests recently started reporting this warning:
 

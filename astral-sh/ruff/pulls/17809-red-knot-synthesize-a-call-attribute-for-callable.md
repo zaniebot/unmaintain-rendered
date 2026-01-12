@@ -13,14 +13,14 @@ head: alex/callable-dunder-call
 created_at: 2025-05-03T11:59:40Z
 updated_at: 2025-05-03T15:43:20Z
 url: https://github.com/astral-sh/ruff/pull/17809
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [red-knot] Synthesize a `__call__` attribute for Callable types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-03 11:59_
+_@AlexWaygood_
 
 ## Summary
 

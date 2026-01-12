@@ -13,14 +13,14 @@ head: charlie/unicode
 created_at: 2023-12-02T18:24:46Z
 updated_at: 2023-12-02T18:44:54Z
 url: https://github.com/astral-sh/ruff/pull/8971
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid syntax error via invalid ur string prefix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-02 18:24_
+_@charliermarsh_
 
 ## Summary
 

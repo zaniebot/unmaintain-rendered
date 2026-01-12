@@ -11,14 +11,14 @@ head: suppressing-diagnostics
 created_at: 2025-11-25T01:57:14Z
 updated_at: 2025-11-25T01:59:11Z
 url: https://github.com/astral-sh/ruff/pull/21622
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ruff] apply range suppressions to filter diagnostics
 
 ---
 
-_Pull request opened by @amyreese on 2025-11-25 01:57_
+_@amyreese_
 
 - **New module for parsing generic ruff suppressions**
 - **Add errors and test cases to exercise new parsing**

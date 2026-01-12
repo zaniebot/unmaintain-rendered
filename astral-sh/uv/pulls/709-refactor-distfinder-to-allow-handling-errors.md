@@ -12,14 +12,14 @@ head: konsti/dist-finder-error
 created_at: 2023-12-19T20:32:41Z
 updated_at: 2023-12-20T04:07:56Z
 url: https://github.com/astral-sh/uv/pull/709
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Refactor `DistFinder` to allow handling errors
 
 ---
 
-_Pull request opened by @konstin on 2023-12-19 20:32_
+_@konstin_
 
 For the install tests, i need the ability to ignore failures in the `DistFinder`. To avoid just copy&pasting a version that collects errors separately, i followed https://gendignoux.com/blog/2021/04/01/rust-async-streams-futures-part1.html and switched the custom channel over to an async stream yielding `Result` items.
 

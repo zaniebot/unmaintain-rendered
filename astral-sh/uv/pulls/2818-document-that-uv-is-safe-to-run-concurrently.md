@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2024-04-04T04:22:03Z
 updated_at: 2024-04-04T04:33:26Z
 url: https://github.com/astral-sh/uv/pull/2818
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Document that uv is safe to run concurrently
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-04 04:22_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2730.
 

@@ -13,14 +13,14 @@ head: db-with-jar
 created_at: 2024-05-08T14:38:55Z
 updated_at: 2024-05-08T16:07:15Z
 url: https://github.com/astral-sh/ruff/pull/11339
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Remove `<Db: SemanticDb>` contraints in favor of dynamic dispatch
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-08 14:38_
+_@MichaReiser_
 
 ## Summary
 

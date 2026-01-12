@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-24T21:53:18Z
 updated_at: 2023-10-24T22:05:09Z
 url: https://github.com/astral-sh/ruff/pull/8186
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix a wrong setting in configuration.md
 
 ---
 
-_Pull request opened by @lmanc on 2023-10-24 21:53_
+_@lmanc_
 
 ## Summary
 

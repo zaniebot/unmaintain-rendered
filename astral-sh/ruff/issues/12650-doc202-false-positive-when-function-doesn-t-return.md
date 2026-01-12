@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T23:39:08Z
 updated_at: 2024-08-03T12:13:22Z
 url: https://github.com/astral-sh/ruff/issues/12650
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC202 false positive when function doesn't return
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-08-02 23:39_
+_@NeilGirdhar_
 
 ```python
 class C:

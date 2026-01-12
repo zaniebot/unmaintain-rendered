@@ -13,14 +13,14 @@ head: zb/system-fix
 created_at: 2025-08-04T14:12:10Z
 updated_at: 2025-08-04T16:02:43Z
 url: https://github.com/astral-sh/uv/pull/15059
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Fix handling of `python-preference = system` when managed interpreters are on the PATH
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-04 14:12_
+_@zanieb_
 
 This is the first part of fixing a 0.8.0 regression from https://github.com/astral-sh/uv/pull/7934
 

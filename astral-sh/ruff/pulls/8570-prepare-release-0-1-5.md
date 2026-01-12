@@ -12,14 +12,14 @@ head: release/015
 created_at: 2023-11-08T19:16:57Z
 updated_at: 2023-11-08T22:00:58Z
 url: https://github.com/astral-sh/ruff/pull/8570
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Prepare release 0.1.5
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-08 19:16_
+_@zanieb_
 
 [Rendered CHANGELOG](https://github.com/astral-sh/ruff/blob/release/015/CHANGELOG.md#015)
 

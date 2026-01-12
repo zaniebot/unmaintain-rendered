@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T04:16:44Z
 updated_at: 2025-09-06T02:36:16Z
 url: https://github.com/astral-sh/uv/issues/15692
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # uv pip install parse wrong version with "+"
 
 ---
 
-_Issue opened by @cos120 on 2025-09-05 04:16_
+_@cos120_
 
 ### Summary
 

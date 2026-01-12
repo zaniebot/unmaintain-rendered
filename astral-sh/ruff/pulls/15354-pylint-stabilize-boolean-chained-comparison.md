@@ -13,14 +13,14 @@ head: micha/boolean-chain-comparison
 created_at: 2025-01-08T14:04:22Z
 updated_at: 2025-01-08T14:43:04Z
 url: https://github.com/astral-sh/ruff/pull/15354
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pylint`]: Stabilize `boolean-chained-comparison` (`PLR1716`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 14:04_
+_@MichaReiser_
 
 ## Summary
 

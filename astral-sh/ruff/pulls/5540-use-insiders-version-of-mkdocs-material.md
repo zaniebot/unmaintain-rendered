@@ -13,14 +13,14 @@ head: charlie/insiders
 created_at: 2023-07-05T19:41:44Z
 updated_at: 2023-07-05T20:58:19Z
 url: https://github.com/astral-sh/ruff/pull/5540
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use Insiders version of `mkdocs-material`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 19:41_
+_@charliermarsh_
 
 ## Summary
 

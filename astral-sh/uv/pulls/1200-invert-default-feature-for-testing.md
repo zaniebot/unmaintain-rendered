@@ -12,14 +12,14 @@ head: charlie/invert
 created_at: 2024-01-31T00:42:17Z
 updated_at: 2024-01-31T14:44:28Z
 url: https://github.com/astral-sh/uv/pull/1200
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Invert default feature for testing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 00:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/creds
 created_at: 2025-04-04T22:17:20Z
 updated_at: 2025-04-07T11:53:22Z
 url: https://github.com/astral-sh/uv/pull/12682
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Use `Credentials` abstraction in `uv-publish`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-04 22:17_
+_@charliermarsh_
 
 ## Summary
 

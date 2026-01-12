@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T17:25:35Z
 updated_at: 2025-01-25T06:25:57Z
 url: https://github.com/astral-sh/uv/issues/1657
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Change the name of `uv pip`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-18 17:25_
+_@zanieb_
 
 Originally discussed in https://github.com/astral-sh/uv/issues/1331
 

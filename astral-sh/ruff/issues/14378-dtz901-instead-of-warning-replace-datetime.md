@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-16T12:31:26Z
 updated_at: 2024-11-18T02:24:36Z
 url: https://github.com/astral-sh/ruff/issues/14378
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DTZ901 Instead of warning replace datetime.datetime.min.time() with datetime.time.min
 
 ---
 
-_Issue opened by @spaceby on 2024-11-16 12:31_
+_@spaceby_
 
 datetime.datetime.min may cause a timezone bug, but datetime.datetime.min.time() does not cause timezone problems.
 

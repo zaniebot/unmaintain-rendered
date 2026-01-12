@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T19:55:44Z
 updated_at: 2024-10-30T11:30:37Z
 url: https://github.com/astral-sh/uv/issues/6271
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Clarify the benefits of `uv.lock` over `requirements.txt`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 19:55_
+_@zanieb_
 
 e.g. as discussed in [Discord](https://discord.com/channels/1039017663004942429/1039017663512449056/1275540373971800116)
 

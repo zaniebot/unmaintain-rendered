@@ -13,14 +13,14 @@ head: charlie/subdir
 created_at: 2024-03-30T02:15:46Z
 updated_at: 2024-03-30T02:52:03Z
 url: https://github.com/astral-sh/uv/pull/2728
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Respect subdirectories when reading static metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-30 02:15_
+_@charliermarsh_
 
 ## Summary
 

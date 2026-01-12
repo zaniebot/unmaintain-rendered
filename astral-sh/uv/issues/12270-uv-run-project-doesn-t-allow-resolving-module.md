@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T10:34:30Z
 updated_at: 2025-04-15T12:45:42Z
 url: https://github.com/astral-sh/uv/issues/12270
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # `uv run --project` doesn't allow resolving module imports on windows
 
 ---
 
-_Issue opened by @leokeba on 2025-03-18 10:34_
+_@leokeba_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: e242-docs
 created_at: 2024-03-27T22:51:06Z
 updated_at: 2024-03-28T07:37:10Z
 url: https://github.com/astral-sh/ruff/pull/10640
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # space_around_operator: use same before/after numbers
 
 ---
 
-_Pull request opened by @pjonsson on 2024-03-27 22:51_
+_@pjonsson_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

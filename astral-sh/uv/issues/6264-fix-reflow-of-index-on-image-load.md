@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T18:17:58Z
 updated_at: 2024-11-11T21:48:42Z
 url: https://github.com/astral-sh/uv/issues/6264
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Fix reflow of index on image load
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 18:17_
+_@zanieb_
 
 e.g. at https://docs.astral.sh/uv/ we reflow when the benchmark loads. We need to set a fixed height for the image.
 

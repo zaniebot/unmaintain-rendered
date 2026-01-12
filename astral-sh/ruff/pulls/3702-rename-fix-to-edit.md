@@ -12,14 +12,14 @@ head: charlie/edit
 created_at: 2023-03-23T23:41:39Z
 updated_at: 2023-03-24T23:29:16Z
 url: https://github.com/astral-sh/ruff/pull/3702
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Rename `Fix` to `Edit`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-23 23:41_
+_@charliermarsh_
 
 ## Summary
 

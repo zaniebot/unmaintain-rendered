@@ -13,14 +13,14 @@ head: charlie/ptc
 created_at: 2025-08-24T13:02:33Z
 updated_at: 2025-08-24T15:41:18Z
 url: https://github.com/astral-sh/uv/pull/15481
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Cache PyTorch wheels by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 13:02_
+_@charliermarsh_
 
 ## Summary
 

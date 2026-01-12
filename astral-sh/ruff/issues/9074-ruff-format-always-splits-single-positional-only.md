@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-09T18:49:09Z
 updated_at: 2023-12-09T23:03:32Z
 url: https://github.com/astral-sh/ruff/issues/9074
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ruff format always splits single positional-only argument list across two lines
 
 ---
 
-_Issue opened by @drhagen on 2023-12-09 18:49_
+_@drhagen_
 
 Black [keeps this code as is](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADVAHpdAD2IimZxl1N_WlbvK5V_r8p8RWVQhH4T2O7WqUDeXrzfa-e6wziIBZ7QgnOLLS6AI8_u-ndkugsJo2YBSDMHN0D47vXymeQ1jtqapcY5xyV7JpggMWoOxoxwKgPXPN0A2MQwkZu3vmIU6QGNqrpOmboAPkPAchIEDU0AAAAAXBH-g4MbwnEAAZYB1gEAAEGE9zexxGf7AgAAAAAEWVo=):
 

@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2025-07-01T15:20:46Z
 updated_at: 2025-07-01T15:59:23Z
 url: https://github.com/astral-sh/ruff/pull/19072
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # Docs: Add Anki to Who's Using Ruff
 
 ---
 
-_Pull request opened by @NamelessGO on 2025-07-01 15:20_
+_@NamelessGO_
 
 https://github.com/ankitects/anki/pull/4119
 

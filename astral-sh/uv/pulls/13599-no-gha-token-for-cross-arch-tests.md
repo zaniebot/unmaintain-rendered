@@ -14,14 +14,14 @@ head: konsti/no-gh-token-for-the-tests
 created_at: 2025-05-22T18:04:07Z
 updated_at: 2025-05-22T19:11:40Z
 url: https://github.com/astral-sh/uv/pull/13599
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # No GHA token for cross arch tests
 
 ---
 
-_Pull request opened by @konstin on 2025-05-22 18:04_
+_@konstin_
 
 _No description provided._
 

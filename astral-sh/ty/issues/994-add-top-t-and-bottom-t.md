@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-15T04:53:37Z
 updated_at: 2025-09-19T17:42:17Z
 url: https://github.com/astral-sh/ty/issues/994
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add Top[T] and Bottom[T]
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-08-15 04:53_
+_@JelleZijlstra_
 
 I'd like to propose adding two new type constructors, `ty_extensions.Top[T]` and `Bottom[T]`. `Top[T]` represents the top materialization of `T`, the smallest type that is a supertype of all materializations of `T`. `Bottom[T]` is the bottom materialization, the largest type that is a subtype of all materializations of `T`. These types would be exposed in `ty_extensions` for testing, and ty would synthesize them internally in some circumstances.
 

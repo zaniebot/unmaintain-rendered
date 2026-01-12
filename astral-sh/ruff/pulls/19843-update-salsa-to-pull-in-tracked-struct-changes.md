@@ -14,14 +14,14 @@ head: micha/salsa-tracked-structs
 created_at: 2025-08-09T16:30:53Z
 updated_at: 2025-08-12T11:17:48Z
 url: https://github.com/astral-sh/ruff/pull/19843
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # Update salsa to pull in tracked struct changes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-09 16:30_
+_@MichaReiser_
 
 ## Summary
 Pulls in https://github.com/salsa-rs/salsa/pull/969

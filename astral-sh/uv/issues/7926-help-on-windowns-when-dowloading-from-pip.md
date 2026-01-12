@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T14:22:05Z
 updated_at: 2024-10-04T15:28:19Z
 url: https://github.com/astral-sh/uv/issues/7926
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Help on Windowns when dowloading from pip
 
 ---
 
-_Issue opened by @brunocarlin on 2024-10-04 14:22_
+_@brunocarlin_
 
 Hi, how do I register uv to the command line when doing a pip install of uv, the reason I want that is because uv is not findable by the venv's I am using because it is only installed on my base python
 

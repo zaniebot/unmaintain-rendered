@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-21T16:44:09Z
 updated_at: 2026-01-11T23:23:28Z
 url: https://github.com/astral-sh/ty/issues/2147
-synced_at: 2026-01-12T00:23:29Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve rendering of ReST directives in docstrings
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-21 16:44_
+_@AlexWaygood_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/exclusions
 created_at: 2023-07-04T20:11:39Z
 updated_at: 2023-07-04T20:46:29Z
 url: https://github.com/astral-sh/ruff/pull/5513
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add .ipynb_checkpoints, .pyenv, .pytest_cache, and .vscode to default excludes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 20:11_
+_@charliermarsh_
 
 ## Summary
 

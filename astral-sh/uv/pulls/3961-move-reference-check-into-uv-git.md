@@ -13,14 +13,14 @@ head: charlie/same-ref
 created_at: 2024-06-01T19:54:19Z
 updated_at: 2024-06-01T20:02:26Z
 url: https://github.com/astral-sh/uv/pull/3961
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Move reference check into `uv-git`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-01 19:54_
+_@charliermarsh_
 
 _No description provided._
 

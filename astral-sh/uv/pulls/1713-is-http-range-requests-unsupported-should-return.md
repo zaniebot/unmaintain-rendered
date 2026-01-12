@@ -12,14 +12,14 @@ head: olivier/survive_http_405_on_head_reqs
 created_at: 2024-02-19T19:09:20Z
 updated_at: 2024-02-19T21:38:43Z
 url: https://github.com/astral-sh/uv/pull/1713
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # is_http_range_requests_unsupported should return true on Method Not Allowed
 
 ---
 
-_Pull request opened by @olivierlefloch on 2024-02-19 19:09_
+_@olivierlefloch_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/override-diags
 created_at: 2026-01-01T17:29:03Z
 updated_at: 2026-01-02T22:10:41Z
 url: https://github.com/astral-sh/ruff/pull/22331
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # Add `help:` subdiagnostics for several Ruff rules that can sometimes appear to disagree with ty
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-01 17:29_
+_@AlexWaygood_
 
 ## Summary
 

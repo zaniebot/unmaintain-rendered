@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-21T02:22:27Z
 updated_at: 2023-11-09T14:01:05Z
 url: https://github.com/astral-sh/uv/issues/157
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Improve performance of wheel tag matching
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-21 02:22_
+_@charliermarsh_
 
 Very low priority, but I have to imagine that we can make this much more efficient? Right now, we iterate over all tags, but can we use some kind of bit set or hash set to reduce the number of operations?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-09T11:23:16Z
 updated_at: 2021-12-09T16:41:38Z
 url: https://github.com/clap-rs/clap/issues/3106
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Result aliases cause compilation failures in rc.0
 
 ---
 
-_Issue opened by @spire-ffoston on 2021-12-09 11:23_
+_@spire-ffoston_
 
 ### Please complete the following tasks
 

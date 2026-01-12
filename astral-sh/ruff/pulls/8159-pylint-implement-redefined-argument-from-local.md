@@ -12,14 +12,14 @@ head: redefined-argument-from-local
 created_at: 2023-10-24T09:08:12Z
 updated_at: 2023-11-10T19:13:07Z
 url: https://github.com/astral-sh/ruff/pull/8159
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] Implement redefined-argument-from-local (R1704)
 
 ---
 
-_Pull request opened by @danbi2990 on 2023-10-24 09:08_
+_@danbi2990_
 
 ## Summary
 

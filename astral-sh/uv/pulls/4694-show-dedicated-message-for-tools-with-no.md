@@ -14,14 +14,14 @@ head: charlie/empty
 created_at: 2024-07-01T13:43:09Z
 updated_at: 2024-07-01T16:22:49Z
 url: https://github.com/astral-sh/uv/pull/4694
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Show dedicated message for tools with no entrypoints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 13:43_
+_@charliermarsh_
 
 ## Summary
 

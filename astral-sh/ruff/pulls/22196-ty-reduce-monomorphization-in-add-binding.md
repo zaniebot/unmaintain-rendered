@@ -14,14 +14,14 @@ head: micha/add-binding
 created_at: 2025-12-25T14:11:52Z
 updated_at: 2025-12-27T10:17:28Z
 url: https://github.com/astral-sh/ruff/pull/22196
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Reduce monomorphization in `add_binding`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-25 14:11_
+_@MichaReiser_
 
 _No description provided._
 

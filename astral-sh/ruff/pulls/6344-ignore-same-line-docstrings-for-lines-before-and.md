@@ -14,14 +14,14 @@ head: charlie/same-line
 created_at: 2023-08-04T15:27:33Z
 updated_at: 2023-08-04T16:31:34Z
 url: https://github.com/astral-sh/ruff/pull/6344
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Ignore same-line docstrings for lines-before and lines-after rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 15:27_
+_@charliermarsh_
 
 These rules assume that the docstring is on its own line. pydocstyle treats them inconsistently, so I'm just going to disable them in this case.
 

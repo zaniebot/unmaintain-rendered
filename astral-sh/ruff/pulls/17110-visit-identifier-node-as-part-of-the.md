@@ -13,14 +13,14 @@ head: micha/source-order-visitor-visit-identifier
 created_at: 2025-04-01T08:58:55Z
 updated_at: 2025-04-01T14:58:12Z
 url: https://github.com/astral-sh/ruff/pull/17110
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Visit `Identifier` node as part of the `SourceOrderVisitor`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-01 08:58_
+_@MichaReiser_
 
 ## Summary
 

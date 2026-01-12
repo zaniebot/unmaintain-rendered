@@ -12,14 +12,14 @@ head: full-lexer
 created_at: 2023-05-15T17:25:10Z
 updated_at: 2023-05-16T07:58:27Z
 url: https://github.com/astral-sh/ruff/pull/4442
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update RustPyhon and enable full-lexer feature
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-15 17:25_
+_@youknowone_
 
 Using features on workspace is regarded as a sort of anti-pattern.
 But if the all workspace crates are only used to build binary, it will be fine.

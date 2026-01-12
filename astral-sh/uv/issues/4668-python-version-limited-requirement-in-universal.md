@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T21:12:22Z
 updated_at: 2024-10-28T17:42:40Z
 url: https://github.com/astral-sh/uv/issues/4668
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Python version limited requirement in universal locking
 
 ---
 
-_Issue opened by @davidfritzsche on 2024-06-30 21:12_
+_@davidfritzsche_
 
 With uv 0.2.18 the following fails
 

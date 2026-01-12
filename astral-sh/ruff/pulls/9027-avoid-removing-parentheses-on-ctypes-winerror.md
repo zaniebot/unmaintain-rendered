@@ -13,14 +13,14 @@ head: charlie/rse
 created_at: 2023-12-06T16:59:35Z
 updated_at: 2023-12-06T17:12:27Z
 url: https://github.com/astral-sh/ruff/pull/9027
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid removing parentheses on ctypes.WinError
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-06 16:59_
+_@charliermarsh_
 
 Re-resolves https://github.com/astral-sh/ruff/issues/6730.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-30T16:31:19Z
 updated_at: 2025-12-07T10:39:28Z
 url: https://github.com/astral-sh/ty/issues/1687
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Can't import utils with Pytest
 
 ---
 
-_Issue opened by @AndreuCodina on 2025-11-30 16:31_
+_@AndreuCodina_
 
 ### Summary
 

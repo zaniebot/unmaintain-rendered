@@ -14,14 +14,14 @@ head: micha/remove-unnecessary-scope-id-conversion
 created_at: 2025-09-19T13:12:45Z
 updated_at: 2025-09-20T11:28:45Z
 url: https://github.com/astral-sh/ruff/pull/20481
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Remove unnecessary `FileScopeId` to `ScopeId` conversion
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-19 13:12_
+_@MichaReiser_
 
 I noticed this when debugging https://github.com/astral-sh/ty/issues/1111 because I saw many repeated `semantic_index` calls.
 

@@ -14,14 +14,14 @@ head: dhruv/semicolon-terminator
 created_at: 2024-04-10T14:09:26Z
 updated_at: 2024-04-11T09:14:44Z
 url: https://github.com/astral-sh/ruff/pull/10859
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Use `Semi` as terminator token for simple stmts
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 14:09_
+_@dhruvmanila_
 
 ## Summary
 

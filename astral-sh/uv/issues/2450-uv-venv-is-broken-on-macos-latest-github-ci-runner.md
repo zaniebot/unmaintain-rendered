@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T06:33:02Z
 updated_at: 2024-03-14T12:37:47Z
 url: https://github.com/astral-sh/uv/issues/2450
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv venv` is broken on `macos-latest` github CI runner
 
 ---
 
-_Issue opened by @yashgorana on 2024-03-14 06:33_
+_@yashgorana_
 
 Just creating the virtual env triggers an error from uv version 0.1.19. From the JSON dump, it seems like uv is incorrectly determining the platform arch to be i386.
 

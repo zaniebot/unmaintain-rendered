@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T10:52:19Z
 updated_at: 2025-01-10T15:44:07Z
 url: https://github.com/astral-sh/ruff/issues/13137
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF012 does not catch mutable default in dataclass
 
 ---
 
-_Issue opened by @msehnout on 2024-08-28 10:52_
+_@msehnout_
 
 Hello,
 

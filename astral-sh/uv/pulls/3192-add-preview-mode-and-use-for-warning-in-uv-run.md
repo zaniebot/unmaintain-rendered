@@ -13,14 +13,14 @@ head: zb/preview
 created_at: 2024-04-22T17:13:15Z
 updated_at: 2024-04-22T20:41:15Z
 url: https://github.com/astral-sh/uv/pull/3192
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Add preview mode and use for warning in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-22 17:13_
+_@zanieb_
 
 Adds hidden `--preview` / `--no-preview` flags with `UV_PREVIEW` environment variable support. Copies the `PreviewMode` type from Ruff.
 

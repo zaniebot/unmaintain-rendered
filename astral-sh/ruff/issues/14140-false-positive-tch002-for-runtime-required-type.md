@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T19:55:04Z
 updated_at: 2025-11-01T14:27:42Z
 url: https://github.com/astral-sh/ruff/issues/14140
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False-positive TCH002 for runtime-required type annotations
 
 ---
 
-_Issue opened by @OlehChyhyryn on 2024-11-06 19:55_
+_@OlehChyhyryn_
 
 In our project, we are using https://injector.readthedocs.io/en/latest/ library to implement dependency injection.
 

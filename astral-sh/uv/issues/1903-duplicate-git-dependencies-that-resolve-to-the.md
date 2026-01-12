@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T07:13:24Z
 updated_at: 2024-03-07T23:47:32Z
 url: https://github.com/astral-sh/uv/issues/1903
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Duplicate git dependencies that resolve to the same commit are treated as conflicting
 
 ---
 
-_Issue opened by @rossmacarthur on 2024-02-23 07:13_
+_@rossmacarthur_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

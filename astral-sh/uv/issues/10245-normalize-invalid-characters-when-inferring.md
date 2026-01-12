@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T21:56:47Z
 updated_at: 2024-12-31T02:05:01Z
 url: https://github.com/astral-sh/uv/issues/10245
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Normalize invalid characters when inferring project name from the working directory in `uv init`
 
 ---
 
-_Issue opened by @zanieb on 2024-12-30 21:56_
+_@zanieb_
 
 As mentioned in https://github.com/astral-sh/uv/issues/10232
 

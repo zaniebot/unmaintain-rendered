@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-05-11T16:41:34Z
 updated_at: 2020-08-11T11:36:57Z
 url: https://github.com/clap-rs/clap/issues/1918
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Short aliases in completions
 
 ---
 
-_Issue opened by @pksunkara on 2020-05-11 16:41_
+_@pksunkara_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%240%20Funded-%2300A156.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1918)

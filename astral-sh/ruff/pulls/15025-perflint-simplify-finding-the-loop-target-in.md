@@ -14,14 +14,14 @@ head: perf401_panic_del
 created_at: 2024-12-16T20:54:49Z
 updated_at: 2024-12-17T07:30:36Z
 url: https://github.com/astral-sh/ruff/pull/15025
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`perflint`] Simplify finding the loop target in `PERF401`
 
 ---
 
-_Pull request opened by @w0nder1ng on 2024-12-16 20:54_
+_@w0nder1ng_
 
 Fixes #15012.
 

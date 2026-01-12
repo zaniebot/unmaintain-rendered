@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-09-10T08:54:15Z
 updated_at: 2020-10-14T21:20:36Z
 url: https://github.com/clap-rs/clap/issues/1545
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # arg.take_value conflicts with arg.default_value
 
 ---
 
-_Issue opened by @maicallist on 2019-09-10 08:54_
+_@maicallist_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

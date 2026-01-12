@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-23T02:29:51Z
 updated_at: 2025-02-23T13:58:26Z
 url: https://github.com/astral-sh/ruff/issues/16324
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # New rule request: instance attribute defined outside __init__
 
 ---
 
-_Issue opened by @Garrett-R on 2025-02-23 02:29_
+_@Garrett-R_
 
 ### Description
 

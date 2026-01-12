@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-01T13:09:01Z
 updated_at: 2025-07-01T13:27:32Z
 url: https://github.com/astral-sh/ty/issues/739
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Pytest xfail
 
 ---
 
-_Issue opened by @Kumzy on 2025-07-01 13:09_
+_@Kumzy_
 
 ### Summary
 

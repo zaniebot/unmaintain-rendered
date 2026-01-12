@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T23:48:14Z
 updated_at: 2024-08-23T13:00:40Z
 url: https://github.com/astral-sh/uv/issues/6237
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Include `bin/uv` in `uv venv`
 
 ---
 
-_Issue opened by @gotmax23 on 2024-08-19 23:48_
+_@gotmax23_
 
 * **A minimal code snippet that reproduces the bug.**
 

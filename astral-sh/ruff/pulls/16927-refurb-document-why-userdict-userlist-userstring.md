@@ -13,14 +13,14 @@ head: update-subclass-builtin-docs
 created_at: 2025-03-23T15:24:19Z
 updated_at: 2025-03-23T17:24:40Z
 url: https://github.com/astral-sh/ruff/pull/16927
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 #  [`refurb`] Document why `UserDict`, `UserList`, `UserString` are preferred over `dict`, `list`, `str` (`FURB189`)
 
 ---
 
-_Pull request opened by @dan-wilton on 2025-03-23 15:24_
+_@dan-wilton_
 
 ## Summary
 

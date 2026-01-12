@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-21T16:30:51Z
 updated_at: 2025-10-16T22:19:15Z
 url: https://github.com/astral-sh/ruff/issues/12434
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Implement `pydoclint`
 
 ---
 
-_Issue opened by @augustelalande on 2024-07-21 16:30_
+_@augustelalande_
 
 This issue tracks the implementation of [pydoclint](https://jsh9.github.io/pydoclint/violation_codes.html). Following discussion in #11471 it was decided to prefer `pydoclint` over `darglint` for implementation in ruff, since they cover mostly the same ruleset, and `pydoclint` is still actively developed (unlike `darglint`). This issue should then supersede #458.
 

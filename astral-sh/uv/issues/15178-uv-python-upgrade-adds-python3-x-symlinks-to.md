@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T23:07:52Z
 updated_at: 2025-08-11T20:36:04Z
 url: https://github.com/astral-sh/uv/issues/15178
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv python upgrade adds python3.x symlinks to ~/.local/bin
 
 ---
 
-_Issue opened by @geofft on 2025-08-08 23:07_
+_@geofft_
 
 ### Summary
 

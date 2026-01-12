@@ -13,14 +13,14 @@ head: improve-redknot-tests
 created_at: 2024-10-05T16:54:28Z
 updated_at: 2024-10-05T17:08:46Z
 url: https://github.com/astral-sh/ruff/pull/13643
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Improve tests relating to type inference for exception handlers
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-05 16:54_
+_@AlexWaygood_
 
 ## Summary
 

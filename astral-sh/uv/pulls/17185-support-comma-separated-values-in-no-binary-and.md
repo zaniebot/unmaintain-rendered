@@ -14,14 +14,14 @@ head: claude/fix-uv-issue-17181-nubfw
 created_at: 2025-12-19T00:14:19Z
 updated_at: 2025-12-19T13:58:35Z
 url: https://github.com/astral-sh/uv/pull/17185
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Support comma-separated values in `--no-binary` and `--only-binary`
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-19 00:14_
+_@zanieb_
 
 Closes #17181
 

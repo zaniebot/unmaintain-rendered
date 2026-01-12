@@ -13,14 +13,14 @@ head: use-preview-style-specific-test-functions
 created_at: 2023-12-22T00:14:24Z
 updated_at: 2023-12-22T00:27:00Z
 url: https://github.com/astral-sh/ruff/pull/9239
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use named preview test functions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-22 00:14_
+_@MichaReiser_
 
 ## Summary
 

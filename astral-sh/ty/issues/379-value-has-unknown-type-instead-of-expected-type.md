@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-14T09:45:53Z
 updated_at: 2025-05-14T10:44:52Z
 url: https://github.com/astral-sh/ty/issues/379
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Value has 'Unknown' Type instead of expected type
 
 ---
 
-_Issue opened by @tonka3000 on 2025-05-14 09:45_
+_@tonka3000_
 
 ### Summary
 

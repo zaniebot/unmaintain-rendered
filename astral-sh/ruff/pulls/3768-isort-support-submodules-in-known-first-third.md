@@ -12,14 +12,14 @@ head: sorting-subpackage-modules
 created_at: 2023-03-28T12:41:14Z
 updated_at: 2023-03-29T04:14:09Z
 url: https://github.com/astral-sh/ruff/pull/3768
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [isort]: support submodules in known_(first|third)_party config options
 
 ---
 
-_Pull request opened by @astaric on 2023-03-28 12:41_
+_@astaric_
 
 This is another attempt at #3059. Passes the tests introduced in #3064
 

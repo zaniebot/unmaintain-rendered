@@ -12,14 +12,14 @@ head: share-setup-py-resolution
 created_at: 2023-11-06T11:35:07Z
 updated_at: 2023-11-06T14:14:25Z
 url: https://github.com/astral-sh/uv/pull/327
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Cache the setup.py resolution
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 11:35_
+_@konstin_
 
 Cache the resolution for the setup.py requirements (`pip`, `setuptools`, `wheels`) across builds.
 

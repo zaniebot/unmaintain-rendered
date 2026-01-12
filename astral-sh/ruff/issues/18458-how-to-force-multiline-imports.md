@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-04T13:01:07Z
 updated_at: 2025-06-05T06:20:06Z
 url: https://github.com/astral-sh/ruff/issues/18458
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # How to force multiline imports
 
 ---
 
-_Issue opened by @EvgeneKuklin on 2025-06-04 13:01_
+_@EvgeneKuklin_
 
 ### Question
 

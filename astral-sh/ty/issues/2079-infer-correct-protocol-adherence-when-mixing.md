@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T16:46:51Z
 updated_at: 2025-12-18T18:53:44Z
 url: https://github.com/astral-sh/ty/issues/2079
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Infer correct `Protocol` adherence when mixing explicit args and `ParamSpec`
 
 ---
 
-_Issue opened by @oliverlambson on 2025-12-18 16:46_
+_@oliverlambson_
 
 ### Summary
 

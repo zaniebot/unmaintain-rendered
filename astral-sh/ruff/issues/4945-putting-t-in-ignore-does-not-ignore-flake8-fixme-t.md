@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-07T23:17:16Z
 updated_at: 2023-06-07T23:25:22Z
 url: https://github.com/astral-sh/ruff/issues/4945
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Putting "T" in ignore does not ignore flake8-fixme (T)
 
 ---
 
-_Issue opened by @ColemanDunn on 2023-06-07 23:17_
+_@ColemanDunn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

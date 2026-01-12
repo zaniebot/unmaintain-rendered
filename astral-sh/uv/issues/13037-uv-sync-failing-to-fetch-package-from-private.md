@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T02:51:46Z
 updated_at: 2025-06-16T12:46:19Z
 url: https://github.com/astral-sh/uv/issues/13037
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # `uv sync` failing to fetch package from private index with 302 error on 0.6.15
 
 ---
 
-_Issue opened by @mfriedy on 2025-04-22 02:51_
+_@mfriedy_
 
 ### Summary
 

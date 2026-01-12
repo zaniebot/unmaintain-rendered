@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T20:46:47Z
 updated_at: 2025-02-07T20:46:47Z
 url: https://github.com/astral-sh/uv/issues/11330
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # [UX] could move warning to start/end of output instead of middle?
 
 ---
 
-_Issue opened by @T-256 on 2025-02-07 20:46_
+_@T-256_
 
 ### Question
 

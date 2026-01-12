@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T19:29:56Z
 updated_at: 2024-06-06T23:45:59Z
 url: https://github.com/astral-sh/uv/issues/4110
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Avoid exposing PubGrub to `uv` crate
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 19:29_
+_@charliermarsh_
 
 _No description provided._
 

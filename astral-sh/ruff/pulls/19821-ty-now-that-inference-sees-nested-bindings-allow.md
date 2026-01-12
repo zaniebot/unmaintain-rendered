@@ -12,14 +12,14 @@ head: jack/allow-unresolved-globals
 created_at: 2025-08-08T03:44:43Z
 updated_at: 2025-08-08T21:44:54Z
 url: https://github.com/astral-sh/ruff/pull/19821
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] now that inference sees nested bindings, allow unresolved globals
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-08 03:44_
+_@oconnor663_
 
 This is an optional follow-up PR on top of https://github.com/astral-sh/ruff/pull/19820. Now that we track all bindings from nested scopes, it could be practical to allow `global` variables without an explicit definition in the module scope. For example:
 

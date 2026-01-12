@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T20:56:32Z
 updated_at: 2025-08-07T20:41:36Z
 url: https://github.com/astral-sh/ruff/issues/19671
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PT003: detect pytest_asyncio
 
 ---
 
-_Issue opened by @spaceone on 2025-07-31 20:56_
+_@spaceone_
 
 `PT003` should also detect `pytest_asyncio` in the same way:
 

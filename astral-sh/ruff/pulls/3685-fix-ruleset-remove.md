@@ -13,14 +13,14 @@ head: fix-rule-set-remove
 created_at: 2023-03-23T16:44:27Z
 updated_at: 2023-03-23T17:22:01Z
 url: https://github.com/astral-sh/ruff/pull/3685
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix RuleSet.remove
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-23 16:44_
+_@MichaReiser_
 
 This PR fixes `RuleSet.remove(rule)` where calling it with a `rule` that isn't in the set resulted in it being added to the set.
 

@@ -13,14 +13,14 @@ head: update-docs-configuration
 created_at: 2023-09-03T20:28:09Z
 updated_at: 2023-09-03T21:17:35Z
 url: https://github.com/astral-sh/ruff/pull/7108
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Deduplicate information in configuration documentation
 
 ---
 
-_Pull request opened by @dalgarno on 2023-09-03 20:28_
+_@dalgarno_
 
 ## Summary
 

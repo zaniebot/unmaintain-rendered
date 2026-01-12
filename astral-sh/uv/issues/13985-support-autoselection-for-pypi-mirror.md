@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T09:25:41Z
 updated_at: 2025-06-12T14:03:58Z
 url: https://github.com/astral-sh/uv/issues/13985
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Support autoselection for PyPI mirror
 
 ---
 
-_Issue opened by @shell-nlp on 2025-06-12 09:25_
+_@shell-nlp_
 
 ### Summary
 

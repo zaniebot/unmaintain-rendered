@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T15:27:48Z
 updated_at: 2024-02-21T03:12:22Z
 url: https://github.com/astral-sh/uv/issues/1596
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Use async zip streaming for non-range-request supporting registries
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-17 15:27_
+_@charliermarsh_
 
 For registries that support range requests, we grab the wheel metadata using range requests, which is much faster than downloading the wheel.
 

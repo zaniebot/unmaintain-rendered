@@ -13,14 +13,14 @@ head: nk/custom-reqwest-client
 created_at: 2025-08-14T14:28:41Z
 updated_at: 2025-08-14T17:06:41Z
 url: https://github.com/astral-sh/uv/pull/15281
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Allow passing custom reqwest client to RegistryClient
 
 ---
 
-_Pull request opened by @nilskch on 2025-08-14 14:28_
+_@nilskch_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

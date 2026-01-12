@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T05:07:33Z
 updated_at: 2025-08-15T13:52:31Z
 url: https://github.com/astral-sh/ty/issues/996
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Negative narrowing with `type(...) is` and final types
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-08-15 05:07_
+_@JelleZijlstra_
 
 ### Summary
 

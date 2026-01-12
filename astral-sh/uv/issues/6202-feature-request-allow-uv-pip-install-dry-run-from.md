@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T12:58:09Z
 updated_at: 2024-08-19T13:00:04Z
 url: https://github.com/astral-sh/uv/issues/6202
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Feature Request: Allow `uv pip install --dry-run` from an explicit package list
 
 ---
 
-_Issue opened by @chaubold on 2024-08-19 12:58_
+_@chaubold_
 
 Hey guys,
 

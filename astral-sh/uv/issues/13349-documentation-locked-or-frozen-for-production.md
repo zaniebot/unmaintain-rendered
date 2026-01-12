@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T17:13:52Z
 updated_at: 2025-05-08T19:04:38Z
 url: https://github.com/astral-sh/uv/issues/13349
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Documentation: `--locked` or `--frozen` for production?
 
 ---
 
-_Issue opened by @thomthom on 2025-05-08 17:13_
+_@thomthom_
 
 ### Question
 

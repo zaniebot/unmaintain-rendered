@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions-45154b2adb
 created_at: 2024-03-11T08:43:36Z
 updated_at: 2024-03-11T09:25:00Z
 url: https://github.com/astral-sh/ruff/pull/10334
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Bump the actions group with 1 update
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 08:43_
+_@dependabot_
 
 Bumps the actions group with 1 update: [softprops/action-gh-release](https://github.com/softprops/action-gh-release).
 

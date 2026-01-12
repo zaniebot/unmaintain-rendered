@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-09T16:34:47Z
 updated_at: 2025-09-09T16:34:47Z
 url: https://github.com/astral-sh/uv/issues/15760
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # `uv format` cannot be disabled/reconfigured
 
 ---
 
-_Issue opened by @onerandomusername on 2025-09-09 16:34_
+_@onerandomusername_
 
 There's two parts to this issue, though the overarching request is same, hence while I'm posting them together.
 

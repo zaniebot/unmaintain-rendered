@@ -12,14 +12,14 @@ head: applicability_pydocstyle
 created_at: 2023-06-27T13:41:09Z
 updated_at: 2023-06-27T16:40:21Z
 url: https://github.com/astral-sh/ruff/pull/5390
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add applicability to pydocstyle
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-27 13:41_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

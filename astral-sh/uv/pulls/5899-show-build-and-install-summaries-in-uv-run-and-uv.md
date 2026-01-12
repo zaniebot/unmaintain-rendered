@@ -15,14 +15,14 @@ head: charlie/show-more
 created_at: 2024-08-08T00:36:05Z
 updated_at: 2024-08-08T15:26:43Z
 url: https://github.com/astral-sh/uv/pull/5899
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Show build and install summaries in `uv run` and `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 00:36_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: init
 created_at: 2024-10-26T14:07:58Z
 updated_at: 2024-10-26T14:59:07Z
 url: https://github.com/astral-sh/uv/pull/8593
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # uv init: Implies `--package` when using `--build-backend`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-26 14:07_
+_@j178_
 
 ## Summary
 

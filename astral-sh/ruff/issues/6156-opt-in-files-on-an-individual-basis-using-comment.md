@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-28T16:31:03Z
 updated_at: 2023-08-31T00:24:02Z
 url: https://github.com/astral-sh/ruff/issues/6156
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # opt-in files on an individual basis using comment in file
 
 ---
 
-_Issue opened by @rsyring on 2023-07-28 16:31_
+_@rsyring_
 
 On legacy code bases its sometimes not possible to get buy-in to do a project wide reformat.  However, incremental migration using ruff, especially on brand new files or code that is unlikely to experience merge conflicts with other PRs due to reformating, is easier to justify and implement.  
 

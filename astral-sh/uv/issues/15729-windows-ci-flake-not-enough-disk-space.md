@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T06:56:20Z
 updated_at: 2025-09-08T13:21:40Z
 url: https://github.com/astral-sh/uv/issues/15729
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Windows CI flake: not enough disk space
 
 ---
 
-_Issue opened by @konstin on 2025-09-08 06:56_
+_@konstin_
 
 E.g. https://github.com/astral-sh/uv/actions/runs/17537693772/job/49803727470?pr=15724
 

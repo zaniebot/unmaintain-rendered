@@ -12,14 +12,14 @@ head: charlie/matches-more
 created_at: 2023-06-16T15:19:11Z
 updated_at: 2023-06-16T18:41:02Z
 url: https://github.com/astral-sh/ruff/pull/5148
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Replace static `CallPath` vectors with `matches!` macros
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 15:19_
+_@charliermarsh_
 
 ## Summary
 

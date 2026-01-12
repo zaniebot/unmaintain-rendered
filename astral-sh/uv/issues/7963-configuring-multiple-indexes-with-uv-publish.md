@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T09:12:41Z
 updated_at: 2024-11-27T20:21:19Z
 url: https://github.com/astral-sh/uv/issues/7963
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Configuring multiple indexes with `uv publish`
 
 ---
 
-_Issue opened by @cthoyt on 2024-10-07 09:12_
+_@cthoyt_
 
 This issue is related to #7676.
 

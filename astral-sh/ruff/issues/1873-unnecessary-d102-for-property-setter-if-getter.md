@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-14T17:52:06Z
 updated_at: 2023-01-15T23:57:39Z
 url: https://github.com/astral-sh/ruff/issues/1873
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Unnecessary D102 for property setter if getter has already a docstring
 
 ---
 
-_Issue opened by @oefe on 2023-01-14 17:52_
+_@oefe_
 
 When a property has a setter and a getter, it should be enough to write a docstring for the getter only. After all, the property has only a single docstring. However, Ruff issues a D102 warning about the missing docstring for the setter.
 

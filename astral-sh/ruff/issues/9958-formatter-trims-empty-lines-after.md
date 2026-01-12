@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-12T18:06:50Z
 updated_at: 2024-03-27T22:36:45Z
 url: https://github.com/astral-sh/ruff/issues/9958
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter trims empty lines after `;` 
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-12 18:06_
+_@MichaReiser_
 
 ```Python
 b = """

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-09T17:41:57Z
 updated_at: 2025-11-11T16:00:16Z
 url: https://github.com/astral-sh/ruff/issues/21347
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP007 emitted for dynamic `Union` creation
 
 ---
 
-_Issue opened by @wRAR on 2025-11-09 17:41_
+_@wRAR_
 
 ### Summary
 

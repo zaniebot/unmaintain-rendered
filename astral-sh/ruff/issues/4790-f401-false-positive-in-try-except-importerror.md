@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-01T17:22:18Z
 updated_at: 2023-06-01T19:53:51Z
 url: https://github.com/astral-sh/ruff/issues/4790
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F401 false positive in try except ImportError
 
 ---
 
-_Issue opened by @Skylion007 on 2023-06-01 17:22_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T05:20:21Z
 updated_at: 2024-08-25T16:02:09Z
 url: https://github.com/astral-sh/uv/issues/6300
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # "Failed to clone files" warning is not particularly useful
 
 ---
 
-_Issue opened by @dimaqq on 2024-08-21 05:20_
+_@dimaqq_
 
 I'm getting this warning every time in these 2 circumstances:
 - host, macos, separate code-sensitive fs volume for code

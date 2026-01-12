@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2025-12-06T03:05:56Z
 updated_at: 2025-12-06T14:06:47Z
 url: https://github.com/astral-sh/uv/pull/17012
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Respect dropped (but explicit) indexes in dependency groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-06 03:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T19:23:17Z
 updated_at: 2024-08-28T18:20:03Z
 url: https://github.com/astral-sh/uv/issues/6460
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Docs suggestion for use with existing simple projects
 
 ---
 
-_Issue opened by @philgyford on 2024-08-22 19:23_
+_@philgyford_
 
 I've been trying to get up and running with uv on an existing Django project and I feel the (otherwise very good) docs have a familiar problem from other package managers: for someone who's creating Python-based websites, or other projects that aren't going to be packaged and redistributed, some of the tool and its docs, confuse matters.
 

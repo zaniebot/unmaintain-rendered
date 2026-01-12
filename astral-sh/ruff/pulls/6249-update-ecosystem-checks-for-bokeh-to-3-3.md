@@ -13,14 +13,14 @@ head: ci/bokeh
 created_at: 2023-08-01T15:55:18Z
 updated_at: 2023-08-01T16:56:59Z
 url: https://github.com/astral-sh/ruff/pull/6249
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Update ecosystem checks for bokeh to 3.3
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-01 15:55_
+_@zanieb_
 
 Bokeh 3.3 is planned for release this month (https://github.com/bokeh/bokeh/issues/13207) and is their default branch now
 

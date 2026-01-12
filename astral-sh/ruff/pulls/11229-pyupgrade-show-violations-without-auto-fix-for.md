@@ -14,14 +14,14 @@ head: up031-more-violations
 created_at: 2024-05-01T08:39:50Z
 updated_at: 2024-08-15T16:14:22Z
 url: https://github.com/astral-sh/ruff/pull/11229
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`pyupgrade`] Show violations without auto-fix for `UP031`
 
 ---
 
-_Pull request opened by @autinerd on 2024-05-01 08:39_
+_@autinerd_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

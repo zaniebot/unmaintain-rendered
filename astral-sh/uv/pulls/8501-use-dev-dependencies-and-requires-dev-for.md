@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-10-23T13:27:08Z
 updated_at: 2024-10-23T13:32:14Z
 url: https://github.com/astral-sh/uv/pull/8501
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Use `dev-dependencies` and `requires-dev` for lockfile compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-23 13:27_
+_@charliermarsh_
 
 ## Summary
 

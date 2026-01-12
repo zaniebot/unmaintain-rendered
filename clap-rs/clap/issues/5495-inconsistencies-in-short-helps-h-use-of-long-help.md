@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-14T19:40:57Z
 updated_at: 2024-05-14T19:41:13Z
 url: https://github.com/clap-rs/clap/issues/5495
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Inconsistencies in short helps (`-h`) use of long help
 
 ---
 
-_Issue opened by @epage on 2024-05-14 19:40_
+_@epage_
 
 From #5491
 

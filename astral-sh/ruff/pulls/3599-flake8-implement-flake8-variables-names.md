@@ -11,14 +11,14 @@ head: flake-8-variable-names
 created_at: 2023-03-18T18:27:09Z
 updated_at: 2023-06-14T20:23:10Z
 url: https://github.com/astral-sh/ruff/pull/3599
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8`]: Implement `flake8-variables-names`
 
 ---
 
-_Pull request opened by @latonis on 2023-03-18 18:27_
+_@latonis_
 
 Implementing [flake8-variables-names](https://github.com/best-doctor/flake8-variables-names)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T14:56:18Z
 updated_at: 2025-08-25T16:43:37Z
 url: https://github.com/astral-sh/uv/issues/15516
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # 🐛 Possible metadata mismatch between uv pip show and pip show
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-08-25 14:56_
+_@DhavalGojiya_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T16:03:04Z
 updated_at: 2025-04-10T01:15:16Z
 url: https://github.com/astral-sh/uv/issues/12720
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # PyArrow Cannot Write ORC File After Building Venv with UV
 
 ---
 
-_Issue opened by @kahemker on 2025-04-07 16:03_
+_@kahemker_
 
 ### Summary
 

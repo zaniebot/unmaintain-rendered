@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T15:02:50Z
 updated_at: 2024-08-21T18:49:57Z
 url: https://github.com/astral-sh/uv/issues/6336
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Short Git rev causes `uv sync --locked` to fail
 
 ---
 
-_Issue opened by @hackedd on 2024-08-21 15:02_
+_@hackedd_
 
 When I specify a Git dependency with a short `rev`, running `uv sync --locked` fails (telling me the lockfile needs to be updated), although `uv lock` makes no changes.
 

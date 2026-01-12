@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T10:27:58Z
 updated_at: 2024-11-18T02:06:49Z
 url: https://github.com/astral-sh/ruff/issues/14294
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Imports split using a backlash are reverted by `ruff format`
 
 ---
 
-_Issue opened by @PatrickJordanNutanix on 2024-11-12 10:27_
+_@PatrickJordanNutanix_
 
 We have an import statement that exceeds our line length limit of 79 characters. The path to the class being imported fits within the line length limit but the `import` exceeds it. For example:
 

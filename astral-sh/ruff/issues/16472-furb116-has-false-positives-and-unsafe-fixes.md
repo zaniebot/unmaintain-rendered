@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-03T14:26:34Z
 updated_at: 2025-05-12T20:08:13Z
 url: https://github.com/astral-sh/ruff/issues/16472
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # FURB116 has false positives and unsafe fixes
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-03 14:26_
+_@dscorbett_
 
 ### Summary
 

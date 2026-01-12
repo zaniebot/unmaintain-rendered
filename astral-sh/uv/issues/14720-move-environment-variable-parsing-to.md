@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-18T12:56:38Z
 updated_at: 2025-10-22T20:33:51Z
 url: https://github.com/astral-sh/uv/issues/14720
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Move environment variable parsing to `EnvironmentOptions`
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 12:56_
+_@zanieb_
 
 In https://github.com/astral-sh/uv/pull/14662 I added a new `EnvironmentOptions` abstraction which allows us to express semantics that Clap cannot and perform up-front parsing of non-CLI environment variables, e.g., https://github.com/astral-sh/uv/pull/14544 and https://github.com/astral-sh/uv/pull/14369.
 

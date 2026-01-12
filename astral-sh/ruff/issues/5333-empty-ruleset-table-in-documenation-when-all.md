@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-23T14:51:27Z
 updated_at: 2023-07-10T08:14:17Z
 url: https://github.com/astral-sh/ruff/issues/5333
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Empty ruleset table in documenation when all rules are in the nursery section
 
 ---
 
-_Issue opened by @tjkuson on 2023-06-23 14:51_
+_@tjkuson_
 
 Visit [the documentation](https://beta.ruff.rs/docs/rules/#copyright-related-rules-cpy) online (version `0.0.275`) and you will see an empty table where the rule `missing-copyright-notice` should be. I think something broke when the rule was moved to the `flake8-copyright` crate.
 

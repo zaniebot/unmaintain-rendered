@@ -13,14 +13,14 @@ head: fix-flaky-file-watching-tests
 created_at: 2024-07-30T10:11:31Z
 updated_at: 2024-07-30T16:53:13Z
 url: https://github.com/astral-sh/ruff/pull/12576
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add delay between updating a file
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-30 10:11_
+_@MichaReiser_
 
 ## Summary
 

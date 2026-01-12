@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:17:20Z
 updated_at: 2025-07-31T19:23:10Z
 url: https://github.com/astral-sh/ty/issues/87
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Go to definition
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:17_
+_@MichaReiser_
 
 Implement go to definition in the LSP
 

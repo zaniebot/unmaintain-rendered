@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T12:41:02Z
 updated_at: 2023-11-24T17:47:59Z
 url: https://github.com/astral-sh/uv/issues/473
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Build source distributions in parallel in pip-sync
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 12:41_
+_@konstin_
 
 We currently first download wheels and source dists and then build source dists sequentially in the installer:
 

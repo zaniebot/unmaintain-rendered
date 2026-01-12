@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T00:17:33Z
 updated_at: 2023-06-10T03:21:34Z
 url: https://github.com/astral-sh/ruff/issues/4973
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F632: assertion failure triggered by newline between "is" and "not"
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-09 00:17_
+_@addisoncrump_
 
 In rare situations, it is possible to have an "is not" statement separated by a newline. Below is a contrived example:
 

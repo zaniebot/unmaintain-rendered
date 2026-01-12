@@ -14,14 +14,14 @@ head: isort-sections-top
 created_at: 2023-03-21T11:00:59Z
 updated_at: 2023-03-22T18:00:17Z
 url: https://github.com/astral-sh/ruff/pull/3645
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # isort: fix bad interaction between `force-sort-within-sections` and `force-to-top`
 
 ---
 
-_Pull request opened by @bluetech on 2023-03-21 11:00_
+_@bluetech_
 
 Fixes #3630.
 

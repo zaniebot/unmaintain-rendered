@@ -12,14 +12,14 @@ head: charlie/except
 created_at: 2023-07-18T01:45:03Z
 updated_at: 2023-07-18T18:55:21Z
 url: https://github.com/astral-sh/ruff/pull/5851
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove exception-handler lexing from `unused-bound-exception` fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-18 01:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T23:37:15Z
 updated_at: 2024-02-17T00:15:26Z
 url: https://github.com/astral-sh/uv/issues/1553
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Wheel names should be URL decoded before validating
 
 ---
 
-_Issue opened by @ewhauser on 2024-02-16 23:37_
+_@ewhauser_
 
 We have some nightly torch dependencies which have encoded URLs:
 

@@ -13,14 +13,14 @@ head: pyupgrade-timeouterror
 created_at: 2023-11-03T17:00:10Z
 updated_at: 2023-11-03T17:35:06Z
 url: https://github.com/astral-sh/ruff/pull/8476
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add pyupgrade UP041 to replace TimeoutError aliases
 
 ---
 
-_Pull request opened by @hugovk on 2023-11-03 17:00_
+_@hugovk_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

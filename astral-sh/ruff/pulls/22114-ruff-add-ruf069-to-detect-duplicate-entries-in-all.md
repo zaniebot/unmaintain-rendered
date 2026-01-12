@@ -14,14 +14,14 @@ head: ruf069
 created_at: 2025-12-20T15:36:26Z
 updated_at: 2026-01-11T15:42:30Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-12T02:12:03Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-12-20 15:36_
+_@leandrobbraga_
 
 Hello,
 

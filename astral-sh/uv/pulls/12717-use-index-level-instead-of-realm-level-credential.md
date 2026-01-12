@@ -13,14 +13,14 @@ head: jtfm/index-level-credential-cache
 created_at: 2025-04-07T14:32:03Z
 updated_at: 2025-04-10T09:52:41Z
 url: https://github.com/astral-sh/uv/pull/12717
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:21Z
 ```
 
 # Use index-level instead of realm-level credential caching for known indexes
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-07 14:32_
+_@jtfmumm_
 
 The current uv behavior is to cache credentials either at the request URL or realm level. But in general, the expected behavior for indexes is to apply credentials at the index level (as implemented in #12651). This means that we also need to cache credentials at this level. Note that when uv does not detect an index URL for a request URL, it will continue to apply the old behavior.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T21:45:13Z
 updated_at: 2025-08-15T09:18:12Z
 url: https://github.com/astral-sh/uv/issues/15264
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # `match-runtime = true` should error if the package has non-static metadata
 
 ---
 
-_Issue opened by @charliermarsh on 2025-08-13 21:45_
+_@charliermarsh_
 
 E.g., for `axoltol`, it actually causes problems because `torch` is included, but at the latest version, which actively ruins the resolution.
 

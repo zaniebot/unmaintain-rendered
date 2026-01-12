@@ -13,14 +13,14 @@ head: chore/removeredundantcallchecks
 created_at: 2023-09-27T14:56:36Z
 updated_at: 2023-09-27T15:36:20Z
 url: https://github.com/astral-sh/ruff/pull/7678
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # chore: remove redundant `Expr::Call` checks
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-09-27 14:56_
+_@qdegraaf_
 
 ## Summary
 

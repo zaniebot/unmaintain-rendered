@@ -12,14 +12,14 @@ head: konsti/avoid-stack-overflow-on-windows-tests
 created_at: 2024-05-03T12:11:18Z
 updated_at: 2024-05-03T12:21:01Z
 url: https://github.com/astral-sh/uv/pull/3344
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Avoid stack overflows on more windows tests
 
 ---
 
-_Pull request opened by @konstin on 2024-05-03 12:11_
+_@konstin_
 
 Fix windows CI by increasing the debug stack size on windows:
 * https://github.com/astral-sh/uv/actions/runs/8938560618/job/24553000399?pr=3340

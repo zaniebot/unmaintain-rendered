@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T13:01:06Z
 updated_at: 2023-11-19T14:49:26Z
 url: https://github.com/astral-sh/ruff/issues/7893
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Incomplete resolving of subclass chains in `runtime-evaluated-base-classes`
 
 ---
 
-_Issue opened by @disrupted on 2023-10-10 13:01_
+_@disrupted_
 
 Extracted from https://github.com/astral-sh/ruff/issues/7866#issuecomment-1752954586
 

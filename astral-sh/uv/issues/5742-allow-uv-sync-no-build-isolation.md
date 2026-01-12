@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-02T23:28:40Z
 updated_at: 2024-08-06T21:11:49Z
 url: https://github.com/astral-sh/uv/issues/5742
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Allow `uv sync --no-build-isolation`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-02 23:28_
+_@chrisrodrigue_
 
 # System Information
 ```txt

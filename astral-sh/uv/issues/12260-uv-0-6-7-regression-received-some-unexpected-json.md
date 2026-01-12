@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T03:46:09Z
 updated_at: 2025-03-18T13:27:23Z
 url: https://github.com/astral-sh/uv/issues/12260
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # uv 0.6.7 regression "Received some unexpected JSON" ... "expected a borrowed string" when installing "pyenchant==3.3.0rc1"
 
 ---
 
-_Issue opened by @adamtheturtle on 2025-03-18 03:46_
+_@adamtheturtle_
 
 ### Summary
 

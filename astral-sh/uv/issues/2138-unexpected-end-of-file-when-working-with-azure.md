@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-03T16:13:02Z
 updated_at: 2024-07-09T09:15:10Z
 url: https://github.com/astral-sh/uv/issues/2138
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # unexpected end of file when working with Azure Artifacts
 
 ---
 
-_Issue opened by @janbernloehr on 2024-03-03 16:13_
+_@janbernloehr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

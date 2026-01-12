@@ -13,14 +13,14 @@ head: charlie/lower
 created_at: 2024-11-22T00:24:07Z
 updated_at: 2024-11-26T10:00:54Z
 url: https://github.com/astral-sh/uv/pull/9341
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Add a lowered representation for markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-22 00:24_
+_@charliermarsh_
 
 ## Summary
 

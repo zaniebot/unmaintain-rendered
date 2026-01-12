@@ -13,14 +13,14 @@ head: subtyping-class-literal-callable
 created_at: 2025-04-18T18:38:06Z
 updated_at: 2025-04-25T20:55:11Z
 url: https://github.com/astral-sh/ruff/pull/17469
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add basic subtyping between class literal and callable
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-18 18:38_
+_@MatthewMckee4_
 
 ## Summary
 

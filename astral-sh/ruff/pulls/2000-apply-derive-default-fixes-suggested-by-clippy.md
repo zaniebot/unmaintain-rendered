@@ -12,14 +12,14 @@ head: default-fix
 created_at: 2023-01-19T15:51:30Z
 updated_at: 2023-01-19T16:04:44Z
 url: https://github.com/astral-sh/ruff/pull/2000
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Apply #[derive(Default)] fixes suggested by Clippy
 
 ---
 
-_Pull request opened by @akx on 2023-01-19 15:51_
+_@akx_
 
 These were bugging me every time I ran `clippy` 😁 
 

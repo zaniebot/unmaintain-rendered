@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-20T13:07:37Z
 updated_at: 2025-02-25T14:02:05Z
 url: https://github.com/astral-sh/ruff/issues/16272
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Incorrect error message when iterating over an object that has an `__iter__` method that might not return an object with a `__next__` method
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-02-20 13:07_
+_@AlexWaygood_
 
 ### Description
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T17:48:29Z
 updated_at: 2025-05-15T19:40:27Z
 url: https://github.com/astral-sh/ruff/issues/18101
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `SIM905` fix is incorrect for unpacked dict arguments
 
 ---
 
-_Issue opened by @ntBre on 2025-05-14 17:48_
+_@ntBre_
 
 ### Summary
 

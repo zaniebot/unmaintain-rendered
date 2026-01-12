@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-31T19:30:02Z
 updated_at: 2025-10-31T19:47:38Z
 url: https://github.com/astral-sh/ruff/issues/21174
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM102 autofix breaks boolean logic by omitting parentheses around OR expressions
 
 ---
 
-_Issue opened by @hunterjsb on 2025-10-31 19:30_
+_@hunterjsb_
 
 ### Summary
 

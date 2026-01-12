@@ -14,14 +14,14 @@ head: charlie/cow
 created_at: 2023-08-16T19:25:52Z
 updated_at: 2023-08-18T13:32:21Z
 url: https://github.com/astral-sh/ruff/pull/6629
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid cloning source code multiple times
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 19:25_
+_@charliermarsh_
 
 ## Summary
 

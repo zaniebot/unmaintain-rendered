@@ -13,14 +13,14 @@ head: ag/fix-i1427
 created_at: 2024-02-16T21:25:10Z
 updated_at: 2024-02-16T21:37:23Z
 url: https://github.com/astral-sh/uv/pull/1545
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # fix OS detection for Alpine Linux
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-16 21:25_
+_@BurntSushi_
 
 This PR fixes the OS detection for Alpine Linux such that the version
 of musl available is correctly determined. The issue boiled down to

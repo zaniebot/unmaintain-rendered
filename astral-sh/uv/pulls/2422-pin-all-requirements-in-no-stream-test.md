@@ -12,14 +12,14 @@ head: charlie/deps
 created_at: 2024-03-13T19:16:46Z
 updated_at: 2024-03-13T19:37:36Z
 url: https://github.com/astral-sh/uv/pull/2422
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Pin all requirements in `no_stream` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 19:16_
+_@charliermarsh_
 
 _No description provided._
 

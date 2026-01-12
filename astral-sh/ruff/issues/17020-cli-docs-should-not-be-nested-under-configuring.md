@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T19:02:14Z
 updated_at: 2025-03-27T19:02:19Z
 url: https://github.com/astral-sh/ruff/issues/17020
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # CLI docs should not be nested under "Configuring Ruff"
 
 ---
 
-_Issue opened by @dylwil3 on 2025-03-27 19:02_
+_@dylwil3_
 
 It always takes me an extra minute and extra click when I want to look up something for the CLI
 

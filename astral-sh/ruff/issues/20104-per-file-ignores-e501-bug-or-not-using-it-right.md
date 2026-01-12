@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-26T19:15:57Z
 updated_at: 2025-08-26T19:51:05Z
 url: https://github.com/astral-sh/ruff/issues/20104
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # per-file-ignores + E501: bug or not using it right?
 
 ---
 
-_Issue opened by @vcaraulean on 2025-08-26 19:15_
+_@vcaraulean_
 
 ### Summary
 

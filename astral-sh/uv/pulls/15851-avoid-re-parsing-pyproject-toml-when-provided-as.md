@@ -13,14 +13,14 @@ head: charlie/pyproj
 created_at: 2025-09-15T00:38:56Z
 updated_at: 2025-09-15T14:07:40Z
 url: https://github.com/astral-sh/uv/pull/15851
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:58Z
 ```
 
 # Avoid re-parsing `pyproject.toml` when provided as a source
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-15 00:38_
+_@charliermarsh_
 
 ## Summary
 

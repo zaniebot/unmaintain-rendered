@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-07-23T07:53:07Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/590
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add a App::unset_setting or App::unset_settings fn
 
 ---
 
-_Issue opened by @freshstrangemusic on 2016-07-23 07:53_
+_@freshstrangemusic_
 
 Currently if you would like to disable a setting, you have to use undocumented interfaces to do so. I would prefer to not have the `--help` option and instead only use the `help` subcommand so I currently have to do:
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-09-27T18:01:53Z
 updated_at: 2025-11-14T21:51:10Z
 url: https://github.com/clap-rs/clap/issues/1553
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Multiple subcommand categories / `help_heading`s
 
 ---
 
-_Issue opened by @BrettMayson on 2019-09-27 18:01_
+_@BrettMayson_
 
 ### Feature Request Summary
 It would be nice to be able to have multiple subcommand groupings. 

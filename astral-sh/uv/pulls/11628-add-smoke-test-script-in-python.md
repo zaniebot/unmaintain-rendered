@@ -13,14 +13,14 @@ head: zb/smoke-test
 created_at: 2025-02-19T17:48:58Z
 updated_at: 2025-03-28T14:44:36Z
 url: https://github.com/astral-sh/uv/pull/11628
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Add smoke test script in Python
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-19 17:48_
+_@zanieb_
 
 I wanted to consolidate these anyway, and apparently it's a huge pain to make a Windows task fail early via GitHub's PowerShell setup so I implement this in Python instead.
 

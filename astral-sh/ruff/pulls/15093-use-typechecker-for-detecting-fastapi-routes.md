@@ -13,14 +13,14 @@ head: tomer/detect-fast-api-routes-by-annotation
 created_at: 2024-12-21T12:35:47Z
 updated_at: 2024-12-21T14:45:38Z
 url: https://github.com/astral-sh/ruff/pull/15093
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Use TypeChecker for detecting fastapi routes
 
 ---
 
-_Pull request opened by @TomerBin on 2024-12-21 12:35_
+_@TomerBin_
 
 Resolves https://github.com/astral-sh/ruff/issues/14903
 

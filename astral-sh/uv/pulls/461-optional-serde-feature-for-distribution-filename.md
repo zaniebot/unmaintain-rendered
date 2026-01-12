@@ -12,14 +12,14 @@ head: optional-serde-distribution-filename
 created_at: 2023-11-19T19:47:12Z
 updated_at: 2023-11-19T20:02:20Z
 url: https://github.com/astral-sh/uv/pull/461
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Optional serde feature for distribution-filename
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 19:47_
+_@konstin_
 
 https://github.com/astral-sh/puffin/pull/459#discussion_r1398482972
 

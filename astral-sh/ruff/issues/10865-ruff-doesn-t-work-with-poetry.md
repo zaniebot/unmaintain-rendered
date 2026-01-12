@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T21:20:19Z
 updated_at: 2024-04-11T01:04:28Z
 url: https://github.com/astral-sh/ruff/issues/10865
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff doesn't work with poetry
 
 ---
 
-_Issue opened by @sdan on 2024-04-10 21:20_
+_@sdan_
 
 on vscode macOS sonoma
 

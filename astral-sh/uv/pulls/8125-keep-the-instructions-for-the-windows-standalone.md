@@ -13,14 +13,14 @@ head: readme_installation_the_same
 created_at: 2024-10-11T10:26:58Z
 updated_at: 2024-10-11T14:52:13Z
 url: https://github.com/astral-sh/uv/pull/8125
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Keep the instructions for the Windows standalone installer consistent across the README and the documentation.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-10-11 10:26_
+_@FishAlchemist_
 
 ## Summary
 This PR aims to align the instructions for installing the Windows standalone installer in the README with the current documentation.

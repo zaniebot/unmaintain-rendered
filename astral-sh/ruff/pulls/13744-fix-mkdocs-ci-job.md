@@ -13,14 +13,14 @@ head: micha/ci-fix-mkdocs-job
 created_at: 2024-10-14T07:10:49Z
 updated_at: 2024-10-14T07:41:34Z
 url: https://github.com/astral-sh/ruff/pull/13744
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fix `mkdocs` CI job
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-14 07:10_
+_@MichaReiser_
 
 ## Summary
 

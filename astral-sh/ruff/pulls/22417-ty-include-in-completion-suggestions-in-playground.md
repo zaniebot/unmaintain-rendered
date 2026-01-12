@@ -14,14 +14,14 @@ head: ag/ty-playground-completion-render-insertion-text
 created_at: 2026-01-06T14:06:49Z
 updated_at: 2026-01-06T14:26:31Z
 url: https://github.com/astral-sh/ruff/pull/22417
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Include `=` in completion suggestions in playground
 
 ---
 
-_Pull request opened by @BurntSushi on 2026-01-06 14:06_
+_@BurntSushi_
 
 This was an accidental omission in #21988 and identified in
 astral-sh/ty#2203.

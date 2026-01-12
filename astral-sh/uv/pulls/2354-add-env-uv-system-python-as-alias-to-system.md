@@ -13,14 +13,14 @@ head: system-env
 created_at: 2024-03-11T09:52:03Z
 updated_at: 2024-03-12T08:08:03Z
 url: https://github.com/astral-sh/uv/pull/2354
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Add env UV_SYSTEM_PYTHON as alias to --system
 
 ---
 
-_Pull request opened by @edenhaus on 2024-03-11 09:52_
+_@edenhaus_
 
 ## Summary
 

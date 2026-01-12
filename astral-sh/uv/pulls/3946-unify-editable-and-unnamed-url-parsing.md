@@ -14,14 +14,14 @@ head: charlie/editable-url
 created_at: 2024-05-31T20:14:27Z
 updated_at: 2024-05-31T21:08:01Z
 url: https://github.com/astral-sh/uv/pull/3946
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Unify editable and unnamed URL parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-31 20:14_
+_@charliermarsh_
 
 ## Summary
 

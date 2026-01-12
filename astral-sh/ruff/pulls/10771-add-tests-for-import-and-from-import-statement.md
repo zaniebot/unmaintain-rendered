@@ -14,14 +14,14 @@ head: dhruv/import-stmt
 created_at: 2024-04-04T06:54:34Z
 updated_at: 2024-04-04T10:38:59Z
 url: https://github.com/astral-sh/ruff/pull/10771
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `import` and `from ... import` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-04 06:54_
+_@dhruvmanila_
 
 ## Summary
 

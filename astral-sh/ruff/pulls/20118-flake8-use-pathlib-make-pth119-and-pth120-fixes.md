@@ -14,14 +14,14 @@ head: pth_119_and_120
 created_at: 2025-08-27T17:49:02Z
 updated_at: 2025-09-02T16:22:13Z
 url: https://github.com/astral-sh/ruff/pull/20118
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`flake8-use-pathlib`] Make `PTH119` and `PTH120` fixes unsafe because they can change behavior
 
 ---
 
-_Pull request opened by @chirizxc on 2025-08-27 17:49_
+_@chirizxc_
 
 ## Summary
 

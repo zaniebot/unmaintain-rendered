@@ -13,14 +13,14 @@ head: charlie/glob
 created_at: 2024-06-03T00:07:42Z
 updated_at: 2024-06-03T12:16:59Z
 url: https://github.com/astral-sh/uv/pull/3969
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Use universal resolution in `uv lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 00:07_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-17T09:17:01Z
 updated_at: 2023-10-17T09:55:45Z
 url: https://github.com/astral-sh/ruff/issues/8004
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruff in VS Code doesn't follow ruff.toml and rules I put in args (v0.1.0)
 
 ---
 
-_Issue opened by @snowlue on 2023-10-17 09:17_
+_@snowlue_
 
 Hello. I got some problem — Ruff doesn't follow the rules I put in args. It worked a few times, but I had added `organizeImports` setting and then he stopped following. I deleted this setting, but it still doesn't work. There are settings from logs of extension. (Workspace and global are the same)
 <details>

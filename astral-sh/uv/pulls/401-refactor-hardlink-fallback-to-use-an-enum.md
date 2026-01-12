@@ -13,14 +13,14 @@ head: charlie/hardlink
 created_at: 2023-11-10T20:07:43Z
 updated_at: 2023-11-10T20:18:52Z
 url: https://github.com/astral-sh/uv/pull/401
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Refactor hardlink fallback to use an enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 20:07_
+_@charliermarsh_
 
 Makes an invalid state unrepresentable (`first_try_hard_linking = true`, `use_copy_fallback` = true`).
 

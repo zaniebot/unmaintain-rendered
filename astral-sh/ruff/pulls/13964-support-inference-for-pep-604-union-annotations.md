@@ -13,14 +13,14 @@ head: charlie/union
 created_at: 2024-10-28T13:11:06Z
 updated_at: 2024-10-28T14:21:22Z
 url: https://github.com/astral-sh/ruff/pull/13964
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Support inference for PEP 604 union annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-28 13:11_
+_@charliermarsh_
 
 ## Summary
 

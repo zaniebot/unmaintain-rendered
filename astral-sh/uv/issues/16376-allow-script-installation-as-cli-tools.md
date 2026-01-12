@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T13:50:50Z
 updated_at: 2025-10-28T23:53:08Z
 url: https://github.com/astral-sh/uv/issues/16376
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Allow Script Installation as CLI Tools
 
 ---
 
-_Issue opened by @o-murphy on 2025-10-20 13:50_
+_@o-murphy_
 
 ### Summary
 

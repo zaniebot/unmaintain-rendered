@@ -12,14 +12,14 @@ head: fix/pip-tools-compatibility
 created_at: 2024-02-22T15:35:22Z
 updated_at: 2024-02-24T05:05:47Z
 url: https://github.com/astral-sh/uv/pull/1873
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Remove `--upgrade` and `--quiet` flags from generated output files
 
 ---
 
-_Pull request opened by @yasufumy on 2024-02-22 15:35_
+_@yasufumy_
 
 ## Summary
 

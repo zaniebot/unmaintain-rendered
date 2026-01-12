@@ -12,14 +12,14 @@ head: statistics-fixable
 created_at: 2023-02-08T15:02:52Z
 updated_at: 2023-02-10T00:36:32Z
 url: https://github.com/astral-sh/ruff/pull/2659
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # feat(cli): let --statistics show fixable codes
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-08 15:02_
+_@spaceone_
 
 Issue #2578
 

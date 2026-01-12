@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-31T07:20:34Z
 updated_at: 2025-06-02T00:30:31Z
 url: https://github.com/astral-sh/uv/issues/13750
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # feat: Allow installing multiple packages with `uv tool install`
 
 ---
 
-_Issue opened by @Mr-Sunglasses on 2025-05-31 07:20_
+_@Mr-Sunglasses_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/flymake
 created_at: 2023-03-29T18:42:07Z
 updated_at: 2023-03-29T19:13:31Z
 url: https://github.com/astral-sh/ruff/pull/3800
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add flymake-ruff to docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-29 18:42_
+_@charliermarsh_
 
 _No description provided._
 

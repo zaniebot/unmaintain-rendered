@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-21T17:30:00Z
 updated_at: 2024-07-22T23:44:43Z
 url: https://github.com/astral-sh/uv/issues/5262
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # docs(style): Navigation bar is not properly covered by the footer
 
 ---
 
-_Issue opened by @zanieb on 2024-07-21 17:30_
+_@zanieb_
 
 Not only does the navigation text obscure some of the footer text, the navigation links are responsive through the footer.
 

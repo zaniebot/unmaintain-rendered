@@ -14,14 +14,14 @@ head: remove-CLI-aliases
 created_at: 2024-06-24T09:30:12Z
 updated_at: 2024-06-25T07:23:21Z
 url: https://github.com/astral-sh/ruff/pull/12011
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove `check`, `--explain`, `--clean`, `--generate-shell-completion` aliases
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 09:30_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T15:17:00Z
 updated_at: 2025-09-16T18:53:00Z
 url: https://github.com/astral-sh/uv/issues/15874
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # `uv lock` with optional dependency restricting main dependencies
 
 ---
 
-_Issue opened by @djsaunde on 2025-09-15 15:17_
+_@djsaunde_
 
 I'm running into an issue with the following (simplified):
 

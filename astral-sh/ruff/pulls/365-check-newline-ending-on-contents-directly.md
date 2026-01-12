@@ -12,14 +12,14 @@ head: charlie/W292
 created_at: 2022-10-08T21:24:53Z
 updated_at: 2022-10-08T21:25:23Z
 url: https://github.com/astral-sh/ruff/pull/365
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Check newline ending on contents directly
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-08 21:24_
+_@charliermarsh_
 
 Resolves #360.
 

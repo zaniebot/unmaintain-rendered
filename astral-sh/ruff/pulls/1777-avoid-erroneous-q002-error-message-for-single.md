@@ -12,14 +12,14 @@ head: fix_q002
 created_at: 2023-01-11T03:08:02Z
 updated_at: 2023-01-12T01:21:50Z
 url: https://github.com/astral-sh/ruff/pull/1777
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid erroneous Q002 error message for single-quote docstrings
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-11 03:08_
+_@colin99d_
 
 Fixes #1775. Before implementing your solution I thought of a slightly simpler one. However, it will let this function pass:
 ```

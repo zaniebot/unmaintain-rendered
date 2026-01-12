@@ -13,14 +13,14 @@ head: dhruv/diagnostic-info
 created_at: 2024-08-12T11:44:35Z
 updated_at: 2024-08-12T16:24:03Z
 url: https://github.com/astral-sh/ruff/pull/12842
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Add filename and source location for diagnostics
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-12 11:44_
+_@dhruvmanila_
 
 ## Summary
 

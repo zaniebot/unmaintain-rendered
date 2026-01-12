@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-23T07:29:31Z
 updated_at: 2023-02-23T12:39:05Z
 url: https://github.com/astral-sh/ruff/issues/3166
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Star patterns in `match` statement aren't captured
 
 ---
 
-_Issue opened by @dosisod on 2023-02-23 07:29_
+_@dosisod_
 
 The following program:
 

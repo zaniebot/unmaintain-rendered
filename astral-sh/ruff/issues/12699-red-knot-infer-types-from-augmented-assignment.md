@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T22:14:52Z
 updated_at: 2024-11-07T15:18:29Z
 url: https://github.com/astral-sh/ruff/issues/12699
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] infer types from augmented assignment
 
 ---
 
-_Issue opened by @carljm on 2024-08-05 22:14_
+_@carljm_
 
 Tracking aspects of this that aren't done yet:
 

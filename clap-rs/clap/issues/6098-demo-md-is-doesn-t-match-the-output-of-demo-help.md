@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-09T22:22:18Z
 updated_at: 2025-08-12T17:51:40Z
 url: https://github.com/clap-rs/clap/issues/6098
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # demo.md is doesn't match the output of `demo --help`
 
 ---
 
-_Issue opened by @winksaville on 2025-08-09 22:22_
+_@winksaville_
 
 ### Please complete the following tasks
 

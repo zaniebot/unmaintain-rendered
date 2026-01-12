@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-09T09:44:43Z
 updated_at: 2023-03-09T21:37:41Z
 url: https://github.com/astral-sh/ruff/issues/3412
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Bug?: `--show-fixes` doesn't work with `--fix-only`
 
 ---
 
-_Issue opened by @MaksimZayats on 2023-03-09 09:44_
+_@MaksimZayats_
 
 Hi! When I tried to use `--show-fixes` with `--fix-only` it doesn't work.
 

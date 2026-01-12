@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-10T00:28:16Z
 updated_at: 2025-06-06T03:59:34Z
 url: https://github.com/astral-sh/uv/issues/5988
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Support `editable: false` for workspace dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-10 00:28_
+_@charliermarsh_
 
 See: #5985.
 

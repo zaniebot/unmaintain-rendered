@@ -12,14 +12,14 @@ head: zb/creates-publish
 created_at: 2025-11-20T15:35:56Z
 updated_at: 2025-11-20T17:52:42Z
 url: https://github.com/astral-sh/uv/pull/16790
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Add publish workflow for crates.io
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 15:35_
+_@zanieb_
 
 Extends #16770 by adding a publish workflow. I verified it with `cargo publish --workspace --dry-run` which led to some fixes adding version pins to the root `Cargo.toml`.
 

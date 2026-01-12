@@ -13,14 +13,14 @@ head: konsti/set-miette-hook-in-puffin-cli
 created_at: 2024-01-18T10:05:44Z
 updated_at: 2024-01-18T13:37:27Z
 url: https://github.com/astral-sh/uv/pull/962
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Set miette hook in all of puffin-cli
 
 ---
 
-_Pull request opened by @konstin on 2024-01-18 10:05_
+_@konstin_
 
 Fixes #938
 

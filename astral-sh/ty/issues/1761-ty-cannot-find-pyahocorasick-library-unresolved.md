@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-04T18:26:33Z
 updated_at: 2025-12-04T18:29:13Z
 url: https://github.com/astral-sh/ty/issues/1761
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty cannot find pyahocorasick library [unresolved-import]
 
 ---
 
-_Issue opened by @find0x90 on 2025-12-04 18:26_
+_@find0x90_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/docs-fix
 created_at: 2023-04-26T15:09:31Z
 updated_at: 2023-04-26T17:18:02Z
 url: https://github.com/astral-sh/ruff/pull/4117
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Tweak `--show-fixes` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-26 15:09_
+_@charliermarsh_
 
 Closes #4112.
 

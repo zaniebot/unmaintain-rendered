@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T05:28:05Z
 updated_at: 2025-12-28T18:53:23Z
 url: https://github.com/astral-sh/uv/issues/16292
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Is it possible to declare conflicting dependencies against published dependencies?
 
 ---
 
-_Issue opened by @winstxnhdw on 2025-10-14 05:28_
+_@winstxnhdw_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-03T00:43:29Z
 updated_at: 2024-10-07T07:38:22Z
 url: https://github.com/astral-sh/ruff/issues/9373
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Allow strings to intersperse imports for E402
 
 ---
 
-_Issue opened by @XChikuX on 2024-01-03 00:43_
+_@XChikuX_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

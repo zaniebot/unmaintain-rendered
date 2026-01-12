@@ -13,14 +13,14 @@ head: charlie/isolated
 created_at: 2024-07-24T18:34:37Z
 updated_at: 2024-08-23T15:57:33Z
 url: https://github.com/astral-sh/uv/pull/5419
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Always accept already-installed pre-releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 18:34_
+_@charliermarsh_
 
 ## Summary
 

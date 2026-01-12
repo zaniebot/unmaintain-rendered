@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-19T22:57:38Z
 updated_at: 2024-05-27T11:13:23Z
 url: https://github.com/astral-sh/ruff/issues/11472
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Feature request: linkcheck
 
 ---
 
-_Issue opened by @nstarman on 2024-05-19 22:57_
+_@nstarman_
 
 I'm not sure if this is out of scope for `ruff`, but it would be awesome to have a means to auto-fix links that now redirect.
 Like many repos, we at Astropy use [Sphinx's link checker](https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-the-linkcheck-builder) to ensure links are working. They are, but our logs are chock full of warning about link redirects. No one has the bandwidth to manually fix them all, so it would be great if a CI tool could do this automatically! Even if a ruff-based fix was implemented only for Python docstrings, it would be immensely useful.

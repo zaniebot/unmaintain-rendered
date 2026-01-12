@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-10T10:13:42Z
 updated_at: 2025-11-10T10:15:27Z
 url: https://github.com/astral-sh/ty/issues/1511
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty display Unknown type for generic templating function
 
 ---
 
-_Issue opened by @viplazylmht on 2025-11-10 10:13_
+_@viplazylmht_
 
 ### Question
 

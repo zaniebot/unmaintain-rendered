@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-19T00:14:10Z
 updated_at: 2023-01-22T17:54:15Z
 url: https://github.com/astral-sh/ruff/issues/1985
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Improvement: N806 and `TypeVar`s inside functions
 
 ---
 
-_Issue opened by @patrick91 on 2023-01-19 00:14_
+_@patrick91_
 
 I don't think this is too important, but while running Ruff on Strawberry's codebase (tests especially) I had a lot of `N806` errors. I'm happy to ignore this check, but maybe this specific case can be improved, since it works for when T is defined outside the function (I guess it is taken as a global):
 

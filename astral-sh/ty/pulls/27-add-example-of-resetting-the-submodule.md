@@ -12,14 +12,14 @@ head: zb/reset-sub
 created_at: 2025-05-05T14:06:10Z
 updated_at: 2025-07-08T10:39:18Z
 url: https://github.com/astral-sh/ty/pull/27
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add example of resetting the submodule
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 14:06_
+_@zanieb_
 
 _No description provided._
 

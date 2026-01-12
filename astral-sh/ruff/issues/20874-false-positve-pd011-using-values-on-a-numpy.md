@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T21:59:34Z
 updated_at: 2025-10-17T03:09:21Z
 url: https://github.com/astral-sh/ruff/issues/20874
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False positve PD011: using `.values` on a NumPy NamedTuple, not a Pandas Series or Index object
 
 ---
 
-_Issue opened by @hunterhogan on 2025-10-14 21:59_
+_@hunterhogan_
 
 ### Summary
 

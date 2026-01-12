@@ -13,14 +13,14 @@ head: renovate/colored-3.x
 created_at: 2025-01-11T16:15:14Z
 updated_at: 2025-01-11T17:55:09Z
 url: https://github.com/astral-sh/ruff/pull/15434
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Update Rust crate colored to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-01-11 16:15_
+_@renovate_
 
 This PR contains the following updates:
 

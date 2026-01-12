@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-23T20:42:06Z
 updated_at: 2025-07-16T14:56:26Z
 url: https://github.com/astral-sh/uv/issues/13626
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Optionally disable file locking
 
 ---
 
-_Issue opened by @eaubin on 2025-05-23 20:42_
+_@eaubin_
 
 ### Summary
 

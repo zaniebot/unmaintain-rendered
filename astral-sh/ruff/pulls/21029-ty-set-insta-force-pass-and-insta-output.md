@@ -14,14 +14,14 @@ head: alex/mdtest-snapshot-integration2
 created_at: 2025-10-22T13:58:40Z
 updated_at: 2025-10-22T14:32:16Z
 url: https://github.com/astral-sh/ruff/pull/21029
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Set `INSTA_FORCE_PASS` and `INSTA_OUTPUT` environment variables from mdtest.py
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-22 13:58_
+_@AlexWaygood_
 
 ## Summary
 

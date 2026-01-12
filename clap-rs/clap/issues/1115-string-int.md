@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-11-25T21:35:32Z
 updated_at: 2018-08-02T03:30:15Z
 url: https://github.com/clap-rs/clap/issues/1115
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # String + int
 
 ---
 
-_Issue opened by @yoni386 on 2017-11-25 21:35_
+_@yoni386_
 
 Hello,
 

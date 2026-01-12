@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-19T13:51:15Z
 updated_at: 2024-04-20T16:22:42Z
 url: https://github.com/astral-sh/ruff/issues/11041
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff format doesn't respect # fmt: skip comment for line-length
 
 ---
 
-_Issue opened by @riZZZhik on 2024-04-19 13:51_
+_@riZZZhik_
 
 I am running ruff 0.3.7.
 

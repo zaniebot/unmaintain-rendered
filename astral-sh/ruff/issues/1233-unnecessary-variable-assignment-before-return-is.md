@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-14T03:55:44Z
 updated_at: 2022-12-20T00:48:28Z
 url: https://github.com/astral-sh/ruff/issues/1233
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # "Unnecessary variable assignment before `return`" is too eager
 
 ---
 
-_Issue opened by @DanCardin on 2022-12-14 03:55_
+_@DanCardin_
 
 Some minimal example:
 ```python

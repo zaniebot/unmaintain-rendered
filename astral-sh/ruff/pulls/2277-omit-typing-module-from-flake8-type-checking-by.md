@@ -12,14 +12,14 @@ head: charlie/typing
 created_at: 2023-01-27T23:19:41Z
 updated_at: 2023-01-27T23:19:46Z
 url: https://github.com/astral-sh/ruff/pull/2277
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Omit typing module from flake8-type-checking by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-27 23:19_
+_@charliermarsh_
 
 Closes #2267.
 

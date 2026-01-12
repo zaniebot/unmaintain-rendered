@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T06:30:45Z
 updated_at: 2025-06-10T20:55:41Z
 url: https://github.com/astral-sh/uv/issues/8879
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Creating venvs from uv python installtions creates broken venvs
 
 ---
 
-_Issue opened by @Olindholm on 2024-11-07 06:30_
+_@Olindholm_
 
 I am using uv to control my python version, great stuff. I create a venv using uv `uv venv --python ...` and uv will install whatever version I requrest. Works great.
 

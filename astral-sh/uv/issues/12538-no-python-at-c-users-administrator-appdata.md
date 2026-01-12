@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T23:57:56Z
 updated_at: 2025-04-01T17:24:58Z
 url: https://github.com/astral-sh/uv/issues/12538
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # No Python at '"C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.10.16-windows-x86_64-none\python.exe'
 
 ---
 
-_Issue opened by @ThermodynamicBeta on 2025-03-28 23:57_
+_@ThermodynamicBeta_
 
 ### Summary
 

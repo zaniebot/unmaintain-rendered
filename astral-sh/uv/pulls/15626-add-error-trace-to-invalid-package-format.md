@@ -13,14 +13,14 @@ head: konsti/show-error-trace-for-broken-package-layout
 created_at: 2025-09-02T11:47:54Z
 updated_at: 2025-09-02T13:22:43Z
 url: https://github.com/astral-sh/uv/pull/15626
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Add error trace to invalid package format
 
 ---
 
-_Pull request opened by @konstin on 2025-09-02 11:47_
+_@konstin_
 
 In https://github.com/astral-sh/uv/issues/11636, we're getting reports for installation flakes that report an invalid package format for what appears to be a network problem. Since we're cutting the error reporting to the first error message in the chain, we're not reporting the actual network error underneath it.
 

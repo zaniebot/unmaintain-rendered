@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T15:31:58Z
 updated_at: 2025-11-13T14:02:04Z
 url: https://github.com/astral-sh/uv/issues/8810
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Secure authentication method needed
 
 ---
 
-_Issue opened by @stoney95 on 2024-11-04 15:31_
+_@stoney95_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

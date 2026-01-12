@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T18:58:07Z
 updated_at: 2024-10-25T00:49:19Z
 url: https://github.com/astral-sh/uv/issues/7476
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # export dependencies from an extra only
 
 ---
 
-_Issue opened by @mivanit on 2024-09-17 18:58_
+_@mivanit_
 
 Have `uv export` support exporting only the requirements listed in an extra, without package dependencies or dev dependencies.
 

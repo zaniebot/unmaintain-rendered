@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T07:53:01Z
 updated_at: 2024-01-16T19:37:49Z
 url: https://github.com/astral-sh/ruff/issues/9544
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # W391 implementation is missing despite being checked off
 
 ---
 
-_Issue opened by @sihil on 2024-01-16 07:53_
+_@sihil_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

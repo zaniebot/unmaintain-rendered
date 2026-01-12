@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T05:00:45Z
 updated_at: 2025-03-30T18:06:14Z
 url: https://github.com/astral-sh/ruff/issues/16661
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] special-case returning NotImplemented
 
 ---
 
-_Issue opened by @carljm on 2025-03-12 05:00_
+_@carljm_
 
 `NotImplemented` should always be returnable, no matter what return type annotation a function has.
 

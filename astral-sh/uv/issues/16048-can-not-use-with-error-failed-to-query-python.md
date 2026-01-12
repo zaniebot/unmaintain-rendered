@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-28T05:48:27Z
 updated_at: 2025-10-09T03:50:06Z
 url: https://github.com/astral-sh/uv/issues/16048
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # can not use with "error: Failed to query Python interpreter"
 
 ---
 
-_Issue opened by @yintian710 on 2025-09-28 05:48_
+_@yintian710_
 
 ### Summary
 

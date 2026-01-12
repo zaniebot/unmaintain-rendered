@@ -13,14 +13,14 @@ head: charlie/slf
 created_at: 2023-12-07T02:48:54Z
 updated_at: 2023-12-07T03:06:17Z
 url: https://github.com/astral-sh/ruff/pull/9036
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Ignore underscore references in type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-07 02:48_
+_@charliermarsh_
 
 ## Summary
 

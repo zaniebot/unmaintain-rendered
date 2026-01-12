@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T18:31:42Z
 updated_at: 2026-01-05T21:19:36Z
 url: https://github.com/astral-sh/ruff/issues/22343
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Consider marking `UP026`'s fix unsafe
 
 ---
 
-_Issue opened by @robsdedude on 2026-01-02 18:31_
+_@robsdedude_
 
 ### Summary
 

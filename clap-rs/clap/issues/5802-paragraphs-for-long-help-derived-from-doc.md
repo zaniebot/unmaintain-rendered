@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T16:35:05Z
 updated_at: 2024-11-04T19:06:53Z
 url: https://github.com/clap-rs/clap/issues/5802
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Paragraphs for long help derived from doc comments may be splitted on more cases
 
 ---
 
-_Issue opened by @JohanVonElectrum on 2024-11-01 16:35_
+_@JohanVonElectrum_
 
 ### Please complete the following tasks
 

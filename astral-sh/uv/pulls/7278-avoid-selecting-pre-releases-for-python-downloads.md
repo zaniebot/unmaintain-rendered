@@ -13,14 +13,14 @@ head: zb/fix-313-install
 created_at: 2024-09-10T22:01:04Z
 updated_at: 2024-09-10T22:20:19Z
 url: https://github.com/astral-sh/uv/pull/7278
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Avoid selecting pre-releases for Python downloads without a version request
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 22:01_
+_@zanieb_
 
 Following #7263 the 3.13.0rc2 releases are at the top of the download list but we should not select them unless 3.13 is actually requested.
 

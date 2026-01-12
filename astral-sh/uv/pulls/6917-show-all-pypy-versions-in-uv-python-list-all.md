@@ -14,14 +14,14 @@ head: charlie/py
 created_at: 2024-09-01T17:30:28Z
 updated_at: 2024-09-03T15:40:30Z
 url: https://github.com/astral-sh/uv/pull/6917
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Show all PyPy versions in `uv python list --all-versions`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-01 17:30_
+_@charliermarsh_
 
 ## Summary
 

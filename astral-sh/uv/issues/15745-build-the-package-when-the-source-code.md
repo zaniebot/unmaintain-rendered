@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T22:27:29Z
 updated_at: 2025-09-09T12:49:08Z
 url: https://github.com/astral-sh/uv/issues/15745
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Build the package when the source code directories are on a read-only file system
 
 ---
 
-_Issue opened by @luzfcb on 2025-09-08 22:27_
+_@luzfcb_
 
 ### Question
 

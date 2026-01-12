@@ -13,14 +13,14 @@ head: dhruv/b017-continue
 created_at: 2024-10-03T06:44:06Z
 updated_at: 2024-10-03T10:05:07Z
 url: https://github.com/astral-sh/ruff/pull/13609
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Avoid short circuiting `B017` for multiple context managers
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-03 06:44_
+_@dhruvmanila_
 
 ## Summary
 

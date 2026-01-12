@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T03:49:06Z
 updated_at: 2024-09-28T03:51:32Z
 url: https://github.com/astral-sh/uv/issues/7750
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # FEAT: Support to set the Project Version using uv command
 
 ---
 
-_Issue opened by @datnguye on 2024-09-28 03:49_
+_@datnguye_
 
 Currently I'm using `poetry` and would like move into `uv` world. One of the migration point is to be able to **set the project version** in `pyproject.toml` using  `uv` command.
 

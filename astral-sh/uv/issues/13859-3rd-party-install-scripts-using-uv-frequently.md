@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T12:58:40Z
 updated_at: 2025-06-05T16:19:28Z
 url: https://github.com/astral-sh/uv/issues/13859
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # 3rd party install scripts using uv frequently shadow previously-standalone-installed uv
 
 ---
 
-_Issue opened by @mattgiles on 2025-06-05 12:58_
+_@mattgiles_
 
 ### Summary
 

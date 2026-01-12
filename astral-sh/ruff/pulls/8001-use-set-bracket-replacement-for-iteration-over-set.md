@@ -13,14 +13,14 @@ head: charlie/iter
 created_at: 2023-10-17T03:56:30Z
 updated_at: 2023-10-17T04:19:21Z
 url: https://github.com/astral-sh/ruff/pull/8001
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use set bracket replacement for `iteration-over-set`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-17 03:56_
+_@charliermarsh_
 
 _No description provided._
 

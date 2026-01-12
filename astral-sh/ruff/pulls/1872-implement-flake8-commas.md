@@ -12,14 +12,14 @@ head: flake8-commas
 created_at: 2023-01-14T17:50:51Z
 updated_at: 2023-01-29T01:19:01Z
 url: https://github.com/astral-sh/ruff/pull/1872
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement flake8-commas
 
 ---
 
-_Pull request opened by @bluetech on 2023-01-14 17:50_
+_@bluetech_
 
 Implements [flake8-commas](https://github.com/PyCQA/flake8-commas). Fixes #1058.
 

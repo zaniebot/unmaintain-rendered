@@ -15,14 +15,14 @@ head: david/ecosystem-analyzer
 created_at: 2025-06-17T10:40:12Z
 updated_at: 2025-06-20T13:23:24Z
 url: https://github.com/astral-sh/ruff/pull/18719
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] ecosystem-analyzer workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-17 10:40_
+_@sharkdp_
 
 ## Summary
 

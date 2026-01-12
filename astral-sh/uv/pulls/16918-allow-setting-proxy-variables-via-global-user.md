@@ -13,14 +13,14 @@ head: seemethere/add_proxy_configuration
 created_at: 2025-12-01T22:24:16Z
 updated_at: 2026-01-09T20:14:24Z
 url: https://github.com/astral-sh/uv/pull/16918
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Allow setting proxy variables via global / user configuration
 
 ---
 
-_Pull request opened by @seemethere on 2025-12-01 22:24_
+_@seemethere_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

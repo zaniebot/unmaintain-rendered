@@ -14,14 +14,14 @@ head: UP049
 created_at: 2025-02-08T00:29:29Z
 updated_at: 2025-02-08T16:52:05Z
 url: https://github.com/astral-sh/ruff/pull/16032
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] [`ruff`] Don't apply renamings if the new name is shadowed in a scope of one of the references to the binding (`UP049`, `RUF052`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-08 00:29_
+_@InSyncWithFoo_
 
 ## Summary
 

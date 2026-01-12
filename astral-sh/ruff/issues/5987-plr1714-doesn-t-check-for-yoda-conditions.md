@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T20:48:27Z
 updated_at: 2023-08-23T03:45:32Z
 url: https://github.com/astral-sh/ruff/issues/5987
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `PLR1714` doesn't check for Yoda conditions
 
 ---
 
-_Issue opened by @dosisod on 2023-07-22 20:48_
+_@dosisod_
 
 See https://github.com/astral-sh/ruff/issues/1348#issuecomment-1646520368.
 

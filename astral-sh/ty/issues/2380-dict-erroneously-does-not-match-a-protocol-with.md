@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-07T20:47:36Z
 updated_at: 2026-01-07T23:02:12Z
 url: https://github.com/astral-sh/ty/issues/2380
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # dict erroneously does not match a Protocol with get()
 
 ---
 
-_Issue opened by @bcmills on 2026-01-07 20:47_
+_@bcmills_
 
 ### Summary
 

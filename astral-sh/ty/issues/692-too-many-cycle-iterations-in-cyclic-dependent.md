@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T07:01:07Z
 updated_at: 2025-08-28T12:34:50Z
 url: https://github.com/astral-sh/ty/issues/692
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # too many cycle iterations in cyclic dependent attributes
 
 ---
 
-_Issue opened by @Glyphack on 2025-06-23 07:01_
+_@Glyphack_
 
 ### Summary
 

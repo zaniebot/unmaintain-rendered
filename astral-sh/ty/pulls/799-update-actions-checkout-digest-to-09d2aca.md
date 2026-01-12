@@ -12,14 +12,14 @@ head: renovate/actions-checkout-digest
 created_at: 2025-07-11T07:30:11Z
 updated_at: 2025-07-11T08:25:57Z
 url: https://github.com/astral-sh/ty/pull/799
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update actions/checkout digest to 09d2aca
 
 ---
 
-_Pull request opened by @renovate on 2025-07-11 07:30_
+_@renovate_
 
 This PR contains the following updates:
 

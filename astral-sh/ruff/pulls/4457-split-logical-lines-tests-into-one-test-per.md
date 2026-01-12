@@ -13,14 +13,14 @@ head: charlie/split-tests
 created_at: 2023-05-16T17:32:59Z
 updated_at: 2023-05-16T17:59:40Z
 url: https://github.com/astral-sh/ruff/pull/4457
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Split logical lines tests into one test per assertion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-16 17:32_
+_@charliermarsh_
 
 Also moved the tests into the module defining `LogicalLines::from_tokens`.
 

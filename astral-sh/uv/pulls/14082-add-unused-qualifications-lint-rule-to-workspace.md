@@ -12,14 +12,14 @@ head: lint/unused-qualifications
 created_at: 2025-06-16T18:53:48Z
 updated_at: 2025-06-17T20:48:55Z
 url: https://github.com/astral-sh/uv/pull/14082
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Add `unused_qualifications` lint rule to `[workspace.lints.rust]`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-16 18:53_
+_@chirizxc_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

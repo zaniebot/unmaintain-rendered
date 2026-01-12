@@ -14,14 +14,14 @@ head: gankra/sync-json
 created_at: 2025-05-27T19:56:23Z
 updated_at: 2025-07-14T14:53:41Z
 url: https://github.com/astral-sh/uv/pull/13689
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Add experimental `uv sync --output-format json`
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-27 19:56_
+_@Gankra_
 
 This is a continuation of the work in 
 

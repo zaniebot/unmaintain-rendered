@@ -13,14 +13,14 @@ head: decimal-parsing
 created_at: 2024-11-04T23:37:12Z
 updated_at: 2024-11-08T10:45:04Z
 url: https://github.com/astral-sh/ruff/pull/14098
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [refurb] Parse more exotic decimal strings in `verbose-decimal-constructor (FURB157)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-04 23:37_
+_@dylwil3_
 
 FURB157 suggests replacing expressions like `Decimal("123")` with `Decimal(123)`. This PR extends the rule to cover cases where the input string to `Decimal` can be easily transformed into an integer literal.
 

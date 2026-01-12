@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-08-20T09:52:06Z
 updated_at: 2025-08-20T15:58:12Z
 url: https://github.com/astral-sh/uv/pull/15388
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Retain IO error source in extraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-20 09:52_
+_@charliermarsh_
 
 ## Summary
 

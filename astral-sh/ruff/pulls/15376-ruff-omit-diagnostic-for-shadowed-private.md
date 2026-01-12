@@ -14,14 +14,14 @@ head: private-fn-arg
 created_at: 2025-01-09T17:12:08Z
 updated_at: 2025-01-10T09:09:26Z
 url: https://github.com/astral-sh/ruff/pull/15376
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`ruff`] Omit diagnostic for shadowed private function parameters in `used-dummy-variable` (`RUF052`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-09 17:12_
+_@dylwil3_
 
 As discussed in #14818, we should skip [used-dummy-variable (RUF052)](https://docs.astral.sh/ruff/rules/used-dummy-variable/#used-dummy-variable-ruf052) for private function parameters. This PR extends the logic from loc. cit. and further skips the lint for bindings in the body of a function which shadow a private function parameter.
 

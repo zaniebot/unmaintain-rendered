@@ -13,14 +13,14 @@ head: add-mro-entries-dunder
 created_at: 2024-01-30T15:25:31Z
 updated_at: 2024-01-30T23:26:45Z
 url: https://github.com/astral-sh/ruff/pull/9706
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Add `__mro_entries__` to known dunder methods (`PLW3201`)
 
 ---
 
-_Pull request opened by @johnslavik on 2024-01-30 15:25_
+_@johnslavik_
 
 Yes, I actually need this dunder in my project.
 

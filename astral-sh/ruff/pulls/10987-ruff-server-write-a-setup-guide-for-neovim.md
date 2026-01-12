@@ -14,14 +14,14 @@ head: jane/server/neovim/setup
 created_at: 2024-04-16T22:29:42Z
 updated_at: 2024-04-18T02:46:31Z
 url: https://github.com/astral-sh/ruff/pull/10987
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Write a setup guide for Neovim
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-16 22:29_
+_@snowsignal_
 
 ## Summary
 

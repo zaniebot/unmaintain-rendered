@@ -13,14 +13,14 @@ head: main
 created_at: 2023-11-20T19:25:27Z
 updated_at: 2023-11-20T19:37:28Z
 url: https://github.com/astral-sh/ruff/pull/8793
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Mark `pydantic_settings.BaseSettings` as having default copy semantics
 
 ---
 
-_Pull request opened by @Iipin on 2023-11-20 19:25_
+_@Iipin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

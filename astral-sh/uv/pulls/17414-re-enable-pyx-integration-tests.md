@@ -12,14 +12,14 @@ head: zsol/jj-uqkrrrxxkqvw
 created_at: 2026-01-12T10:51:14Z
 updated_at: 2026-01-12T14:35:46Z
 url: https://github.com/astral-sh/uv/pull/17414
-synced_at: 2026-01-12T15:03:50Z
+synced_at: 2026-01-12T16:12:46Z
 ```
 
 # Re-enable pyx integration tests
 
 ---
 
-_Pull request opened by @zsol on 2026-01-12 10:51_
+_@zsol_
 
 Re-enables the recently-disabled pyx integration tests, and moves them to a more stable environment.
 

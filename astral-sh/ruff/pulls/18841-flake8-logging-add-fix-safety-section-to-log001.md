@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2025-06-20T23:26:24Z
 updated_at: 2025-06-23T16:57:03Z
 url: https://github.com/astral-sh/ruff/pull/18841
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`flake8-logging`] Add fix safety section to `LOG001`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 23:26_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

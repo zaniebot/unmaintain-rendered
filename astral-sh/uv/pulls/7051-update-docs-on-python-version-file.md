@@ -13,14 +13,14 @@ head: my1e5-patch-1
 created_at: 2024-09-04T21:38:23Z
 updated_at: 2024-09-26T12:59:16Z
 url: https://github.com/astral-sh/uv/pull/7051
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:39Z
 ```
 
 # Update docs on `.python-version` file
 
 ---
 
-_Pull request opened by @my1e5 on 2024-09-04 21:38_
+_@my1e5_
 
 ## Summary
 

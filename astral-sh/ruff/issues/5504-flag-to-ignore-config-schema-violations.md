@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T15:44:20Z
 updated_at: 2023-07-04T22:05:02Z
 url: https://github.com/astral-sh/ruff/issues/5504
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Flag to ignore config schema violations
 
 ---
 
-_Issue opened by @janosh on 2023-07-04 15:44_
+_@janosh_
 
 Every time ruff adds new rules, my commit hooks start failing with
 

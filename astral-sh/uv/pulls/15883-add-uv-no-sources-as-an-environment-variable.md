@@ -12,14 +12,14 @@ head: blairallan/env-no-sources
 created_at: 2025-09-15T22:52:44Z
 updated_at: 2025-11-02T20:25:20Z
 url: https://github.com/astral-sh/uv/pull/15883
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Add `UV_NO_SOURCES` as an environment variable
 
 ---
 
-_Pull request opened by @BlairAllan on 2025-09-15 22:52_
+_@BlairAllan_
 
 ## Summary
 

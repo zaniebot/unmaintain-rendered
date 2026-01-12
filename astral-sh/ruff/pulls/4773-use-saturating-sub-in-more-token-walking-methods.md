@@ -12,14 +12,14 @@ head: charlie/saturating
 created_at: 2023-06-01T02:28:57Z
 updated_at: 2023-06-01T21:16:33Z
 url: https://github.com/astral-sh/ruff/pull/4773
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use saturating_sub in more token-walking methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 02:28_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

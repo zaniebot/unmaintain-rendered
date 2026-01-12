@@ -13,14 +13,14 @@ head: dhruv/display-err-context
 created_at: 2025-01-13T09:48:16Z
 updated_at: 2025-01-13T10:13:22Z
 url: https://github.com/astral-sh/ruff/pull/15452
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Display context for `ruff.configuration` errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-13 09:48_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-20T16:10:50Z
 updated_at: 2025-05-21T05:33:01Z
 url: https://github.com/astral-sh/ruff/issues/18225
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New lint rule to prevent mis-nesting `contextlib.ExitStack`
 
 ---
 
-_Issue opened by @Zac-HD on 2025-05-20 16:10_
+_@Zac-HD_
 
 ### Summary
 

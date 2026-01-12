@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-11T17:06:44Z
 updated_at: 2026-01-11T17:50:33Z
 url: https://github.com/astral-sh/ty/issues/2449
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positives for cls/self in dict creation
 
 ---
 
-_Issue opened by @adamjstewart on 2026-01-11 17:06_
+_@adamjstewart_
 
 ### Summary
 

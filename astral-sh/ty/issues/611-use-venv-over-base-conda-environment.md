@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T16:28:15Z
 updated_at: 2025-08-20T13:07:44Z
 url: https://github.com/astral-sh/ty/issues/611
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Use `.venv` over `base` conda environment
 
 ---
 
-_Issue opened by @Danielkonge on 2025-06-08 16:28_
+_@Danielkonge_
 
 ### Summary
 

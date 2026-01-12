@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T19:19:43Z
 updated_at: 2025-07-07T04:55:57Z
 url: https://github.com/astral-sh/uv/issues/8953
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # MuJoCo `mjpython` fails with uvx
 
 ---
 
-_Issue opened by @kevinzakka on 2024-11-08 19:19_
+_@kevinzakka_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

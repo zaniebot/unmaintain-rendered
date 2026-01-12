@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-31T08:09:25Z
 updated_at: 2023-04-28T01:24:36Z
 url: https://github.com/astral-sh/ruff/issues/3827
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Docstring autofixer adds too much whitespace
 
 ---
 
-_Issue opened by @stinodego on 2023-03-31 08:09_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

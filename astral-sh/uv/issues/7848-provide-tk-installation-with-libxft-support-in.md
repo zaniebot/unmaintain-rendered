@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-01T16:25:16Z
 updated_at: 2025-08-08T18:19:35Z
 url: https://github.com/astral-sh/uv/issues/7848
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Provide tk installation with libXft support in Python installations
 
 ---
 
-_Issue opened by @FCamborda on 2024-10-01 16:25_
+_@FCamborda_
 
 We're trying to use customtkinter (which depends on tkinter, already delivered with the uv Python installation). As seen in this issue, we export the necessary env. variables to get tkinter to work (https://github.com/astral-sh/uv/issues/7036) 
 

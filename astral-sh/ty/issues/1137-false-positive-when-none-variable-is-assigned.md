@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-05T19:40:09Z
 updated_at: 2025-09-07T14:14:41Z
 url: https://github.com/astral-sh/ty/issues/1137
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # False positive when None variable is assigned - possibly-unbound-attribute
 
 ---
 
-_Issue opened by @JoanPuig on 2025-09-05 19:40_
+_@JoanPuig_
 
 ### Summary
 

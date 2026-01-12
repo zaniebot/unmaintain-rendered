@@ -13,14 +13,14 @@ head: benchmark-doc-python-3.12.0
 created_at: 2024-02-15T07:37:16Z
 updated_at: 2024-02-15T14:54:53Z
 url: https://github.com/astral-sh/uv/pull/1308
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Document that Python 3.12.0 is required to run benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-15 07:37_
+_@MichaReiser_
 
 Update the Benchmark documentation to explicitly document that it requires Python 3.12.0 to run the non puffin benchmarks:
 

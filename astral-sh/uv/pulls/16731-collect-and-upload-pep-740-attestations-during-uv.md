@@ -13,14 +13,14 @@ head: ww/upload-attestations
 created_at: 2025-11-13T21:34:46Z
 updated_at: 2025-11-24T21:47:17Z
 url: https://github.com/astral-sh/uv/pull/16731
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Collect and upload PEP 740 attestations during `uv publish`
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-13 21:34_
+_@woodruffw_
 
 ## Summary
 

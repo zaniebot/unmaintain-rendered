@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T08:23:36Z
 updated_at: 2025-09-19T05:34:28Z
 url: https://github.com/astral-sh/uv/issues/15566
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # Package Override/Dependency Replacement
 
 ---
 
-_Issue opened by @qiansen1386 on 2025-08-28 08:23_
+_@qiansen1386_
 
 ### Summary
 

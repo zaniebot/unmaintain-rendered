@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T02:31:05Z
 updated_at: 2023-10-12T10:15:01Z
 url: https://github.com/astral-sh/ruff/issues/7882
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # E251 from spaces around equals in f-string in function argument
 
 ---
 
-_Issue opened by @mymoomin on 2023-10-10 02:31_
+_@mymoomin_
 
 On Ruff version 0.0.292, `ruff --preview --isolated` will misinterpret spaces around equals in f-strings that are function arguments as spaces around keyword arguments and raise an error.
 

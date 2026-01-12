@@ -13,14 +13,14 @@ head: charlie/pre-pydantic
 created_at: 2024-02-22T17:00:49Z
 updated_at: 2024-02-25T08:50:18Z
 url: https://github.com/astral-sh/uv/pull/1878
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Make < exclusive for non-prerelease markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-22 17:00_
+_@charliermarsh_
 
 ## Summary
 

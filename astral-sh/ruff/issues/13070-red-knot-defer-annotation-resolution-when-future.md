@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-23T06:54:03Z
 updated_at: 2024-09-19T17:09:23Z
 url: https://github.com/astral-sh/ruff/issues/13070
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] defer annotation resolution when __future__.annotations is active
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-23 06:54_
+_@MichaReiser_
 
 Red-knot panics on this:
 

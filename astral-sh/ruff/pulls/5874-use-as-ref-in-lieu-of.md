@@ -12,14 +12,14 @@ head: charlie/ref
 created_at: 2023-07-19T00:42:40Z
 updated_at: 2023-07-19T01:18:18Z
 url: https://github.com/astral-sh/ruff/pull/5874
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use `.as_ref()` in lieu of `&**`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 00:42_
+_@charliermarsh_
 
 I find this less opaque (and often more succinct).
 

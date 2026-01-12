@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T22:45:56Z
 updated_at: 2024-09-07T18:40:05Z
 url: https://github.com/astral-sh/uv/issues/6985
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Support `allow-insecure-host` in `uv python`
 
 ---
 
-_Issue opened by @zanieb on 2024-09-03 22:45_
+_@zanieb_
 
 Currently, we do not read this setting during Python downloads.
 

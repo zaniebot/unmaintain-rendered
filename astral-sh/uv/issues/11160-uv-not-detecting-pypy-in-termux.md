@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-02T08:38:53Z
 updated_at: 2025-02-02T08:39:26Z
 url: https://github.com/astral-sh/uv/issues/11160
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # uv not detecting pypy in termux
 
 ---
 
-_Issue opened by @Vinfall on 2025-02-02 08:38_
+_@Vinfall_
 
 ### Summary
 

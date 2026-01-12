@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T14:08:43Z
 updated_at: 2024-02-01T19:35:05Z
 url: https://github.com/astral-sh/ruff/issues/9007
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive for `PLR1706`
 
 ---
 
-_Issue opened by @UnknownPlatypus on 2023-12-05 14:08_
+_@UnknownPlatypus_
 
 Here is a minimal example for the issue I had with PLR1706 and the autofix using ruff v0.1.7.
 

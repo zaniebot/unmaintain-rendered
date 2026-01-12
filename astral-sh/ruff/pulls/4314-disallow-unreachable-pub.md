@@ -12,14 +12,14 @@ head: disallow-unreachable-pub
 created_at: 2023-05-09T16:33:58Z
 updated_at: 2023-05-11T22:00:42Z
 url: https://github.com/astral-sh/ruff/pull/4314
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Disallow unreachable_pub
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-09 16:33_
+_@JonathanPlasse_
 
 Fixed with `cargo clippy --fix` and some manual fixes for IOError
 

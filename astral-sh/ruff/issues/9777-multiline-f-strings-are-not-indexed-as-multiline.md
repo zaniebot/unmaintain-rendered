@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T08:05:07Z
 updated_at: 2024-02-06T02:25:35Z
 url: https://github.com/astral-sh/ruff/issues/9777
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Multiline f-strings are not indexed as multiline strings
 
 ---
 
-_Issue opened by @sanxiyn on 2024-02-02 08:05_
+_@sanxiyn_
 
 Tracking leftover work from #9744. Removing trailing whitespace inside multiline strings is unsafe, so multiline strings are indexed. But multiline f-strings are currently not indexed as multiline strings.
 

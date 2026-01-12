@@ -13,14 +13,14 @@ head: dhruv/fstring-comma
 created_at: 2023-11-09T11:44:17Z
 updated_at: 2023-11-10T04:19:15Z
 url: https://github.com/astral-sh/ruff/pull/8582
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Consider the new f-string tokens for `flake8-commas`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-09 11:44_
+_@dhruvmanila_
 
 ## Summary
 

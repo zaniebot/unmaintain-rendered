@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-30T22:03:54Z
 updated_at: 2024-01-02T19:52:10Z
 url: https://github.com/astral-sh/ruff/issues/9326
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Extend docstring-code-format to python snippets in MarkDown, RST etc
 
 ---
 
-_Issue opened by @peterjc on 2023-12-30 22:03_
+_@peterjc_
 
 With [ruff](https://astral.sh/blog/ruff-v0.1.8) introducing the ``docstring-code-format`` setting, the tool might start to follow what https://pypi.org/project/blacken-docs/ offers - not just black style formatting to doctests within Python files, but also doctests and Python snippets within reStructuredText files (``*.rst``, often used for Python project documentation), Markdown files (``*.md``), and even LaTeX files (``*.tex``).
 

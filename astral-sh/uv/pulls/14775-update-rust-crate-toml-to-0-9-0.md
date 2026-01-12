@@ -12,14 +12,14 @@ head: renovate/toml-0.x
 created_at: 2025-07-21T01:26:03Z
 updated_at: 2025-07-21T01:47:50Z
 url: https://github.com/astral-sh/uv/pull/14775
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:24Z
 ```
 
 # Update Rust crate toml to 0.9.0
 
 ---
 
-_Pull request opened by @renovate on 2025-07-21 01:26_
+_@renovate_
 
 This PR contains the following updates:
 

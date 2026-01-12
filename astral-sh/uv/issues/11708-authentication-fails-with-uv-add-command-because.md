@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T12:26:43Z
 updated_at: 2025-02-23T23:53:32Z
 url: https://github.com/astral-sh/uv/issues/11708
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Authentication fails with `uv add` command because the authentication information for the index URL is removed from pyproject.toml
 
 ---
 
-_Issue opened by @Di-Is on 2025-02-22 12:26_
+_@Di-Is_
 
 
 ## Overview

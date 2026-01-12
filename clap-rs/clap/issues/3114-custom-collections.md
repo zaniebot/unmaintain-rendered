@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:10:29Z
 updated_at: 2024-11-15T19:29:26Z
 url: https://github.com/clap-rs/clap/issues/3114
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Custom collections
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:10_
+_@epage_
 
 <a href="https://github.com/vorner"><img src="https://avatars.githubusercontent.com/u/11783500?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [vorner](https://github.com/vorner)**
 _Friday Mar 09, 2018 at 11:20 GMT_

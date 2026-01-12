@@ -14,14 +14,14 @@ head: zb/reinstall
 created_at: 2024-08-20T03:57:10Z
 updated_at: 2024-08-20T15:35:34Z
 url: https://github.com/astral-sh/uv/pull/6243
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Special-case reinstalls in environment update summaries
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 03:57_
+_@zanieb_
 
 e.g.
 

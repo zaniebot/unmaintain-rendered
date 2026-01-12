@@ -13,14 +13,14 @@ head: dcreager/dummy-constraint-sets
 created_at: 2025-08-19T22:16:41Z
 updated_at: 2025-08-29T00:04:32Z
 url: https://github.com/astral-sh/ruff/pull/19997
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Add constraint set implementation
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-19 22:16_
+_@dcreager_
 
 This PR adds an implementation of constraint sets.
 

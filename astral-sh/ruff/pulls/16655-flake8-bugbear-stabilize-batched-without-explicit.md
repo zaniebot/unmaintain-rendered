@@ -13,14 +13,14 @@ head: brent/b911-0.10
 created_at: 2025-03-12T02:26:11Z
 updated_at: 2025-03-12T12:36:03Z
 url: https://github.com/astral-sh/ruff/pull/16655
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-bugbear`] Stabilize `batched-without-explicit-strict` (`B911`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 02:26_
+_@ntBre_
 
 Summary
 --

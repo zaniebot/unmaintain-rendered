@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-16T15:20:28Z
 updated_at: 2023-08-16T16:21:34Z
 url: https://github.com/astral-sh/ruff/issues/6619
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Feature Request: Offer validation of exported items in `__all__`
 
 ---
 
-_Issue opened by @kkirsche on 2023-08-16 15:20_
+_@kkirsche_
 
 This feature request is to ask if it would be possible to provide optional support for validating that the contents are `__all__` in an `__init__.py` file or equivalent are actually imported or cannot be determined due to a `from package import *` method.
 

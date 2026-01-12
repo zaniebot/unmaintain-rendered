@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-03T12:31:03Z
 updated_at: 2023-01-03T12:44:40Z
 url: https://github.com/astral-sh/ruff/issues/1596
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [plugin] flake8_pytest_style without config section (pyproject.toml) crashes
 
 ---
 
-_Issue opened by @marscher on 2023-01-03 12:31_
+_@marscher_
 
 minimal reproducing config:
 ```toml

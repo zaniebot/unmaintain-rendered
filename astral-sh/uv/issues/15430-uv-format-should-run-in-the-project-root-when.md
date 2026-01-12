@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T19:57:58Z
 updated_at: 2025-08-22T20:09:43Z
 url: https://github.com/astral-sh/uv/issues/15430
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # `uv format` should run in the project root when invoked from a subdirectory
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 19:57_
+_@zanieb_
 
 _No description provided._
 

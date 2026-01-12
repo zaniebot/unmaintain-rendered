@@ -13,14 +13,14 @@ head: index-strategy-docs
 created_at: 2024-04-27T19:12:02Z
 updated_at: 2024-04-27T22:29:51Z
 url: https://github.com/astral-sh/uv/pull/3290
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Fix documentation on --index-strategy values
 
 ---
 
-_Pull request opened by @sergeykolosov on 2024-04-27 19:12_
+_@sergeykolosov_
 
 ## Summary
 

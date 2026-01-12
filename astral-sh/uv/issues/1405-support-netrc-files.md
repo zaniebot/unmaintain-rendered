@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T01:01:04Z
 updated_at: 2024-03-06T20:48:32Z
 url: https://github.com/astral-sh/uv/issues/1405
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support .netrc files
 
 ---
 
-_Issue opened by @janbernloehr on 2024-02-16 01:01_
+_@janbernloehr_
 
 pip supports obtaining credentials for authentication from `.netrc` files. This allows to keep `pip.conf`, `--index-url` and `--find-links` free of credentials and instead store them in a central place in `~/.netrc`.
 

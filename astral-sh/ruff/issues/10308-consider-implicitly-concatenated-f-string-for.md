@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T10:51:07Z
 updated_at: 2024-03-11T16:53:39Z
 url: https://github.com/astral-sh/ruff/issues/10308
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Consider implicitly concatenated f-string for rules
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-09 10:51_
+_@dhruvmanila_
 
 Certain rules which look at f-strings, especially implicitly concatenated ones, performs the check for an individual string element and not the concatenated one. Taking https://docs.astral.sh/ruff/rules/hardcoded-bind-all-interfaces/ as an example,
 

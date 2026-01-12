@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T17:54:49Z
 updated_at: 2025-09-18T14:05:06Z
 url: https://github.com/astral-sh/ruff/issues/20422
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP008 should not apply when the class variable is shadowed
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-15 17:54_
+_@dscorbett_
 
 ### Summary
 

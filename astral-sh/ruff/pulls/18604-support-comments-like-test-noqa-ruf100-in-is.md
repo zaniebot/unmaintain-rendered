@@ -12,14 +12,14 @@ head: codeman/18470
 created_at: 2025-06-10T05:12:31Z
 updated_at: 2025-06-23T07:25:24Z
 url: https://github.com/astral-sh/ruff/pull/18604
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # support comments like `# test # noqa: RUF100` in `is_pragma_comment` 
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-06-10 05:12_
+_@CodeMan62_
 
 ## Summary
 the [`is_pragma_comment`](https://github.com/astral-sh/ruff/blob/ff6f0b6ab8fef4df5a14651cf9ef86f016ec0367/crates/ruff_python_trivia/src/pragmas.rs#L13-L30)

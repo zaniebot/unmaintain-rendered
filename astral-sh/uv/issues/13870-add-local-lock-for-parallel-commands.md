@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T19:04:14Z
 updated_at: 2025-06-05T19:20:22Z
 url: https://github.com/astral-sh/uv/issues/13870
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Add local lock for parallel commands
 
 ---
 
-_Issue opened by @leviska on 2025-06-05 19:04_
+_@leviska_
 
 ### Summary
 

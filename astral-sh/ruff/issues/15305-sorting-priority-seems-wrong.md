@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T16:52:26Z
 updated_at: 2025-01-07T07:58:34Z
 url: https://github.com/astral-sh/ruff/issues/15305
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Sorting priority seems wrong?
 
 ---
 
-_Issue opened by @daenny on 2025-01-06 16:52_
+_@daenny_
 
 We prefix everything in our company. I would like to sort all company package before my current package. In `isort` that works. 
 

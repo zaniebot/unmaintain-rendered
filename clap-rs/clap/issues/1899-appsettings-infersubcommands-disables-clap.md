@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-02T22:48:31Z
 updated_at: 2020-05-02T22:49:20Z
 url: https://github.com/clap-rs/clap/issues/1899
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # AppSettings::InferSubcommands disables #[clap(external_subcommand)]
 
 ---
 
-_Issue opened by @alerque on 2020-05-02 22:48_
+_@alerque_
 
 I'm porting an app from StructOpt to Clap using the derive methods in the current Git HEAD version. The original app used `clap::AppSettings::InferSubcommands)`, and also later made use of `#[clap(external_subcommand)]`. This combo wasn't a problem in StructOpt, but it fails with Clap derive.
 

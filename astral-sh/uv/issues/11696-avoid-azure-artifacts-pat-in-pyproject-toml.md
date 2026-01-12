@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T12:11:36Z
 updated_at: 2025-03-09T12:22:42Z
 url: https://github.com/astral-sh/uv/issues/11696
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # avoid azure artifacts PAT in pyproject.toml
 
 ---
 
-_Issue opened by @zkurtz on 2025-02-21 12:11_
+_@zkurtz_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-18T07:54:08Z
 updated_at: 2025-11-18T16:10:36Z
 url: https://github.com/astral-sh/ty/issues/1037
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add setting to disable types in signature help
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-08-18 07:54_
+_@JaRoSchm_
 
 Hi, for me the types displayed in the signature in the hover popup or the completion of function parameters are often not helpful. Even if the types would be formatted better (https://github.com/astral-sh/ty/issues/1000), they would still reduce the readability of the important signature without having a substantial advantage for me. Often, this is due to the typing language of python getting more and more complicated (see for example the screenshot below, what is `SupportsIndex` supposed to mean?). This problem is especially large in the scientific python ecosystem, where either the name of the parameter is enough to directly understand what is needed or so complicated that you have to read the documentation and understand the underlying algorithm where the type is simply not enough. Therefore, I would suggest to add an option to not show types there.
 

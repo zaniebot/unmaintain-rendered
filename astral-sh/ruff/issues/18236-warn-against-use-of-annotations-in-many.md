@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T02:18:57Z
 updated_at: 2025-05-26T19:19:02Z
 url: https://github.com/astral-sh/ruff/issues/18236
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Warn against use of `.__annotations__` (in many circumstances)
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-21 02:18_
+_@JelleZijlstra_
 
 ### Summary
 

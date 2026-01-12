@@ -13,14 +13,14 @@ head: no-registry
 created_at: 2025-07-14T19:53:49Z
 updated_at: 2025-07-15T17:29:12Z
 url: https://github.com/astral-sh/uv/pull/14614
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Make preview Python registration on Windows non-fatal
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-14 19:53_
+_@zanieb_
 
 Same as #14612 for registration with the Windows Registry.
 

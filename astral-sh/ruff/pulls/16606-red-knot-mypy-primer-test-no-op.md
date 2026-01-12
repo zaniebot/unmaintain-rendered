@@ -15,14 +15,14 @@ head: david/test-mypy_primer-noop
 created_at: 2025-03-10T16:34:52Z
 updated_at: 2025-03-11T10:36:15Z
 url: https://github.com/astral-sh/ruff/pull/16606
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] mypy_primer: test no op
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-10 16:34_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

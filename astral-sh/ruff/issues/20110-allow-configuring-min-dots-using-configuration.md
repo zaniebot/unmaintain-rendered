@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T03:12:23Z
 updated_at: 2025-09-16T11:19:35Z
 url: https://github.com/astral-sh/ruff/issues/20110
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Allow configuring `--min-dots` using configuration file
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-08-27 03:12_
+_@InSyncWithFoo_
 
 `ruff analyze graph` has both `--detect-string-imports` and `--min-dots`, but [`tool.ruff.analyze`/`analyze`](https://docs.astral.sh/ruff/settings/#analyze) only has [`detect-string-imports`](https://docs.astral.sh/ruff/settings/#analyze_detect-string-imports).
 

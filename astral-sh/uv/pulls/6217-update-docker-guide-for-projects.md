@@ -14,14 +14,14 @@ head: zb/docker-project
 created_at: 2024-08-19T17:31:56Z
 updated_at: 2024-08-19T22:53:24Z
 url: https://github.com/astral-sh/uv/pull/6217
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Update Docker guide for projects
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 17:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5371
 

@@ -13,14 +13,14 @@ head: zb/release-update
 created_at: 2024-03-24T18:10:43Z
 updated_at: 2024-03-24T18:11:27Z
 url: https://github.com/zanieb/rooster/pull/40
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Clean-up changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-24 18:10_
+_@zanieb_
 
 _No description provided._
 

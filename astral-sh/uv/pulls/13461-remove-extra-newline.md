@@ -13,14 +13,14 @@ head: konsti/remove-extra-newline
 created_at: 2025-05-15T09:22:08Z
 updated_at: 2025-05-15T09:30:23Z
 url: https://github.com/astral-sh/uv/pull/13461
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Remove extra newline
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 09:22_
+_@konstin_
 
 This left an extra newline the hint, which isn't captured in the snapshot.
 

@@ -12,14 +12,14 @@ head: dhruv/docs
 created_at: 2023-07-16T09:29:21Z
 updated_at: 2023-09-28T23:08:54Z
 url: https://github.com/astral-sh/ruff/pull/5801
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use tabbed interface for docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-16 09:29_
+_@dhruvmanila_
 
 Use tabbed interface for docs.
 

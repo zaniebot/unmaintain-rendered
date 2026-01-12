@@ -13,14 +13,14 @@ head: fix-order-exclude
 created_at: 2024-07-16T16:00:13Z
 updated_at: 2024-07-16T20:43:00Z
 url: https://github.com/astral-sh/uv/pull/5111
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # pip compile: change order of check to handle exact argument first
 
 ---
 
-_Pull request opened by @skshetry on 2024-07-16 16:00_
+_@skshetry_
 
 I messed up the order of checks in #5033, due to which it failed to exclude the case of `-P package`, as `arg.startswith("-P")` check came first and skipped only the first argument.
 

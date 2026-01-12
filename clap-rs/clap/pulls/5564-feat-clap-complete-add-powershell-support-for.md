@@ -12,14 +12,14 @@ head: powershell_glue
 created_at: 2024-07-04T08:59:08Z
 updated_at: 2025-05-31T13:53:34Z
 url: https://github.com/clap-rs/clap/pull/5564
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(clap_complete): Add powershell support for native completion
 
 ---
 
-_Pull request opened by @shannmu on 2024-07-04 08:59_
+_@shannmu_
 
 <!--
 Thanks for helping out!

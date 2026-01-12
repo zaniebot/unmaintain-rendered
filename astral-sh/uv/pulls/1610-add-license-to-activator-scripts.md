@@ -13,14 +13,14 @@ head: activator-licenses
 created_at: 2024-02-17T19:32:05Z
 updated_at: 2024-02-17T19:37:27Z
 url: https://github.com/astral-sh/uv/pull/1610
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Add license to activator scripts
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-17 19:32_
+_@MichaReiser_
 
 ## Summary
 

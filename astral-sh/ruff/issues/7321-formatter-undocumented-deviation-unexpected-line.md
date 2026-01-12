@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T21:12:27Z
 updated_at: 2023-09-27T15:18:03Z
 url: https://github.com/astral-sh/ruff/issues/7321
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: unexpected line wrapping
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-12 21:12_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

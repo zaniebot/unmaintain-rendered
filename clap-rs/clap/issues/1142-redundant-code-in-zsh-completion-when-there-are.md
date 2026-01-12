@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-01-06T12:42:08Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1142
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Redundant code in Zsh completion when there are no subcommands
 
 ---
 
-_Issue opened by @segevfiner on 2018-01-06 12:42_
+_@segevfiner_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

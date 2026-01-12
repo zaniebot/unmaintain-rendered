@@ -13,14 +13,14 @@ head: david/typeddict-readonly
 created_at: 2025-09-04T16:13:40Z
 updated_at: 2025-09-05T08:51:41Z
 url: https://github.com/astral-sh/ruff/pull/20241
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] TypedDict: Add support for `typing.ReadOnly`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-04 16:13_
+_@sharkdp_
 
 ## Summary
 

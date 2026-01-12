@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T17:45:23Z
 updated_at: 2025-12-09T23:39:07Z
 url: https://github.com/astral-sh/uv/issues/17002
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Cannot use uv sync with a workspace when project have an extra defined
 
 ---
 
-_Issue opened by @jabbera on 2025-12-05 17:45_
+_@jabbera_
 
 ### Summary
 

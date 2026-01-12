@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T18:22:10Z
 updated_at: 2025-04-21T19:16:49Z
 url: https://github.com/astral-sh/uv/issues/12605
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Drop support for reading executable name requests from `.python-version` files
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 18:22_
+_@zanieb_
 
 It seems weird to write an executable name to a `.python-version` file, and this causes conflicts with `pyenv-virtualenv` as they write environment names there (see https://github.com/astral-sh/uv/pull/7935)
 

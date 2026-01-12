@@ -12,14 +12,14 @@ head: charlie/test
 created_at: 2023-12-01T02:52:18Z
 updated_at: 2023-12-01T03:02:41Z
 url: https://github.com/astral-sh/ruff/pull/8935
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update formatter fixtures
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 02:52_
+_@charliermarsh_
 
 I merged a branch that wasn't up-to-date, which left us with test failures on `main`.
 

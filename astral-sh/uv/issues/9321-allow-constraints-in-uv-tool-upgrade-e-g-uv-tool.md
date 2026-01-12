@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T14:34:27Z
 updated_at: 2024-11-25T22:22:32Z
 url: https://github.com/astral-sh/uv/issues/9321
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Allow constraints in `uv tool upgrade` (e.g., `uv tool upgrade "babel<0.2.14"`)
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-21 14:34_
+_@charliermarsh_
 
 This is preferable to `uv tool upgrade babel --upgrade-package "babel<0.2.14"`.
 

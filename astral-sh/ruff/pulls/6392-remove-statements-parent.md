@@ -13,14 +13,14 @@ head: charlie/parent_id
 created_at: 2023-08-07T15:11:27Z
 updated_at: 2023-08-07T15:57:47Z
 url: https://github.com/astral-sh/ruff/pull/6392
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `Statements#parent`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 15:11_
+_@charliermarsh_
 
 Discussed in https://github.com/astral-sh/ruff/pull/6351#discussion_r1284997065.
 

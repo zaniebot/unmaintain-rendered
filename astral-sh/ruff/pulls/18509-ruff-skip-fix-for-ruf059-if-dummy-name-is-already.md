@@ -14,14 +14,14 @@ head: fix/unused-unpacked-variable
 created_at: 2025-06-06T18:19:13Z
 updated_at: 2025-06-11T08:25:00Z
 url: https://github.com/astral-sh/ruff/pull/18509
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`ruff`] skip fix for `RUF059` if dummy name is already bound (unused-unpacked-variable)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-06 18:19_
+_@chirizxc_
 
 
 

@@ -13,14 +13,14 @@ head: action
 created_at: 2024-07-24T01:20:00Z
 updated_at: 2024-07-24T02:42:03Z
 url: https://github.com/astral-sh/uv/pull/5390
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Update `python-build-standalone` workflow
 
 ---
 
-_Pull request opened by @j178 on 2024-07-24 01:20_
+_@j178_
 
 ## Summary
 

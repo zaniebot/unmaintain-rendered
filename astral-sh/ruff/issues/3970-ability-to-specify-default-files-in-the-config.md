@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-14T01:24:13Z
 updated_at: 2023-11-21T17:34:23Z
 url: https://github.com/astral-sh/ruff/issues/3970
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # (🎁) Ability to specify default files in the config
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-04-14 01:24_
+_@KotlinIsland_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

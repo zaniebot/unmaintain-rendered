@@ -13,14 +13,14 @@ head: docs-installation-add-scoop
 created_at: 2025-01-06T18:57:51Z
 updated_at: 2025-01-06T19:29:43Z
 url: https://github.com/astral-sh/uv/pull/10332
-synced_at: 2026-01-10T11:44:43Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # docs: installation.md add info about installing with Scoop
 
 ---
 
-_Pull request opened by @o-l-a-v on 2025-01-06 18:57_
+_@o-l-a-v_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

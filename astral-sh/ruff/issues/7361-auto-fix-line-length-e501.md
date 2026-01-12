@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T18:58:30Z
 updated_at: 2023-09-13T19:10:26Z
 url: https://github.com/astral-sh/ruff/issues/7361
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Auto-fix line length (E501)
 
 ---
 
-_Issue opened by @xaah on 2023-09-13 18:58_
+_@xaah_
 
 Does auto-fix support E501? It doesn't seem to auto-fix line lengths in my setup, wondering if this is by design or a bug on my side.
 

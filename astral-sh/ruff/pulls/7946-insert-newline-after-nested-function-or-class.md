@@ -13,14 +13,14 @@ head: 10-13-Insert_newline_after_nested_function_or_class_statements
 created_at: 2023-10-13T15:01:51Z
 updated_at: 2023-10-18T09:52:05Z
 url: https://github.com/astral-sh/ruff/pull/7946
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Insert newline after nested function or class statements
 
 ---
 
-_Pull request opened by @konstin on 2023-10-13 15:01_
+_@konstin_
 
 **Summary** Insert a newline after nested function and class definitions, unless there is a trailing own line comment.
 

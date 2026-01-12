@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T17:15:07Z
 updated_at: 2024-06-27T11:25:24Z
 url: https://github.com/astral-sh/uv/issues/1009
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Combine dependency clauses with the same root
 
 ---
 
-_Issue opened by @zanieb on 2024-01-19 17:15_
+_@zanieb_
 
 e.g. instead of "you require a and you require b" we should say "you require a and b"
 

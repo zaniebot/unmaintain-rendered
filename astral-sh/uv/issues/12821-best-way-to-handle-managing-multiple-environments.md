@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T19:00:07Z
 updated_at: 2025-04-14T14:33:52Z
 url: https://github.com/astral-sh/uv/issues/12821
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Best way to handle managing multiple environments in the same project
 
 ---
 
-_Issue opened by @Mathemmagician on 2025-04-10 19:00_
+_@Mathemmagician_
 
 ### Question
 

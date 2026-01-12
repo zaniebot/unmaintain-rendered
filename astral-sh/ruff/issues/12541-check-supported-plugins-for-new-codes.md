@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-27T08:19:22Z
 updated_at: 2024-09-09T12:03:44Z
 url: https://github.com/astral-sh/ruff/issues/12541
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Check supported plugins for new codes
 
 ---
 
-_Issue opened by @nkakouros on 2024-07-27 08:19_
+_@nkakouros_
 
 It would be nice to have a CI job report new, unsupported codes for the plugins (or tools) that ruff already has some support for. There could be a blacklist of codes that were purposefully omitted in ruff. 
 

@@ -15,14 +15,14 @@ head: zb/no-clean-no-more
 created_at: 2024-08-20T02:40:13Z
 updated_at: 2024-08-20T16:01:09Z
 url: https://github.com/astral-sh/uv/pull/6241
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Rename `uv sync --no-clean` to `uv sync --inexact`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 02:40_
+_@zanieb_
 
 _No description provided._
 

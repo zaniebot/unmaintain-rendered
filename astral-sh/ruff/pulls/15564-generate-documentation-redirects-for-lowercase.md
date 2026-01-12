@@ -13,14 +13,14 @@ head: docs-redirects
 created_at: 2025-01-18T00:52:57Z
 updated_at: 2025-01-18T05:15:14Z
 url: https://github.com/astral-sh/ruff/pull/15564
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Generate documentation redirects for lowercase rule codes
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-18 00:52_
+_@InSyncWithFoo_
 
 ## Summary
 

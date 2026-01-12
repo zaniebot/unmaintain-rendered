@@ -14,14 +14,14 @@ head: pos-only-arguments
 created_at: 2023-05-31T08:29:43Z
 updated_at: 2023-06-01T06:43:36Z
 url: https://github.com/astral-sh/ruff/pull/4748
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Handle positional-only-arguments separator comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-31 08:29_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

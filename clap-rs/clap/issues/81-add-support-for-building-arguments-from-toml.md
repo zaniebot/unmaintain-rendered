@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-29T01:25:01Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/81
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add support for building arguments from toml
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-29 01:25_
+_@kbknapp_
 
 Splitting from #80 to track separately. Same method though, via a `feature` due to additional `toml-rs` dep.
 

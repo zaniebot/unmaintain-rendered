@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T18:18:16Z
 updated_at: 2025-10-03T12:20:21Z
 url: https://github.com/astral-sh/ty/issues/282
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # ty does not respect workspace-level `experimental.completions.enable`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-08 18:18_
+_@InSyncWithFoo_
 
 Steps to reproduce:
 

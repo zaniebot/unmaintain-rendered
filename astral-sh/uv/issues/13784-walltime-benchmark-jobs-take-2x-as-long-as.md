@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T13:43:44Z
 updated_at: 2025-06-02T13:49:44Z
 url: https://github.com/astral-sh/uv/issues/13784
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Walltime benchmark jobs take 2x as long as instrumented ones
 
 ---
 
-_Issue opened by @zanieb on 2025-06-02 13:43_
+_@zanieb_
 
 We pay per minute for the walltime runs, so we should try to identify why these are slower and speed them up.
 

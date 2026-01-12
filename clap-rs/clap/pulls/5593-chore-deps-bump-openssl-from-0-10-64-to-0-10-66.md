@@ -12,14 +12,14 @@ head: dependabot/cargo/openssl-0.10.66
 created_at: 2024-07-22T18:15:37Z
 updated_at: 2025-07-03T14:32:13Z
 url: https://github.com/clap-rs/clap/pull/5593
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): bump openssl from 0.10.64 to 0.10.66
 
 ---
 
-_Pull request opened by @dependabot on 2024-07-22 18:15_
+_@dependabot_
 
 Bumps [openssl](https://github.com/sfackler/rust-openssl) from 0.10.64 to 0.10.66.
 <details>

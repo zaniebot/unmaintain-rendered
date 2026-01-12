@@ -13,14 +13,14 @@ head: charlie/flatten
 created_at: 2024-04-17T00:04:39Z
 updated_at: 2024-04-17T00:15:11Z
 url: https://github.com/astral-sh/uv/pull/3079
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Flatten settings into a single struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 00:04_
+_@charliermarsh_
 
 ## Summary
 

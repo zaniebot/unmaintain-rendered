@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-27T17:21:11Z
 updated_at: 2022-11-01T20:47:57Z
 url: https://github.com/astral-sh/ruff/issues/490
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Importing a function called `cast` leads to confusing F722 and F821 errors
 
 ---
 
-_Issue opened by @tgross35 on 2022-10-27 17:21_
+_@tgross35_
 
 Using a function named `cast` (shadows a newish builtin) leads to somewhat confusing errors. For the test file:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T05:13:12Z
 updated_at: 2025-06-05T04:48:22Z
 url: https://github.com/astral-sh/uv/issues/11652
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # uv build creates dist/.gitignore; doesn't play nice with PYPI trusted publishing
 
 ---
 
-_Issue opened by @dimaqq on 2025-02-20 05:13_
+_@dimaqq_
 
 ### Summary
 

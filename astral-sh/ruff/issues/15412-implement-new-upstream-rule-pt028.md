@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T02:53:32Z
 updated_at: 2025-01-13T12:40:56Z
 url: https://github.com/astral-sh/ruff/issues/15412
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Implement new upstream rule PT028
 
 ---
 
-_Issue opened by @Zac-HD on 2025-01-11 02:53_
+_@Zac-HD_
 
 from https://github.com/m-burst/flake8-pytest-style/pull/324
 

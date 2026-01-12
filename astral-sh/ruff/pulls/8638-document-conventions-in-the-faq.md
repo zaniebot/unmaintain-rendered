@@ -13,14 +13,14 @@ head: charlie/convention
 created_at: 2023-11-12T21:37:02Z
 updated_at: 2023-11-12T23:02:57Z
 url: https://github.com/astral-sh/ruff/pull/8638
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Document conventions in the FAQ
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-12 21:37_
+_@charliermarsh_
 
 Enumerates all rules defined in each convention in the FAQ. These lists mirror [pydocstyle](https://www.pydocstyle.org/en/latest/error_codes.html#default-conventions).
 

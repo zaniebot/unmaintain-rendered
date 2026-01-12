@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T16:39:45Z
 updated_at: 2025-12-31T15:21:54Z
 url: https://github.com/astral-sh/ty/issues/130
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # unused suppression for `type: ignore`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-10 16:39_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/17305 revealed an interesting case where Red Knot raised an unused suppression diagnostic when the user intended to suppress it:
 

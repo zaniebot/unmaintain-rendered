@@ -14,14 +14,14 @@ head: alex/typealias-autocomplete
 created_at: 2025-07-11T13:16:57Z
 updated_at: 2025-07-11T13:20:40Z
 url: https://github.com/astral-sh/ruff/pull/19282
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Filter out private type aliases from stub files when offering autocomplete suggestions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-11 13:16_
+_@AlexWaygood_
 
 ## Summary
 

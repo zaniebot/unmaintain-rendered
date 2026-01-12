@@ -14,14 +14,14 @@ head: fix-power-op-line-length
 created_at: 2023-12-01T16:23:31Z
 updated_at: 2023-12-02T00:35:36Z
 url: https://github.com/astral-sh/ruff/pull/8947
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Implement the `fix_power_op_line_length` preview style
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-01 16:23_
+_@MichaReiser_
 
 ## Summary
 

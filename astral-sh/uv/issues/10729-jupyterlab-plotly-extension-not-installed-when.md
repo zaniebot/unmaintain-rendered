@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-18T09:46:25Z
 updated_at: 2025-01-23T11:48:50Z
 url: https://github.com/astral-sh/uv/issues/10729
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # jupyterlab-plotly extension not installed when running jupyter from a project with plotly installed
 
 ---
 
-_Issue opened by @MikaelUmaN on 2025-01-18 09:46_
+_@MikaelUmaN_
 
 I followed this: https://docs.astral.sh/uv/guides/integration/jupyter/
 

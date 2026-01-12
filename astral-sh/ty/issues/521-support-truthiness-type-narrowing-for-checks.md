@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T09:05:44Z
 updated_at: 2026-01-05T20:17:02Z
 url: https://github.com/astral-sh/ty/issues/521
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support truthiness type narrowing for checks involving `all(…)` / `any(…)`
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-05-27 09:05_
+_@Julian-J-S_
 
 A python concept I often see in functions is checking if a certain set of variables is not None.
 

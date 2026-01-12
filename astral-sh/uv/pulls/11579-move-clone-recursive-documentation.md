@@ -13,14 +13,14 @@ head: zb/clone-recursive
 created_at: 2025-02-17T17:31:22Z
 updated_at: 2025-02-18T19:31:40Z
 url: https://github.com/astral-sh/uv/pull/11579
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Move `clone_recursive` documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-17 17:31_
+_@zanieb_
 
 While investigating #11554 I noticed this was not quite correct and hard to find.
 

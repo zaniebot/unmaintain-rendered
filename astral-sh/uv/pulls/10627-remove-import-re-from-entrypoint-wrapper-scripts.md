@@ -13,14 +13,14 @@ head: rm-re-import
 created_at: 2025-01-15T08:54:52Z
 updated_at: 2025-01-15T18:51:11Z
 url: https://github.com/astral-sh/uv/pull/10627
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Remove `import re` from entrypoint wrapper scripts
 
 ---
 
-_Pull request opened by @hukkin on 2025-01-15 08:54_
+_@hukkin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

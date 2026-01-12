@@ -12,14 +12,14 @@ head: charlie/copy
 created_at: 2022-12-30T00:46:46Z
 updated_at: 2022-12-30T00:46:51Z
 url: https://github.com/astral-sh/ruff/pull/1458
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Copy URL but don't update the hash
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 00:46_
+_@charliermarsh_
 
 _No description provided._
 

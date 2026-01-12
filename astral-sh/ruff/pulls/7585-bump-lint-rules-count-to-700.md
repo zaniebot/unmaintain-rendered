@@ -13,14 +13,14 @@ head: r700
 created_at: 2023-09-21T23:19:28Z
 updated_at: 2023-09-22T01:55:04Z
 url: https://github.com/astral-sh/ruff/pull/7585
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump lint rules count to 700
 
 ---
 
-_Pull request opened by @T-256 on 2023-09-21 23:19_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

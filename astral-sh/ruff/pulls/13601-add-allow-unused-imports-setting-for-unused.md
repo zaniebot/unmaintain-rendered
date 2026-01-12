@@ -13,14 +13,14 @@ head: enh_f401
 created_at: 2024-10-02T10:59:33Z
 updated_at: 2024-10-03T19:59:12Z
 url: https://github.com/astral-sh/ruff/pull/13601
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add `allow-unused-imports` setting for `unused-import` rule (`F401`)
 
 ---
 
-_Pull request opened by @hoxbro on 2024-10-02 10:59_
+_@hoxbro_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

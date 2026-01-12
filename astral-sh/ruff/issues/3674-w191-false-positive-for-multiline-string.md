@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-22T20:01:18Z
 updated_at: 2023-04-07T02:25:41Z
 url: https://github.com/astral-sh/ruff/issues/3674
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # W191 False positive for multiline string
 
 ---
 
-_Issue opened by @Nodd on 2023-03-22 20:01_
+_@Nodd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

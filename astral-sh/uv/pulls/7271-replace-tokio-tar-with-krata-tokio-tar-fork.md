@@ -13,14 +13,14 @@ head: krata-tokio-tar
 created_at: 2024-09-10T19:03:25Z
 updated_at: 2024-09-11T02:08:25Z
 url: https://github.com/astral-sh/uv/pull/7271
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Replace `tokio-tar` with `krata-tokio-tar` fork
 
 ---
 
-_Pull request opened by @mgorny on 2024-09-10 19:03_
+_@mgorny_
 
 ## Summary
 

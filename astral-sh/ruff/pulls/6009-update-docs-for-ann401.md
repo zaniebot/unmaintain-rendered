@@ -13,14 +13,14 @@ head: dhruv/ANN401-docs
 created_at: 2023-07-23T07:47:35Z
 updated_at: 2023-07-23T16:35:14Z
 url: https://github.com/astral-sh/ruff/pull/6009
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Update docs for `ANN401`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-23 07:47_
+_@dhruvmanila_
 
 Part of #5803 
 

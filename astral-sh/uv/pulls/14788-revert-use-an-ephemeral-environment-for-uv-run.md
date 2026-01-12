@@ -11,14 +11,14 @@ head: charlie/reverts
 created_at: 2025-07-21T13:00:42Z
 updated_at: 2025-07-22T12:15:40Z
 url: https://github.com/astral-sh/uv/pull/14788
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Revert "Use an ephemeral environment for `uv run --with` invocations (#14447)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 13:00_
+_@charliermarsh_
 
 ## Summary
 

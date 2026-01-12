@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T11:00:47Z
 updated_at: 2025-03-13T15:40:10Z
 url: https://github.com/astral-sh/uv/issues/9271
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # installing current project as editable
 
 ---
 
-_Issue opened by @zkurtz on 2024-11-20 11:00_
+_@zkurtz_
 
 Is there a single uv command that achieves both `uv sync; uv pip install -e .`? 
 

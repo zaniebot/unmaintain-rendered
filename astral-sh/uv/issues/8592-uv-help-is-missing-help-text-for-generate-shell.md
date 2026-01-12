@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T13:46:36Z
 updated_at: 2024-10-26T15:04:47Z
 url: https://github.com/astral-sh/uv/issues/8592
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # `uv --help` is missing help text for `generate-shell-completion`
 
 ---
 
-_Issue opened by @drmikehenry on 2024-10-26 13:46_
+_@drmikehenry_
 
 `uv --help` is missing help text for `generate-shell-completion`, though it's in `uv help`, e.g.:
 

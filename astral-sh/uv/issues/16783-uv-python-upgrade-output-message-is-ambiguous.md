@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T23:39:20Z
 updated_at: 2025-12-16T10:23:01Z
 url: https://github.com/astral-sh/uv/issues/16783
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # `uv python upgrade` output message is ambiguous
 
 ---
 
-_Issue opened by @nehfan on 2025-11-19 23:39_
+_@nehfan_
 
 ### Summary
 

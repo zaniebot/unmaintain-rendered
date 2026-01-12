@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T11:20:38Z
 updated_at: 2025-05-14T11:42:24Z
 url: https://github.com/astral-sh/ty/issues/382
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # 3rd party modules with the same namespace as 1st party code aren't being discovered
 
 ---
 
-_Issue opened by @mrlifetime on 2025-05-14 11:20_
+_@mrlifetime_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2024-02-20T05:45:10Z
 updated_at: 2024-02-20T05:56:27Z
 url: https://github.com/astral-sh/uv/pull/1735
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Allow `-f` alias for `--find-links`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 05:45_
+_@charliermarsh_
 
 ## Summary
 

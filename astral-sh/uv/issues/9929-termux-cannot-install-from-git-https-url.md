@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T03:45:36Z
 updated_at: 2025-06-22T02:27:06Z
 url: https://github.com/astral-sh/uv/issues/9929
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Termux cannot install from git+https url
 
 ---
 
-_Issue opened by @joshcangit on 2024-12-16 03:45_
+_@joshcangit_
 
 I've tried looking through other similar issues but nothing helps.
 I was running this but it failed.

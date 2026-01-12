@@ -13,14 +13,14 @@ head: alex/knownfunction-nits
 created_at: 2025-01-12T14:05:15Z
 updated_at: 2025-01-12T16:06:33Z
 url: https://github.com/astral-sh/ruff/pull/15441
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Minor improvements to `KnownFunction` API
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-12 14:05_
+_@AlexWaygood_
 
 A small PR to reduce some of the code duplication between the various branches, make it a little more readable and move the API closer to what we already have for `KnownClass`
 

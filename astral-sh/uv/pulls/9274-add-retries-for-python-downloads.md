@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-11-20T14:05:36Z
 updated_at: 2024-11-20T14:42:44Z
 url: https://github.com/astral-sh/uv/pull/9274
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Add retries for Python downloads
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 14:05_
+_@charliermarsh_
 
 ## Summary
 

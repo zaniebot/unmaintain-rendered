@@ -9,16 +9,16 @@ labels:
   - tracking
 assignees: []
 created_at: 2024-07-30T16:35:02Z
-updated_at: 2025-11-20T14:54:55Z
+updated_at: 2026-01-12T05:44:20Z
 url: https://github.com/astral-sh/uv/issues/5605
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Documentation feedback
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 16:35_
+_@zanieb_
 
 This is a tracking issue for feedback on the new documentation at https://docs.astral.sh/uv/
 

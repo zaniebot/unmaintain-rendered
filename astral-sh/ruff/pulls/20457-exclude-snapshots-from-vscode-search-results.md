@@ -13,14 +13,14 @@ head: amy/vscode-search-exclude-snapshots
 created_at: 2025-09-17T19:55:19Z
 updated_at: 2025-09-19T04:10:45Z
 url: https://github.com/astral-sh/ruff/pull/20457
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # Exclude snapshots from vscode search results
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-17 19:55_
+_@amyreese_
 
 Makes ⌘-T file search ignore snapshot files, so you can actually fuzzy
 match "ruff cache" to "ruff/src/cache.rs" without looking/scrolling past

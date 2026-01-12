@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-12-29T21:15:32Z
 updated_at: 2021-03-12T17:12:42Z
 url: https://github.com/clap-rs/clap/issues/1616
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Testing with ArgMatches
 
 ---
 
-_Issue opened by @MichaelAquilina on 2019-12-29 21:15_
+_@MichaelAquilina_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

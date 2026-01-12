@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-02T03:47:00Z
 updated_at: 2024-08-04T10:01:36Z
 url: https://github.com/astral-sh/ruff/pull/12618
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Replace `ruff-lsp` links in `README.md` with links to new documentation page
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-08-02 03:47_
+_@InSyncWithFoo_
 
 Since `ruff-lsp` has been (semi-)deprecated for sometime, it wouldn't make sense to mention it in the most prominent sections of the `README`. Instead, they should point to the new <i>[Editor Integrations](https://docs.astral.sh/ruff/editors/)</i> documentation page.
 

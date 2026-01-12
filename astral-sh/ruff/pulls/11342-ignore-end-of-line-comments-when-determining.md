@@ -14,14 +14,14 @@ head: charlie/comm
 created_at: 2024-05-08T15:13:01Z
 updated_at: 2024-05-08T15:26:12Z
 url: https://github.com/astral-sh/ruff/pull/11342
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Ignore end-of-line comments when determining blank line rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 15:13_
+_@charliermarsh_
 
 ## Summary
 

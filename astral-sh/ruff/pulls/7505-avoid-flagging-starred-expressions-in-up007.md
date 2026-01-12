@@ -13,14 +13,14 @@ head: charlie/starred
 created_at: 2023-09-19T03:25:54Z
 updated_at: 2023-09-19T03:45:50Z
 url: https://github.com/astral-sh/ruff/pull/7505
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid flagging starred expressions in UP007
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-19 03:25_
+_@charliermarsh_
 
 ## Summary
 

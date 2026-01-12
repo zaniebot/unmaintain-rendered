@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T17:30:20Z
 updated_at: 2025-09-16T16:58:48Z
 url: https://github.com/astral-sh/ruff/issues/15555
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Autofix for flake8-logging-format (G) rules
 
 ---
 
-_Issue opened by @justinchuby on 2025-01-17 17:30_
+_@justinchuby_
 
 Hi! I was wondering if there are any plans to create autofix for (G) rules? We have a lot of violations that prevents enabling the rule. Having autofix capabilities (even if unsafe) would greatly help with adoption of the (G) rules in our codebase.
 

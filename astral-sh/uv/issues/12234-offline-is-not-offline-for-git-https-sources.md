@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-17T09:53:35Z
 updated_at: 2025-04-04T16:02:55Z
 url: https://github.com/astral-sh/uv/issues/12234
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # --offline is not offline for "git+https" sources.
 
 ---
 
-_Issue opened by @konstin on 2025-03-17 09:53_
+_@konstin_
 
  _Originally posted by @andrei-korshikov in [#942](https://github.com/astral-sh/uv/issues/942#issuecomment-2728480835)_
 

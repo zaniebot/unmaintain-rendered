@@ -15,14 +15,14 @@ head: micha/io-error-exit-code
 created_at: 2025-11-18T08:41:11Z
 updated_at: 2025-11-19T08:39:21Z
 url: https://github.com/astral-sh/ruff/pull/21508
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Exit with `2` if there's any IO error
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-18 08:41_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T08:48:55Z
 updated_at: 2025-01-08T15:04:11Z
 url: https://github.com/astral-sh/ruff/issues/15339
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False positive of E252, double output for each occurence
 
 ---
 
-_Issue opened by @IgnatKudriavtsev on 2025-01-08 08:48_
+_@IgnatKudriavtsev_
 
 ruff 0.8.6 with preview option enabled
 Python 3.13.1

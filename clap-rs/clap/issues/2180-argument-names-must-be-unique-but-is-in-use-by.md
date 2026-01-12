@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-10-20T23:44:15Z
 updated_at: 2020-10-21T05:24:36Z
 url: https://github.com/clap-rs/clap/issues/2180
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Argument names must be unique, but '' is in use by more than one argument or group'
 
 ---
 
-_Issue opened by @embeddedpenguin on 2020-10-20 23:44_
+_@embeddedpenguin_
 
 ### Code
 

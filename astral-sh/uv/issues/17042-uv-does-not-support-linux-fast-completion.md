@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T06:10:19Z
 updated_at: 2025-12-09T13:28:16Z
 url: https://github.com/astral-sh/uv/issues/17042
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # uv does not support Linux fast completion
 
 ---
 
-_Issue opened by @pengjunfeng11 on 2025-12-09 06:10_
+_@pengjunfeng11_
 
 ### Summary
 

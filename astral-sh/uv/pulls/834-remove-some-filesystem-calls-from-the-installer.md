@@ -13,14 +13,14 @@ head: charlie/entry
 created_at: 2024-01-08T17:22:23Z
 updated_at: 2024-01-08T17:59:02Z
 url: https://github.com/astral-sh/uv/pull/834
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Remove some filesystem calls from the installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 17:22_
+_@charliermarsh_
 
 Noticed these when working on something unrelated. Generally:
 

@@ -13,14 +13,14 @@ head: add-PLR6201
 created_at: 2023-10-16T03:51:39Z
 updated_at: 2023-10-17T04:23:31Z
 url: https://github.com/astral-sh/ruff/pull/7973
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # implement PLR6201 with autofix
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-16 03:51_
+_@diceroll123_
 
 ## Summary
 

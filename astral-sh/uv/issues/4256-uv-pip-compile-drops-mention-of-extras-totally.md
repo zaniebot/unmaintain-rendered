@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T23:47:34Z
 updated_at: 2024-06-13T14:03:46Z
 url: https://github.com/astral-sh/uv/issues/4256
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv pip compile` drops mention of extras, totally losing dependency annotations via constraints
 
 ---
 
-_Issue opened by @funkybob on 2024-06-11 23:47_
+_@funkybob_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

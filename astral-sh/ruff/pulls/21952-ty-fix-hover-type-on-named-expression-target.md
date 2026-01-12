@@ -13,14 +13,14 @@ head: cjm/target
 created_at: 2025-12-12T17:20:44Z
 updated_at: 2025-12-12T17:32:36Z
 url: https://github.com/astral-sh/ruff/pull/21952
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] fix hover type on named expression target
 
 ---
 
-_Pull request opened by @carljm on 2025-12-12 17:20_
+_@carljm_
 
 ## Summary
 

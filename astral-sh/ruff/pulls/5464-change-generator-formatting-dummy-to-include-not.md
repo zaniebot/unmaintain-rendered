@@ -12,14 +12,14 @@ head: Change_generator_dummy_to_include_NOT_IMPLEMENTED_YET
 created_at: 2023-07-02T18:21:49Z
 updated_at: 2023-07-03T07:11:16Z
 url: https://github.com/astral-sh/ruff/pull/5464
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Change generator formatting dummy to include NOT_YET_IMPLEMENTED
 
 ---
 
-_Pull request opened by @konstin on 2023-07-02 18:21_
+_@konstin_
 
 ## Summary
 

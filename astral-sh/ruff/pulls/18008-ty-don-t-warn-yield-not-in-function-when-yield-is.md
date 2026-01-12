@@ -14,14 +14,14 @@ head: yield-outside-fn-duplication
 created_at: 2025-05-10T19:03:31Z
 updated_at: 2025-05-21T16:16:25Z
 url: https://github.com/astral-sh/ruff/pull/18008
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Don't warn `yield` not in function when `yield` is in function
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-10 19:03_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

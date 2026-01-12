@@ -12,14 +12,14 @@ head: charlie/exemption-parser
 created_at: 2023-07-06T18:10:26Z
 updated_at: 2023-07-07T16:04:05Z
 url: https://github.com/astral-sh/ruff/pull/5567
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move file-level rule exemption to lexer-based approach
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 18:10_
+_@charliermarsh_
 
 ## Summary
 

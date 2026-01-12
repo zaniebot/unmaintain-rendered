@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T16:36:00Z
 updated_at: 2025-10-30T08:27:49Z
 url: https://github.com/astral-sh/uv/issues/12290
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Multi-Accelerator torch setup and unexpected uv run behaviour
 
 ---
 
-_Issue opened by @relativityhd on 2025-03-18 16:36_
+_@relativityhd_
 
 ### Question
 

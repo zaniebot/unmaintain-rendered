@@ -14,14 +14,14 @@ head: dylan/stabilize-binary-simplify
 created_at: 2025-06-06T17:38:31Z
 updated_at: 2025-06-06T21:46:45Z
 url: https://github.com/astral-sh/ruff/pull/18506
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`flake8-simplify`] Stabilize further simplification to binary expressions in autofix for `if-else-block-instead-of-if-exp` (`SIM108`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 17:38_
+_@dylwil3_
 
 _No description provided._
 

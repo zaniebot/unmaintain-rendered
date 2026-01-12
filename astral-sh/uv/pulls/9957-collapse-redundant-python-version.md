@@ -13,14 +13,14 @@ head: zb/collapse-redundant-tree
 created_at: 2024-12-17T04:31:25Z
 updated_at: 2024-12-17T14:27:09Z
 url: https://github.com/astral-sh/uv/pull/9957
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Collapse redundant Python version incompatibilities in resolver error message
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 04:31_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/9886
 

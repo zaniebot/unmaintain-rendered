@@ -11,14 +11,14 @@ head: fix-issue-6087
 created_at: 2025-08-04T14:00:15Z
 updated_at: 2025-08-04T14:52:46Z
 url: https://github.com/clap-rs/clap/pull/6088
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: Improve parsing and formatting inside after_help
 
 ---
 
-_Pull request opened by @Agent-Hellboy on 2025-08-04 14:00_
+_@Agent-Hellboy_
 
 <!--
 Thanks for helping out!

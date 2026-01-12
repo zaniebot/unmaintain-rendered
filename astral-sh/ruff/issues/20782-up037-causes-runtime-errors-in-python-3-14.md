@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-09T09:18:51Z
 updated_at: 2025-12-10T17:29:37Z
 url: https://github.com/astral-sh/ruff/issues/20782
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `UP037` causes runtime errors in Python 3.14
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-10-09 09:18_
+_@tylerlaprade_
 
 ### Summary
 

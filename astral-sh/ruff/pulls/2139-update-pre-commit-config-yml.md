@@ -12,14 +12,14 @@ head: update-pre-commit-config-yml
 created_at: 2023-01-24T19:14:41Z
 updated_at: 2023-04-30T19:47:52Z
 url: https://github.com/astral-sh/ruff/pull/2139
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Update .pre-commit-config.yml
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-01-24 19:14_
+_@JonathanPlasse_
 
 - Ruff hook:
   - enable auto-fix

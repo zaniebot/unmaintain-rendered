@@ -14,14 +14,14 @@ head: charlie/with
 created_at: 2024-07-08T00:26:00Z
 updated_at: 2024-07-08T01:24:00Z
 url: https://github.com/astral-sh/uv/pull/4879
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Skip installing `--with` requirements if present in base environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 00:26_
+_@charliermarsh_
 
 ## Summary
 

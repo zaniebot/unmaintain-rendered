@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-02T15:42:18Z
 updated_at: 2025-04-02T15:46:59Z
 url: https://github.com/astral-sh/ruff/issues/17155
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Formatter: keep hanging indent for wrapped string
 
 ---
 
-_Issue opened by @vasily-v-ryabov on 2025-04-02 15:42_
+_@vasily-v-ryabov_
 
 ### Summary
 

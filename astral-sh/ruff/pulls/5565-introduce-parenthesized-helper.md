@@ -14,14 +14,14 @@ head: rewrite-parenthesized
 created_at: 2023-07-06T15:58:01Z
 updated_at: 2023-07-07T09:28:27Z
 url: https://github.com/astral-sh/ruff/pull/5565
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Introduce `parenthesized` helper
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-06 15:58_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

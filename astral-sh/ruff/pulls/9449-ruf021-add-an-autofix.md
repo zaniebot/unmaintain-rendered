@@ -14,14 +14,14 @@ head: force-parens-fix
 created_at: 2024-01-09T12:49:41Z
 updated_at: 2024-01-09T17:56:24Z
 url: https://github.com/astral-sh/ruff/pull/9449
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [RUF021]: Add an autofix
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-09 12:49_
+_@AlexWaygood_
 
 ## Summary
 

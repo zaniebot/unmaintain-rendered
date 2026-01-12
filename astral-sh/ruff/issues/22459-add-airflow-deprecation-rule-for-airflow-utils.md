@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T14:49:13Z
 updated_at: 2026-01-09T08:17:48Z
 url: https://github.com/astral-sh/ruff/issues/22459
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Add Airflow deprecation rule for `airflow.utils` module's deprecated classes
 
 ---
 
-_Issue opened by @zach-overflow on 2026-01-08 14:49_
+_@zach-overflow_
 
 ### Summary
 

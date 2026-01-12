@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-28T10:57:42Z
 updated_at: 2024-03-03T00:22:44Z
 url: https://github.com/astral-sh/ruff/issues/5416
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RSE102 error despite parentheses being necessary
 
 ---
 
-_Issue opened by @sultur on 2023-06-28 10:57_
+_@sultur_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

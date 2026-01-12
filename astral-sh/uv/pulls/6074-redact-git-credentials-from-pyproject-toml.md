@@ -14,14 +14,14 @@ head: charlie/git-creds-2
 created_at: 2024-08-13T23:33:56Z
 updated_at: 2024-08-14T01:30:03Z
 url: https://github.com/astral-sh/uv/pull/6074
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Redact Git credentials from `pyproject.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-13 23:33_
+_@charliermarsh_
 
 ## Summary
 

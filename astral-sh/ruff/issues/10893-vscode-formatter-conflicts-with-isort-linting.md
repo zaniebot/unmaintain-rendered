@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-12T01:37:15Z
 updated_at: 2024-04-12T01:45:03Z
 url: https://github.com/astral-sh/ruff/issues/10893
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Vscode formatter conflicts with isort linting quick fix on I001, can't save file and auto-format without breaking linting in some files
 
 ---
 
-_Issue opened by @ryanovas on 2024-04-12 01:37_
+_@ryanovas_
 
 Hi, new user of ruff here.
 

@@ -13,14 +13,14 @@ head: move-versions-logic
 created_at: 2024-06-21T14:15:50Z
 updated_at: 2024-06-21T15:41:09Z
 url: https://github.com/astral-sh/ruff/pull/11967
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Move typeshed `VERSIONS` parser to the module resolver crate
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-21 14:15_
+_@AlexWaygood_
 
 ## Summary
 

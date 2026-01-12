@@ -13,14 +13,14 @@ head: flake8-django
 created_at: 2023-02-05T18:40:42Z
 updated_at: 2023-02-14T10:47:27Z
 url: https://github.com/astral-sh/ruff/pull/2586
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Implemented flake8-django plugin rules
 
 ---
 
-_Pull request opened by @konysko on 2023-02-05 18:40_
+_@konysko_
 
 Hello,
 

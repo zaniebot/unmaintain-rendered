@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-27T01:28:14Z
 updated_at: 2024-07-29T00:32:12Z
 url: https://github.com/astral-sh/uv/issues/5503
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Make `CachedEnvironment` robust to concurrent modifications
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-27 01:28_
+_@charliermarsh_
 
 Right now, it's possible that we'd modify an environment that's in-use by another process.
 

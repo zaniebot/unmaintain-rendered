@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T15:04:52Z
 updated_at: 2024-05-05T14:00:43Z
 url: https://github.com/astral-sh/ruff/issues/3206
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `isort` need its own line-length configuration
 
 ---
 
-_Issue opened by @KerberosMorphy on 2023-02-24 15:04_
+_@KerberosMorphy_
 
 I remove `isort` rules in my ruff configuration to use `isort` directly since it broke my config.
 

@@ -13,14 +13,14 @@ head: use-uv-workspace
 created_at: 2024-08-02T09:09:54Z
 updated_at: 2024-08-12T14:14:57Z
 url: https://github.com/astral-sh/ruff/pull/12622
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use uv workspaces instead of pip
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 09:09_
+_@MichaReiser_
 
 ## Summary
 

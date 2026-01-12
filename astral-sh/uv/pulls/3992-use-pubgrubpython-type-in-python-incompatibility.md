@@ -13,14 +13,14 @@ head: charlie/req-p
 created_at: 2024-06-03T17:34:50Z
 updated_at: 2024-06-03T18:32:23Z
 url: https://github.com/astral-sh/uv/pull/3992
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Use `PubGrubPython` type in Python incompatibility reporting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 17:34_
+_@charliermarsh_
 
 ## Summary
 

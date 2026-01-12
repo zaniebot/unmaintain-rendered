@@ -13,14 +13,14 @@ head: charlie/urls
 created_at: 2025-01-01T03:56:59Z
 updated_at: 2025-01-01T17:35:31Z
 url: https://github.com/astral-sh/uv/pull/10259
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Parse URLs lazily in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-01 03:56_
+_@charliermarsh_
 
 ## Summary
 

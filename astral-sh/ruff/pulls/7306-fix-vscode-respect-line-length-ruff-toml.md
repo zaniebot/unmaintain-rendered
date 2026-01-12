@@ -14,14 +14,14 @@ head: format-stdin-ruff-toml
 created_at: 2023-09-12T15:20:44Z
 updated_at: 2023-09-12T15:47:01Z
 url: https://github.com/astral-sh/ruff/pull/7306
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix(vscode): Respect line length ruff.toml configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-12 15:20_
+_@MichaReiser_
 
 ## Summary
 

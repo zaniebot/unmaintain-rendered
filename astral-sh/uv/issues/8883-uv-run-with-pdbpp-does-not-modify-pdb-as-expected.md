@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T08:35:54Z
 updated_at: 2025-06-09T06:25:04Z
 url: https://github.com/astral-sh/uv/issues/8883
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv run --with=pdbpp does not modify pdb as expected
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-11-07 08:35_
+_@adamtheturtle_
 
 [`pdbpp`](https://github.com/pdbpp/pdbpp) is a replacement for `pdb` which is automatically used when it is installed and a [`pdb`](https://docs.python.org/3/library/pdb.html) breakpoint is set.
 

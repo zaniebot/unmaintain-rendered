@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T11:16:22Z
 updated_at: 2025-05-07T15:08:32Z
 url: https://github.com/astral-sh/ruff/issues/16413
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff` LSP code auto-completion
 
 ---
 
-_Issue opened by @plutonium-239 on 2025-02-27 11:16_
+_@plutonium-239_
 
 There was an old issue (https://github.com/astral-sh/ruff-lsp/issues/47) on the `ruff-lsp` repo regarding auto completion which was shut down.
 

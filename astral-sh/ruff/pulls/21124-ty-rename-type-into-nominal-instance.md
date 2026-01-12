@@ -14,14 +14,14 @@ head: alex/rename-into-instance
 created_at: 2025-10-29T14:11:30Z
 updated_at: 2025-10-29T16:42:14Z
 url: https://github.com/astral-sh/ruff/pull/21124
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Rename `Type::into_nominal_instance`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-29 14:11_
+_@AlexWaygood_
 
 Looks like this was missed in https://github.com/astral-sh/ruff/pull/20857.
 

@@ -13,14 +13,14 @@ head: micha/fix-snapshot-difference
 created_at: 2024-11-20T09:40:05Z
 updated_at: 2024-11-20T15:41:09Z
 url: https://github.com/astral-sh/ruff/pull/14482
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix failing tests for Ruff 0.8 branch
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-20 09:40_
+_@MichaReiser_
 
 ## Summary
 

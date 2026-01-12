@@ -12,14 +12,14 @@ head: add_ecosystem_all_fix_checker
 created_at: 2023-05-09T19:53:05Z
 updated_at: 2023-05-22T13:23:27Z
 url: https://github.com/astral-sh/ruff/pull/4326
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add script for ecosystem wide checks of all rules and fixes
 
 ---
 
-_Pull request opened by @konstin on 2023-05-09 19:53_
+_@konstin_
 
 This adds my personal script for checking an entire checkout of ~2.1k packages for panics, autofix errors and similar problems. It's not really meant to be used by anybody else but i thought it's better if it lives in the repo than if it doesn't.
 

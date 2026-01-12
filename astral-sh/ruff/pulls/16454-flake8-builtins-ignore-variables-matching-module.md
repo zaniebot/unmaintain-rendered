@@ -14,14 +14,14 @@ head: A001
 created_at: 2025-03-01T22:12:24Z
 updated_at: 2025-03-03T10:10:24Z
 url: https://github.com/astral-sh/ruff/pull/16454
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [flake8-builtins] Ignore variables matching module attribute names (A001)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-01 22:12_
+_@VascoSch92_
 
 This PR (partially) addresses issue #16373 
 

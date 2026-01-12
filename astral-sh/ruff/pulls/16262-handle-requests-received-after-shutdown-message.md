@@ -14,14 +14,14 @@ head: dhruv/handle-shutdown
 created_at: 2025-02-19T17:38:00Z
 updated_at: 2025-02-22T05:50:44Z
 url: https://github.com/astral-sh/ruff/pull/16262
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Handle requests received after shutdown message
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-19 17:38_
+_@dhruvmanila_
 
 ## Summary
 

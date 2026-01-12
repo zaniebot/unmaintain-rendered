@@ -13,14 +13,14 @@ head: refactor/split-get-argument
 created_at: 2023-03-13T08:44:35Z
 updated_at: 2023-03-13T17:18:27Z
 url: https://github.com/astral-sh/ruff/pull/3478
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor(ruff_python_ast): Split `get_argument`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-13 08:44_
+_@MichaReiser_
 
 This PR splits `SimpleCallArguments::get_arguments` into two methods:
 

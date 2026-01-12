@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T11:17:49Z
 updated_at: 2025-05-09T13:55:04Z
 url: https://github.com/astral-sh/uv/issues/13328
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Pre-release version string differs between pyproject.toml and uv version
 
 ---
 
-_Issue opened by @Steinkreis on 2025-05-07 11:17_
+_@Steinkreis_
 
 ### Summary
 

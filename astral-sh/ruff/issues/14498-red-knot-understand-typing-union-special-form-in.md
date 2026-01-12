@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T20:10:45Z
 updated_at: 2024-11-20T21:55:34Z
 url: https://github.com/astral-sh/ruff/issues/14498
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Understand typing.Union special form in annotations
 
 ---
 
-_Issue opened by @Glyphack on 2024-11-20 20:10_
+_@Glyphack_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

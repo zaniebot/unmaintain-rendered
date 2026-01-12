@@ -13,14 +13,14 @@ head: rk-infer-string-literal
 created_at: 2024-08-26T17:39:25Z
 updated_at: 2024-08-27T23:45:01Z
 url: https://github.com/astral-sh/ruff/pull/13113
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # red-knot: infer string literal types
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-26 17:39_
+_@chriskrycho_
 
 ## Summary
 

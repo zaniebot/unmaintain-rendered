@@ -12,14 +12,14 @@ head: more-flags
 created_at: 2023-02-23T16:31:06Z
 updated_at: 2023-02-23T21:31:47Z
 url: https://github.com/astral-sh/ruff/pull/3175
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Adapt BoolLike to flags
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-23 16:31_
+_@youknowone_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dhruv/untitled-files-2
 created_at: 2024-07-26T10:53:33Z
 updated_at: 2024-07-26T12:20:50Z
 url: https://github.com/astral-sh/ruff/pull/12526
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Add tests for untitled files
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-26 10:53_
+_@dhruvmanila_
 
 ## Summary
 

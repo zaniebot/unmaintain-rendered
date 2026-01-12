@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-20T13:31:27Z
 updated_at: 2023-04-27T21:38:13Z
 url: https://github.com/astral-sh/ruff/issues/4046
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # importing pytest fixtures raises F401
 
 ---
 
-_Issue opened by @wasim42 on 2023-04-20 13:31_
+_@wasim42_
 
 It appears that ruff isn't handling pytest fixtures correctly.
 

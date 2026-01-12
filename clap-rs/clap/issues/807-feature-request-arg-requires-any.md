@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-04T06:08:08Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/807
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Feature request: Arg::requires_any
 
 ---
 
-_Issue opened by @saghm on 2017-01-04 06:08_
+_@saghm_
 
 Hi! First off, sorry for not following the template! The default sections seemed to be geared towards bug reports, and I honestly didn't think that any of them applied to my issue. As for the request...
 

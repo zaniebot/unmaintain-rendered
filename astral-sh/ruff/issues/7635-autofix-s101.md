@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T06:12:33Z
 updated_at: 2025-03-28T20:22:25Z
 url: https://github.com/astral-sh/ruff/issues/7635
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Autofix S101
 
 ---
 
-_Issue opened by @kunaltyagi on 2023-09-25 06:12_
+_@kunaltyagi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

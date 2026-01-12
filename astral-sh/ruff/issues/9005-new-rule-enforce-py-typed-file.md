@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-05T07:36:19Z
 updated_at: 2024-03-03T18:40:51Z
 url: https://github.com/astral-sh/ruff/issues/9005
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # new rule - enforce `py.typed` file
 
 ---
 
-_Issue opened by @DetachHead on 2023-12-05 07:36_
+_@DetachHead_
 
 a `py.typed` file is required for type checkers to consider the package typed. see https://peps.python.org/pep-0561/#packaging-type-information
 

@@ -13,14 +13,14 @@ head: feat/ruff-20011
 created_at: 2025-08-21T17:39:24Z
 updated_at: 2025-09-09T13:05:33Z
 url: https://github.com/astral-sh/ruff/pull/20027
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [`pyupgrade`] Enable rule triggering for stub files  (`UP043`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-08-21 17:39_
+_@IDrokin117_
 
 ## Summary
 Resolves #20011

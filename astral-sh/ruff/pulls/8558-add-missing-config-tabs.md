@@ -13,14 +13,14 @@ head: add-missing-config-tabs
 created_at: 2023-11-08T13:33:58Z
 updated_at: 2023-11-09T08:56:02Z
 url: https://github.com/astral-sh/ruff/pull/8558
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add missing config tabs
 
 ---
 
-_Pull request opened by @doolio on 2023-11-08 13:33_
+_@doolio_
 
 _No description provided._
 

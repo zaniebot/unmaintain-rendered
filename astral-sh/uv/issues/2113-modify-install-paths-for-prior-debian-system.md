@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T15:12:29Z
 updated_at: 2024-03-05T21:23:37Z
 url: https://github.com/astral-sh/uv/issues/2113
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Modify install paths for prior Debian system Pythons
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-01 15:12_
+_@charliermarsh_
 
 Within:
 

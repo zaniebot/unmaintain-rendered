@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-27T16:24:46Z
 updated_at: 2025-12-10T17:23:36Z
 url: https://github.com/astral-sh/ruff/issues/21664
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Support Debian 13 "Trixie" as docker container base
 
 ---
 
-_Issue opened by @MatthijsKok on 2025-11-27 16:24_
+_@MatthijsKok_
 
 Currently the ruff docker container is based on Debian 12 "Bookworm".
 See published tags: https://github.com/astral-sh/ruff/pkgs/container/ruff/versions?filters%5Bversion_type%5D=tagged

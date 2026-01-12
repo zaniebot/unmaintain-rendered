@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-07T04:00:54Z
 updated_at: 2024-06-07T07:02:50Z
 url: https://github.com/astral-sh/ruff/issues/11791
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Line break not occuring on type annotations whereas black does
 
 ---
 
-_Issue opened by @jonathan-hill-visasq on 2024-06-07 04:00_
+_@jonathan-hill-visasq_
 
 ## Issue Description
 I've noticed a deviation from the black formatter, which I can't find accounted for in either the [known deviations](https://docs.astral.sh/ruff/formatter/black/) page, or the [issue tracker](https://github.com/astral-sh/ruff/issues?q=is%3Aopen+is%3Aissue+label%3Aformatter).

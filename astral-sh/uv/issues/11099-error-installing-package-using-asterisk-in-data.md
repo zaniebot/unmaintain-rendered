@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T15:50:25Z
 updated_at: 2025-01-30T17:41:47Z
 url: https://github.com/astral-sh/uv/issues/11099
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Error installing package using * asterisk in data path on windows
 
 ---
 
-_Issue opened by @javier-garcia-tilburg on 2025-01-30 15:50_
+_@javier-garcia-tilburg_
 
 ### Summary
 

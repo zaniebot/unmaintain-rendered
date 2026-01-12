@@ -14,14 +14,14 @@ head: feat/tch007-tch008
 created_at: 2024-08-16T11:43:49Z
 updated_at: 2024-11-28T15:29:42Z
 url: https://github.com/astral-sh/ruff/pull/12927
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-type-checking`] Adds implementation for TC007 and TC008
 
 ---
 
-_Pull request opened by @Daverball on 2024-08-16 11:43_
+_@Daverball_
 
 This is part of a series of pull requests fulfilling my promise in #9573 to port some of the enhancements and new rules from flake8-type-checking to ruff.
 

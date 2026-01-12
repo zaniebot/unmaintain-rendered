@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T14:23:21Z
 updated_at: 2024-11-09T02:08:24Z
 url: https://github.com/astral-sh/ruff/issues/14204
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FURB157 has incorrect fixes when replacing strings with integers
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-08 14:23_
+_@dscorbett_
 
 The fixes for [`verbose-decimal-constructor` (FURB157)](https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/) are sometimes incorrect in Ruff 0.7.3. Two of them change behavior and one introduces a syntax error.
 

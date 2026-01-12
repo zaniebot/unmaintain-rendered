@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T16:44:04Z
 updated_at: 2024-06-30T23:43:25Z
 url: https://github.com/astral-sh/uv/issues/4590
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Support `--disable-pip-version-check` and other pip flags
 
 ---
 
-_Issue opened by @jeffgeee on 2024-06-27 16:44_
+_@jeffgeee_
 
 `uv` is supposed to be a "Drop-in replacement for common pip, pip-tools, and virtualenv commands."
 

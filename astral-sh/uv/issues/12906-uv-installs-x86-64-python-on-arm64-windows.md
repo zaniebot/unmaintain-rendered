@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T20:45:32Z
 updated_at: 2025-11-28T01:23:00Z
 url: https://github.com/astral-sh/uv/issues/12906
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # uv installs x86_64 Python on arm64 Windows 
 
 ---
 
-_Issue opened by @burgholzer on 2025-04-15 20:45_
+_@burgholzer_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: david/unreachable-code-tests
 created_at: 2025-04-02T16:40:56Z
 updated_at: 2025-04-02T17:43:46Z
 url: https://github.com/astral-sh/ruff/pull/17159
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add initial set of tests for unreachable code
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-02 16:40_
+_@sharkdp_
 
 ## Summary
 

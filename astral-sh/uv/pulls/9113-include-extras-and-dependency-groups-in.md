@@ -13,14 +13,14 @@ head: charlie/chain-iii
 created_at: 2024-11-14T04:27:28Z
 updated_at: 2024-11-15T20:37:20Z
 url: https://github.com/astral-sh/uv/pull/9113
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Include extras and dependency groups in derivation chains
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-14 04:27_
+_@charliermarsh_
 
 ## Summary
 

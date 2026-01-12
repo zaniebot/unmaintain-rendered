@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-28T06:48:40Z
 updated_at: 2025-04-26T12:35:44Z
 url: https://github.com/astral-sh/ruff/issues/9298
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused
 
 ---
 
-_Issue opened by @max-muoto on 2023-12-28 06:48_
+_@max-muoto_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

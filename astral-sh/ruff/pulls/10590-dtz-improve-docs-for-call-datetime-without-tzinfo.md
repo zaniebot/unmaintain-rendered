@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-03-25T21:21:39Z
 updated_at: 2024-03-27T20:03:38Z
 url: https://github.com/astral-sh/ruff/pull/10590
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`DTZ`] Improve docs for `call-datetime-without-tzinfo` (`DTZ005`)
 
 ---
 
-_Pull request opened by @cclauss on 2024-03-25 21:21_
+_@cclauss_
 
 Fixes #10251
 * #10251

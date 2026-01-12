@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-04T17:54:41Z
 updated_at: 2026-01-10T11:42:23Z
 url: https://github.com/astral-sh/ty/issues/1308
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `CovariantClass[T | U]` should be assignable to `CovariantClass[T] | CovariantClass[U]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-04 17:54_
+_@AlexWaygood_
 
 ### Summary
 

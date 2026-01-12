@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T00:28:39Z
 updated_at: 2024-11-06T16:43:44Z
 url: https://github.com/astral-sh/uv/issues/8786
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Add a progress bar to `uv cache clean`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-04 00:28_
+_@charliermarsh_
 
 Similar to `cargo clean`.
 

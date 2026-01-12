@@ -13,14 +13,14 @@ head: renovate/monaco
 created_at: 2024-04-29T00:31:59Z
 updated_at: 2024-04-29T06:34:50Z
 url: https://github.com/astral-sh/ruff/pull/11197
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Update dependency monaco-editor to ^0.48.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-29 00:31_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

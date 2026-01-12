@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-11T20:20:03Z
 updated_at: 2023-11-12T00:25:14Z
 url: https://github.com/astral-sh/ruff/issues/8620
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add option to disable preview warnings
 
 ---
 
-_Issue opened by @ofek on 2023-11-11 20:20_
+_@ofek_
 
 I would like to wrap Ruff without having to know which rules are under preview or not and suppress the warnings. Also, I think there are many duplicate warnings:
 

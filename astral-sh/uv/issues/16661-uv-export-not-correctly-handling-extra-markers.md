@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T09:06:35Z
 updated_at: 2025-11-10T12:49:09Z
 url: https://github.com/astral-sh/uv/issues/16661
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # uv export not correctly handling extra markers
 
 ---
 
-_Issue opened by @jsiverskog on 2025-11-10 09:06_
+_@jsiverskog_
 
 ### Summary
 

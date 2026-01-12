@@ -14,14 +14,14 @@ head: charlie/noop
 created_at: 2024-08-10T17:57:13Z
 updated_at: 2024-08-11T00:34:07Z
 url: https://github.com/astral-sh/uv/pull/5998
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Avoid replacing executables on no-op upgrades
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-10 17:57_
+_@charliermarsh_
 
 ## Summary
 

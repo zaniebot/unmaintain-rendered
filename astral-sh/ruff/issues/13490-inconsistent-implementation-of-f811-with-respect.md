@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T22:44:48Z
 updated_at: 2024-09-23T23:28:11Z
 url: https://github.com/astral-sh/ruff/issues/13490
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Inconsistent implementation of F811 with respect to submodule imports
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-09-23 22:44_
+_@AlexWaygood_
 
 Ruff [emits no F811 diagnostics for this snippet](https://play.ruff.rs/e2f74be7-eeff-4e61-ab90-867610850d2c):
 

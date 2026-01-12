@@ -14,14 +14,14 @@ head: zb/docs-show-hidden
 created_at: 2024-08-16T14:07:53Z
 updated_at: 2024-08-16T16:40:07Z
 url: https://github.com/astral-sh/uv/pull/6146
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Show `uv generate-shell-completion` in CLI documentation reference
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 14:07_
+_@zanieb_
 
 We need to follow this with:
 

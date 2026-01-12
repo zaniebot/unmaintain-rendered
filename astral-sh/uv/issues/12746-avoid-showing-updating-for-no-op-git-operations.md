@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-08T15:27:05Z
 updated_at: 2025-06-15T10:46:34Z
 url: https://github.com/astral-sh/uv/issues/12746
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Avoid showing `Updating...` for no-op Git operations like checkout of immutable references
 
 ---
 
-_Issue opened by @sbidoul on 2025-04-08 15:27_
+_@sbidoul_
 
 ### Summary
 

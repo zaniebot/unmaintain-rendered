@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-11T10:36:33Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/7287
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Upgrade tool Python patch versions automatically on managed Python upgrade
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-09-11 10:36_
+_@neutrinoceros_
 
 Here's a scenario where I have a tool (say, `pre-commit`) installed against a uv-managed python interpreter (say 3.12.5) which also happens to be my only uv-managed python 3.12. Trying to upgrade to Python 3.12.6 results in a broken state where Python 3.12.5 is dropped under my tool.
 

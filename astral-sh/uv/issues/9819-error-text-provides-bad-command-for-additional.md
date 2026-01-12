@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-11T18:19:48Z
 updated_at: 2024-12-11T18:49:28Z
 url: https://github.com/astral-sh/uv/issues/9819
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # error text provides bad command for additional information
 
 ---
 
-_Issue opened by @hwine on 2024-12-11 18:19_
+_@hwine_
 
 While attempting to install the `aarch64` version of python, I received the following suggestions -- the first suggestion (`uv python help`) is both:
 - a syntax error (as the second invocation shows)

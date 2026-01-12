@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T07:12:01Z
 updated_at: 2025-03-05T18:13:48Z
 url: https://github.com/astral-sh/uv/issues/4088
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # A path dependency is incompatible with the current platform
 
 ---
 
-_Issue opened by @henryiii on 2024-06-06 07:12_
+_@henryiii_
 
 I'm running into `error: Failed to determine installation plan Caused by: A path dependency is incompatible with the current platform` when trying to use uv in cibuildwheel for macOS and Windows wheels (Linux is fine).
 

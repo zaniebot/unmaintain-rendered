@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-03T02:07:39Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/410
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Panics when parsing a single hyphen
 
 ---
 
-_Issue opened by @cite-reader on 2016-02-03 02:07_
+_@cite-reader_
 
 Given the following minimal test case:
 

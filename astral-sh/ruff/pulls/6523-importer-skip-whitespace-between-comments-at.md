@@ -13,14 +13,14 @@ head: fix_i002
 created_at: 2023-08-12T14:39:13Z
 updated_at: 2023-08-12T20:37:56Z
 url: https://github.com/astral-sh/ruff/pull/6523
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # importer: skip whitespace between comments at start of file
 
 ---
 
-_Pull request opened by @durumu on 2023-08-12 14:39_
+_@durumu_
 
 ## Summary
 

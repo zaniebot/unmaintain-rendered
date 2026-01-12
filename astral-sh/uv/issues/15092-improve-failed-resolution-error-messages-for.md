@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T19:58:00Z
 updated_at: 2025-08-06T13:26:55Z
 url: https://github.com/astral-sh/uv/issues/15092
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Improve failed resolution error messages for "splits"
 
 ---
 
-_Issue opened by @zanieb on 2025-08-05 19:58_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/15041#discussion_r2255215788
             

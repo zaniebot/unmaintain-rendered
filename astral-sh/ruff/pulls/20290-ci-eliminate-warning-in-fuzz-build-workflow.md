@@ -13,14 +13,14 @@ head: fix-fuzz-ci-warning
 created_at: 2025-09-07T22:53:20Z
 updated_at: 2025-09-08T06:13:36Z
 url: https://github.com/astral-sh/ruff/pull/20290
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # CI: Eliminate warning in fuzz build workflow
 
 ---
 
-_Pull request opened by @ferdnyc on 2025-09-07 22:53_
+_@ferdnyc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

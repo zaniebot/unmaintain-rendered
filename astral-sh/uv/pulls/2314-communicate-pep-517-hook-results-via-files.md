@@ -13,14 +13,14 @@ head: charlie/scikit-image
 created_at: 2024-03-09T03:17:58Z
 updated_at: 2024-03-09T11:49:58Z
 url: https://github.com/astral-sh/uv/pull/2314
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Communicate PEP 517 hook results via files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-09 03:17_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

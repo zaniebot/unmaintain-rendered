@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-28T19:26:15Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/546
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Multiple values separated by a delimiter _only_?
 
 ---
 
-_Issue opened by @kornelski on 2016-06-28 19:26_
+_@kornelski_
 
 I'm trying to make an arg that accepts one or two comma-delimited values, and also accept unnamed (index) argument after that.
 

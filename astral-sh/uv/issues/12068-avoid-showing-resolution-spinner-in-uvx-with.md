@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T19:43:44Z
 updated_at: 2025-03-09T03:05:31Z
 url: https://github.com/astral-sh/uv/issues/12068
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Avoid showing resolution spinner in `uvx` with fully-cached resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-08 19:43_
+_@charliermarsh_
 
 I think `uvx ruff check` will briefly show the spinner even if all the data is cached.
 

@@ -13,14 +13,14 @@ head: zb/bounce-python
 created_at: 2024-10-28T15:57:06Z
 updated_at: 2024-10-30T00:26:58Z
 url: https://github.com/astral-sh/uv/pull/8637
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Add a trampoline variant that just executes `python`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 15:57_
+_@zanieb_
 
 Currently, our trampoline is used to convert `<command> [args]` to `python <command> [args]` for script entrypoints installed into virtual environments. For #8458, it'd be nice to convert a shim `python3.12 [args]` to `python [args]`. Here, we modify the trampolines to support this use-case.
 

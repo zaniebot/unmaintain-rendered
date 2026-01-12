@@ -12,14 +12,14 @@ head: renkai-narrow-enum
 created_at: 2025-09-07T01:32:28Z
 updated_at: 2025-09-07T02:14:53Z
 url: https://github.com/astral-sh/ruff/pull/20283
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty][WIP] make narrowing for enums
 
 ---
 
-_Pull request opened by @Renkai on 2025-09-07 01:32_
+_@Renkai_
 
 Finished todos left in https://github.com/astral-sh/ruff/pull/20164
 

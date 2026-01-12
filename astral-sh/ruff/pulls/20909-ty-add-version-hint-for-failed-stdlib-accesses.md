@@ -14,14 +14,14 @@ head: gankra/older-python
 created_at: 2025-10-16T03:00:47Z
 updated_at: 2025-10-16T14:07:34Z
 url: https://github.com/astral-sh/ruff/pull/20909
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Add version hint for failed stdlib accesses
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-16 03:00_
+_@Gankra_
 
 This is the ultra-minimal implementation of
 

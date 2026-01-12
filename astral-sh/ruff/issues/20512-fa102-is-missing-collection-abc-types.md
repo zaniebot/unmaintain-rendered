@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T09:34:56Z
 updated_at: 2025-10-03T13:45:34Z
 url: https://github.com/astral-sh/ruff/issues/20512
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FA102 is missing `collection.abc` types
 
 ---
 
-_Issue opened by @Andrej730 on 2025-09-22 09:34_
+_@Andrej730_
 
 ### Summary
 

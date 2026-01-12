@@ -13,14 +13,14 @@ head: fix-async-doc
 created_at: 2024-08-16T10:12:42Z
 updated_at: 2024-08-16T10:26:35Z
 url: https://github.com/astral-sh/ruff/pull/12924
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-async`] Fix examples to use `async with`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-16 10:12_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/12921

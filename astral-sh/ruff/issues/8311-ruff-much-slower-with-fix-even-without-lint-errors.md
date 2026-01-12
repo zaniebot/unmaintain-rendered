@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-28T17:50:30Z
 updated_at: 2023-10-29T16:06:37Z
 url: https://github.com/astral-sh/ruff/issues/8311
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff much slower with --fix even without lint errors
 
 ---
 
-_Issue opened by @lukaspiatkowski on 2023-10-28 17:50_
+_@lukaspiatkowski_
 
 When I call `ruff .` it finished in 0.15s on my repo, but `ruff --fix .` takes >2.5s, even if there are no lint errors and nothing to fix. Is it safe to always call `ruff .` and run it again with --fix only when the are some fixable issues? If so then maybe there is some room for improvement in ruff itself?
 

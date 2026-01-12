@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T10:01:06Z
 updated_at: 2024-07-19T14:47:12Z
 url: https://github.com/astral-sh/uv/issues/5212
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Make ``uv help <command>`` work on Windows(GUI) without using ``more``.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-19 10:01_
+_@FishAlchemist_
 
 **uv version**: build from commit 93ba676f(after uv v0.2.26)
 In Windows(GUI), using the ``more`` is a bit cumbersome for me. It would be better to output everything at once and then I use the mouse to find the information I need.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T01:16:30Z
 updated_at: 2025-10-21T20:58:50Z
 url: https://github.com/astral-sh/ruff/issues/18778
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-simplify] SIM911 false positive when methods have args
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 01:16_
+_@MeGaGiGaGon_
 
 ### Summary
 

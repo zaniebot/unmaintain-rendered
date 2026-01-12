@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-26T15:51:13Z
 updated_at: 2024-08-16T21:01:13Z
 url: https://github.com/astral-sh/uv/issues/5484
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv pip install -e .` does not recompute dynamic dependencies anymore
 
 ---
 
-_Issue opened by @sbidoul on 2024-07-26 15:51_
+_@sbidoul_
 
 I have a project with dynamic dependencies.
 

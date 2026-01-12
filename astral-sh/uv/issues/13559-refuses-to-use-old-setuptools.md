@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T18:22:32Z
 updated_at: 2025-05-20T19:53:45Z
 url: https://github.com/astral-sh/uv/issues/13559
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Refuses to use old setuptools
 
 ---
 
-_Issue opened by @mlanett on 2025-05-20 18:22_
+_@mlanett_
 
 ### Summary
 

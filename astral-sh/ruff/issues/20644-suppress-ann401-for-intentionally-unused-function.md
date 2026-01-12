@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T09:33:00Z
 updated_at: 2025-12-10T17:35:35Z
 url: https://github.com/astral-sh/ruff/issues/20644
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Suppress ANN401 for intentionally-unused function arguments
 
 ---
 
-_Issue opened by @colinrsmall on 2025-09-30 09:33_
+_@colinrsmall_
 
 ### Summary
 

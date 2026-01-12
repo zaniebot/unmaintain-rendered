@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-13T18:29:08Z
 updated_at: 2025-06-17T07:24:30Z
 url: https://github.com/astral-sh/ty/issues/365
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # panic: If we have at least one binding, the scope-start should not be definitely visible
 
 ---
 
-_Issue opened by @jelle-openai on 2025-05-13 18:29_
+_@jelle-openai_
 
 ### Summary
 

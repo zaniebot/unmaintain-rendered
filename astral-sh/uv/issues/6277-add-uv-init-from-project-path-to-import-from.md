@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T21:21:33Z
 updated_at: 2025-08-22T03:16:15Z
 url: https://github.com/astral-sh/uv/issues/6277
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add `uv init --from-project <path>` to import from other tools
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 21:21_
+_@zanieb_
 
 As previously discussed for `uv add -r pyproject.toml` but without any of the controversy about what to do with extras. We can copy all of the dependencies as reported by the build backend.
 

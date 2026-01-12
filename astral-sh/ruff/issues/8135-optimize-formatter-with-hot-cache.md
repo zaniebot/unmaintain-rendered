@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-23T10:06:06Z
 updated_at: 2024-05-04T21:22:53Z
 url: https://github.com/astral-sh/ruff/issues/8135
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Optimize formatter with hot cache
 
 ---
 
-_Issue opened by @konstin on 2023-10-23 10:06_
+_@konstin_
 
 There's a lot of optimization opportunities with the formatter with a hot cache (the example is apache airflow with rayon removed):
 

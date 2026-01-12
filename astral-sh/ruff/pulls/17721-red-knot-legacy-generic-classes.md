@@ -13,14 +13,14 @@ head: dcreager/legacy-class
 created_at: 2025-04-29T20:03:41Z
 updated_at: 2025-05-03T15:43:22Z
 url: https://github.com/astral-sh/ruff/pull/17721
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Legacy generic classes
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-29 20:03_
+_@dcreager_
 
 This adds support for legacy generic classes, which use a `typing.Generic` base class, or which inherit from another generic class that has been specialized with legacy typevars.
 

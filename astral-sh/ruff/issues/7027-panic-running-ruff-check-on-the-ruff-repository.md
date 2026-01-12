@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-31T16:04:27Z
 updated_at: 2023-08-31T16:16:30Z
 url: https://github.com/astral-sh/ruff/issues/7027
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Panic running `ruff check` on the ruff repository
 
 ---
 
-_Issue opened by @zanieb on 2023-08-31 16:04_
+_@zanieb_
 
 From `main` at 96a9717c1a77796bc23d15625b60e8c03851e54c
 

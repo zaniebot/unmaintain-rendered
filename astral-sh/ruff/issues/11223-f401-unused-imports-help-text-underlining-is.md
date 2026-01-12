@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-30T23:48:27Z
 updated_at: 2024-05-09T17:47:38Z
 url: https://github.com/astral-sh/ruff/issues/11223
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F401 (unused imports) - Help text underlining is confusing
 
 ---
 
-_Issue opened by @plredmond on 2024-04-30 23:48_
+_@plredmond_
 
 In https://github.com/astral-sh/ruff/pull/11168 we [noticed](https://github.com/astral-sh/ruff/pull/11168#discussion_r1583791309) that the help text is only underlining the as-name part of an unused import, e.g.
 ```

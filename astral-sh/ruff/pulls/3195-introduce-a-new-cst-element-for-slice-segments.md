@@ -13,14 +13,14 @@ head: charlie/format-ii
 created_at: 2023-02-24T00:40:31Z
 updated_at: 2023-02-24T00:49:42Z
 url: https://github.com/astral-sh/ruff/pull/3195
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Introduce a new CST element for slice segments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 00:40_
+_@charliermarsh_
 
 In Python, both of these slices have the same AST:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T08:09:44Z
 updated_at: 2025-08-08T10:51:41Z
 url: https://github.com/astral-sh/uv/issues/15159
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv ignores custom URL in [tool.uv.sources] when marker is used
 
 ---
 
-_Issue opened by @peacefulotter on 2025-08-08 08:09_
+_@peacefulotter_
 
 ### Summary
 

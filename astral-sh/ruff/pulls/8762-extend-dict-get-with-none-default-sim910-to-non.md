@@ -14,14 +14,14 @@ head: charlie/SIM9
 created_at: 2023-11-18T23:51:22Z
 updated_at: 2023-11-19T00:29:04Z
 url: https://github.com/astral-sh/ruff/pull/8762
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Extend `dict-get-with-none-default` (`SIM910`) to non-literals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-18 23:51_
+_@charliermarsh_
 
 ## Summary
 

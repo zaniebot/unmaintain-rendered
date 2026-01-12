@@ -14,14 +14,14 @@ head: charlie/del
 created_at: 2025-12-21T01:00:36Z
 updated_at: 2025-12-24T03:34:22Z
 url: https://github.com/astral-sh/ruff/pull/22121
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Check `__delitem__` instead of `__getitem__` for `del x[k]`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-21 01:00_
+_@charliermarsh_
 
 ## Summary
 

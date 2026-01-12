@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T21:26:28Z
 updated_at: 2024-08-22T23:06:58Z
 url: https://github.com/astral-sh/uv/issues/6463
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add feature flag to disable new lock file features (PEP 751)
 
 ---
 
-_Issue opened by @ketozhang on 2024-08-22 21:26_
+_@ketozhang_
 
 I'm not ready to use the new lock files in my dev environment. I need to heavily rely on pip-compile style lock files (`uv sync requirements.in`). 
 

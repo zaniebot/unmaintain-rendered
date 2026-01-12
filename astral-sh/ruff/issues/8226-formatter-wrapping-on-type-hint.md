@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T20:30:36Z
 updated_at: 2023-10-26T00:08:49Z
 url: https://github.com/astral-sh/ruff/issues/8226
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # formatter: wrapping on type hint
 
 ---
 
-_Issue opened by @henryiii on 2023-10-25 20:30_
+_@henryiii_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

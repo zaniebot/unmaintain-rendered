@@ -13,14 +13,14 @@ head: brent/msrv
 created_at: 2025-02-26T16:17:22Z
 updated_at: 2025-02-26T16:29:02Z
 url: https://github.com/astral-sh/ruff/pull/16402
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Use `is_none_or` in `stdlib-module-shadowing`
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-26 16:17_
+_@ntBre_
 
 Summary
 --

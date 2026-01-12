@@ -12,14 +12,14 @@ head: py38-more
 created_at: 2025-06-02T07:56:43Z
 updated_at: 2025-06-04T14:53:30Z
 url: https://github.com/astral-sh/uv/pull/13780
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update `lock::lock_requires_python` not to require Python 3.8
 
 ---
 
-_Pull request opened by @mgorny on 2025-06-02 07:56_
+_@mgorny_
 
 ## Summary
 

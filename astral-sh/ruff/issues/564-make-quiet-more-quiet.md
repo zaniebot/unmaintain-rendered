@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-03T07:58:38Z
 updated_at: 2022-11-03T14:10:10Z
 url: https://github.com/astral-sh/ruff/issues/564
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Make --quiet more quiet
 
 ---
 
-_Issue opened by @jlangeveld on 2022-11-03 07:58_
+_@jlangeveld_
 
 Would it be possible to make the output more quiet when using the `--quiet` option?
 Right now ruff reports

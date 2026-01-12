@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-08T19:37:06Z
 updated_at: 2024-05-10T13:38:18Z
 url: https://github.com/astral-sh/ruff/issues/11344
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff config custom filename
 
 ---
 
-_Issue opened by @padrepitufo on 2024-05-08 19:37_
+_@padrepitufo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: zb/pbs
 created_at: 2024-12-17T17:19:43Z
 updated_at: 2024-12-17T20:20:00Z
 url: https://github.com/astral-sh/uv/pull/9977
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Update references to `python-build-standalone` to reflect the transferred project
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 17:19_
+_@zanieb_
 
 _No description provided._
 

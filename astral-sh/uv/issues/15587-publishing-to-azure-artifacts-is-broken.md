@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T22:51:22Z
 updated_at: 2025-08-29T23:49:47Z
 url: https://github.com/astral-sh/uv/issues/15587
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # publishing to azure artifacts is broken
 
 ---
 
-_Issue opened by @niekrongen on 2025-08-29 22:51_
+_@niekrongen_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: cognitive_complexity
 created_at: 2024-02-04T14:48:57Z
 updated_at: 2024-03-28T16:17:30Z
 url: https://github.com/astral-sh/ruff/pull/9812
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # New lint rule: flake8_cognitive_complexity function_is_too_cognitive_complex
 
 ---
 
-_Pull request opened by @Anders-Steen on 2024-02-04 14:48_
+_@Anders-Steen_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

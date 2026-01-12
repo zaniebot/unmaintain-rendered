@@ -14,14 +14,14 @@ head: dylwil3/fix-grep
 created_at: 2025-01-23T19:06:56Z
 updated_at: 2025-01-23T19:15:00Z
 url: https://github.com/astral-sh/ruff/pull/15699
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Fix grep for version number in docker build
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-23 19:06_
+_@dylwil3_
 
 Grep now only returns _first_ result and "version" has to be at start of line.
 

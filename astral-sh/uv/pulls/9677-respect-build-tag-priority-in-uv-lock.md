@@ -13,14 +13,14 @@ head: charlie/tags
 created_at: 2024-12-06T12:29:32Z
 updated_at: 2024-12-06T12:41:14Z
 url: https://github.com/astral-sh/uv/pull/9677
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Respect build tag priority in `uv.lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-06 12:29_
+_@charliermarsh_
 
 ## Summary
 

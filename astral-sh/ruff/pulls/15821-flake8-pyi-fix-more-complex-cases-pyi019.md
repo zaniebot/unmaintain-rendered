@@ -14,14 +14,14 @@ head: PYI019
 created_at: 2025-01-30T00:09:47Z
 updated_at: 2025-02-02T19:15:34Z
 url: https://github.com/astral-sh/ruff/pull/15821
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pyi`] Fix more complex cases (`PYI019`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-30 00:09_
+_@InSyncWithFoo_
 
 ## Summary
 

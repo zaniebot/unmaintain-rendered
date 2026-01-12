@@ -13,14 +13,14 @@ head: micha/go-to-type-definition
 created_at: 2025-03-21T16:36:31Z
 updated_at: 2025-04-02T15:11:12Z
 url: https://github.com/astral-sh/ruff/pull/16901
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Goto type definition
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-21 16:36_
+_@MichaReiser_
 
 ## Summary
 

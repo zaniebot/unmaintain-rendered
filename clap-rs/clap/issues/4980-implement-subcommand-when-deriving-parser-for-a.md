@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T21:19:45Z
 updated_at: 2023-06-22T01:46:32Z
 url: https://github.com/clap-rs/clap/issues/4980
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Implement Subcommand when deriving Parser for a struct that has a Subcommand field
 
 ---
 
-_Issue opened by @Heliozoa on 2023-06-21 21:19_
+_@Heliozoa_
 
 ### Please complete the following tasks
 

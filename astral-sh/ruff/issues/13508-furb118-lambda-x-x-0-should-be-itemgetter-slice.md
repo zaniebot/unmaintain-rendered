@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-25T04:48:09Z
 updated_at: 2024-09-26T14:20:05Z
 url: https://github.com/astral-sh/ruff/issues/13508
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FURB118, `lambda x: x[:, 0]` should be `itemgetter((slice(None), 0))`, instead of `itemgetter((:, 0))`
 
 ---
 
-_Issue opened by @nasyxx on 2024-09-25 04:48_
+_@nasyxx_
 
 In refurb, FURB118, `lambda x: x[:, 0]` should be `itemgetter((slice(None), 0))`, instead of `itemgetter((:, 0))`
 

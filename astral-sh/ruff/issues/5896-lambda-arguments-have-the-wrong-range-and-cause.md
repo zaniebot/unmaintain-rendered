@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-19T19:26:25Z
 updated_at: 2023-07-21T15:39:39Z
 url: https://github.com/astral-sh/ruff/issues/5896
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # lambda arguments have the wrong range and cause unstable formatting
 
 ---
 
-_Issue opened by @konstin on 2023-07-19 19:26_
+_@konstin_
 
 This example causes unstable formatting:
 ```python

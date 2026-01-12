@@ -13,14 +13,14 @@ head: alex/pyi019-stabilize
 created_at: 2025-03-10T17:12:17Z
 updated_at: 2025-03-11T16:05:28Z
 url: https://github.com/astral-sh/ruff/pull/16607
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [ruff-0.10] [`flake8-pyi`] Stabilize preview-mode behaviours for `custom-type-var-for-self`(`PYI019`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-10 17:12_
+_@AlexWaygood_
 
 ## Summary
 

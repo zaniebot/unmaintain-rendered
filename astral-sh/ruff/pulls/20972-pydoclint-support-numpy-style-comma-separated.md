@@ -14,14 +14,14 @@ head: fix-20959
 created_at: 2025-10-19T21:51:19Z
 updated_at: 2025-11-12T07:44:41Z
 url: https://github.com/astral-sh/ruff/pull/20972
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [`pydoclint`] Support NumPy-style comma-separated parameters (`DOC102`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-19 21:51_
+_@danparizher_
 
 ## Summary
 

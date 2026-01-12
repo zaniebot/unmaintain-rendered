@@ -15,14 +15,14 @@ head: server/add-links-to-documentation-rules
 created_at: 2025-05-16T07:35:31Z
 updated_at: 2025-05-17T17:28:00Z
 url: https://github.com/astral-sh/ruff/pull/18128
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Add rule link to server diagnostics
 
 ---
 
-_Pull request opened by @kiran-4444 on 2025-05-16 07:35_
+_@kiran-4444_
 
 ## Summary
 

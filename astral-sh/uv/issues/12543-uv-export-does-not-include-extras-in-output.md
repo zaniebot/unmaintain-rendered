@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T11:11:03Z
 updated_at: 2025-03-29T18:13:36Z
 url: https://github.com/astral-sh/uv/issues/12543
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # `uv export` does not include extras in output
 
 ---
 
-_Issue opened by @kshramt on 2025-03-29 11:11_
+_@kshramt_
 
 ### Summary
 

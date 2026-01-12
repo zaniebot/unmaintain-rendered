@@ -13,14 +13,14 @@ head: zb/314-test
 created_at: 2025-08-08T23:47:34Z
 updated_at: 2025-08-08T23:49:39Z
 url: https://github.com/astral-sh/uv/pull/15182
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add a test requirement on Python 3.14
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-08 23:47_
+_@zanieb_
 
 For #15181 
 

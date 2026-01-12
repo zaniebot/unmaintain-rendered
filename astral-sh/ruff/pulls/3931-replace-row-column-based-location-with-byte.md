@@ -13,14 +13,14 @@ head: byte-offset-parser
 created_at: 2023-04-11T10:09:30Z
 updated_at: 2023-04-26T18:32:28Z
 url: https://github.com/astral-sh/ruff/pull/3931
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Replace row/column based `Location` with byte-offsets.
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-11 10:09_
+_@MichaReiser_
 
 ## Summary
 

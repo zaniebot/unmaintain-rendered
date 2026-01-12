@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-03T21:33:03Z
 updated_at: 2025-12-30T12:59:55Z
 url: https://github.com/clap-rs/clap/issues/4824
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Dependency Dashboard
 
 ---
 
-_Issue opened by @renovate on 2023-04-03 21:33_
+_@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/clap-rs/clap).
 

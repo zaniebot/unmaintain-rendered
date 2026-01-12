@@ -13,14 +13,14 @@ head: alex/rework-equivalence-relation
 created_at: 2025-09-05T14:57:12Z
 updated_at: 2025-09-07T12:59:10Z
 url: https://github.com/astral-sh/ruff/pull/20267
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Reimplement equivalence via mutual subtyping
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-05 14:57_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

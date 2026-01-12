@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-30T20:57:24Z
 updated_at: 2025-07-30T20:59:52Z
 url: https://github.com/astral-sh/ruff/issues/19649
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Introduce a system to suppress existing errors
 
 ---
 
-_Issue opened by @InsidersByte on 2025-07-30 20:57_
+_@InsidersByte_
 
 I would like there to be a system to suppress existing errors from being reported, so that I can select a new rule and be notified when new ones show up.
 

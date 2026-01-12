@@ -12,14 +12,14 @@ head: konsti/allow-unknown-fields
 created_at: 2024-05-10T16:56:46Z
 updated_at: 2024-05-10T18:50:25Z
 url: https://github.com/astral-sh/uv/pull/3511
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Allow unknown pyproject.toml fields
 
 ---
 
-_Pull request opened by @konstin on 2024-05-10 16:56_
+_@konstin_
 
 Fixes #3510, we use typo error messages though.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-11T14:44:33Z
 updated_at: 2025-12-18T20:51:38Z
 url: https://github.com/astral-sh/ruff/issues/21380
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Allow one empty newline after class header
 
 ---
 
-_Issue opened by @laymonage on 2025-11-11 14:44_
+_@laymonage_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/source-kind
 created_at: 2023-10-04T14:23:21Z
 updated_at: 2023-10-04T15:15:41Z
 url: https://github.com/astral-sh/ruff/pull/7813
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Move diffing logic into `SourceKind::diff`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-04 14:23_
+_@charliermarsh_
 
 _No description provided._
 

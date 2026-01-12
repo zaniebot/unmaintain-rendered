@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-27T12:21:35Z
 updated_at: 2025-10-21T18:34:56Z
 url: https://github.com/astral-sh/uv/issues/9465
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Configurable Precedence for `--env-file`
 
 ---
 
-_Issue opened by @pedroprates on 2024-11-27 12:21_
+_@pedroprates_
 
 ### Problem Description
 

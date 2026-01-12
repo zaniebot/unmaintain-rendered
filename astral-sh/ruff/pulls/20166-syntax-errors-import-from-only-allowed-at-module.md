@@ -13,14 +13,14 @@ head: F406
 created_at: 2025-08-30T12:23:23Z
 updated_at: 2025-09-16T19:53:28Z
 url: https://github.com/astral-sh/ruff/pull/20166
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [syntax-errors]: import from * only allowed at module scope (F406)
 
 ---
 
-_Pull request opened by @11happy on 2025-08-30 12:23_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T12:38:58Z
 updated_at: 2026-01-06T13:06:46Z
 url: https://github.com/astral-sh/ty/issues/2365
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Completions for `[item.<CURSOR> for item in xs]` fail because of how the comprehension is parsed
 
 ---
 
-_Issue opened by @BurntSushi on 2026-01-06 12:38_
+_@BurntSushi_
 
 ### Summary
 

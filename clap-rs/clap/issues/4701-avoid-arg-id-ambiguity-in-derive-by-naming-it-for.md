@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-02-10T15:42:43Z
 updated_at: 2023-02-10T15:42:43Z
 url: https://github.com/clap-rs/clap/issues/4701
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Avoid `Arg::id` ambiguity in derive by naming it for `Type::field` instead of `field`
 
 ---
 
-_Issue opened by @epage on 2023-02-10 15:42_
+_@epage_
 
 ### Please complete the following tasks
 

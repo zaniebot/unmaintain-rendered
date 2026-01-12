@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T11:28:19Z
 updated_at: 2025-08-26T08:49:22Z
 url: https://github.com/astral-sh/ruff/issues/850
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement flake8-noqa
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-21 11:28_
+_@JonathanPlasse_
 
 # [`flake8-noqa`](https://pypi.org/project/flake8-noqa/)
 

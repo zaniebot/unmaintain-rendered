@@ -12,14 +12,14 @@ head: charlie/import-map
 created_at: 2024-09-18T23:46:42Z
 updated_at: 2024-09-20T01:20:35Z
 url: https://github.com/astral-sh/ruff/pull/13402
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add a subcommand to generate dependency graphs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-18 23:46_
+_@charliermarsh_
 
 ## Summary
 

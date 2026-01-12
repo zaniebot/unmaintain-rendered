@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T23:03:26Z
 updated_at: 2024-02-29T16:57:08Z
 url: https://github.com/astral-sh/uv/issues/1377
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # uv fails to use extra index url
 
 ---
 
-_Issue opened by @pawamoy on 2024-02-15 23:03_
+_@pawamoy_
 
 I'm passing an extra index URL, but uv seems to only find package versions from PyPI.org.
 

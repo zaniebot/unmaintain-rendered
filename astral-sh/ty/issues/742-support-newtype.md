@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T14:01:32Z
 updated_at: 2025-11-11T01:07:25Z
 url: https://github.com/astral-sh/ty/issues/742
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support `NewType`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-01 14:01_
+_@InSyncWithFoo_
 
 `NewType` is an almost-zero-runtime-overhead way to create a new subtype:
 

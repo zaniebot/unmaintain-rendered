@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-04T21:49:05Z
 updated_at: 2021-06-06T19:55:10Z
 url: https://github.com/clap-rs/clap/issues/1786
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow abbreviated/unambiguous shortened long options
 
 ---
 
-_Issue opened by @chungy on 2020-04-04 21:49_
+_@chungy_
 
 ### Describe your use case
 

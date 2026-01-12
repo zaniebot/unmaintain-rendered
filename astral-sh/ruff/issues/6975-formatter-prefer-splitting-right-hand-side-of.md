@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-29T12:50:58Z
 updated_at: 2023-12-13T03:43:25Z
 url: https://github.com/astral-sh/ruff/issues/6975
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `prefer_splitting_right_hand_side_of_assignments` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-29 12:50_
+_@MichaReiser_
 
 Implement Black's [improved linebreaks](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-line-breaks) preview style. The style is gated behind the [`prefer_splitting_right_hand_side_of_assignments`](https://github.com/psf/black/pull/3368) preview flag.
 

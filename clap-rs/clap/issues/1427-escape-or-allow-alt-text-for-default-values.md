@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-03-14T05:30:47Z
 updated_at: 2020-09-25T09:58:44Z
 url: https://github.com/clap-rs/clap/issues/1427
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Escape or allow alt text for default values
 
 ---
 
-_Issue opened by @Morganamilo on 2019-03-14 05:30_
+_@Morganamilo_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -13,14 +13,14 @@ head: rule/pyi030
 created_at: 2023-07-06T19:00:46Z
 updated_at: 2023-07-07T17:05:56Z
 url: https://github.com/astral-sh/ruff/pull/5570
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Implement PYI030: Unnecessary literal union
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-06 19:00_
+_@zanieb_
 
 Implements PYI030 as part of https://github.com/astral-sh/ruff/issues/848
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T14:33:25Z
 updated_at: 2024-12-20T15:26:18Z
 url: https://github.com/astral-sh/uv/issues/1753
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Tracking Issue: Make test suite pass on alpine
 
 ---
 
-_Issue opened by @konstin on 2024-02-20 14:33_
+_@konstin_
 
 For better musl support, we should add alpine to CI. The first step to that is making the test suite pass on alpine. We are currently at 8 failures. Each test failure needs to be triaged and either fixed or the test ignored. Afterwards, we need a script that we can run on github actions and need to integrate it with caching.
 

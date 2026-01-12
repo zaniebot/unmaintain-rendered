@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T20:55:53Z
 updated_at: 2024-06-26T01:07:37Z
 url: https://github.com/astral-sh/uv/issues/1336
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Support for shorter --python-version=3.7 argument: --3.7 or --python=3.7
 
 ---
 
-_Issue opened by @2-5 on 2024-02-15 20:55_
+_@2-5_
 
 I often create venvs for multiple Python versions, `--python-version=3.7` is just too long, consider (additional) shorter options:
 

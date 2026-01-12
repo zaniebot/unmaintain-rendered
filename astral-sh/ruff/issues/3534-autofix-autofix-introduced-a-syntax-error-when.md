@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T05:37:50Z
 updated_at: 2023-03-17T18:40:34Z
 url: https://github.com/astral-sh/ruff/issues/3534
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix] Autofix introduced a syntax error when checking file
 
 ---
 
-_Issue opened by @qarmin on 2023-03-15 05:37_
+_@qarmin_
 
 Ruff 0.0.255
 Command

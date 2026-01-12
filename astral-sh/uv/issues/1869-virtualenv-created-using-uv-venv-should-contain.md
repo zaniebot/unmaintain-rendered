@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T14:17:15Z
 updated_at: 2024-02-22T18:48:46Z
 url: https://github.com/astral-sh/uv/issues/1869
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Virtualenv created using `uv venv` should contain pre-installed `uv`
 
 ---
 
-_Issue opened by @hkad98 on 2024-02-22 14:17_
+_@hkad98_
 
 Hi,
 I want to replace the pip installation with uv, but I discovered that it would be beneficial if the `uv venv` produced an environment with preinstalled `uv`. I know that I can use `uv venv --seed`, but it does not install uv.  I use Makefile to bootstrap venv, install requirements, and do other things. To ensure that everything works fine, I do this:

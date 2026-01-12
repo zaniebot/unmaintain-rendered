@@ -12,14 +12,14 @@ head: feat/refactorbindingcheck
 created_at: 2023-11-09T13:49:09Z
 updated_at: 2024-01-02T14:58:06Z
 url: https://github.com/astral-sh/ruff/pull/8583
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`typing`] Add `find_assigned_value` helper func to `typing.rs` to retrieve value of a given variable `id`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-11-09 13:49_
+_@qdegraaf_
 
 ## Summary
 

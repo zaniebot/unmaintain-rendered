@@ -13,14 +13,14 @@ head: fix-pt006-clean
 created_at: 2026-01-08T19:56:23Z
 updated_at: 2026-01-09T15:21:12Z
 url: https://github.com/astral-sh/ruff/pull/22464
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [PT006] Fix syntax error when unpacking nested tuples in parametrize fixes (#22441)
 
 ---
 
-_Pull request opened by @bxff on 2026-01-08 19:56_
+_@bxff_
 
 ## Summary
 

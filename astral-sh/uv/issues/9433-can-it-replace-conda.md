@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T02:59:44Z
 updated_at: 2024-11-26T18:29:02Z
 url: https://github.com/astral-sh/uv/issues/9433
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Can it replace conda?
 
 ---
 
-_Issue opened by @MonolithFoundation on 2024-11-26 02:59_
+_@MonolithFoundation_
 
 The slowest thing is not pip, it's conda.
 

@@ -13,14 +13,14 @@ head: charlie/2
 created_at: 2024-05-30T01:51:26Z
 updated_at: 2024-05-30T01:57:20Z
 url: https://github.com/astral-sh/uv/pull/3922
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Remove `from_registry_built_dist2`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 01:51_
+_@charliermarsh_
 
 ## Summary
 

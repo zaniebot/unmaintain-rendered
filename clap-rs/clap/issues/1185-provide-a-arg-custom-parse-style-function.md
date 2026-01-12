@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-02-16T03:10:59Z
 updated_at: 2022-01-11T18:45:48Z
 url: https://github.com/clap-rs/clap/issues/1185
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Provide a `Arg::custom_parse` style function
 
 ---
 
-_Issue opened by @kbknapp on 2018-02-16 03:10_
+_@kbknapp_
 
 Something I've been thinking about for a while and mentioned in BurntSushi/ripgrep#809 is to add some additional functions which allow users to do something mid parse. From the linked issue:
 

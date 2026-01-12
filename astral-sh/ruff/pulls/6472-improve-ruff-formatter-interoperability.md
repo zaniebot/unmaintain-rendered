@@ -13,14 +13,14 @@ head: fix/fmt
 created_at: 2023-08-10T06:53:55Z
 updated_at: 2024-01-20T06:40:31Z
 url: https://github.com/astral-sh/ruff/pull/6472
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Improve Ruff Formatter Interoperability
 
 ---
 
-_Pull request opened by @magic-akari on 2023-08-10 06:53_
+_@magic-akari_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

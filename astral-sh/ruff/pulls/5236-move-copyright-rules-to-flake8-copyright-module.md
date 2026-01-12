@@ -12,14 +12,14 @@ head: charlie/copyright
 created_at: 2023-06-21T01:47:58Z
 updated_at: 2023-06-21T02:20:25Z
 url: https://github.com/astral-sh/ruff/pull/5236
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move `copyright` rules to `flake8_copyright` module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 01:47_
+_@charliermarsh_
 
 ## Summary
 

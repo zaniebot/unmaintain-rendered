@@ -14,14 +14,14 @@ head: micha/preserve-verbose-output
 created_at: 2025-12-19T11:09:36Z
 updated_at: 2025-12-19T14:16:56Z
 url: https://github.com/astral-sh/ruff/pull/22078
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Only clear output between two successful checks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 11:09_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-16T19:37:25Z
 updated_at: 2024-07-22T14:08:59Z
 url: https://github.com/astral-sh/uv/issues/5124
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Bug: `uv help pip compile` failing with `error: program not found`
 
 ---
 
-_Issue opened by @jbw-vtl on 2024-07-16 19:37_
+_@jbw-vtl_
 
 Running the command `uv help pip compile -v` is failing with
 

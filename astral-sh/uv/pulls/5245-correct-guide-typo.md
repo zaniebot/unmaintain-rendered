@@ -13,14 +13,14 @@ head: tools-guide-doc-fix
 created_at: 2024-07-20T12:08:24Z
 updated_at: 2024-07-22T13:04:30Z
 url: https://github.com/astral-sh/uv/pull/5245
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Correct guide typo
 
 ---
 
-_Pull request opened by @iw on 2024-07-20 12:08_
+_@iw_
 
 ## Summary
 

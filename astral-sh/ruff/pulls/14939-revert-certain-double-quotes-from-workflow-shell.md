@@ -13,14 +13,14 @@ head: dhruv/revert-quote
 created_at: 2024-12-12T14:53:38Z
 updated_at: 2024-12-12T14:59:50Z
 url: https://github.com/astral-sh/ruff/pull/14939
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Revert certain double quotes from workflow shell script
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-12 14:53_
+_@dhruvmanila_
 
 Follow-up from #14938 
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-06-27T09:30:18Z
 updated_at: 2024-07-19T19:25:53Z
 url: https://github.com/astral-sh/uv/pull/4576
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Defer finding uv binary to shutil
 
 ---
 
-_Pull request opened by @ulucs on 2024-06-27 09:30_
+_@ulucs_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

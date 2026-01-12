@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T14:54:27Z
 updated_at: 2023-11-15T18:22:13Z
 url: https://github.com/astral-sh/uv/issues/380
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Use "any" wheel when resolving
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-09 14:54_
+_@charliermarsh_
 
 It's actually okay if the wheel isn't compatible with your platform -- we don't need to install it, we just fetch the metadata.
 

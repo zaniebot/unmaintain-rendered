@@ -13,14 +13,14 @@ head: typing-namedtuple-slots
 created_at: 2024-04-06T22:06:01Z
 updated_at: 2024-04-06T23:16:08Z
 url: https://github.com/astral-sh/ruff/pull/10808
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`flake8-slots`] Flag subclasses of call-based `typing.NamedTuple`s as well as subclasses of `collections.namedtuple()` (`SLOT002`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-06 22:06_
+_@AlexWaygood_
 
 ## Summary
 

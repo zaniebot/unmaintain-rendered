@@ -13,14 +13,14 @@ head: rename-preorder-visitor
 created_at: 2024-06-07T15:35:07Z
 updated_at: 2024-06-07T17:18:04Z
 url: https://github.com/astral-sh/ruff/pull/11798
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Rename `PreorderVisitor` to `SourceOrderVisitor`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-07 15:35_
+_@MichaReiser_
 
 ## Summary
 

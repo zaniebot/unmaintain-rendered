@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T16:01:47Z
 updated_at: 2024-12-13T08:07:34Z
 url: https://github.com/astral-sh/ruff/issues/13795
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Linter request: pytest "usefixture" mark should be flagged
 
 ---
 
-_Issue opened by @lengau on 2024-10-17 16:01_
+_@lengau_
 
 I've seen multiple cases where a test used `pytest.mark.usefixture` rather than `pytest.mark.usefixtures` in ways that caused the tests to only sometimes fail (e.g. only on certain platforms). It would be handy to have a linter that changed this.
 

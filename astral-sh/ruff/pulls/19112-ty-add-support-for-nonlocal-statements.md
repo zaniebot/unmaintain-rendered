@@ -14,14 +14,14 @@ head: jack/nonlocal
 created_at: 2025-07-03T02:18:17Z
 updated_at: 2025-07-11T16:44:56Z
 url: https://github.com/astral-sh/ruff/pull/19112
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] add support for `nonlocal` statements
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-03 02:18_
+_@oconnor663_
 
 Related to: https://github.com/astral-sh/ty/issues/220
 

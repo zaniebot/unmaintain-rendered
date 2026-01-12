@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T20:33:02Z
 updated_at: 2025-10-27T18:01:40Z
 url: https://github.com/astral-sh/uv/issues/16121
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Add list-scripts subcommand similar to pydoit.org or taskfile.dev
 
 ---
 
-_Issue opened by @scr-oath on 2025-10-03 20:33_
+_@scr-oath_
 
 ### Summary
 

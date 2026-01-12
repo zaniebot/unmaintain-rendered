@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T08:07:42Z
 updated_at: 2024-10-04T15:02:51Z
 url: https://github.com/astral-sh/uv/issues/1578
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # allow centralized venv storage like pyenv-virtualenv
 
 ---
 
-_Issue opened by @wakamex on 2024-02-17 08:07_
+_@wakamex_
 
 This provides a few handy features:
 - easily use the same venv in multiple locations

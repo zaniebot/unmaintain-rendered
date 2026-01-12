@@ -13,14 +13,14 @@ head: charlie/class-display
 created_at: 2025-05-06T13:47:50Z
 updated_at: 2025-05-07T00:11:27Z
 url: https://github.com/astral-sh/ruff/pull/17889
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Update class literal display to use `<class 'Foo'>` style
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-06 13:47_
+_@charliermarsh_
 
 ## Summary
 

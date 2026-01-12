@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T07:37:17Z
 updated_at: 2024-10-22T19:33:00Z
 url: https://github.com/astral-sh/uv/issues/8407
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # uv sync fails for workspace if workspace member is declared to come from a named index
 
 ---
 
-_Issue opened by @thorbenk on 2024-10-21 07:37_
+_@thorbenk_
 
 I ran into an issue with the new named indexes feature and workspaces.
 

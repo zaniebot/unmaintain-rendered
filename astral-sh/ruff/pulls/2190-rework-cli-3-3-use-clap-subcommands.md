@@ -12,14 +12,14 @@ head: subcommands
 created_at: 2023-01-26T07:46:20Z
 updated_at: 2023-01-28T03:21:24Z
 url: https://github.com/astral-sh/ruff/pull/2190
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # rework CLI (3/3): Use clap subcommands
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-26 07:46_
+_@not-my-profile_
 
 Followup PR for #2155.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T09:26:25Z
 updated_at: 2024-09-25T00:36:21Z
 url: https://github.com/astral-sh/ruff/issues/13208
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [flake8-type-checking] Missing rules, autofix strategies, overlapping rules and more
 
 ---
 
-_Issue opened by @Daverball on 2024-09-02 09:26_
+_@Daverball_
 
 Hey, I'm one of the maintainers for flake8-type-checking and I really like some of the decisions ruff has made when implementing these rules, especially at a time where the implementation of the flake8 plugin was still a lot more naïve and reported tons of false positives. Since then however, the flake8 plugin underwent a lot of changes and now has its own semantic analysis to bring false positives down to a negligible percentage, in fact in all of my code bases with hundreds of thousands of lines of code I do not have a single `noqa` comment that silences a `flake8-type-checking` violation.
 

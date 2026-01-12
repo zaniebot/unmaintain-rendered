@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T19:12:08Z
 updated_at: 2024-02-19T19:13:13Z
 url: https://github.com/clap-rs/clap/issues/5358
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `args_conflicts_with_subcommands` is not overriding `subcommand_required = true`
 
 ---
 
-_Issue opened by @foobl42 on 2024-02-16 19:12_
+_@foobl42_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/5353
 

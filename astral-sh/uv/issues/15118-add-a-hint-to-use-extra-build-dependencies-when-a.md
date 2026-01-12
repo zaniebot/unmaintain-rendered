@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T20:54:18Z
 updated_at: 2025-08-20T09:56:43Z
 url: https://github.com/astral-sh/uv/issues/15118
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Add a hint to use `extra-build-dependencies` when a build fails with a missing package
 
 ---
 
-_Issue opened by @zanieb on 2025-08-06 20:54_
+_@zanieb_
 
 e.g., see https://github.com/astral-sh/uv/issues/15039#issuecomment-3161503863
 

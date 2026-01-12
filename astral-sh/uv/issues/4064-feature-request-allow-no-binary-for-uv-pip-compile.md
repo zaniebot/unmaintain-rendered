@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T19:24:35Z
 updated_at: 2024-06-13T13:59:09Z
 url: https://github.com/astral-sh/uv/issues/4064
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Feature Request: Allow `--no-binary` for `uv pip compile`
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-06-05 19:24_
+_@notatallshaw-gts_
 
 This request is based on my use case here https://github.com/astral-sh/uv/issues/4063
 

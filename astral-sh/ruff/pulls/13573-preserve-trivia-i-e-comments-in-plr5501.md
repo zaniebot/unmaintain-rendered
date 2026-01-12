@@ -14,14 +14,14 @@ head: zb/collapse-elif-trivia
 created_at: 2024-09-30T16:27:28Z
 updated_at: 2024-10-03T15:28:06Z
 url: https://github.com/astral-sh/ruff/pull/13573
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Preserve trivia (i.e. comments) in PLR5501
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-30 16:27_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13545
 

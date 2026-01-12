@@ -13,14 +13,14 @@ head: single-string-slots
 created_at: 2023-06-27T17:26:01Z
 updated_at: 2023-07-10T09:54:59Z
 url: https://github.com/astral-sh/ruff/pull/5399
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Implement Pylint `single-string-used-for-slots` (`C0205`) as `single-string-slots` (`PLC0205`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-27 17:26_
+_@tjkuson_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

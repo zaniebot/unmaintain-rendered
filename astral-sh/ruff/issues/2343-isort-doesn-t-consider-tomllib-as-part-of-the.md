@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T08:46:59Z
 updated_at: 2023-06-19T05:01:09Z
 url: https://github.com/astral-sh/ruff/issues/2343
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Isort doesn't consider tomllib as part of the standard library
 
 ---
 
-_Issue opened by @yakMM on 2023-01-30 08:46_
+_@yakMM_
 
 Consider the following: 
 

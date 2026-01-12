@@ -13,14 +13,14 @@ head: charlie/extras-dynamic
 created_at: 2024-10-10T13:43:39Z
 updated_at: 2024-10-10T14:00:38Z
 url: https://github.com/astral-sh/uv/pull/8091
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Respect dynamic extras in `uv lock` and `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 13:43_
+_@charliermarsh_
 
 ## Summary
 

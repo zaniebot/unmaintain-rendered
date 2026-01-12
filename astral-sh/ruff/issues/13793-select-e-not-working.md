@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T13:36:18Z
 updated_at: 2024-10-17T14:16:05Z
 url: https://github.com/astral-sh/ruff/issues/13793
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # select = ["E"] Not working. 
 
 ---
 
-_Issue opened by @lozik4 on 2024-10-17 13:36_
+_@lozik4_
 
 ruff==0.6.9
 Python 3.12

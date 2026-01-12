@@ -12,14 +12,14 @@ head: ag/pep508-additions
 created_at: 2024-11-27T13:35:45Z
 updated_at: 2024-12-02T14:09:37Z
 url: https://github.com/astral-sh/uv/pull/9469
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # uv-pep508: add more methods for simplifying `extra`-related expressions
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-27 13:35_
+_@BurntSushi_
 
 In the course of working on #9289, I've had to devise some additions to
 our markers. While we are still staying strictly compatible with the

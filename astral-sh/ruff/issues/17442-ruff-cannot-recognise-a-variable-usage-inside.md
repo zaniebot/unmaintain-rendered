@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T04:15:49Z
 updated_at: 2025-04-23T07:26:01Z
 url: https://github.com/astral-sh/ruff/issues/17442
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff Cannot Recognise a Variable Usage inside typing.cast
 
 ---
 
-_Issue opened by @barmanroys on 2025-04-17 04:15_
+_@barmanroys_
 
 ### Summary
 

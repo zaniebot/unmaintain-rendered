@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T12:15:26Z
 updated_at: 2025-07-03T16:00:50Z
 url: https://github.com/astral-sh/uv/issues/14418
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Wheel from URL with correct filename but incorrect name in URL
 
 ---
 
-_Issue opened by @danielkonecny on 2025-07-02 12:15_
+_@danielkonecny_
 
 ### Summary
 

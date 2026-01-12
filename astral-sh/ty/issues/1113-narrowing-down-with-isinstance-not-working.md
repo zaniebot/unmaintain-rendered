@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T10:07:11Z
 updated_at: 2025-09-02T17:53:17Z
 url: https://github.com/astral-sh/ty/issues/1113
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Narrowing down with `isinstance` not working properly
 
 ---
 
-_Issue opened by @mflova on 2025-09-01 10:07_
+_@mflova_
 
 ### Summary
 

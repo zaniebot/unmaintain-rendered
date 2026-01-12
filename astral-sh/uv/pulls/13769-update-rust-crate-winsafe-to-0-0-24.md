@@ -13,14 +13,14 @@ head: renovate/winsafe-0.x
 created_at: 2025-06-02T00:24:36Z
 updated_at: 2025-06-02T01:57:16Z
 url: https://github.com/astral-sh/uv/pull/13769
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update Rust crate winsafe to 0.0.24
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 00:24_
+_@renovate_
 
 This PR contains the following updates:
 

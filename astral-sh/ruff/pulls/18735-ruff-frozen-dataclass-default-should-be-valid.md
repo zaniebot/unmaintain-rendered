@@ -13,14 +13,14 @@ head: feat/frozen-dc-default
 created_at: 2025-06-17T19:49:05Z
 updated_at: 2025-06-23T19:15:32Z
 url: https://github.com/astral-sh/ruff/pull/18735
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [`ruff`] Frozen Dataclass default should be valid (`RUF009`)
 
 ---
 
-_Pull request opened by @lubaskinc0de on 2025-06-17 19:49_
+_@lubaskinc0de_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: flake8-pytest-csv-comma-space
 created_at: 2024-08-13T07:38:40Z
 updated_at: 2024-08-13T08:06:51Z
 url: https://github.com/astral-sh/ruff/pull/12853
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-pytest-style`] Add a space after comma in CSV output (`PT006`)
 
 ---
 
-_Pull request opened by @uranusjr on 2024-08-13 07:38_
+_@uranusjr_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

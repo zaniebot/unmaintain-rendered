@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T12:59:10Z
 updated_at: 2023-10-26T13:46:53Z
 url: https://github.com/astral-sh/ruff/issues/8251
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Proposal: detach file output format from output format
 
 ---
 
-_Issue opened by @penguinolog on 2023-10-26 12:59_
+_@penguinolog_
 
 Use-case:
 `ruff` is used on jenkins CI. Text output is usually read by user, but also collected and parsed JUnitXML log.

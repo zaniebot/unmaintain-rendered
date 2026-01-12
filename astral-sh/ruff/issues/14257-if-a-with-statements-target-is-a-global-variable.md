@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-11T01:09:12Z
 updated_at: 2024-11-12T10:21:04Z
 url: https://github.com/astral-sh/ruff/issues/14257
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # If a with statement’s target is a global variable that was assigned before, a false “redefinition of unused variable” is reported.
 
 ---
 
-_Issue opened by @manueljacob on 2024-11-11 01:09_
+_@manueljacob_
 
 ```python
 from contextlib import nullcontext

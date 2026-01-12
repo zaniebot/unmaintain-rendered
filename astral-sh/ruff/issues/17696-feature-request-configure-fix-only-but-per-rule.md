@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-28T22:17:08Z
 updated_at: 2025-04-29T05:51:51Z
 url: https://github.com/astral-sh/ruff/issues/17696
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Feature request: Configure `--fix-only` but per-rule in the `TOML` config
 
 ---
 
-_Issue opened by @Avasam on 2025-04-28 22:17_
+_@Avasam_
 
 ### Summary
 

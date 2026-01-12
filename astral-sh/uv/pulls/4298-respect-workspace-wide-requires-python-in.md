@@ -14,14 +14,14 @@ head: charlie/virtual
 created_at: 2024-06-13T02:38:33Z
 updated_at: 2024-06-13T12:55:58Z
 url: https://github.com/astral-sh/uv/pull/4298
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Respect workspace-wide `requires-python` in interpreter selection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 02:38_
+_@charliermarsh_
 
 ## Summary
 

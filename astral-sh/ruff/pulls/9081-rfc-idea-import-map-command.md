@@ -11,14 +11,14 @@ head: import-map
 created_at: 2023-12-10T22:17:30Z
 updated_at: 2024-03-12T18:48:34Z
 url: https://github.com/astral-sh/ruff/pull/9081
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # RFC/idea: import map command
 
 ---
 
-_Pull request opened by @akx on 2023-12-10 22:17_
+_@akx_
 
 ## Summary
 

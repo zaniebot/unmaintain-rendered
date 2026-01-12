@@ -14,14 +14,14 @@ head: micha/instrumented-depot
 created_at: 2025-12-21T21:04:38Z
 updated_at: 2025-12-22T14:06:24Z
 url: https://github.com/astral-sh/ruff/pull/22133
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Speed-up instrumented benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-21 21:04_
+_@MichaReiser_
 
 The ty-instrumented benchmarks are now our slowest job after https://github.com/astral-sh/ruff/pull/22126.
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-27T10:00:44Z
 updated_at: 2024-10-29T12:34:03Z
 url: https://github.com/astral-sh/uv/pull/8604
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Remove unneeded `return` from Maturin project template
 
 ---
 
-_Pull request opened by @vivienm on 2024-10-27 10:00_
+_@vivienm_
 
 ## Summary
 

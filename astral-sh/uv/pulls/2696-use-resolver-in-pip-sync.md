@@ -12,14 +12,14 @@ head: charlie/finder
 created_at: 2024-03-27T17:22:56Z
 updated_at: 2024-03-27T21:36:39Z
 url: https://github.com/astral-sh/uv/pull/2696
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Use `Resolver` in `pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 17:22_
+_@charliermarsh_
 
 ## Summary
 

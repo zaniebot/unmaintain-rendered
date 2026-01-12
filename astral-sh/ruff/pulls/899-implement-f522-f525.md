@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-25T00:40:04Z
 updated_at: 2022-11-25T19:07:24Z
 url: https://github.com/astral-sh/ruff/pull/899
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement F522-F525
 
 ---
 
-_Pull request opened by @olliemath on 2022-11-25 00:40_
+_@olliemath_
 
 Adds checks for F522 through F525. Closes https://github.com/charliermarsh/ruff/issues/891
 

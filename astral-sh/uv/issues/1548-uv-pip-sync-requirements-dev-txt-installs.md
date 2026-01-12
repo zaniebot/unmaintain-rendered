@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T22:56:07Z
 updated_at: 2024-02-20T16:31:12Z
 url: https://github.com/astral-sh/uv/issues/1548
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv pip sync requirements/dev.txt` installs executables without sufficient permissions
 
 ---
 
-_Issue opened by @Tomperez98 on 2024-02-16 22:56_
+_@Tomperez98_
 
 I'm installing `alembic` using this command and end up with an executable without permissions
 

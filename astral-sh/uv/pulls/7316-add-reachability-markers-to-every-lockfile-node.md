@@ -12,14 +12,14 @@ head: charlie/marker-nodes
 created_at: 2024-09-12T00:56:49Z
 updated_at: 2024-09-23T23:31:40Z
 url: https://github.com/astral-sh/uv/pull/7316
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Add reachability markers to every lockfile node
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-12 00:56_
+_@charliermarsh_
 
 ## Summary
 

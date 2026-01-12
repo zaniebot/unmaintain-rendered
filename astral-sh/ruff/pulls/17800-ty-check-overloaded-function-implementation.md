@@ -13,14 +13,14 @@ head: redknot-overload
 created_at: 2025-05-02T21:45:34Z
 updated_at: 2025-07-10T20:14:17Z
 url: https://github.com/astral-sh/ruff/pull/17800
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [ty] Check overloaded function implementation consistency
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-02 21:45_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

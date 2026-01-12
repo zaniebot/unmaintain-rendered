@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T19:06:01Z
 updated_at: 2025-11-21T16:02:10Z
 url: https://github.com/astral-sh/ty/issues/1561
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Render PEP-257-style docstrings to markdown
 
 ---
 
-_Issue opened by @Gankra on 2025-11-14 19:06_
+_@Gankra_
 
 https://peps.python.org/pep-0257/
 

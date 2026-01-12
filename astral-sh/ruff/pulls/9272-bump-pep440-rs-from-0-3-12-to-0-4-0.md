@@ -13,14 +13,14 @@ head: dependabot/cargo/pep440_rs-0.4.0
 created_at: 2023-12-25T08:22:45Z
 updated_at: 2023-12-25T13:12:21Z
 url: https://github.com/astral-sh/ruff/pull/9272
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump pep440_rs from 0.3.12 to 0.4.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-25 08:22_
+_@dependabot_
 
 Bumps [pep440_rs](https://github.com/konstin/pep440-rs) from 0.3.12 to 0.4.0.
 <details>

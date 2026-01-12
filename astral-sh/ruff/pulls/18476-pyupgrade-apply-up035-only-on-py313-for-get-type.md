@@ -14,14 +14,14 @@ head: up035-get-type-hints
 created_at: 2025-06-05T11:06:30Z
 updated_at: 2025-06-05T16:16:37Z
 url: https://github.com/astral-sh/ruff/pull/18476
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [`pyupgrade`] Apply `UP035` only on py313+ for `get_type_hints()`
 
 ---
 
-_Pull request opened by @Viicos on 2025-06-05 11:06_
+_@Viicos_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

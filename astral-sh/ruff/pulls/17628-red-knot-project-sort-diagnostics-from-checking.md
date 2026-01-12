@@ -15,14 +15,14 @@ head: ag/sort-diagnostics
 created_at: 2025-04-25T14:15:42Z
 updated_at: 2025-04-25T16:38:32Z
 url: https://github.com/astral-sh/ruff/pull/17628
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # red_knot_project: sort diagnostics from checking files
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-25 14:15_
+_@BurntSushi_
 
 Previously, we could iterate over files in an unspecified order (via
 `HashSet` iteration) and we could accumulate diagnostics from files in

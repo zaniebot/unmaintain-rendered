@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-20T22:10:45Z
 updated_at: 2023-01-20T22:54:13Z
 url: https://github.com/astral-sh/ruff/issues/2041
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support for kebab-case names in error output
 
 ---
 
-_Issue opened by @scop on 2023-01-20 22:10_
+_@scop_
 
 The ability to specify `noqa` et al using the (now kebab-case) check names is great; they're much human friendlier than the flake8-style error codes.
 

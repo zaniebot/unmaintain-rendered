@@ -13,14 +13,14 @@ head: depr-pyi053
 created_at: 2024-01-07T17:27:20Z
 updated_at: 2024-01-07T23:43:52Z
 url: https://github.com/astral-sh/ruff/pull/9423
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [flake8-pyi] PYI053: Exclude string literals that are the first argument to `warnings.deprecated` or `typing_extensions.deprecated`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-07 17:27_
+_@AlexWaygood_
 
 Fixes #9420
 

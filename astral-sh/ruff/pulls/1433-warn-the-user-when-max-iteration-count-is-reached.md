@@ -12,14 +12,14 @@ head: charlie/warn
 created_at: 2022-12-29T01:51:14Z
 updated_at: 2022-12-29T01:56:44Z
 url: https://github.com/astral-sh/ruff/pull/1433
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Warn the user when max iteration count is reached
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-29 01:51_
+_@charliermarsh_
 
 _No description provided._
 

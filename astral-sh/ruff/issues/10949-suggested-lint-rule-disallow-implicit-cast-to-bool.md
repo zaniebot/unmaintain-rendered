@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T07:55:43Z
 updated_at: 2025-02-16T04:27:04Z
 url: https://github.com/astral-sh/ruff/issues/10949
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Suggested lint rule: disallow implicit-cast-to-bool
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-04-15 07:55_
+_@patrick-kidger_
 
 I'm thinking of writing a new lint rule for Ruff, to disallow implicit-cast-to-bool.
 

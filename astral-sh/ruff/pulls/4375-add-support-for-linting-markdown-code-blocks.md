@@ -12,14 +12,14 @@ head: 3792_markdown
 created_at: 2023-05-11T13:48:00Z
 updated_at: 2023-06-15T17:01:40Z
 url: https://github.com/astral-sh/ruff/pull/4375
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add support for linting Markdown code blocks
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-11 13:48_
+_@evanrittenhouse_
 
 Adds support for Markdown code blocks.
 

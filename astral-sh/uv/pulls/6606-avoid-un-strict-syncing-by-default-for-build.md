@@ -13,14 +13,14 @@ head: charlie/build-iso
 created_at: 2024-08-25T14:16:49Z
 updated_at: 2024-08-26T18:05:00Z
 url: https://github.com/astral-sh/uv/pull/6606
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Avoid un-strict syncing by-default for build isolation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 14:16_
+_@charliermarsh_
 
 ## Summary
 

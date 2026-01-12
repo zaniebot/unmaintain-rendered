@@ -14,14 +14,14 @@ head: ibraheem/structs-memory-usage
 created_at: 2025-08-06T19:41:20Z
 updated_at: 2025-08-12T11:30:21Z
 url: https://github.com/astral-sh/ruff/pull/19790
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Track heap usage of salsa structs
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-08-06 19:41_
+_@ibraheemdev_
 
 ## Summary
 

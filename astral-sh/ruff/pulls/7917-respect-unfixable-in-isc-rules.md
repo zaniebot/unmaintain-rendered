@@ -12,14 +12,14 @@ head: charlie/isc
 created_at: 2023-10-11T13:24:45Z
 updated_at: 2023-10-11T13:51:25Z
 url: https://github.com/astral-sh/ruff/pull/7917
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Respect `--unfixable` in ISC rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-11 13:24_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7909.
 

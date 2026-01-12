@@ -13,14 +13,14 @@ head: PLW0177
 created_at: 2025-02-25T17:54:22Z
 updated_at: 2025-02-26T18:50:58Z
 url: https://github.com/astral-sh/ruff/pull/16378
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`pylint`] Also reports `case np.nan`/`case math.nan` (`PLW0177`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-25 17:54_
+_@InSyncWithFoo_
 
 ## Summary
 

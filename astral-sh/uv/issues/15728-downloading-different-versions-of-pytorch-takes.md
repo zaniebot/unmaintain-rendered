@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T03:44:00Z
 updated_at: 2025-09-08T07:44:37Z
 url: https://github.com/astral-sh/uv/issues/15728
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Downloading different versions of PyTorch takes varying amounts of time.
 
 ---
 
-_Issue opened by @wz1114841863 on 2025-09-08 03:44_
+_@wz1114841863_
 
 ### Question
 

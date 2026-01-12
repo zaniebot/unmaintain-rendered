@@ -13,14 +13,14 @@ head: zb/fix-old-dists
 created_at: 2024-10-15T13:28:35Z
 updated_at: 2024-10-15T16:08:48Z
 url: https://github.com/astral-sh/uv/pull/8216
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Retain old python-build-standalone releases
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-15 13:28_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8213
 

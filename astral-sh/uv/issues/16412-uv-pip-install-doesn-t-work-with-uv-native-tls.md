@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T16:37:27Z
 updated_at: 2026-01-09T17:08:07Z
 url: https://github.com/astral-sh/uv/issues/16412
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # uv pip install doesn't work with :  ⁠UV_NATIVE_TLS and ⁠--native-tls -  No detection system certificates, requiring ⁠--allow-insecure-host
 
 ---
 
-_Issue opened by @errajibadr on 2025-10-22 16:37_
+_@errajibadr_
 
 ### Summary
 

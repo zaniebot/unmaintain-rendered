@@ -13,14 +13,14 @@ head: zb/is-executable
 created_at: 2025-02-11T21:53:45Z
 updated_at: 2025-02-12T19:50:32Z
 url: https://github.com/astral-sh/uv/pull/11430
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Check for executable permissions in `is_executable`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-11 21:53_
+_@zanieb_
 
 e.g., as in https://docs.rs/is_executable/latest/src/is_executable/lib.rs.html#44
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T08:26:15Z
 updated_at: 2024-11-08T14:36:00Z
 url: https://github.com/astral-sh/uv/issues/8925
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Docker configuration broken after latest 0.5.0 release
 
 ---
 
-_Issue opened by @niels-bosman on 2024-11-08 08:26_
+_@niels-bosman_
 
 Hey all, wanted to flag that our docker build system failed after the latest 0.5.0 release, this is the `Dockerfile`:
 

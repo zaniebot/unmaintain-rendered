@@ -13,14 +13,14 @@ head: printer-all-lines-indent
 created_at: 2023-07-27T10:10:04Z
 updated_at: 2023-07-27T11:34:38Z
 url: https://github.com/astral-sh/ruff/pull/6120
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Respect indent when measuring with `MeasureMode::AllLines`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-27 10:10_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

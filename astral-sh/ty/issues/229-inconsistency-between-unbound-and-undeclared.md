@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T12:57:19Z
 updated_at: 2025-11-18T16:10:24Z
 url: https://github.com/astral-sh/ty/issues/229
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Inconsistency between unbound and undeclared symbols
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-12 12:57_
+_@sharkdp_
 
 Pretty much what @carljm wrote in a comment [here](https://github.com/astral-sh/ruff/pull/13980#discussion_r1824747585), and what is now described in this TODO comment:
 

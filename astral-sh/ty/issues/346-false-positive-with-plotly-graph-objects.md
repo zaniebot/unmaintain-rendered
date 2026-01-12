@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-13T08:01:49Z
 updated_at: 2025-05-13T08:40:48Z
 url: https://github.com/astral-sh/ty/issues/346
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive with plotly.graph_objects.Scatter3d: "No overload of bound method __init__ matches arguments"
 
 ---
 
-_Issue opened by @romainbourdain on 2025-05-13 08:01_
+_@romainbourdain_
 
 ### Summary
 

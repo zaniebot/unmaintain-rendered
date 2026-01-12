@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T18:26:39Z
 updated_at: 2025-12-23T21:23:24Z
 url: https://github.com/astral-sh/ty/issues/2190
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # support generic TypedDict
 
 ---
 
-_Issue opened by @RyanSaxe on 2025-12-23 18:26_
+_@RyanSaxe_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: harmonize-format
 created_at: 2023-10-25T06:27:23Z
 updated_at: 2023-10-29T13:24:31Z
 url: https://github.com/astral-sh/ruff/pull/8203
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Harmonize help commands' `--format` to `--output-format` with deprecation warnings
 
 ---
 
-_Pull request opened by @akx on 2023-10-25 06:27_
+_@akx_
 
 ## Summary
 

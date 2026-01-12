@@ -12,14 +12,14 @@ head: some-refactors
 created_at: 2023-01-24T12:26:24Z
 updated_at: 2023-01-24T12:37:34Z
 url: https://github.com/astral-sh/ruff/pull/2122
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Some refactors
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-24 12:26_
+_@not-my-profile_
 
 While splitting the redirects from the `RuleCodePrefix` enum in #2103 I ended up doing these refactors, so I have now split them  into their own PR to be easier to review.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T23:43:27Z
 updated_at: 2025-01-15T17:37:34Z
 url: https://github.com/astral-sh/uv/issues/7480
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # venv/activate uses zsh-specific syntax
 
 ---
 
-_Issue opened by @prez on 2024-09-17 23:43_
+_@prez_
 
 I'm using the yash shell, which is strictly POSIX-compliant and errors out on `. .venv/bin/activate`.
 

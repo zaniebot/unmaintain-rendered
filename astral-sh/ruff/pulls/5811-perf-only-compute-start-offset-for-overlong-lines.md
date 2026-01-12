@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-07-16T19:10:01Z
 updated_at: 2023-07-17T06:21:50Z
 url: https://github.com/astral-sh/ruff/pull/5811
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # perf: only compute start offset for overlong lines
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-16 19:10_
+_@sbrugman_
 
 Moves the computation of the `start_offset` for overlong lines to just before the result is returned. There is a slight overhead for overlong lines (double the work for the first `limit` characters). 
 

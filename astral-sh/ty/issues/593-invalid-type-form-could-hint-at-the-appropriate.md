@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T12:51:37Z
 updated_at: 2025-06-08T23:40:06Z
 url: https://github.com/astral-sh/ty/issues/593
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `invalid-type-form` could hint at the appropriate type
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-06 12:51_
+_@charliermarsh_
 
 At least for the common case of `[int]`, we could suggest `list[int]`:
 

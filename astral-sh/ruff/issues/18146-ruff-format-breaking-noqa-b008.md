@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-17T01:41:30Z
 updated_at: 2025-05-17T14:26:57Z
 url: https://github.com/astral-sh/ruff/issues/18146
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff format breaking # noqa: B008
 
 ---
 
-_Issue opened by @waterworthd-cim on 2025-05-17 01:41_
+_@waterworthd-cim_
 
 I'm not sure if this is a duplicate, I'm not sure what to search for
 

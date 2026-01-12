@@ -12,14 +12,14 @@ head: charlie/quotes
 created_at: 2023-01-31T21:10:48Z
 updated_at: 2023-01-31T21:27:16Z
 url: https://github.com/astral-sh/ruff/pull/2416
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Allow implicit multiline strings with internal quotes to use non-preferred quote
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 21:10_
+_@charliermarsh_
 
 As an example, if you have `single` as your preferred style, we'll now allow this:
 

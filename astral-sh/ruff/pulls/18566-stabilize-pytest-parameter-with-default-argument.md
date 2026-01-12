@@ -13,14 +13,14 @@ head: dylan/stabilize-pt028
 created_at: 2025-06-08T19:20:17Z
 updated_at: 2025-06-09T19:09:13Z
 url: https://github.com/astral-sh/ruff/pull/18566
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `pytest-parameter-with-default-argument` (`PT028`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:20_
+_@dylwil3_
 
 _No description provided._
 

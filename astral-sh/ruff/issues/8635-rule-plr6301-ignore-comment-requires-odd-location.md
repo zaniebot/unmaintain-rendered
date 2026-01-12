@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-12T20:56:59Z
 updated_at: 2023-11-12T21:39:40Z
 url: https://github.com/astral-sh/ruff/issues/8635
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule `PLR6301` ignore comment requires odd location
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 20:56_
+_@ofek_
 
 ```
 Method `construct_build_command` could be a function, class method, or static method

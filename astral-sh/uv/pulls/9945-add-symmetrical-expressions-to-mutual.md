@@ -12,14 +12,14 @@ head: charlie/l
 created_at: 2024-12-16T21:54:33Z
 updated_at: 2024-12-18T15:29:50Z
 url: https://github.com/astral-sh/uv/pull/9945
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Add symmetrical expressions to mutual incompatibilities
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-16 21:54_
+_@charliermarsh_
 
 ## Summary
 

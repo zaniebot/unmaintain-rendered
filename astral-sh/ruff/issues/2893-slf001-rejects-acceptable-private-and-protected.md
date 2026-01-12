@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-14T14:47:20Z
 updated_at: 2023-02-15T16:52:07Z
 url: https://github.com/astral-sh/ruff/issues/2893
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SLF001 rejects acceptable private and protected access
 
 ---
 
-_Issue opened by @sanmai-NL on 2023-02-14 14:47_
+_@sanmai-NL_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

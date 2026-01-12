@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T15:21:28Z
 updated_at: 2024-11-14T21:39:39Z
 url: https://github.com/astral-sh/ruff/issues/14283
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Infinite loop] PLC0414 conflicts with I002 if a useless alias is required
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-11 15:21_
+_@dscorbett_
 
 [`useless-import-alias` (PLC0414)](https://docs.astral.sh/ruff/rules/useless-import-alias/) conflicts with [`missing-required-import` (I002)](https://docs.astral.sh/ruff/rules/missing-required-import/) in Ruff 0.7.3 if the latter rule is configured to require an alias that the former rule considers useless.
 

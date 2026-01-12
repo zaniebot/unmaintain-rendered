@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T20:11:03Z
 updated_at: 2023-03-30T15:33:48Z
 url: https://github.com/astral-sh/ruff/issues/835
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add the possibility to add import and respect the import sorting.
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-20 20:11_
+_@JonathanPlasse_
 
 - In #816, we need to add the `sys` module if missing and keep the imports sorted.
 

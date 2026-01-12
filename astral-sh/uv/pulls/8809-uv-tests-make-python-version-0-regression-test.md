@@ -12,14 +12,14 @@ head: ag/faster-version-zero-test
 created_at: 2024-11-04T15:14:27Z
 updated_at: 2024-11-04T16:10:20Z
 url: https://github.com/astral-sh/uv/pull/8809
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # uv/tests: make `python_version < '0'` regression test smaller
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-04 15:14_
+_@BurntSushi_
 
 Running this test manually on the latest release shows that it still
 emits a `python_version < '0'` marker:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-15T14:04:31Z
 updated_at: 2024-08-20T14:21:17Z
 url: https://github.com/astral-sh/uv/issues/6112
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Has anyone used uv with Bazel?
 
 ---
 
-_Issue opened by @pablospe on 2024-08-15 14:04_
+_@pablospe_
 
 _No description provided._
 

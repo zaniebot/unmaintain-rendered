@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-22T03:07:46Z
 updated_at: 2025-04-22T09:24:04Z
 url: https://github.com/astral-sh/uv/issues/13039
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # PEP 571 tests hardcode Python 3.12.10
 
 ---
 
-_Issue opened by @mgorny on 2025-04-22 03:07_
+_@mgorny_
 
 ### Summary
 

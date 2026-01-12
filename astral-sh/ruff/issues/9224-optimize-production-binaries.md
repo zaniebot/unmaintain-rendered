@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-21T06:00:44Z
 updated_at: 2024-01-26T07:30:55Z
 url: https://github.com/astral-sh/ruff/issues/9224
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Optimize production binaries
 
 ---
 
-_Issue opened by @T-256 on 2023-12-21 06:00_
+_@T-256_
 
 #9031 Improved compile-time, but it also affects runtime, this issue opened to create a separated build profile for production.
 

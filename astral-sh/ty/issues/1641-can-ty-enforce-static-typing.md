@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T05:15:26Z
 updated_at: 2025-11-26T08:04:00Z
 url: https://github.com/astral-sh/ty/issues/1641
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Can Ty enforce static typing?
 
 ---
 
-_Issue opened by @StandingPadAnimations on 2025-11-26 05:15_
+_@StandingPadAnimations_
 
 ### Question
 

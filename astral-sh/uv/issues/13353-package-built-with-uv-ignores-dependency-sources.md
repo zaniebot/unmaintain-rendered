@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T18:20:11Z
 updated_at: 2025-07-07T08:42:23Z
 url: https://github.com/astral-sh/uv/issues/13353
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Package built with uv, ignores dependency sources specified in tool.uv.sources
 
 ---
 
-_Issue opened by @mvechtomova on 2025-05-08 18:20_
+_@mvechtomova_
 
 ### Summary
 

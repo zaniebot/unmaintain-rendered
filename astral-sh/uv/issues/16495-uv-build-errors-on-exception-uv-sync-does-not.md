@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-29T14:06:30Z
 updated_at: 2025-11-09T03:13:42Z
 url: https://github.com/astral-sh/uv/issues/16495
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # uv build errors on exception, uv sync does not
 
 ---
 
-_Issue opened by @Timoses on 2025-10-29 14:06_
+_@Timoses_
 
 ### Summary
 

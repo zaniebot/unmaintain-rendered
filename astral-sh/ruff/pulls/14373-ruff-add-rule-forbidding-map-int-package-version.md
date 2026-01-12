@@ -14,14 +14,14 @@ head: RUF048
 created_at: 2024-11-16T00:52:03Z
 updated_at: 2024-11-20T03:46:08Z
 url: https://github.com/astral-sh/ruff/pull/14373
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Add rule forbidding `map(int, package.__version__.split('.'))` (`RUF048`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-16 00:52_
+_@InSyncWithFoo_
 
 ## Summary
 

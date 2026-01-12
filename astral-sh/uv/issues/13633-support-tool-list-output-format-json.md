@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T00:28:13Z
 updated_at: 2025-07-09T05:29:26Z
 url: https://github.com/astral-sh/uv/issues/13633
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Support `tool list --output-format=json`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-24 00:28_
+_@InSyncWithFoo_
 
 (@gaborbernat [asked for this on Discord](https://discord.com/channels/1039017663004942429/1207998321562619954/1375609411023798373). I'm also interested myself. Part of #411 and #3199.)
 

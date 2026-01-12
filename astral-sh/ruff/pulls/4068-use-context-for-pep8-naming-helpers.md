@@ -13,14 +13,14 @@ head: charlie/pep8-naming
 created_at: 2023-04-22T22:27:07Z
 updated_at: 2023-04-22T22:56:22Z
 url: https://github.com/astral-sh/ruff/pull/4068
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use `Context` for pep8-naming helpers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-22 22:27_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:10Z
 updated_at: 2023-09-19T06:29:24Z
 url: https://github.com/astral-sh/ruff/issues/7294
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `RUF001-003` to check in f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 `RUF001`, `RUF002`, and `RUF003` checks for ambiguous unicode character in strings, comments and docstrings respectively.
 

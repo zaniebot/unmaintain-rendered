@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T03:22:16Z
 updated_at: 2024-06-27T11:42:41Z
 url: https://github.com/astral-sh/ruff/issues/12036
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Re-lexing should avoid line continuation in a comment
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-26 03:22_
+_@dhruvmanila_
 
 Even with the fix in https://github.com/astral-sh/ruff/pull/12035, we still need to consider the fact that the line continuation character could be part of the comment which means that the newline character is not being escaped.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T14:16:01Z
 updated_at: 2026-01-08T21:58:49Z
 url: https://github.com/astral-sh/uv/issues/8047
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Feature: Provide a Debian package
 
 ---
 
-_Issue opened by @jondo on 2024-10-09 14:16_
+_@jondo_
 
 I am on Linux Mint, and I would like to start using uv, but I have been taught not to trust arbitrary installer scripts like your https://astral.sh/uv/install.sh . Also, I would like to avoid `pip install uv`, since I cannot be sure this keeps my local Python environment stable.
 

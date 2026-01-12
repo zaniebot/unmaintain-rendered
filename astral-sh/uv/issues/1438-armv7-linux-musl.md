@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T05:54:05Z
 updated_at: 2024-02-16T12:21:53Z
 url: https://github.com/astral-sh/uv/issues/1438
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # ARMv7 Linux Musl
 
 ---
 
-_Issue opened by @dynasticorpheus on 2024-02-16 05:54_
+_@dynasticorpheus_
 
 As ruff enthusiast I would love to see uv-armv7-unknown-linux-musl target made available for this great initiative. Very useful for environments like Alphine linux and OpenWRT.
 

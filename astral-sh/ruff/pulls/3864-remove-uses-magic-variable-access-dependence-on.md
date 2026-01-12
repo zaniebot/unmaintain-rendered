@@ -12,14 +12,14 @@ head: charlie/classify
 created_at: 2023-04-03T16:08:52Z
 updated_at: 2023-04-03T16:35:28Z
 url: https://github.com/astral-sh/ruff/pull/3864
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove `uses_magic_variable_access` dependence on `Checker`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-03 16:08_
+_@charliermarsh_
 
 _No description provided._
 

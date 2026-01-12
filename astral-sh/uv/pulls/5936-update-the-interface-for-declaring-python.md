@@ -14,14 +14,14 @@ head: zb/python-downloads
 created_at: 2024-08-08T21:29:55Z
 updated_at: 2024-08-09T18:10:21Z
 url: https://github.com/astral-sh/uv/pull/5936
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Update the interface for declaring Python download preferences
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 21:29_
+_@zanieb_
 
 The loose consensus is that "fetch" doesn't have much meaning and that a boolean flag makes more sense from the command line.
 

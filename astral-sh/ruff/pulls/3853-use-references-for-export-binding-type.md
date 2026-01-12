@@ -12,14 +12,14 @@ head: charlie/all
 created_at: 2023-04-02T21:17:54Z
 updated_at: 2023-04-03T15:47:59Z
 url: https://github.com/astral-sh/ruff/pull/3853
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use references for `Export` binding type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-02 21:17_
+_@charliermarsh_
 
 ## Summary
 

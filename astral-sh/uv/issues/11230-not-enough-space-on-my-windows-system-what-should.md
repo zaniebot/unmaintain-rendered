@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T03:39:32Z
 updated_at: 2025-03-08T11:35:29Z
 url: https://github.com/astral-sh/uv/issues/11230
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Not enough space on my Windows system, what should I do to move the UV content to the D drive?
 
 ---
 
-_Issue opened by @ghost on 2025-02-05 03:39_
+_@ghost_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T12:54:25Z
 updated_at: 2025-07-22T16:46:55Z
 url: https://github.com/astral-sh/uv/issues/6685
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `--no-install-workspace` needs the pyproject.toml of each workspace member to be present
 
 ---
 
-_Issue opened by @konstin on 2024-08-27 12:54_
+_@konstin_
 
 `uv sync --no-dev --no-install-workspace --locked` doesn't work when only the root `pyproject.toml` and `uv.lock` are present. We should allow installing the entire workspace with `--no-install-workspace --locked` when only the top level `uv.lock` is present.
 

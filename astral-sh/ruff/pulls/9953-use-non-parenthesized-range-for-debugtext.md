@@ -14,14 +14,14 @@ head: dhruv/fix-debug-text
 created_at: 2024-02-12T15:15:35Z
 updated_at: 2024-02-12T17:30:04Z
 url: https://github.com/astral-sh/ruff/pull/9953
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use non-parenthesized range for `DebugText`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-12 15:15_
+_@dhruvmanila_
 
 ## Summary
 

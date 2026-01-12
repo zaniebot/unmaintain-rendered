@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T11:59:14Z
 updated_at: 2025-03-04T11:59:14Z
 url: https://github.com/astral-sh/ruff/issues/16497
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Server: Improve notification message for invalid config
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-04 11:59_
+_@dhruvmanila_
 
 Based on the feedback in https://github.com/astral-sh/ruff-vscode/issues/711 as stated in https://github.com/astral-sh/ruff-vscode/issues/711#issuecomment-2697302858.
 

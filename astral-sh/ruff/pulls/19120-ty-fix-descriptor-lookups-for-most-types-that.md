@@ -14,14 +14,14 @@ head: alex/none-descr
 created_at: 2025-07-03T13:22:57Z
 updated_at: 2025-07-07T06:38:52Z
 url: https://github.com/astral-sh/ruff/pull/19120
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Fix descriptor lookups for most types that overlap with `None`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-03 13:22_
+_@AlexWaygood_
 
 ## Summary
 

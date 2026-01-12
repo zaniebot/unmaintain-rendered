@@ -13,14 +13,14 @@ head: charlie/paths
 created_at: 2025-01-13T00:50:55Z
 updated_at: 2025-01-13T00:57:07Z
 url: https://github.com/astral-sh/ruff/pull/15446
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-pathlib`] Fix `--select` for `os-path-dirname` (`PTH120`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-13 00:50_
+_@charliermarsh_
 
 ## Summary
 

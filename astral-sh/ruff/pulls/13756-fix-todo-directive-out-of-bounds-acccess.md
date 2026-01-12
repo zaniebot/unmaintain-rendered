@@ -13,14 +13,14 @@ head: micha/fix-todo-out-of-bounds
 created_at: 2024-10-15T06:26:53Z
 updated_at: 2024-10-15T08:49:55Z
 url: https://github.com/astral-sh/ruff/pull/13756
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fix TODO directive out of bounds acccess
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-15 06:26_
+_@MichaReiser_
 
 ## Summary
 

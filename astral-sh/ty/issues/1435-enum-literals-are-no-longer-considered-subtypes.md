@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-24T12:11:58Z
 updated_at: 2025-10-24T13:34:17Z
 url: https://github.com/astral-sh/ty/issues/1435
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Enum literals are no longer considered subtypes of the enum-class instance unioned with `AlwaysTruthy`
 
 ---
 
-_Issue opened by @github-actions on 2025-10-24 12:11_
+_@github-actions_
 
 Run listed here: https://github.com/astral-sh/ty/actions/runs/18779122084
 

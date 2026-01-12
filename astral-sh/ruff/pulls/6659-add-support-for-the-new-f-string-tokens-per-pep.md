@@ -14,14 +14,14 @@ head: dhruv/fstring-tokens
 created_at: 2023-08-17T19:24:38Z
 updated_at: 2023-09-14T01:46:51Z
 url: https://github.com/astral-sh/ruff/pull/6659
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add support for the new f-string tokens per PEP 701
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-17 19:24_
+_@dhruvmanila_
 
 ## Summary
 

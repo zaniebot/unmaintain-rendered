@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T17:23:55Z
 updated_at: 2024-05-22T16:15:18Z
 url: https://github.com/astral-sh/uv/issues/3555
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Merge `pip_sync.rs` and `pip_install.rs`.
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-13 17:23_
+_@charliermarsh_
 
 These used to be more different but they've since converged a lot. The difference now is just that we resolve with --no-deps and we uninstall extraneous packages.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T19:46:27Z
 updated_at: 2025-06-03T19:35:48Z
 url: https://github.com/astral-sh/ruff/issues/7248
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Implement `flake8-logging`
 
 ---
 
-_Issue opened by @LaBatata101 on 2023-09-08 19:46_
+_@LaBatata101_
 
 Issue to track the implementation of [`flake8-logging`](https://github.com/adamchainz/flake8-logging) rules.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T20:17:51Z
 updated_at: 2025-10-14T11:32:12Z
 url: https://github.com/astral-sh/uv/issues/16239
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # PEP723-style comments inside a string literal still causes script-mode execution
 
 ---
 
-_Issue opened by @flaport on 2025-10-10 20:17_
+_@flaport_
 
 ### Summary
 

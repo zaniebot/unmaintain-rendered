@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-28T13:29:39Z
 updated_at: 2022-02-28T13:29:39Z
 url: https://github.com/clap-rs/clap/issues/3520
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add to Derive Reference an example of what a derive exapnds to
 
 ---
 
-_Issue opened by @epage on 2022-02-28 13:29_
+_@epage_
 
 ### Please complete the following tasks
 

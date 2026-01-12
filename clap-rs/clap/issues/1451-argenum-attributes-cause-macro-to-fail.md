@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-04-07T21:45:18Z
 updated_at: 2020-04-22T18:24:02Z
 url: https://github.com/clap-rs/clap/issues/1451
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # ArgEnum: attributes cause macro to fail
 
 ---
 
-_Issue opened by @ghost on 2019-04-07 21:45_
+_@ghost_
 
 ### Affected Version of clap
 2.9.3

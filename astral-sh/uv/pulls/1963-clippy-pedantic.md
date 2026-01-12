@@ -13,14 +13,14 @@ head: clippy-pedantic
 created_at: 2024-02-25T07:58:21Z
 updated_at: 2024-02-25T19:31:33Z
 url: https://github.com/astral-sh/uv/pull/1963
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Clippy pedantic
 
 ---
 
-_Pull request opened by @danieleades on 2024-02-25 07:58_
+_@danieleades_
 
 Address a few pedantic lints
 

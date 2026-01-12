@@ -12,14 +12,14 @@ head: charlie/enum
 created_at: 2023-05-13T15:07:40Z
 updated_at: 2023-05-14T01:59:32Z
 url: https://github.com/astral-sh/ruff/pull/4413
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Replace TODO tag regex with a lexer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-13 15:07_
+_@charliermarsh_
 
 A little faster in my scrappy hyperfine benchmark.
 

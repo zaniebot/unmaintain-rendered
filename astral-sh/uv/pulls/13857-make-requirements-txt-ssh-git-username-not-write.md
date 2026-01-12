@@ -13,14 +13,14 @@ head: ssh-knownhosts
 created_at: 2025-06-05T10:06:28Z
 updated_at: 2025-06-05T10:55:52Z
 url: https://github.com/astral-sh/uv/pull/13857
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Make `requirements_txt_ssh_git_username` not write into homedir
 
 ---
 
-_Pull request opened by @mgorny on 2025-06-05 10:06_
+_@mgorny_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/rm
 created_at: 2024-07-09T17:38:17Z
 updated_at: 2024-07-09T17:46:33Z
 url: https://github.com/astral-sh/uv/pull/4930
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Respect resolver settings in `uv remove`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 17:38_
+_@charliermarsh_
 
 ## Summary
 

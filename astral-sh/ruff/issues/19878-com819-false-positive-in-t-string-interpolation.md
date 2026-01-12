@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T13:06:47Z
 updated_at: 2025-10-03T18:29:36Z
 url: https://github.com/astral-sh/ruff/issues/19878
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # COM819 false positive in t-string interpolation
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-12 13:06_
+_@dscorbett_
 
 ### Summary
 

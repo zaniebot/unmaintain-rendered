@@ -13,14 +13,14 @@ head: alex/bare-annotated
 created_at: 2024-12-14T18:15:55Z
 updated_at: 2024-12-15T02:00:54Z
 url: https://github.com/astral-sh/ruff/pull/14973
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Emit an error if a bare `Annotated` or `Literal` is used in a type expression
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-14 18:15_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-02-05T09:11:07Z
 updated_at: 2021-03-11T10:51:12Z
 url: https://github.com/clap-rs/clap/issues/2327
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Usage string is invalid when conflicting flags are passed
 
 ---
 
-_Issue opened by @dimo414 on 2021-02-05 09:11_
+_@dimo414_
 
 ### Make sure you completed the following tasks
 

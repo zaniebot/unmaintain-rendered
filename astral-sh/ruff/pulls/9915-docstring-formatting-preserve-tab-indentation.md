@@ -13,14 +13,14 @@ head: preserve-docstring-tabs
 created_at: 2024-02-09T20:23:49Z
 updated_at: 2024-02-12T15:09:14Z
 url: https://github.com/astral-sh/ruff/pull/9915
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Docstring formatting: Preserve tab indentation when using `indent-style=tabs`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-09 20:23_
+_@MichaReiser_
 
 ## Summary
 

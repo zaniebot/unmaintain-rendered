@@ -12,14 +12,14 @@ head: PYI044
 created_at: 2023-06-12T09:20:03Z
 updated_at: 2023-06-12T11:20:18Z
 url: https://github.com/astral-sh/ruff/pull/5021
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [flake8-pyi] Implement PYI044
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-12 09:20_
+_@Thomasdezeeuw_
 
 ## Summary
 

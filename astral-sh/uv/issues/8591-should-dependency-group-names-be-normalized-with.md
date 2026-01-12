@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T12:27:36Z
 updated_at: 2025-04-16T00:40:54Z
 url: https://github.com/astral-sh/uv/issues/8591
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Should dependency group names be normalized with underscores converted to hyphens?
 
 ---
 
-_Issue opened by @drmikehenry on 2024-10-26 12:27_
+_@drmikehenry_
 
 Should dependency group names be normalized with underscores converted to hyphens?
 

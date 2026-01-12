@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T17:05:04Z
 updated_at: 2024-01-24T12:02:02Z
 url: https://github.com/astral-sh/ruff/issues/8679
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Automatically add imports?
 
 ---
 
-_Issue opened by @Tronic on 2023-11-14 17:05_
+_@Tronic_
 
 Since Ruff helpfully removes imports, would it be completely blasphemous if it could also add them back at times? Often some imported symbols are not needed for a while, e.g. when cut/pasteing code around and casually hitting Ctrl-S to save and losing the now unneeded imports. When the code was restored, the imports should also (at least in some cases) come back.
 

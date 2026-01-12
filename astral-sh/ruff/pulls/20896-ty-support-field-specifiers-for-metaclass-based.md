@@ -14,14 +14,14 @@ head: david/field-specifiers-metaclass
 created_at: 2025-10-15T15:21:47Z
 updated_at: 2025-10-15T15:44:25Z
 url: https://github.com/astral-sh/ruff/pull/20896
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Support field_specifiers for metaclass based transformers 
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-15 15:21_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

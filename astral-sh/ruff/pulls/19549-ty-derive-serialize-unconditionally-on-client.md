@@ -14,14 +14,14 @@ head: dhruv/client-options-serialize
 created_at: 2025-07-25T03:59:37Z
 updated_at: 2025-07-25T04:12:16Z
 url: https://github.com/astral-sh/ruff/pull/19549
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Derive `Serialize` unconditionally on client options
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-25 03:59_
+_@dhruvmanila_
 
 _No description provided._
 

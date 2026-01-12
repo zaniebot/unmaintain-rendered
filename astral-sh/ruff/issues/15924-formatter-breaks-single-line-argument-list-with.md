@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-04T08:24:06Z
 updated_at: 2025-02-04T08:44:18Z
 url: https://github.com/astral-sh/ruff/issues/15924
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Formatter: breaks single-line argument list with comments into one argument per line
 
 ---
 
-_Issue opened by @bersbersbers on 2025-02-04 08:24_
+_@bersbersbers_
 
 ### Description
 

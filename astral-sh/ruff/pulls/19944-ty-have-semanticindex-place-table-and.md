@@ -14,14 +14,14 @@ head: alex/refactor-use-def
 created_at: 2025-08-16T20:56:54Z
 updated_at: 2025-08-18T10:38:02Z
 url: https://github.com/astral-sh/ruff/pull/19944
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Have `SemanticIndex::place_table()` and `SemanticIndex::use_def_map` return references
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-16 20:56_
+_@AlexWaygood_
 
 ## Summary
 

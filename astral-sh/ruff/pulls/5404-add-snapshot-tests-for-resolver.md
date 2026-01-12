@@ -13,14 +13,14 @@ head: charlie/airflow
 created_at: 2023-06-27T21:39:45Z
 updated_at: 2023-06-28T13:56:21Z
 url: https://github.com/astral-sh/ruff/pull/5404
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add snapshot tests for resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 21:39_
+_@charliermarsh_
 
 ## Summary
 

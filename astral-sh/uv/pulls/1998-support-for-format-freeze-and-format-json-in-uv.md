@@ -12,14 +12,14 @@ head: pip-list-format
 created_at: 2024-02-26T22:56:53Z
 updated_at: 2024-03-06T09:31:23Z
 url: https://github.com/astral-sh/uv/pull/1998
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Support for `--format=freeze` and `--format=json` in `uv pip list`
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-26 22:56_
+_@sbrugman_
 
 Implements `pip list --format=freeze` and `pip list --format=json`
 

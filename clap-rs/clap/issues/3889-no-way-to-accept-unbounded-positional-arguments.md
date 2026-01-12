@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-30T19:36:34Z
 updated_at: 2022-09-28T16:19:24Z
 url: https://github.com/clap-rs/clap/issues/3889
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # No way to accept unbounded positional arguments with subcommand
 
 ---
 
-_Issue opened by @nissaofthesea on 2022-06-30 19:36_
+_@nissaofthesea_
 
 ### Please complete the following tasks
 

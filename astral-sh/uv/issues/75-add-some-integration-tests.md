@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-09T04:04:12Z
 updated_at: 2023-10-22T04:15:28Z
 url: https://github.com/astral-sh/uv/issues/75
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add some integration tests
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-09 04:04_
+_@charliermarsh_
 
 We're sorely lacking test coverage here, but at least some end-to-end integration tests would be useful.
 

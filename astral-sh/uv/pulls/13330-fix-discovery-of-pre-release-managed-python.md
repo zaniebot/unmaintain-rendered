@@ -13,14 +13,14 @@ head: zb/range-contains
 created_at: 2025-05-07T13:42:51Z
 updated_at: 2025-05-07T14:27:28Z
 url: https://github.com/astral-sh/uv/pull/13330
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Fix discovery of pre-release managed Python versions in range requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 13:42_
+_@zanieb_
 
 We have test coverage for this elsewhere, but managed Python versions are a distinct case because we know the _full_ version before querying the interpreter (whereas, when we find them on the `PATH`, we usually only know `X.y` from the file name).
 

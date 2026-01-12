@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T20:10:03Z
 updated_at: 2026-01-06T19:20:26Z
 url: https://github.com/astral-sh/uv/issues/17247
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Custom command hook for uv sync/lock/run/... calls
 
 ---
 
-_Issue opened by @danijar on 2025-12-28 20:10_
+_@danijar_
 
 ### Summary
 

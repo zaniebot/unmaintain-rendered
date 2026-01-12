@@ -13,14 +13,14 @@ head: konsti/url-url-url-docs
 created_at: 2025-09-18T09:55:35Z
 updated_at: 2025-09-25T10:18:12Z
 url: https://github.com/astral-sh/uv/pull/15929
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Document why we ban URLs from index dependencies
 
 ---
 
-_Pull request opened by @konstin on 2025-09-18 09:55_
+_@konstin_
 
 Document why we ban URLs from index dependencies, and also what the lookahead resolver does.
 

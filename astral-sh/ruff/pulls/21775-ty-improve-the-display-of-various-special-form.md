@@ -14,14 +14,14 @@ head: alex/special-form-display
 created_at: 2025-12-03T15:46:39Z
 updated_at: 2025-12-03T21:20:00Z
 url: https://github.com/astral-sh/ruff/pull/21775
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Improve the display of various special-form types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-03 15:46_
+_@AlexWaygood_
 
 ## Summary
 

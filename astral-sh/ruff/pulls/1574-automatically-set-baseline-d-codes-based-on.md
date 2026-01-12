@@ -12,14 +12,14 @@ head: charlie/convention
 created_at: 2023-01-02T23:36:30Z
 updated_at: 2023-01-03T00:08:57Z
 url: https://github.com/astral-sh/ruff/pull/1574
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Automatically set baseline D codes based on convention
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-02 23:36_
+_@charliermarsh_
 
 Resolves #1569.
 

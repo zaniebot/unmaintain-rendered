@@ -12,14 +12,14 @@ head: autofix-B010
 created_at: 2022-11-20T08:06:23Z
 updated_at: 2022-11-20T15:14:59Z
 url: https://github.com/astral-sh/ruff/pull/823
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for B010
 
 ---
 
-_Pull request opened by @harupy on 2022-11-20 08:06_
+_@harupy_
 
 #389 
 

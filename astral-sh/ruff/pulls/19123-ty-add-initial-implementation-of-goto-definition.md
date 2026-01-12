@@ -14,14 +14,14 @@ head: gankra/gotodef
 created_at: 2025-07-03T15:15:09Z
 updated_at: 2025-07-18T13:45:51Z
 url: https://github.com/astral-sh/ruff/pull/19123
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Add initial implementation of goto definition for loads of local names
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-03 15:15_
+_@Gankra_
 
 _No description provided._
 

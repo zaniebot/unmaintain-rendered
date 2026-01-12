@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions/checkout-4
 created_at: 2023-09-11T08:22:32Z
 updated_at: 2023-09-11T09:11:26Z
 url: https://github.com/astral-sh/ruff/pull/7266
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump actions/checkout from 3 to 4
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-11 08:22_
+_@dependabot_
 
 Bumps [actions/checkout](https://github.com/actions/checkout) from 3 to 4.
 <details>

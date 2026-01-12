@@ -13,14 +13,14 @@ head: charlie/iteration-over-set
 created_at: 2023-06-27T15:24:49Z
 updated_at: 2023-06-27T15:56:29Z
 url: https://github.com/astral-sh/ruff/pull/5392
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Ignore unpacking in `iteration-over-set`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 15:24_
+_@charliermarsh_
 
 Closes #5386.
 

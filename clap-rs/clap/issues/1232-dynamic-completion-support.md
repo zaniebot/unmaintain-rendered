@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-03-26T21:39:30Z
 updated_at: 2024-08-10T00:35:03Z
 url: https://github.com/clap-rs/clap/issues/1232
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Dynamic completion support
 
 ---
 
-_Issue opened by @Manishearth on 2018-03-26 21:39_
+_@Manishearth_
 
 Maintainers notes:
 - Assuming this is custom completion on top of clap-driven completion, this is blocked on #3166 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-07T06:49:57Z
 updated_at: 2023-07-09T19:53:29Z
 url: https://github.com/astral-sh/ruff/issues/5581
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive for PERF401 when conditional depends on list being appended
 
 ---
 
-_Issue opened by @dosisod on 2023-07-07 06:49_
+_@dosisod_
 
 The following code cannot be re-written as a comprehension. It's a pretty common idiom (from my experience) to remove duplicates from an array while maintaining the order, keeping the first duplicate.
 

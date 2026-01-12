@@ -12,14 +12,14 @@ head: main
 created_at: 2023-08-08T02:09:28Z
 updated_at: 2023-09-13T04:05:05Z
 url: https://github.com/astral-sh/ruff/pull/6414
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add autofix for import convention's `banned-from` rule (issue #6372)
 
 ---
 
-_Pull request opened by @Sawbez on 2023-08-08 02:09_
+_@Sawbez_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

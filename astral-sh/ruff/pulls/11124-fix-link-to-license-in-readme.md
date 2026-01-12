@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-24T12:35:54Z
 updated_at: 2024-04-26T02:08:13Z
 url: https://github.com/astral-sh/ruff/pull/11124
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Fix link to license in README
 
 ---
 
-_Pull request opened by @KPCOFGS on 2024-04-24 12:35_
+_@KPCOFGS_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: pygrep-hooks
 created_at: 2022-12-18T06:44:30Z
 updated_at: 2022-12-19T04:22:16Z
 url: https://github.com/astral-sh/ruff/pull/1275
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # pygrep-hooks - deprecated use of logging.warn & no blanket type ignore
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-18 06:44_
+_@squiddy_
 
 _No description provided._
 

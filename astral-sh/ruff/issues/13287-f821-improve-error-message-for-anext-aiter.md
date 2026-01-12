@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T01:41:28Z
 updated_at: 2024-09-10T18:05:37Z
 url: https://github.com/astral-sh/ruff/issues/13287
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [F821] Improve error message for `anext`/`aiter`
 
 ---
 
-_Issue opened by @JP-Ellis on 2024-09-09 01:41_
+_@JP-Ellis_
 
 ## Summary
 

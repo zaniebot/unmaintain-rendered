@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T23:05:39Z
 updated_at: 2025-01-23T19:17:35Z
 url: https://github.com/astral-sh/uv/issues/10832
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # no-manylinux support does not work when cache is enabled
 
 ---
 
-_Issue opened by @pythonweb2 on 2025-01-21 23:05_
+_@pythonweb2_
 
 ### Summary
 

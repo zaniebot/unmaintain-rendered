@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-04T22:17:30Z
 updated_at: 2023-12-06T02:36:13Z
 url: https://github.com/astral-sh/uv/issues/554
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Repeatedly building local source distribution fails
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-04 22:17_
+_@charliermarsh_
 
 I'm getting, e.g.:
 

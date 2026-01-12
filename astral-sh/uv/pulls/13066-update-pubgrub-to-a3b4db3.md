@@ -13,14 +13,14 @@ head: konsti/pubgrub-a3b4db3
 created_at: 2025-04-23T11:47:32Z
 updated_at: 2025-04-24T10:39:58Z
 url: https://github.com/astral-sh/uv/pull/13066
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Update pubgrub to a3b4db3
 
 ---
 
-_Pull request opened by @konstin on 2025-04-23 11:47_
+_@konstin_
 
 Maintenance update to PubGrub a3b4db3abb1829ce889fb89fa6d157fef529ef7e
 

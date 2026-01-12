@@ -14,14 +14,14 @@ head: micha/salsa-test-perf
 created_at: 2025-10-29T13:35:36Z
 updated_at: 2025-11-16T11:46:50Z
 url: https://github.com/astral-sh/ruff/pull/21122
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Test performance impact of upstream salsa change
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-29 13:35_
+_@MichaReiser_
 
 _No description provided._
 

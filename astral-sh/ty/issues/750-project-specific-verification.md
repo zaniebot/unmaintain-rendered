@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T10:44:13Z
 updated_at: 2025-07-03T07:41:15Z
 url: https://github.com/astral-sh/ty/issues/750
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Project specific verification
 
 ---
 
-_Issue opened by @KaQuMiQ on 2025-07-02 10:44_
+_@KaQuMiQ_
 
 ### Question
 

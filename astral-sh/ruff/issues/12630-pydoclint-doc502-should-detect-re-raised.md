@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T14:00:20Z
 updated_at: 2024-08-02T21:47:23Z
 url: https://github.com/astral-sh/ruff/issues/12630
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [pydoclint] DOC502 should detect re-raised exceptions
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-08-02 14:00_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

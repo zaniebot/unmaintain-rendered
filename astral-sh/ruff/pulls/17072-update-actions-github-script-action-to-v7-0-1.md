@@ -13,14 +13,14 @@ head: renovate/actions-github-script-7.x
 created_at: 2025-03-31T01:53:28Z
 updated_at: 2025-03-31T07:24:40Z
 url: https://github.com/astral-sh/ruff/pull/17072
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Update actions/github-script action to v7.0.1
 
 ---
 
-_Pull request opened by @renovate on 2025-03-31 01:53_
+_@renovate_
 
 This PR contains the following updates:
 

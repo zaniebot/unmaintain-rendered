@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T21:27:27Z
 updated_at: 2024-02-21T00:21:56Z
 url: https://github.com/astral-sh/uv/issues/1784
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Any way to create a stdlib style venv instead of virtualenv style?
 
 ---
 
-_Issue opened by @wimglenn on 2024-02-20 21:27_
+_@wimglenn_
 
 I wonder if it is possible to ask `uv venv` for a [stdlib venv](https://docs.python.org/3/library/venv.html) style env instead of a [virtualenv](https://github.com/pypa/virtualenv) style one?
 

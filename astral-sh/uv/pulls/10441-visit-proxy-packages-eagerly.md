@@ -13,14 +13,14 @@ head: charlie/prox
 created_at: 2025-01-09T18:44:01Z
 updated_at: 2025-01-21T22:28:37Z
 url: https://github.com/astral-sh/uv/pull/10441
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Visit proxy packages eagerly
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 18:44_
+_@charliermarsh_
 
 ## Summary
 

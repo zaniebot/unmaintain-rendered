@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T19:00:24Z
 updated_at: 2024-11-17T19:04:26Z
 url: https://github.com/astral-sh/ruff/issues/12461
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # UP031 does not support %d formatting
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-07-22 19:00_
+_@inoa-jboliveira_
 
 Ruff version 0.5.4
 

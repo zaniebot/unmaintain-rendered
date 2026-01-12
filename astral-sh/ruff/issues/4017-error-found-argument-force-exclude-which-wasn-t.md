@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-19T06:28:27Z
 updated_at: 2023-04-19T15:23:37Z
 url: https://github.com/astral-sh/ruff/issues/4017
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # error: Found argument '--force-exclude' which wasn't expected, or isn't valid in this context
 
 ---
 
-_Issue opened by @lexicalunit on 2023-04-19 06:28_
+_@lexicalunit_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

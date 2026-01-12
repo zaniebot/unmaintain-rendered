@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T14:55:20Z
 updated_at: 2023-11-13T19:28:18Z
 url: https://github.com/astral-sh/ruff/issues/8602
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Extend `PIE790` to ellipses
 
 ---
 
-_Issue opened by @doolio on 2023-11-10 14:55_
+_@doolio_
 
 _No description provided._
 

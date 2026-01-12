@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-20T21:04:14Z
 updated_at: 2015-05-23T03:38:15Z
 url: https://github.com/clap-rs/clap/issues/129
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Reduce colored output to more specific formatting
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-20 21:04_
+_@kbknapp_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dcreager/consolidate-any
 created_at: 2025-01-09T20:25:00Z
 updated_at: 2025-01-10T02:32:22Z
 url: https://github.com/astral-sh/ruff/pull/15386
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Consolidate all gradual types into single Type variant
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-09 20:25_
+_@dcreager_
 
 Prompted by https://github.com/astral-sh/ty/issues/222:
 

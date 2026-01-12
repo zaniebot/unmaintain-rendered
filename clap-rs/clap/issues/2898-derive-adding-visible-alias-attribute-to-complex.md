@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-16T20:08:23Z
 updated_at: 2021-10-26T23:04:39Z
 url: https://github.com/clap-rs/clap/issues/2898
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Derive: adding `visible_alias` attribute to complex subcommands results in duplicated aliases
 
 ---
 
-_Issue opened by @tranzystorekk on 2021-10-16 20:08_
+_@tranzystorekk_
 
 StructOpt Issue: https://github.com/TeXitoi/structopt/issues/418
 StructOpt PR: https://github.com/TeXitoi/structopt/pull/504

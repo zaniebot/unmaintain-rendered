@@ -13,14 +13,14 @@ head: 3301-fix-windows-wildcards
 created_at: 2023-03-26T10:19:27Z
 updated_at: 2023-03-26T14:51:19Z
 url: https://github.com/astral-sh/ruff/pull/3739
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use `wild::args()` and add `wild` as a dependency
 
 ---
 
-_Pull request opened by @agriyakhetarpal on 2023-03-26 10:19_
+_@agriyakhetarpal_
 
 A small fix to close #3301 
 

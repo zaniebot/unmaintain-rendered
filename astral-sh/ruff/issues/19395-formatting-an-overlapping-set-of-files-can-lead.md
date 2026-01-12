@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T09:10:37Z
 updated_at: 2025-09-19T18:40:24Z
 url: https://github.com/astral-sh/ruff/issues/19395
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatting an overlapping set of files can lead to errors
 
 ---
 
-_Issue opened by @ikalchev on 2025-07-17 09:10_
+_@ikalchev_
 
 ### Summary
 

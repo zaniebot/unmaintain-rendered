@@ -12,14 +12,14 @@ head: ag/if-modified-since-format-fix
 created_at: 2024-11-01T12:34:38Z
 updated_at: 2024-11-01T13:46:27Z
 url: https://github.com/astral-sh/uv/pull/8752
-synced_at: 2026-01-10T12:08:45Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # uv-client: switch to RFC 9110 compatible format
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-01 12:34_
+_@BurntSushi_
 
 This still utilizes the RFC 2822 datetime formatter, but utilizes new
 methods [added in jiff 0.1.14] to emit timestamps in a format strictly

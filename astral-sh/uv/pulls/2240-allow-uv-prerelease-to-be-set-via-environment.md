@@ -12,14 +12,14 @@ head: charlie/env
 created_at: 2024-03-06T14:27:48Z
 updated_at: 2024-03-06T21:34:13Z
 url: https://github.com/astral-sh/uv/pull/2240
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Allow `UV_PRERELEASE` to be set via environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 14:27_
+_@charliermarsh_
 
 ## Summary
 

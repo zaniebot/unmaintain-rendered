@@ -14,14 +14,14 @@ head: zb/release-sh
 created_at: 2024-05-22T19:57:35Z
 updated_at: 2024-07-03T12:35:30Z
 url: https://github.com/astral-sh/ruff/pull/11496
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update release script to match `uv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 19:57_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/3764
 

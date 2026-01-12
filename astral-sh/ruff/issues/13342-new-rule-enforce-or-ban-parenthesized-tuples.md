@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T05:19:18Z
 updated_at: 2025-01-07T17:34:02Z
 url: https://github.com/astral-sh/ruff/issues/13342
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - enforce (or ban) parenthesized tuples everywhere
 
 ---
 
-_Issue opened by @DetachHead on 2024-09-13 05:19_
+_@DetachHead_
 
 [`incorrectly-parenthesized-tuple-in-subscript` (`RUF031`)](https://docs.astral.sh/ruff/rules/incorrectly-parenthesized-tuple-in-subscript/) allows you to enforce (or ban) them inside subscripts, but imo there should also be a rule to enforce it everywhere else as well:
 

@@ -13,14 +13,14 @@ head: thejchap/union-attribute-assignment-possibly-undefined
 created_at: 2025-06-07T02:31:22Z
 updated_at: 2025-07-20T23:53:18Z
 url: https://github.com/astral-sh/ruff/pull/18527
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] Add attribute assignment tests
 
 ---
 
-_Pull request opened by @thejchap on 2025-06-07 02:31_
+_@thejchap_
 
 ## Summary
 Related to: https://github.com/astral-sh/ruff/pull/18347

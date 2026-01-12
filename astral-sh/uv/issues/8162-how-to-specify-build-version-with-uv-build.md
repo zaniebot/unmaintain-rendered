@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-13T23:05:27Z
 updated_at: 2024-10-14T16:30:43Z
 url: https://github.com/astral-sh/uv/issues/8162
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # how to specify build version with `uv build`?
 
 ---
 
-_Issue opened by @struckchure on 2024-10-13 23:05_
+_@struckchure_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

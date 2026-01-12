@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T17:05:26Z
 updated_at: 2025-06-26T06:54:46Z
 url: https://github.com/astral-sh/ruff/issues/18825
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [wish/feature] Link from playground to docs
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 17:05_
+_@MeGaGiGaGon_
 
 It's very nice when there is a quick link from the playground to the docs, as I often open the playground first to test something, and then want to visit the docs to confirm the behavior. 
 

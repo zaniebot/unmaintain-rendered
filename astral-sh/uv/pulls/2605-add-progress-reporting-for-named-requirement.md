@@ -13,14 +13,14 @@ head: charlie/reporter
 created_at: 2024-03-22T03:37:34Z
 updated_at: 2024-03-22T04:18:00Z
 url: https://github.com/astral-sh/uv/pull/2605
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Add progress reporting for named requirement resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-22 03:37_
+_@charliermarsh_
 
 _No description provided._
 

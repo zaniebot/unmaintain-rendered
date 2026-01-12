@@ -13,14 +13,14 @@ head: support-prompt
 created_at: 2024-02-17T04:24:43Z
 updated_at: 2024-02-21T21:00:09Z
 url: https://github.com/astral-sh/uv/pull/1570
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Support `venv --prompt`
 
 ---
 
-_Pull request opened by @methane on 2024-02-17 04:24_
+_@methane_
 
 ## Summary
 

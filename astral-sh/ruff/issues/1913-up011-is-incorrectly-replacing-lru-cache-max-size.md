@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T11:34:15Z
 updated_at: 2023-01-17T21:57:09Z
 url: https://github.com/astral-sh/ruff/issues/1913
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # UP011 is incorrectly replacing `lru_cache(max_size)=None`
 
 ---
 
-_Issue opened by @henribru on 2023-01-16 11:34_
+_@henribru_
 
 The UP011 rule replaces `functools.lru_cache(max_size=None)` with `functools.lru_cache`. The corresponding rule in pyupgrade replaces it with `functools.cache`: https://github.com/asottile/pyupgrade#replace-functoolslru_cachemaxsizenone-with-shorthand. 
 

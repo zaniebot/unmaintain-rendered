@@ -13,14 +13,14 @@ head: init-package
 created_at: 2024-09-24T19:09:35Z
 updated_at: 2024-09-30T23:29:40Z
 url: https://github.com/astral-sh/uv/pull/7670
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # packaged app: use executable named for the project and main function
 
 ---
 
-_Pull request opened by @bluss on 2024-09-24 19:09_
+_@bluss_
 
 ## Summary
 

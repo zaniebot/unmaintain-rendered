@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T14:23:43Z
 updated_at: 2026-01-03T17:46:45Z
 url: https://github.com/astral-sh/ty/issues/1471
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reconsider how we display class definitions in the LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-03 14:23_
+_@MichaReiser_
 
 > Most classes and types will have lsp description of <class 'Foo'> (which is especially weird for built-in ones like <class 'int'>) and doesn't seem to carry much info
 

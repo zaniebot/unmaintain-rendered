@@ -13,14 +13,14 @@ head: dylan/stabilize-furb166
 created_at: 2025-06-08T19:07:28Z
 updated_at: 2025-06-09T18:12:12Z
 url: https://github.com/astral-sh/ruff/pull/18558
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `int-on-sliced-str` (`FURB166`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:07_
+_@dylwil3_
 
 _No description provided._
 

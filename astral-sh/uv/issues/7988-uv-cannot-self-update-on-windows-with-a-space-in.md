@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T19:21:13Z
 updated_at: 2024-10-07T19:23:36Z
 url: https://github.com/astral-sh/uv/issues/7988
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # uv cannot self update on windows with a space in the user name
 
 ---
 
-_Issue opened by @dancergraham on 2024-10-07 19:21_
+_@dancergraham_
 
 trying `uv self update`
 Using uv-self 0.4.7 (a178051e8 2024-09-07) 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T06:59:53Z
 updated_at: 2025-03-24T14:32:54Z
 url: https://github.com/astral-sh/ruff/issues/16863
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # How to check 'missing type annotation for function arguments' only for public functions?
 
 ---
 
-_Issue opened by @Somya-Singhal on 2025-03-20 06:59_
+_@Somya-Singhal_
 
 ### Question
 

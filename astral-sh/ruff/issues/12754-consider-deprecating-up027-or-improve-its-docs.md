@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T14:10:13Z
 updated_at: 2024-08-13T15:56:53Z
 url: https://github.com/astral-sh/ruff/issues/12754
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Consider deprecating UP027 or improve its docs
 
 ---
 
-_Issue opened by @sk- on 2024-08-08 14:10_
+_@sk-_
 
 The original rule [UP027 (unpacked-list-comprehension)](url), implemented in `pyupgrade` does not seem to be thoroughly justified, and in fact it is actually slower. Which goes against the documentation in ruff which mentions
 

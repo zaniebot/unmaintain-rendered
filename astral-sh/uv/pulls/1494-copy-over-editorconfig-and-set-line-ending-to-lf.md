@@ -13,14 +13,14 @@ head: set-line-ending-to-lf
 created_at: 2024-02-16T14:35:10Z
 updated_at: 2024-02-16T14:44:57Z
 url: https://github.com/astral-sh/uv/pull/1494
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Copy over editorconfig and set line ending to LF
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-16 14:35_
+_@MichaReiser_
 
 Set git's `eol` setting to `LF` fortext file to have consistent line endings when working on the checked-out project.
 

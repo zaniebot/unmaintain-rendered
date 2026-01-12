@@ -13,14 +13,14 @@ head: charlie/small-str
 created_at: 2025-01-12T20:04:45Z
 updated_at: 2025-01-12T20:23:20Z
 url: https://github.com/astral-sh/uv/pull/10545
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Add a shared `uv-small-str` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-12 20:04_
+_@charliermarsh_
 
 ## Summary
 

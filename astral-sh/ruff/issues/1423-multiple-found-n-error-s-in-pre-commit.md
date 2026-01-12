@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-28T13:30:29Z
 updated_at: 2022-12-28T14:36:32Z
 url: https://github.com/astral-sh/ruff/issues/1423
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Multiple "Found n error(s)" in pre-commit
 
 ---
 
-_Issue opened by @jad-haddad on 2022-12-28 13:30_
+_@jad-haddad_
 
 I ran the pre-commit on all files and I noticed that the result is reported in a fractionated manner as shown in the image below
 ![SCR-20221228-j6g](https://user-images.githubusercontent.com/27054843/209815644-7edbc0eb-ab09-42d1-b9ed-72ee0aa690f0.png)

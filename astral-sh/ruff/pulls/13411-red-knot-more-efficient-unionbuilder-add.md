@@ -13,14 +13,14 @@ head: cjm/union-builder
 created_at: 2024-09-19T19:43:39Z
 updated_at: 2024-09-20T17:49:47Z
 url: https://github.com/astral-sh/ruff/pull/13411
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] more efficient UnionBuilder::add
 
 ---
 
-_Pull request opened by @carljm on 2024-09-19 19:43_
+_@carljm_
 
 Avoid quadratic time in subsumed elements when adding a super-type of existing union elements.
 

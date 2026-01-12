@@ -13,14 +13,14 @@ head: micha/ci-fix-benchmarks-ci
 created_at: 2024-10-14T07:06:21Z
 updated_at: 2024-10-14T07:28:40Z
 url: https://github.com/astral-sh/ruff/pull/13743
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Downgrade benchmarks CI job to ubuntu 22
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-14 07:06_
+_@MichaReiser_
 
 ## Summary
 

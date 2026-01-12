@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-15T01:45:37Z
 updated_at: 2025-08-15T01:45:51Z
 url: https://github.com/astral-sh/uv/issues/15294
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # add integration tests for venv activation scripts
 
 ---
 
-_Issue opened by @2bndy5 on 2025-08-15 01:45_
+_@2bndy5_
 
 Following a discussion about the topic of venv activation scripts:
 > I think someone just needs to validate and pull in those upstream changes [from virtualenv package] into our virtual environment activation scripts. Ideally, we'd have some test coverage that makes it apparent we're resolving the problem.

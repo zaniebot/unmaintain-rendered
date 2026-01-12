@@ -13,14 +13,14 @@ head: alex/thinner-spec
 created_at: 2025-08-14T19:36:41Z
 updated_at: 2025-08-15T13:53:49Z
 url: https://github.com/astral-sh/ruff/pull/19920
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Refactor `Specialization` to remove redundancy between `types` and `tuple_inner` fields
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-14 19:36_
+_@AlexWaygood_
 
 ## Summary
 

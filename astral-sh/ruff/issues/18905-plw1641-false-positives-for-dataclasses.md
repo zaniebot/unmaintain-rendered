@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T22:14:10Z
 updated_at: 2025-07-08T07:24:52Z
 url: https://github.com/astral-sh/ruff/issues/18905
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PLW1641` false positives for dataclasses
 
 ---
 
-_Issue opened by @lengau on 2025-06-23 22:14_
+_@lengau_
 
 ### Summary
 

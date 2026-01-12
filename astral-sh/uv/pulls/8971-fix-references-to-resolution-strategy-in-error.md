@@ -14,14 +14,14 @@ head: charlie/r
 created_at: 2024-11-09T13:45:11Z
 updated_at: 2024-11-09T13:54:50Z
 url: https://github.com/astral-sh/uv/pull/8971
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Fix references to `--resolution-strategy` in error message output
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 13:45_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/8967.
 

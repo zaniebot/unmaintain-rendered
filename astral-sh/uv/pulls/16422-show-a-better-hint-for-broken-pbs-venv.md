@@ -12,14 +12,14 @@ head: konsti/hint-at-broken-interpreter
 created_at: 2025-10-23T15:40:40Z
 updated_at: 2025-12-11T15:42:31Z
 url: https://github.com/astral-sh/uv/pull/16422
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 #  Show a better hint for broken PBS venv
 
 ---
 
-_Pull request opened by @konstin on 2025-10-23 15:40_
+_@konstin_
 
 For some reason, I'm encountering broken PBS venvs again (https://github.com/astral-sh/python-build-standalone/issues/380). Instead of showing the inscrutable error to the user, we point them to the PBS bug and ask them to run `uv venv`.
 

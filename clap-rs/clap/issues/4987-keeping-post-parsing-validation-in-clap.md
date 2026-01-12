@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-24T23:43:30Z
 updated_at: 2023-06-25T00:59:50Z
 url: https://github.com/clap-rs/clap/issues/4987
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Keeping post parsing validation in clap
 
 ---
 
-_Issue opened by @Easyoakland on 2023-06-24 23:43_
+_@Easyoakland_
 
 ### Please complete the following tasks
 

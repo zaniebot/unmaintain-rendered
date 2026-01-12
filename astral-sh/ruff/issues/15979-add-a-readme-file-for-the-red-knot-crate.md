@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T20:15:31Z
 updated_at: 2025-02-19T07:31:03Z
 url: https://github.com/astral-sh/ruff/issues/15979
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add a `README` file for the `red_knot` crate
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-02-05 20:15_
+_@InSyncWithFoo_
 
 As Red Knot is now "[officially](https://bsky.app/profile/crmarsh.com/post/3lgvhzdfrps26)" public knowledge, the crate should at least have a short informational user-facing `README` explaining what it is, what its goals and non-goals are as well as what state it is currently in.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-09-13T16:32:43Z
 updated_at: 2023-09-20T13:19:00Z
 url: https://github.com/astral-sh/ruff/issues/7354
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rename `format` option to `output-format`
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:32_
+_@zanieb_
 
 The `format` option could be confused with our formatter. It should be renamed to `output-format` in both the configuration file and CLI e.g.
 

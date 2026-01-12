@@ -14,14 +14,14 @@ head: zb/sdist-cache-bucket
 created_at: 2024-07-15T17:56:02Z
 updated_at: 2024-07-15T19:41:05Z
 url: https://github.com/astral-sh/uv/pull/5077
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Rename "built-wheels" cache bucket to "source-dists"
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-15 17:56_
+_@zanieb_
 
 This name should lead to less confusion. Unfortunately this is a "breaking cache change" so everyone's cache will be invalidated. I'm not sure if we should support a rename-on-upgrade.
 

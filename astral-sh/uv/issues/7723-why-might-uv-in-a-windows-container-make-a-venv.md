@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T19:16:46Z
 updated_at: 2024-10-21T22:03:16Z
 url: https://github.com/astral-sh/uv/issues/7723
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Why might `uv` in a Windows container make a .venv with a `Lib` that cannot be copied?
 
 ---
 
-_Issue opened by @doctorpangloss on 2024-09-26 19:16_
+_@doctorpangloss_
 
 
 <!--

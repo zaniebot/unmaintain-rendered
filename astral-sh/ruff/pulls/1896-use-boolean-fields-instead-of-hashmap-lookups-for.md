@@ -12,14 +12,14 @@ head: enabled-bools
 created_at: 2023-01-15T21:15:07Z
 updated_at: 2023-01-17T10:28:42Z
 url: https://github.com/astral-sh/ruff/pull/1896
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Use boolean fields instead of HashMap lookups for enabled checks
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-15 21:15_
+_@not-my-profile_
 
 _No description provided._
 

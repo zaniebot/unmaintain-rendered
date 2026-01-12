@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T12:47:55Z
 updated_at: 2024-10-29T13:41:28Z
 url: https://github.com/astral-sh/uv/issues/8658
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Missing Python version marker in `uv export` output for dependency in a group
 
 ---
 
-_Issue opened by @nsoranzo on 2024-10-29 12:47_
+_@nsoranzo_
 
 I have a `pyproject.toml` with a dependency group (thanks for adding support for this!) that contains a dependency that should only be installed for Python >=3.9 while our project support Python >=3.8 , here's the simplified version:
 

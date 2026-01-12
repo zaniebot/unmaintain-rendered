@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-08-26T18:05:16Z
 updated_at: 2022-01-11T18:44:56Z
 url: https://github.com/clap-rs/clap/issues/1535
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Recursively print whole help?
 
 ---
 
-_Issue opened by @dpc on 2019-08-26 18:05_
+_@dpc_
 
 My app (`cargo-crev`) used `<verb> <subject> <qualifier>` convention. Eg. `cargo crev query id all`. This makes it use a lot of 3-level sub-command nesting, which is tedious for the users to fully discover.
 

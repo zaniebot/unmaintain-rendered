@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T07:43:35Z
 updated_at: 2024-10-09T23:03:33Z
 url: https://github.com/astral-sh/uv/issues/6676
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # exclude-newer doesn't downgrade. should it?
 
 ---
 
-_Issue opened by @davidszotten on 2024-08-27 07:43_
+_@davidszotten_
 
 i was expecting `--exclude-newer` to also downgrade installed packages, is that not the intended behaviour?
 

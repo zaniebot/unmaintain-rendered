@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T16:05:20Z
 updated_at: 2024-08-20T15:58:56Z
 url: https://github.com/astral-sh/ruff/issues/12991
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # COM812 improvement
 
 ---
 
-_Issue opened by @danpascu on 2024-08-19 16:05_
+_@danpascu_
 
 Hi,
 

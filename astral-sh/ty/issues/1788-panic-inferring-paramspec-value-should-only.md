@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T22:16:05Z
 updated_at: 2025-12-08T05:20:42Z
 url: https://github.com/astral-sh/ty/issues/1788
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: Inferring ParamSpec value...should only happen when it contains exactly one ParamSpec
 
 ---
 
-_Issue opened by @correctmost on 2025-12-05 22:16_
+_@correctmost_
 
 ### Summary
 

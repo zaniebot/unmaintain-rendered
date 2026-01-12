@@ -13,14 +13,14 @@ head: alex/generic-protocol-mro
 created_at: 2025-05-04T13:35:09Z
 updated_at: 2025-06-27T16:29:53Z
 url: https://github.com/astral-sh/ruff/pull/17832
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [ty] Understand classes that inherit from subscripted `Protocol[]` as generic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-04 13:35_
+_@AlexWaygood_
 
 ## Summary
 

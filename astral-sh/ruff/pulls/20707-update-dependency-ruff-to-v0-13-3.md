@@ -13,14 +13,14 @@ head: renovate/ruff-0.x
 created_at: 2025-10-06T02:07:33Z
 updated_at: 2025-10-06T06:26:24Z
 url: https://github.com/astral-sh/ruff/pull/20707
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Update dependency ruff to v0.13.3
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:07_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

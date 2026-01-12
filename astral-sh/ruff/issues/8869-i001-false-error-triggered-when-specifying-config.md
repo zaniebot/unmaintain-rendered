@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-28T15:52:32Z
 updated_at: 2023-11-30T22:02:55Z
 url: https://github.com/astral-sh/ruff/issues/8869
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [I001] false error triggered when specifying `--config` file
 
 ---
 
-_Issue opened by @ErickKramer on 2023-11-28 15:52_
+_@ErickKramer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

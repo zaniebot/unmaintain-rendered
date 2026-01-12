@@ -13,14 +13,14 @@ head: charlie/choc
 created_at: 2024-03-21T18:06:50Z
 updated_at: 2024-03-21T18:15:44Z
 url: https://github.com/astral-sh/uv/pull/2595
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Don't install `pydantic_core` on Python 3.13
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-21 18:06_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/actions/runs/8379602011/job/22947128453?pr=1217
 

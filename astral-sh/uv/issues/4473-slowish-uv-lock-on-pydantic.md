@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-24T13:52:18Z
 updated_at: 2024-06-24T21:09:38Z
 url: https://github.com/astral-sh/uv/issues/4473
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # slowish `uv lock` on pydantic
 
 ---
 
-_Issue opened by @BurntSushi on 2024-06-24 13:52_
+_@BurntSushi_
 
 To reproduce:
 

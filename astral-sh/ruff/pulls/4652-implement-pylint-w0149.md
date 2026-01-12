@@ -11,14 +11,14 @@ head: while-loop
 created_at: 2023-05-25T09:32:12Z
 updated_at: 2023-07-10T09:55:32Z
 url: https://github.com/astral-sh/ruff/pull/4652
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement Pylint W0149
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-25 09:32_
+_@tjkuson_
 
 ## Summary
 

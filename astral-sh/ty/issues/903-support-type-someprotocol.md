@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-27T13:55:46Z
 updated_at: 2025-10-17T09:51:08Z
 url: https://github.com/astral-sh/ty/issues/903
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support `type[SomeProtocol]`
 
 ---
 
-_Issue opened by @tpgillam on 2025-07-27 13:55_
+_@tpgillam_
 
 ### Question
 

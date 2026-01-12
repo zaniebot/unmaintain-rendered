@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-07T21:44:33Z
 updated_at: 2025-07-08T06:07:51Z
 url: https://github.com/astral-sh/uv/issues/7182
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Feature request: `uv init --namespace`
 
 ---
 
-_Issue opened by @Afoucaul on 2024-09-07 21:44_
+_@Afoucaul_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

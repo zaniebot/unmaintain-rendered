@@ -11,14 +11,14 @@ head: format-no-tuple-constant
 created_at: 2023-07-16T20:58:34Z
 updated_at: 2023-07-18T06:58:37Z
 url: https://github.com/astral-sh/ruff/pull/5812
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # tuple constants are for optimisations, not source
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-16 20:58_
+_@davidszotten_
 
 my reading of https://docs.python.org/3/library/ast.html#ast.unparse and
 https://discuss.python.org/t/ast-constant-value-tuple-s-and-frozenset-s/22578 is that tuple constants cannot come from parsing python source, they are only for optimised bytecode

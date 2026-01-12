@@ -13,14 +13,14 @@ head: zanie/eco-hide-cmd
 created_at: 2023-11-02T04:23:22Z
 updated_at: 2023-11-02T13:53:40Z
 url: https://github.com/astral-sh/ruff/pull/8435
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Only show ecosystem command used if options are non-default
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 04:23_
+_@zanieb_
 
 To save that precious character count
 

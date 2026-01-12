@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-04T00:18:30Z
 updated_at: 2025-01-04T12:20:57Z
 url: https://github.com/astral-sh/ruff/issues/15246
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Duplication and inconsistency between pep585 annotation rules: UP006, UP035
 
 ---
 
-_Issue opened by @oprypin on 2025-01-04 00:18_
+_@oprypin_
 
 Since ruff 0.8.5:
 

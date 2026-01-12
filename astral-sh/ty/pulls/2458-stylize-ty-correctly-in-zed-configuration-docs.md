@@ -13,14 +13,14 @@ head: fix-ty-style
 created_at: 2026-01-12T10:33:54Z
 updated_at: 2026-01-12T10:36:39Z
 url: https://github.com/astral-sh/ty/pull/2458
-synced_at: 2026-01-12T11:01:03Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Stylize 'ty' correctly in zed configuration docs
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2026-01-12 10:33_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T10:18:27Z
 updated_at: 2025-03-05T16:18:54Z
 url: https://github.com/astral-sh/uv/issues/11945
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # uv failed to resolve pytorch dependencies in project with `cu126`
 
 ---
 
-_Issue opened by @hv0905 on 2025-03-04 10:18_
+_@hv0905_
 
 ### Summary
 

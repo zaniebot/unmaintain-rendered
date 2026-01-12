@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-06T05:14:46Z
 updated_at: 2025-12-16T20:59:00Z
 url: https://github.com/astral-sh/uv/issues/17013
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Make importing from root easy
 
 ---
 
-_Issue opened by @davidgilbertson on 2025-12-06 05:14_
+_@davidgilbertson_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: feat/flake8-use-pathlib
 created_at: 2023-01-22T18:50:33Z
 updated_at: 2023-01-30T11:52:49Z
 url: https://github.com/astral-sh/ruff/pull/2090
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: flake8-use-pathlib PTH100-124
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-22 18:50_
+_@sbrugman_
 
 See: https://github.com/charliermarsh/ruff/issues/2060
 

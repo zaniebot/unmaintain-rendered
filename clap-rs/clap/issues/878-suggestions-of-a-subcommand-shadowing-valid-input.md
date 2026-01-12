@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-27T16:53:35Z
 updated_at: 2020-11-07T13:23:29Z
 url: https://github.com/clap-rs/clap/issues/878
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Suggestions of a subcommand shadowing valid input
 
 ---
 
-_Issue opened by @fredszaq on 2017-02-27 16:53_
+_@fredszaq_
 
 Hello,
 

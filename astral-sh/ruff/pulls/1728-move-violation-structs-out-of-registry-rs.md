@@ -12,14 +12,14 @@ head: charlie/structs
 created_at: 2023-01-08T00:20:22Z
 updated_at: 2023-04-20T20:03:20Z
 url: https://github.com/astral-sh/ruff/pull/1728
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move violation structs out of `registry.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-08 00:20_
+_@charliermarsh_
 
 _No description provided._
 

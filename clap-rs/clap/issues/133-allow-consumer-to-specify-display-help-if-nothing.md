@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-05-25T17:11:07Z
 updated_at: 2015-05-26T01:56:41Z
 url: https://github.com/clap-rs/clap/issues/133
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow consumer to specify "display help if nothing else"
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-25 17:11_
+_@kbknapp_
 
 Will probably be implemented as two methods on `App`; `.help_on_no_args()` and `.help_on_no_subcommand()`
 

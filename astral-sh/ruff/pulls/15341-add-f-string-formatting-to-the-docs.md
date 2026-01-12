@@ -13,14 +13,14 @@ head: dhruv/f-string-docs
 created_at: 2025-01-08T09:37:21Z
 updated_at: 2025-01-09T05:16:15Z
 url: https://github.com/astral-sh/ruff/pull/15341
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Add f-string formatting to the docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-08 09:37_
+_@dhruvmanila_
 
 ## Summary
 

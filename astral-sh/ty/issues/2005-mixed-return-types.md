@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T12:34:56Z
 updated_at: 2025-12-17T14:49:21Z
 url: https://github.com/astral-sh/ty/issues/2005
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Mixed return types
 
 ---
 
-_Issue opened by @laurensnaturalis on 2025-12-17 12:34_
+_@laurensnaturalis_
 
 ### Question
 

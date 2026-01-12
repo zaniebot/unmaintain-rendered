@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T04:08:45Z
 updated_at: 2025-04-02T01:40:16Z
 url: https://github.com/astral-sh/uv/issues/12523
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Feature Request: Support for no-install-package in pyproject.toml
 
 ---
 
-_Issue opened by @garam-kim1 on 2025-03-28 04:08_
+_@garam-kim1_
 
 ### Summary
 

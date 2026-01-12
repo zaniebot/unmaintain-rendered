@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T09:14:23Z
 updated_at: 2025-12-02T10:31:10Z
 url: https://github.com/astral-sh/uv/issues/1312
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Benchmarks cannot be run under PowerShell
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-15 09:14_
+_@MichaReiser_
 
 Running the benchmarks on windows currently fails for several reasons:
 

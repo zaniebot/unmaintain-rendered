@@ -14,14 +14,14 @@ head: bump-primer
 created_at: 2025-04-28T16:09:37Z
 updated_at: 2025-04-28T16:13:08Z
 url: https://github.com/astral-sh/ruff/pull/17685
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Bump mypy_primer pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-28 16:09_
+_@AlexWaygood_
 
 So that we get a version that includes https://github.com/hauntsaninja/mypy_primer/commit/b83b9eade0b7ed2f4b9b129b163acac1ecb48f71
 

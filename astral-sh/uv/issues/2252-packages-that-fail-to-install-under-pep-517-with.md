@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T22:34:28Z
 updated_at: 2025-07-31T13:58:30Z
 url: https://github.com/astral-sh/uv/issues/2252
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Packages that fail to install under PEP 517 with build isolation
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-06 22:34_
+_@charliermarsh_
 
 I don't know that an issue is the right home for this, but I want to track the packages we _know_ can't be installed under PEP 517 when build isolation is enforced. In all cases, these packages _also_ fail under `pip install --use-pep517`.
 

@@ -13,14 +13,14 @@ head: gankra/group-refactor
 created_at: 2025-05-30T20:02:34Z
 updated_at: 2025-06-13T22:22:36Z
 url: https://github.com/astral-sh/uv/pull/13742
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Support reading dependency-groups from pyproject.tomls with no project
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-30 20:02_
+_@Gankra_
 
 (or legacy tool.uv.workspace).
 

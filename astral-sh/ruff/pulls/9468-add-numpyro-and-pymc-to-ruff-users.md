@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-01-11T14:18:03Z
 updated_at: 2024-01-11T15:16:16Z
 url: https://github.com/astral-sh/ruff/pull/9468
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add numpyro and pymc to ruff users
 
 ---
 
-_Pull request opened by @juanitorduz on 2024-01-11 14:18_
+_@juanitorduz_
 
 - NumPyro: https://github.com/pyro-ppl/numpyro/pull/1700
 - PyMC: https://github.com/pymc-devs/pymc/pull/7091

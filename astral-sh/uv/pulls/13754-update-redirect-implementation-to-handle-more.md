@@ -14,14 +14,14 @@ head: jtfm/update-redirect-handling
 created_at: 2025-05-31T13:46:52Z
 updated_at: 2025-06-18T08:57:38Z
 url: https://github.com/astral-sh/uv/pull/13754
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Update redirect implementation to handle more cases and be more testable
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-31 13:46_
+_@jtfmumm_
 
 This PR factors out and updates the redirect handling logic from #13595. It handles a few new cases:
 * If a 303 redirect is received for any method other than GET or HEAD, converts it to a GET. Unlike `reqwest`, it does not do this conversion for 301s or 302s (which is not required by RFC 7231 and was not the original intention of the spec).

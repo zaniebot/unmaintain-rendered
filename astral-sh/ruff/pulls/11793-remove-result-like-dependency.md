@@ -13,14 +13,14 @@ head: dhruv/result-like
 created_at: 2024-06-07T05:04:47Z
 updated_at: 2024-06-07T06:23:23Z
 url: https://github.com/astral-sh/ruff/pull/11793
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Remove `result_like` dependency
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-07 05:04_
+_@dhruvmanila_
 
 ## Summary
 

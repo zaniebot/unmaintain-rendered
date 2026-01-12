@@ -12,14 +12,14 @@ head: charlie/up
 created_at: 2023-04-16T23:01:44Z
 updated_at: 2023-04-16T23:35:16Z
 url: https://github.com/astral-sh/ruff/pull/3988
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove autofix behavior for uncapitalized-environment-variables (`SIM112`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-16 23:01_
+_@charliermarsh_
 
 This is a dangerous fix, since it's not purely contained within the code. That is: if you change the environment variable here, you're effectively guaranteed to break code if the user doesn't notice and propagate the change to their environment.
 

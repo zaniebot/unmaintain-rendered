@@ -12,14 +12,14 @@ head: f821-try-2
 created_at: 2024-03-22T11:28:26Z
 updated_at: 2024-05-02T15:47:06Z
 url: https://github.com/astral-sh/ruff/pull/10524
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix F821 false negatives when `from __future__ import annotations` is active (attempt 2)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-22 11:28_
+_@AlexWaygood_
 
 A second attempt to fix https://github.com/astral-sh/ruff/issues/10340. The earlier attempt was https://github.com/astral-sh/ruff/pull/10362, which was reverted in https://github.com/astral-sh/ruff/pull/10513.
 

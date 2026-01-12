@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T10:18:58Z
 updated_at: 2025-04-21T21:16:08Z
 url: https://github.com/astral-sh/uv/issues/12184
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Should `uv python install 3` install an alpha version?
 
 ---
 
-_Issue opened by @bersbersbers on 2025-03-15 10:18_
+_@bersbersbers_
 
 ### Summary
 

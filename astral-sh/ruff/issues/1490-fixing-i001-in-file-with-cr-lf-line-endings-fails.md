@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T23:34:14Z
 updated_at: 2022-12-31T12:37:28Z
 url: https://github.com/astral-sh/ruff/issues/1490
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Fixing I001 in file with Cr Lf line endings fails after 100 iterations
 
 ---
 
-_Issue opened by @rhkleijn on 2022-12-30 23:34_
+_@rhkleijn_
 
 
 With `ruff 0.0.203` the reproducer from #1477 now results in a loop, and the `I001` linting error ends up not being fixed.

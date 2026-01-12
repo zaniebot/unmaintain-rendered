@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T14:08:32Z
 updated_at: 2025-07-16T13:54:14Z
 url: https://github.com/astral-sh/uv/issues/7461
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv add generating unstable environments when used with local version identifiers
 
 ---
 
-_Issue opened by @itrase on 2024-09-17 14:08_
+_@itrase_
 
 On uv version 0.4.10
 

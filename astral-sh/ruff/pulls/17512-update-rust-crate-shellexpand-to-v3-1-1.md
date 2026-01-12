@@ -13,14 +13,14 @@ head: renovate/shellexpand-3.x-lockfile
 created_at: 2025-04-21T01:54:03Z
 updated_at: 2025-04-21T02:17:10Z
 url: https://github.com/astral-sh/ruff/pull/17512
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Update Rust crate shellexpand to v3.1.1
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 01:54_
+_@renovate_
 
 This PR contains the following updates:
 

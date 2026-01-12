@@ -12,14 +12,14 @@ head: charlie/wait
 created_at: 2024-01-30T05:02:22Z
 updated_at: 2024-01-30T20:25:24Z
 url: https://github.com/astral-sh/uv/pull/1183
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Remove `WaitMap` dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 05:02_
+_@charliermarsh_
 
 ## Summary
 

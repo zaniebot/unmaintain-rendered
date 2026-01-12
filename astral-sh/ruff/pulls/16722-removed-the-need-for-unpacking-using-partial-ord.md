@@ -11,14 +11,14 @@ head: num-ordering-cleanup
 created_at: 2025-03-14T08:50:44Z
 updated_at: 2025-03-14T09:29:28Z
 url: https://github.com/astral-sh/ruff/pull/16722
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # removed the need for unpacking using partial ord derive
 
 ---
 
-_Pull request opened by @ekohilas on 2025-03-14 08:50_
+_@ekohilas_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

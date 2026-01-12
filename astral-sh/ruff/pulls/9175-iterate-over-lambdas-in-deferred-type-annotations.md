@@ -13,14 +13,14 @@ head: charlie/defer
 created_at: 2023-12-18T04:45:23Z
 updated_at: 2023-12-18T04:58:15Z
 url: https://github.com/astral-sh/ruff/pull/9175
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Iterate over lambdas in deferred type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 04:45_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9159.
 

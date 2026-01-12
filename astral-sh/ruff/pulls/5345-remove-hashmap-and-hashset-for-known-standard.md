@@ -12,14 +12,14 @@ head: charlie/match
 created_at: 2023-06-23T19:09:00Z
 updated_at: 2023-06-23T20:17:54Z
 url: https://github.com/astral-sh/ruff/pull/5345
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove HashMap and HashSet for known-standard-library detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-23 19:09_
+_@charliermarsh_
 
 ## Summary
 

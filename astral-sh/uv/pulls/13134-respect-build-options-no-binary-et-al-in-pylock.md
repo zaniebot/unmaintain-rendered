@@ -13,14 +13,14 @@ head: charlie/build-options
 created_at: 2025-04-27T15:58:52Z
 updated_at: 2025-04-27T16:28:32Z
 url: https://github.com/astral-sh/uv/pull/13134
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Respect build options (`--no-binary` et al) in `pylock.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-27 15:58_
+_@charliermarsh_
 
 ## Summary
 

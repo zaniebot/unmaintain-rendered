@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T10:23:34Z
 updated_at: 2025-02-26T15:44:29Z
 url: https://github.com/astral-sh/uv/issues/11777
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Create a statically linked binary for python projects
 
 ---
 
-_Issue opened by @kishaningithub on 2025-02-25 10:23_
+_@kishaningithub_
 
 ### Summary
 

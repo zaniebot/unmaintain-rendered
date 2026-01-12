@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-04-08T23:55:37Z
 updated_at: 2024-04-09T00:00:58Z
 url: https://github.com/astral-sh/uv/pull/2920
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Rebrand `Manifest` as `Revision` in wheel database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 23:55_
+_@charliermarsh_
 
 ## Summary
 

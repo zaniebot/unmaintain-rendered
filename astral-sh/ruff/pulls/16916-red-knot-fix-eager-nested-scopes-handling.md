@@ -13,14 +13,14 @@ head: fix-eager-nested-scopes
 created_at: 2025-03-22T15:51:30Z
 updated_at: 2025-03-30T04:29:15Z
 url: https://github.com/astral-sh/ruff/pull/16916
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] fix eager nested scopes handling
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-22 15:51_
+_@mtshiba_
 
 ## Summary
 

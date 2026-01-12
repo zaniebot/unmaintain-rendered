@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-09T22:24:56Z
 updated_at: 2022-11-30T05:48:20Z
 url: https://github.com/astral-sh/ruff/issues/665
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Plans on creating a full LSP
 
 ---
 
-_Issue opened by @jhossbach on 2022-11-09 22:24_
+_@jhossbach_
 
 Hey,
 I was thinking about adding a plugin for linting the code using ruff for the python language server (https://github.com/python-lsp/python-lsp-server) but it seems like there already exists a language server using ruff, namely ruffd by @Seamooo.

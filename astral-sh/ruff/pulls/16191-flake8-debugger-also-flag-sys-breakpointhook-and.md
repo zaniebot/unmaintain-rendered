@@ -13,14 +13,14 @@ head: brent/t100-breakpointhook
 created_at: 2025-02-16T18:18:22Z
 updated_at: 2025-02-16T19:50:18Z
 url: https://github.com/astral-sh/ruff/pull/16191
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`flake8-debugger`] Also flag `sys.breakpointhook` and `sys.__breakpointhook__` (`T100`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-16 18:18_
+_@ntBre_
 
 ## Summary
 

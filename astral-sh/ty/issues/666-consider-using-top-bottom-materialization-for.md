@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T05:12:00Z
 updated_at: 2025-11-18T16:10:33Z
 url: https://github.com/astral-sh/ty/issues/666
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Consider using top / bottom materialization for assignability check
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-17 05:12_
+_@dhruvmanila_
 
 The concept of top and bottom materialization of a type was added in https://github.com/astral-sh/ruff/pull/18594.
 

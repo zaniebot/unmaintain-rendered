@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-11T01:27:18Z
 updated_at: 2025-06-11T13:28:36Z
 url: https://github.com/astral-sh/uv/issues/12108
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # "uv tool run" swallows SIGINT without forwarding to the underlying process
 
 ---
 
-_Issue opened by @gibsondan on 2025-03-11 01:27_
+_@gibsondan_
 
 ### Summary
 

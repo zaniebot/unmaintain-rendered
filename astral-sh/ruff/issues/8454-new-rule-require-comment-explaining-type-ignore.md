@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-03T01:25:20Z
 updated_at: 2024-04-08T23:43:13Z
 url: https://github.com/astral-sh/ruff/issues/8454
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # new rule - require comment explaining `type:ignore`/`pyright:ignore` comments
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-03 01:25_
+_@DetachHead_
 
 it would be nice to have a rule that enforces that `type:ignore` comments have a comment above them describing the reason the error is being suppressed, eg:
 

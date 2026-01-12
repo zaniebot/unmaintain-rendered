@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-23T13:14:06Z
 updated_at: 2025-04-16T17:41:32Z
 url: https://github.com/astral-sh/uv/issues/10120
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Module rich with UV is not installed corectly
 
 ---
 
-_Issue opened by @Mirjax2000 on 2024-12-23 13:14_
+_@Mirjax2000_
 
 If i install rich with UV it is not working. If i installed with PIP it is working fine.
 and i have this error:

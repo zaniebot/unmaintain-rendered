@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T01:21:04Z
 updated_at: 2025-02-05T09:55:49Z
 url: https://github.com/clap-rs/clap/issues/5901
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Resolution order conflict between env arguments and `value_parser`
 
 ---
 
-_Issue opened by @asibahi on 2025-02-05 01:21_
+_@asibahi_
 
 ### Please complete the following tasks
 

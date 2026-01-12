@@ -14,14 +14,14 @@ head: zb/filter-bin
 created_at: 2024-07-03T18:34:02Z
 updated_at: 2024-07-10T15:09:45Z
 url: https://github.com/astral-sh/uv/pull/4787
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Add standard filters for virtual environment bin directories and python executables
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 18:34_
+_@zanieb_
 
 Needed over in https://github.com/astral-sh/uv/pull/4674
 

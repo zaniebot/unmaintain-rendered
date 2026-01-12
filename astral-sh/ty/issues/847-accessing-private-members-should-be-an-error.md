@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T00:00:59Z
 updated_at: 2026-01-09T01:49:05Z
 url: https://github.com/astral-sh/ty/issues/847
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Accessing private members should be an error
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-18 00:00_
+_@InSyncWithFoo_
 
 Consider this example ([playground](https://play.ty.dev/9ec508e3-29af-43e2-a761-967982cf6a56)):
 

@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-04-19T23:27:16Z
 updated_at: 2024-04-19T23:36:05Z
 url: https://github.com/astral-sh/uv/pull/3152
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Move README sections around
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 23:27_
+_@charliermarsh_
 
 ## Summary
 

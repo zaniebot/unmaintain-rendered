@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-18T10:06:34Z
 updated_at: 2023-10-30T00:25:46Z
 url: https://github.com/astral-sh/ruff/issues/8042
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Split tuple at commas first
 
 ---
 
-_Issue opened by @konstin on 2023-10-18 10:06_
+_@konstin_
 
 Ours:
 ```python

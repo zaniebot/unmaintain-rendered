@@ -13,14 +13,14 @@ head: konsti/add-parsed-information-to-dist
 created_at: 2024-05-07T16:12:26Z
 updated_at: 2024-05-14T01:23:29Z
 url: https://github.com/astral-sh/uv/pull/3429
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 #  Add parsed URL fields to `Dist` variants 
 
 ---
 
-_Pull request opened by @konstin on 2024-05-07 16:12_
+_@konstin_
 
 Avoid reparsing urls by storing the parsed parts across resolution on `Dist`.
 

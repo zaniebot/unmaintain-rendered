@@ -13,14 +13,14 @@ head: charlie/non-editable
 created_at: 2024-09-13T18:06:11Z
 updated_at: 2024-09-17T14:50:37Z
 url: https://github.com/astral-sh/uv/pull/7371
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Add `--no-editable` support to `uv sync` and `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-13 18:06_
+_@charliermarsh_
 
 ## Summary
 

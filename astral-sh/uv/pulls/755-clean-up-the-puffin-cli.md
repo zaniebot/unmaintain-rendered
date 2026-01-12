@@ -12,14 +12,14 @@ head: charlie/cli
 created_at: 2024-01-03T21:17:40Z
 updated_at: 2024-01-03T21:22:07Z
 url: https://github.com/astral-sh/uv/pull/755
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Clean up the Puffin CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 21:17_
+_@charliermarsh_
 
 - Rename to `puffin pip-freeze` for consistency.
 - Add a `virtualenv` alias to `venv`.

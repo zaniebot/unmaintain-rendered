@@ -13,14 +13,14 @@ head: zb/timeout
 created_at: 2024-05-21T21:50:29Z
 updated_at: 2024-05-21T21:56:51Z
 url: https://github.com/astral-sh/uv/pull/3723
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Bump test timeout to 120s
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 21:50_
+_@zanieb_
 
 90s is too low in our test suite :sob:
 

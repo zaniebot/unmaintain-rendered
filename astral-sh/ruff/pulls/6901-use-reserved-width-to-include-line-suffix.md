@@ -13,14 +13,14 @@ head: line-suffix-client
 created_at: 2023-08-26T17:54:56Z
 updated_at: 2023-08-30T13:17:42Z
 url: https://github.com/astral-sh/ruff/pull/6901
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use reserved width to include line suffix measurement
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-26 17:54_
+_@cnpryer_
 
 Closes #6771
 

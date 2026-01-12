@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-08T12:05:21Z
 updated_at: 2023-05-08T19:33:31Z
 url: https://github.com/astral-sh/ruff/issues/4280
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Infinite loop] My File: pandas\compat\numpy\function.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-08 12:05_
+_@FishAlchemist_
 
 ## Version(ruff --version)
 **ruff 0.0.265**

@@ -13,14 +13,14 @@ head: test_on_other_linuxes
 created_at: 2024-02-16T19:43:12Z
 updated_at: 2024-03-13T21:54:54Z
 url: https://github.com/astral-sh/uv/pull/1534
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # include testing on amazonlinux:2023
 
 ---
 
-_Pull request opened by @altendky on 2024-02-16 19:43_
+_@altendky_
 
 Trying to test related to https://github.com/astral-sh/uv/issues/1532.
 

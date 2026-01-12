@@ -13,14 +13,14 @@ head: alex/override-docs
 created_at: 2025-11-26T17:30:17Z
 updated_at: 2025-11-27T08:18:23Z
 url: https://github.com/astral-sh/ruff/pull/21644
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # Improve docs on how to stop Ruff and ty disagreeing with each other
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-26 17:30_
+_@AlexWaygood_
 
 ## Summary
 

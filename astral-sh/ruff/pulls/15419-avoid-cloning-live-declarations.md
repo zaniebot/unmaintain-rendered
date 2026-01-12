@@ -12,14 +12,14 @@ head: micha/dont-clone-live-declarations
 created_at: 2025-01-11T10:23:52Z
 updated_at: 2025-01-13T11:52:03Z
 url: https://github.com/astral-sh/ruff/pull/15419
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Avoid cloning live declarations
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-11 10:23_
+_@MichaReiser_
 
 ## Summary
 

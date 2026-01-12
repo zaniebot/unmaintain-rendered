@@ -12,14 +12,14 @@ head: add-bytes-to-immutable-types
 created_at: 2023-07-15T12:05:00Z
 updated_at: 2023-07-15T13:54:16Z
 url: https://github.com/astral-sh/ruff/pull/5776
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [B006] Add bytes to immutable types
 
 ---
 
-_Pull request opened by @harupy on 2023-07-15 12:05_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

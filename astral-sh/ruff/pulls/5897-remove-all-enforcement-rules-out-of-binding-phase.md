@@ -13,14 +13,14 @@ head: charlie/all
 created_at: 2023-07-19T19:30:50Z
 updated_at: 2023-07-19T21:38:36Z
 url: https://github.com/astral-sh/ruff/pull/5897
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove `__all__` enforcement rules out of binding phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 19:30_
+_@charliermarsh_
 
 ## Summary
 

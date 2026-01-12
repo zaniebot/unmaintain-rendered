@@ -13,14 +13,14 @@ head: micha/ignore-warn-error-cli-arguments
 created_at: 2025-01-23T13:09:49Z
 updated_at: 2025-01-24T15:20:49Z
 url: https://github.com/astral-sh/ruff/pull/15689
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Add `--ignore`, `--warn`, and `--error` CLI arguments
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-23 13:09_
+_@MichaReiser_
 
 ## Summary
 

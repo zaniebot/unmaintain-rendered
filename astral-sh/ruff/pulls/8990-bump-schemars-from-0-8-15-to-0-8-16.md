@@ -13,14 +13,14 @@ head: dependabot/cargo/schemars-0.8.16
 created_at: 2023-12-04T08:40:39Z
 updated_at: 2023-12-04T09:24:55Z
 url: https://github.com/astral-sh/ruff/pull/8990
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump schemars from 0.8.15 to 0.8.16
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-04 08:40_
+_@dependabot_
 
 Bumps [schemars](https://github.com/GREsau/schemars) from 0.8.15 to 0.8.16.
 <details>

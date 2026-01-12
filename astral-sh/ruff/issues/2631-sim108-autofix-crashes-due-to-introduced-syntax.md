@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T18:42:31Z
 updated_at: 2023-02-07T20:18:54Z
 url: https://github.com/astral-sh/ruff/issues/2631
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM108: autofix crashes due to introduced syntax error
 
 ---
 
-_Issue opened by @spaceone on 2023-02-07 18:42_
+_@spaceone_
 
 `ruff --select SIM108 --fix`
 ```python

@@ -13,14 +13,14 @@ head: charlie/small
 created_at: 2024-09-09T15:19:59Z
 updated_at: 2024-11-06T22:10:31Z
 url: https://github.com/astral-sh/uv/pull/7220
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Prefer smaller wheels when priority is unset
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-09 15:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T15:23:02Z
 updated_at: 2025-12-11T15:23:02Z
 url: https://github.com/astral-sh/uv/issues/17087
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # `--project <path>` does not fail if `<path>` does not exist
 
 ---
 
-_Issue opened by @zanieb on 2025-12-11 15:23_
+_@zanieb_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-29T17:09:37Z
 updated_at: 2022-07-30T01:52:27Z
 url: https://github.com/clap-rs/clap/issues/4004
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Argument that requires another argument in an argument group gives empty error
 
 ---
 
-_Issue opened by @crat0z on 2022-07-29 17:09_
+_@crat0z_
 
 ### Please complete the following tasks
 

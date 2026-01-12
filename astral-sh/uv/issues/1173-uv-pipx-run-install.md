@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T19:48:06Z
 updated_at: 2024-05-13T20:44:20Z
 url: https://github.com/astral-sh/uv/issues/1173
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # `uv pipx {run,install}`
 
 ---
 
-_Issue opened by @konstin on 2024-01-29 19:48_
+_@konstin_
 
 pipx is the preferred way to install python tools globally, storing each tool in an isolated, managed environment instead of causing problem in the global or user local environment.
 

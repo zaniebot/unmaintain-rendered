@@ -14,14 +14,14 @@ head: alex/knownclass-bindings
 created_at: 2025-06-26T18:10:27Z
 updated_at: 2025-06-26T18:35:54Z
 url: https://github.com/astral-sh/ruff/pull/18968
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] move special-cased `KnownClass` bindings to `class.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-26 18:10_
+_@AlexWaygood_
 
 ## Summary
 

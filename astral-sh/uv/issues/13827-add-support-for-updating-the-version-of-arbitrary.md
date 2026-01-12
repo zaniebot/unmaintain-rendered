@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T22:37:36Z
 updated_at: 2025-11-03T22:47:20Z
 url: https://github.com/astral-sh/uv/issues/13827
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Add support for updating the version of arbitrary files in `uv version —bump`
 
 ---
 
-_Issue opened by @HenriBlacksmith on 2025-06-03 22:37_
+_@HenriBlacksmith_
 
 ### Summary
 

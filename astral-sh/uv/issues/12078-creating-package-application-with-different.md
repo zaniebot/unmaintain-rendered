@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-09T20:33:04Z
 updated_at: 2025-03-10T06:14:17Z
 url: https://github.com/astral-sh/uv/issues/12078
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Creating `Package Application` with different target subfolder
 
 ---
 
-_Issue opened by @Anselmoo on 2025-03-09 20:33_
+_@Anselmoo_
 
 ### Question
 

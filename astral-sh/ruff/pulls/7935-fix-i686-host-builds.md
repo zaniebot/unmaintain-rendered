@@ -13,14 +13,14 @@ head: fix-i686-builds
 created_at: 2023-10-13T07:44:57Z
 updated_at: 2023-10-13T08:25:00Z
 url: https://github.com/astral-sh/ruff/pull/7935
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix i686 host builds
 
 ---
 
-_Pull request opened by @konstin on 2023-10-13 07:44_
+_@konstin_
 
 See https://github.com/progval/unicode_names2/pull/34 for a detailed explanation.
 

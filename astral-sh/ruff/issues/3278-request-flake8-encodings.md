@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-28T17:42:59Z
 updated_at: 2025-11-07T00:23:57Z
 url: https://github.com/astral-sh/ruff/issues/3278
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Request: flake8-encodings
 
 ---
 
-_Issue opened by @henryiii on 2023-02-28 17:42_
+_@henryiii_
 
 I noticed https://pypi.org/project/flake8-encodings/ was missing when porting a package over to Ruff. This checks for `encoding=` missing from open (and `configparser.ConfigParser` and `pathlib.Path`) calls.
 

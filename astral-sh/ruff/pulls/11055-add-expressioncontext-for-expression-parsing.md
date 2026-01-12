@@ -14,14 +14,14 @@ head: dhruv/expr-context
 created_at: 2024-04-20T09:43:28Z
 updated_at: 2024-04-23T04:29:49Z
 url: https://github.com/astral-sh/ruff/pull/11055
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add `ExpressionContext` for expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-20 09:43_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-25T20:14:38Z
 updated_at: 2024-06-24T22:29:26Z
 url: https://github.com/astral-sh/ruff/issues/4100
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: adding `flake8-requirements`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-25 20:14_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: konsti/error-editing
 created_at: 2025-05-08T17:43:43Z
 updated_at: 2025-05-12T11:04:42Z
 url: https://github.com/astral-sh/uv/pull/13351
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Add more context to errors in high level crates.
 
 ---
 
-_Pull request opened by @konstin on 2025-05-08 17:43_
+_@konstin_
 
 Add error context in some places where it was previously missing, and a few style improvements.
 

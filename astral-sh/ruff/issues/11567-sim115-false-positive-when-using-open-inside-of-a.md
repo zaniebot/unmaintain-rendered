@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-27T14:42:35Z
 updated_at: 2024-05-28T01:44:25Z
 url: https://github.com/astral-sh/ruff/issues/11567
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `SIM115` false positive when using `open()` inside of a custom context manager `__enter__`
 
 ---
 
-_Issue opened by @p-adema on 2024-05-27 14:42_
+_@p-adema_
 
 Keywords: `SIM115`, `__enter__`, context manager
 

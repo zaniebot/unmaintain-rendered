@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-19T15:07:10Z
 updated_at: 2023-07-19T16:04:53Z
 url: https://github.com/clap-rs/clap/issues/5022
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # wrap_help can fail to wrap at the correct point
 
 ---
 
-_Issue opened by @Xophmeister on 2023-07-19 15:07_
+_@Xophmeister_
 
 ### Please complete the following tasks
 

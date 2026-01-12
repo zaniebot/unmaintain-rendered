@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-11T20:54:38Z
 updated_at: 2025-02-12T16:14:41Z
 url: https://github.com/astral-sh/ruff/issues/16104
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `invalid-formatter-suppression-comment (RUF028)` false positives
 
 ---
 
-_Issue opened by @Avasam on 2025-02-11 20:54_
+_@Avasam_
 
 ### Description
 

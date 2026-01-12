@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-27T05:41:32Z
 updated_at: 2024-10-27T19:03:29Z
 url: https://github.com/astral-sh/uv/issues/8603
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # uv lock/add selects package versions not available for current platform
 
 ---
 
-_Issue opened by @per11235813 on 2024-10-27 05:41_
+_@per11235813_
 
 First, I would like to thank you for `uv`, it is just awesome, but I do have a problem
 

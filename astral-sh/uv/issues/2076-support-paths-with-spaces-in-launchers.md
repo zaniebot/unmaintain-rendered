@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-29T09:00:48Z
 updated_at: 2024-02-29T23:19:07Z
 url: https://github.com/astral-sh/uv/issues/2076
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Support paths with spaces in launchers
 
 ---
 
-_Issue opened by @konstin on 2024-02-29 09:00_
+_@konstin_
 
 See https://github.com/astral-sh/uv/issues/1997#issuecomment-1970091076
 

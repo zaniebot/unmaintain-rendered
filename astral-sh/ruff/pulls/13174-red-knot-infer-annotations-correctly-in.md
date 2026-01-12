@@ -12,14 +12,14 @@ head: rk-assignment-annotations
 created_at: 2024-08-30T23:16:20Z
 updated_at: 2024-09-04T21:57:15Z
 url: https://github.com/astral-sh/ruff/pull/13174
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] infer annotations correctly in assignments
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-30 23:16_
+_@chriskrycho_
 
 ## Summary
 

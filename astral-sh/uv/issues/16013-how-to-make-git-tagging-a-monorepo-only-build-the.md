@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T09:59:08Z
 updated_at: 2025-10-25T09:30:39Z
 url: https://github.com/astral-sh/uv/issues/16013
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # How to make git tagging a monorepo only build the affected workspace members in CI?
 
 ---
 
-_Issue opened by @MartyMcFlyInTheSky on 2025-09-24 09:59_
+_@MartyMcFlyInTheSky_
 
 ### Question
 

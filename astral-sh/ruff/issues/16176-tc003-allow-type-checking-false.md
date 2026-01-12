@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-15T15:47:37Z
 updated_at: 2025-02-15T18:12:20Z
 url: https://github.com/astral-sh/ruff/issues/16176
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TC003: Allow `TYPE_CHECKING = False`
 
 ---
 
-_Issue opened by @hugovk on 2025-02-15 15:47_
+_@hugovk_
 
 ### Description
 

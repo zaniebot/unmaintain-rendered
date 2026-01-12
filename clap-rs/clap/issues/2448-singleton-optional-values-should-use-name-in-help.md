@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-04-20T20:59:56Z
 updated_at: 2021-08-02T08:19:20Z
 url: https://github.com/clap-rs/clap/issues/2448
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Singleton optional values should use `[<name>]` in help message
 
 ---
 
-_Issue opened by @mina86 on 2021-04-20 20:59_
+_@mina86_
 
 ### Rust Version
 

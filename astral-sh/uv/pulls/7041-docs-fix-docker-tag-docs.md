@@ -13,14 +13,14 @@ head: adjust-docker-tag-docs
 created_at: 2024-09-04T18:08:57Z
 updated_at: 2024-09-04T18:12:36Z
 url: https://github.com/astral-sh/uv/pull/7041
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # docs: fix docker tag docs
 
 ---
 
-_Pull request opened by @samypr100 on 2024-09-04 18:08_
+_@samypr100_
 
 ## Summary
 

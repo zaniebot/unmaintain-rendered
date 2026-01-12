@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T17:57:22Z
 updated_at: 2025-02-16T00:19:32Z
 url: https://github.com/astral-sh/uv/issues/11540
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Windows/Apple App Store Versions
 
 ---
 
-_Issue opened by @BruceEckel on 2025-02-15 17:57_
+_@BruceEckel_
 
 ### Summary
 

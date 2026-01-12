@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-06T05:04:27Z
 updated_at: 2024-08-08T12:52:59Z
 url: https://github.com/astral-sh/ruff/issues/12707
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RET505 doesn't work with mixed space and tabs
 
 ---
 
-_Issue opened by @qarmin on 2024-08-06 05:04_
+_@qarmin_
 
 ruff 0.5.6+419 (0b4d3ce39 2024-08-05)
 ```

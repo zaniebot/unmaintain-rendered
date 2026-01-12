@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2025-03-08T02:57:34Z
 updated_at: 2025-03-17T21:56:12Z
 url: https://github.com/astral-sh/uv/pull/12062
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Add `src` to default cache keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-08 02:57_
+_@charliermarsh_
 
 ## Summary
 

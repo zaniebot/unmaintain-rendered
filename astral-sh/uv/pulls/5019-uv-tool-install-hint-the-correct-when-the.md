@@ -14,14 +14,14 @@ head: hint-correct-package
 created_at: 2024-07-12T19:00:51Z
 updated_at: 2024-07-15T17:38:23Z
 url: https://github.com/astral-sh/uv/pull/5019
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # `uv tool install` hint the correct when the executable is available
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-12 19:00_
+_@blueraft_
 
 ## Summary
 

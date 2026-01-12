@@ -11,14 +11,14 @@ head: stabilize-ruf00x
 created_at: 2024-11-17T17:52:13Z
 updated_at: 2024-11-18T13:06:44Z
 url: https://github.com/astral-sh/ruff/pull/14403
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Stabilize unicode-to-unicode check for `ambiguous-unicode-xxx` (`RUF001`, `RUF002`, `RUF003`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-17 17:52_
+_@dylwil3_
 
 This PR stabilizes the preview behavior introduced in #8473, where ambiguous unicode checks are flagged not only for unicode characters that may be confused for ASCII characters, but also for unicode characters that may be confused for other unicode characters.
 

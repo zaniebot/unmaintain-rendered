@@ -14,14 +14,14 @@ head: init-dot
 created_at: 2024-07-23T06:08:08Z
 updated_at: 2024-07-23T12:26:16Z
 url: https://github.com/astral-sh/uv/pull/5330
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Fix `uv init .`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-23 06:08_
+_@eth3lbert_
 
 ## Summary
 

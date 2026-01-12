@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T17:04:46Z
 updated_at: 2024-06-10T19:02:18Z
 url: https://github.com/astral-sh/uv/issues/4053
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Non-deterministic? behavior if a requirements.txt contains a dependency which is also specified to be installed editable
 
 ---
 
-_Issue opened by @Julian on 2024-06-05 17:04_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

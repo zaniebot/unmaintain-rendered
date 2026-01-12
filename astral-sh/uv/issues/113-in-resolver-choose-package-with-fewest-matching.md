@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T18:54:19Z
 updated_at: 2023-11-09T01:28:13Z
 url: https://github.com/astral-sh/uv/issues/113
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # In resolver, choose package with fewest matching versions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-17 18:54_
+_@charliermarsh_
 
 _No description provided._
 

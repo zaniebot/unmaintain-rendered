@@ -14,14 +14,14 @@ head: add-FURB167
 created_at: 2024-01-14T20:52:12Z
 updated_at: 2024-01-14T23:47:29Z
 url: https://github.com/astral-sh/ruff/pull/9516
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`refurb`] Implement `regex-flag-alias` with fix (`FURB167`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-14 20:52_
+_@diceroll123_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-25T05:37:58Z
 updated_at: 2024-09-25T06:15:42Z
 url: https://github.com/astral-sh/uv/issues/7679
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Dependencies Not Found in Jupyter Environment
 
 ---
 
-_Issue opened by @anzhi0708 on 2024-09-25 05:37_
+_@anzhi0708_
 
 After using `uv add jupyter`, attempting to enter Jupyter notebook with `uvx jupyter lab` or `uvx --from jupyterlab jupyter-lab` results in an error saying `pandas` cannot be found.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-17T19:23:15Z
 updated_at: 2024-02-17T20:33:28Z
 url: https://github.com/astral-sh/uv/issues/1609
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Can no longer create an editable install of `typeshed-stats` on Windows after upgrading to `uv==0.1.3`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-02-17 19:23_
+_@AlexWaygood_
 
 I was able to create an editable install of [`typeshed-stats`](https://github.com/AlexWaygood/typeshed-stats) fine on Windows locally with `uv==0.1.1`, and I'm still able to on macOS. However, after upgrading from `uv==0.1.1` to `uv==0.1.3` on Windows, I now see this (using PowerShell):
 

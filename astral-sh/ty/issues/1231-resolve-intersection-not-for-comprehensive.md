@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-22T02:02:24Z
 updated_at: 2025-11-18T16:10:38Z
 url: https://github.com/astral-sh/ty/issues/1231
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # resolve intersection/not for comprehensive overload matching
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-22 02:02_
+_@KotlinIsland_
 
 ### Summary
 

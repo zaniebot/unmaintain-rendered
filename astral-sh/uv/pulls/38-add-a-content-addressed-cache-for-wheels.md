@@ -12,14 +12,14 @@ head: charlie/cacache
 created_at: 2023-10-07T14:09:07Z
 updated_at: 2023-10-07T14:24:54Z
 url: https://github.com/astral-sh/uv/pull/38
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Add a content-addressed cache for wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 14:09_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/4.
 

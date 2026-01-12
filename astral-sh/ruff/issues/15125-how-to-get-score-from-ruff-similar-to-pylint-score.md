@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T15:32:15Z
 updated_at: 2025-01-07T11:38:21Z
 url: https://github.com/astral-sh/ruff/issues/15125
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to get score from ruff, similar to pylint score?
 
 ---
 
-_Issue opened by @fhg-isi on 2024-12-23 15:32_
+_@fhg-isi_
 
 Could you please provide a score feature, similar to pylint... if it does not exist yet?
 

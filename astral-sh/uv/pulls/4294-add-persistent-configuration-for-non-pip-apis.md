@@ -14,14 +14,14 @@ head: charlie/configuration
 created_at: 2024-06-13T01:04:17Z
 updated_at: 2024-06-14T00:56:39Z
 url: https://github.com/astral-sh/uv/pull/4294
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Add persistent configuration for non-`pip` APIs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 01:04_
+_@charliermarsh_
 
 ## Summary
 

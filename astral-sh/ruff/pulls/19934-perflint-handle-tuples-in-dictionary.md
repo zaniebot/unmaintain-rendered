@@ -14,14 +14,14 @@ head: bugfix/perf403-tuple-error
 created_at: 2025-08-16T09:03:30Z
 updated_at: 2025-08-28T21:44:43Z
 url: https://github.com/astral-sh/ruff/pull/19934
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [`perflint`] Handle tuples in dictionary comprehensions (`PERF403`)
 
 ---
 
-_Pull request opened by @liortct on 2025-08-16 09:03_
+_@liortct_
 
 This pull request fixes the bug described in issue [#19153](https://github.com/astral-sh/ruff/issues/19153).
 

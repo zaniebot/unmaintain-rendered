@@ -13,14 +13,14 @@ head: SIM222
 created_at: 2024-11-11T05:15:40Z
 updated_at: 2024-11-11T20:38:16Z
 url: https://github.com/astral-sh/ruff/pull/14263
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-simplify`] Infer "unknown" truthiness for literal iterables whose items are all unpacks (`SIM222`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-11 05:15_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-21T12:01:08Z
 updated_at: 2025-09-02T13:48:44Z
 url: https://github.com/astral-sh/uv/issues/10074
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv in ReadTheDocs
 
 ---
 
-_Issue opened by @cthoyt on 2024-12-21 12:01_
+_@cthoyt_
 
 Note, this issue has now been upstreamed by incorporating the discussion into the ReadTheDocs documentation upstream at https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-uv.
 

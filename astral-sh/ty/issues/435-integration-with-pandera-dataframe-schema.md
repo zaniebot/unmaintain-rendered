@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T17:14:21Z
 updated_at: 2025-05-21T11:12:48Z
 url: https://github.com/astral-sh/ty/issues/435
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Integration with pandera dataframe schema validation
 
 ---
 
-_Issue opened by @josh-gree on 2025-05-17 17:14_
+_@josh-gree_
 
 ### Summary
 

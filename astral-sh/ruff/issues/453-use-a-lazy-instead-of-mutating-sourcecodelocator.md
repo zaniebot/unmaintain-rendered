@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-18T21:25:49Z
 updated_at: 2022-10-26T15:27:49Z
 url: https://github.com/astral-sh/ruff/issues/453
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Use a `Lazy` instead of mutating `SourceCodeLocator` everywhere
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-18 21:25_
+_@charliermarsh_
 
 We pass around `&mut checker` in a bunch of places because `SourceCodeLocator` lazily initializes itself. Could we instead use an actual `Lazy` to implement that behavior?
 

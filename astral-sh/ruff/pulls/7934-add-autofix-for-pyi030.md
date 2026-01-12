@@ -14,14 +14,14 @@ head: tweak-PYI030
 created_at: 2023-10-13T05:16:02Z
 updated_at: 2023-11-30T22:30:19Z
 url: https://github.com/astral-sh/ruff/pull/7934
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add autofix for `PYI030`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-13 05:16_
+_@diceroll123_
 
 ## Summary
 

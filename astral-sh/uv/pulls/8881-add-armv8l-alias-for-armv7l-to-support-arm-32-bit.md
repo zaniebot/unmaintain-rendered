@@ -13,14 +13,14 @@ head: add_armv8l_alias_to_supported_architectures
 created_at: 2024-11-07T08:21:58Z
 updated_at: 2024-11-07T16:54:40Z
 url: https://github.com/astral-sh/uv/pull/8881
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add armv8l alias for armv7l to support arm 32-bit compatibility mode
 
 ---
 
-_Pull request opened by @adbjo on 2024-11-07 08:21_
+_@adbjo_
 
 ## Summary
 

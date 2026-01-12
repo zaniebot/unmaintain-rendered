@@ -14,14 +14,14 @@ head: zb/docs-epic-iii
 created_at: 2024-07-24T21:56:36Z
 updated_at: 2024-07-24T22:10:35Z
 url: https://github.com/astral-sh/uv/pull/5426
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Bundle of docs changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-24 21:56_
+_@zanieb_
 
 _No description provided._
 

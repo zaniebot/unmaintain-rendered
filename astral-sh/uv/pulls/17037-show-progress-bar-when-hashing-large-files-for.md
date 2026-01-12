@@ -12,14 +12,14 @@ head: feat/add_progress_bar_in_pulish_hash
 created_at: 2025-12-08T19:50:41Z
 updated_at: 2025-12-11T16:50:56Z
 url: https://github.com/astral-sh/uv/pull/17037
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Show progress bar when hashing large files for upload
 
 ---
 
-_Pull request opened by @yumeminami on 2025-12-08 19:50_
+_@yumeminami_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

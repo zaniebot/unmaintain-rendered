@@ -14,14 +14,14 @@ head: add-missing-immutable-datetime-types
 created_at: 2024-08-26T13:10:11Z
 updated_at: 2024-08-27T14:53:29Z
 url: https://github.com/astral-sh/ruff/pull/13109
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add time, tzinfo, and timezone as immutable function calls
 
 ---
 
-_Pull request opened by @N-Wouda on 2024-08-26 13:10_
+_@N-Wouda_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

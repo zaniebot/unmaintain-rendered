@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T23:41:41Z
 updated_at: 2025-03-16T01:39:15Z
 url: https://github.com/astral-sh/uv/issues/11887
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Custom installation options present in the pyproject.toml
 
 ---
 
-_Issue opened by @hongbo-miao on 2025-03-01 23:41_
+_@hongbo-miao_
 
 ### Summary
 

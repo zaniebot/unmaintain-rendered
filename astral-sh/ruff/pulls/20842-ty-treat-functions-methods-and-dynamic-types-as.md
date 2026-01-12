@@ -14,14 +14,14 @@ head: david/fix-1342-attempt-2
 created_at: 2025-10-13T12:21:17Z
 updated_at: 2025-10-13T13:21:57Z
 url: https://github.com/astral-sh/ruff/pull/20842
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Treat functions, methods, and dynamic types as function-like `Callable`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-13 12:21_
+_@sharkdp_
 
 ## Summary
 

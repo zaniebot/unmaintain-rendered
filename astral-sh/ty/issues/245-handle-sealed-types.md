@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T18:29:57Z
 updated_at: 2025-05-11T07:16:26Z
 url: https://github.com/astral-sh/ty/issues/245
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # handle sealed types
 
 ---
 
-_Issue opened by @carljm on 2024-08-05 18:29_
+_@carljm_
 
 Some types have a finite number of possible inhabitants. Examples include `builtins.bool` (the inhabitants are `Literal[True]` and `Literal[False]`) and enum types. For such types, we should consider the union of all possible inhabitants as equivalent to the type itself (so for example `Literal[True, False]`) is equivalent to `builtins.bool`). We should also take this equivalence into account when resolving negated intersections (so for example `builtins.bool & ~Literal[True]` is equivalent to `Literal[False]`; practically this will come up in type narrowing.)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T14:09:55Z
 updated_at: 2025-04-29T14:37:22Z
 url: https://github.com/astral-sh/ruff/issues/17708
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Unused noqa is not unused and is removed
 
 ---
 
-_Issue opened by @TrevorWinstral on 2025-04-29 14:09_
+_@TrevorWinstral_
 
 ### Summary
 

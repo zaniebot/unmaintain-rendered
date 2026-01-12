@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T06:26:02Z
 updated_at: 2024-11-28T08:50:04Z
 url: https://github.com/astral-sh/ruff/issues/14651
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Documentation with complete rulesets and parity information
 
 ---
 
-_Issue opened by @kaddkaka on 2024-11-28 06:26_
+_@kaddkaka_
 
 I would like to propose that the rule documentation or rule page (or a new subpage?) lists all existing rules from the different tools (flake8, pycodestyle, pylint, etc...) and which ones currently are and are not implemented in ruff.
 

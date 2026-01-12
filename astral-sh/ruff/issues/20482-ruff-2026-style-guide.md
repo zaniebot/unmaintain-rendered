@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-19T13:37:01Z
 updated_at: 2026-01-10T15:01:47Z
 url: https://github.com/astral-sh/ruff/issues/20482
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff 2026 Style Guide
 
 ---
 
-_Issue opened by @dylwil3 on 2025-09-19 13:37_
+_@dylwil3_
 
 From [Black's changelog](https://github.com/psf/black/blob/main/CHANGES.md) and [`Preview` enum](https://github.com/psf/black/blob/43135e9fafccbca723910a45aa62f0f182e85e5f/src/black/mode.py#L223). Last checked 19.09.2025, Last release: v25.9.0.
 

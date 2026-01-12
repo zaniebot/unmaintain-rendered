@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T23:17:41Z
 updated_at: 2025-06-09T17:28:40Z
 url: https://github.com/astral-sh/uv/issues/13874
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `uv add --index <name>` assumes a path in the local directory as the index?
 
 ---
 
-_Issue opened by @zanieb on 2025-06-05 23:17_
+_@zanieb_
 
 ### Summary
 

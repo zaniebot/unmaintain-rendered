@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-11T16:16:14Z
 updated_at: 2026-01-11T16:24:54Z
 url: https://github.com/astral-sh/ty/issues/2447
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Understand literal strings are containers of their characters
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2026-01-11 16:16_
+_@MeGaGiGaGon_
 
 ### Summary
 

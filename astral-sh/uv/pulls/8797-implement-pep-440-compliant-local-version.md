@@ -14,14 +14,14 @@ head: local-version-semantics
 created_at: 2024-11-04T06:07:46Z
 updated_at: 2024-11-10T08:27:07Z
 url: https://github.com/astral-sh/uv/pull/8797
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Implement PEP 440-compliant local version semantics
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2024-11-04 06:07_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T11:18:29Z
 updated_at: 2025-11-18T16:10:30Z
 url: https://github.com/astral-sh/ty/issues/615
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # datetimes and dates are not substitutable but ty thinks they are
 
 ---
 
-_Issue opened by @m-aciek on 2025-06-09 11:18_
+_@m-aciek_
 
 ```python
 from datetime import date, datetime

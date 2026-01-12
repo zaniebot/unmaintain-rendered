@@ -15,14 +15,14 @@ head: alex/up040
 created_at: 2025-02-07T16:36:40Z
 updated_at: 2025-02-07T17:07:49Z
 url: https://github.com/astral-sh/ruff/pull/16026
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Don't introduce invalid syntax when upgrading old-style type aliases with parenthesized multiline values (`UP040`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-07 16:36_
+_@AlexWaygood_
 
 ## Summary
 

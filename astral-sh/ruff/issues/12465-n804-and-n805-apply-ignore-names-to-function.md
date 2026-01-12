@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T21:15:37Z
 updated_at: 2024-07-24T22:08:24Z
 url: https://github.com/astral-sh/ruff/issues/12465
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # N804 and N805 apply `ignore-names` to function, rather than parameter names (`self`, `cls`)
 
 ---
 
-_Issue opened by @njzjz on 2024-07-22 21:15_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

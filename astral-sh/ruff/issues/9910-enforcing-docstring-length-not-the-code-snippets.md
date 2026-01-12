@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-09T13:02:29Z
 updated_at: 2024-10-03T12:11:49Z
 url: https://github.com/astral-sh/ruff/issues/9910
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Enforcing docstring length (not the code snippets)
 
 ---
 
-_Issue opened by @ma-sadeghi on 2024-02-09 13:02_
+_@ma-sadeghi_
 
 Is it possible to enforce docstring length (I know this possible for code snippets, but I mean the strings). Here's an example: Enforce docstring line length of 75:
 

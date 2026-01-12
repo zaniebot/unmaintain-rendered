@@ -13,14 +13,14 @@ head: fix/cache-key-without-creds-to-avoid-cache-invalidation
 created_at: 2024-04-12T07:14:06Z
 updated_at: 2024-04-14T17:14:29Z
 url: https://github.com/astral-sh/uv/pull/3010
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Avoid cache invalidation on credentials renewal
 
 ---
 
-_Pull request opened by @jvdw-synth on 2024-04-12 07:14_
+_@jvdw-synth_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

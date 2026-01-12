@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-07T18:52:36Z
 updated_at: 2023-11-03T22:53:26Z
 url: https://github.com/astral-sh/ruff/issues/3907
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Feature Request: Indents
 
 ---
 
-_Issue opened by @navyamehta on 2023-04-07 18:52_
+_@navyamehta_
 
 Is there a way to directly specify the indentation style to apply in a codebase (4-space indent vs hanging indent etc.) via a config in ruff.toml? Thank you!
 

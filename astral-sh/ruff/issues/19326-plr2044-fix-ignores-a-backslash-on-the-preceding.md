@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-14T11:29:11Z
 updated_at: 2025-07-23T15:56:50Z
 url: https://github.com/astral-sh/ruff/issues/19326
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLR2044 fix ignores a backslash on the preceding line
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-14 11:29_
+_@dscorbett_
 
 ### Summary
 

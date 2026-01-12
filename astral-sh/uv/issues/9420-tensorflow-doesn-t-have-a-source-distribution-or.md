@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T15:05:16Z
 updated_at: 2025-10-19T14:21:44Z
 url: https://github.com/astral-sh/uv/issues/9420
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Tensorflow doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @younver on 2024-11-25 15:05_
+_@younver_
 
 Salute, I've been trying to solve this issue for a while, but couldn't manage to resolve it even after digging through my project like a minefield. I'd really appreciate any help!
 

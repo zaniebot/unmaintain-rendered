@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T03:12:07Z
 updated_at: 2025-12-22T03:19:54Z
 url: https://github.com/astral-sh/uv/issues/17186
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Failed to resolve torch with different index but same marker for conflict extras
 
 ---
 
-_Issue opened by @hermeschen1116 on 2025-12-19 03:12_
+_@hermeschen1116_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/git-auth-pat
 created_at: 2024-02-19T20:12:37Z
 updated_at: 2024-02-21T00:12:58Z
 url: https://github.com/astral-sh/uv/pull/1717
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Retain passwords in Git URLs
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-19 20:12_
+_@zanieb_
 
 Fixes handling of GitHub PATs in HTTPS URLs, which were otherwise dropped. We now supporting the following authentication schemes:
 

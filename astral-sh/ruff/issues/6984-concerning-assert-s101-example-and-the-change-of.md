@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-29T16:53:26Z
 updated_at: 2023-08-29T21:08:09Z
 url: https://github.com/astral-sh/ruff/issues/6984
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Concerning `assert (S101)` example and the change of `>`
 
 ---
 
-_Issue opened by @Anselmoo on 2023-08-29 16:53_
+_@Anselmoo_
 
 When using the assertion `assert(S101)`, changing from `x > 0` to `x <= 0` can be confusing because these statements might have different meanings.
 

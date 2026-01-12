@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T21:35:48Z
 updated_at: 2025-03-18T22:21:17Z
 url: https://github.com/astral-sh/uv/issues/12248
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Building a project with dev dependencies does not make those dev dependencies installable.
 
 ---
 
-_Issue opened by @boatcoder on 2025-03-17 21:35_
+_@boatcoder_
 
 ### Summary
 

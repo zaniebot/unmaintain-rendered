@@ -13,14 +13,14 @@ head: fix-constructor-typevar-specialization
 created_at: 2025-12-28T10:57:39Z
 updated_at: 2025-12-29T09:16:19Z
 url: https://github.com/astral-sh/ruff/pull/22233
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] support __new__ return type in constructor calls
 
 ---
 
-_Pull request opened by @kitagry on 2025-12-28 10:57_
+_@kitagry_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

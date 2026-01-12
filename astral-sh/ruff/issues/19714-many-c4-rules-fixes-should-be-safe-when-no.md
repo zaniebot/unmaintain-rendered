@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-03T19:27:52Z
 updated_at: 2025-08-04T22:48:25Z
 url: https://github.com/astral-sh/ruff/issues/19714
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Many C4 rules’ fixes should be safe when no comments are deleted
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-03 19:27_
+_@dscorbett_
 
 ### Summary
 

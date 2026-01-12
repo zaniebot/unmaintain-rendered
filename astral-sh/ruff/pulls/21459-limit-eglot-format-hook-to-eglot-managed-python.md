@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-14T17:34:39Z
 updated_at: 2025-11-17T13:52:32Z
 url: https://github.com/astral-sh/ruff/pull/21459
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # Limit `eglot-format` hook to eglot-managed Python buffers
 
 ---
 
-_Pull request opened by @thamer on 2025-11-14 17:34_
+_@thamer_
 
 Running `eglot-format` in buffers not managed by Eglot causes a `jsonrpc-error` in Emacs 30. It may also display a `documentFormattingProvider` warning when the server does not support formatting. Add checks for both.
 

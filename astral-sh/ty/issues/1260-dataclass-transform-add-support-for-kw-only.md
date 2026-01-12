@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-26T09:38:32Z
 updated_at: 2025-10-09T13:54:15Z
 url: https://github.com/astral-sh/ty/issues/1260
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `dataclass_transform`: Add support for `kw_only_default` and `frozen_default`
 
 ---
 
-_Issue opened by @rayansostenes on 2025-09-26 09:38_
+_@rayansostenes_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-02-08T03:58:19Z
 updated_at: 2025-02-10T15:30:42Z
 url: https://github.com/clap-rs/clap/pull/5906
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: replace `concolor-clap` with `colorchoice-clap`
 
 ---
 
-_Pull request opened by @wmmc88 on 2025-02-08 03:58_
+_@wmmc88_
 
 Since [concolor is deprecated](https://github.com/rust-cli/concolor/issues/47), the docs should point to its replacement, 
  `colorchoice-clap`, instead

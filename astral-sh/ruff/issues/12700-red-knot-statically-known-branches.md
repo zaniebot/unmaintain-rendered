@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T22:19:48Z
 updated_at: 2024-12-21T10:33:12Z
 url: https://github.com/astral-sh/ruff/issues/12700
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] statically-known branches
 
 ---
 
-_Issue opened by @carljm on 2024-08-05 22:19_
+_@carljm_
 
 In cases like `if True:` or `if False:` (or any case where we know the truthiness of a branch test), we should assume that only the possible branch is taken.
 

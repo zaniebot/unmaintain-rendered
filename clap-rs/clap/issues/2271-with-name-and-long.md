@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-12-25T16:13:07Z
 updated_at: 2020-12-25T16:20:10Z
 url: https://github.com/clap-rs/clap/issues/2271
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # with_name and long
 
 ---
 
-_Issue opened by @mvolkmann on 2020-12-25 16:13_
+_@mvolkmann_
 
 Why doesn't the value passed to the `long` method default to the value passed to `with_name`?
 When would someone want those to be different strings?

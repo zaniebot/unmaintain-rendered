@@ -13,14 +13,14 @@ head: pylint-bad-format-character
 created_at: 2023-07-29T12:34:38Z
 updated_at: 2023-08-12T17:42:42Z
 url: https://github.com/astral-sh/ruff/pull/6171
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`pylint`] Implement Pylint `bad-format-character` (`E1300`)
 
 ---
 
-_Pull request opened by @silvanocerza on 2023-07-29 12:34_
+_@silvanocerza_
 
 ## Summary
 

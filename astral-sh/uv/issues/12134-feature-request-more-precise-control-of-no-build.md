@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T12:22:27Z
 updated_at: 2025-03-12T12:22:27Z
 url: https://github.com/astral-sh/uv/issues/12134
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Feature request: More precise control of no-build-isolation: use same venv or skip build requirement resolution
 
 ---
 
-_Issue opened by @JakkuSakura on 2025-03-12 12:22_
+_@JakkuSakura_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T23:30:31Z
 updated_at: 2025-11-07T15:23:38Z
 url: https://github.com/astral-sh/uv/issues/16626
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Exclusive bound incorrectly reported in uv conflict explanation
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-11-06 23:30_
+_@hauntsaninja_
 
 ### Summary
 

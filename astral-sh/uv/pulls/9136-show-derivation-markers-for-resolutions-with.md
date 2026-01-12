@@ -13,14 +13,14 @@ head: charlie/root
 created_at: 2024-11-15T00:06:24Z
 updated_at: 2024-11-15T00:25:27Z
 url: https://github.com/astral-sh/uv/pull/9136
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Show derivation markers for resolutions with project name
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-15 00:06_
+_@charliermarsh_
 
 ## Summary
 

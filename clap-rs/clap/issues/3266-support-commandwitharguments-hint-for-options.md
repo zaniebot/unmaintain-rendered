@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-07T09:24:49Z
 updated_at: 2025-12-10T07:30:05Z
 url: https://github.com/clap-rs/clap/issues/3266
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Support `CommandWithArguments` hint for options
 
 ---
 
-_Issue opened by @tmccombs on 2022-01-07 09:24_
+_@tmccombs_
 
 ### Please complete the following tasks
 

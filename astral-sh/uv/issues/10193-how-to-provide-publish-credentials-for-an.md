@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-27T14:15:18Z
 updated_at: 2025-11-04T14:34:09Z
 url: https://github.com/astral-sh/uv/issues/10193
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # How to provide publish credentials for an alternative (named) package index?
 
 ---
 
-_Issue opened by @menzenski on 2024-12-27 14:15_
+_@menzenski_
 
 The documentation on [Package indexes](https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes) specifies how to provide credentials via environment variables for installing packages from a named index. The documentation on [Publishing packages](https://docs.astral.sh/uv/guides/publish/#publishing-your-package) specifies how to provide credentials via environment variables for publishing via PyPI.
 

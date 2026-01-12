@@ -12,14 +12,14 @@ head: refactor-whitespace-around-operator
 created_at: 2023-05-04T13:20:32Z
 updated_at: 2023-05-05T07:37:58Z
 url: https://github.com/astral-sh/ruff/pull/4223
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Refactor whitespace around operator
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-04 13:20_
+_@MichaReiser_
 
 This PR refactors the pycodestyle missing whitespace around operator rule and fixes a few bug where our implementation didn't match the behavior of the pycodestyle rule. My main motivation for the refactor was that I simply didn't understood the rule and failed to set the right diagnostic ranges in #4113. I find the new logic easier to understand because it only uses token specific state, but some may disagree with that. 
 

@@ -13,14 +13,14 @@ head: perf-rules-any-enabled
 created_at: 2024-04-16T08:40:52Z
 updated_at: 2024-04-16T13:18:32Z
 url: https://github.com/astral-sh/ruff/pull/10971
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # perf: `RuleTable::any_enabled`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-16 08:40_
+_@MichaReiser_
 
 ## Summary
 

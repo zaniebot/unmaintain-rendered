@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T23:10:18Z
 updated_at: 2025-06-21T12:06:12Z
 url: https://github.com/astral-sh/uv/issues/14173
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `uvx` doesn't seem to support `git-lfs`
 
 ---
 
-_Issue opened by @asmith26 on 2025-06-20 23:10_
+_@asmith26_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-14T11:22:20Z
 updated_at: 2023-05-14T11:33:03Z
 url: https://github.com/astral-sh/ruff/issues/4429
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ignore E501 on comments (for black compatibility)
 
 ---
 
-_Issue opened by @ricardoV94 on 2023-05-14 11:22_
+_@ricardoV94_
 
 I don't see a way to setup ruff so that it works like black wrt to line-length.
 

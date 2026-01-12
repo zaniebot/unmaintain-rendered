@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T17:53:53Z
 updated_at: 2024-07-08T14:03:39Z
 url: https://github.com/astral-sh/uv/issues/4814
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv toolchain` CLI should use consistent colors
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-04 17:53_
+_@charliermarsh_
 
 E.g., `Installed 1 installation in 3.73s` should probably match the dimming and bolding we do in the `uv pip` commands.
 

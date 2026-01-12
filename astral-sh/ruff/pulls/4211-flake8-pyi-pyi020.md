@@ -13,14 +13,14 @@ head: pyi_y020
 created_at: 2023-05-03T15:43:46Z
 updated_at: 2023-05-04T02:38:34Z
 url: https://github.com/astral-sh/ruff/pull/4211
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [flake8-pyi] PYI020
 
 ---
 
-_Pull request opened by @arya-k on 2023-05-03 15:43_
+_@arya-k_
 
 PYI020 bans quoted annotations in stub files, since they're always allowed to contain forward references.
 

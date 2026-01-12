@@ -13,14 +13,14 @@ head: charlie/default
 created_at: 2024-01-16T22:50:22Z
 updated_at: 2024-01-17T14:14:44Z
 url: https://github.com/astral-sh/ruff/pull/9558
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Make `ruff` the default binary
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 22:50_
+_@charliermarsh_
 
 ## Summary
 

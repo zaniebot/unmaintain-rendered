@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-29T13:33:59Z
 updated_at: 2025-05-14T07:32:31Z
 url: https://github.com/astral-sh/uv/issues/13195
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Disabling hash verification
 
 ---
 
-_Issue opened by @kevmo314 on 2025-04-29 13:33_
+_@kevmo314_
 
 ### Question
 

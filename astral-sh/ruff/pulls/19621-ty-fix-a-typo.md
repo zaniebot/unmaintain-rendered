@@ -14,14 +14,14 @@ head: typo
 created_at: 2025-07-29T17:43:56Z
 updated_at: 2025-07-29T17:54:49Z
 url: https://github.com/astral-sh/ruff/pull/19621
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] fix a typo 
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-29 17:43_
+_@CodeMan62_
 
 ## Summary
 I was working on a issue and trying to learn via PR's so i found this in #19435  I think the Member forget to check the review 

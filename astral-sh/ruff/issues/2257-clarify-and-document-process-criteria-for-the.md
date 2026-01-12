@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T14:50:03Z
 updated_at: 2023-03-16T12:18:59Z
 url: https://github.com/astral-sh/ruff/issues/2257
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Clarify and document process/criteria for the inclusion of new checks
 
 ---
 
-_Issue opened by @sciyoshi on 2023-01-27 14:50_
+_@sciyoshi_
 
 People who are looking to adopt Ruff will invariably have differing needs from their linter. There are currently at least 400 flake8 plugins/linter packages on PyPI, and it is unlikely that Ruff will grow in scope to support all of them (nor should it, I think).
 

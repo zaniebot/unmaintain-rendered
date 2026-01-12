@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-15T14:52:51Z
 updated_at: 2021-12-13T16:39:01Z
 url: https://github.com/clap-rs/clap/issues/3026
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Support alternative name/value separator
 
 ---
 
-_Issue opened by @epage on 2021-11-15 14:52_
+_@epage_
 
 ### Please complete the following tasks
 

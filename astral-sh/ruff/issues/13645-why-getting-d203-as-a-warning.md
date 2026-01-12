@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-05T17:12:42Z
 updated_at: 2024-11-20T12:01:56Z
 url: https://github.com/astral-sh/ruff/issues/13645
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Why getting D203 as a warning?
 
 ---
 
-_Issue opened by @naveenmaan on 2024-10-05 17:12_
+_@naveenmaan_
 
 I am working on trying to run a linter over my script. which has some lint issues. 
 I want my output as JSON. But I am getting warning before my json.

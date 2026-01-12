@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-08-24T02:32:43Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/626
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Panic with help wrapping at certain widths with non-English characters
 
 ---
 
-_Issue opened by @mac-book-pro on 2016-08-24 02:32_
+_@mac-book-pro_
 
 Hello,
 

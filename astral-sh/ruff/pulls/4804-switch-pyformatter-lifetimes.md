@@ -12,14 +12,14 @@ head: pyformatter_lifetimes
 created_at: 2023-06-02T08:11:43Z
 updated_at: 2023-06-02T10:26:40Z
 url: https://github.com/astral-sh/ruff/pull/4804
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Switch PyFormatter lifetimes
 
 ---
 
-_Pull request opened by @konstin on 2023-06-02 08:11_
+_@konstin_
 
 Stylistic change to have the input lifetime first and the output lifetime second. I'll rebase my other PR on top of this.
 

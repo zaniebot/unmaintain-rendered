@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T15:05:37Z
 updated_at: 2026-01-09T16:42:43Z
 url: https://github.com/astral-sh/ty/issues/2344
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect type inference for asynccontextmanager's yielding Self
 
 ---
 
-_Issue opened by @iyad-f on 2026-01-05 15:05_
+_@iyad-f_
 
 ### Summary
 

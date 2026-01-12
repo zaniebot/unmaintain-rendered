@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T08:53:51Z
 updated_at: 2025-01-13T02:42:23Z
 url: https://github.com/astral-sh/uv/issues/10462
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # failover on multiple indexes
 
 ---
 
-_Issue opened by @yuzhichang on 2025-01-10 08:53_
+_@yuzhichang_
 
 My scenario is:
 The access to pypi.org is slow, or even broken very often. There are some public pypi mirrors here but none is stable (reachable, fast, can serve query and downloading) enough.  These mirrors are hosted by famous companies or universities so I trust them.

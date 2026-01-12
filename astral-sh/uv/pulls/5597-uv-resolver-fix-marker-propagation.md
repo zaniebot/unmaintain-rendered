@@ -12,14 +12,14 @@ head: ag/fix-marker-propagation
 created_at: 2024-07-30T12:42:26Z
 updated_at: 2024-08-23T14:47:15Z
 url: https://github.com/astral-sh/uv/pull/5597
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # uv-resolver: fix marker propagation
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-30 12:42_
+_@BurntSushi_
 
 This PR represents a different approach to marker propagation in an
 attempt to unblock #5583. In particular, instead of propagating markers

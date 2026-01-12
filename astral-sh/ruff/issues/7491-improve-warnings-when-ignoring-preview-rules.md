@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-18T12:43:53Z
 updated_at: 2023-10-08T16:14:38Z
 url: https://github.com/astral-sh/ruff/issues/7491
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improve warnings when ignoring preview rules without preview flag
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-18 12:43_
+_@bersbersbers_
 
 ```shell
 ruff check --isolated --ignore PLC1901,PLR0904  # version 0.0.290

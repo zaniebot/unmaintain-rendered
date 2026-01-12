@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T08:00:43Z
 updated_at: 2025-05-21T06:33:28Z
 url: https://github.com/astral-sh/uv/issues/13550
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Github action installation differs from local
 
 ---
 
-_Issue opened by @atinary-bvollmer on 2025-05-20 08:00_
+_@atinary-bvollmer_
 
 ### Summary
 

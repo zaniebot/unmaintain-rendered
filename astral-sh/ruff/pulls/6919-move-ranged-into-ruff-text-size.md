@@ -13,14 +13,14 @@ head: charlie/move
 created_at: 2023-08-27T15:49:39Z
 updated_at: 2023-08-27T18:12:52Z
 url: https://github.com/astral-sh/ruff/pull/6919
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Move `Ranged` into `ruff_text_size`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 15:49_
+_@charliermarsh_
 
 
 ## Summary

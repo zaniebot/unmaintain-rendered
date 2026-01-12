@@ -13,14 +13,14 @@ head: ag/lock-install
 created_at: 2024-05-02T18:38:57Z
 updated_at: 2024-05-03T13:54:49Z
 url: https://github.com/astral-sh/uv/pull/3340
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # add basic "install from lock file" operation
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-02 18:38_
+_@BurntSushi_
 
 This PR principally adds a routine for converting a `Lock` to a
 `Resolution`, where a `Resolution` is a map of package names pinned to

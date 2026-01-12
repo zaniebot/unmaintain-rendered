@@ -13,14 +13,14 @@ head: formatter-stability-repo-check
 created_at: 2023-06-13T16:29:48Z
 updated_at: 2023-06-19T14:35:08Z
 url: https://github.com/astral-sh/ruff/pull/5055
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add a script that tests formatter stability on repositories
 
 ---
 
-_Pull request opened by @konstin on 2023-06-13 16:29_
+_@konstin_
 
 ## Summary
 

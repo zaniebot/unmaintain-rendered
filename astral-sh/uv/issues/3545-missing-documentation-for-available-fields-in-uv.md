@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T14:35:49Z
 updated_at: 2025-04-14T17:07:16Z
 url: https://github.com/astral-sh/uv/issues/3545
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Missing documentation for available fields in `uv.toml` and `pyproject.toml`
 
 ---
 
-_Issue opened by @silv-io on 2024-05-13 14:35_
+_@silv-io_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-05T12:35:10Z
 updated_at: 2025-06-12T06:52:46Z
 url: https://github.com/astral-sh/ruff/issues/18477
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP008 false negative on `super(__class__, self)`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-05 12:35_
+_@dscorbett_
 
 ### Summary
 

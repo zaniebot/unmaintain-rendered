@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T20:04:56Z
 updated_at: 2024-10-08T21:52:28Z
 url: https://github.com/astral-sh/uv/issues/5491
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Cannot install git dependency from Windows
 
 ---
 
-_Issue opened by @mcrumiller on 2024-07-26 20:04_
+_@mcrumiller_
 
 I'm trying to install a package on one of our local gitlab servers. pip succeeds whereas uv fails (url and project name redacted since it's work stuff):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-14T04:55:25Z
 updated_at: 2023-03-21T23:50:24Z
 url: https://github.com/astral-sh/ruff/issues/1864
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Devise a better system for "re-releasing"
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-14 04:55_
+_@charliermarsh_
 
 Right now, release builds are triggered by creating a release on GitHub. If the build fails, the only way to "re-run" is to create a new release. So we have a few versions that have just never been released. [v0.0.221](https://github.com/charliermarsh/ruff/actions/runs/3916906363/jobs/6696361593) is one example, where I had to push a fix, then re-release as v0.0.222.
 

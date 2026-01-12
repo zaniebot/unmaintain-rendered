@@ -13,14 +13,14 @@ head: david/fix-509
 created_at: 2025-05-26T17:42:17Z
 updated_at: 2025-05-28T08:45:19Z
 url: https://github.com/astral-sh/ruff/pull/18326
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Emit unresolved-attribute diagnostics in annotated assignments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-26 17:42_
+_@sharkdp_
 
 ## Summary
 

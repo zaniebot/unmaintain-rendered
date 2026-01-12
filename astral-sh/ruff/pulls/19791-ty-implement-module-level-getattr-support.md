@@ -13,14 +13,14 @@ head: fix/943
 created_at: 2025-08-06T19:54:42Z
 updated_at: 2025-08-08T17:48:28Z
 url: https://github.com/astral-sh/ruff/pull/19791
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Implement module-level `__getattr__` support
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-06 19:54_
+_@PrettyWood_
 
 fix https://github.com/astral-sh/ty/issues/943
 

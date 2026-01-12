@@ -13,14 +13,14 @@ head: unary-prefix-op
 created_at: 2023-07-23T01:05:42Z
 updated_at: 2023-07-23T10:11:39Z
 url: https://github.com/astral-sh/ruff/pull/5998
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Extends `B002` to detect unary prefix decrement operators
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-23 01:05_
+_@tjkuson_
 
 ## Summary
 

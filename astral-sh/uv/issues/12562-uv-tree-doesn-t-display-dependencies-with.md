@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T18:57:19Z
 updated_at: 2025-03-30T18:57:22Z
 url: https://github.com/astral-sh/uv/issues/12562
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # `uv tree` doesn't display dependencies with conflict markers
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-30 18:57_
+_@charliermarsh_
 
 Given:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T00:05:59Z
 updated_at: 2025-10-24T22:35:44Z
 url: https://github.com/astral-sh/uv/issues/13358
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # uv add tries checks for package in both public and private package registry, then fails with private registry error despite the package being available in public registry
 
 ---
 
-_Issue opened by @Ark-kun on 2025-05-09 00:05_
+_@Ark-kun_
 
 ### Summary
 

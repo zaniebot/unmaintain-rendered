@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T19:04:18Z
 updated_at: 2025-03-17T13:25:45Z
 url: https://github.com/astral-sh/uv/issues/12190
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # How to automatically update `pyproject.toml` after package upgrade?
 
 ---
 
-_Issue opened by @prrao87 on 2025-03-15 19:04_
+_@prrao87_
 
 Okay, I have to ask this as it's so hard to find this in the docs. How does one upgrade a Python package (defined in `pyproject.toml`) using uv?
 

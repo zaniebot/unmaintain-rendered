@@ -12,14 +12,14 @@ head: nushell-dynamic-completion
 created_at: 2024-12-11T23:31:58Z
 updated_at: 2025-10-28T16:03:06Z
 url: https://github.com/clap-rs/clap/pull/5841
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(complete): Add dynamic completion for nushell
 
 ---
 
-_Pull request opened by @chklauser on 2024-12-11 23:31_
+_@chklauser_
 
 Adds an implementation of dynamic completion to `clap_complete_nushell` under the `unstable-dynamic` feature flag. Corresponding issue #5840. The issue description has more context and a more complete solution sketch. This PR doesn't implement the full solution sketched there. Ideally, we'd first agree that that solution is the way to go.
 

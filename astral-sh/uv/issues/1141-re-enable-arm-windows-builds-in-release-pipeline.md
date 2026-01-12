@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-27T01:10:46Z
 updated_at: 2025-01-24T15:24:24Z
 url: https://github.com/astral-sh/uv/issues/1141
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Re-enable ARM Windows builds in release pipeline
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-27 01:10_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/puffin/actions/runs/7673412766 (failure to build `libgit2`).
 

@@ -13,14 +13,14 @@ head: brent/icn001-conflict
 created_at: 2025-01-14T20:54:12Z
 updated_at: 2025-01-16T15:45:27Z
 url: https://github.com/astral-sh/ruff/pull/15480
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`unconventional-import-alias`] Fix infinite loop between ICN001 and I002 (`ICN001`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-14 20:54_
+_@ntBre_
 
 ## Summary
 

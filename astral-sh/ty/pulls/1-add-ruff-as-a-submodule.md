@@ -12,14 +12,14 @@ head: zb/submodule
 created_at: 2025-05-02T16:43:01Z
 updated_at: 2025-05-05T09:32:38Z
 url: https://github.com/astral-sh/ty/pull/1
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add `ruff` as a submodule
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-02 16:43_
+_@zanieb_
 
 _No description provided._
 

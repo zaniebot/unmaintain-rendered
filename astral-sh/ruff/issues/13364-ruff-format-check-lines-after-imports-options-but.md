@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T03:01:36Z
 updated_at: 2025-03-05T12:41:54Z
 url: https://github.com/astral-sh/ruff/issues/13364
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff format` check lines-after-imports options but not respect it
 
 ---
 
-_Issue opened by @trim21 on 2024-09-16 03:01_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

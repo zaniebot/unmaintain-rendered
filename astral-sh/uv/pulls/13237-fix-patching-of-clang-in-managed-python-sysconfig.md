@@ -13,14 +13,14 @@ head: zb/fix-patch
 created_at: 2025-04-30T17:06:03Z
 updated_at: 2025-05-04T12:26:40Z
 url: https://github.com/astral-sh/uv/pull/13237
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Fix patching of `clang` in managed Python sysconfig
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-30 17:06_
+_@zanieb_
 
 Regressed in https://github.com/astral-sh/uv/pull/12239/files#r2069106892 because additional entries override the previous one in the mapping. Now, we can apply multiple patches in-order.
 

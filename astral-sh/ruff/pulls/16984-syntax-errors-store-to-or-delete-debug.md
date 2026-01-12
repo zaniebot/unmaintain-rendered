@@ -14,14 +14,14 @@ head: brent/del-debug-3.10
 created_at: 2025-03-26T17:24:10Z
 updated_at: 2025-03-29T16:07:22Z
 url: https://github.com/astral-sh/ruff/pull/16984
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [syntax-errors] Store to or delete `__debug__`
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-26 17:24_
+_@ntBre_
 
 Summary
 --

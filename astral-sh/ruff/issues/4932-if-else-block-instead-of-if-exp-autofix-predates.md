@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-07T16:08:06Z
 updated_at: 2023-06-07T22:33:41Z
 url: https://github.com/astral-sh/ruff/issues/4932
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `if-else-block-instead-of-if-exp` autofix predates the desired `if-else-block-instead-of-dict-get` autofix
 
 ---
 
-_Issue opened by @tjkuson on 2023-06-07 16:08_
+_@tjkuson_
 
 ## Expected behaviour
 

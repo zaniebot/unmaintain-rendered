@@ -14,14 +14,14 @@ head: tfsingh/tool-upgrade-python
 created_at: 2024-09-20T22:08:33Z
 updated_at: 2024-09-26T02:33:16Z
 url: https://github.com/astral-sh/uv/pull/7605
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Add support for upgrading build env for tools
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-20 22:08_
+_@tfsingh_
 
 This PR adds support for upgrading the build environment of tools with the addition of a ```--python``` argument to ```uv upgrade```, as specified in #7471.
 

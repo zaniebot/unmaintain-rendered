@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-27T11:45:58Z
 updated_at: 2023-05-24T15:12:11Z
 url: https://github.com/astral-sh/ruff/issues/1401
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F401 (unused import) false positive
 
 ---
 
-_Issue opened by @jad-haddad on 2022-12-27 11:45_
+_@jad-haddad_
 
 Hello, I have an import that is used in typing and is getting removed by ruff (flake8 detects it as unused as well) here is the example:
 

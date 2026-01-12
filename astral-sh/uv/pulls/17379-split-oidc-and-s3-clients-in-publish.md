@@ -13,14 +13,14 @@ head: charlie/cli
 created_at: 2026-01-09T14:37:21Z
 updated_at: 2026-01-09T17:16:00Z
 url: https://github.com/astral-sh/uv/pull/17379
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Split OIDC and S3 clients in publish
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 14:37_
+_@charliermarsh_
 
 _No description provided._
 

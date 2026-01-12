@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T10:24:20Z
 updated_at: 2024-11-08T20:12:16Z
 url: https://github.com/astral-sh/uv/issues/8929
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # CI cache pruning corrupts cache for other Python versions
 
 ---
 
-_Issue opened by @nijel on 2024-11-08 10:24_
+_@nijel_
 
 We use multiple Python versions in one of our CI pipelines, but the uv cache is generated only for one of the Python versions. On subsequent runs when cache is used, the package build fails with:
 

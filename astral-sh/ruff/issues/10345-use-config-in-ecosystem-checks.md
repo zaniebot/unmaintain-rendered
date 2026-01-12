@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T21:27:13Z
 updated_at: 2024-03-17T03:48:25Z
 url: https://github.com/astral-sh/ruff/issues/10345
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Use `--config` in ecosystem checks
 
 ---
 
-_Issue opened by @zanieb on 2024-03-11 21:27_
+_@zanieb_
 
 Our ecosystem checks manually overwrite the `pyproject.toml` file to perform some overrides but now that we have `--config` support we should use that instead.
 

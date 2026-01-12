@@ -11,14 +11,14 @@ head: add-trio-210-support
 created_at: 2023-11-09T09:23:15Z
 updated_at: 2023-11-10T03:46:33Z
 url: https://github.com/astral-sh/ruff/pull/8578
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add TRIO210 rule
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-11-09 09:23_
+_@karpetrosyan_
 
 ## Summary
 

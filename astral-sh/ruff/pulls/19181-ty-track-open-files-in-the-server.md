@@ -15,14 +15,14 @@ head: dhruv/track-open-files-in-server
 created_at: 2025-07-07T14:32:36Z
 updated_at: 2025-07-10T14:41:32Z
 url: https://github.com/astral-sh/ruff/pull/19181
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Track open files in the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-07 14:32_
+_@dhruvmanila_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-03T09:15:43Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/7892
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # [feat] `uv python upgrade` or `uv python install --upgrade`
 
 ---
 
-_Issue opened by @baggiponte on 2024-10-03 09:15_
+_@baggiponte_
 
 Ciao! New python versions are coming out and I wonder if uv can behave a bit more like `mise` or other devtools in that it can upgrade the python versions. For example, @hynek teased a video about how he uses [`MOPup`](https://pypi.org/project/MOPUp/) to keep his Python versions updated ~~and it would be fun to ruin his plans once again~~.
 

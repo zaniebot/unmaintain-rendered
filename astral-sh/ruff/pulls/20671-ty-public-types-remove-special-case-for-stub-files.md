@@ -13,14 +13,14 @@ head: david/remove-stub-special-case
 created_at: 2025-10-01T14:29:11Z
 updated_at: 2025-10-01T14:37:14Z
 url: https://github.com/astral-sh/ruff/pull/20671
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Public types: remove special-case for stub files
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-01 14:29_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

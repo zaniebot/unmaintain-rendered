@@ -13,14 +13,14 @@ head: charlie/random
 created_at: 2025-01-02T22:45:47Z
 updated_at: 2025-01-02T22:51:42Z
 url: https://github.com/astral-sh/ruff/pull/15231
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Misc. clean up to rounding rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 22:45_
+_@charliermarsh_
 
 _No description provided._
 

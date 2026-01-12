@@ -14,14 +14,14 @@ head: call-chains
 created_at: 2025-11-10T21:35:33Z
 updated_at: 2025-12-19T13:54:58Z
 url: https://github.com/astral-sh/ruff/pull/21369
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Fluent formatting of method chains
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-11-10 21:35_
+_@dylwil3_
 
 This PR implements a modification (in preview) to fluent formatting for method chains: We break _at_ the first call instead of _after_.
 

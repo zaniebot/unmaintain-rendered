@@ -15,14 +15,14 @@ head: david/improve-specialization-error-diagnostics
 created_at: 2025-09-10T09:44:20Z
 updated_at: 2025-09-10T12:01:25Z
 url: https://github.com/astral-sh/ruff/pull/20326
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Improve specialization-error diagnostics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 09:44_
+_@sharkdp_
 
 ## Summary
 

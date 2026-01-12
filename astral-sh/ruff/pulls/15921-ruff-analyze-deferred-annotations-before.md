@@ -14,14 +14,14 @@ head: classvar
 created_at: 2025-02-04T01:46:06Z
 updated_at: 2025-02-05T12:47:08Z
 url: https://github.com/astral-sh/ruff/pull/15921
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Analyze deferred annotations before enforcing `mutable-(data)class-default` and `function-call-in-dataclass-default-argument` (`RUF008`,`RUF009`,`RUF012`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-04 01:46_
+_@dylwil3_
 
 This PR moves the rules [`mutable-dataclass-default` (`RUF008`)](https://docs.astral.sh/ruff/rules/mutable-dataclass-default/#mutable-dataclass-default-ruf008), [function-call-in-dataclass-default-argument (RUF009)](https://docs.astral.sh/ruff/rules/function-call-in-dataclass-default-argument/#function-call-in-dataclass-default-argument-ruf009), and [`mutable-class-default` (`RUF012`)](https://docs.astral.sh/ruff/rules/mutable-class-default/#mutable-class-default-ruf012)   to the checker for deferred scopes, which avoids false positives caused by a failure to account for deferred resolution of annotations. 
 

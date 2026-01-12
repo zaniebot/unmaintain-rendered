@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T15:47:13Z
 updated_at: 2025-06-22T02:25:17Z
 url: https://github.com/astral-sh/uv/issues/11926
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # uv sync fails while uv venv + uv pip install succeeds
 
 ---
 
-_Issue opened by @kohlrabi on 2025-03-03 15:47_
+_@kohlrabi_
 
 ### Summary
 

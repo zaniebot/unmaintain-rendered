@@ -14,14 +14,14 @@ head: main
 created_at: 2025-10-11T12:27:16Z
 updated_at: 2025-10-21T02:52:44Z
 url: https://github.com/astral-sh/ruff/pull/20810
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [`fastapi`] Handle ellipsis defaults in FAST002 autofix (`FAST002`)
 
 ---
 
-_Pull request opened by @hengky-kurniawan-1 on 2025-10-11 12:27_
+_@hengky-kurniawan-1_
 
 ## Summary
 

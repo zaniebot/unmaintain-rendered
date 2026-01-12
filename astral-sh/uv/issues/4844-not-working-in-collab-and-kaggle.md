@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-06T09:28:18Z
 updated_at: 2025-07-31T12:06:47Z
 url: https://github.com/astral-sh/uv/issues/4844
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Not working in Collab and Kaggle
 
 ---
 
-_Issue opened by @dudegladiator on 2024-07-06 09:28_
+_@dudegladiator_
 
 I run the the following command over kaggle and collab. 
 

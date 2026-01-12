@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T10:05:36Z
 updated_at: 2024-04-14T18:14:13Z
 url: https://github.com/astral-sh/ruff/issues/7595
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # First string token is always considered as docstring
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-22 10:05_
+_@dhruvmanila_
 
 In the [docstring detection state machine](https://github.com/astral-sh/ruff/blob/82978ac9b54e16286e5b2fa60240e06ad8cc88d7/crates/ruff_linter/src/lex/docstring_detection.rs), the first string token is always considered as docstring without considering the context. For example, the first strings in the following example are considered as docstrings:
 

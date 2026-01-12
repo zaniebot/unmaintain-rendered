@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-07T16:01:02Z
 updated_at: 2024-11-07T21:43:27Z
 url: https://github.com/astral-sh/ruff/issues/14166
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Port more tests in `infer.rs` to mdtest
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-07 16:01_
+_@AlexWaygood_
 
 Following https://github.com/astral-sh/ruff/pull/14126, mdtest now supports Python snippets that contain invalid syntax. This enables us to port more tests in `infer.rs` over to the mdtest framework; we should do so
 

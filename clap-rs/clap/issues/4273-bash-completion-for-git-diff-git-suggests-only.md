@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-28T18:49:40Z
 updated_at: 2022-09-29T17:07:27Z
 url: https://github.com/clap-rs/clap/issues/4273
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Bash completion for `git diff git` suggests only top-level completions
 
 ---
 
-_Issue opened by @martinvonz on 2022-09-28 18:49_
+_@martinvonz_
 
 ### Please complete the following tasks
 

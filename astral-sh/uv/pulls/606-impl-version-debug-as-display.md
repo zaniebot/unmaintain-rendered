@@ -12,14 +12,14 @@ head: impl-version-debug-as-display
 created_at: 2023-12-11T12:48:43Z
 updated_at: 2023-12-11T15:38:16Z
 url: https://github.com/astral-sh/uv/pull/606
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Impl Version debug as display
 
 ---
 
-_Pull request opened by @konstin on 2023-12-11 12:48_
+_@konstin_
 
 Currently, `dbg!` is hard to read because versions are verbose, showing all optional fields, and we have a lot of versions. Changing debug formatting to displaying the version number (which can be losslessly converted to the struct and back) makes this more readable.
 

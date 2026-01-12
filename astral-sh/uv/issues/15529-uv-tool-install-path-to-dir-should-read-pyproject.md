@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-26T13:29:58Z
 updated_at: 2025-08-26T15:10:35Z
 url: https://github.com/astral-sh/uv/issues/15529
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # `uv tool install /path/to/dir` should read `pyproject.toml` configuration in `/path/to/dir`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-08-26 13:29_
+_@charliermarsh_
 
 We typically _don't_ do this, e.g., `uv pip install /path/to/dir` will _not_ read configuration from `/path/to/dir/pyproject.toml` -- it only discovers configuration from the current working directory and above. (An exception is for named, pinned indexes in sources -- those are always respected.)
 

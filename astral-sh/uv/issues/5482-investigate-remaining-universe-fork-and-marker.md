@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T14:14:35Z
 updated_at: 2024-08-16T17:30:26Z
 url: https://github.com/astral-sh/uv/issues/5482
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # investigate "remaining universe" fork and marker construction
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-26 14:14_
+_@BurntSushi_
 
 In PR #5163, @konstin [brought up a concern](https://github.com/astral-sh/uv/pull/5163#discussion_r1691703519) that the way I was creating the "remaining universe" fork in the case of incomplete markers was either not correct or, perhaps, was doing more than what was needed. I spent some time trying to come up with a packse scenario that demonstrated why it was needed. My first attempt was this:
 

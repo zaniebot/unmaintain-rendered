@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T04:53:50Z
 updated_at: 2023-10-27T09:19:52Z
 url: https://github.com/astral-sh/ruff/issues/8269
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Invalid flake8-quotes rule
 
 ---
 
-_Issue opened by @wu-clan on 2023-10-27 04:53_
+_@wu-clan_
 
 This is pyproject.toml for ruff:
 ```toml

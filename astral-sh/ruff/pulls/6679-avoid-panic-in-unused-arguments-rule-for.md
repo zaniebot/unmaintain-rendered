@@ -12,14 +12,14 @@ head: charlie/lambda
 created_at: 2023-08-18T18:17:46Z
 updated_at: 2023-08-18T18:29:32Z
 url: https://github.com/astral-sh/ruff/pull/6679
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid panic in unused arguments rule for parameter-free lambda
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-18 18:17_
+_@charliermarsh_
 
 ## Summary
 

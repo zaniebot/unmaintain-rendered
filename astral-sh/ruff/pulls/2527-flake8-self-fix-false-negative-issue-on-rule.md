@@ -13,14 +13,14 @@ head: fix-slf001
 created_at: 2023-02-03T11:01:19Z
 updated_at: 2023-02-03T14:44:38Z
 url: https://github.com/astral-sh/ruff/pull/2527
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`flake8-self`] Fix False Negative Issue on Rule `SLF001`
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-02-03 11:01_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/2521
 

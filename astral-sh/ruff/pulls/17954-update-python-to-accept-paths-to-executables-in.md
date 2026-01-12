@@ -14,14 +14,14 @@ head: zb/resolve-python
 created_at: 2025-05-08T15:31:36Z
 updated_at: 2025-05-13T14:18:56Z
 url: https://github.com/astral-sh/ruff/pull/17954
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Update `--python` to accept paths to executables in environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-08 15:31_
+_@zanieb_
 
 ## Summary
 

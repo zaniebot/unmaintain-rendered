@@ -13,14 +13,14 @@ head: fix_only_downloads_with_all_arches
 created_at: 2025-07-15T15:57:14Z
 updated_at: 2025-07-15T17:20:50Z
 url: https://github.com/astral-sh/uv/pull/14629
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Fix --all-arches when paired with --only-downloads
 
 ---
 
-_Pull request opened by @alexprengere on 2025-07-15 15:57_
+_@alexprengere_
 
 ## Summary
 

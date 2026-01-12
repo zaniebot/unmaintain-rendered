@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-05-09T13:47:56Z
 updated_at: 2024-06-07T06:53:19Z
 url: https://github.com/clap-rs/clap/issues/2475
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_derive casing change stringly type
 
 ---
 
-_Issue opened by @pickfire on 2021-05-09 13:47_
+_@pickfire_
 
 Maintainer's notes:
 - With #3335 resolved, the remaining work is

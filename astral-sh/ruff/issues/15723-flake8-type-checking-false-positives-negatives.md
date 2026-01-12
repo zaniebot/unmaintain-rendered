@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T16:13:14Z
 updated_at: 2025-12-04T06:59:08Z
 url: https://github.com/astral-sh/ruff/issues/15723
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [`flake8-type-checking`] False positives/negatives for TC001-004 for overlapping module imports
 
 ---
 
-_Issue opened by @Daverball on 2025-01-24 16:13_
+_@Daverball_
 
 ### Description
 

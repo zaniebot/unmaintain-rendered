@@ -12,14 +12,14 @@ head: zb/fixups
 created_at: 2025-05-03T15:36:35Z
 updated_at: 2025-05-03T21:49:09Z
 url: https://github.com/zanieb/rooster/pull/54
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Various fixes and clean-up following refactor
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-03 15:36_
+_@zanieb_
 
 _No description provided._
 

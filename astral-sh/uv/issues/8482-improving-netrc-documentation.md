@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T00:50:46Z
 updated_at: 2024-10-24T02:34:46Z
 url: https://github.com/astral-sh/uv/issues/8482
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Improving netrc documentation
 
 ---
 
-_Issue opened by @brendan-morin on 2024-10-23 00:50_
+_@brendan-morin_
 
 Is it possible to have a bit of clarification what it means when the docs say uv supports netrc? I understand there are a few ways projects usually support this:
 - Look for a file at `~/.netrc`

@@ -13,14 +13,14 @@ head: ibraheem/sync-exact
 created_at: 2024-06-17T18:28:12Z
 updated_at: 2024-06-17T18:38:35Z
 url: https://github.com/astral-sh/uv/pull/4366
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Remove extraneous installations in `uv sync` by default
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-17 18:28_
+_@ibraheemdev_
 
 ## Summary
 

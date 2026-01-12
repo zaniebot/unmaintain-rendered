@@ -14,14 +14,14 @@ head: charlie/collect
 created_at: 2024-07-19T01:05:20Z
 updated_at: 2024-07-19T12:50:39Z
 url: https://github.com/astral-sh/uv/pull/5203
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Process completed Python installs and uninstalls as a stream
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 01:05_
+_@charliermarsh_
 
 ## Summary
 

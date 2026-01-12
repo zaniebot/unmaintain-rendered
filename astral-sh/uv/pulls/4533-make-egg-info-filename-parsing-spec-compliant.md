@@ -14,14 +14,14 @@ head: charlie/egg
 created_at: 2024-06-25T23:15:18Z
 updated_at: 2024-06-25T23:49:44Z
 url: https://github.com/astral-sh/uv/pull/4533
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Make `.egg-info` filename parsing spec compliant
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 23:15_
+_@charliermarsh_
 
 ## Summary
 

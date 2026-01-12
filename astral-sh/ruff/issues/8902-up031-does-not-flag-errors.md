@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-29T06:06:24Z
 updated_at: 2023-11-29T10:27:44Z
 url: https://github.com/astral-sh/ruff/issues/8902
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP031 does not flag errors
 
 ---
 
-_Issue opened by @abhijeetbodas2001 on 2023-11-29 06:06_
+_@abhijeetbodas2001_
 
 The `UP031` fixer seems to be broken. I picked up one of the examples from the documentation for the fixer itself (https://docs.astral.sh/ruff/rules/printf-string-formatting/), but latest `ruff v0.1.6` did not flag it.
 

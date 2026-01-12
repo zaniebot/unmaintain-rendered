@@ -13,14 +13,14 @@ head: fix/super-call-with-parameters
 created_at: 2025-06-05T13:13:15Z
 updated_at: 2025-06-12T10:57:51Z
 url: https://github.com/astral-sh/ruff/pull/18478
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [`pyupgrade`] Fix `super(__class__, self)` detection in UP008 (super-call-with-parameters)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-05 13:13_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

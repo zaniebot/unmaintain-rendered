@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-01T20:41:03Z
 updated_at: 2023-06-10T04:05:03Z
 url: https://github.com/astral-sh/ruff/issues/4173
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # possible false positive with RET504 and class method
 
 ---
 
-_Issue opened by @Borda on 2023-05-01 20:41_
+_@Borda_
 
 I have the following code sample, and here I do think it is correct:
 ```py

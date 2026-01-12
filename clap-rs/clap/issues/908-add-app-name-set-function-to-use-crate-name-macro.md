@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-03-20T16:02:00Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/908
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add App::name set function to use crate_name!() macro
 
 ---
 
-_Issue opened by @SuperFluffy on 2017-03-20 16:02_
+_@SuperFluffy_
 
 Currently, you can further specify the `about`, `authors`, and `version` field of an `App` through setter methods of the same, and pull in the appropriate value through `crate_about!()` and similar macros. Only `crate_name!()` is special, in that we can only use it when constructing a new `App` through `App::new`.
 

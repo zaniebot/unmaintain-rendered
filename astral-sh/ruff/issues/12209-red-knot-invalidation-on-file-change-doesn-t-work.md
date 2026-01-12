@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T16:34:40Z
 updated_at: 2024-07-09T07:52:14Z
 url: https://github.com/astral-sh/ruff/issues/12209
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] invalidation on file change doesn't work in CLI with relative paths
 
 ---
 
-_Issue opened by @carljm on 2024-07-05 16:34_
+_@carljm_
 
 
 Given these files:

@@ -14,14 +14,14 @@ head: charlie/index-api-environment-vars
 created_at: 2024-09-27T17:01:34Z
 updated_at: 2024-10-15T22:35:08Z
 url: https://github.com/astral-sh/uv/pull/7741
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Enable environment variable authentication for named indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-27 17:01_
+_@charliermarsh_
 
 ## Summary
 

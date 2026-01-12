@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-26T17:54:50Z
 updated_at: 2023-12-15T18:23:27Z
 url: https://github.com/astral-sh/ruff/issues/6100
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Odd behavior of `ERA001` on code-like comments
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-26 17:54_
+_@tylerlaprade_
 
 <img width="276" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/513b1292-880b-40d6-b2b9-e24529fdf7f5">
 

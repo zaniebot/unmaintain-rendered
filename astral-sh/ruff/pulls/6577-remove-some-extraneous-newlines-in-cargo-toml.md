@@ -13,14 +13,14 @@ head: charlie/cargo
 created_at: 2023-08-14T23:26:21Z
 updated_at: 2023-08-14T23:49:26Z
 url: https://github.com/astral-sh/ruff/pull/6577
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove some extraneous newlines in Cargo.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 23:26_
+_@charliermarsh_
 
 _No description provided._
 

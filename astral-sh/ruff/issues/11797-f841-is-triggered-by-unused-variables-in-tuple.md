@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-07T15:30:59Z
 updated_at: 2024-11-10T03:14:13Z
 url: https://github.com/astral-sh/ruff/issues/11797
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 #  F841 is triggered by unused variables in tuple unpacking from with statements (#890 regression)
 
 ---
 
-_Issue opened by @andykais on 2024-06-07 15:30_
+_@andykais_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

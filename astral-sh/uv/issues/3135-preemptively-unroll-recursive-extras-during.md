@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T04:16:06Z
 updated_at: 2024-04-24T11:51:57Z
 url: https://github.com/astral-sh/uv/issues/3135
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Preemptively unroll recursive extras during resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-19 04:16_
+_@charliermarsh_
 
 Right now, when we see a requirement with a recursive extra, we just add that as a constraint and return the set of resolved constraints. We'll later ask for the requirements for that same package with the recursive extra, return the set of resolved constraints, and continue.
 

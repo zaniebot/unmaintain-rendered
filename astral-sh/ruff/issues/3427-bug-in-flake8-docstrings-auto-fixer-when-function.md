@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T01:05:54Z
 updated_at: 2023-03-10T11:54:26Z
 url: https://github.com/astral-sh/ruff/issues/3427
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Bug in `flake8-docstrings` auto-fixer when function contains parameter named `args`
 
 ---
 
-_Issue opened by @stinodego on 2023-03-10 01:05_
+_@stinodego_
 
 A recent version has introduced a regression in `flake8-docstrings` lints.
 

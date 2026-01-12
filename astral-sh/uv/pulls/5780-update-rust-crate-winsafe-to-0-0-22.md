@@ -13,14 +13,14 @@ head: renovate/winsafe-0.x
 created_at: 2024-08-05T00:37:48Z
 updated_at: 2024-08-05T01:13:38Z
 url: https://github.com/astral-sh/uv/pull/5780
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Update Rust crate winsafe to 0.0.22
 
 ---
 
-_Pull request opened by @renovate on 2024-08-05 00:37_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

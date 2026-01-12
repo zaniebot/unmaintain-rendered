@@ -12,14 +12,14 @@ head: charlie/auto-write
 created_at: 2022-11-05T18:23:26Z
 updated_at: 2022-11-05T19:41:43Z
 url: https://github.com/astral-sh/ruff/pull/604
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Automatically write to src/checks_gen.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-05 18:23_
+_@charliermarsh_
 
 Resolves #602.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T15:36:18Z
 updated_at: 2025-02-15T08:48:23Z
 url: https://github.com/astral-sh/uv/issues/11319
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Indicate the version of uv that was used to generate/update the uv.lock file in the file itself
 
 ---
 
-_Issue opened by @sebn on 2025-02-07 15:36_
+_@sebn_
 
 ### Summary
 

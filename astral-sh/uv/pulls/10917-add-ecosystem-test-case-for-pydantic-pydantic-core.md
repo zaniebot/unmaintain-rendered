@@ -13,14 +13,14 @@ head: zb/ecosystem-new
 created_at: 2025-01-23T22:20:47Z
 updated_at: 2025-01-23T23:05:16Z
 url: https://github.com/astral-sh/uv/pull/10917
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Add ecosystem test case for `pydantic/pydantic-core`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 22:20_
+_@zanieb_
 
 _No description provided._
 

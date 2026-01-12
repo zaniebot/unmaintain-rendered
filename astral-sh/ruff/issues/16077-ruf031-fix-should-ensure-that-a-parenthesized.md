@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-10T14:29:36Z
 updated_at: 2025-02-10T17:30:08Z
 url: https://github.com/astral-sh/ruff/issues/16077
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF031 fix should ensure that a parenthesized single-element tuple has a comma
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-10 14:29_
+_@dscorbett_
 
 ### Description
 

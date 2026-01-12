@@ -13,14 +13,14 @@ head: zb/python-seen
 created_at: 2025-03-21T14:12:51Z
 updated_at: 2025-04-03T16:13:09Z
 url: https://github.com/astral-sh/uv/pull/12367
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Skip repeated directories in `PATH` when searching for Python interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 14:12_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/12302
 

@@ -14,14 +14,14 @@ head: isolated
 created_at: 2024-07-22T14:33:55Z
 updated_at: 2024-07-22T21:07:28Z
 url: https://github.com/astral-sh/uv/pull/5290
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # `uv init` ignores workspace when `--isolated` flag is used
 
 ---
 
-_Pull request opened by @j178 on 2024-07-22 14:33_
+_@j178_
 
 ## Summary
 

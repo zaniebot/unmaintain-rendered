@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T21:01:52Z
 updated_at: 2023-06-01T02:24:00Z
 url: https://github.com/astral-sh/ruff/issues/4765
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ARG003: Wrong example
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-31 21:01_
+_@saippuakauppias_
 
 The [rule page](https://beta.ruff.rs/docs/rules/unused-class-method-argument/) has an example of correct usage, but it itself contains an error:
 

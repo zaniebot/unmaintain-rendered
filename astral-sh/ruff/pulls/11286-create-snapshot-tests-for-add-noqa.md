@@ -14,14 +14,14 @@ head: jane/linter/add-noqa-tests
 created_at: 2024-05-04T17:54:11Z
 updated_at: 2024-05-04T18:07:34Z
 url: https://github.com/astral-sh/ruff/pull/11286
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Create snapshot tests for `--add-noqa`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-04 17:54_
+_@snowsignal_
 
 _No description provided._
 

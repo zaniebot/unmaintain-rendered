@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T21:13:03Z
 updated_at: 2025-05-19T15:45:41Z
 url: https://github.com/astral-sh/ty/issues/370
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # No overload of bound method `__init__` matches arguments for tempfile.TemporaryDirectory
 
 ---
 
-_Issue opened by @divaltor on 2025-05-13 21:13_
+_@divaltor_
 
 ### Summary
 

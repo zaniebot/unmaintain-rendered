@@ -12,14 +12,14 @@ head: trim-readme
 created_at: 2023-02-15T20:50:28Z
 updated_at: 2023-02-17T12:55:51Z
 url: https://github.com/astral-sh/ruff/pull/2937
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove rule tables and option documentation from the README
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-15 20:50_
+_@not-my-profile_
 
 As per https://github.com/charliermarsh/ruff/issues/2911#issuecomment-1430791769.
 

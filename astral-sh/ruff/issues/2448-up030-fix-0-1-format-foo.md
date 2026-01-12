@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T17:17:24Z
 updated_at: 2023-02-04T22:34:49Z
 url: https://github.com/astral-sh/ruff/issues/2448
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # UP030: fix `'_{0}._{1}'.format(*foo)`
 
 ---
 
-_Issue opened by @spaceone on 2023-02-01 17:17_
+_@spaceone_
 
 `'_{0}._{1}'.format(*foo)` can't be autofixed.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-21T07:57:33Z
 updated_at: 2024-12-21T23:52:54Z
 url: https://github.com/astral-sh/uv/issues/10073
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv build with msvc, the console output is abnormal
 
 ---
 
-_Issue opened by @fanck0605 on 2024-12-21 07:57_
+_@fanck0605_
 
 ## Environment
 Platform: Windows 10 (**Chinese Language**)

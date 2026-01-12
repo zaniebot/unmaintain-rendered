@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T05:44:59Z
 updated_at: 2025-01-08T15:45:06Z
 url: https://github.com/astral-sh/ruff/issues/15336
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Freeze when using unreachable rule
 
 ---
 
-_Issue opened by @qarmin on 2025-01-08 05:44_
+_@qarmin_
 
 Command
 ```

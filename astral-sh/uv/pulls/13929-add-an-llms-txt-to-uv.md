@@ -13,14 +13,14 @@ head: charlie/llms
 created_at: 2025-06-09T17:20:57Z
 updated_at: 2025-06-25T16:57:15Z
 url: https://github.com/astral-sh/uv/pull/13929
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Add an `llms.txt` to uv
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-09 17:20_
+_@charliermarsh_
 
 ## Summary
 

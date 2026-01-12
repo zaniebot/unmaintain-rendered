@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-13T10:11:52Z
 updated_at: 2025-07-16T18:58:55Z
 url: https://github.com/astral-sh/uv/issues/14585
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Improve the behavior of `uv run` when running from outside the project folder
 
 ---
 
-_Issue opened by @AngelEzquerra on 2025-07-13 10:11_
+_@AngelEzquerra_
 
 ### Summary
 

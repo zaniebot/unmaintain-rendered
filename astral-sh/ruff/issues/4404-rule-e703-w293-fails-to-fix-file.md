@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T21:17:37Z
 updated_at: 2023-06-20T02:57:26Z
 url: https://github.com/astral-sh/ruff/issues/4404
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Rule `E703, W293` fails to fix file
 
 ---
 
-_Issue opened by @qarmin on 2023-05-12 21:17_
+_@qarmin_
 
 Ruff https://github.com/charliermarsh/ruff/commit/f5be3d8e5b2e3f3a0c5890075b552371f4061023
 

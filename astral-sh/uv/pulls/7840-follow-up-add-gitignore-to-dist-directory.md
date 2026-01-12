@@ -13,14 +13,14 @@ head: konsti/dont-upload-gitignore
 created_at: 2024-10-01T13:30:10Z
 updated_at: 2024-10-01T13:38:40Z
 url: https://github.com/astral-sh/uv/pull/7840
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Follow-up: Add gitignore to dist directory
 
 ---
 
-_Pull request opened by @konstin on 2024-10-01 13:30_
+_@konstin_
 
 Follow-up on #7835, i missed the interaction with publish: Don't try to upload the gitignore directory.
 

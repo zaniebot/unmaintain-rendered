@@ -12,14 +12,14 @@ head: zb/many-hint
 created_at: 2024-01-05T16:38:46Z
 updated_at: 2024-01-05T20:41:41Z
 url: https://github.com/astral-sh/uv/pull/796
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add pre-release test scenario reproducing hint simplification bug
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-05 16:38_
+_@zanieb_
 
 A reproduction of #751 
 

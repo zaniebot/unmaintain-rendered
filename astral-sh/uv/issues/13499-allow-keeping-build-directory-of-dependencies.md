@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T21:46:02Z
 updated_at: 2025-09-08T18:38:39Z
 url: https://github.com/astral-sh/uv/issues/13499
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Allow keeping build directory of dependencies (similar to pip install --no-clean)
 
 ---
 
-_Issue opened by @Hawk777 on 2025-05-16 21:46_
+_@Hawk777_
 
 ### Summary
 

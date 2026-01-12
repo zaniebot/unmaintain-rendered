@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T17:22:36Z
 updated_at: 2025-12-12T20:23:00Z
 url: https://github.com/astral-sh/ruff/issues/21953
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # RUF012 warns for pydantic.v1.main.BaseModel
 
 ---
 
-_Issue opened by @justin-snyder-slgg on 2025-12-12 17:22_
+_@justin-snyder-slgg_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T15:45:26Z
 updated_at: 2025-11-26T17:05:45Z
 url: https://github.com/astral-sh/ty/issues/1646
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Improve diagnostics to explain why a `TypedDict` is not assignable to `dict`
 
 ---
 
-_Issue opened by @lypwig on 2025-11-26 15:45_
+_@lypwig_
 
 ### Question
 

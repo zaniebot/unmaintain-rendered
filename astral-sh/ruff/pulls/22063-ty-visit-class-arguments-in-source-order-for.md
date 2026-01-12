@@ -15,14 +15,14 @@ head: fix-panic-in-semantic-token-visitor
 created_at: 2025-12-18T21:53:52Z
 updated_at: 2025-12-22T11:17:50Z
 url: https://github.com/astral-sh/ruff/pull/22063
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Visit class arguments in source order for semantic tokens
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-18 21:53_
+_@RasmusNygren_
 
 ## Summary
 

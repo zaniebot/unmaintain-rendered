@@ -15,14 +15,14 @@ assignees: []
 created_at: 2022-01-05T19:59:57Z
 updated_at: 2022-05-06T21:18:22Z
 url: https://github.com/clap-rs/clap/issues/3263
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # External subcommands that alias built-in subccommands cause panics
 
 ---
 
-_Issue opened by @epage on 2022-01-05 19:59_
+_@epage_
 
 ### Please complete the following tasks
 

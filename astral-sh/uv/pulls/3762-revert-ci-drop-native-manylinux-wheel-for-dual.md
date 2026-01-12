@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-05-22T19:40:20Z
 updated_at: 2024-05-22T19:53:18Z
 url: https://github.com/astral-sh/uv/pull/3762
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Revert "ci: drop native manylinux wheel for dual-tagged one (#3685)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 19:40_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T16:40:15Z
 updated_at: 2024-11-14T05:04:24Z
 url: https://github.com/astral-sh/uv/issues/9090
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # uv python install 3.12 -> but no python at command line
 
 ---
 
-_Issue opened by @pitosalas on 2024-11-13 16:40_
+_@pitosalas_
 
 I am trying to go all uv. I uninstalled python from home-brew so that all I have now is the default python that came with my Mac. It's an old one. So next I did:
 

@@ -12,14 +12,14 @@ head: charlie/sometimes
 created_at: 2023-06-05T16:45:45Z
 updated_at: 2023-06-05T17:20:44Z
 url: https://github.com/astral-sh/ruff/pull/4868
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Mark F523 as "sometimes" fixable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 16:45_
+_@charliermarsh_
 
 Closes #4865.
 

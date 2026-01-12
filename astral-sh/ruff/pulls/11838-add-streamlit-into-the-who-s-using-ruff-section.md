@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-11T15:11:55Z
 updated_at: 2024-06-11T15:14:23Z
 url: https://github.com/astral-sh/ruff/pull/11838
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Add Streamlit into the `Who's Using Ruff?` section
 
 ---
 
-_Pull request opened by @lukasmasuch on 2024-06-11 15:11_
+_@lukasmasuch_
 
 ## Summary
 

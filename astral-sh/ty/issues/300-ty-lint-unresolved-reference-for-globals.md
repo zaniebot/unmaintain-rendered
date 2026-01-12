@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-09T18:05:33Z
 updated_at: 2025-05-09T20:35:26Z
 url: https://github.com/astral-sh/ty/issues/300
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # [ty] lint:unresolved-reference for globals
 
 ---
 
-_Issue opened by @mitsuhiko on 2025-05-09 18:05_
+_@mitsuhiko_
 
 ### Summary
 

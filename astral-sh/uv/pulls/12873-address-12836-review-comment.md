@@ -13,14 +13,14 @@ head: konsti/inline-pep440-methods
 created_at: 2025-04-14T08:01:20Z
 updated_at: 2025-04-14T08:10:35Z
 url: https://github.com/astral-sh/uv/pull/12873
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # Address #12836 review comment
 
 ---
 
-_Pull request opened by @konstin on 2025-04-14 08:01_
+_@konstin_
 
 Inline single use methods
 

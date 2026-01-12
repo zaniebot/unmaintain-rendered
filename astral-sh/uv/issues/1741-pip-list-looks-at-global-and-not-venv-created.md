@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-20T09:08:10Z
 updated_at: 2024-02-20T19:00:05Z
 url: https://github.com/astral-sh/uv/issues/1741
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # pip list looks at global and not .venv created with UV
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-02-20 09:08_
+_@ion-elgreco_
 
 Running  python3 -m venv .venv, and then install with uv pip install works fine. You can then also inspect the installed packages with pip list
 

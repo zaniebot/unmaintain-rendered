@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T14:58:27Z
 updated_at: 2024-08-23T06:22:13Z
 url: https://github.com/astral-sh/ruff/issues/13058
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] emit diagnostics on invalid syntax
 
 ---
 
-_Issue opened by @carljm on 2024-08-22 14:58_
+_@carljm_
 
 We regularly hit confusion because of the error-recovering parser letting syntax errors pass silently, and then red-knot behaving in unexpected ways because we didn't realize there was a syntax error in the code. We should emit diagnostics on syntax errors to avoid this.
 

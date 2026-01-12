@@ -13,14 +13,14 @@ head: exception-docs
 created_at: 2023-06-16T09:44:31Z
 updated_at: 2023-07-10T09:55:25Z
 url: https://github.com/astral-sh/ruff/pull/5143
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Complete documentation for `flake8-blind-except` and `flake8-raise` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-16 09:44_
+_@tjkuson_
 
 ## Summary
 

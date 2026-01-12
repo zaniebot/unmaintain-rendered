@@ -13,14 +13,14 @@ head: amy/suppression-perf
 created_at: 2026-01-07T02:34:34Z
 updated_at: 2026-01-08T19:17:43Z
 url: https://github.com/astral-sh/ruff/pull/22428
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Improve performance of loading range suppressions
 
 ---
 
-_Pull request opened by @amyreese on 2026-01-07 02:34_
+_@amyreese_
 
 WIP, not fully baked, checkpointing progress:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T08:33:56Z
 updated_at: 2025-09-30T07:14:50Z
 url: https://github.com/astral-sh/ruff/issues/19394
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # N812 and ICN001 conflict
 
 ---
 
-_Issue opened by @guillaume-alliander on 2025-07-17 08:33_
+_@guillaume-alliander_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-01T11:31:53Z
 updated_at: 2023-05-02T01:03:11Z
 url: https://github.com/astral-sh/ruff/issues/4168
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Testing docs examples
 
 ---
 
-_Issue opened by @calumy on 2023-05-01 11:31_
+_@calumy_
 
 As far as I am aware, the examples in docs are not currently tested to check that the proposed fix actually fixes an issue. This would be useful to check the initial example returns the expected error code and that the "Use instead:" section removes the error.
 

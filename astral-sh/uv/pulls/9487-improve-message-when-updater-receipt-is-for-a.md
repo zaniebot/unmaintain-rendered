@@ -13,14 +13,14 @@ head: zb/self-update-receipt
 created_at: 2024-11-27T23:59:47Z
 updated_at: 2024-12-04T01:26:33Z
 url: https://github.com/astral-sh/uv/pull/9487
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Improve message when updater receipt is for a different uv executable
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-27 23:59_
+_@zanieb_
 
 Attempts to improve confusing messaging in cases like https://github.com/astral-sh/uv/issues/6774#issuecomment-2504950681, when the receipt is for a different uv executable. 
 

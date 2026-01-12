@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T03:13:06Z
 updated_at: 2024-10-29T04:04:43Z
 url: https://github.com/astral-sh/ruff/issues/13975
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `Black.format_file_in_place()` equivalent for ruff?
 
 ---
 
-_Issue opened by @zarif98 on 2024-10-29 03:13_
+_@zarif98_
 
 I was wondering if there is an equivalent within Ruff?
 

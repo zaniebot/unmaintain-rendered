@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T01:08:23Z
 updated_at: 2025-02-23T00:13:30Z
 url: https://github.com/astral-sh/uv/issues/11703
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # `uv cache prune --ci` leads to error: Failed to generate package metadata
 
 ---
 
-_Issue opened by @andersk on 2025-02-22 01:08_
+_@andersk_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: alex/tvar-disjoint
 created_at: 2025-05-07T15:54:45Z
 updated_at: 2025-05-07T17:59:18Z
 url: https://github.com/astral-sh/ruff/pull/17922
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Ensure that `T` is disjoint from `~T` even when `T` is a TypeVar
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-07 15:54_
+_@AlexWaygood_
 
 Same as https://github.com/astral-sh/ruff/pull/17910 but for disjointness
 

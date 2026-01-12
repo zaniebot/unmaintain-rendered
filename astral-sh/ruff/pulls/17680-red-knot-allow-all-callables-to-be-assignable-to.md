@@ -13,14 +13,14 @@ head: david/todo-signature
 created_at: 2025-04-28T13:54:42Z
 updated_at: 2025-04-28T14:40:38Z
 url: https://github.com/astral-sh/ruff/pull/17680
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Allow all callables to be assignable to @Todo-signatures
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-28 13:54_
+_@sharkdp_
 
 ## Summary
 

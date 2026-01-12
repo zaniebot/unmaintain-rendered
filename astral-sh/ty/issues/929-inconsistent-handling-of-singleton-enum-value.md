@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-03T00:17:24Z
 updated_at: 2025-10-06T16:34:18Z
 url: https://github.com/astral-sh/ty/issues/929
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Inconsistent handling of singleton `Enum` value assigned to variable
 
 ---
 
-_Issue opened by @mthuurne on 2025-08-03 00:17_
+_@mthuurne_
 
 ### Summary
 

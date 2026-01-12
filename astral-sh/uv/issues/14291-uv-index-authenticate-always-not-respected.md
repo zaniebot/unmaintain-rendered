@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T18:16:59Z
 updated_at: 2025-06-30T10:49:51Z
 url: https://github.com/astral-sh/uv/issues/14291
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # UV Index authenticate = "always" not respected
 
 ---
 
-_Issue opened by @asnoeyink on 2025-06-26 18:16_
+_@asnoeyink_
 
 ### Summary
 

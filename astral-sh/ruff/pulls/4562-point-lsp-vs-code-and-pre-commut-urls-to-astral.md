@@ -12,14 +12,14 @@ head: charlie/astral
 created_at: 2023-05-21T18:10:55Z
 updated_at: 2023-05-21T19:27:36Z
 url: https://github.com/astral-sh/ruff/pull/4562
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Point LSP, VS Code, and pre-commut URLs to Astral org
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-21 18:10_
+_@charliermarsh_
 
 _No description provided._
 

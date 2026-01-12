@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-14T03:11:54Z
 updated_at: 2025-07-08T05:53:05Z
 url: https://github.com/astral-sh/ruff/issues/12874
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Server diagnostics linger when cell language is changed
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-14 03:11_
+_@dhruvmanila_
 
 This is related to https://github.com/astral-sh/ruff/pull/11864 where we assumed that VS Code would always send a `textDocument/didClose` request when the `notebookDocument/didChange` request contained a cell deletion change. But, it turns out that is not true. If you change the language of a code cell from Python to any other language, VS Code would only send the `notebookDocument/didChange` request because the cell was never closed, it was just closed for Ruff (the text document is still present).
 

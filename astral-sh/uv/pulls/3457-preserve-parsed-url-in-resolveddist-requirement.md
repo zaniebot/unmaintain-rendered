@@ -13,14 +13,14 @@ head: konsti/parse-unnamed-url
 created_at: 2024-05-08T12:53:28Z
 updated_at: 2024-05-14T01:47:21Z
 url: https://github.com/astral-sh/uv/pull/3457
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 #  Preserve parsed url in ResolvedDist -> Requirement 
 
 ---
 
-_Pull request opened by @konstin on 2024-05-08 12:53_
+_@konstin_
 
 Lose less information in the `ResolvedDist` -> `Requirement` conversion.
 

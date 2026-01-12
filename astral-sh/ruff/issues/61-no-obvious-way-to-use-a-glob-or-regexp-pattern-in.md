@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-31T20:45:11Z
 updated_at: 2022-09-01T02:08:24Z
 url: https://github.com/astral-sh/ruff/issues/61
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # No obvious way to use a glob or regexp pattern in `exclude`
 
 ---
 
-_Issue opened by @the9000 on 2022-08-31 20:45_
+_@the9000_
 
 With many Django apps in one project,  one usually has a lot of auto-generated DB migrations, each under its own app directory. It looks like so:
 ```

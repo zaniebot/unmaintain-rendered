@@ -12,14 +12,14 @@ head: charlie/resolved
 created_at: 2023-05-18T20:41:16Z
 updated_at: 2023-05-27T07:27:21Z
 url: https://github.com/astral-sh/ruff/pull/4509
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Improve reference resolution for deferred-annotations-within-classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 20:41_
+_@charliermarsh_
 
 ## Summary
 

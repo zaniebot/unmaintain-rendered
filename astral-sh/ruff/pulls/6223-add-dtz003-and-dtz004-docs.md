@@ -13,14 +13,14 @@ head: docs/DTZ003-DTZ004
 created_at: 2023-08-01T06:29:18Z
 updated_at: 2023-08-07T01:43:42Z
 url: https://github.com/astral-sh/ruff/pull/6223
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add `DTZ003` and `DTZ004` docs
 
 ---
 
-_Pull request opened by @klistwan on 2023-08-01 06:29_
+_@klistwan_
 
 Changes:
 - Fixes typo and repeated phrase in `DTZ002`

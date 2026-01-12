@@ -15,14 +15,14 @@ head: zb/cli-docs-add
 created_at: 2024-08-08T14:48:31Z
 updated_at: 2024-08-08T15:52:40Z
 url: https://github.com/astral-sh/uv/pull/5914
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Improve the CLI documentation for `uv add`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 14:48_
+_@zanieb_
 
 _No description provided._
 

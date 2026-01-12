@@ -13,14 +13,14 @@ head: rk-annotated
 created_at: 2024-12-13T01:05:34Z
 updated_at: 2024-12-13T17:50:37Z
 url: https://github.com/astral-sh/ruff/pull/14950
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Understand `Annotated`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-13 01:05_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-09-16T12:14:39Z
 updated_at: 2021-09-17T18:28:44Z
 url: https://github.com/clap-rs/clap/issues/2770
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Duplicate output in error message if called with missing argument
 
 ---
 
-_Issue opened by @dimasukr on 2021-09-16 12:14_
+_@dimasukr_
 
 ### Please complete the following tasks
 

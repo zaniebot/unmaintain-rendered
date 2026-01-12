@@ -14,14 +14,14 @@ head: stabilize-quote-style-preserve
 created_at: 2024-02-10T06:29:35Z
 updated_at: 2024-02-12T09:41:22Z
 url: https://github.com/astral-sh/ruff/pull/9922
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Stabilize quote-style `preserve`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-10 06:29_
+_@MichaReiser_
 
 This PR removes the `--preview` requirement for `quote-style: preserve` and changes the semantics of
 the style to apply to all strings (including triple quoted and doc-strings).

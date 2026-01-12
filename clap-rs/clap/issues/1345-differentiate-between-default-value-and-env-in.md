@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-09-25T09:05:21Z
 updated_at: 2022-02-08T21:22:57Z
 url: https://github.com/clap-rs/clap/issues/1345
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Differentiate between default_value and env in ArgMatches
 
 ---
 
-_Issue opened by @drystone on 2018-09-25 09:05_
+_@drystone_
 
 Maintainer's notes:
 

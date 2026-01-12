@@ -12,14 +12,14 @@ head: konsti/explicit-manylinux
 created_at: 2026-01-08T10:02:14Z
 updated_at: 2026-01-09T13:51:23Z
 url: https://github.com/astral-sh/uv/pull/17358
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Use explicit manylinux/musllinux targets and better pre-upload checks
 
 ---
 
-_Pull request opened by @konstin on 2026-01-08 10:02_
+_@konstin_
 
 This ensures that changes to the targets are intentional and explicit.
 

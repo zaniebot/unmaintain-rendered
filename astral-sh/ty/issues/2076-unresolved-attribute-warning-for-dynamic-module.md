@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T15:23:32Z
 updated_at: 2025-12-18T16:18:26Z
 url: https://github.com/astral-sh/ty/issues/2076
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # unresolved-attribute warning for dynamic module attributes
 
 ---
 
-_Issue opened by @duncanmmacleod on 2025-12-18 15:23_
+_@duncanmmacleod_
 
 ### Summary
 

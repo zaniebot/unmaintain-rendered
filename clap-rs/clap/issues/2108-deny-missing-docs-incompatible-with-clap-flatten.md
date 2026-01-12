@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-08-25T04:00:33Z
 updated_at: 2020-08-26T07:36:59Z
 url: https://github.com/clap-rs/clap/issues/2108
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # #![deny(missing_docs)] incompatible with #[clap(flatten)]
 
 ---
 
-_Issue opened by @jared-mackey on 2020-08-25 04:00_
+_@jared-mackey_
 
 ### Code
 

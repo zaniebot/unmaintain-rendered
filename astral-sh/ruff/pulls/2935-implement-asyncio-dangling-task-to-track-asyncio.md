@@ -12,14 +12,14 @@ head: charlie/async
 created_at: 2023-02-15T18:54:09Z
 updated_at: 2023-02-16T14:05:57Z
 url: https://github.com/astral-sh/ruff/pull/2935
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement `asyncio-dangling-task` to track `asyncio.create_task` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 18:54_
+_@charliermarsh_
 
 This rule guards against `asyncio.create_task` usages of the form:
 

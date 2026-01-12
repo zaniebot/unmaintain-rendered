@@ -12,14 +12,14 @@ head: charlie/lib
 created_at: 2022-11-08T22:15:05Z
 updated_at: 2022-11-08T22:42:13Z
 url: https://github.com/astral-sh/ruff/pull/663
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Upgrade LibCST and other crates
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-08 22:15_
+_@charliermarsh_
 
 _No description provided._
 

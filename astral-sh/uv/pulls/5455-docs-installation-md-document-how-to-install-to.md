@@ -12,14 +12,14 @@ head: document-install
 created_at: 2024-07-25T17:56:25Z
 updated_at: 2024-09-17T04:07:07Z
 url: https://github.com/astral-sh/uv/pull/5455
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # [docs/installation.md] Document how to install to custom locations
 
 ---
 
-_Pull request opened by @SamuelMarks on 2024-07-25 17:56_
+_@SamuelMarks_
 
 ## Summary
 

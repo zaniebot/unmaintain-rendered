@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T18:15:32Z
 updated_at: 2024-08-10T16:49:26Z
 url: https://github.com/astral-sh/ruff/issues/12189
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SIM108 suggested for code block that could have been simplified to an `or`
 
 ---
 
-_Issue opened by @brettcannon on 2024-07-04 18:15_
+_@brettcannon_
 
 * List of keywords you searched for before creating this issue: SIM108
 * A minimal code snippet that reproduces the bug.

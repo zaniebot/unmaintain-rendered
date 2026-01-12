@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T22:20:33Z
 updated_at: 2024-02-01T19:35:07Z
 url: https://github.com/astral-sh/ruff/issues/8931
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Deprecate `PGH` rules
 
 ---
 
-_Issue opened by @zanieb on 2023-11-30 22:20_
+_@zanieb_
 
 See discussion in https://github.com/astral-sh/ruff/pull/7506
 

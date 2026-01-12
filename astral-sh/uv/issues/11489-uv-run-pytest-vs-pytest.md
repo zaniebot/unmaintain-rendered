@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T19:31:59Z
 updated_at: 2025-02-13T23:00:26Z
 url: https://github.com/astral-sh/uv/issues/11489
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # `uv run pytest` vs `pytest`
 
 ---
 
-_Issue opened by @oliverangelil on 2025-02-13 19:31_
+_@oliverangelil_
 
 ### Question
 

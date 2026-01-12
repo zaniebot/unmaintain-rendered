@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-07T19:50:52Z
 updated_at: 2023-01-30T12:29:31Z
 url: https://github.com/astral-sh/ruff/issues/1719
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM108 autofix removes comments
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-07 19:50_
+_@twoertwein_
 
 ```py
 def test(x: int) -> int:

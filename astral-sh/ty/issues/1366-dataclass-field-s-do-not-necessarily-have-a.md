@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T09:02:16Z
 updated_at: 2025-10-16T10:49:25Z
 url: https://github.com/astral-sh/ty/issues/1366
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Dataclass `field`s do not necessarily have a default value
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-16 09:02_
+_@sharkdp_
 
 ### Summary
 

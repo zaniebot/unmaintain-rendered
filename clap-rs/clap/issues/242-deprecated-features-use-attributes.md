@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-09T08:25:28Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/242
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Deprecated features; use attributes
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-09 08:25_
+_@WildCryptoFox_
 
 Rust has stability markers.  `#[$stability_level] $ITEM`:
 - `#[stable]`: Stable and officially supported for this major release

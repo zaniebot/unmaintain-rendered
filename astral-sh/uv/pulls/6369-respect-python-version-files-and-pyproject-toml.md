@@ -14,14 +14,14 @@ head: zb/python-find-pin
 created_at: 2024-08-21T19:10:17Z
 updated_at: 2024-08-21T22:08:30Z
 url: https://github.com/astral-sh/uv/pull/6369
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Respect `.python-version` files and `pyproject.toml` in `uv python find`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 19:10_
+_@zanieb_
 
 I was surprised to find we didn't do this — we should find Python versions as we do everywhere else.
 

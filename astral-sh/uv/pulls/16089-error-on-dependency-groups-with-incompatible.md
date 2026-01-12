@@ -11,14 +11,14 @@ head: grouped-error-messages
 created_at: 2025-10-01T17:36:17Z
 updated_at: 2025-10-07T18:55:17Z
 url: https://github.com/astral-sh/uv/pull/16089
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Error on dependency groups with incompatible requires-python in `pip compile`
 
 ---
 
-_Pull request opened by @terror on 2025-10-01 17:36_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/15889
 

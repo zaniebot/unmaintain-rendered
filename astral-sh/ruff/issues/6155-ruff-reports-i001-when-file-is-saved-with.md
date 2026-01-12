@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-28T14:37:05Z
 updated_at: 2023-07-29T11:47:15Z
 url: https://github.com/astral-sh/ruff/issues/6155
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff reports I001 when file is saved with encoding "UTF-8 with BOM"
 
 ---
 
-_Issue opened by @tkukushkin on 2023-07-28 14:37_
+_@tkukushkin_
 
 foo.py (saved with encoding "UTF-8 with BOM"):
 ```python

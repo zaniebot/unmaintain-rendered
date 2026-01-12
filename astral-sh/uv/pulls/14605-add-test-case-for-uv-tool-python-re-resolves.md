@@ -13,14 +13,14 @@ head: zb/run-reresolve
 created_at: 2025-07-14T13:43:43Z
 updated_at: 2025-07-14T13:56:41Z
 url: https://github.com/astral-sh/uv/pull/14605
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Add test case for `uv tool` Python re-resolves
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-14 13:43_
+_@zanieb_
 
 A test case for https://github.com/astral-sh/uv/pull/10401 and https://github.com/astral-sh/uv/pull/14606
 

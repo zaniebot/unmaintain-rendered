@@ -12,14 +12,14 @@ assignees: []
 created_at: 2015-09-19T06:21:41Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/258
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # `Cow<'static, str>` for strings; no excessive lifetimes
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-19 06:21_
+_@WildCryptoFox_
 
 Increasing performance and easing away the lifetimes.
 

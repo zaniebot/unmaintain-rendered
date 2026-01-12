@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T01:21:50Z
 updated_at: 2024-10-13T15:16:09Z
 url: https://github.com/astral-sh/ruff/issues/13673
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # G rules seems not working with loguru.
 
 ---
 
-_Issue opened by @qiuxiafei on 2024-10-08 01:21_
+_@qiuxiafei_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

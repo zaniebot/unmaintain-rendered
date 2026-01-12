@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T14:13:04Z
 updated_at: 2025-09-15T13:33:43Z
 url: https://github.com/astral-sh/ruff/issues/20193
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Use loop variables or variables defined in a loop outside the loop
 
 ---
 
-_Issue opened by @ShaiAvr on 2025-09-01 14:13_
+_@ShaiAvr_
 
 ### Summary
 

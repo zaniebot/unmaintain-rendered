@@ -14,14 +14,14 @@ head: gankra/inlay-unary
 created_at: 2025-11-10T20:13:46Z
 updated_at: 2025-11-13T19:16:23Z
 url: https://github.com/astral-sh/ruff/pull/21368
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] supress inlay hints for `+1` and `-1`
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-10 20:13_
+_@Gankra_
 
 It's everyone's favourite language corner case!
 

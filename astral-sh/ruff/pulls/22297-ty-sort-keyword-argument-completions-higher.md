@@ -14,14 +14,14 @@ head: fix-argument-completion-order
 created_at: 2025-12-30T13:47:22Z
 updated_at: 2026-01-06T20:19:37Z
 url: https://github.com/astral-sh/ruff/pull/22297
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Sort keyword argument completions higher
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-30 13:47_
+_@RasmusNygren_
 
 ## Summary
 

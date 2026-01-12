@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T12:12:21Z
 updated_at: 2024-02-19T18:25:42Z
 url: https://github.com/clap-rs/clap/issues/5368
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_derive parsing of PathBuf with default_value of empty string still requires it to be specified on command line
 
 ---
 
-_Issue opened by @akanalytics on 2024-02-18 12:12_
+_@akanalytics_
 
 ### Please complete the following tasks
 

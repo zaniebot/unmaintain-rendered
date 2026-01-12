@@ -13,14 +13,14 @@ head: charlie/lexer
 created_at: 2023-08-21T04:08:16Z
 updated_at: 2023-08-21T06:59:35Z
 url: https://github.com/astral-sh/ruff/pull/6710
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use simple lexer for argument removal
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 04:08_
+_@charliermarsh_
 
 _No description provided._
 

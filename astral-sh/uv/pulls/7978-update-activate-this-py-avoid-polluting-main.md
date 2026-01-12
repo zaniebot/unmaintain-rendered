@@ -11,14 +11,14 @@ head: fix-activate_this.py
 created_at: 2024-10-07T16:23:15Z
 updated_at: 2024-10-08T20:36:08Z
 url: https://github.com/astral-sh/uv/pull/7978
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Update `activate_this.py`; avoid polluting `__main__`
 
 ---
 
-_Pull request opened by @t-kalinowski on 2024-10-07 16:23_
+_@t-kalinowski_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

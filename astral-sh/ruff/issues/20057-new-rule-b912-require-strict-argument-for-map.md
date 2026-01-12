@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-23T23:06:22Z
 updated_at: 2025-09-19T17:54:46Z
 url: https://github.com/astral-sh/ruff/issues/20057
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New rule: `B912` require `strict=` argument for `map(...)` with >=2 iterables on Python 3.14+
 
 ---
 
-_Issue opened by @Zac-HD on 2025-08-23 23:06_
+_@Zac-HD_
 
 ### Summary
 

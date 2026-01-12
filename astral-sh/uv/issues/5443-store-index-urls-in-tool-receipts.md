@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T14:15:22Z
 updated_at: 2024-08-10T01:01:06Z
 url: https://github.com/astral-sh/uv/issues/5443
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Store index URLs in tool receipts
 
 ---
 
-_Issue opened by @zanieb on 2024-07-25 14:15_
+_@zanieb_
 
 per https://github.com/astral-sh/uv/pull/5197#issuecomment-2248419637 we need the index urls to be able to upgrade the tool when alternative indexes are used.
 

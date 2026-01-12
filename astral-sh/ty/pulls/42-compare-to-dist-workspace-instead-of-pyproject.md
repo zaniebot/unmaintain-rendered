@@ -12,14 +12,14 @@ head: zb/pre-docker
 created_at: 2025-05-05T22:29:17Z
 updated_at: 2025-07-08T10:39:01Z
 url: https://github.com/astral-sh/ty/pull/42
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Compare to `dist-workspace` instead of `pyproject` during Docker tag check
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 22:29_
+_@zanieb_
 
 _No description provided._
 

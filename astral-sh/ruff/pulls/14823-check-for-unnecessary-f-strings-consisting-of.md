@@ -14,14 +14,14 @@ head: unnecessary-fstring
 created_at: 2024-12-06T16:46:07Z
 updated_at: 2024-12-10T16:07:49Z
 url: https://github.com/astral-sh/ruff/pull/14823
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Check for unnecessary f-strings consisting of only one expression
 
 ---
 
-_Pull request opened by @lheckemann on 2024-12-06 16:46_
+_@lheckemann_
 
 ## Summary
 

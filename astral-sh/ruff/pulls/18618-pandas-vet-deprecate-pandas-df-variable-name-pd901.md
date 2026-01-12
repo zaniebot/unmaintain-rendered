@@ -14,14 +14,14 @@ head: brent/deprecate-pd901
 created_at: 2025-06-10T20:36:55Z
 updated_at: 2025-06-12T14:26:17Z
 url: https://github.com/astral-sh/ruff/pull/18618
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`pandas-vet`] Deprecate `pandas-df-variable-name` (`PD901`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 20:36_
+_@ntBre_
 
 Summary
 --

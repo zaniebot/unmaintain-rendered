@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T07:21:17Z
 updated_at: 2025-10-13T07:55:14Z
 url: https://github.com/astral-sh/uv/issues/1737
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Performance with large git repos
 
 ---
 
-_Issue opened by @sbidoul on 2024-02-20 07:21_
+_@sbidoul_
 
 Hi,
 

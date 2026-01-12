@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T03:32:22Z
 updated_at: 2023-02-10T21:59:30Z
 url: https://github.com/astral-sh/ruff/issues/2681
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE2502: Location of NoQA comment
 
 ---
 
-_Issue opened by @AA-Turner on 2023-02-09 03:32_
+_@AA-Turner_
 
 This one is slightly more complicated to report as it has actual embedded RTL/LTR marks.
 

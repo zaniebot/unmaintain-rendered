@@ -13,14 +13,14 @@ head: nonlocal
 created_at: 2024-08-31T00:26:51Z
 updated_at: 2024-09-03T21:18:07Z
 url: https://github.com/astral-sh/ruff/pull/13177
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] support non-local name lookups
 
 ---
 
-_Pull request opened by @carljm on 2024-08-31 00:26_
+_@carljm_
 
 Add support for non-local name lookups.
 

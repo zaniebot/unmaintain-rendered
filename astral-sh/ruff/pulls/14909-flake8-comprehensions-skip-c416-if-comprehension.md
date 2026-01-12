@@ -14,14 +14,14 @@ head: fix-C416-unpack
 created_at: 2024-12-11T12:33:23Z
 updated_at: 2024-12-20T09:50:03Z
 url: https://github.com/astral-sh/ruff/pull/14909
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-comprehensions`] Skip `C416` if comprehension contains unpacking
 
 ---
 
-_Pull request opened by @harupy on 2024-12-11 12:33_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

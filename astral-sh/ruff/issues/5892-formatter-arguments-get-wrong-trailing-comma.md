@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-19T18:52:52Z
 updated_at: 2023-07-27T10:32:11Z
 url: https://github.com/astral-sh/ruff/issues/5892
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: arguments get wrong trailing comma
 
 ---
 
-_Issue opened by @konstin on 2023-07-19 18:52_
+_@konstin_
 
 We format
 ```python

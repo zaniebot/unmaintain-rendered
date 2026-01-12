@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-02-04T16:49:03Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/415
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # multiple=True for an option-type argument also sets max_values > 1?
 
 ---
 
-_Issue opened by @birkenfeld on 2016-02-04 16:49_
+_@birkenfeld_
 
 Here is a small demo for the issue. Take this code:
 

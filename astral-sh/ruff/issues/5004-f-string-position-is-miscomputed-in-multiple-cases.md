@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T12:28:26Z
 updated_at: 2024-02-27T17:39:05Z
 url: https://github.com/astral-sh/ruff/issues/5004
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # f-string position is miscomputed in multiple cases
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-10 12:28_
+_@addisoncrump_
 
 The position of errors is miscomputed in f-strings:
 

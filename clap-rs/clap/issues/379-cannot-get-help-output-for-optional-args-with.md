@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-01-12T16:32:59Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/379
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Cannot get help output for optional ARGS with dependencies to print as [DEPENDENCY [DEPENDENT]]
 
 ---
 
-_Issue opened by @kamalmarhubi on 2016-01-12 16:32_
+_@kamalmarhubi_
 
 I'm creating a program that can take a command and its arguments as arguments. I'd like the usage to show up as
 

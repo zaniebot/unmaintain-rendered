@@ -13,14 +13,14 @@ head: ryan-ph/guides/integration/docker/tip-pin-sha
 created_at: 2025-01-25T06:40:13Z
 updated_at: 2025-01-27T18:29:24Z
 url: https://github.com/astral-sh/uv/pull/10955
-synced_at: 2026-01-10T11:45:20Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # [docs/integration/docker] add sha pinning tip
 
 ---
 
-_Pull request opened by @ryan-ph on 2025-01-25 06:40_
+_@ryan-ph_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T08:54:49Z
 updated_at: 2024-11-18T17:19:03Z
 url: https://github.com/astral-sh/uv/issues/9188
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # How to install uv in a custom mounted path without using the local fs at all (avoind copy-link).
 
 ---
 
-_Issue opened by @LuchiLucs on 2024-11-18 08:54_
+_@LuchiLucs_
 
 I tried following the installation configuration [documentation](https://docs.astral.sh/uv/configuration/installer/#changing-the-install-path) in order to set-up uv in another custom path, but it seems that later, when using its binary, some paths and configurations are still pointing to the local fs, under `/home/user/...`. Like sometimes when I call `uv run` or `uv sync` there is a warning about copy failing and fallbacking to copy-link. That is intented because I mount a remote a fs between my machines in order to share the installation and the envs. I wish uv to be able to install and use only this remote mounted fs whichever the machines I am sshing into. How can I do it?
 

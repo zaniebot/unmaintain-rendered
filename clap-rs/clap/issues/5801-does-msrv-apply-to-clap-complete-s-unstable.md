@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T13:40:29Z
 updated_at: 2024-11-04T15:55:09Z
 url: https://github.com/clap-rs/clap/issues/5801
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Does MSRV apply to clap_complete's unstable-dynamic feature?
 
 ---
 
-_Issue opened by @senekor on 2024-11-01 13:40_
+_@senekor_
 
 ### Please complete the following tasks
 

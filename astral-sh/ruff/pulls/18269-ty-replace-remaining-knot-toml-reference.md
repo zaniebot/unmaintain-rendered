@@ -14,14 +14,14 @@ head: david/knot_toml-leftover
 created_at: 2025-05-23T06:53:16Z
 updated_at: 2025-05-23T08:44:48Z
 url: https://github.com/astral-sh/ruff/pull/18269
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Replace remaining knot.toml reference
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-23 06:53_
+_@sharkdp_
 
 ## Summary
 

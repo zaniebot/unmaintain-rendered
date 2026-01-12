@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T11:15:18Z
 updated_at: 2023-02-13T14:57:13Z
 url: https://github.com/astral-sh/ruff/issues/2850
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `DJ013`: False positive for multiple `@receiver` decorators
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-13 11:15_
+_@ngnpope_
 
 For the following:
 

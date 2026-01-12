@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T20:02:59Z
 updated_at: 2025-04-03T14:41:24Z
 url: https://github.com/astral-sh/uv/issues/11932
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # `uv lock --check` doesn't error if environment doesn't match lockfile
 
 ---
 
-_Issue opened by @cjw296 on 2025-03-03 20:02_
+_@cjw296_
 
 ### Summary
 

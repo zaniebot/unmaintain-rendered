@@ -12,14 +12,14 @@ head: better-type-name-message
 created_at: 2023-07-10T16:57:29Z
 updated_at: 2023-07-16T11:52:11Z
 url: https://github.com/astral-sh/ruff/pull/5658
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Improve `type-name-incorrect-variance` message
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-10 16:57_
+_@tjkuson_
 
 ## Summary
 

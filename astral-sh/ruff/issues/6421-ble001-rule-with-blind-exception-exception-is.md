@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-08T10:22:48Z
 updated_at: 2024-02-29T16:28:58Z
 url: https://github.com/astral-sh/ruff/issues/6421
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # BLE001 rule with blind exception `Exception` is passing the check
 
 ---
 
-_Issue opened by @eslamodeh on 2023-08-08 10:22_
+_@eslamodeh_
 
 Hey everyone,
 I just found that there are cases where the blind exception is not being caught.

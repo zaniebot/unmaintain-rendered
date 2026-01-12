@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T09:52:29Z
 updated_at: 2024-10-28T16:27:13Z
 url: https://github.com/astral-sh/ruff/issues/13961
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Can't install 2 different ruff versions with different Python interpreters
 
 ---
 
-_Issue opened by @giampaolo on 2024-10-28 09:52_
+_@giampaolo_
 
 Hello. :-) 
 At work we're stuck at Python 3.8 to a specific ruff version, but for my everyday development I'm free to use 3.10 with the most up to date version of ruff. It turns out that whatever version of ruff is installed last, it overwrites any previous installation, including if the Python interpreter is different:

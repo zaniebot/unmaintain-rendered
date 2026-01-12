@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T19:07:57Z
 updated_at: 2024-10-17T17:22:11Z
 url: https://github.com/astral-sh/ruff/issues/12281
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Only Python cells should be validated in Jupyter notebooks
 
 ---
 
-_Issue opened by @stewartadam on 2024-07-10 19:07_
+_@stewartadam_
 
 ## Description
 When using creating a multi-language notebook (e.g. using the [Polyglot Notebooks](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) extension), Ruff continues to validate all cells producing many linting errors on non-Python code.

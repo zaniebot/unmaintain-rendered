@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-01-29T13:48:25Z
 updated_at: 2024-01-29T13:50:25Z
 url: https://github.com/astral-sh/uv/pull/1171
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Remove specific MUSL mention from README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 13:48_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/puffin/pull/1158#discussion_r1469603073.
 

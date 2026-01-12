@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T06:46:52Z
 updated_at: 2025-02-04T15:57:58Z
 url: https://github.com/astral-sh/uv/issues/11176
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # `uv tool install` with `--allow-insecure-host` does not work as expected
 
 ---
 
-_Issue opened by @doraeric on 2025-02-03 06:46_
+_@doraeric_
 
 ### Summary
 

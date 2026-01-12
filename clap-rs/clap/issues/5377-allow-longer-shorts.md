@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-26T08:31:59Z
 updated_at: 2024-02-27T06:25:31Z
 url: https://github.com/clap-rs/clap/issues/5377
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow longer shorts
 
 ---
 
-_Issue opened by @h8sd on 2024-02-26 08:31_
+_@h8sd_
 
 ### Please complete the following tasks
 

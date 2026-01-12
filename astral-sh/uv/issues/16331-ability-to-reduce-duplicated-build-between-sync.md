@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T22:05:28Z
 updated_at: 2025-11-08T03:10:12Z
 url: https://github.com/astral-sh/uv/issues/16331
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Ability to reduce duplicated build between "sync" and "build" commands
 
 ---
 
-_Issue opened by @f3flight on 2025-10-16 22:05_
+_@f3flight_
 
 ### Summary
 

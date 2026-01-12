@@ -13,14 +13,14 @@ head: garrett/14996/ruff052-fix-global-keyword
 created_at: 2025-01-03T05:08:44Z
 updated_at: 2025-01-14T16:03:47Z
 url: https://github.com/astral-sh/ruff/pull/15235
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Fix false positive on global keyword (`RUF052`)
 
 ---
 
-_Pull request opened by @Garrett-R on 2025-01-03 05:08_
+_@Garrett-R_
 
 ## Summary
 

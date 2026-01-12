@@ -13,14 +13,14 @@ head: zb/ref-rules
 created_at: 2025-12-15T20:47:37Z
 updated_at: 2025-12-15T21:25:01Z
 url: https://github.com/astral-sh/ty/pull/1905
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update wording in link to rules reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 20:47_
+_@zanieb_
 
 _No description provided._
 

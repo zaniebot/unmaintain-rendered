@@ -13,14 +13,14 @@ head: zb/fix-aarch64
 created_at: 2025-07-16T13:53:04Z
 updated_at: 2025-07-16T14:05:00Z
 url: https://github.com/astral-sh/uv/pull/14655
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Request arm64 Python in aarch64-windows smoke test
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-16 13:53_
+_@zanieb_
 
 The Python interpreter selected by `py` recently changed to x64 instead of arm64. 
 

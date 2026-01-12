@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T02:27:38Z
 updated_at: 2025-04-23T14:40:07Z
 url: https://github.com/astral-sh/uv/issues/8279
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # How to add extra to a dependency of a tool?
 
 ---
 
-_Issue opened by @grejioh on 2024-10-17 02:27_
+_@grejioh_
 
 I installed a tool use `requests`.
 I want to use `requests[socks]` instead of the default `requests` package. I have tried the following commands:

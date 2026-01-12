@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T03:23:12Z
 updated_at: 2025-03-18T07:05:14Z
 url: https://github.com/astral-sh/ruff/issues/13871
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `# noqa` doesn't stop import sorting (I001: `unsorted-imports`)
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-10-22 03:23_
+_@samuelcolvin_
 
 I want to add the following after other imports
 

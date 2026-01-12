@@ -13,14 +13,14 @@ head: e203-slices-format-strings
 created_at: 2024-03-07T18:26:13Z
 updated_at: 2024-03-08T04:08:18Z
 url: https://github.com/astral-sh/ruff/pull/10280
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix E203 false positive for slices in format strings
 
 ---
 
-_Pull request opened by @sciyoshi on 2024-03-07 18:26_
+_@sciyoshi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

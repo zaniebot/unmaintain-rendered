@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T05:59:13Z
 updated_at: 2023-01-10T06:48:46Z
 url: https://github.com/astral-sh/ruff/issues/1546
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Unify terminology: error vs. check vs. rule
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-02 05:59_
+_@not-my-profile_
 
 The documentation currently uses all of them switching between them at random. For example in the `--help`:
 

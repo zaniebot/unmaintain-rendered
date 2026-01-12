@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T07:30:59Z
 updated_at: 2025-05-16T08:18:00Z
 url: https://github.com/astral-sh/ty/issues/421
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # bug when using overload decorator and numpy arrays
 
 ---
 
-_Issue opened by @martinResearch on 2025-05-16 07:30_
+_@martinResearch_
 
 ### Summary
 

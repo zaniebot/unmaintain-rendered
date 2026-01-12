@@ -13,14 +13,14 @@ head: SIM115-close
 created_at: 2023-10-11T11:33:18Z
 updated_at: 2023-10-11T14:02:20Z
 url: https://github.com/astral-sh/ruff/pull/7916
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [SIM115] Allow `open` followed by `close`
 
 ---
 
-_Pull request opened by @harupy on 2023-10-11 11:33_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

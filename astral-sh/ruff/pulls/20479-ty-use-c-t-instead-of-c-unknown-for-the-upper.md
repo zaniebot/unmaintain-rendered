@@ -14,14 +14,14 @@ head: david/fix-1196
 created_at: 2025-09-19T08:45:49Z
 updated_at: 2025-09-23T12:02:27Z
 url: https://github.com/astral-sh/ruff/pull/20479
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Use `C[T]` instead of `C[Unknown]` for the upper bound of `Self`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-19 08:45_
+_@sharkdp_
 
 ### Summary
 

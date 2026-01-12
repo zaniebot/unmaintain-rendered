@@ -14,14 +14,14 @@ head: ibraheem/marker-disjoint-perf
 created_at: 2024-08-16T15:24:40Z
 updated_at: 2024-08-16T17:05:05Z
 url: https://github.com/astral-sh/uv/pull/6148
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Improve performance of `MarkerTree::is_disjoint`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-16 15:24_
+_@ibraheemdev_
 
 ## Summary
 

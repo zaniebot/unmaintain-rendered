@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-28T06:53:11Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/714
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # zsh completion fails when subcommands have aliases
 
 ---
 
-_Issue opened by @nicompte on 2016-10-28 06:53_
+_@nicompte_
 
 I'm trying to generate the zsh completion in my `build.rs` file, using clap `2.16.2`:
 

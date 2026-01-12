@@ -14,14 +14,14 @@ head: charlie/rev
 created_at: 2025-01-21T23:15:37Z
 updated_at: 2025-01-22T17:12:48Z
 url: https://github.com/astral-sh/uv/pull/10833
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Respect visitation order for proxy packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 23:15_
+_@charliermarsh_
 
 ## Summary
 

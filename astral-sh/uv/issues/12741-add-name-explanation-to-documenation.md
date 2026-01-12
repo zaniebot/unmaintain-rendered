@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T10:00:08Z
 updated_at: 2025-04-10T11:26:34Z
 url: https://github.com/astral-sh/uv/issues/12741
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Add name explanation to documenation
 
 ---
 
-_Issue opened by @marksverdhei on 2025-04-08 10:00_
+_@marksverdhei_
 
 ### Summary
 

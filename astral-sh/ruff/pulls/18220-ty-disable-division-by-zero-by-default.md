@@ -13,14 +13,14 @@ head: cjm/disable-div-zero
 created_at: 2025-05-20T14:52:15Z
 updated_at: 2025-05-27T13:07:09Z
 url: https://github.com/astral-sh/ruff/pull/18220
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] disable division-by-zero by default
 
 ---
 
-_Pull request opened by @carljm on 2025-05-20 14:52_
+_@carljm_
 
 ## Summary
 

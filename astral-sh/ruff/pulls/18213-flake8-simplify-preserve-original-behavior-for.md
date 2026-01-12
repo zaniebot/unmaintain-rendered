@@ -14,14 +14,14 @@ head: issue-18209
 created_at: 2025-05-20T06:45:03Z
 updated_at: 2025-06-23T20:45:38Z
 url: https://github.com/astral-sh/ruff/pull/18213
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [`flake8-simplify`] Preserve original behavior for `except ()` and bare `except` (`SIM105`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-20 06:45_
+_@VascoSch92_
 
 The PR addresses issue #18209.
 

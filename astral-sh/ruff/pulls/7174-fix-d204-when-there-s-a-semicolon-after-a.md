@@ -12,14 +12,14 @@ head: 09-05-Fix_D204_when_there_s_a_semicolon_after_a_docstring
 created_at: 2023-09-05T21:31:03Z
 updated_at: 2023-09-11T13:13:52Z
 url: https://github.com/astral-sh/ruff/pull/7174
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix D204 when there's a semicolon after a docstring
 
 ---
 
-_Pull request opened by @konstin on 2023-09-05 21:31_
+_@konstin_
 
 ## Summary
 

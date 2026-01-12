@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-08-01T12:18:24Z
 updated_at: 2022-08-01T14:13:52Z
 url: https://github.com/clap-rs/clap/issues/4013
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Set the value of an argument from a file, based on an environment variable
 
 ---
 
-_Issue opened by @nitnelave on 2022-08-01 12:18_
+_@nitnelave_
 
 ### Please complete the following tasks
 

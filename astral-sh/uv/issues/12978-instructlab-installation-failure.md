@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-19T06:18:16Z
 updated_at: 2025-04-29T01:49:24Z
 url: https://github.com/astral-sh/uv/issues/12978
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # InstructLab Installation Failure
 
 ---
 
-_Issue opened by @rauldsl on 2025-04-19 06:18_
+_@rauldsl_
 
 I'm trying to install InstructLab locally on my Mac M1. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T13:18:10Z
 updated_at: 2024-08-22T13:33:24Z
 url: https://github.com/astral-sh/uv/issues/6430
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # [Feature request] `uv` command to update package version in `pyproject.toml`
 
 ---
 
-_Issue opened by @albertferras-vrf on 2024-08-22 13:18_
+_@albertferras-vrf_
 
 Currently, we have a command to add dependencies to `pyproject.toml` like this: `uv add package==1.2.3`
 It would be nice if we could also bump our package version (project.version) through a command, too. 

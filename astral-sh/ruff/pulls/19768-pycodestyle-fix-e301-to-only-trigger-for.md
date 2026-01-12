@@ -15,14 +15,14 @@ head: fix-19752
 created_at: 2025-08-05T18:27:34Z
 updated_at: 2025-09-16T15:21:45Z
 url: https://github.com/astral-sh/ruff/pull/19768
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`pycodestyle`] Fix `E301` to only trigger for functions immediately within a class
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-05 18:27_
+_@danparizher_
 
 ## Summary
 

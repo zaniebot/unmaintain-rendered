@@ -13,14 +13,14 @@ head: david/possibly-unbound-imports
 created_at: 2024-11-11T14:41:39Z
 updated_at: 2024-11-11T19:28:40Z
 url: https://github.com/astral-sh/ruff/pull/14281
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Diagnostic for possibly unbound imports
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-11 14:41_
+_@sharkdp_
 
 ## Summary
 

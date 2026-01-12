@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T18:15:28Z
 updated_at: 2023-02-10T18:24:46Z
 url: https://github.com/astral-sh/ruff/issues/2725
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # S112: why forbidden?
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 18:15_
+_@spaceone_
 
 why is `S112` disallowing this? 
 ```

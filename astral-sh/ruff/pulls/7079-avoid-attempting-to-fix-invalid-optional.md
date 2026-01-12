@@ -14,14 +14,14 @@ head: charlie/up007
 created_at: 2023-09-03T13:15:20Z
 updated_at: 2023-09-03T13:29:34Z
 url: https://github.com/astral-sh/ruff/pull/7079
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid attempting to fix invalid `Optional` annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 13:15_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7073.
 

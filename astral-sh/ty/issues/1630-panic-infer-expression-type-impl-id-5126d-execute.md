@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T11:42:29Z
 updated_at: 2025-11-25T15:34:41Z
 url: https://github.com/astral-sh/ty/issues/1630
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] infer_expression_type_impl(Id(5126d)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @cclauss on 2025-11-25 11:42_
+_@cclauss_
 
 Codebase: https://github.com/celery/kombu
 Python file: https://github.com/celery/kombu/blob/main/kombu/resource.py

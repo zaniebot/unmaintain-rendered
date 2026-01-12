@@ -14,14 +14,14 @@ head: alex/proto-classmethod-staticmethod-tests
 created_at: 2025-09-24T16:48:29Z
 updated_at: 2025-09-25T11:12:33Z
 url: https://github.com/astral-sh/ruff/pull/20555
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Add tests for interactions of `@classmethod`, `@staticmethod`, and protocol method members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-24 16:48_
+_@AlexWaygood_
 
 ## Summary
 

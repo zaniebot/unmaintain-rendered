@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-05-20T05:18:03Z
 updated_at: 2021-10-14T21:42:35Z
 url: https://github.com/clap-rs/clap/issues/2485
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap generates invalid bash completions for ArgEnum
 
 ---
 
-_Issue opened by @ajeetdsouza on 2021-05-20 05:18_
+_@ajeetdsouza_
 
 ### Please complete the following tasks
 

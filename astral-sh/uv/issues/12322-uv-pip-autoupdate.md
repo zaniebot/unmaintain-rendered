@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T19:21:10Z
 updated_at: 2025-04-06T23:07:11Z
 url: https://github.com/astral-sh/uv/issues/12322
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # `uv pip autoupdate`?
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-19 19:21_
+_@gtkacz_
 
 ### Question
 

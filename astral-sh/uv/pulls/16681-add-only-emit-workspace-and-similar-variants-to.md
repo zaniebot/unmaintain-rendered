@@ -13,14 +13,14 @@ head: charlie/only
 created_at: 2025-11-11T03:46:39Z
 updated_at: 2025-11-12T16:51:46Z
 url: https://github.com/astral-sh/uv/pull/16681
-synced_at: 2026-01-10T11:10:47Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Add `only-emit-workspace` and similar variants to `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-11 03:46_
+_@charliermarsh_
 
 ## Summary
 

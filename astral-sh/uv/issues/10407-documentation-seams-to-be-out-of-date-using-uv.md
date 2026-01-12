@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T19:28:29Z
 updated_at: 2025-01-09T21:43:10Z
 url: https://github.com/astral-sh/uv/issues/10407
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Documentation seams to be out of date: "Using uv with Jupyter"
 
 ---
 
-_Issue opened by @OlafEichstaedt on 2025-01-08 19:28_
+_@OlafEichstaedt_
 
 For non-Project environments, the documentation 
 

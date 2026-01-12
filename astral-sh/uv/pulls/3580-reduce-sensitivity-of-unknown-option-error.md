@@ -13,14 +13,14 @@ head: charlie/2
 created_at: 2024-05-14T14:31:18Z
 updated_at: 2024-05-14T14:40:03Z
 url: https://github.com/astral-sh/uv/pull/3580
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Reduce sensitivity of unknown option error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 14:31_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/3579.
 

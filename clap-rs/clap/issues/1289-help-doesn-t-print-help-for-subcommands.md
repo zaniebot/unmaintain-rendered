@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-06-07T18:25:11Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1289
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Help doesn't print help for subcommands
 
 ---
 
-_Issue opened by @kirillbobyrev on 2018-06-07 18:25_
+_@kirillbobyrev_
 
 Help message for subcommands doesn't work as expected: despite being provided, `version`, `about` and `author` do not appear upon calling `binary subcommand --help`. Also, none of the options and flags which can be used with subcommand appear in the subcommand help message.
 

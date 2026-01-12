@@ -13,14 +13,14 @@ head: renovate/zip-1.x-lockfile
 created_at: 2024-04-29T00:27:17Z
 updated_at: 2024-04-29T14:31:07Z
 url: https://github.com/astral-sh/uv/pull/3300
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Update Rust crate zip to v1.1.2
 
 ---
 
-_Pull request opened by @renovate on 2024-04-29 00:27_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -13,14 +13,14 @@ head: charlie/reg
 created_at: 2025-03-22T18:05:06Z
 updated_at: 2025-03-22T18:14:26Z
 url: https://github.com/astral-sh/uv/pull/12393
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Remove flat index client's dependency on registry client
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-22 18:05_
+_@charliermarsh_
 
 ## Summary
 

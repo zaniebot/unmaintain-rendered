@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-18T18:19:39Z
 updated_at: 2024-02-29T02:39:17Z
 url: https://github.com/astral-sh/ruff/issues/9190
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Expand `RUF015` rule for `list(iterable).pop(0)` idiom
 
 ---
 
-_Issue opened by @Skylion007 on 2023-12-18 18:19_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

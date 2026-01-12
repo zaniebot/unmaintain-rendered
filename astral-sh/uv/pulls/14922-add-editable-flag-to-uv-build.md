@@ -11,14 +11,14 @@ head: build-editable
 created_at: 2025-07-28T01:24:07Z
 updated_at: 2025-07-28T14:32:07Z
 url: https://github.com/astral-sh/uv/pull/14922
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Add --editable flag to `uv build`
 
 ---
 
-_Pull request opened by @adisbladis on 2025-07-28 01:24_
+_@adisbladis_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T17:25:09Z
 updated_at: 2024-05-21T17:25:12Z
 url: https://github.com/astral-sh/uv/issues/3708
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Combine `PythonVersion` and `VersionRequest`
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 17:25_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/3266
 

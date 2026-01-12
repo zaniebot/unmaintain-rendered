@@ -13,14 +13,14 @@ head: fix-safety-section-trailing_whitespace
 created_at: 2025-06-19T19:27:03Z
 updated_at: 2025-06-19T22:15:56Z
 url: https://github.com/astral-sh/ruff/pull/18800
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`pycodestyle`] Add fix safety section to `W291` and `W293` 
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-19 19:27_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

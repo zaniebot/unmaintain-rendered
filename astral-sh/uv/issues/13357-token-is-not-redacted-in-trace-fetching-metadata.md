@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T23:55:56Z
 updated_at: 2025-05-09T21:36:00Z
 url: https://github.com/astral-sh/uv/issues/13357
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Token is not redacted in "TRACE Fetching metadata for typer from https://token:ACTUAL_TOKEN@pkgs.shopify.io/basic/data/python/simple/typer/" log lines
 
 ---
 
-_Issue opened by @Ark-kun on 2025-05-08 23:55_
+_@Ark-kun_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T20:25:26Z
 updated_at: 2025-02-17T04:19:43Z
 url: https://github.com/astral-sh/uv/issues/11343
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # `uv add vllm` doesnt resolve dependcy
 
 ---
 
-_Issue opened by @dipta007 on 2025-02-08 20:25_
+_@dipta007_
 
 ### Question
 

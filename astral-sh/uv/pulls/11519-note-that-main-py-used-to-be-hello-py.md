@@ -13,14 +13,14 @@ head: gankra/meaculpa
 created_at: 2025-02-14T19:50:56Z
 updated_at: 2025-02-14T21:59:26Z
 url: https://github.com/astral-sh/uv/pull/11519
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Note that main.py used to be hello.py
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-14 19:50_
+_@Gankra_
 
 _No description provided._
 

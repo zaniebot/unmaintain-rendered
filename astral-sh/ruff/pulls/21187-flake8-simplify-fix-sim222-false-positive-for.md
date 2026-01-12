@@ -14,14 +14,14 @@ head: fix-21136
 created_at: 2025-11-01T18:51:27Z
 updated_at: 2025-11-10T15:52:14Z
 url: https://github.com/astral-sh/ruff/pull/21187
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`flake8-simplify`] Fix SIM222 false positive for `tuple(generator) or None` (`SIM222`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-01 18:51_
+_@danparizher_
 
 ## Summary
 

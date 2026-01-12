@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T15:27:57Z
 updated_at: 2023-01-23T18:36:12Z
 url: https://github.com/astral-sh/ruff/issues/2060
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Feature request - support `flake8-use-pathlib` plugin
 
 ---
 
-_Issue opened by @Kilo59 on 2023-01-21 15:27_
+_@Kilo59_
 
 Would love to see support for the `flake8-use-pathlib` plugin for enforcing use of `pathlib` over `os`.
 

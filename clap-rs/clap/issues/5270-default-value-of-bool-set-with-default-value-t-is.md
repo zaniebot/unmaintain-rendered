@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-27T06:31:23Z
 updated_at: 2023-12-27T16:59:55Z
 url: https://github.com/clap-rs/clap/issues/5270
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # default value of bool (set with default_value_t) is missing from help
 
 ---
 
-_Issue opened by @szabgab on 2023-12-27 06:31_
+_@szabgab_
 
 ### Please complete the following tasks
 

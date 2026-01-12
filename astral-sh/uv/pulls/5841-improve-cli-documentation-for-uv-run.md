@@ -13,14 +13,14 @@ head: zb/cli-docs-run
 created_at: 2024-08-06T22:40:00Z
 updated_at: 2024-08-07T13:26:25Z
 url: https://github.com/astral-sh/uv/pull/5841
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Improve CLI documentation for `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 22:40_
+_@zanieb_
 
 Adds more long-form help to `uv run`, which renders in `uv help run` and the CLI reference on the website.
 

@@ -13,14 +13,14 @@ head: konsti/always-strip-files
 created_at: 2024-02-27T15:45:17Z
 updated_at: 2024-02-28T11:42:32Z
 url: https://github.com/astral-sh/uv/pull/2018
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Always remove color codes from output file
 
 ---
 
-_Pull request opened by @konstin on 2024-02-27 15:45_
+_@konstin_
 
 Always strip color codes when we're writing to a file.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-30T14:16:12Z
 updated_at: 2025-08-31T20:16:01Z
 url: https://github.com/astral-sh/uv/issues/15590
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Missing credentials for private index when another explicit public index is configured
 
 ---
 
-_Issue opened by @ScienceWithConscience on 2025-08-30 14:16_
+_@ScienceWithConscience_
 
 ### Summary
 

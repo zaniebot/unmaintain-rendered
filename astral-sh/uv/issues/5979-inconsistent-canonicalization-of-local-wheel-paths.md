@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T20:30:31Z
 updated_at: 2024-08-10T01:43:48Z
 url: https://github.com/astral-sh/uv/issues/5979
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Inconsistent canonicalization of local wheel paths
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-09 20:30_
+_@charliermarsh_
 
 See here: https://github.com/astral-sh/uv/actions/runs/10325081297/job/28585974643?pr=5969
 

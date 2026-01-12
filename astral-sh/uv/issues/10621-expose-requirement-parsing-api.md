@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T01:02:43Z
 updated_at: 2025-01-15T16:43:18Z
 url: https://github.com/astral-sh/uv/issues/10621
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Expose requirement parsing api
 
 ---
 
-_Issue opened by @brendan-morin on 2025-01-15 01:02_
+_@brendan-morin_
 
 There exist a few requirement parsing libraries ([requirements-parser](https://github.com/madpah/requirements-parser/#readme), [requirementslib](https://github.com/sarugaku/requirementslib), etc) that can be used to parse python requirement strings. However, I haven't found any of these are particularly well adopted or supported. It would be great to see uv expose an API for its internal requirement parsing.
 

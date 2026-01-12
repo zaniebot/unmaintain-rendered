@@ -14,14 +14,14 @@ head: gankra/typerender
 created_at: 2025-12-16T13:41:12Z
 updated_at: 2025-12-16T14:20:36Z
 url: https://github.com/astral-sh/ruff/pull/22005
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Improve highlighting of special type syntax in hovers
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-16 13:41_
+_@Gankra_
 
 ## Summary
 

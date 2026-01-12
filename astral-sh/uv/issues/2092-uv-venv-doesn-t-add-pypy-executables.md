@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T18:05:37Z
 updated_at: 2024-07-15T18:28:33Z
 url: https://github.com/astral-sh/uv/issues/2092
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # `uv venv` doesn't add PyPy executables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-29 18:05_
+_@charliermarsh_
 
 We don't officially support PyPy right now, this is more a note for the future, but we need to include a variety of `pypy` binaries / symlinks:
 

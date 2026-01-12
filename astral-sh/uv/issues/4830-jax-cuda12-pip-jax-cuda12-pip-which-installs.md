@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T09:47:19Z
 updated_at: 2024-07-06T19:18:11Z
 url: https://github.com/astral-sh/uv/issues/4830
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # jax[cuda12_pip] -> jax[cuda12-pip] which installs different packages
 
 ---
 
-_Issue opened by @froody on 2024-07-05 09:47_
+_@froody_
 
 uv rewrites `jax[cuda12_pip]==0.4.25` as `jax[cuda12-pip]==0.4.25` which results in different packages being installed by pip. IMHO it should preserve the exact spelling.
 

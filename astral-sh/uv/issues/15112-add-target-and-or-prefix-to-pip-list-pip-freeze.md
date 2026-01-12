@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T16:59:14Z
 updated_at: 2025-12-03T12:49:12Z
 url: https://github.com/astral-sh/uv/issues/15112
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Add --target and/or --prefix to `pip list`, `pip freeze`, `pip show`
 
 ---
 
-_Issue opened by @aivarannamaa on 2025-08-06 16:59_
+_@aivarannamaa_
 
 ### Summary
 

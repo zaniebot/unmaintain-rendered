@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T16:04:32Z
 updated_at: 2024-09-28T19:08:04Z
 url: https://github.com/astral-sh/uv/issues/7714
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Mismatch error introduced by #2484 makes it impossible to create some trivial packages
 
 ---
 
-_Issue opened by @jsbueno on 2024-09-26 16:04_
+_@jsbueno_
 
 Relative to issue  #2484 
 

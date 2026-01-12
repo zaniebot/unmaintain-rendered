@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T20:20:37Z
 updated_at: 2025-02-12T18:04:21Z
 url: https://github.com/astral-sh/uv/issues/10945
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Platform-dependent dependency bug (`sling-mac-arm64`)
 
 ---
 
-_Issue opened by @smackesey on 2025-01-24 20:20_
+_@smackesey_
 
 ### Summary
 

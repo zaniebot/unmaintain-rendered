@@ -12,14 +12,14 @@ head: charlie/error
 created_at: 2022-11-17T19:51:09Z
 updated_at: 2022-11-17T20:04:32Z
 url: https://github.com/astral-sh/ruff/pull/796
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Trigger N818 when parent ends in Error or Exception
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 19:51_
+_@charliermarsh_
 
 Resolves #783.
 

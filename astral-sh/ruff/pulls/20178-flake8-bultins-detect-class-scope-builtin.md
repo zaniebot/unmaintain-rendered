@@ -14,14 +14,14 @@ head: fix-20171
 created_at: 2025-08-31T15:33:14Z
 updated_at: 2025-09-22T22:22:20Z
 url: https://github.com/astral-sh/ruff/pull/20178
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`flake8-bultins`] Detect class-scope builtin shadowing in decorators, default args, and attribute initializers (`A003`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-31 15:33_
+_@danparizher_
 
 ## Summary
 Fix #20171

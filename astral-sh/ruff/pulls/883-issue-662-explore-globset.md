@@ -12,14 +12,14 @@ head: issue-662-explore-globset
 created_at: 2022-11-23T00:38:52Z
 updated_at: 2022-12-11T17:04:13Z
 url: https://github.com/astral-sh/ruff/pull/883
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Issue 662 explore globset
 
 ---
 
-_Pull request opened by @CelebrateVC on 2022-11-23 00:38_
+_@CelebrateVC_
 
 Thank you for submitting this pull request! We appreciate you spending the time to work on these changes.
 

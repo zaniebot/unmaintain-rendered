@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T16:56:08Z
 updated_at: 2026-01-09T17:22:06Z
 url: https://github.com/astral-sh/ty/issues/2419
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False negative on undefined attributes in `finally` block
 
 ---
 
-_Issue opened by @lihu-zhong on 2026-01-09 16:56_
+_@lihu-zhong_
 
 ### Summary
 

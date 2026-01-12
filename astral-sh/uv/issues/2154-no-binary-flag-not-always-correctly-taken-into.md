@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T13:36:33Z
 updated_at: 2024-09-29T17:34:54Z
 url: https://github.com/astral-sh/uv/issues/2154
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # --no-binary flag not always correctly taken into acount across runs.
 
 ---
 
-_Issue opened by @tdejager on 2024-03-04 13:36_
+_@tdejager_
 
 In a fresh venv:
 Running:

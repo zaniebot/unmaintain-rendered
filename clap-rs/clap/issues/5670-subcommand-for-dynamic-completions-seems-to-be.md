@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T13:34:59Z
 updated_at: 2024-08-12T13:41:49Z
 url: https://github.com/clap-rs/clap/issues/5670
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Subcommand for dynamic completions seems to be hard coded and blocks use of word 'complete' as actual input
 
 ---
 
-_Issue opened by @alerque on 2024-08-12 13:34_
+_@alerque_
 
 I have been [experimenting with a POC on a small project](https://github.com/alerque/git-warp-time/compare/dynamic-completion) using the `features = [ "unstable-dynamic" ]` and testing ZSH completions.
 

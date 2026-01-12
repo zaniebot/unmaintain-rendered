@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-17T17:33:12Z
 updated_at: 2024-04-18T00:09:14Z
 url: https://github.com/astral-sh/ruff/issues/11002
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Display enabled rules
 
 ---
 
-_Issue opened by @BlindChickens on 2024-04-17 17:33_
+_@BlindChickens_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

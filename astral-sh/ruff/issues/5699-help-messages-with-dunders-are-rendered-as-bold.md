@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-12T00:05:30Z
 updated_at: 2023-11-13T14:45:17Z
 url: https://github.com/astral-sh/ruff/issues/5699
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Help messages with dunders are rendered as bold instead of displaying literal `__`
 
 ---
 
-_Issue opened by @zanieb on 2023-07-12 00:05_
+_@zanieb_
 
 Help messages with content that includes `__XXXX__` is rendered bold instead of displaying the `__` which is common for dunder variables.
 

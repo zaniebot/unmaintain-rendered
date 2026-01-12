@@ -12,14 +12,14 @@ head: ag/marker-debug-graph-follow-up
 created_at: 2024-09-09T20:11:37Z
 updated_at: 2024-09-09T20:20:24Z
 url: https://github.com/astral-sh/uv/pull/7230
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # pep508: small fixes for debug marker graph output
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-09 20:11_
+_@BurntSushi_
 
 This responds to some feedback left on #7130.
 

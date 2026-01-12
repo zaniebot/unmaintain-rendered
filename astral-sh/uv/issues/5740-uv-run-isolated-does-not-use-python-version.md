@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T22:08:15Z
 updated_at: 2024-08-02T23:34:27Z
 url: https://github.com/astral-sh/uv/issues/5740
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # uv run --isolated does not use .python-version
 
 ---
 
-_Issue opened by @bluss on 2024-08-02 22:08_
+_@bluss_
 
 From the description, it could be expected that uv run --isolated derives some of its settings from the active project, like python version. Here's a strange situation, with an active virtualenv, but it was from a real situation.
 

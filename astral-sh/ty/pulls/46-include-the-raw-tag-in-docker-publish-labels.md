@@ -12,14 +12,14 @@ head: zb/docker-raw
 created_at: 2025-05-05T23:42:41Z
 updated_at: 2025-07-08T10:38:35Z
 url: https://github.com/astral-sh/ty/pull/46
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Include the raw tag in Docker publish labels
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 23:42_
+_@zanieb_
 
 In https://github.com/astral-sh/ty/actions/runs/14848358920/job/41687152688, we've published a Python PEP 440 tag but we are trying to consume a Rust version tag later. We could transform the Rust tag into a Python tag, but since `ty version` will report the Rust version tag for pre-releases (and so will the Git tag), we should just _also_ publish a tag for matching Rust pre-release styling.
 

@@ -13,14 +13,14 @@ head: charlie/dual
 created_at: 2023-11-04T15:35:11Z
 updated_at: 2023-11-04T15:46:43Z
 url: https://github.com/astral-sh/uv/pull/317
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Use separate representations for canonical repository vs. commit
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-04 15:35_
+_@charliermarsh_
 
 Given `https://github.com/pypa/package.git#subdirectory=pkg_a` and `https://github.com/pypa/package.git#subdirectory=pkg_b`, we want these to map to the same shared _resource_ (for locking and cloning), but different _packages_ (for determining whether the wheel already exists in the cache). As such, we need two distinct concepts for "canonical equality".
 

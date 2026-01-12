@@ -13,14 +13,14 @@ head: jane/server/diagnostics/refresh
 created_at: 2024-04-17T01:15:04Z
 updated_at: 2024-04-18T02:54:46Z
 url: https://github.com/astral-sh/ruff/pull/10988
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server` refreshes diagnostics for open files when file configuration is changed
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-17 01:15_
+_@snowsignal_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T12:33:54Z
 updated_at: 2025-02-04T10:00:23Z
 url: https://github.com/astral-sh/ruff/issues/15910
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Formatter/ Linter: Quote consistency
 
 ---
 
-_Issue opened by @GutiCW on 2025-02-03 12:33_
+_@GutiCW_
 
 If I configure them as single quotes, I wouldn't expect any string being wrapped in double quotes (simple or tripled).
 

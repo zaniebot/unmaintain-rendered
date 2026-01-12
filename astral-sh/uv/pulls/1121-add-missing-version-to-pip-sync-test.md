@@ -14,14 +14,14 @@ head: konsti/sync_editable_and_registry
 created_at: 2024-01-26T13:34:38Z
 updated_at: 2024-01-26T13:36:27Z
 url: https://github.com/astral-sh/uv/pull/1121
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Add missing version to pip sync test
 
 ---
 
-_Pull request opened by @konstin on 2024-01-26 13:34_
+_@konstin_
 
 The test started failing due to a newer version on pypi.
 

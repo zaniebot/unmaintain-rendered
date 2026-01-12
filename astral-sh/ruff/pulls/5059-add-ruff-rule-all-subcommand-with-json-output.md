@@ -13,14 +13,14 @@ head: rules-json
 created_at: 2023-06-13T18:11:51Z
 updated_at: 2023-07-04T20:03:53Z
 url: https://github.com/astral-sh/ruff/pull/5059
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add `ruff rule --all` subcommand (with JSON output)
 
 ---
 
-_Pull request opened by @akx on 2023-06-13 18:11_
+_@akx_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: allow-todo
 created_at: 2023-09-19T15:46:07Z
 updated_at: 2023-09-29T10:11:32Z
 url: https://github.com/astral-sh/ruff/pull/7523
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ignore TODO tags in `commented-out-code`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-19 15:46_
+_@tjkuson_
 
 ## Summary
 

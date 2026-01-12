@@ -12,14 +12,14 @@ head: dhruv/fstring-eol
 created_at: 2023-09-30T18:39:17Z
 updated_at: 2023-10-01T02:28:21Z
 url: https://github.com/astral-sh/ruff/pull/7722
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Consume the escaped Windows newline (`\r\n`) for `FStringMiddle`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-30 18:39_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: resolve-submodules-fix
 created_at: 2025-12-31T06:59:57Z
 updated_at: 2026-01-05T12:53:57Z
 url: https://github.com/astral-sh/ruff/pull/22314
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Prioritize real submodules over module `__getattr__`
 
 ---
 
-_Pull request opened by @Adamkadaban on 2025-12-31 06:59_
+_@Adamkadaban_
 
 Related to https://github.com/astral-sh/ty/issues/1053 (PySide6 submodules)
 Related to https://github.com/astral-sh/ty/issues/1361 (aiohttp.web)

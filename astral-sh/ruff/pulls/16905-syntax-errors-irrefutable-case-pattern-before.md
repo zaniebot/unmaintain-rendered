@@ -14,14 +14,14 @@ head: brent/syn-irrefutable-match-cases
 created_at: 2025-03-21T21:33:56Z
 updated_at: 2025-03-26T16:27:20Z
 url: https://github.com/astral-sh/ruff/pull/16905
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [syntax-errors] Irrefutable case pattern before final case
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-21 21:33_
+_@ntBre_
 
 Summary
 --

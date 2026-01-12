@@ -11,16 +11,16 @@ assignees: []
 base: main
 head: charlie/git-cache
 created_at: 2025-11-12T02:22:26Z
-updated_at: 2026-01-06T15:33:50Z
+updated_at: 2026-01-12T02:11:45Z
 url: https://github.com/astral-sh/uv/pull/16698
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Support remote-cached Git wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-12 02:22_
+_@charliermarsh_
 
 ## Summary
 

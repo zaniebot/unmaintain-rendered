@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-05T11:57:00Z
 updated_at: 2024-02-17T07:01:13Z
 url: https://github.com/clap-rs/clap/issues/4994
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Derive: specifying invalid struct field type fails with Epic error message
 
 ---
 
-_Issue opened by @LunarLambda on 2023-07-05 11:57_
+_@LunarLambda_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T05:16:08Z
 updated_at: 2025-05-23T21:43:41Z
 url: https://github.com/astral-sh/uv/issues/13564
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # RFE: Update available managed python versions without requiring updating uv
 
 ---
 
-_Issue opened by @danra on 2025-05-21 05:16_
+_@danra_
 
 ### Summary
 

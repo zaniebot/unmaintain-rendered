@@ -14,14 +14,14 @@ head: micha/salsa-lookup
 created_at: 2025-07-15T07:41:51Z
 updated_at: 2025-07-15T12:52:13Z
 url: https://github.com/astral-sh/ruff/pull/19347
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Make use of salsa `Lookup` when interning values
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-15 07:41_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-09-30T17:47:38Z
 updated_at: 2024-10-17T07:13:32Z
 url: https://github.com/astral-sh/ruff/pull/13574
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [`flake8-bandit`] Detect patterns from multi line SQL statements (`S608`)
 
 ---
 
-_Pull request opened by @DataEnggNerd on 2024-09-30 17:47_
+_@DataEnggNerd_
 
 ## Summary
 

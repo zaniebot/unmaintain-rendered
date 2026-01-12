@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T04:59:38Z
 updated_at: 2023-10-08T05:31:21Z
 url: https://github.com/astral-sh/uv/issues/53
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Cache environment markers
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 04:59_
+_@charliermarsh_
 
 Turns out this is really expensive (at least on a relative basis), since it's bounded by Python startup time.
 

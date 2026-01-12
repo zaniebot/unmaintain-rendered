@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-14T16:33:49Z
 updated_at: 2024-02-15T04:25:27Z
 url: https://github.com/astral-sh/ruff/issues/9988
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # New rule: dependency specification linting
 
 ---
 
-_Issue opened by @QMalcolm on 2024-02-14 16:33_
+_@QMalcolm_
 
 # Context
 

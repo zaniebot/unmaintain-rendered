@@ -13,14 +13,14 @@ head: tryceratops_docs
 created_at: 2023-04-20T10:37:31Z
 updated_at: 2023-05-09T22:15:03Z
 url: https://github.com/astral-sh/ruff/pull/4042
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add docs for tryceratops rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-04-20 10:37_
+_@tjkuson_
 
 Add documentation to the tryceratops rules that did not already have documentation. This should complete all the documentation for the tryceratops ruleset.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-09T12:01:25Z
 updated_at: 2023-08-09T16:04:03Z
 url: https://github.com/astral-sh/ruff/issues/6445
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # In Jupyter Notebook ruff should ignore bash cells
 
 ---
 
-_Issue opened by @shaneahmed on 2023-08-09 12:01_
+_@shaneahmed_
 
 The command you invoked: `ruff check . --fix` 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-16T03:04:56Z
 updated_at: 2024-03-18T17:35:16Z
 url: https://github.com/astral-sh/uv/issues/2484
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Fail if req name and metadata name mismatch
 
 ---
 
-_Issue opened by @wimglenn on 2024-03-16 03:04_
+_@wimglenn_
 
 pip refuses to install a .whl if the req is wrong, e.g.
 

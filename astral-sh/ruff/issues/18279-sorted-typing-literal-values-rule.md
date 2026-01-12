@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T15:26:07Z
 updated_at: 2025-05-25T15:32:20Z
 url: https://github.com/astral-sh/ruff/issues/18279
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Sorted `typing.Literal` Values Rule
 
 ---
 
-_Issue opened by @TimothyWillard on 2025-05-23 15:26_
+_@TimothyWillard_
 
 ### Summary
 

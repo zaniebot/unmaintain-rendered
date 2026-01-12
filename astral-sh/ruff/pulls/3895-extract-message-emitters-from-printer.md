@@ -13,14 +13,14 @@ head: extract-message-emitters
 created_at: 2023-04-06T08:02:47Z
 updated_at: 2023-04-11T07:56:51Z
 url: https://github.com/astral-sh/ruff/pull/3895
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Extract message emitters from Printer
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-06 08:02_
+_@MichaReiser_
 
 This PR extracts the emitters for serializing `Messages` from the `Printer` in the CLI to `ruff`. The reason for moving the implementations to ruff is so that I use the text emitter to write the linter snapshots instead of serializing the `Diagnostic` to YAML. Using the rendered text output has the advantage that we can do refactors like replacing `Location` with `TextSize` without affecting the snapshot outputs, which gives us confidence in the refactor. 
 

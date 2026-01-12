@@ -13,14 +13,14 @@ head: flake8-bandit
 created_at: 2023-11-07T03:17:16Z
 updated_at: 2023-11-08T03:46:42Z
 url: https://github.com/astral-sh/ruff/pull/8533
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`flake8-bandit`] Implement `mako-templates` (`S702`)
 
 ---
 
-_Pull request opened by @ischaojie on 2023-11-07 03:17_
+_@ischaojie_
 
 See: https://github.com/astral-sh/ruff/issues/1646.
 

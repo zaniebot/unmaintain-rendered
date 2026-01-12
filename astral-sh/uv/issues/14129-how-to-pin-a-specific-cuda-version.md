@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T14:56:15Z
 updated_at: 2025-06-19T08:25:07Z
 url: https://github.com/astral-sh/uv/issues/14129
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # How to pin a specific cuda version?
 
 ---
 
-_Issue opened by @sorenwacker on 2025-06-18 14:56_
+_@sorenwacker_
 
 ### Question
 

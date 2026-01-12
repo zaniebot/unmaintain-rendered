@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-30T08:46:40Z
 updated_at: 2023-08-02T21:32:04Z
 url: https://github.com/astral-sh/ruff/issues/6176
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [rule proposal] prevent `all` on a len-1 iterable
 
 ---
 
-_Issue opened by @dorschw on 2023-07-30 08:46_
+_@dorschw_
 
 ```diff
 - all([something])

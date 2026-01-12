@@ -14,14 +14,14 @@ head: akuhn/FAST002_autofix
 created_at: 2024-08-28T05:07:49Z
 updated_at: 2024-08-28T15:38:34Z
 url: https://github.com/astral-sh/ruff/pull/13133
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 #  [`FastAPI`] Avoid introducing invalid syntax in fix for `fast-api-non-annotated-dependency` (`FAST002`)
 
 ---
 
-_Pull request opened by @arkuhn on 2024-08-28 05:07_
+_@arkuhn_
 
 
 <!--

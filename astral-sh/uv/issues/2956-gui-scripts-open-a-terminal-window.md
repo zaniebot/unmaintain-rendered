@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-10T08:05:08Z
 updated_at: 2024-06-23T12:09:49Z
 url: https://github.com/astral-sh/uv/issues/2956
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # GUI scripts open a terminal window
 
 ---
 
-_Issue opened by @bersbersbers on 2024-04-10 08:05_
+_@bersbersbers_
 
 GUI scripts, when installed via `uv pip` and launched from VS Code, open a terminal window. They should not do that. `pip` doesn't do it, either.
 

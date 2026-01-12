@@ -14,14 +14,14 @@ head: zb/pyodide-fix
 created_at: 2025-08-13T17:25:53Z
 updated_at: 2025-08-13T19:08:56Z
 url: https://github.com/astral-sh/uv/pull/15256
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Allow selection of pyodide interpreters with "pyodide"
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-13 17:25_
+_@zanieb_
 
 _No description provided._
 

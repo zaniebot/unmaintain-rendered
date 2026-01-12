@@ -13,14 +13,14 @@ head: charlie/furb
 created_at: 2024-05-28T01:25:35Z
 updated_at: 2024-05-28T01:38:58Z
 url: https://github.com/astral-sh/ruff/pull/11574
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Avoid recomending operator.itemgetter with dependence on lambda arg
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-28 01:25_
+_@charliermarsh_
 
 ## Summary
 

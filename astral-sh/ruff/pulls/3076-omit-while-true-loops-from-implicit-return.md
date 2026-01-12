@@ -13,14 +13,14 @@ head: charlie/while-true
 created_at: 2023-02-20T23:13:14Z
 updated_at: 2023-02-20T23:22:30Z
 url: https://github.com/astral-sh/ruff/pull/3076
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Omit while-True loops from implicit return enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 23:13_
+_@charliermarsh_
 
 We can do better, but this fixes #3071 for now.
 

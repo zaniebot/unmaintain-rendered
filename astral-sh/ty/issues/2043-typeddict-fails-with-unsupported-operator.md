@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T23:30:54Z
 updated_at: 2026-01-09T05:29:22Z
 url: https://github.com/astral-sh/ty/issues/2043
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `<TypedDict> |= {}` fails with `unsupported-operator`
 
 ---
 
-_Issue opened by @zanieb on 2025-12-17 23:30_
+_@zanieb_
 
 https://play.ty.dev/3c2f6220-f3ad-48ed-b960-d80d9d611de2
 

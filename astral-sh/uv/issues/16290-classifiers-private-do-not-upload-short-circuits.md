@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T00:42:18Z
 updated_at: 2025-10-20T12:24:36Z
 url: https://github.com/astral-sh/uv/issues/16290
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # classifiers = ["Private :: Do Not Upload"] short-circuits uv publish entirely
 
 ---
 
-_Issue opened by @heyitsaamir on 2025-10-14 00:42_
+_@heyitsaamir_
 
 ### Summary
 

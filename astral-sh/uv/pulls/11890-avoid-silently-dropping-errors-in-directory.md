@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2025-03-02T01:15:11Z
 updated_at: 2025-03-03T02:39:18Z
 url: https://github.com/astral-sh/uv/pull/11890
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Avoid silently dropping errors in directory enumeration
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-02 01:15_
+_@charliermarsh_
 
 ## Summary
 

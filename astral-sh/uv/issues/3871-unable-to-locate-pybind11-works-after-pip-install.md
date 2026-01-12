@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T00:08:20Z
 updated_at: 2024-05-28T01:07:18Z
 url: https://github.com/astral-sh/uv/issues/3871
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # unable to locate pybind11; works after pip install
 
 ---
 
-_Issue opened by @Ryang20718 on 2024-05-28 00:08_
+_@Ryang20718_
 
 Appreciate the fast tool! 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-03T06:44:15Z
 updated_at: 2024-08-17T14:35:59Z
 url: https://github.com/astral-sh/ruff/issues/12652
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 #   = note: ld: cannot find -lclang.dll: No such file or directory
 
 ---
 
-_Issue opened by @zzy444626905 on 2024-08-03 06:44_
+_@zzy444626905_
 
 ```
 $ cargo run

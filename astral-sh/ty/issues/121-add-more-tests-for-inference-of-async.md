@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-21T13:02:54Z
 updated_at: 2025-11-18T16:10:23Z
 url: https://github.com/astral-sh/ty/issues/121
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add more tests for inference of async comprehensions with invalid syntax
 
 ---
 
-_Issue opened by @ntBre on 2025-04-21 13:02_
+_@ntBre_
 
 Similarly here, I don't think the intent here was for this to test our resilience to invalid syntax (the test case is titled "Basic" 😄), so I'd be inclined to do this to avoid the syntax error:
 

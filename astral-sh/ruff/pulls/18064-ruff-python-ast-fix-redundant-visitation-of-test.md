@@ -13,14 +13,14 @@ head: main
 created_at: 2025-05-13T06:58:57Z
 updated_at: 2025-05-13T07:16:33Z
 url: https://github.com/astral-sh/ruff/pull/18064
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ruff_python_ast] Fix redundant visitation of test expressions in elif clause statements
 
 ---
 
-_Pull request opened by @swnb on 2025-05-13 06:58_
+_@swnb_
 
 Fix redundant AST visitation of elif clause test expressions
 

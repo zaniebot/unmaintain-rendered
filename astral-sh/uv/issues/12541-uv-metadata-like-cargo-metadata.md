@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T00:31:14Z
 updated_at: 2025-03-29T00:31:14Z
 url: https://github.com/astral-sh/uv/issues/12541
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv metadata (like cargo metadata)
 
 ---
 
-_Issue opened by @heiner on 2025-03-29 00:31_
+_@heiner_
 
 ### Summary
 

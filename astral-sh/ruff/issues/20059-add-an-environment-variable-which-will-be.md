@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-24T20:37:47Z
 updated_at: 2025-09-30T07:17:55Z
 url: https://github.com/astral-sh/ruff/issues/20059
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add an environment variable, which will be equivalent to the `--unsafe-fixes` command-line argument for `ruff check`.
 
 ---
 
-_Issue opened by @pygarap on 2025-08-24 20:37_
+_@pygarap_
 
 Add an environment variable, which will be equivalent to the `--unsafe-fixes` command-line argument for `ruff check`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T05:07:28Z
 updated_at: 2023-01-12T04:41:57Z
 url: https://github.com/astral-sh/ruff/issues/1545
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Document glob syntax
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-02 05:07_
+_@not-my-profile_
 
 The glob syntax is described in the [globset documentation](https://docs.rs/globset/latest/globset/#syntax). However that documentation mentions some settings (`literal_separator` and `backslash_escape`) and users won't know if ruff has these enabled or disabled.
 

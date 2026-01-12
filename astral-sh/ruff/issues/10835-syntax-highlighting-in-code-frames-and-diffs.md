@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-08T12:02:58Z
 updated_at: 2025-09-26T18:11:00Z
 url: https://github.com/astral-sh/ruff/issues/10835
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Syntax highlighting in code frames and diffs
 
 ---
 
-_Issue opened by @MichaReiser on 2024-04-08 12:02_
+_@MichaReiser_
 
 We should consider highlighting code frames and diffs. 
 

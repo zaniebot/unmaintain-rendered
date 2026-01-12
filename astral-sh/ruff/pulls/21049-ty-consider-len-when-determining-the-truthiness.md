@@ -13,14 +13,14 @@ head: alex/final-always-truthy
 created_at: 2025-10-23T16:59:58Z
 updated_at: 2025-10-24T16:28:44Z
 url: https://github.com/astral-sh/ruff/pull/21049
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Consider `__len__` when determining the truthiness of an instance of a tuple class or a `@final` class
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-23 16:59_
+_@AlexWaygood_
 
 ## Summary
 

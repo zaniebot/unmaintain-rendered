@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T06:17:58Z
 updated_at: 2025-12-18T16:15:32Z
 url: https://github.com/astral-sh/uv/issues/16465
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Linking project extras to maturin features
 
 ---
 
-_Issue opened by @chitralverma on 2025-10-27 06:17_
+_@chitralverma_
 
 ### Summary
 

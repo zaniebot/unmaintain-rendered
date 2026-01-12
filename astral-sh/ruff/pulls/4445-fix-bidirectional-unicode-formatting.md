@@ -12,14 +12,14 @@ head: charlie/mkdocs
 created_at: 2023-05-15T22:28:04Z
 updated_at: 2023-05-15T22:58:26Z
 url: https://github.com/astral-sh/ruff/pull/4445
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix bidirectional-unicode formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-15 22:28_
+_@charliermarsh_
 
 Entirely my fault, changed this prior to merging and turns out I messed up the formatting.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-13T16:34:25Z
 updated_at: 2024-12-15T14:21:49Z
 url: https://github.com/astral-sh/uv/issues/9874
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # GitHub CI for lockfile being in sync with pyproject.toml fails
 
 ---
 
-_Issue opened by @superlopuh on 2024-12-13 16:34_
+_@superlopuh_
 
 I am trying to set up a CI that will prevent merging lockfiles out of sync with pyproject.toml:
 

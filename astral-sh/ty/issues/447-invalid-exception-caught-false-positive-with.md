@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-19T12:15:11Z
 updated_at: 2025-05-19T21:15:51Z
 url: https://github.com/astral-sh/ty/issues/447
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # invalid-exception-caught false positive with aliased error
 
 ---
 
-_Issue opened by @sk- on 2025-05-19 12:15_
+_@sk-_
 
 ### Summary
 

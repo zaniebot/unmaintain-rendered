@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T09:20:02Z
 updated_at: 2025-03-27T14:14:07Z
 url: https://github.com/astral-sh/uv/issues/12508
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Url dependency makes install from registry fail
 
 ---
 
-_Issue opened by @ivan94fi on 2025-03-27 09:20_
+_@ivan94fi_
 
 ### Summary
 

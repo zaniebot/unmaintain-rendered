@@ -13,14 +13,14 @@ head: charlie/requires-python-ii
 created_at: 2024-06-05T20:01:22Z
 updated_at: 2024-06-05T20:22:09Z
 url: https://github.com/astral-sh/uv/pull/4068
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Enforce `Requires-Python` when syncing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-05 20:01_
+_@charliermarsh_
 
 ## Summary
 

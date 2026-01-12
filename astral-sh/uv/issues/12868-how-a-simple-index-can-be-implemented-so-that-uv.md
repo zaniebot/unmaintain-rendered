@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T03:31:20Z
 updated_at: 2025-04-14T12:14:26Z
 url: https://github.com/astral-sh/uv/issues/12868
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # How a simple index can be implemented so that uv can query git packages?
 
 ---
 
-_Issue opened by @pmabres on 2025-04-14 03:31_
+_@pmabres_
 
 ### Question
 

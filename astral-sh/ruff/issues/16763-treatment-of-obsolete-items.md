@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-15T10:23:49Z
 updated_at: 2025-03-16T09:10:40Z
 url: https://github.com/astral-sh/ruff/issues/16763
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Treatment of obsolete items
 
 ---
 
-_Issue opened by @ya7010 on 2025-03-15 10:23_
+_@ya7010_
 
 ### Question
 

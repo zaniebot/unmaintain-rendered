@@ -13,14 +13,14 @@ head: unused-import-docs
 created_at: 2024-02-12T20:58:48Z
 updated_at: 2024-02-13T00:07:20Z
 url: https://github.com/astral-sh/ruff/pull/9963
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # unused_imports/F401: Explain when imports are preserved
 
 ---
 
-_Pull request opened by @Hnasar on 2024-02-12 20:58_
+_@Hnasar_
 
 The docs previously mentioned an irrelevant config option, but were missing a link to the relevant `ignore-init-module-imports` config option which _is_ actually used.
 

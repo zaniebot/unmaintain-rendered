@@ -13,14 +13,14 @@ head: charlie/inv
 created_at: 2024-06-01T23:14:01Z
 updated_at: 2024-06-01T23:30:56Z
 url: https://github.com/astral-sh/ruff/pull/11684
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-simplify`] Simplify double negatives in `SIM103`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-01 23:14_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: sometimes-f522
 created_at: 2023-06-06T06:18:22Z
 updated_at: 2023-06-06T13:14:31Z
 url: https://github.com/astral-sh/ruff/pull/4893
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # mark f522 as sometimes fixable
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-06 06:18_
+_@addisoncrump_
 
 Closes #4892.
 

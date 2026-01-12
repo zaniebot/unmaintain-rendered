@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-31T20:42:45Z
 updated_at: 2024-11-01T06:49:12Z
 url: https://github.com/astral-sh/ruff/issues/14025
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter breaks line-length and removes line continuations 
 
 ---
 
-_Issue opened by @andre-muraro-umbrage on 2024-10-31 20:42_
+_@andre-muraro-umbrage_
 
 When applying `format` , it removes line continuations resulting in E501 violations: 
 

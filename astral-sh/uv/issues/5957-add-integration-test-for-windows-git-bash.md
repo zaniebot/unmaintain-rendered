@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T13:53:38Z
 updated_at: 2024-08-09T13:53:43Z
 url: https://github.com/astral-sh/uv/issues/5957
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Add integration test for Windows Git Bash
 
 ---
 
-_Issue opened by @zanieb on 2024-08-09 13:53_
+_@zanieb_
 
 Asserting behavior like https://github.com/astral-sh/uv/pull/5956
 

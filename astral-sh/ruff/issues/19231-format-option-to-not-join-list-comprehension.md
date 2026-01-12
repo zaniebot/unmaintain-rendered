@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-09T12:12:43Z
 updated_at: 2025-08-04T12:00:38Z
 url: https://github.com/astral-sh/ruff/issues/19231
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # format option to not join list-comprehension multilines into one single line
 
 ---
 
-_Issue opened by @spaceone on 2025-07-09 12:12_
+_@spaceone_
 
 I am generally allowing a lower line length: 120 chars because the code base has function calls with many parameters.
 On the other side I format certain list-comprehension code blocks for readability into multiple lines.

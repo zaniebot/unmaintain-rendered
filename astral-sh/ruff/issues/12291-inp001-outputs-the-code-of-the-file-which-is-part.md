@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T18:02:52Z
 updated_at: 2024-07-12T15:21:30Z
 url: https://github.com/astral-sh/ruff/issues/12291
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # INP001 outputs the code of the file which is part of an implicit namespace package
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-07-11 18:02_
+_@adamtheturtle_
 
 ~ruff 0.4.10~ Edit: I pasted wrong! `ruff 0.5.1`
 

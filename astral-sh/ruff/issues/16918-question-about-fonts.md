@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-22T18:36:30Z
 updated_at: 2025-03-23T01:11:25Z
 url: https://github.com/astral-sh/ruff/issues/16918
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Question about fonts?
 
 ---
 
-_Issue opened by @rlgloden on 2025-03-22 18:36_
+_@rlgloden_
 
 Ruff Playground contains fonts that appear to be trial fonts?  Our corporate IT is pretty particular about these things and flagged these font files:
 

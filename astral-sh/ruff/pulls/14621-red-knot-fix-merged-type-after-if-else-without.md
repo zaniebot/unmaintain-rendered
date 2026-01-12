@@ -13,14 +13,14 @@ head: gh-14593-inverse-narrowing-without-explicit-else-branches
 created_at: 2024-11-27T03:54:05Z
 updated_at: 2024-11-28T20:11:31Z
 url: https://github.com/astral-sh/ruff/pull/14621
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Fix merged type after if-else without explicit else branch
 
 ---
 
-_Pull request opened by @sransara on 2024-11-27 03:54_
+_@sransara_
 
 ## Summary
 

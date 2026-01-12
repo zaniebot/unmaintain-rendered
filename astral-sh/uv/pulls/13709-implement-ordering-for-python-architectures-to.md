@@ -12,14 +12,14 @@ head: zb/ord-arch
 created_at: 2025-05-28T20:47:38Z
 updated_at: 2025-05-29T19:06:34Z
 url: https://github.com/astral-sh/uv/pull/13709
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Implement ordering for Python architectures to prefer native installations
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-28 20:47_
+_@zanieb_
 
 Resolves https://github.com/astral-sh/uv/pull/13474#discussion_r2112586405
 

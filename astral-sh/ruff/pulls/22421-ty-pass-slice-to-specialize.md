@@ -14,14 +14,14 @@ head: micha/specialize-slice
 created_at: 2026-01-06T17:46:03Z
 updated_at: 2026-01-09T08:45:41Z
 url: https://github.com/astral-sh/ruff/pull/22421
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Pass slice to `specialize`
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-06 17:46_
+_@MichaReiser_
 
 ## Summary
 We call `specialize` or `to_specialized_class` in many places with a fixed number of specializations, and probably often with the very same arguments. 

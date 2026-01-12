@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T11:15:01Z
 updated_at: 2023-02-22T16:17:16Z
 url: https://github.com/astral-sh/ruff/issues/3118
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Syntax errors with match statement
 
 ---
 
-_Issue opened by @rslinckx on 2023-02-22 11:15_
+_@rslinckx_
 
 Here are 2 failing syntaxes for match statements using the latest 0.0.251 release. They both run fine but it seems to use more "esoteric" syntax from the match spec.
 

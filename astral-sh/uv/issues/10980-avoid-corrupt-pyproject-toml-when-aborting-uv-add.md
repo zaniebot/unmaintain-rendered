@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T10:05:35Z
 updated_at: 2025-01-27T14:06:07Z
 url: https://github.com/astral-sh/uv/issues/10980
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Avoid corrupt pyproject.toml when aborting `uv add xxx`
 
 ---
 
-_Issue opened by @perapp on 2025-01-27 10:05_
+_@perapp_
 
 ### Summary
 

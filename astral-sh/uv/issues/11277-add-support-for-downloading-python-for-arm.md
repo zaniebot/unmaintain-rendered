@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-06T09:39:13Z
 updated_at: 2025-02-06T17:07:00Z
 url: https://github.com/astral-sh/uv/issues/11277
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Add support for downloading Python for ARM Windows11
 
 ---
 
-_Issue opened by @stefansimik on 2025-02-06 09:39_
+_@stefansimik_
 
 ### Summary
 

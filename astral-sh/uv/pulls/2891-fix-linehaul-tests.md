@@ -13,14 +13,14 @@ head: zb/fix-linehaul-test
 created_at: 2024-04-08T04:23:07Z
 updated_at: 2024-04-11T00:08:54Z
 url: https://github.com/astral-sh/uv/pull/2891
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Fix linehaul tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 04:23_
+_@zanieb_
 
 Cleans up the assertions a bit. I looked into snapshot tests per #2564 but it didn't seem worth it for cross-platform tests.
 

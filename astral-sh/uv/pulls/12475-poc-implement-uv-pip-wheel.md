@@ -12,14 +12,14 @@ head: pip_wheel
 created_at: 2025-03-26T03:22:03Z
 updated_at: 2025-10-29T21:30:41Z
 url: https://github.com/astral-sh/uv/pull/12475
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # POC: Implement `uv pip wheel`
 
 ---
 
-_Pull request opened by @abhiaagarwal on 2025-03-26 03:22_
+_@abhiaagarwal_
 
 ## Summary
 

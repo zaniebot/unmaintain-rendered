@@ -12,14 +12,14 @@ head: wps111-too_short_name
 created_at: 2023-04-19T14:52:34Z
 updated_at: 2023-10-19T16:12:23Z
 url: https://github.com/astral-sh/ruff/pull/4021
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement rule for WPS111
 
 ---
 
-_Pull request opened by @kytta on 2023-04-19 14:52_
+_@kytta_
 
 This is one of the many rules one would need to implement for #3845. This PR implements WPS11, which checks that the names are not too short.
 

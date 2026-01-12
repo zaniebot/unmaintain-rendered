@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T04:18:51Z
 updated_at: 2024-05-25T15:08:20Z
 url: https://github.com/astral-sh/ruff/issues/11259
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Code action breaks when using both `ruff_lsp` and `ruff` on unused import
 
 ---
 
-_Issue opened by @xl4624 on 2024-05-03 04:18_
+_@xl4624_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

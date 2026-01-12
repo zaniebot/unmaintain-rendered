@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-11T19:59:47Z
 updated_at: 2025-03-17T20:49:25Z
 url: https://github.com/astral-sh/uv/issues/12119
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # `[index]` fields are missing from the settings reference
 
 ---
 
-_Issue opened by @zanieb on 2025-03-11 19:59_
+_@zanieb_
 
 ### Summary
 

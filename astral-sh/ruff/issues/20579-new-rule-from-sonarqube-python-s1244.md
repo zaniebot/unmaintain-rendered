@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-25T18:27:38Z
 updated_at: 2025-09-25T19:29:19Z
 url: https://github.com/astral-sh/ruff/issues/20579
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New rule from `SonarQube`: python:S1244
 
 ---
 
-_Issue opened by @chirizxc on 2025-09-25 18:27_
+_@chirizxc_
 
 ### Summary
 

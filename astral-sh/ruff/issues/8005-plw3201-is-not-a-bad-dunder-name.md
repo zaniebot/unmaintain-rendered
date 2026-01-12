@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T09:45:35Z
 updated_at: 2023-10-17T14:13:06Z
 url: https://github.com/astral-sh/ruff/issues/8005
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PLW3201 "_" is not a bad dunder name
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-10-17 09:45_
+_@NeilGirdhar_
 
 `_` is not a bad dunder name.  `_` is often used functions whose names are not relevant.  Please consider excluding `_` from PLW3201's rules.:
 

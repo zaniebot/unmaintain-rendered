@@ -13,14 +13,14 @@ head: zb/bootstrap
 created_at: 2024-01-23T20:38:21Z
 updated_at: 2024-01-25T19:55:16Z
 url: https://github.com/astral-sh/uv/pull/1068
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Add script to download Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-23 20:38_
+_@zanieb_
 
 Adapts the [`find-downloads` script from Rye](https://github.com/mitsuhiko/rye/blob/main/rye/find-downloads.py) to give us a utility for fetching Python versions. 
 

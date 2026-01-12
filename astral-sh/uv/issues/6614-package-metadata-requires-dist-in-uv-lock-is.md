@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T18:56:16Z
 updated_at: 2024-08-25T21:04:26Z
 url: https://github.com/astral-sh/uv/issues/6614
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages.
 
 ---
 
-_Issue opened by @kabouzeid on 2024-08-25 18:56_
+_@kabouzeid_
 
 `package.metadata.requires-dist` in `uv.lock` isn't updated with the version specifier on `add`. only subsequent `add`, `lock`, or `sync` calls add it.
 

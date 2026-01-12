@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-25T08:14:31Z
 updated_at: 2024-06-18T13:54:50Z
 url: https://github.com/astral-sh/uv/issues/3260
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Azure artifacts auth fails on first attempt but works on second.
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-04-25 08:14_
+_@jenshnielsen_
 
 For example running 
 ```

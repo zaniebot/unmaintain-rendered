@@ -12,14 +12,14 @@ head: charlie/importer
 created_at: 2023-05-23T01:19:54Z
 updated_at: 2023-05-23T01:52:40Z
 url: https://github.com/astral-sh/ruff/pull/4591
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move `get_or_import_symbol` onto `Importer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 01:19_
+_@charliermarsh_
 
 No behavioral change, just improving discoverability and colocating relevant logic.
 

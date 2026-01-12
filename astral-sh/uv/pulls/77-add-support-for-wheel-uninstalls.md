@@ -12,14 +12,14 @@ head: charlie/uninstall
 created_at: 2023-10-09T18:06:15Z
 updated_at: 2023-10-09T18:14:34Z
 url: https://github.com/astral-sh/uv/pull/77
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Add support for wheel uninstalls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-09 18:06_
+_@charliermarsh_
 
 Closes #36.
 

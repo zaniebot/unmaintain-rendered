@@ -12,14 +12,14 @@ head: renovate/rustls-native-certs-0.x
 created_at: 2024-04-08T03:05:25Z
 updated_at: 2024-04-08T03:58:05Z
 url: https://github.com/astral-sh/uv/pull/2885
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update Rust crate rustls-native-certs to 0.7.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 03:05_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

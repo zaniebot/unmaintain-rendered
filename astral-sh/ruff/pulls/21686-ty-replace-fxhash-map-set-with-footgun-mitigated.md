@@ -12,14 +12,14 @@ head: stable-iteration
 created_at: 2025-11-29T06:35:34Z
 updated_at: 2025-12-10T16:48:37Z
 url: https://github.com/astral-sh/ruff/pull/21686
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] replace `FxHash{Map, Set}` with footgun-mitigated APIs
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-29 06:35_
+_@mtshiba_
 
 ## Summary
 

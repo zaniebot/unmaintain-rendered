@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T07:19:05Z
 updated_at: 2025-05-13T03:05:20Z
 url: https://github.com/astral-sh/uv/issues/13297
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Cannot override dependency metadata of source dependency
 
 ---
 
-_Issue opened by @toslunar on 2025-05-05 07:19_
+_@toslunar_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-13T10:41:08Z
 updated_at: 2020-04-10T02:00:15Z
 url: https://github.com/clap-rs/clap/issues/1743
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Forbid args to conflict with themselves
 
 ---
 
-_Issue opened by @matthiaskrgr on 2020-03-13 10:41_
+_@matthiaskrgr_
 
 I just found something like this in my code
 `Arg::with_name("a").conflicts_with("a")`

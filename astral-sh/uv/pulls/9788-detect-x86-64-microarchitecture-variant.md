@@ -13,14 +13,14 @@ head: zb/micro-detect
 created_at: 2024-12-10T21:01:08Z
 updated_at: 2025-04-21T22:34:31Z
 url: https://github.com/astral-sh/uv/pull/9788
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Detect x86_64 microarchitecture variant automatically
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 21:01_
+_@zanieb_
 
 e.g., on my test machine
 

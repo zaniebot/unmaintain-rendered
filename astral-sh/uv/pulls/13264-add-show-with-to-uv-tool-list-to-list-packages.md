@@ -13,14 +13,14 @@ head: show-extras
 created_at: 2025-05-02T12:36:00Z
 updated_at: 2025-05-06T20:23:50Z
 url: https://github.com/astral-sh/uv/pull/13264
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Add `--show-with` to `uv tool list` to list packages included by `--with`
 
 ---
 
-_Pull request opened by @gaardhus on 2025-05-02 12:36_
+_@gaardhus_
 
 ## Summary
 

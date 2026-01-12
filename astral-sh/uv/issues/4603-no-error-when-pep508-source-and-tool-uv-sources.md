@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T22:05:52Z
 updated_at: 2024-08-12T23:46:45Z
 url: https://github.com/astral-sh/uv/issues/4603
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # No error when PEP508 source and `tool.uv.sources` entry don't match
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-27 22:05_
+_@ibraheemdev_
 
 For example:
 ```

@@ -12,14 +12,14 @@ head: fix-up032-auto-fix
 created_at: 2023-04-30T19:40:29Z
 updated_at: 2023-04-30T21:03:15Z
 url: https://github.com/astral-sh/ruff/pull/4165
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix UP032 auto-fix
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-30 19:40_
+_@JonathanPlasse_
 
 - Close #4078
 

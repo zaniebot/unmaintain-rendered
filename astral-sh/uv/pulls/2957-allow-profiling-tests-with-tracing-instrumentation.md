@@ -15,14 +15,14 @@ head: konsti/allow-profiling-test-runs
 created_at: 2024-04-10T10:06:17Z
 updated_at: 2024-04-10T10:15:28Z
 url: https://github.com/astral-sh/uv/pull/2957
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Allow profiling tests with tracing instrumentation
 
 ---
 
-_Pull request opened by @konstin on 2024-04-10 10:06_
+_@konstin_
 
 To get more insights into test performance, allow instrumenting tests with tracing-durations-export.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-13T16:40:45Z
 updated_at: 2023-06-13T17:11:01Z
 url: https://github.com/astral-sh/ruff/issues/5056
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ability to add noqa for individual rules
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-13 16:40_
+_@gaborbernat_
 
 Would be nice if `--add-noqa` could take an optional argument to only add those ignores for a given rule, and not globally.
 

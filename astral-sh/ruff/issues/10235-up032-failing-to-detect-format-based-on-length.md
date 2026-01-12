@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T05:51:43Z
 updated_at: 2024-03-06T08:58:21Z
 url: https://github.com/astral-sh/ruff/issues/10235
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP032 Failing to Detect `format` based on Length
 
 ---
 
-_Issue opened by @max-muoto on 2024-03-05 05:51_
+_@max-muoto_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

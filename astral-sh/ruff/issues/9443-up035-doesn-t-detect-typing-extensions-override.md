@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-09T04:47:26Z
 updated_at: 2024-01-09T17:52:03Z
 url: https://github.com/astral-sh/ruff/issues/9443
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `UP035` doesn't detect `typing_extensions.override` when targeting python 3.12
 
 ---
 
-_Issue opened by @DetachHead on 2024-01-09 04:47_
+_@DetachHead_
 
 ```py
 from typing_extensions import override  # no error

@@ -12,14 +12,14 @@ head: quadratic
 created_at: 2022-11-11T06:15:11Z
 updated_at: 2022-11-11T18:34:23Z
 url: https://github.com/astral-sh/ruff/pull/679
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Only scan checks once in check_lines
 
 ---
 
-_Pull request opened by @andersk on 2022-11-11 06:15_
+_@andersk_
 
 Avoids a quadratic slowdown when there are many checks. For example, `yes | head -n 100000 | ruff -` goes from 25s to 0.2s. Fixes #483.
 

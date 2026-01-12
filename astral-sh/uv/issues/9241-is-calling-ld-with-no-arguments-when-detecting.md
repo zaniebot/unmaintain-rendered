@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T20:00:05Z
 updated_at: 2024-11-19T20:04:47Z
 url: https://github.com/astral-sh/uv/issues/9241
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Is calling `ld` with no arguments when detecting Linux environment intended?
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-11-19 20:00_
+_@notatallshaw-gts_
 
 This is purely observational, there is no known bug this is creating.
 

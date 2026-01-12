@@ -14,14 +14,14 @@ head: zb/python-hover
 created_at: 2025-07-02T02:31:20Z
 updated_at: 2025-07-03T05:20:36Z
 url: https://github.com/astral-sh/ruff/pull/19082
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # Use "python" for markdown code fences in on-hover content
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 02:31_
+_@zanieb_
 
 Instead of "text".
 

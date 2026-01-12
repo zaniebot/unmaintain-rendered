@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T12:21:57Z
 updated_at: 2024-09-10T12:24:50Z
 url: https://github.com/astral-sh/uv/issues/7080
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Unable to create an editable .pth without 'uv pip install -e .'
 
 ---
 
-_Issue opened by @jklaiho on 2024-09-05 12:21_
+_@jklaiho_
 
 I've got a Django project in development inside a Docker container, structured like this:
 

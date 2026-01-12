@@ -12,14 +12,14 @@ head: add-pypi-cfg
 created_at: 2025-05-28T11:42:20Z
 updated_at: 2025-06-02T07:57:03Z
 url: https://github.com/astral-sh/uv/pull/13699
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Conditionalize more tests that require PyPI
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-05-28 11:42_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

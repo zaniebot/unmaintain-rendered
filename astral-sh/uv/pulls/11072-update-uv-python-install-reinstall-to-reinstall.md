@@ -13,14 +13,14 @@ head: zb/reinstall-all
 created_at: 2025-01-29T17:29:43Z
 updated_at: 2025-02-02T17:56:28Z
 url: https://github.com/astral-sh/uv/pull/11072
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Update `uv python install --reinstall` to reinstall all previous versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 17:29_
+_@zanieb_
 
 Since we're shipping substantive updates to Python versions frequently, I want to lower the bar for reinstalling with the latest distributions.
 

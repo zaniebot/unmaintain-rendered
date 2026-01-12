@@ -15,14 +15,14 @@ head: david/deploy-ecosystem-diff-to-cloudflare
 created_at: 2025-07-09T12:51:45Z
 updated_at: 2025-07-10T13:58:55Z
 url: https://github.com/astral-sh/ruff/pull/19234
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Deploy ecosystem diff to Cloudflare pages
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-09 12:51_
+_@sharkdp_
 
 ## Summary
 

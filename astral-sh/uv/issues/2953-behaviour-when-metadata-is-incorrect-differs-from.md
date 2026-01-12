@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-10T04:36:58Z
 updated_at: 2024-04-10T05:13:34Z
 url: https://github.com/astral-sh/uv/issues/2953
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Behaviour when metadata is incorrect differs from pip
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-04-10 04:36_
+_@hauntsaninja_
 
 It looks like docutils made a new release today and something is a little weird with the release.
 

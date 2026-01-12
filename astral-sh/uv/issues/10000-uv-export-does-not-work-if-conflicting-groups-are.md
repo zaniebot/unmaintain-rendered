@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T14:28:41Z
 updated_at: 2024-12-18T15:04:25Z
 url: https://github.com/astral-sh/uv/issues/10000
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # `uv export` does not work if conflicting groups are defined
 
 ---
 
-_Issue opened by @ghislainbourgeois on 2024-12-18 14:28_
+_@ghislainbourgeois_
 
 I have a project that requires a different version of a library based on the infrastructure we are testing against. I defined those dependencies in 2 different dependency groups and told `uv` that they conflict:
 

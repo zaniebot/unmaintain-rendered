@@ -14,14 +14,14 @@ head: charlie/de
 created_at: 2025-01-30T17:35:38Z
 updated_at: 2025-02-01T02:10:01Z
 url: https://github.com/astral-sh/uv/pull/11105
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Make metadata deserialization failures non-fatal in the cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 17:35_
+_@charliermarsh_
 
 ## Summary
 

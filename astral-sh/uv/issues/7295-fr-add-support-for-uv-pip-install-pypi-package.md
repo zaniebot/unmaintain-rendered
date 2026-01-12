@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-11T15:52:41Z
 updated_at: 2024-09-12T05:41:59Z
 url: https://github.com/astral-sh/uv/issues/7295
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # FR: add support for `uv pip install <PyPI package> --all-extras`
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-09-11 15:52_
+_@neutrinoceros_
 
 I know of a couple packages with so many optional dependencies that they implement a shorthand to get all of them as, for instance `pip install 'pkg[all]'` or something similar. Problem is that this is hardly discoverable for end users, must be documented, and not every package chooses the same `extra` name so it's hard to remember.
 

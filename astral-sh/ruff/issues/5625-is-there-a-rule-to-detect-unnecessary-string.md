@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-09T02:14:55Z
 updated_at: 2023-07-09T13:21:36Z
 url: https://github.com/astral-sh/ruff/issues/5625
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Is there a rule to detect unnecessary string literals in a `format` call on a string literal?
 
 ---
 
-_Issue opened by @harupy on 2023-07-09 02:14_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

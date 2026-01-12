@@ -14,14 +14,14 @@ head: charlie/always-stable-dir
 created_at: 2025-02-09T19:58:41Z
 updated_at: 2025-02-12T00:54:47Z
 url: https://github.com/astral-sh/uv/pull/11364
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Use stable environments for remote and stdin scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-09 19:58_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T18:04:09Z
 updated_at: 2024-07-31T18:30:23Z
 url: https://github.com/astral-sh/ruff/issues/12597
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Refactor applicability handling in `Display` impl for `message::diff::Diff`
 
 ---
 
-_Issue opened by @chriskrycho on 2024-07-31 18:04_
+_@chriskrycho_
 
 Spinning this out of some of the discussion on #12595, as requested by @zanieb.
 

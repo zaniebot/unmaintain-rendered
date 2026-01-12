@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-18T07:26:49Z
 updated_at: 2025-10-03T12:19:10Z
 url: https://github.com/astral-sh/ty/issues/1200
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Types are weirdly attached to symbols in auto-completions
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-18 07:26_
+_@sharkdp_
 
 I don't know when this changed, but this looks weird:
 

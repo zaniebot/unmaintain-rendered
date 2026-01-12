@@ -14,14 +14,14 @@ head: synthesized_typeddict
 created_at: 2025-12-04T04:04:12Z
 updated_at: 2025-12-10T20:51:46Z
 url: https://github.com/astral-sh/ruff/pull/21784
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] add `SyntheticTypedDictType` and implement `normalized` and `is_equivalent_to`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-04 04:04_
+_@oconnor663_
 
 This PR cribs a lot of @ibraheemdev's work on https://github.com/astral-sh/ruff/pull/20732.
 

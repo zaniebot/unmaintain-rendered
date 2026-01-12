@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T09:51:44Z
 updated_at: 2025-08-11T19:58:35Z
 url: https://github.com/astral-sh/ty/issues/968
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Low CPU saturation
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-11 09:51_
+_@MichaReiser_
 
 I noticed that running ty on a large project overall shows low CPU saturation (specifically the longer checking runs)
 

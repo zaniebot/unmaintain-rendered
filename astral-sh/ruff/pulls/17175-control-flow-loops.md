@@ -13,14 +13,14 @@ head: cfg-loops
 created_at: 2025-04-03T13:54:24Z
 updated_at: 2025-12-10T18:00:13Z
 url: https://github.com/astral-sh/ruff/pull/17175
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Control flow: loops
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-03 13:54_
+_@dylwil3_
 
 This PR implements support for loop statements in the control flow graph, as well as the associated jumps `break` and `continue`. It is simplest to review commit by commit (now that I rewrote history...)
 

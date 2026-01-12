@@ -13,14 +13,14 @@ head: zb/newlines
 created_at: 2025-03-20T13:07:24Z
 updated_at: 2025-03-20T13:55:00Z
 url: https://github.com/astral-sh/ruff/pull/16869
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Split git pathspecs in change determination onto separate lines
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-20 13:07_
+_@zanieb_
 
 _No description provided._
 

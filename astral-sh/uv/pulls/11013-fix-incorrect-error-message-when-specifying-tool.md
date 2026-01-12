@@ -13,14 +13,14 @@ head: cannot-specify-workspace
 created_at: 2025-01-28T07:42:22Z
 updated_at: 2025-01-28T14:25:34Z
 url: https://github.com/astral-sh/uv/pull/11013
-synced_at: 2026-01-10T11:45:23Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Fix incorrect error message when specifying `tool.uv.sources.(package).workspace` with other options
 
 ---
 
-_Pull request opened by @micolous on 2025-01-28 07:42_
+_@micolous_
 
 ## Summary
 

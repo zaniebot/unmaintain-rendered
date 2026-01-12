@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T00:11:46Z
 updated_at: 2024-10-29T03:24:52Z
 url: https://github.com/astral-sh/uv/issues/8651
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Error encountered when running sync in a Docker image with editable dependencies: path could not be normalized: ./../
 
 ---
 
-_Issue opened by @haruiz on 2024-10-29 00:11_
+_@haruiz_
 
 Hello, Astral team! 
 

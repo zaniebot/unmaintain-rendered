@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T10:16:07Z
 updated_at: 2025-09-08T15:54:47Z
 url: https://github.com/astral-sh/uv/issues/9012
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # uv remove --group any_group any_package. All deps are removed.
 
 ---
 
-_Issue opened by @VladislavSoren on 2024-11-11 10:16_
+_@VladislavSoren_
 
 Is this correct behavior?
 

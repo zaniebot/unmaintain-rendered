@@ -12,14 +12,14 @@ head: charlie/migrate-to-editable
 created_at: 2023-12-18T02:14:58Z
 updated_at: 2023-12-18T09:28:15Z
 url: https://github.com/astral-sh/uv/pull/677
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Uninstall existing non-editable versions when installing editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 02:14_
+_@charliermarsh_
 
 If you install `black` from PyPI, then `-e ../black`, we need to uninstall the existing `black`. This sounds simple, but that in turn requires that we _know_ `-e ../black` maps to the package `black`, so that we can mark it for uninstallation in the install plan. This, in turn, means that we need to build editable dependencies prior to the install plan.
 

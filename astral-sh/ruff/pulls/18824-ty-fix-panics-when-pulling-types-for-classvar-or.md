@@ -14,14 +14,14 @@ head: pulltypes-panics
 created_at: 2025-06-20T16:43:29Z
 updated_at: 2025-06-20T17:06:42Z
 url: https://github.com/astral-sh/ruff/pull/18824
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Fix panics when pulling types for `ClassVar` or `Final` parameterized with >1 argument
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-20 16:43_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-28T10:19:43Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/607
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # wrong erro msgs for arg dependecies.
 
 ---
 
-_Issue opened by @laishulu on 2016-07-28 10:19_
+_@laishulu_
 
 If I have args:
 

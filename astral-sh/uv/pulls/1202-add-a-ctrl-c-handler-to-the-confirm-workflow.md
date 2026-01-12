@@ -13,14 +13,14 @@ head: charlie/ctrl
 created_at: 2024-01-31T01:44:48Z
 updated_at: 2024-01-31T02:08:28Z
 url: https://github.com/astral-sh/uv/pull/1202
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Add a Ctrl+C handler to the confirm workflow
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 01:44_
+_@charliermarsh_
 
 Fixes an issue whereby exiting the confirmation prompt can lead to your cursor disappearing: https://github.com/console-rs/dialoguer/issues/294.
 

@@ -13,14 +13,14 @@ head: charlie/ctrl-c
 created_at: 2024-09-04T14:41:31Z
 updated_at: 2024-09-04T15:04:02Z
 url: https://github.com/astral-sh/uv/pull/7024
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Revert `pyproject.toml` modifications on Ctrl-C
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 14:41_
+_@charliermarsh_
 
 ## Summary
 

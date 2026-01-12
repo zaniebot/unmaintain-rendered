@@ -13,14 +13,14 @@ head: remove-parser-dependency-from-ruff-python-ast
 created_at: 2023-07-26T13:07:04Z
 updated_at: 2023-07-26T15:47:23Z
 url: https://github.com/astral-sh/ruff/pull/6096
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove parser dependency from ruff-python-ast
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-26 13:07_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

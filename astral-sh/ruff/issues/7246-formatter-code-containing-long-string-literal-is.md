@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T16:45:42Z
 updated_at: 2023-09-25T10:02:29Z
 url: https://github.com/astral-sh/ruff/issues/7246
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: code containing long string literal is parenthesized and generates worse output
 
 ---
 
-_Issue opened by @rossmacarthur on 2023-09-08 16:45_
+_@rossmacarthur_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/newlines
 created_at: 2023-09-21T14:42:58Z
 updated_at: 2023-09-21T14:53:01Z
 url: https://github.com/astral-sh/ruff/pull/7575
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Allow up to two newlines before trailing clause body comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 14:42_
+_@charliermarsh_
 
 ## Summary
 

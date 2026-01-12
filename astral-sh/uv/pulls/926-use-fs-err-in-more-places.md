@@ -13,14 +13,14 @@ head: konsti/more-fs_err
 created_at: 2024-01-15T09:37:37Z
 updated_at: 2024-01-15T09:39:34Z
 url: https://github.com/astral-sh/uv/pull/926
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Use fs_err in more places
 
 ---
 
-_Pull request opened by @konstin on 2024-01-15 09:37_
+_@konstin_
 
 Before:
 

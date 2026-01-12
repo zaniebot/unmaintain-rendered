@@ -13,14 +13,14 @@ head: msimacek/graalpy
 created_at: 2025-08-01T14:05:50Z
 updated_at: 2025-08-07T20:53:37Z
 url: https://github.com/astral-sh/uv/pull/15013
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Ignore GraalPy devtag
 
 ---
 
-_Pull request opened by @msimacek on 2025-08-01 14:05_
+_@msimacek_
 
 Allows [development builds of GraalPy](https://github.com/graalvm/graal-languages-ea-builds) to work with uv.
 

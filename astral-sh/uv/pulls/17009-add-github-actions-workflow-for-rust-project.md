@@ -11,14 +11,14 @@ head: main
 created_at: 2025-12-06T00:49:54Z
 updated_at: 2025-12-06T01:19:19Z
 url: https://github.com/astral-sh/uv/pull/17009
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Add GitHub Actions workflow for Rust project
 
 ---
 
-_Pull request opened by @pohi99999 on 2025-12-06 00:49_
+_@pohi99999_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

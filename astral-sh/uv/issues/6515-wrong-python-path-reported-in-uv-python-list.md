@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T14:01:23Z
 updated_at: 2024-08-23T21:06:59Z
 url: https://github.com/astral-sh/uv/issues/6515
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Wrong Python path reported in uv python list
 
 ---
 
-_Issue opened by @adaamz on 2024-08-23 14:01_
+_@adaamz_
 
 Hi,
 I think I misunderstand `uv python list` command or it returns something I wouldn't expect 🤔 

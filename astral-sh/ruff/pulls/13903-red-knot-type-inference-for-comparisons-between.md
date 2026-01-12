@@ -13,14 +13,14 @@ head: red-knot-implement-comparison-instances
 created_at: 2024-10-24T10:04:41Z
 updated_at: 2024-10-26T18:29:00Z
 url: https://github.com/astral-sh/ruff/pull/13903
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Type inference for comparisons between arbitrary instances
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-10-24 10:04_
+_@cake-monotone_
 
 # Summary
  - Implemented "rich comparison" for instance comparisons.

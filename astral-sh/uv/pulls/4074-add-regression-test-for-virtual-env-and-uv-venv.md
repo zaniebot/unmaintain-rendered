@@ -13,14 +13,14 @@ head: zb/fix-venv-reg
 created_at: 2024-06-05T20:55:07Z
 updated_at: 2024-06-06T00:28:46Z
 url: https://github.com/astral-sh/uv/pull/4074
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Add regression test for `VIRTUAL_ENV` and `uv venv` interaction
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 20:55_
+_@zanieb_
 
 For https://github.com/astral-sh/uv/pull/4073
 

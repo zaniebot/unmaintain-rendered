@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2025-01-20T22:15:55Z
 updated_at: 2025-01-20T22:28:20Z
 url: https://github.com/astral-sh/uv/pull/10791
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Move `RequiresDist` into its own module
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 22:15_
+_@charliermarsh_
 
 _No description provided._
 

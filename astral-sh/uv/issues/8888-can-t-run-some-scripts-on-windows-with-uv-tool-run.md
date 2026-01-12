@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T14:41:00Z
 updated_at: 2024-11-11T14:51:35Z
 url: https://github.com/astral-sh/uv/issues/8888
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Can't run some scripts on Windows with `uv tool run`
 
 ---
 
-_Issue opened by @depau on 2024-11-07 14:41_
+_@depau_
 
 uv version: `uv 0.4.30 (61ed2a236 2024-11-04)`
 

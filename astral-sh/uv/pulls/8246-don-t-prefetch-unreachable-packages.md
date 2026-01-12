@@ -15,14 +15,14 @@ head: konsti/stop-prefetching-the-wrong-packages
 created_at: 2024-10-16T09:09:20Z
 updated_at: 2024-10-22T11:02:20Z
 url: https://github.com/astral-sh/uv/pull/8246
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Don't prefetch unreachable packages
 
 ---
 
-_Pull request opened by @konstin on 2024-10-16 09:09_
+_@konstin_
 
 When batch prefetching we can fetch versions we know that are incompatible. In the following example, we were prefetching sentry-kafka-schemas below version 1.50.0.
 

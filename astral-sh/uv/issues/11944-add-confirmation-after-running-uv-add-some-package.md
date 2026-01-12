@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T09:42:02Z
 updated_at: 2025-03-05T21:11:21Z
 url: https://github.com/astral-sh/uv/issues/11944
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Add confirmation after running `uv add some_package`
 
 ---
 
-_Issue opened by @ifsheldon on 2025-03-04 09:42_
+_@ifsheldon_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-14T18:43:39Z
 updated_at: 2024-06-19T00:45:03Z
 url: https://github.com/astral-sh/uv/issues/4331
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support specifying layered requirements in a single file
 
 ---
 
-_Issue opened by @jab on 2024-06-14 18:43_
+_@jab_
 
 I recently noticed #2679 -- awesome to see all the interest in that!
 

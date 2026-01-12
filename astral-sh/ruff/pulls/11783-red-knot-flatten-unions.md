@@ -13,14 +13,14 @@ head: cjm/ifexpr
 created_at: 2024-06-06T21:00:47Z
 updated_at: 2024-06-08T13:51:19Z
 url: https://github.com/astral-sh/ruff/pull/11783
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] flatten unions
 
 ---
 
-_Pull request opened by @carljm on 2024-06-06 21:00_
+_@carljm_
 
 Flatten union types. Fixes #11781
 

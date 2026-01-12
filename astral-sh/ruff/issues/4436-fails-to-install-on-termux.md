@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-15T09:49:20Z
 updated_at: 2025-07-01T10:19:56Z
 url: https://github.com/astral-sh/ruff/issues/4436
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Fails to install on Termux 
 
 ---
 
-_Issue opened by @edshamis on 2023-05-15 09:49_
+_@edshamis_
 
 There's a dedicated ruff package for Termux, but ruff-lsp and python-lsp-ruff fail to install for the same reason
 

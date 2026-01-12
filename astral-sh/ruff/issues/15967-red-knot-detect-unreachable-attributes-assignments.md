@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T13:13:05Z
 updated_at: 2025-04-14T07:23:22Z
 url: https://github.com/astral-sh/ruff/issues/15967
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Detect unreachable attributes assignments
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 13:13_
+_@sharkdp_
 
 This is probably not a high-priority feature, but it would be great if we could detect attribute assignments in unreachable code sections, and eliminate them from the set of possible answers:
 

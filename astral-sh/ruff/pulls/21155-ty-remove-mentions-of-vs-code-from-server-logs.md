@@ -15,14 +15,14 @@ head: ty-ide-logs
 created_at: 2025-10-31T00:12:39Z
 updated_at: 2025-11-06T11:48:49Z
 url: https://github.com/astral-sh/ruff/pull/21155
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Remove mentions of VS Code from server logs
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-10-31 00:12_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

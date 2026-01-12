@@ -13,14 +13,14 @@ head: charlie/hash-eq-ii
 created_at: 2024-11-03T18:53:29Z
 updated_at: 2024-11-03T19:16:36Z
 url: https://github.com/astral-sh/ruff/pull/14065
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Detect items that hash to same value in duplicate dictionaries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-03 18:53_
+_@charliermarsh_
 
 ## Summary
 

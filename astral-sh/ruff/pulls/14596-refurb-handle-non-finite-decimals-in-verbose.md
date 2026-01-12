@@ -13,14 +13,14 @@ head: decimal-nan
 created_at: 2024-11-26T02:53:36Z
 updated_at: 2024-12-03T00:13:25Z
 url: https://github.com/astral-sh/ruff/pull/14596
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`refurb`] Handle non-finite decimals in `verbose-decimal-constructor (FURB157)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-26 02:53_
+_@dylwil3_
 
 This PR extends the Decimal parsing used in [verbose-decimal-constructor (FURB157)](https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/) to better handle non-finite `Decimal` objects, avoiding some false negatives.
 

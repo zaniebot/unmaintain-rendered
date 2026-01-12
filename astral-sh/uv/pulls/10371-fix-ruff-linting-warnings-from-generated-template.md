@@ -13,14 +13,14 @@ head: fix/ruff-compliance-init-templates
 created_at: 2025-01-07T16:55:16Z
 updated_at: 2025-01-07T17:07:44Z
 url: https://github.com/astral-sh/uv/pull/10371
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Fix ruff linting warnings from generated template files for extension modules
 
 ---
 
-_Pull request opened by @kmarchais on 2025-01-07 16:55_
+_@kmarchais_
 
 ## Summary
 

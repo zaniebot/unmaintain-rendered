@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-27T09:11:33Z
 updated_at: 2025-06-06T19:11:19Z
 url: https://github.com/astral-sh/uv/issues/3287
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # [perf] uv pip install resolution is slow when installing from VCS
 
 ---
 
-_Issue opened by @baggiponte on 2024-04-27 09:11_
+_@baggiponte_
 
 Ciao! I am installing a library from VCS and I _feel_ it should be faster.
 

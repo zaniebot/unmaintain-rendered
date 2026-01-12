@@ -13,14 +13,14 @@ head: move-settings-to-ruff-workspace
 created_at: 2023-09-20T12:23:14Z
 updated_at: 2023-09-20T21:52:02Z
 url: https://github.com/astral-sh/ruff/pull/7544
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Move `Settings` and `ResolverSettings` to `ruff_workspace`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-20 12:23_
+_@MichaReiser_
 
 ## Summary
 

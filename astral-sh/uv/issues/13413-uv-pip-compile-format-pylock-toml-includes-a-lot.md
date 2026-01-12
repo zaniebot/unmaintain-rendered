@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T16:49:11Z
 updated_at: 2025-12-04T16:07:36Z
 url: https://github.com/astral-sh/uv/issues/13413
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # `uv pip compile --format pylock.toml` includes a lot of wheels/sdits not allowed by compile command
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2025-05-12 16:49_
+_@notatallshaw-gts_
 
 ### Summary
 

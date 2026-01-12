@@ -13,14 +13,14 @@ head: dcreager/more-from-imports
 created_at: 2024-12-17T20:29:08Z
 updated_at: 2024-12-18T05:42:00Z
 url: https://github.com/astral-sh/ruff/pull/15041
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Prioritize attribute in from/import statement
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-17 20:29_
+_@dcreager_
 
 This tweaks the new semantics from #15026 a bit when a symbol could be interpreted both as an attribute and a submodule of a package.  For `from...import`, we should actually prioritize the attribute, because of how the statement itself [is implemented](https://docs.python.org/3/reference/simple_stmts.html#the-import-statement):
 

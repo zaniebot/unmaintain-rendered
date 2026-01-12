@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-12T16:29:34Z
 updated_at: 2024-07-15T16:54:41Z
 url: https://github.com/astral-sh/uv/issues/5018
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv tool install` should hint correct package when executable is provided by a dependency
 
 ---
 
-_Issue opened by @zanieb on 2024-07-12 16:29_
+_@zanieb_
 
 e.g. this command works:
 

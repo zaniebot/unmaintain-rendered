@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T19:32:21Z
 updated_at: 2025-07-15T20:38:55Z
 url: https://github.com/astral-sh/ruff/issues/19374
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [website] Search preview snippets should always show "What it does" instead of "Where it derives from"
 
 ---
 
-_Issue opened by @corneliusroemer on 2025-07-15 19:32_
+_@corneliusroemer_
 
 I came across non-ideal behavior of the search modal while looking for a Ruff lint rule that would flag Exceptions without any message text.
 

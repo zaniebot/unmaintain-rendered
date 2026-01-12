@@ -13,14 +13,14 @@ head: renovate/log-0.x-lockfile
 created_at: 2024-07-01T00:57:24Z
 updated_at: 2024-07-01T01:19:52Z
 url: https://github.com/astral-sh/ruff/pull/12118
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update Rust crate log to v0.4.22
 
 ---
 
-_Pull request opened by @renovate on 2024-07-01 00:57_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

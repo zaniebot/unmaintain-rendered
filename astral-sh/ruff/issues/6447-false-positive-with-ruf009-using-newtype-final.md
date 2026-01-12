@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-09T12:22:36Z
 updated_at: 2025-01-20T14:44:48Z
 url: https://github.com/astral-sh/ruff/issues/6447
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False positive with RUF009 using NewType, Final and dataclass
 
 ---
 
-_Issue opened by @inkhey on 2023-08-09 12:22_
+_@inkhey_
 
 Hello :wave: , I think I found a false positive on `RUF009` rule. 
 

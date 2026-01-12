@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T09:50:16Z
 updated_at: 2025-01-02T13:18:40Z
 url: https://github.com/astral-sh/uv/issues/5180
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Instability with preferences and forks: Lockfile changes on the second run
 
 ---
 
-_Issue opened by @konstin on 2024-07-18 09:50_
+_@konstin_
 
 The lockfile can change on the second `uv lock`, collapsing previously forking dependencies into a single one. I believe this due to how preferences are handled.
 

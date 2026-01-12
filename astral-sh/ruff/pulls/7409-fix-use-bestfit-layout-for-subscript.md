@@ -13,14 +13,14 @@ head: subscript-best-fit-layout
 created_at: 2023-09-15T15:59:15Z
 updated_at: 2023-09-16T14:21:46Z
 url: https://github.com/astral-sh/ruff/pull/7409
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # fix: Use BestFit layout for subscript
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-15 15:59_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-08T17:52:52Z
 updated_at: 2020-04-08T18:08:34Z
 url: https://github.com/clap-rs/clap/issues/1796
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Example 01b_quick_examples error
 
 ---
 
-_Issue opened by @OAyomide on 2020-04-08 17:52_
+_@OAyomide_
 
 ### Clap version
 2.33.0

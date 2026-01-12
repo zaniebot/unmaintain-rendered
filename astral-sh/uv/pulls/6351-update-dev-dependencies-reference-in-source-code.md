@@ -13,14 +13,14 @@ head: charlie/dev-gen
 created_at: 2024-08-21T16:22:47Z
 updated_at: 2024-08-21T16:29:56Z
 url: https://github.com/astral-sh/uv/pull/6351
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Update `dev_dependencies` reference in source code
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-21 16:22_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/6344
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-06T01:21:25Z
 updated_at: 2026-01-09T02:40:44Z
 url: https://github.com/astral-sh/ty/issues/1138
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Detect class attributes set by metaclasses `__init__` method
 
 ---
 
-_Issue opened by @strangemonad on 2025-09-06 01:21_
+_@strangemonad_
 
 ### Summary
 

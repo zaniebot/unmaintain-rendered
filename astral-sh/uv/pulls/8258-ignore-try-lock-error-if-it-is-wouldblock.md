@@ -12,14 +12,14 @@ head: main
 created_at: 2024-10-16T14:37:33Z
 updated_at: 2024-10-16T19:15:48Z
 url: https://github.com/astral-sh/uv/pull/8258
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Ignore try lock error if it is WouldBlock
 
 ---
 
-_Pull request opened by @j178 on 2024-10-16 14:37_
+_@j178_
 
 ## Summary
 

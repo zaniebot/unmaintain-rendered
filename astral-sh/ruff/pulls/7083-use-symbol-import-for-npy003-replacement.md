@@ -14,14 +14,14 @@ head: charlie/npy
 created_at: 2023-09-03T15:38:01Z
 updated_at: 2023-09-03T15:55:11Z
 url: https://github.com/astral-sh/ruff/pull/7083
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use symbol import for NPY003 replacement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 15:38_
+_@charliermarsh_
 
 ## Summary
 

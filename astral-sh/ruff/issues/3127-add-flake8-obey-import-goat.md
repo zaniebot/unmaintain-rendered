@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-22T15:07:46Z
 updated_at: 2023-07-10T01:26:06Z
 url: https://github.com/astral-sh/ruff/issues/3127
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add `flake8-obey-import-goat`
 
 ---
 
-_Issue opened by @bellini666 on 2023-02-22 15:07_
+_@bellini666_
 
 Ref: https://pypi.org/project/flake8-obey-import-goat
 

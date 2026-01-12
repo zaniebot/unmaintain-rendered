@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T00:19:32Z
 updated_at: 2025-10-12T21:16:50Z
 url: https://github.com/astral-sh/uv/issues/11302
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Start search for projects and virtual environments at script directory (instead of cwd)
 
 ---
 
-_Issue opened by @jdumas on 2025-02-07 00:19_
+_@jdumas_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T17:24:49Z
 updated_at: 2025-09-23T06:36:18Z
 url: https://github.com/astral-sh/uv/issues/13540
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Allow using workspace root dependency groups from member
 
 ---
 
-_Issue opened by @zanieb on 2025-05-19 17:24_
+_@zanieb_
 
 ### Summary
 

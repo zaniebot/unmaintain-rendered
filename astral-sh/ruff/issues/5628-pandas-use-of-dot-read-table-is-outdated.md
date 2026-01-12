@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-09T13:51:05Z
 updated_at: 2023-07-17T01:25:15Z
 url: https://github.com/astral-sh/ruff/issues/5628
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `pandas-use-of-dot-read-table` is outdated
 
 ---
 
-_Issue opened by @tjkuson on 2023-07-09 13:51_
+_@tjkuson_
 
 `.read_table()` and `.read_csv()` are identical, except the first expects tab separation and the second expects comma separation. I am unclear why it is bad practice to use `.read_table()` to read tab separated values, for example
 

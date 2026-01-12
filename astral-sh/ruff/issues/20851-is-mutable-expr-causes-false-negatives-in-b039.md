@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T20:38:02Z
 updated_at: 2025-10-15T14:26:27Z
 url: https://github.com/astral-sh/ruff/issues/20851
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `is_mutable_expr` causes false negatives in B039, RUF008, RUF012, and RUF024
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-13 20:38_
+_@dscorbett_
 
 ### Summary
 

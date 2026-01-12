@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-15T09:14:57Z
 updated_at: 2023-09-15T22:21:29Z
 url: https://github.com/clap-rs/clap/issues/5127
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Default value seems to be cached, resulting in wrong default
 
 ---
 
-_Issue opened by @ctron on 2023-09-15 09:14_
+_@ctron_
 
 ### Please complete the following tasks
 

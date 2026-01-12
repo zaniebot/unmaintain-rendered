@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-24T16:41:38Z
 updated_at: 2025-09-26T05:40:20Z
 url: https://github.com/astral-sh/ruff/issues/20553
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # inconsistent first-party/third-party auto-resolution for non-permanent files (rule I001)
 
 ---
 
-_Issue opened by @jsurany on 2025-09-24 16:41_
+_@jsurany_
 
 ### Summary
 

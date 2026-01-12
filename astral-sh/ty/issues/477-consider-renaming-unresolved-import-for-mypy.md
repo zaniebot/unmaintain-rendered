@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-21T20:14:03Z
 updated_at: 2025-10-06T16:02:30Z
 url: https://github.com/astral-sh/ty/issues/477
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Consider renaming unresolved-import for mypy compatibility
 
 ---
 
-_Issue opened by @danielhollas on 2025-05-21 20:14_
+_@danielhollas_
 
 ### Question
 

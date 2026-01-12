@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-08T10:43:57Z
 updated_at: 2024-02-10T23:59:26Z
 url: https://github.com/astral-sh/ruff/issues/9893
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Enforce every `tqdm()` has a `desc: str`
 
 ---
 
-_Issue opened by @janosh on 2024-02-08 10:43_
+_@janosh_
 
 > very opinionated so feel free to close.
 

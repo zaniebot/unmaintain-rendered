@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-27T23:44:29Z
 updated_at: 2025-05-28T02:11:34Z
 url: https://github.com/astral-sh/ty/issues/526
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # feature request: expose a consistent mechanism for python environment discovery
 
 ---
 
-_Issue opened by @strangemonad on 2025-05-27 23:44_
+_@strangemonad_
 
 Sorry for the cross project issue spam but I'd like to attempt to plug https://github.com/astral-sh/uv/issues/2813 again. 
 

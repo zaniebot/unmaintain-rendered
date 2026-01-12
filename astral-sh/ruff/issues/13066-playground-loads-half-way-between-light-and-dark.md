@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T03:58:46Z
 updated_at: 2024-08-23T12:53:44Z
 url: https://github.com/astral-sh/ruff/issues/13066
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # playground loads half way between light and dark mode
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-23 03:58_
+_@DetachHead_
 
 firefox 130.0b7, "Website appearance" setting is set to dark
 

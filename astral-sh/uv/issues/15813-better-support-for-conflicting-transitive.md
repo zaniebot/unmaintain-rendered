@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T14:12:49Z
 updated_at: 2025-09-18T13:08:15Z
 url: https://github.com/astral-sh/uv/issues/15813
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Better support for conflicting transitive dependencies
 
 ---
 
-_Issue opened by @Ousret on 2025-09-12 14:12_
+_@Ousret_
 
 ### Summary
 

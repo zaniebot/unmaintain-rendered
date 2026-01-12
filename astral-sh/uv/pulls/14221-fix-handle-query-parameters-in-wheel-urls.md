@@ -11,14 +11,14 @@ head: fix/wheel-url-query-params
 created_at: 2025-06-23T16:57:09Z
 updated_at: 2025-06-23T18:52:20Z
 url: https://github.com/astral-sh/uv/pull/14221
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Fix: Handle query parameters in wheel URLs
 
 ---
 
-_Pull request opened by @esafak on 2025-06-23 16:57_
+_@esafak_
 
 ## Summary
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-04-11T15:54:42Z
 updated_at: 2020-04-10T02:00:14Z
 url: https://github.com/clap-rs/clap/issues/929
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Panic when Arg::requires_if contains an unknown argument
 
 ---
 
-_Issue opened by @RazrFalcon on 2017-04-11 15:54_
+_@RazrFalcon_
 
 ### Rust Version
 

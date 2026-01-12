@@ -12,14 +12,14 @@ head: zb/readme
 created_at: 2024-02-12T20:12:28Z
 updated_at: 2024-02-13T00:45:27Z
 url: https://github.com/astral-sh/uv/pull/1289
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Change ordering of highlights in readme
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-12 20:12_
+_@zanieb_
 
 Also, shorten some more items
 

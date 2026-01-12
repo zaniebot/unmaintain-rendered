@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-10T17:09:18Z
 updated_at: 2022-09-10T21:24:12Z
 url: https://github.com/clap-rs/clap/issues/4202
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `clap-derive`: error message does not match usage of `default_value_t`
 
 ---
 
-_Issue opened by @bengsparks on 2022-09-10 17:09_
+_@bengsparks_
 
 ### Please complete the following tasks
 

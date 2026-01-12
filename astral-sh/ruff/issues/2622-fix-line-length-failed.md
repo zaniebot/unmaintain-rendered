@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-07T11:48:58Z
 updated_at: 2023-02-07T15:41:42Z
 url: https://github.com/astral-sh/ruff/issues/2622
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # fix line-length failed 
 
 ---
 
-_Issue opened by @me-v2 on 2023-02-07 11:48_
+_@me-v2_
 
 `def format_record(record: dict) -> str:
     """

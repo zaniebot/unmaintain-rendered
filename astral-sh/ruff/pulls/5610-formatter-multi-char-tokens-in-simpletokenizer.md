@@ -12,14 +12,14 @@ head: simple-tokenizer-multi-char-tokens
 created_at: 2023-07-08T09:45:34Z
 updated_at: 2023-07-10T08:01:00Z
 url: https://github.com/astral-sh/ruff/pull/5610
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # formatter: multi char tokens in SimpleTokenizer 
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-08 09:45_
+_@davidszotten_
 
 _No description provided._
 

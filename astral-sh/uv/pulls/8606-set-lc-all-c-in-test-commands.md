@@ -13,14 +13,14 @@ head: lc_all
 created_at: 2024-10-27T10:41:38Z
 updated_at: 2024-10-27T14:26:34Z
 url: https://github.com/astral-sh/uv/pull/8606
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Set `LC_ALL=C` in test commands
 
 ---
 
-_Pull request opened by @vivienm on 2024-10-27 10:41_
+_@vivienm_
 
 ## Summary
 

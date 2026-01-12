@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-07T03:52:22Z
 updated_at: 2024-03-07T05:32:20Z
 url: https://github.com/astral-sh/ruff/issues/10264
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Update parser to have Notebook context
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-07 03:52_
+_@dhruvmanila_
 
 Taking the following 2 code cells as an example:
 

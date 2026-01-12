@@ -14,14 +14,14 @@ head: madlittlemods/control-var-used-after-block
 created_at: 2024-06-06T01:29:09Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/11769
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `ControlVarUsedAfterBlockViolation` `WPS441`)
 
 ---
 
-_Pull request opened by @MadLittleMods on 2024-06-06 01:29_
+_@MadLittleMods_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

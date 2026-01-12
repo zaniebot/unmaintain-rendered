@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T15:42:36Z
 updated_at: 2024-10-11T08:26:47Z
 url: https://github.com/astral-sh/uv/issues/8097
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Inconsistent inline dependency collection when passing scripts through stdin using `uv run -`
 
 ---
 
-_Issue opened by @MatthewCane on 2024-10-10 15:42_
+_@MatthewCane_
 
 **platform**: MacOS Sequoia 15.0.1
 **uv version:**: 0.4.20 (Homebrew 2024-10-08)

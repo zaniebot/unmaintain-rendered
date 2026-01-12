@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-23T17:05:45Z
 updated_at: 2024-07-31T15:12:13Z
 url: https://github.com/astral-sh/uv/issues/5351
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Odd UV Cache behaviour around freshly published package
 
 ---
 
-_Issue opened by @jbw-vtl on 2024-07-23 17:05_
+_@jbw-vtl_
 
 Hi Team,
 

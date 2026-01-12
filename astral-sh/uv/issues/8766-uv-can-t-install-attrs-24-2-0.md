@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T15:33:03Z
 updated_at: 2024-11-02T15:58:10Z
 url: https://github.com/astral-sh/uv/issues/8766
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # uv can't install attrs==24.2.0
 
 ---
 
-_Issue opened by @sh-shahrokhi on 2024-11-02 15:33_
+_@sh-shahrokhi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

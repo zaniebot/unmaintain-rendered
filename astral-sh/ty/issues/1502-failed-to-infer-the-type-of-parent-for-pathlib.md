@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T04:25:19Z
 updated_at: 2025-11-11T12:03:12Z
 url: https://github.com/astral-sh/ty/issues/1502
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Failed to infer the type of `.parent` for `pathlib.PurePath`/`pathlib.Path`/...
 
 ---
 
-_Issue opened by @ynty on 2025-11-08 04:25_
+_@ynty_
 
 ### Summary
 

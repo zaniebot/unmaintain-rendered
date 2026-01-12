@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T16:44:21Z
 updated_at: 2026-01-08T18:36:06Z
 url: https://github.com/astral-sh/ty/issues/1167
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Unexpected `invalid-return-type` when using narrowed dict as argument to dataclass
 
 ---
 
-_Issue opened by @jbree on 2025-09-10 16:44_
+_@jbree_
 
 ### Summary
 

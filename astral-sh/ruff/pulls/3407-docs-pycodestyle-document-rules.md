@@ -13,14 +13,14 @@ head: pycodestyle-docs
 created_at: 2023-03-08T19:42:28Z
 updated_at: 2023-03-10T22:36:38Z
 url: https://github.com/astral-sh/ruff/pull/3407
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # docs(pycodestyle): document rules
 
 ---
 
-_Pull request opened by @spaceone on 2023-03-08 19:42_
+_@spaceone_
 
 rip of the descriptions used by pycodestyle itself.
 

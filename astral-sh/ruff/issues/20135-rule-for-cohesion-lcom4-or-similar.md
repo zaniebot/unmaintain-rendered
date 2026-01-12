@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-28T13:10:36Z
 updated_at: 2025-09-06T08:25:58Z
 url: https://github.com/astral-sh/ruff/issues/20135
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule for cohesion (LCOM4 or similar)
 
 ---
 
-_Issue opened by @scastlara on 2025-08-28 13:10_
+_@scastlara_
 
 ### Summary
 

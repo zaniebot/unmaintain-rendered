@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T14:00:11Z
 updated_at: 2025-11-18T16:10:35Z
 url: https://github.com/astral-sh/ty/issues/953
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add support for `workspace/didChangeConfiguration` notification
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-08-07 14:00_
+_@dhruvmanila_
 
 This is a follow-up task from https://github.com/astral-sh/ty/issues/82 which is to add support for handling `workspace/didChangeConfiguration` notification.
 

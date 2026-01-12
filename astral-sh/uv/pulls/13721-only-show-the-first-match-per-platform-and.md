@@ -12,14 +12,14 @@ head: gankra/filter-smarter
 created_at: 2025-05-29T20:29:26Z
 updated_at: 2025-05-29T21:38:46Z
 url: https://github.com/astral-sh/uv/pull/13721
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Only show the first match per platform (and architecture) by default in `uv python list` 
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-29 20:29_
+_@Gankra_
 
 This is an alternative to #13701 
 

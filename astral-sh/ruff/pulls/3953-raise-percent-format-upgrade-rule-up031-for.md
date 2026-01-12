@@ -12,14 +12,14 @@ head: charlie/mod
 created_at: 2023-04-13T03:38:27Z
 updated_at: 2023-04-13T04:09:21Z
 url: https://github.com/astral-sh/ruff/pull/3953
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Raise percent-format upgrade rule (`UP031`) for hanging modulos
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 03:38_
+_@charliermarsh_
 
 ## Summary
 

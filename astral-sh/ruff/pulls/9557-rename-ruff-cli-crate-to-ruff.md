@@ -13,14 +13,14 @@ head: charlie/ruff
 created_at: 2024-01-16T20:53:32Z
 updated_at: 2024-01-16T22:47:02Z
 url: https://github.com/astral-sh/ruff/pull/9557
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Rename `ruff_cli` crate to `ruff`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 20:53_
+_@charliermarsh_
 
 ## Summary
 

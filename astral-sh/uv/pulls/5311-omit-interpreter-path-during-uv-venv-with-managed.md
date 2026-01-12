@@ -14,14 +14,14 @@ head: zb/venv-managed
 created_at: 2024-07-22T21:08:11Z
 updated_at: 2024-07-23T19:20:25Z
 url: https://github.com/astral-sh/uv/pull/5311
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Omit interpreter path during `uv venv` with managed Python
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 21:08_
+_@zanieb_
 
 e.g. 
 ```

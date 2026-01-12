@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T16:16:11Z
 updated_at: 2024-12-20T12:20:12Z
 url: https://github.com/astral-sh/uv/issues/7589
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # pynmstar failure to compile sub package
 
 ---
 
-_Issue opened by @varioustoxins on 2024-09-20 16:16_
+_@varioustoxins_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

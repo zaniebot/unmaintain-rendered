@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T11:16:27Z
 updated_at: 2025-02-07T16:34:04Z
 url: https://github.com/astral-sh/ruff/issues/16017
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Panic] Ruff crashed on ruff format - Os { code: 2, kind: NotFound }
 
 ---
 
-_Issue opened by @prdai on 2025-02-07 11:16_
+_@prdai_
 
 
 Ruff crashed while running `ruff format`. The error message indicates a missing file or directory:  

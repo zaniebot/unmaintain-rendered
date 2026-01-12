@@ -14,14 +14,14 @@ head: micha/place-table-thin-vec
 created_at: 2025-07-21T17:51:44Z
 updated_at: 2025-07-22T18:49:11Z
 url: https://github.com/astral-sh/ruff/pull/19470
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Use `ThinVec` for sub segments in `PlaceExpr`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-21 17:51_
+_@MichaReiser_
 
 ## Summary
 

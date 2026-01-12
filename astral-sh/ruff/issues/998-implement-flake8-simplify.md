@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-02T15:36:49Z
 updated_at: 2024-01-14T16:01:05Z
 url: https://github.com/astral-sh/ruff/issues/998
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement flake8-simplify
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-02 15:36_
+_@charliermarsh_
 
 Python-specific rules:
 

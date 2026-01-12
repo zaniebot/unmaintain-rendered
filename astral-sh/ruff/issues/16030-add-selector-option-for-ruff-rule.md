@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T00:13:54Z
 updated_at: 2025-03-20T03:43:04Z
 url: https://github.com/astral-sh/ruff/issues/16030
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add `--selector` option for `ruff rule`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-02-08 00:13_
+_@InSyncWithFoo_
 
 There are multiple kinds of rule selectors:
 

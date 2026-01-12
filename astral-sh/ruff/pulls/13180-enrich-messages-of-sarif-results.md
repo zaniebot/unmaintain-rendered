@@ -13,14 +13,14 @@ head: enrich-sarif-message
 created_at: 2024-08-31T04:40:42Z
 updated_at: 2024-09-01T12:30:25Z
 url: https://github.com/astral-sh/ruff/pull/13180
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Enrich messages of SARIF results
 
 ---
 
-_Pull request opened by @RussellLuo on 2024-08-31 04:40_
+_@RussellLuo_
 
 Closes #13179.
 

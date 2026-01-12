@@ -15,14 +15,14 @@ assignees: []
 created_at: 2021-08-13T01:05:10Z
 updated_at: 2022-05-23T15:33:39Z
 url: https://github.com/clap-rs/clap/issues/2683
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Provide data in the application domain rather than the CLI domain
 
 ---
 
-_Issue opened by @pksunkara on 2021-08-13 01:05_
+_@pksunkara_
 
 Currently, clap's API is focused on the CLI domain, with data being tracked as `OsString` with specialized helpers for `String`.  At the tale-end of the builder API, we provide the `value_of_t` API.  We do gloss over this in the derive API.
 

@@ -12,14 +12,14 @@ head: zb/test-rules-new
 created_at: 2024-01-31T19:12:26Z
 updated_at: 2024-02-02T08:53:22Z
 url: https://github.com/astral-sh/ruff/pull/9747
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add internal hidden rules for testing
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-31 19:12_
+_@zanieb_
 
 Updated implementation of https://github.com/astral-sh/ruff/pull/7369 which was left out in the cold.
 

@@ -13,14 +13,14 @@ head: zb/run-python-pin
 created_at: 2024-08-21T17:41:17Z
 updated_at: 2024-08-21T21:41:29Z
 url: https://github.com/astral-sh/uv/pull/6361
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Respect `.python-version` files in `uv run` outside projects
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 17:41_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6285
 

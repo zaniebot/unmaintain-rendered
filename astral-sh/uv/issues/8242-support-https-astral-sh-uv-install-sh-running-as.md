@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-16T06:46:16Z
 updated_at: 2024-10-21T13:35:25Z
 url: https://github.com/astral-sh/uv/issues/8242
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Support https://astral.sh/uv/install.sh running as Nobody
 
 ---
 
-_Issue opened by @VirtualTim on 2024-10-16 06:46_
+_@VirtualTim_
 
 I would like to use uv as a jenkins action, similar to https://github.com/astral-sh/setup-uv.
 When I'm running inside a docker container, Jenkins runs as `Nobody` (specifically `-u 1000:1000`).

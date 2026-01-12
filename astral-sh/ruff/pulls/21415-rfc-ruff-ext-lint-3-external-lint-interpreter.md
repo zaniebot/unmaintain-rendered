@@ -11,14 +11,14 @@ head: pieterh/ext-lint-3-interpreter
 created_at: 2025-11-12T22:14:05Z
 updated_at: 2026-01-07T01:49:43Z
 url: https://github.com/astral-sh/ruff/pull/21415
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # RFC [ruff][ext-lint] 3: external lint interpreter using PyO3
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-11-12 22:14_
+_@pieterh-oai_
 
 ## Summary
 

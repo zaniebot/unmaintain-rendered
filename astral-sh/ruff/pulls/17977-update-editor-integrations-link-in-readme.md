@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-05-09T09:35:23Z
 updated_at: 2025-05-26T08:50:09Z
 url: https://github.com/astral-sh/ruff/pull/17977
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # Update editor integrations link in README
 
 ---
 
-_Pull request opened by @otakutyrant on 2025-05-09 09:35_
+_@otakutyrant_
 
 Especially the wrong link of "editor integrations".
 

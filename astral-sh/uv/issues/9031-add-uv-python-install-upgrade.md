@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T21:10:57Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/9031
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Add `uv python install --upgrade`
 
 ---
 
-_Issue opened by @kevinrenskers on 2024-11-11 21:10_
+_@kevinrenskers_
 
 ```
 ~ $ uv --version

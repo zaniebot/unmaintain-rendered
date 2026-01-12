@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T11:55:36Z
 updated_at: 2023-08-31T13:47:12Z
 url: https://github.com/astral-sh/ruff/issues/7006
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # noqa comment at the end of a definition is not respected (DJ001)
 
 ---
 
-_Issue opened by @jaap3 on 2023-08-30 11:55_
+_@jaap3_
 
 Using `ruff 0.0.286` is noticed the following:
 

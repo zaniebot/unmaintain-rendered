@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T07:21:29Z
 updated_at: 2023-03-13T12:20:31Z
 url: https://github.com/astral-sh/ruff/issues/3052
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # C901 (max-complexity) not reported since 0.0.247
 
 ---
 
-_Issue opened by @kalekseev on 2023-02-20 07:21_
+_@kalekseev_
 
 Can't find anything that can cause the change in changelog https://github.com/charliermarsh/ruff/releases/tag/v0.0.247 or docs https://beta.ruff.rs/docs/settings/#max-complexity 
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T06:38:08Z
 updated_at: 2024-11-03T21:55:50Z
 url: https://github.com/astral-sh/uv/issues/8514
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Tools break (understandably) after upgrading system Python
 
 ---
 
-_Issue opened by @akx on 2024-10-24 06:38_
+_@akx_
 
 I ran a long-overdue `brew upgrade` on my system yesterday, and since `python@3.12 3.12.4 -> 3.12.7_1`, I knew I'd have to nuke my venvs (which is related to #1495 – since my venvs are in `~/venvs`, I don't need to hunt them around my project folders...) since the base interpreter is gone.
 

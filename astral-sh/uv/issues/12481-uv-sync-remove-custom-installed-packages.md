@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T10:26:16Z
 updated_at: 2025-05-09T10:46:29Z
 url: https://github.com/astral-sh/uv/issues/12481
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # `uv sync` remove custom installed packages
 
 ---
 
-_Issue opened by @neolee on 2025-03-26 10:26_
+_@neolee_
 
 ### Summary
 

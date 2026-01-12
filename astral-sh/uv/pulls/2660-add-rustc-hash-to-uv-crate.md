@@ -13,14 +13,14 @@ head: charlie/rustc-hash
 created_at: 2024-03-25T20:02:10Z
 updated_at: 2024-03-25T20:21:45Z
 url: https://github.com/astral-sh/uv/pull/2660
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Add `rustc-hash` to `uv` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-25 20:02_
+_@charliermarsh_
 
 ## Summary
 

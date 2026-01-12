@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T00:49:22Z
 updated_at: 2025-10-16T11:44:17Z
 url: https://github.com/astral-sh/uv/issues/11010
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # caching: Ignoring existing virtual environment
 
 ---
 
-_Issue opened by @sshleifer on 2025-01-28 00:49_
+_@sshleifer_
 
 ### Question
 

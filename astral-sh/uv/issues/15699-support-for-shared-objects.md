@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T10:08:37Z
 updated_at: 2025-09-16T23:00:05Z
 url: https://github.com/astral-sh/uv/issues/15699
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Support for shared objects
 
 ---
 
-_Issue opened by @pswsm on 2025-09-05 10:08_
+_@pswsm_
 
 ### Question
 

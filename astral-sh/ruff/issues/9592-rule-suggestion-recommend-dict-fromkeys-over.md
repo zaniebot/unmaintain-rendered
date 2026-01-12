@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-20T14:00:42Z
 updated_at: 2024-01-24T02:16:49Z
 url: https://github.com/astral-sh/ruff/issues/9592
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule suggestion: recommend `dict.fromkeys` over comprehension
 
 ---
 
-_Issue opened by @tjkuson on 2024-01-20 14:00_
+_@tjkuson_
 
 Replace
 

@@ -13,14 +13,14 @@ head: charlie/arg001
 created_at: 2023-02-07T16:20:15Z
 updated_at: 2023-02-07T16:22:18Z
 url: https://github.com/astral-sh/ruff/pull/2627
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid non-recursion in nested typing function calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 16:20_
+_@charliermarsh_
 
 Previously, we treated the outer `Call` in `cast(...)(x=x)` as `cast`, whereas in reality only the _inner_ call is `cast`.
 

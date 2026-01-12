@@ -12,14 +12,14 @@ head: charlie/visit
 created_at: 2023-07-22T01:50:04Z
 updated_at: 2023-07-22T02:34:28Z
 url: https://github.com/astral-sh/ruff/pull/5963
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove unnecessary `check_deferred_assignments`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-22 01:50_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T12:22:47Z
 updated_at: 2024-11-09T13:54:50Z
 url: https://github.com/astral-sh/uv/issues/8967
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Confusing warning - `resolution-strategy`
 
 ---
 
-_Issue opened by @KasperZutterman on 2024-11-09 12:22_
+_@KasperZutterman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

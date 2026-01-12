@@ -14,14 +14,14 @@ head: alex/pyslice-lifetimes
 created_at: 2025-08-01T13:43:41Z
 updated_at: 2025-08-01T14:16:05Z
 url: https://github.com/astral-sh/ruff/pull/19687
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Simplify lifetime requirements for `PySlice` trait
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-01 13:43_
+_@AlexWaygood_
 
 ## Summary
 

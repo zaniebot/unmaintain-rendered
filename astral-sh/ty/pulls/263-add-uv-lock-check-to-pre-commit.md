@@ -13,14 +13,14 @@ head: add-uv-lock-check
 created_at: 2025-05-08T07:57:39Z
 updated_at: 2025-05-09T07:28:28Z
 url: https://github.com/astral-sh/ty/pull/263
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add uv lock --check to pre-commit
 
 ---
 
-_Pull request opened by @paul-nameless on 2025-05-08 07:57_
+_@paul-nameless_
 
 Fixes #253 
 

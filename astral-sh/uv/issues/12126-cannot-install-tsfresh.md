@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T01:46:08Z
 updated_at: 2025-03-14T00:28:18Z
 url: https://github.com/astral-sh/uv/issues/12126
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Cannot install tsfresh
 
 ---
 
-_Issue opened by @lucidfrontier45 on 2025-03-12 01:46_
+_@lucidfrontier45_
 
 ### Summary
 

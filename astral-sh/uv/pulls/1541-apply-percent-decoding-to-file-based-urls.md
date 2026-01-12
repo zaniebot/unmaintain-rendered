@@ -13,14 +13,14 @@ head: charlie/escape
 created_at: 2024-02-16T20:55:59Z
 updated_at: 2024-02-16T21:11:17Z
 url: https://github.com/astral-sh/uv/pull/1541
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Apply percent-decoding to file-based URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 20:55_
+_@charliermarsh_
 
 ## Summary
 

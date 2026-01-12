@@ -14,14 +14,14 @@ head: konsti/release-reqwest-middleware
 created_at: 2024-11-12T13:46:30Z
 updated_at: 2024-11-12T13:57:49Z
 url: https://github.com/astral-sh/uv/pull/9058
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Use crates.io reqwest-middleware
 
 ---
 
-_Pull request opened by @konstin on 2024-11-12 13:46_
+_@konstin_
 
 Thanks to https://github.com/TrueLayer/reqwest-middleware/pull/198, we can now remove the git dependency and switch back to a crates.io dependency.
 

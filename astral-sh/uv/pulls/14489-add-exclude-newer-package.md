@@ -13,14 +13,14 @@ head: zb/exclude-newer-package
 created_at: 2025-07-07T16:29:19Z
 updated_at: 2025-07-29T22:00:27Z
 url: https://github.com/astral-sh/uv/pull/14489
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:14Z
 ```
 
 # Add `exclude-newer-package`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-07 16:29_
+_@zanieb_
 
 Adds `exclude-newer-package = { package = timestamp, ... } ` and `--exclude-newer-package package=timestamp`. These take precedence over `exclude-newer` for a given package.
 

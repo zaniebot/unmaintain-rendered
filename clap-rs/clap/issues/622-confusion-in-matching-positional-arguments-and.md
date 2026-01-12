@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-08-21T10:15:38Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/622
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Confusion in matching positional arguments and subcommands
 
 ---
 
-_Issue opened by @guiniol on 2016-08-21 10:15_
+_@guiniol_
 
 If the positional argument's value starts with the same string as a subcommand, clap tries to match it as a subcommand. This can be seen with the example in the main README:
 

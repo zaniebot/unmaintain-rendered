@@ -14,14 +14,14 @@ head: rename-tch-to-tc
 created_at: 2024-11-18T17:15:45Z
 updated_at: 2024-11-28T15:29:25Z
 url: https://github.com/astral-sh/ruff/pull/14438
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff 0.8][`flake8-type-checking`] Rename `TCH` to `TC`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-18 17:15_
+_@Daverball_
 
 Closes #9573
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-06T01:32:53Z
 updated_at: 2025-10-06T09:16:02Z
 url: https://github.com/astral-sh/uv/issues/16131
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # I don't understand documentation for version
 
 ---
 
-_Issue opened by @raffaem on 2025-10-06 01:32_
+_@raffaem_
 
 ### Summary
 

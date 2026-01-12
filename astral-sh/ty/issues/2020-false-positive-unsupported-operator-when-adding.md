@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T16:43:46Z
 updated_at: 2025-12-17T17:20:24Z
 url: https://github.com/astral-sh/ty/issues/2020
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False-positive `unsupported-operator` when adding strings to non-strings
 
 ---
 
-_Issue opened by @rodya-mirov on 2025-12-17 16:43_
+_@rodya-mirov_
 
 ### Summary
 

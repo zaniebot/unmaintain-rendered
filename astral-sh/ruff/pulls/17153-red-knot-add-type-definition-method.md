@@ -13,14 +13,14 @@ head: micha/type-definition
 created_at: 2025-04-02T14:39:59Z
 updated_at: 2025-04-04T08:56:22Z
 url: https://github.com/astral-sh/ruff/pull/17153
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add `Type.definition` method
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-02 14:39_
+_@MichaReiser_
 
 ## Summary
 

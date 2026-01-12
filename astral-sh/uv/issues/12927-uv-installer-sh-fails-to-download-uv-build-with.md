@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T20:02:50Z
 updated_at: 2025-04-17T15:10:50Z
 url: https://github.com/astral-sh/uv/issues/12927
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # uv-installer.sh fails to download uv-build with 404 error behind proxy
 
 ---
 
-_Issue opened by @the-Fitz on 2025-04-16 20:02_
+_@the-Fitz_
 
 When running the `uv-installer.sh` script to download a specific version of `uv-build`, it fails to download the package with a 404 error. This issue occurs on both Linux and macOS devices that are behind a proxy. However, the issue does not occur on a macOS device that is not behind a proxy.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T14:44:17Z
 updated_at: 2026-01-05T14:50:31Z
 url: https://github.com/astral-sh/ty/issues/2015
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Inconsistent type inference for `tuple[int, ...]` when using `type` and `TypeAlias`
 
 ---
 
-_Issue opened by @tomasr8 on 2025-12-17 14:44_
+_@tomasr8_
 
 ### Summary
 

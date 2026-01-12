@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-31T09:49:23Z
 updated_at: 2025-12-31T00:01:12Z
 url: https://github.com/astral-sh/ty/issues/1460
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # treat `__setattr__` as fallback only
 
 ---
 
-_Issue opened by @lbhm on 2025-10-31 09:49_
+_@lbhm_
 
 ### Question
 

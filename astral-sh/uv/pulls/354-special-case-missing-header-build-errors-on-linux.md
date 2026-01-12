@@ -12,14 +12,14 @@ head: special-case-missing-header
 created_at: 2023-11-07T13:15:47Z
 updated_at: 2023-11-08T15:26:41Z
 url: https://github.com/astral-sh/uv/pull/354
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Special case missing header build errors (on linux)
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 13:15_
+_@konstin_
 
 One of the most common errors i observed are build failures due to missing header files. On ubuntu, this generally means that you need to install some `<...>-dev` package that the documentation tells you about, e.g. [mysqlclient](https://github.com/PyMySQL/mysqlclient#linux) needs `default-libmysqlclient-dev`, [some psycopg versions](https://www.psycopg.org/psycopg3/docs/basic/install.html#local-installation) (i remember that this was always required at some earlier point) require `libpq-dev` and pygraphviz wants `graphviz-dev`. This is quite common for many scientific packages (where conda has an advantage because they can provide those package as a dependency).
 

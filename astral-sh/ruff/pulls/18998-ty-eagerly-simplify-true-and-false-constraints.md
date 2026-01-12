@@ -13,14 +13,14 @@ head: david/eagerly-simplify-true-false
 created_at: 2025-06-27T20:01:35Z
 updated_at: 2025-06-30T11:15:14Z
 url: https://github.com/astral-sh/ruff/pull/18998
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Eagerly simplify 'True' and 'False' constraints
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-27 20:01_
+_@sharkdp_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-17T17:01:39Z
 updated_at: 2024-10-18T16:39:10Z
 url: https://github.com/astral-sh/uv/issues/8295
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `init::init_app_build_backend_maturin` and `init::init_lib_build_backend_maturin` test failures (offline?)
 
 ---
 
-_Issue opened by @mgorny on 2024-10-17 17:01_
+_@mgorny_
 
 I'm seeing the two following test failures in Gentoo with uv-0.4.23:
 

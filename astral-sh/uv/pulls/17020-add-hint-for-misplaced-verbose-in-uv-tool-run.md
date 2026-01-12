@@ -13,14 +13,14 @@ head: feature-16777-verbose-error-hint
 created_at: 2025-12-07T23:37:29Z
 updated_at: 2025-12-09T16:15:11Z
 url: https://github.com/astral-sh/uv/pull/17020
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Add hint for misplaced `--verbose`  in `uv tool run`
 
 ---
 
-_Pull request opened by @F4RAN on 2025-12-07 23:37_
+_@F4RAN_
 
 Resolves #16777
 

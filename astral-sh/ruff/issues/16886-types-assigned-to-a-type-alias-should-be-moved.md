@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T07:23:26Z
 updated_at: 2025-03-24T07:56:13Z
 url: https://github.com/astral-sh/ruff/issues/16886
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Types assigned to a type alias should be moved under type checking block
 
 ---
 
-_Issue opened by @haarisr on 2025-03-21 07:23_
+_@haarisr_
 
 ### Summary
 

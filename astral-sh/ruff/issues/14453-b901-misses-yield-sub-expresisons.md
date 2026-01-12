@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T13:37:46Z
 updated_at: 2025-12-29T20:18:08Z
 url: https://github.com/astral-sh/ruff/issues/14453
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B901: Misses `yield` sub-expresisons
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-19 13:37_
+_@MichaReiser_
 
 A very contrived example but `B901` misses yield expressions where they're not the expression of a `ExprStmt`. 
 

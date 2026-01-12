@@ -13,14 +13,14 @@ head: zb/include-group
 created_at: 2025-07-10T12:17:04Z
 updated_at: 2025-07-10T13:10:23Z
 url: https://github.com/astral-sh/uv/pull/14539
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Add nesting groups documentation for dependency groups
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-10 12:17_
+_@zanieb_
 
 _No description provided._
 

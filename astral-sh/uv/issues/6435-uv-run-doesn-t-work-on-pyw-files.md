@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T13:45:36Z
 updated_at: 2024-08-22T23:07:32Z
 url: https://github.com/astral-sh/uv/issues/6435
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv run` doesn't work on .pyw files
 
 ---
 
-_Issue opened by @Gaiko-sw on 2024-08-22 13:45_
+_@Gaiko-sw_
 
 Platform: Both Windows 10 & Ubuntu 24.04
 uv version: uv 0.3.1

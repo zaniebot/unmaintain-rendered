@@ -12,14 +12,14 @@ head: fix-20874
 created_at: 2025-10-15T01:41:21Z
 updated_at: 2026-01-02T17:12:54Z
 url: https://github.com/astral-sh/ruff/pull/20879
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [`pandas-vet`] Fix false positive for `.values` on NumPy `NamedTuples` (`PD011`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-15 01:41_
+_@danparizher_
 
 ## Summary
 

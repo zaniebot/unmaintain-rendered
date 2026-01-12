@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-07T01:48:22Z
 updated_at: 2022-11-07T02:09:51Z
 url: https://github.com/astral-sh/ruff/issues/629
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Undefined name when using `Literal`
 
 ---
 
-_Issue opened by @matteosantama on 2022-11-07 01:48_
+_@matteosantama_
 
 ```
 ❯ ruff --version

@@ -12,14 +12,14 @@ head: konsti/different-compile-timeout
 created_at: 2024-03-05T10:21:58Z
 updated_at: 2024-03-05T16:20:05Z
 url: https://github.com/astral-sh/uv/pull/2199
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Only use compile timeout for critical section
 
 ---
 
-_Pull request opened by @konstin on 2024-03-05 10:21_
+_@konstin_
 
 Follow-up to #2086: Don't use timeouts for the entire workers, but only for the section that's about communicating with the (potentially broken) `python` subprocess. I've also raised the timeout to 60s.
 

@@ -14,14 +14,14 @@ head: brent/watch-output-formats
 created_at: 2025-10-27T13:17:21Z
 updated_at: 2025-10-27T16:04:57Z
 url: https://github.com/astral-sh/ruff/pull/21097
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Respect `--output-format` with `--watch`
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-27 13:17_
+_@ntBre_
 
 Summary
 --

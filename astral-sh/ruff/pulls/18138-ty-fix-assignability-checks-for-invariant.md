@@ -14,14 +14,14 @@ head: alex/variance-assignability
 created_at: 2025-05-16T16:47:52Z
 updated_at: 2025-05-16T17:37:09Z
 url: https://github.com/astral-sh/ruff/pull/18138
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Fix assignability checks for invariant generics parameterized by gradual types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-16 16:47_
+_@AlexWaygood_
 
 ## Summary
 

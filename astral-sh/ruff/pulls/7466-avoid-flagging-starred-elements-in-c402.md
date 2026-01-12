@@ -13,14 +13,14 @@ head: charlie/C402
 created_at: 2023-09-17T15:16:28Z
 updated_at: 2023-09-17T15:30:38Z
 url: https://github.com/astral-sh/ruff/pull/7466
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid flagging starred elements in C402
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-17 15:16_
+_@charliermarsh_
 
 ## Summary
 

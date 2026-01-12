@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-22T21:18:53Z
 updated_at: 2025-11-25T18:38:09Z
 url: https://github.com/astral-sh/ruff/issues/21581
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter should avoid splitting arguments into their own line
 
 ---
 
-_Issue opened by @injust on 2025-11-22 21:18_
+_@injust_
 
 ### Summary
 

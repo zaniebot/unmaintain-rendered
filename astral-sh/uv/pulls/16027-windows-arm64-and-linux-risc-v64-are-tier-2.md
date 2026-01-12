@@ -13,14 +13,14 @@ head: konsti/winows-arm64-is-supported
 created_at: 2025-09-25T16:28:59Z
 updated_at: 2025-09-29T15:54:06Z
 url: https://github.com/astral-sh/uv/pull/16027
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Windows arm64 and Linux RISC-V64 are Tier 2 supported
 
 ---
 
-_Pull request opened by @konstin on 2025-09-25 16:28_
+_@konstin_
 
 Windows arm64 and Linux RISC-V64 are supported. Windows arm64 is special because you can also use the x86_64 stack, which may even be a better experience.
 

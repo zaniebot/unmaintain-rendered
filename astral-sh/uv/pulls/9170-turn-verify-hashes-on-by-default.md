@@ -13,14 +13,14 @@ head: uv-hashes
 created_at: 2024-11-17T01:08:44Z
 updated_at: 2024-11-18T02:40:13Z
 url: https://github.com/astral-sh/uv/pull/9170
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Turn `--verify-hashes` on by default
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-11-17 01:08_
+_@hauntsaninja_
 
 Fixes #9164
 

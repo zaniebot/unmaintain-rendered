@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T18:05:52Z
 updated_at: 2025-06-26T19:14:51Z
 url: https://github.com/astral-sh/uv/issues/14289
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Cannot specify multiple uv.sources which depend on platform markers
 
 ---
 
-_Issue opened by @adstalla on 2025-06-26 18:05_
+_@adstalla_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T18:51:05Z
 updated_at: 2024-03-21T13:47:40Z
 url: https://github.com/astral-sh/ruff/issues/10495
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Bug: not detecting `SIM105` when loop is present
 
 ---
 
-_Issue opened by @jamesbraza on 2024-03-20 18:51_
+_@jamesbraza_
 
 With `ruff==0.3.3`, I think [SIM105](https://docs.astral.sh/ruff/rules/suppressible-exception/) should be triggered here, but it's not:
 

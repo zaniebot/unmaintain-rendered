@@ -13,14 +13,14 @@ head: dcreager/constraints
 created_at: 2025-08-05T01:49:10Z
 updated_at: 2025-08-05T19:49:24Z
 url: https://github.com/astral-sh/ruff/pull/19750
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] WIP: Implement the type tallying algorithm from POPL2015 paper
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-05 01:49_
+_@dcreager_
 
 Not ready for review, but pushing up my ongoing progress for visibility
 

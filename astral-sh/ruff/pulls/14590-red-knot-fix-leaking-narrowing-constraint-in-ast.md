@@ -13,14 +13,14 @@ head: red-knot-leaked-narrowing-for-if-expr
 created_at: 2024-11-25T17:40:42Z
 updated_at: 2024-11-25T18:41:08Z
 url: https://github.com/astral-sh/ruff/pull/14590
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Fix Leaking Narrowing Constraint in `ast::ExprIf`
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-11-25 17:40_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

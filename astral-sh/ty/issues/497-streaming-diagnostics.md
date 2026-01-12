@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T14:26:41Z
 updated_at: 2025-08-15T12:10:08Z
 url: https://github.com/astral-sh/ty/issues/497
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Streaming diagnostics
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-23 14:26_
+_@sharkdp_
 
 This has been on my mind for some time. I also briefly discussed it with @MichaReiser some weeks ago. The progress bar that we have looks cool, but it would be even more useful if we could start showing diagnostics as early as possible [^1]. This reduces latency (time to first diagnostic), but also has the potential to reduce the overall runtime (time until all diagnostics are printed), I believe. This is because we could start with the IO-heavy work of printing out the diagnostics while the CPU-intense work is still ongoing, instead of waiting for it to be completely over [^2]. The obvious problem here is determinism. We currently sort all diagnostics before printing them. So we cannot simply send the diagnostics over a channel and print them out as soon as we generate them. But there might be some strategy where streaming is still possible. We know all files (that can produce diagnostics) before we start. So if we order diagnostics by file, we could print out all diagnostics of file `a/a/a.py` if no other file comes before it in the list of ordered files. It's questionable if this would work in practice though. `a/a/a.py` might be a file that depends on a lot of other files [^3]. It might therefore take a long time until we can start to even print out the diagnostics of the very first file.
 

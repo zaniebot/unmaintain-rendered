@@ -13,14 +13,14 @@ head: class-literal-init-callable-subtyping
 created_at: 2025-04-25T23:51:34Z
 updated_at: 2025-06-28T23:12:36Z
 url: https://github.com/astral-sh/ruff/pull/17638
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [ty] Add subtyping between Callable types and class literals with `__init__`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-25 23:51_
+_@MatthewMckee4_
 
 ## Summary
 

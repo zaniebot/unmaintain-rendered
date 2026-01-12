@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-20T14:53:44Z
 updated_at: 2025-01-08T13:32:54Z
 url: https://github.com/astral-sh/uv/issues/10056
-synced_at: 2026-01-10T11:10:22Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # "uv add PySide6" fails when the latest version doesn't have a wheel for the current platform
 
 ---
 
-_Issue opened by @borco on 2024-12-20 14:53_
+_@borco_
 
 At the time of writing this, the latest version of `PySide6` is `6.8.1.1`. I assume this is a patch release only for macos, as there is only one wheel for macos in it.
 

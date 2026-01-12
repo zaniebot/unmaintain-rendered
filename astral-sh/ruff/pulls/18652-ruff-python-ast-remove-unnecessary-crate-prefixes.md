@@ -13,14 +13,14 @@ head: fix/unnecessary-crate-prefix
 created_at: 2025-06-12T20:41:38Z
 updated_at: 2025-06-24T14:14:11Z
 url: https://github.com/astral-sh/ruff/pull/18652
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ruff_python_ast] remove unnecessary `crate::` prefixes
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-12 20:41_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T09:24:41Z
 updated_at: 2024-09-17T09:28:32Z
 url: https://github.com/astral-sh/ruff/issues/13377
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # (opened with wrong account, please ignore)
 
 ---
 
-_Issue opened by @glukai on 2024-09-17 09:24_
+_@glukai_
 
 EDIT: opened this with the wrong account, please ignore it
 

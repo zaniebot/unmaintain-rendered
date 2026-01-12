@@ -12,14 +12,14 @@ head: charlie/license-files
 created_at: 2023-01-05T00:59:18Z
 updated_at: 2023-01-28T09:20:55Z
 url: https://github.com/astral-sh/ruff/pull/1648
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Move external licenses to separate directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-05 00:59_
+_@charliermarsh_
 
 I received some feedback from a friend at Google that our license structure was failing to get picked up as MIT when run against the license auto-detection systems that make it easier for Google employees to contribute. This was the other structure I considered initially (add licenses to a subdirectory), so lets run with that instead.
 

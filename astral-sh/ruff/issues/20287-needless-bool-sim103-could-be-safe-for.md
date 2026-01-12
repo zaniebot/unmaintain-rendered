@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-07T18:31:20Z
 updated_at: 2025-09-10T14:15:24Z
 url: https://github.com/astral-sh/ruff/issues/20287
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `needless-bool` (SIM103) could be safe for expressions guaranteed to return `bool`s
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-07 18:31_
+_@dscorbett_
 
 ### Summary
 

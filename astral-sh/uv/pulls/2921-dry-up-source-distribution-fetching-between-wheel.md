@@ -13,14 +13,14 @@ head: charlie/shard
 created_at: 2024-04-09T00:08:16Z
 updated_at: 2024-04-09T00:14:43Z
 url: https://github.com/astral-sh/uv/pull/2921
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # DRY up source distribution fetching between wheel and metadata routes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 00:08_
+_@charliermarsh_
 
 These will get more involved with hash-checking, so easiest to extract them now.
 

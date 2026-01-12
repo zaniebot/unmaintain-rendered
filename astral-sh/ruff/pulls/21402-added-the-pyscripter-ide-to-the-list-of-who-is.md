@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-12T12:43:31Z
 updated_at: 2025-11-12T18:10:08Z
 url: https://github.com/astral-sh/ruff/pull/21402
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # Added the PyScripter IDE to the list of "Who is using Ruff?"
 
 ---
 
-_Pull request opened by @pyscripter on 2025-11-12 12:43_
+_@pyscripter_
 
 ## Summary
 

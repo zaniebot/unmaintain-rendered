@@ -12,14 +12,14 @@ head: charlie/ruff-isort
 created_at: 2023-03-13T21:38:03Z
 updated_at: 2023-03-14T18:34:31Z
 url: https://github.com/astral-sh/ruff/pull/3493
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow `# ruff:` prefix for isort action comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 21:38_
+_@charliermarsh_
 
 This PR lets users write `# ruff: isort: skip_file` in lieu of `# isort: skip_file` -- similar to how we support `# ruff: noqa: F401` in lieu of `# flake8: noqa: F401`.
 

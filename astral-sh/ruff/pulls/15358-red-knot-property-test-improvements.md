@@ -14,14 +14,14 @@ head: david/property-test-updates
 created_at: 2025-01-08T20:17:05Z
 updated_at: 2025-01-08T21:35:46Z
 url: https://github.com/astral-sh/ruff/pull/15358
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Property test improvements
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-08 20:17_
+_@sharkdp_
 
 ## Summary
 

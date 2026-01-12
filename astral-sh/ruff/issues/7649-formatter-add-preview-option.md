@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T09:21:57Z
 updated_at: 2023-10-18T01:26:40Z
 url: https://github.com/astral-sh/ruff/issues/7649
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Add `preview` option
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:21_
+_@MichaReiser_
 
 Add a `format.preview` option that allows enabling preview style for the formatter (without opting in to preview rules)
 

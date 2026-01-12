@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T02:30:47Z
 updated_at: 2023-10-01T03:30:09Z
 url: https://github.com/astral-sh/ruff/issues/7731
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Syntax error while parsing variables containing unicode? character
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-10-01 02:30_
+_@dhruvmanila_
 
 Surfaced in #7632. Maybe it's related to the encoding comment?
 

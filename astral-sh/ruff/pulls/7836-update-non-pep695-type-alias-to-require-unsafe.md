@@ -12,14 +12,14 @@ head: zanie/up040
 created_at: 2023-10-06T15:54:07Z
 updated_at: 2023-10-06T19:56:41Z
 url: https://github.com/astral-sh/ruff/pull/7836
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update `non-pep695-type-alias` to require `--unsafe-fixes` outside of stub files
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-06 15:54_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6434
 

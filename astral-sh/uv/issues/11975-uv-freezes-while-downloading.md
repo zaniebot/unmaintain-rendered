@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T13:45:48Z
 updated_at: 2025-03-11T21:11:32Z
 url: https://github.com/astral-sh/uv/issues/11975
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # uv freezes while downloading
 
 ---
 
-_Issue opened by @Marco-Sulla on 2025-03-05 13:45_
+_@Marco-Sulla_
 
 ### Summary
 

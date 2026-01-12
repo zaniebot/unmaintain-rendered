@@ -13,14 +13,14 @@ head: charlie/redirect
 created_at: 2023-03-13T19:46:41Z
 updated_at: 2023-03-13T19:58:24Z
 url: https://github.com/astral-sh/ruff/pull/3488
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove erroneous C4-to-C40 redirect
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 19:46_
+_@charliermarsh_
 
 This is my mistake. Redirecting `C4` to `C40` means that `C4` ends up omitting any of the `C41` rules. We don't need to redirect `C4` at all!
 

@@ -11,14 +11,14 @@ head: release-artifact-attestations
 created_at: 2025-04-17T06:44:10Z
 updated_at: 2025-11-26T20:59:42Z
 url: https://github.com/astral-sh/uv/pull/12935
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Generate artifact attestations for release binaries, too
 
 ---
 
-_Pull request opened by @scop on 2025-04-17 06:44_
+_@scop_
 
 
 <!--

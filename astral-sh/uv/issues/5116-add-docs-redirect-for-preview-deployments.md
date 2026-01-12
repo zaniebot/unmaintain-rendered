@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T17:06:51Z
 updated_at: 2024-07-16T18:22:47Z
 url: https://github.com/astral-sh/uv/issues/5116
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Add docs redirect for preview deployments
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 17:06_
+_@charliermarsh_
 
 _No description provided._
 

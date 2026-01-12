@@ -13,14 +13,14 @@ head: openai-more-ecosystem-exclude
 created_at: 2024-07-22T07:55:30Z
 updated_at: 2024-07-22T12:16:50Z
 url: https://github.com/astral-sh/ruff/pull/12448
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Ignore more open ai notebooks for now
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-22 07:55_
+_@MichaReiser_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: ww/npm
 created_at: 2025-12-02T15:01:22Z
 updated_at: 2025-12-02T15:14:57Z
 url: https://github.com/astral-sh/ty/pull/1722
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use `npm ci --ignore-scripts` instead of `npm install`
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-02 15:01_
+_@woodruffw_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T08:42:27Z
 updated_at: 2025-08-19T13:37:21Z
 url: https://github.com/astral-sh/uv/issues/15372
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # uv init should do git init before getting author information from git
 
 ---
 
-_Issue opened by @sebastianw on 2025-08-19 08:42_
+_@sebastianw_
 
 ### Summary
 

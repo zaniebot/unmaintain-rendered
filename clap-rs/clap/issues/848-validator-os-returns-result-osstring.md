@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-11T23:39:13Z
 updated_at: 2018-08-02T03:30:01Z
 url: https://github.com/clap-rs/clap/issues/848
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # validator_os returns Result<(), OsString>
 
 ---
 
-_Issue opened by @ssokolow on 2017-02-11 23:39_
+_@ssokolow_
 
 ### Affected Version of clap
 2.20.3 and anything API-compatible with it.

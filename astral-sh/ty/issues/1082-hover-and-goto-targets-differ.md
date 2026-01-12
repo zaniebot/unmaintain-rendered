@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T15:16:04Z
 updated_at: 2025-11-23T03:22:05Z
 url: https://github.com/astral-sh/ty/issues/1082
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # hover and goto targets differ
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-08-21 15:16_
+_@MatthewMckee4_
 
 ### Summary
 

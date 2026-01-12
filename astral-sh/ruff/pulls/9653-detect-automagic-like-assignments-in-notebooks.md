@@ -13,14 +13,14 @@ head: charlie/auto
 created_at: 2024-01-26T16:27:50Z
 updated_at: 2024-01-29T13:05:07Z
 url: https://github.com/astral-sh/ruff/pull/9653
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Detect automagic-like assignments in notebooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 16:27_
+_@charliermarsh_
 
 ## Summary
 

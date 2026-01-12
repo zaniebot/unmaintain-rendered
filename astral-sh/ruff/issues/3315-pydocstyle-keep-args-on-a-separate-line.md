@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T23:24:45Z
 updated_at: 2023-03-02T23:34:41Z
 url: https://github.com/astral-sh/ruff/issues/3315
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # pydocstyle: keep 'Args:' on a separate line
 
 ---
 
-_Issue opened by @janosh on 2023-03-02 23:24_
+_@janosh_
 
 `ruff check . --select D --fix` currently reformats
 

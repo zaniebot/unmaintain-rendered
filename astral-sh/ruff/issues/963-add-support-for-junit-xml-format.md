@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-29T20:54:40Z
 updated_at: 2022-11-30T06:17:05Z
 url: https://github.com/astral-sh/ruff/issues/963
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add support for junit xml format
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-29 20:54_
+_@JonathanPlasse_
 
 It would be helpful for Continuous Integration.
 

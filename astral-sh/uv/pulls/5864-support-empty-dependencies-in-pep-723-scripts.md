@@ -14,14 +14,14 @@ head: charlie/script
 created_at: 2024-08-07T14:44:01Z
 updated_at: 2024-08-07T14:56:07Z
 url: https://github.com/astral-sh/uv/pull/5864
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Support empty dependencies in PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 14:44_
+_@charliermarsh_
 
 ## Summary
 

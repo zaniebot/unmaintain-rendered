@@ -13,14 +13,14 @@ head: python_platform_docs
 created_at: 2024-04-23T20:00:49Z
 updated_at: 2024-04-23T20:17:49Z
 url: https://github.com/astral-sh/uv/pull/3220
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Fix documentation for python platform
 
 ---
 
-_Pull request opened by @neumann-nico on 2024-04-23 20:00_
+_@neumann-nico_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

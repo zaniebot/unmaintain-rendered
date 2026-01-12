@@ -14,14 +14,14 @@ head: selection_range
 created_at: 2025-07-25T23:29:51Z
 updated_at: 2025-07-26T16:08:40Z
 url: https://github.com/astral-sh/ruff/pull/19567
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Implemented support for "selection range" language server feature
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-25 23:29_
+_@UnboundVariable_
 
 This PR adds support for the "selection range" language server feature. This feature was recently requested by a ty user in [this feature request](https://github.com/astral-sh/ty/issues/882).
 

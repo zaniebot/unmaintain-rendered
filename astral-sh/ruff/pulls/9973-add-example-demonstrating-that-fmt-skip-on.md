@@ -13,14 +13,14 @@ head: document-fmt-skip-expression-level
 created_at: 2024-02-13T11:51:23Z
 updated_at: 2024-02-13T15:35:28Z
 url: https://github.com/astral-sh/ruff/pull/9973
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add example demonstrating that `fmt: skip` on expression level is not supported
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-13 11:51_
+_@MichaReiser_
 
 ## Summary
 

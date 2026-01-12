@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T14:01:38Z
 updated_at: 2024-06-10T17:36:31Z
 url: https://github.com/astral-sh/uv/issues/4199
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # failed to open file `/dev/null/uv/uv.toml`
 
 ---
 
-_Issue opened by @misery on 2024-06-10 14:01_
+_@misery_
 
 I tried uv in pre-receive hook in gitlab. Seems gitlab misses something here. But it would be nice if uv won't fail anymore.
 

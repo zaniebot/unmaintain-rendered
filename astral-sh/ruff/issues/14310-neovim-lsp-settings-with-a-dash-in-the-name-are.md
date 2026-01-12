@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T08:45:55Z
 updated_at: 2024-11-13T11:22:37Z
 url: https://github.com/astral-sh/ruff/issues/14310
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Neovim LSP settings with a dash in the name are ignored
 
 ---
 
-_Issue opened by @mamekoro on 2024-11-13 08:45_
+_@mamekoro_
 
 I've tried to set `extend-exclude` to `["__about__.py"]` and `lint.allowed-confusables` to `["（", "）"]` in various ways, but none of them work.
 

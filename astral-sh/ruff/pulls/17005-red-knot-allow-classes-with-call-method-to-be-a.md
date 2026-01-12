@@ -12,14 +12,14 @@ head: class-with-call-subtype-callable
 created_at: 2025-03-26T23:39:09Z
 updated_at: 2025-04-01T23:49:30Z
 url: https://github.com/astral-sh/ruff/pull/17005
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Allow classes with __call__ method to be a subtype of Callable
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-26 23:39_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

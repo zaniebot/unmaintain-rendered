@@ -13,14 +13,14 @@ head: charlie/pre-commit
 created_at: 2023-11-07T16:29:39Z
 updated_at: 2023-11-08T17:07:28Z
 url: https://github.com/astral-sh/ruff/pull/8545
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update pre-commit documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 16:29_
+_@charliermarsh_
 
 I got some feedback on Mastodon that it wasn't clear how to use the linter and formatter together in pre-commit (mostly in the pre-commit repo's documentation, which is even less clear, but the two should be consistent).
 

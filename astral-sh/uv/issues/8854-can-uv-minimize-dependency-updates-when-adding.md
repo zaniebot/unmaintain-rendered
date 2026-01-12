@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-06T04:44:41Z
 updated_at: 2024-11-07T02:36:38Z
 url: https://github.com/astral-sh/uv/issues/8854
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Can UV minimize dependency updates when adding new dependencies, updating only to the minimum required version?
 
 ---
 
-_Issue opened by @TonyYanOnFire on 2024-11-06 04:44_
+_@TonyYanOnFire_
 
 Scenario: Adding dependency foo, which requires bar >= 1.5.0. The latest version of bar is 1.9.0, but the project currently locks bar at version 1.0.0. In this case, pip will upgrade bar directly to 1.9.0. However, what i want is to upgrade bar only to 1.5.0. My goal is to minimize changes to the existing project dependencies. 
 

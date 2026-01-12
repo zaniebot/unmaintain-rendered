@@ -13,14 +13,14 @@ head: zb/win-32
 created_at: 2025-01-15T23:40:10Z
 updated_at: 2025-04-21T20:06:16Z
 url: https://github.com/astral-sh/uv/pull/10662
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Use 32-core Windows runner for tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 23:40_
+_@zanieb_
 
 Historically, this has not been worth it; worth a try though
 

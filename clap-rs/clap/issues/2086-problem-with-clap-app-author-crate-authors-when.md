@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-20T13:45:14Z
 updated_at: 2020-08-21T09:32:39Z
 url: https://github.com/clap-rs/clap/issues/2086
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Problem with `clap::App::author(crate_authors!(", "))` when called from function
 
 ---
 
-_Issue opened by @finga on 2020-08-20 13:45_
+_@finga_
 
 I wanted to tighten up a `main()` function and therefor tried to move the `clapp::App::new(...` to another function in another file but this does not seem to work when using `crate_authors!(", ")`
 

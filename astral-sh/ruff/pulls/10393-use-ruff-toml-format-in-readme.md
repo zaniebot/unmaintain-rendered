@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-03-13T18:07:31Z
 updated_at: 2024-03-13T18:45:35Z
 url: https://github.com/astral-sh/ruff/pull/10393
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Use ruff.toml format in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 18:07_
+_@charliermarsh_
 
 ## Summary
 

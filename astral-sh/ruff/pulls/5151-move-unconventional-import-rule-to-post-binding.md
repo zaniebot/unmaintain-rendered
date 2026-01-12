@@ -12,14 +12,14 @@ head: charlie/import-convention
 created_at: 2023-06-16T18:02:30Z
 updated_at: 2023-06-18T15:39:03Z
 url: https://github.com/astral-sh/ruff/pull/5151
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move unconventional import rule to post-binding phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 18:02_
+_@charliermarsh_
 
 ## Summary
 

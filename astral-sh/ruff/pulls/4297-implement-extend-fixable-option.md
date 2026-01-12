@@ -12,14 +12,14 @@ head: charlie/extend-fixable
 created_at: 2023-05-09T01:34:33Z
 updated_at: 2023-05-19T02:20:20Z
 url: https://github.com/astral-sh/ruff/pull/4297
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement `--extend-fixable` option
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 01:34_
+_@charliermarsh_
 
 # Summary
 

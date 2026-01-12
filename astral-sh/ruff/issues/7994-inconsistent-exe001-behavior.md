@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T20:17:28Z
 updated_at: 2023-10-16T21:20:17Z
 url: https://github.com/astral-sh/ruff/issues/7994
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Inconsistent EXE001 behavior
 
 ---
 
-_Issue opened by @Scrat94 on 2023-10-16 20:17_
+_@Scrat94_
 
 Hello,
 

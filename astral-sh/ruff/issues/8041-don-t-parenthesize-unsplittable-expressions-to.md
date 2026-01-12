@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-18T10:04:15Z
 updated_at: 2023-11-03T05:13:01Z
 url: https://github.com/astral-sh/ruff/issues/8041
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Don't parenthesize unsplittable expressions to make comments fit
 
 ---
 
-_Issue opened by @konstin on 2023-10-18 10:04_
+_@konstin_
 
 Black:
 ```python

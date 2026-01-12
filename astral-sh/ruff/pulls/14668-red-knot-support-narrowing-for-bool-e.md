@@ -13,14 +13,14 @@ head: narrow-bool
 created_at: 2024-11-29T06:01:33Z
 updated_at: 2024-12-03T03:06:37Z
 url: https://github.com/astral-sh/ruff/pull/14668
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # red-knot: support narrowing for bool(E)
 
 ---
 
-_Pull request opened by @connorskees on 2024-11-29 06:01_
+_@connorskees_
 
 Resolves https://github.com/astral-sh/ruff/issues/14547 by delegating narrowing to `E` for `bool(E)` where `E` is some expression. 
 

@@ -15,14 +15,14 @@ head: pieterh-oai/G004-implicit-concat
 created_at: 2025-10-09T21:33:02Z
 updated_at: 2025-10-28T18:49:02Z
 url: https://github.com/astral-sh/ruff/pull/20793
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [`flake8-logging-format`] Avoid dropping implicitly concatenated pieces in the `G004` fix
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-10-09 21:33_
+_@pieterh-oai_
 
 ## Summary
 

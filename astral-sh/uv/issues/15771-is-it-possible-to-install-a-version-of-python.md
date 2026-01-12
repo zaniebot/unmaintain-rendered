@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T17:56:22Z
 updated_at: 2025-09-10T18:58:13Z
 url: https://github.com/astral-sh/uv/issues/15771
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Is it possible to install a version of python that includes the "test" package?
 
 ---
 
-_Issue opened by @JanEricNitschke on 2025-09-10 17:56_
+_@JanEricNitschke_
 
 ### Question
 

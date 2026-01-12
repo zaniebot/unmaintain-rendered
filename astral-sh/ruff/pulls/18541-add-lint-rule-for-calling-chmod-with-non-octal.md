@@ -13,14 +13,14 @@ head: feature/chmod-non-octal
 created_at: 2025-06-07T22:26:51Z
 updated_at: 2025-06-19T09:31:46Z
 url: https://github.com/astral-sh/ruff/pull/18541
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Add lint rule for calling chmod with non-octal integers
 
 ---
 
-_Pull request opened by @RazerM on 2025-06-07 22:26_
+_@RazerM_
 
 Resolves #18464
 

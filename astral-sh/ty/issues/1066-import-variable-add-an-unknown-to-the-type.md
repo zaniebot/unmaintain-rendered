@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T18:48:58Z
 updated_at: 2025-10-06T16:41:11Z
 url: https://github.com/astral-sh/ty/issues/1066
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # import variable add an Unknown | to the type
 
 ---
 
-_Issue opened by @asukaminato0721 on 2025-08-20 18:48_
+_@asukaminato0721_
 
 ### Summary
 

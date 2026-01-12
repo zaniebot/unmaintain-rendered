@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-11T09:47:04Z
 updated_at: 2025-07-21T13:21:48Z
 url: https://github.com/astral-sh/ruff/issues/9091
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # How to make peace with needed nested import statements for Ruff E402?
 
 ---
 
-_Issue opened by @alanwilter on 2023-12-11 09:47_
+_@alanwilter_
 
 I use this lines a lot in several projects.
 

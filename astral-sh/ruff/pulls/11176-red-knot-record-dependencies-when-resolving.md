@@ -12,14 +12,14 @@ head: cjm/record-deps
 created_at: 2024-04-27T14:42:44Z
 updated_at: 2024-05-08T17:43:10Z
 url: https://github.com/astral-sh/ruff/pull/11176
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] record dependencies when resolving across imports
 
 ---
 
-_Pull request opened by @carljm on 2024-04-27 14:42_
+_@carljm_
 
 ## Summary
 

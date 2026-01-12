@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-09T05:33:31Z
 updated_at: 2024-12-09T10:15:40Z
 url: https://github.com/astral-sh/ruff/issues/14859
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Upgrade to React 19
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-12-09 05:33_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/14856
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T11:43:03Z
 updated_at: 2025-01-18T05:12:05Z
 url: https://github.com/astral-sh/ruff/issues/7005
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # isort custom sections in a monorepo
 
 ---
 
-_Issue opened by @jaap3 on 2023-08-30 11:43_
+_@jaap3_
 
 I'm running into the following using `ruff 0.0.286` in a monorepo. 
 

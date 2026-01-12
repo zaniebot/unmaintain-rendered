@@ -12,14 +12,14 @@ head: zb/python-version-enforcement
 created_at: 2024-09-10T17:42:25Z
 updated_at: 2024-09-10T18:34:19Z
 url: https://github.com/astral-sh/uv/pull/7264
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Drop Python version range enforcement from `PythonVersion::from_str`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 17:42_
+_@zanieb_
 
 This caused some problems earlier, as it prevented us from _listing_ Python versions <3.7 which seems weird (see https://github.com/astral-sh/uv/pull/7131#issuecomment-2334929000)
 

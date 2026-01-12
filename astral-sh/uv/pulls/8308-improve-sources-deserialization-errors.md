@@ -13,14 +13,14 @@ head: charlie/src-err
 created_at: 2024-10-17T21:23:54Z
 updated_at: 2024-10-17T21:33:05Z
 url: https://github.com/astral-sh/uv/pull/8308
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Improve sources deserialization errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-17 21:23_
+_@charliermarsh_
 
 _No description provided._
 

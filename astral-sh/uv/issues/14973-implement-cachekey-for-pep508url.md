@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T14:07:13Z
 updated_at: 2025-07-30T15:44:07Z
 url: https://github.com/astral-sh/uv/issues/14973
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Implement `CacheKey` for `Pep508Url`
 
 ---
 
-_Issue opened by @zanieb on 2025-07-30 14:07_
+_@zanieb_
 
 We should look into this...
 

@@ -13,14 +13,14 @@ head: renkai-equality-narrowing
 created_at: 2025-08-30T02:23:08Z
 updated_at: 2025-09-03T15:34:23Z
 url: https://github.com/astral-sh/ruff/pull/20164
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty]eliminate definitely-impossible types from union in equality narrowing
 
 ---
 
-_Pull request opened by @Renkai on 2025-08-30 02:23_
+_@Renkai_
 
 solves https://github.com/astral-sh/ty/issues/939
 

@@ -13,14 +13,14 @@ head: zb/names
 created_at: 2024-01-18T23:14:30Z
 updated_at: 2024-01-19T16:01:35Z
 url: https://github.com/astral-sh/uv/pull/978
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Use more realistic names in scenario snapshots
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-18 23:14_
+_@zanieb_
 
 This is helpful to make the error messages more realistic and the names are indisputably cuter. 
 

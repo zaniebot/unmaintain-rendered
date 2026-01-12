@@ -12,14 +12,14 @@ head: perf/maybe-faster-ident
 created_at: 2024-02-18T05:35:08Z
 updated_at: 2024-02-18T05:48:13Z
 url: https://github.com/astral-sh/ruff/pull/10019
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # perf(lexer): maybe faster identifiers
 
 ---
 
-_Pull request opened by @sno2 on 2024-02-18 05:35_
+_@sno2_
 
 might help a bit
 

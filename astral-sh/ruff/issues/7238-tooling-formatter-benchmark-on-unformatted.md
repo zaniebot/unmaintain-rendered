@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T08:10:11Z
 updated_at: 2023-10-18T10:11:42Z
 url: https://github.com/astral-sh/ruff/issues/7238
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Tooling: Formatter benchmark on unformatted projects
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 08:10_
+_@MichaReiser_
 
 Benchmark Ruff's formatter compatibility on *unblacked* projects by
 

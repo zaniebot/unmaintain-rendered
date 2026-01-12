@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T13:43:29Z
 updated_at: 2024-08-12T23:50:46Z
 url: https://github.com/astral-sh/uv/issues/3943
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Missing test coverage for `tool.uv` behaviours
 
 ---
 
-_Issue opened by @konstin on 2024-05-31 13:43_
+_@konstin_
 
 In #3904, we added support for a whole class of new `tool.uv` behaviors, but no tests for them yet. 
 

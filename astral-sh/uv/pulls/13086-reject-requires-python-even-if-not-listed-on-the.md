@@ -13,14 +13,14 @@ head: konsti/requires-python-not-on-index
 created_at: 2025-04-24T10:18:19Z
 updated_at: 2025-04-25T10:52:04Z
 url: https://github.com/astral-sh/uv/pull/13086
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Reject requires python even if not listed on the index page
 
 ---
 
-_Pull request opened by @konstin on 2025-04-24 10:18_
+_@konstin_
 
 Reject distributions with an incompatible `Requires-Python`, even if the index page is missing `data-requires-python`.
 

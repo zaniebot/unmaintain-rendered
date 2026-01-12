@@ -13,14 +13,14 @@ head: pathlib-getsize-time
 created_at: 2023-07-17T15:54:24Z
 updated_at: 2023-07-20T08:41:49Z
 url: https://github.com/astral-sh/ruff/pull/5835
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`flake8-use-pathlib`] Implement `os-path-getsize` and `os-path-get(a|m|c)-time` (`PTH202-205`)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-17 15:54_
+_@sbrugman_
 
 Reviving https://github.com/astral-sh/ruff/pull/2348 step by step
 

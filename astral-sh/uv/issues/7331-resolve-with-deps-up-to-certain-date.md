@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T14:12:33Z
 updated_at: 2024-09-12T14:24:56Z
 url: https://github.com/astral-sh/uv/issues/7331
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Resolve with deps up to certain date
 
 ---
 
-_Issue opened by @nmichlo on 2024-09-12 14:12_
+_@nmichlo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

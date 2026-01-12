@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-10-19T15:33:36Z
 updated_at: 2022-09-07T14:41:04Z
 url: https://github.com/clap-rs/clap/issues/2911
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Mutable app functions are confusing to users and awkward to work with
 
 ---
 
-_Issue opened by @epage on 2021-10-19 15:33_
+_@epage_
 
 ### Please complete the following tasks
 

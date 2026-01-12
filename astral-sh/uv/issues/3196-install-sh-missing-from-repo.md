@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-22T19:50:06Z
 updated_at: 2024-04-22T22:06:46Z
 url: https://github.com/astral-sh/uv/issues/3196
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Install.sh Missing from Repo?
 
 ---
 
-_Issue opened by @blakete on 2024-04-22 19:50_
+_@blakete_
 
 ```console
 $ curl -LsSf https://astral.sh/uv/install.sh

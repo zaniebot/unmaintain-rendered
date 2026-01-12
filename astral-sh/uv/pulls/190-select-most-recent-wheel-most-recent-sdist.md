@@ -12,14 +12,14 @@ head: most-recent-sdist
 created_at: 2023-10-26T08:12:36Z
 updated_at: 2023-10-26T08:15:28Z
 url: https://github.com/astral-sh/uv/pull/190
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Select most recent wheel, most recent sdist
 
 ---
 
-_Pull request opened by @konstin on 2023-10-26 08:12_
+_@konstin_
 
 Select a compatible wheel for a version, even we already found a source distribution previously.
 

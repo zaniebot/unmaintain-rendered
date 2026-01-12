@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T03:52:09Z
 updated_at: 2025-12-03T05:52:06Z
 url: https://github.com/astral-sh/uv/issues/16951
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # uv cannot pick python3.14t
 
 ---
 
-_Issue opened by @mbUSC on 2025-12-03 03:52_
+_@mbUSC_
 
 ### Summary
 

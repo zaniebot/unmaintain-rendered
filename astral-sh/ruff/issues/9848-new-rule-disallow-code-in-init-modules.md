@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T23:32:34Z
 updated_at: 2025-12-30T16:32:12Z
 url: https://github.com/astral-sh/ruff/issues/9848
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # New rule: disallow code in `__init__` modules
 
 ---
 
-_Issue opened by @samueljsb on 2024-02-05 23:32_
+_@samueljsb_
 
 Could we add the rules from [flake8-empty-init-modules/](https://pypi.org/project/flake8-empty-init-modules/) (`EIM001`/`EIM002`) to `ruff`?
 

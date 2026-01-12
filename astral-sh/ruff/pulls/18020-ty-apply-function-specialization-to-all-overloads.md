@@ -13,14 +13,14 @@ head: dcreager/specialized-overload
 created_at: 2025-05-11T19:55:05Z
 updated_at: 2025-05-12T17:48:55Z
 url: https://github.com/astral-sh/ruff/pull/18020
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Apply function specialization to all overloads
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-11 19:55_
+_@dcreager_
 
 Function literals have an optional specialization, which is applied to the parameter/return type annotations lazily when the function's signature is requested. We were previously only applying this specialization to the final overload of an overloaded function.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-11T13:09:19Z
 updated_at: 2024-04-04T17:37:24Z
 url: https://github.com/clap-rs/clap/issues/5119
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Strange compilation error "error: expected `,`" in arg derive
 
 ---
 
-_Issue opened by @apbr on 2023-09-11 13:09_
+_@apbr_
 
 ### Please complete the following tasks
 

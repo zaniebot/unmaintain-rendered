@@ -14,14 +14,14 @@ head: zb/venv-test-isolate
 created_at: 2024-06-16T15:41:47Z
 updated_at: 2024-06-17T10:40:12Z
 url: https://github.com/astral-sh/uv/pull/4342
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Isolate virtual environment tests from developer toolchains
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-16 15:41_
+_@zanieb_
 
 Otherwise, when testing `uv venv --preview` the default toolchain directory will leak into the test.
 

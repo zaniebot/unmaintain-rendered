@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-26T19:18:06Z
 updated_at: 2025-02-28T02:14:10Z
 url: https://github.com/astral-sh/uv/issues/11809
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # invalid default cache-dir on mac
 
 ---
 
-_Issue opened by @luqasz on 2025-02-26 19:18_
+_@luqasz_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T16:38:02Z
 updated_at: 2024-08-05T17:33:42Z
 url: https://github.com/astral-sh/ruff/issues/11799
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] use borrowing iterators instead of returning vecs for Union.elements, Intersection.{positive|negative}
 
 ---
 
-_Issue opened by @carljm on 2024-06-07 16:38_
+_@carljm_
 
 See https://github.com/astral-sh/ruff/pull/11783#issuecomment-2155133526
 

@@ -12,14 +12,14 @@ head: charlie/noqa
 created_at: 2023-06-05T17:22:36Z
 updated_at: 2023-06-05T17:56:18Z
 url: https://github.com/astral-sh/ruff/pull/4869
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Avoid running RUF100 rules when code contains syntax errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 17:22_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

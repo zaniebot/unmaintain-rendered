@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T22:34:43Z
 updated_at: 2025-01-04T08:30:54Z
 url: https://github.com/astral-sh/uv/issues/10295
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # UV Self Update Not Working on MAC
 
 ---
 
-_Issue opened by @kb-cov on 2025-01-03 22:34_
+_@kb-cov_
 
 Hi,
 

@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2024-05-19T03:27:40Z
 updated_at: 2024-05-19T03:41:50Z
 url: https://github.com/astral-sh/ruff/pull/11465
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Treat escaped newline as valid sequence
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-19 03:27_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2024-02-02T00:48:29Z
 updated_at: 2024-02-02T01:02:44Z
 url: https://github.com/astral-sh/ruff/pull/9768
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Move `adjust_indentation` to a shared home
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 00:48_
+_@charliermarsh_
 
 Now that this method is used in multiple linters, it should be moved out of the `pyupgrade` module.
 

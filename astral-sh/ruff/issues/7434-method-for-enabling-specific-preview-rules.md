@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-16T09:48:52Z
 updated_at: 2023-09-28T20:00:35Z
 url: https://github.com/astral-sh/ruff/issues/7434
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Method for enabling specific preview rules
 
 ---
 
-_Issue opened by @btjones0 on 2023-09-16 09:48_
+_@btjones0_
 
 My ruff configuration is structured as a deny list where I've enabled all rules and then disable the rules that I don't want.
 

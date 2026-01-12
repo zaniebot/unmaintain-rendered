@@ -13,14 +13,14 @@ head: flake8-logging-registry-order
 created_at: 2024-03-25T20:15:42Z
 updated_at: 2024-03-25T20:29:32Z
 url: https://github.com/astral-sh/ruff/pull/10587
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Put flake8-logging next to the other flake8 plugins in registry
 
 ---
 
-_Pull request opened by @FFY00 on 2024-03-25 20:15_
+_@FFY00_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T13:01:36Z
 updated_at: 2025-03-07T21:03:30Z
 url: https://github.com/astral-sh/ruff/issues/15966
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Descriptor protocol
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 13:01_
+_@sharkdp_
 
 We need to understand the descriptor protocol in order to infer proper types for attribute accesses like in this simple example:
 

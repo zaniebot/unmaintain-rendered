@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-23T12:42:07Z
 updated_at: 2025-08-31T05:28:21Z
 url: https://github.com/astral-sh/ruff/issues/7615
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Docstrings with `quote-style = "single"` configuration
 
 ---
 
-_Issue opened by @alkatar21 on 2023-09-23 12:42_
+_@alkatar21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

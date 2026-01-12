@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T11:45:42Z
 updated_at: 2024-03-24T10:50:01Z
 url: https://github.com/astral-sh/ruff/issues/10357
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E402 false positive with cell magics in Jupyter notebooks
 
 ---
 
-_Issue opened by @jamesmyatt on 2024-03-12 11:45_
+_@jamesmyatt_
 
 The E402 rule should permit cell magics as well as comments before the import statements. The cell magics must come first.
 

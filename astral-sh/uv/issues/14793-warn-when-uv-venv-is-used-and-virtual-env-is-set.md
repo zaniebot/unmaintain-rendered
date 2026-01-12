@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T15:53:22Z
 updated_at: 2025-07-21T15:54:42Z
 url: https://github.com/astral-sh/uv/issues/14793
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Warn when `uv venv` is used and `VIRTUAL_ENV` is set
 
 ---
 
-_Issue opened by @zanieb on 2025-07-21 15:53_
+_@zanieb_
 
 e.g., in a workflow like
 

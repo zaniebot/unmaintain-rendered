@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-17T02:19:56Z
 updated_at: 2025-01-17T17:43:33Z
 url: https://github.com/astral-sh/uv/issues/10702
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # uv downloads multiple versions of torch nightlies continuously
 
 ---
 
-_Issue opened by @rbavery on 2025-01-17 02:19_
+_@rbavery_
 
 Apologies since I'm fairly certain this is a duplicate but I can't find the github issue after much searching. 
 

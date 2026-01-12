@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-04T17:11:52Z
 updated_at: 2026-01-12T13:17:31Z
 url: https://github.com/astral-sh/ty/issues/1307
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Truncate type display for long unions in some situations
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-04 17:11_
+_@AlexWaygood_
 
 ### Summary
 

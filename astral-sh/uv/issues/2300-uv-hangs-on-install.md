@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T10:04:52Z
 updated_at: 2024-03-12T06:41:08Z
 url: https://github.com/astral-sh/uv/issues/2300
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv hangs on install
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-08 10:04_
+_@hauntsaninja_
 
 uv hangs on various installs for me. The hangs are weirdly deterministic, except for when I really want them to be deterministic and then they stop being so. Anyway, I've got it down to something small that repros reasonably often. The full unminimised case with like 1000 packages always hangs.
 

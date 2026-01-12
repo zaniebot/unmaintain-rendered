@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-19T01:47:04Z
 updated_at: 2021-07-19T05:10:41Z
 url: https://github.com/clap-rs/clap/issues/2601
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Cheatsheet and cookbook links on clap.rs broken
 
 ---
 
-_Issue opened by @dbr on 2021-07-19 01:47_
+_@dbr_
 
 ### Please complete the following tasks
 

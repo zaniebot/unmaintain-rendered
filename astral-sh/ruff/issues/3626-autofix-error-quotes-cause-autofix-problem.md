@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T15:31:43Z
 updated_at: 2023-08-28T20:02:11Z
 url: https://github.com/astral-sh/ruff/issues/3626
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] Quotes cause autofix problem
 
 ---
 
-_Issue opened by @qarmin on 2023-03-20 15:31_
+_@qarmin_
 
 Ruff  a45753f462c7a53afd7f942ab3c6f9af3871bf1f
 Also ruff 0.0.285

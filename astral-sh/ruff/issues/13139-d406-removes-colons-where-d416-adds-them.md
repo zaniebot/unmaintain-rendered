@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T12:11:22Z
 updated_at: 2024-08-29T15:33:19Z
 url: https://github.com/astral-sh/ruff/issues/13139
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # D406 removes colons where D416 adds them
 
 ---
 
-_Issue opened by @maxschulz-COL on 2024-08-28 12:11_
+_@maxschulz-COL_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 

@@ -13,14 +13,14 @@ head: feat/string-literal-sequence-subtype-v2
 created_at: 2026-01-06T09:34:15Z
 updated_at: 2026-01-09T17:44:28Z
 url: https://github.com/astral-sh/ruff/pull/22415
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Recognize string-literal types as subtypes of `Sequence[Literal[chars]]`
 
 ---
 
-_Pull request opened by @jhartum on 2026-01-06 09:34_
+_@jhartum_
 
 ## Summary
 

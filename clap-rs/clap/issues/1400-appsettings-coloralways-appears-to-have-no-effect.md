@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-12-23T05:55:50Z
 updated_at: 2019-04-11T00:17:48Z
 url: https://github.com/clap-rs/clap/issues/1400
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # AppSettings::ColorAlways appears to have no effect
 
 ---
 
-_Issue opened by @ExoticMatter on 2018-12-23 05:55_
+_@ExoticMatter_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

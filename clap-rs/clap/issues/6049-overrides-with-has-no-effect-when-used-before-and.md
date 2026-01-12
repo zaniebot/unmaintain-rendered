@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-27T10:11:49Z
 updated_at: 2025-06-30T18:21:03Z
 url: https://github.com/clap-rs/clap/issues/6049
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `overrides_with` has no effect when used before and after a subcommand
 
 ---
 
-_Issue opened by @konstin on 2025-06-27 10:11_
+_@konstin_
 
 ### Please complete the following tasks
 

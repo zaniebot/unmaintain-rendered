@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T22:35:21Z
 updated_at: 2025-06-20T13:51:10Z
 url: https://github.com/astral-sh/uv/issues/9623
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # virtualenv detection skipped when running via `python -m uv`
 
 ---
 
-_Issue opened by @tjni on 2024-12-03 22:35_
+_@tjni_
 
 ```
 /path/to/system/python -m uv python find

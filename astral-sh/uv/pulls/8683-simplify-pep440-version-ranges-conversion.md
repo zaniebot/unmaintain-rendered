@@ -13,14 +13,14 @@ head: konsti/version-ranges-3
 created_at: 2024-10-29T20:26:49Z
 updated_at: 2024-10-30T12:10:50Z
 url: https://github.com/astral-sh/uv/pull/8683
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Simplify pep440 -> version ranges conversion
 
 ---
 
-_Pull request opened by @konstin on 2024-10-29 20:26_
+_@konstin_
 
 With #8669 as preparation, we can remove what used to be the `PubGrubSpecifier` and instead implement a direct conversion from `VersionSpecifiers` to `Range<Version>`. Thanks to https://github.com/astral-sh/uv/pull/8669#discussion_r1821241638, this conversion is infallible, removing a lot of fallibility downstream.
 

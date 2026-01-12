@@ -14,14 +14,14 @@ head: charlie/warn-run
 created_at: 2024-08-09T20:22:32Z
 updated_at: 2024-08-09T23:10:35Z
 url: https://github.com/astral-sh/uv/pull/5977
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Warn when project-specific settings are passed to non-project `uv run` commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 20:22_
+_@charliermarsh_
 
 ## Summary
 

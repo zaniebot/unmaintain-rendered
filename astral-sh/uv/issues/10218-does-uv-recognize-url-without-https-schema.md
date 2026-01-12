@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-29T01:36:23Z
 updated_at: 2025-01-06T20:34:54Z
 url: https://github.com/astral-sh/uv/issues/10218
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Does uv recognize url without https schema?
 
 ---
 
-_Issue opened by @youkaichao on 2024-12-29 01:36_
+_@youkaichao_
 
 I'm trying to get vllm nightly wheels working for `uv`, and would like to simplify the user interface.
 

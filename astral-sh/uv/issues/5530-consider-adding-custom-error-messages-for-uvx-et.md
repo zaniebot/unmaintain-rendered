@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-28T21:47:47Z
 updated_at: 2024-08-10T03:21:58Z
 url: https://github.com/astral-sh/uv/issues/5530
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Consider adding custom error messages for `uvx` et al
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-28 21:47_
+_@charliermarsh_
 
 Oops, I ran the following:
 

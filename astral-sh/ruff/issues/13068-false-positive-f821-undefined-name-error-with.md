@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T06:06:40Z
 updated_at: 2024-08-23T06:18:58Z
 url: https://github.com/astral-sh/ruff/issues/13068
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False Positive: F821(Undefined name) Error with `Literal`
 
 ---
 
-_Issue opened by @hawk-tomy on 2024-08-23 06:06_
+_@hawk-tomy_
 
 ```py
 from typings import Literal

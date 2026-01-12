@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-23T11:34:39Z
 updated_at: 2022-12-23T13:25:21Z
 url: https://github.com/astral-sh/ruff/issues/1347
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Cannot select specific flake8-errmsg checks
 
 ---
 
-_Issue opened by @rhkleijn on 2022-12-23 11:34_
+_@rhkleijn_
 
 In my project I want to enable EM102 and EM103 from flake8-errmsg, but not EM101.
 

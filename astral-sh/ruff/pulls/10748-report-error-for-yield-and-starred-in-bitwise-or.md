@@ -13,14 +13,14 @@ head: dhruv/star-expr-2
 created_at: 2024-04-03T07:48:03Z
 updated_at: 2024-04-03T08:07:14Z
 url: https://github.com/astral-sh/ruff/pull/10748
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Report error for `yield` and `starred` in bitwise or parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-03 07:48_
+_@dhruvmanila_
 
 ## Summary
 

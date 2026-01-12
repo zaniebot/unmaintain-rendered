@@ -13,14 +13,14 @@ head: add-meta-descriptions-to-rule-pages
 created_at: 2024-09-03T19:38:41Z
 updated_at: 2024-09-09T14:02:05Z
 url: https://github.com/astral-sh/ruff/pull/13234
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add meta descriptions to rule pages
 
 ---
 
-_Pull request opened by @calumy on 2024-09-03 19:38_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

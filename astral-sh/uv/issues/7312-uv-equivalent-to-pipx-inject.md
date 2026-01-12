@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-11T21:09:45Z
 updated_at: 2025-02-13T15:35:26Z
 url: https://github.com/astral-sh/uv/issues/7312
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uv equivalent to pipx inject
 
 ---
 
-_Issue opened by @zachvalenta on 2024-09-11 21:09_
+_@zachvalenta_
 
 I searched through issues but didn't find anything similar - apologies if there's already an issue that I missed.
 

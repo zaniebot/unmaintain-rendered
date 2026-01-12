@@ -12,14 +12,14 @@ head: charlie/pd
 created_at: 2023-01-06T00:30:36Z
 updated_at: 2023-01-06T00:30:55Z
 url: https://github.com/astral-sh/ruff/pull/1671
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Improve Pandas call and attribute detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-06 00:30_
+_@charliermarsh_
 
 This PR adds some guardrails to avoid common false positives in our `pandas-vet` rules. Specifically, we now avoid triggering `pandas-vet` rules if the target of the call or attribute (i.e., the `x` in `x.stack(...)`) is unbound, or bound to something that couldn't be a DataFrame (like an import that _isn't_ `pandas`, or a class definition). This lets us avoid common false positives like `np.stack(...)`.
 

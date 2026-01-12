@@ -13,14 +13,14 @@ head: fix-issue-17026
 created_at: 2025-04-06T14:38:25Z
 updated_at: 2025-04-08T07:24:47Z
 url: https://github.com/astral-sh/ruff/pull/17231
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`flake8-pytest-style`] Avoid false positive for legacy form of `pytest.raises` (`PT011`)
 
 ---
 
-_Pull request opened by @twentyone212121 on 2025-04-06 14:38_
+_@twentyone212121_
 
 This fix closes #17026 
 

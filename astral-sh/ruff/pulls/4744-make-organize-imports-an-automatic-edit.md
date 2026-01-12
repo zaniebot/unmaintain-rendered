@@ -12,14 +12,14 @@ head: charlie/auto
 created_at: 2023-05-31T04:10:31Z
 updated_at: 2023-05-31T05:01:06Z
 url: https://github.com/astral-sh/ruff/pull/4744
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Make organize imports an automatic edit
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-31 04:10_
+_@charliermarsh_
 
 _No description provided._
 

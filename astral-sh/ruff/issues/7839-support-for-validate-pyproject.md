@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-06T17:13:18Z
 updated_at: 2023-10-28T09:00:00Z
 url: https://github.com/astral-sh/ruff/issues/7839
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Support for validate-pyproject
 
 ---
 
-_Issue opened by @henryiii on 2023-10-06 17:13_
+_@henryiii_
 
 Would it be possible to support [validate-pyproject](https://validate-pyproject.readthedocs.io/en/latest/)? There already is a schema at https://github.com/astral-sh/ruff/blob/main/ruff.schema.json. All that would be needed would be:
 

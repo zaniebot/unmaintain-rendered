@@ -13,14 +13,14 @@ head: python-version-help-text
 created_at: 2024-02-16T09:22:15Z
 updated_at: 2024-02-16T14:36:38Z
 url: https://github.com/astral-sh/uv/pull/1459
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Fix list rendering in `venv --help` output
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-16 09:22_
+_@MichaReiser_
 
 ## Summary 
 

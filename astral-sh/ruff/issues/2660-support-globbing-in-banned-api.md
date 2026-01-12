@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-08T15:45:12Z
 updated_at: 2025-04-22T09:34:50Z
 url: https://github.com/astral-sh/ruff/issues/2660
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support globbing in `banned-api`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-08 15:45_
+_@charliermarsh_
 
 E.g., `top` should match `import top`, but not `import top.internal`, whereas `top.*` should match both (I think? We'll do whatever `flake8-tidy-imports` does).
 

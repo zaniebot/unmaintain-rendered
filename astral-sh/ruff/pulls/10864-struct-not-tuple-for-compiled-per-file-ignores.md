@@ -13,14 +13,14 @@ head: cjm/structify
 created_at: 2024-04-10T20:31:19Z
 updated_at: 2024-04-11T19:47:58Z
 url: https://github.com/astral-sh/ruff/pull/10864
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Struct not tuple for compiled per-file ignores
 
 ---
 
-_Pull request opened by @carljm on 2024-04-10 20:31_
+_@carljm_
 
 ## Summary
 

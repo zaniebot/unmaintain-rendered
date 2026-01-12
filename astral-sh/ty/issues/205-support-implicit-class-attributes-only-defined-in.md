@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T12:40:16Z
 updated_at: 2025-06-24T09:42:12Z
 url: https://github.com/astral-sh/ty/issues/205
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support implicit class attributes (only defined in a `@classmethod`)
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 12:40_
+_@sharkdp_
 
 Similar to how we support implicit *instance* attributes, we should also support implicitly defined *class* attributes. More concretely, we want the `TODO` comment here to be resolved, i.e. there should be no `unresolved-attribute` diagnostic:
 

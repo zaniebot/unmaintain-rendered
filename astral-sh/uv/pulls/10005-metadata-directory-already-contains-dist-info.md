@@ -14,14 +14,14 @@ head: konsti/fix-metadata-step-paths
 created_at: 2024-12-18T15:45:41Z
 updated_at: 2024-12-18T19:14:11Z
 url: https://github.com/astral-sh/uv/pull/10005
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # `metadata_directory` already contains dist-info directory
 
 ---
 
-_Pull request opened by @konstin on 2024-12-18 15:45_
+_@konstin_
 
 From PEP 517:
 

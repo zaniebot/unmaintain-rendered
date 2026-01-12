@@ -12,14 +12,14 @@ head: charlie/sim115
 created_at: 2023-01-18T03:38:59Z
 updated_at: 2023-01-18T03:39:56Z
 url: https://github.com/astral-sh/ruff/pull/1946
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Exempt `contextlib.ExitStack()` for SIM115 rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 03:38_
+_@charliermarsh_
 
 Since our binding tracking is somewhat limited, I opted to favor false negatives over false positives. So, e.g., this won't trigger SIM115:
 

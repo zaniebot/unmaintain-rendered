@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-20T10:53:39Z
 updated_at: 2023-01-20T12:18:36Z
 url: https://github.com/astral-sh/ruff/issues/2021
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM102 walrus operator
 
 ---
 
-_Issue opened by @Kludex on 2023-01-20 10:53_
+_@Kludex_
 
 # Description
 

@@ -12,14 +12,14 @@ head: claude/fix-upgrade-package-flag-j4Ey8
 created_at: 2025-12-19T21:22:27Z
 updated_at: 2025-12-19T22:49:57Z
 url: https://github.com/astral-sh/uv/pull/17192
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Allow `--upgrade-package` to override `--no-upgrade`
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-19 21:22_
+_@zanieb_
 
 Resolve a TODO from @charliermarsh that I noticed while looking into https://github.com/astral-sh/uv/issues/13705
 

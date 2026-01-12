@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T01:47:29Z
 updated_at: 2024-12-12T18:01:53Z
 url: https://github.com/astral-sh/uv/issues/9830
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # UX: hard to spot python provider in output
 
 ---
 
-_Issue opened by @hwine on 2024-12-12 01:47_
+_@hwine_
 
 _[Filing per @zanieb request in [#9819 comment](https://github.com/astral-sh/uv/issues/9819#issuecomment-2536854906)]_ 
 

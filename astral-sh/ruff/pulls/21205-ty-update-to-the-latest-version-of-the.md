@@ -14,14 +14,14 @@ head: david/bump-conformance-suite-sha
 created_at: 2025-11-02T13:38:33Z
 updated_at: 2025-11-02T16:33:33Z
 url: https://github.com/astral-sh/ruff/pull/21205
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Update to the latest version of the conformance suite
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-02 13:38_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/tracing-subscriber-0.3.18
 created_at: 2023-11-20T08:17:44Z
 updated_at: 2023-11-20T08:55:57Z
 url: https://github.com/astral-sh/ruff/pull/8777
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump tracing-subscriber from 0.3.17 to 0.3.18
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-20 08:17_
+_@dependabot_
 
 Bumps [tracing-subscriber](https://github.com/tokio-rs/tracing) from 0.3.17 to 0.3.18.
 <details>

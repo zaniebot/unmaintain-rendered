@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-05-02T18:28:34Z
 updated_at: 2021-05-02T18:35:22Z
 url: https://github.com/clap-rs/clap/issues/2466
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Cargo generate fails on generate_to with version beta.2
 
 ---
 
-_Issue opened by @HoolaBoola on 2021-05-02 18:28_
+_@HoolaBoola_
 
 ### Rust Version
 

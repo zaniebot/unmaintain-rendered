@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-09-06T07:43:19Z
 updated_at: 2024-10-03T14:47:52Z
 url: https://github.com/astral-sh/ruff/issues/13260
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Unexpected changes occur when fixing D208 and D209 on the same line
 
 ---
 
-_Issue opened by @kubotty on 2024-09-06 07:43_
+_@kubotty_
 
 When ruff fixes both D208 (over-indentation) and D209 (new-line-after-last-paragraph) on the same line, it results in unexpected changes.
 I share the minimum test case.

@@ -11,14 +11,14 @@ head: remove-dir-all-to-remove-virtualenv
 created_at: 2025-10-09T11:19:15Z
 updated_at: 2025-10-15T14:30:50Z
 url: https://github.com/astral-sh/uv/pull/16203
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Replace `remove_dir_all` with `remove_virtualenv`
 
 ---
 
-_Pull request opened by @MitchellBerend on 2025-10-09 11:19_
+_@MitchellBerend_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

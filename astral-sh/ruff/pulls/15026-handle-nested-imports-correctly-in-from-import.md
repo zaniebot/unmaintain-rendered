@@ -13,14 +13,14 @@ head: dcreager/relative-nested-imports
 created_at: 2024-12-16T23:19:20Z
 updated_at: 2024-12-17T19:23:37Z
 url: https://github.com/astral-sh/ruff/pull/15026
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Handle nested imports correctly in `from ... import`
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-16 23:19_
+_@dcreager_
 
 #14946 fixed our handling of nested imports with the `import` statement, but didn't touch `from...import` statements.  
 

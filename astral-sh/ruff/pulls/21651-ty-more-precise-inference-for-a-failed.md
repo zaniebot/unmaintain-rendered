@@ -14,14 +14,14 @@ head: cjm/failedspec
 created_at: 2025-11-27T00:57:32Z
 updated_at: 2025-11-27T12:44:31Z
 url: https://github.com/astral-sh/ruff/pull/21651
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] more precise inference for a failed specialization
 
 ---
 
-_Pull request opened by @carljm on 2025-11-27 00:57_
+_@carljm_
 
 ## Summary
 

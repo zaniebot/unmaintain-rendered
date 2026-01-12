@@ -12,14 +12,14 @@ head: dhruv/upload-npm-failure-logs
 created_at: 2025-01-16T14:13:06Z
 updated_at: 2025-01-17T02:50:13Z
 url: https://github.com/astral-sh/ruff/pull/15531
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Upload npm publish logs when failed
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-16 14:13_
+_@dhruvmanila_
 
 _No description provided._
 

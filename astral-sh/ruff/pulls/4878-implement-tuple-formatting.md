@@ -14,14 +14,14 @@ head: format-expr-tuple
 created_at: 2023-06-05T20:48:21Z
 updated_at: 2023-06-12T12:37:12Z
 url: https://github.com/astral-sh/ruff/pull/4878
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement tuple formatting
 
 ---
 
-_Pull request opened by @konstin on 2023-06-05 20:48_
+_@konstin_
 
 This implements basic tuple formatting. Parentheses are correctly preserved, nested tuples are wrapped correctly, single element tuples are supported and it respects for magic trailing comma.
 

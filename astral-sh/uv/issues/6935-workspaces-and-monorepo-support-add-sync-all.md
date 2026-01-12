@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T12:09:42Z
 updated_at: 2025-12-17T09:57:41Z
 url: https://github.com/astral-sh/uv/issues/6935
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Workspaces and monorepo support (add sync --all-packages)
 
 ---
 
-_Issue opened by @carderne on 2024-09-02 12:09_
+_@carderne_
 
 I've put a decent amount of effort trying to figure out a workable "monorepo" solution with pip-tools/Rye/etc and now uv. What I mean by a monorepo:
 1. 2+ packages with interdependencies.

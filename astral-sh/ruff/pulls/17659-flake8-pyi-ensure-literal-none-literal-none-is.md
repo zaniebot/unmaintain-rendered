@@ -14,14 +14,14 @@ head: fix-PYI061
 created_at: 2025-04-27T21:38:57Z
 updated_at: 2025-04-30T20:56:40Z
 url: https://github.com/astral-sh/ruff/pull/17659
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`flake8-pyi`] Ensure `Literal[None,] | Literal[None,]` is not autofixed to `None | None` (`PYI061`)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-27 21:38_
+_@LaBatata101_
 
 Handles the case where the `None` literal inside `Literal` is part of a tuple, e.g. `List[None,]`. We don't create the fix for this case.
 
@@ -70,6 +70,36 @@ _Comment by @github-actions[bot] on 2025-04-27 21:45_
 
 
 
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:269 on 2025-04-27 21:47_
+
+slightly simpler:
+
+```suggestion
+        // If the slice contains a single-element tuple, e.g. `Literal[None,]`,
+        // check the first element.
+        Expr::Tuple(ast::ExprTuple { elts, .. }) => {
+            matches!(&**elts, [Expr::NoneLiteral(_)])
+        }
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-04-27 21:47_
+
+thanks!
+
+---
+
+_@LaBatata101 reviewed on 2025-04-27 21:49_
+
+---
+
+_Review comment by @LaBatata101 on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:269 on 2025-04-27 21:49_
+
+Nice!
 
 ---
 
@@ -173,7 +203,89 @@ Makes sense, thanks!
 
 ---
 
+_Review comment by @AlexWaygood on `crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py`:84 on 2025-04-27 22:26_
+
+can you add a comment along the lines of "we offer a fix for one of these, but not both of them, as if both were autofixed it would result in a `TypeError` at runtime"?
+
+(Same for the other fixture file)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:138 on 2025-04-27 22:26_
+
+can you add a short comment for future readers that explains why we need to ensure isolation here?
+
+---
+
+_@AlexWaygood reviewed on 2025-04-27 22:27_
+
+---
+
+_@AlexWaygood reviewed on 2025-04-27 22:28_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py`:84 on 2025-04-27 22:28_
+
+in fact, this should probably be an integration test, since in the unit tests here it looks like both fixes _are_ being offered simultaneously, even though that's not what actually happens on your PR branch when Ruff is actually run on user code
+
+---
+
+_Review comment by @LaBatata101 on `crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py`:84 on 2025-04-27 22:29_
+
+Yep
+
+---
+
+_@LaBatata101 reviewed on 2025-04-27 22:29_
+
+---
+
+_@LaBatata101 reviewed on 2025-04-27 22:29_
+
+---
+
+_Review comment by @LaBatata101 on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:138 on 2025-04-27 22:29_
+
+Yes.
+
+---
+
+_@AlexWaygood reviewed on 2025-04-27 22:29_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py`:84 on 2025-04-27 22:29_
+
+an integration test could go in https://github.com/astral-sh/ruff/blob/main/crates/ruff/tests/lint.rs
+
+---
+
+_@LaBatata101 reviewed on 2025-04-27 23:07_
+
+---
+
+_Review comment by @LaBatata101 on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:138 on 2025-04-27 23:07_
+
+@AlexWaygood I've added the comment, can you check to see if it's good?
+
+---
+
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-04-28 06:39_
+
+---
+
+_@AlexWaygood reviewed on 2025-04-28 11:03_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs`:138 on 2025-04-28 11:03_
+
+it looks great, thanks!
+
+---
+
+_@AlexWaygood approved on 2025-04-28 11:03_
 
 ---
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T22:00:51Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9622
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Package dependencies not installed on first `uv run --extra` with conflicting extras
 
 ---
 
-_Issue opened by @eginhard on 2024-12-03 22:00_
+_@eginhard_
 
 I can confirm that #9533 is fixed with uv 0.5.6, this is a follow-up for packages with dependencies in conflicting extras:
 

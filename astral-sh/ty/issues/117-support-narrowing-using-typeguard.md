@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-21T21:53:46Z
 updated_at: 2025-12-30T20:38:15Z
 url: https://github.com/astral-sh/ty/issues/117
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support narrowing using `TypeGuard`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-21 21:53_
+_@dhruvmanila_
 
 Add support for narrowing on `TypeGuard` and `TypeIs`:
 

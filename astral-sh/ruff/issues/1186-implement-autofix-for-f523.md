@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-10T21:45:21Z
 updated_at: 2023-03-21T03:55:25Z
 url: https://github.com/astral-sh/ruff/issues/1186
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement autofix for `F523`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-10 21:45_
+_@charliermarsh_
 
 See: #1144.
 

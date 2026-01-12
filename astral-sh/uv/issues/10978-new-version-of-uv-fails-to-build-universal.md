@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T07:31:37Z
 updated_at: 2025-01-28T19:44:33Z
 url: https://github.com/astral-sh/uv/issues/10978
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # New version of uv fails to build universal requirements for python version system does not have
 
 ---
 
-_Issue opened by @CoolCat467 on 2025-01-27 07:31_
+_@CoolCat467_
 
 ### Summary
 

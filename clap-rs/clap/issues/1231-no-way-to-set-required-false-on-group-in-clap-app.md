@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-03-25T07:35:49Z
 updated_at: 2018-08-02T03:30:21Z
 url: https://github.com/clap-rs/clap/issues/1231
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # No way to set `required(false)` on `@group` in `clap_app!`
 
 ---
 
-_Issue opened by @LegNeato on 2018-03-25 07:35_
+_@LegNeato_
 
 
 ### Rust Version

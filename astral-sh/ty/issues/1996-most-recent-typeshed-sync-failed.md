@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T10:30:27Z
 updated_at: 2025-12-19T18:09:09Z
 url: https://github.com/astral-sh/ty/issues/1996
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Most recent typeshed sync failed
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-17 10:30_
+_@AlexWaygood_
 
 See https://github.com/astral-sh/ruff/actions/runs/20216754532. It failed again when I reran it.
 

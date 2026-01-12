@@ -12,14 +12,14 @@ head: henryiii/ci/drop-aarch
 created_at: 2024-05-21T03:49:04Z
 updated_at: 2024-06-07T01:45:37Z
 url: https://github.com/astral-sh/uv/pull/3685
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # ci: drop native manylinux wheel for dual-tagged one
 
 ---
 
-_Pull request opened by @henryiii on 2024-05-21 03:49_
+_@henryiii_
 
 
 <!--

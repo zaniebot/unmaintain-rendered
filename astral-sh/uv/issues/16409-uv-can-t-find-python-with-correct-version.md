@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T12:02:51Z
 updated_at: 2025-12-16T13:11:17Z
 url: https://github.com/astral-sh/uv/issues/16409
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # uv can't find Python with correct version
 
 ---
 
-_Issue opened by @typed-sigterm on 2025-10-22 12:02_
+_@typed-sigterm_
 
 ### Summary
 

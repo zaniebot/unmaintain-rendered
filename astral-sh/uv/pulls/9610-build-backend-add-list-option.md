@@ -14,14 +14,14 @@ head: konsti/build-backend-list-cli
 created_at: 2024-12-03T16:32:26Z
 updated_at: 2024-12-04T12:50:15Z
 url: https://github.com/astral-sh/uv/pull/9610
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Build backend: Add `--list` option
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 16:32_
+_@konstin_
 
 Add the `uv build --list`, a "subcommand" to list the files that would be included when building a distribution. It does not build the distribution, except when a source dist is required for source dist -> wheel. This is an important debugging tool for the include and exclude options: Did i actually include the files I wanted, or am i shipping a broken distribution? Are there any temporary files I still need to exclude?
 

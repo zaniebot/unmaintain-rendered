@@ -14,14 +14,14 @@ head: micha/limit-completions
 created_at: 2025-12-29T08:58:07Z
 updated_at: 2025-12-31T16:39:27Z
 url: https://github.com/astral-sh/ruff/pull/22240
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Limit the returned completions to reduce lag
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-29 08:58_
+_@MichaReiser_
 
 ## Summary
 

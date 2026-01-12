@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T17:12:20Z
 updated_at: 2025-12-31T15:36:05Z
 url: https://github.com/astral-sh/ty/issues/1621
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Zed: No LSP features for unsaved buffers
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-24 17:12_
+_@MichaReiser_
 
 ty doesn't provide any type checking or LSP functionality for unsaved files (buffers):
 

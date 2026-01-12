@@ -11,14 +11,14 @@ head: charlie/cross
 created_at: 2024-01-19T02:05:38Z
 updated_at: 2024-01-19T20:03:25Z
 url: https://github.com/astral-sh/uv/pull/994
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Re-enable cross compilation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 02:05_
+_@charliermarsh_
 
 _No description provided._
 

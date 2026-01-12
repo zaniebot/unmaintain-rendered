@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T15:09:37Z
 updated_at: 2025-03-17T21:33:34Z
 url: https://github.com/astral-sh/ruff/issues/16811
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # inconsistent behavior regarding asyncio-dangling-task (RUF006)
 
 ---
 
-_Issue opened by @amirsoroush on 2025-03-17 15:09_
+_@amirsoroush_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T23:19:35Z
 updated_at: 2025-07-24T15:13:42Z
 url: https://github.com/astral-sh/ruff/issues/19474
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # highlight when a function cannot return all of its unioned types
 
 ---
 
-_Issue opened by @gpshead on 2025-07-21 23:19_
+_@gpshead_
 
 ### Summary
 

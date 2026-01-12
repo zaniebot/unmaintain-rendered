@@ -14,14 +14,14 @@ head: brent/empty-span-after-line-terminator
 created_at: 2025-07-24T18:42:25Z
 updated_at: 2025-07-29T12:26:01Z
 url: https://github.com/astral-sh/ruff/pull/19535
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Fix empty spans following a line terminator and unprintable character spans in diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-24 18:42_
+_@ntBre_
 
 ## Summary
 

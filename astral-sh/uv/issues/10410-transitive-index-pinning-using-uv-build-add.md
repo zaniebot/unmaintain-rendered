@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T21:37:52Z
 updated_at: 2025-07-10T23:30:22Z
 url: https://github.com/astral-sh/uv/issues/10410
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Transitive index pinning using uv build / add
 
 ---
 
-_Issue opened by @rivershah on 2025-01-08 21:37_
+_@rivershah_
 
 I'm using `uv` for package management with private, per-project, token-based indices hosted on gitlab. While I can pin direct dependencies to specific indexes in `pyproject.toml`, I need a way to ensure that all downstream consumers can also resolve pinned indices. Currently, one has to exhaustively list out transitive dependencies and pinned indices in downstream packages.
 

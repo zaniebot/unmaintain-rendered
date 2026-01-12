@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-14T06:41:36Z
 updated_at: 2024-06-23T15:16:10Z
 url: https://github.com/astral-sh/ruff/issues/11868
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Improve documentation for `PLR0917` around keyword only parameters
 
 ---
 
-_Issue opened by @Renkai on 2024-06-14 06:41_
+_@Renkai_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

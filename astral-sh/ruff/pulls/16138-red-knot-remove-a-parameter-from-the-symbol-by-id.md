@@ -13,14 +13,14 @@ head: alex/dunder-slots-arg
 created_at: 2025-02-13T13:22:21Z
 updated_at: 2025-02-13T21:17:37Z
 url: https://github.com/astral-sh/ruff/pull/16138
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Remove a parameter from the `symbol_by_id()` query
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-13 13:22_
+_@AlexWaygood_
 
 Salsa queries are more performant when they have fewer parameters, so this might lead to a performance improvement
 

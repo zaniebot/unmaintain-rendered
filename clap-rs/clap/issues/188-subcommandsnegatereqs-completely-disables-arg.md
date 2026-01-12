@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-08-24T14:00:46Z
 updated_at: 2015-08-24T18:48:20Z
 url: https://github.com/clap-rs/clap/issues/188
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # SubcommandsNegateReqs completely disables Arg.required
 
 ---
 
-_Issue opened by @wenLiangcan on 2015-08-24 14:00_
+_@wenLiangcan_
 
 ``` rust
 App::new("my_app")

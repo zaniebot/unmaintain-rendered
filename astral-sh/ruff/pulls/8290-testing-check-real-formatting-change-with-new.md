@@ -12,14 +12,14 @@ head: zanie/tuple-split-comma
 created_at: 2023-10-27T22:10:22Z
 updated_at: 2023-10-27T22:27:43Z
 url: https://github.com/astral-sh/ruff/pull/8290
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Testing: check real formatting change with new ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-27 22:10_
+_@zanieb_
 
 Rebase of #8280 onto #8223 for testing
 

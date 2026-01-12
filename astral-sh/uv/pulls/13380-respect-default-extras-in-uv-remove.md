@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-05-10T19:09:32Z
 updated_at: 2025-05-18T21:28:52Z
 url: https://github.com/astral-sh/uv/pull/13380
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Respect default extras in uv remove
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-10 19:09_
+_@charliermarsh_
 
 ## Summary
 

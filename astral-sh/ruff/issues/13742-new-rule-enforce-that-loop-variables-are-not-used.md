@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-14T02:56:36Z
 updated_at: 2024-10-14T04:33:05Z
 url: https://github.com/astral-sh/ruff/issues/13742
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - enforce that loop variables are not used outside the loop
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-14 02:56_
+_@DetachHead_
 
 the fact that loop variables are still in scope outside of the loop is a very common source of bugs:
 

@@ -13,14 +13,14 @@ head: charlie/k
 created_at: 2025-03-08T03:33:00Z
 updated_at: 2025-03-17T23:59:34Z
 url: https://github.com/astral-sh/uv/pull/12063
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Avoid allocations for default cache keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-08 03:33_
+_@charliermarsh_
 
 _No description provided._
 

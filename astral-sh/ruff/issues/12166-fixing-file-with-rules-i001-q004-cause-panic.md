@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-03T10:05:26Z
 updated_at: 2024-07-04T05:24:12Z
 url: https://github.com/astral-sh/ruff/issues/12166
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Fixing file with rules I001, Q004 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-07-03 10:05_
+_@qarmin_
 
 ruff 0.5.0+130 (7c8112614 2024-07-02)
 ```

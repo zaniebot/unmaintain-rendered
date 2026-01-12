@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T08:16:12Z
 updated_at: 2025-12-17T08:28:46Z
 url: https://github.com/astral-sh/ty/issues/1982
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # typing.Never return function yields incorrect type inference
 
 ---
 
-_Issue opened by @SadoP on 2025-12-17 08:16_
+_@SadoP_
 
 ### Summary
 

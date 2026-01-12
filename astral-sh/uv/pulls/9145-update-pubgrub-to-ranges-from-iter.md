@@ -12,14 +12,14 @@ head: konsti/pubgrub-from-iter
 created_at: 2024-11-15T09:34:42Z
 updated_at: 2024-11-18T12:28:19Z
 url: https://github.com/astral-sh/uv/pull/9145
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Update pubgrub to `Ranges::from_iter`
 
 ---
 
-_Pull request opened by @konstin on 2024-11-15 09:34_
+_@konstin_
 
 _No description provided._
 

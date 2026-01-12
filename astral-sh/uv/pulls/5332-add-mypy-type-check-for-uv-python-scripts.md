@@ -12,14 +12,14 @@ head: mypy
 created_at: 2024-07-23T13:13:03Z
 updated_at: 2024-07-23T14:57:29Z
 url: https://github.com/astral-sh/uv/pull/5332
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Add mypy type check for uv-python scripts
 
 ---
 
-_Pull request opened by @j178 on 2024-07-23 13:13_
+_@j178_
 
 ## Summary
 

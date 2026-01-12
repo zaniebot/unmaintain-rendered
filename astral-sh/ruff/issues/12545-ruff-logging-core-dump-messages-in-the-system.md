@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-27T17:46:36Z
 updated_at: 2024-08-07T02:57:16Z
 url: https://github.com/astral-sh/ruff/issues/12545
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff logging core dump messages in the system journal
 
 ---
 
-_Issue opened by @Fissium on 2024-07-27 17:46_
+_@Fissium_
 
 I've noticed that ruff continues to run, but there are frequent core dump messages logged in the system journal. Below are the details from the most recent log entry:
 

@@ -12,14 +12,14 @@ head: jtfm/fix-070-snapshot
 created_at: 2025-04-19T08:52:14Z
 updated_at: 2025-04-19T09:01:55Z
 url: https://github.com/astral-sh/uv/pull/12979
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Fix keyring request snapshot test
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-19 08:52_
+_@jtfmumm_
 
 _No description provided._
 

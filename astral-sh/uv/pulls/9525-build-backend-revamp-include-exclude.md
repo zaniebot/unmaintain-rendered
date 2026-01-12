@@ -13,14 +13,14 @@ head: konsti/build-backend-warn-extra
 created_at: 2024-11-29T15:43:27Z
 updated_at: 2024-12-03T14:14:42Z
 url: https://github.com/astral-sh/uv/pull/9525
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 #  Build backend: Revamp include/exclude
 
 ---
 
-_Pull request opened by @konstin on 2024-11-29 15:43_
+_@konstin_
 
 When building the source distribution, we always need to include `pyproject.toml` and the module, when building the wheel, we always include the module but nothing else at top level. Since we only allow a single module per wheel, that means that there are no specific wheel includes. This means we have source includes, source excludes, wheel excludes, but no wheel includes: This is defined by the module root, plus the metadata files and data directories separately.
 

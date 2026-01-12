@@ -14,14 +14,14 @@ head: david/default-specialize-1
 created_at: 2025-12-02T20:17:56Z
 updated_at: 2025-12-03T08:10:46Z
 url: https://github.com/astral-sh/ruff/pull/21765
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Default-specialization of generic type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-02 20:17_
+_@sharkdp_
 
 ## Summary
 

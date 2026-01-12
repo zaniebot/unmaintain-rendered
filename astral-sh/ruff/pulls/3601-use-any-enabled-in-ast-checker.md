@@ -13,14 +13,14 @@ head: charlie/any
 created_at: 2023-03-18T21:59:32Z
 updated_at: 2023-03-19T14:44:35Z
 url: https://github.com/astral-sh/ruff/pull/3601
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use `any_enabled` in AST checker
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-18 21:59_
+_@charliermarsh_
 
 This was introduced in a separate PR, but the AST checker has a lot of usages that can be shortened with it.
 

@@ -14,14 +14,14 @@ head: link-inline-settings
 created_at: 2024-03-21T02:03:42Z
 updated_at: 2024-03-31T16:00:40Z
 url: https://github.com/astral-sh/ruff/pull/10499
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Docs: Link inline settings when not part of options section
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-21 02:03_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

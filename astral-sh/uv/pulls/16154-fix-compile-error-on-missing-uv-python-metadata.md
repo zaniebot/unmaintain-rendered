@@ -12,14 +12,14 @@ head: fix/uv-python-build
 created_at: 2025-10-07T15:57:29Z
 updated_at: 2025-10-09T19:02:44Z
 url: https://github.com/astral-sh/uv/pull/16154
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # fix compile error on missing uv-python metadata
 
 ---
 
-_Pull request opened by @dead10ck on 2025-10-07 15:57_
+_@dead10ck_
 
 The `uv-python` crate reads the checked-in download metadata to write out a minified version to be statically included into the binary.
 

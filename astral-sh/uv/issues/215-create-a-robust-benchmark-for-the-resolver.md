@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T13:39:47Z
 updated_at: 2024-04-04T04:04:15Z
 url: https://github.com/astral-sh/uv/issues/215
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Create a robust benchmark for the resolver
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-27 13:39_
+_@charliermarsh_
 
 In addition to correctness, it would be nice to have a benchmark suite against a diverse set of resolutions.
 

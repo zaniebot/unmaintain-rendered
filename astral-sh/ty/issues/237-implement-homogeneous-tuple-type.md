@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T11:02:55Z
 updated_at: 2025-05-13T02:02:26Z
 url: https://github.com/astral-sh/ty/issues/237
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Implement Homogeneous Tuple Type
 
 ---
 
-_Issue opened by @cake-monotone on 2024-10-21 11:02_
+_@cake-monotone_
 
 As `Type::Tuple` is becoming more actively used in implementations, I think we should implement Homogeneous Tuples before the refactoring cost becomes too high.
 

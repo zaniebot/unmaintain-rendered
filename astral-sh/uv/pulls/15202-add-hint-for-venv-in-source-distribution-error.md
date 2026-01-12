@@ -13,14 +13,14 @@ head: konsti/venv-in-source-dist-hint
 created_at: 2025-08-10T13:42:40Z
 updated_at: 2025-08-19T10:56:03Z
 url: https://github.com/astral-sh/uv/pull/15202
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add hint for venv in source distribution error
 
 ---
 
-_Pull request opened by @konstin on 2025-08-10 13:42_
+_@konstin_
 
 Venvs should not be in source distributions, and on Unix, we now reject them for having a link outside the source directory. This PR adds a hint for that since users were confused (#15096).
 

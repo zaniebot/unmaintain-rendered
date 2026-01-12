@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T18:50:27Z
 updated_at: 2024-05-09T01:37:37Z
 url: https://github.com/astral-sh/uv/issues/3468
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Offline mode is not automatic fallback when offline
 
 ---
 
-_Issue opened by @minusf on 2024-05-08 18:50_
+_@minusf_
 
 I am trying to understand the reason why `--offline` is not implied when network connections fail:
 

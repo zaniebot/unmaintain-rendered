@@ -13,14 +13,14 @@ head: cjm/disjoint-recurse
 created_at: 2025-07-04T06:18:37Z
 updated_at: 2025-07-04T13:31:46Z
 url: https://github.com/astral-sh/ruff/pull/19139
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] detect cycles in Type::is_disjoint_from
 
 ---
 
-_Pull request opened by @carljm on 2025-07-04 06:18_
+_@carljm_
 
 ## Summary
 

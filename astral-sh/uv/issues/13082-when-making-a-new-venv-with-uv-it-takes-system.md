@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T06:49:16Z
 updated_at: 2025-05-04T12:37:56Z
 url: https://github.com/astral-sh/uv/issues/13082
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # When making a new venv with uv, it takes system packages with it while with python it doesn't which should be the actual case
 
 ---
 
-_Issue opened by @karanbosamia on 2025-04-24 06:49_
+_@karanbosamia_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-28T13:58:32Z
 updated_at: 2022-08-29T16:30:52Z
 url: https://github.com/astral-sh/ruff/issues/37
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Polish README, PyPI descriptions, repo topics, etc.
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-28 13:58_
+_@charliermarsh_
 
 _No description provided._
 

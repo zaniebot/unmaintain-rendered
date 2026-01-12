@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-25T13:35:15Z
 updated_at: 2023-06-14T13:37:59Z
 url: https://github.com/clap-rs/clap/issues/4857
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Some clap v3.x Subcommand derives cause clippy errors since Rust 1.69.0
 
 ---
 
-_Issue opened by @hds on 2023-04-25 13:35_
+_@hds_
 
 ### Please complete the following tasks
 

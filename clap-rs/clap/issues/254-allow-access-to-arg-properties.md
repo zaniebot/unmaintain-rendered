@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-13T21:22:01Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/254
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow access to `Arg` properties
 
 ---
 
-_Issue opened by @wackywendell on 2015-09-13 21:22_
+_@wackywendell_
 
 When building an `Arg`, right now one can only do so in a functional style. To be more extensible, it would help to add functions for some of the following functions:
 

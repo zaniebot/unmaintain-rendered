@@ -14,14 +14,14 @@ head: david/fix-1156
 created_at: 2025-09-10T08:57:05Z
 updated_at: 2025-09-10T15:00:30Z
 url: https://github.com/astral-sh/ruff/pull/20325
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Use 'unknown' specialization for upper bound on Self
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 08:57_
+_@sharkdp_
 
 ## Summary
 

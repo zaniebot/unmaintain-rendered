@@ -12,14 +12,14 @@ head: stabilize-e741
 created_at: 2024-11-17T18:09:13Z
 updated_at: 2024-11-18T13:39:16Z
 url: https://github.com/astral-sh/ruff/pull/14405
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pycodestyle`] Stabilize behavior to ignore stub files in `ambiguous-variable-name (E741)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-17 18:09_
+_@dylwil3_
 
 This PR stabilizes the behavior for `[ambiguous-variable-name (E741)](https://docs.astral.sh/ruff/rules/ambiguous-variable-name/#ambiguous-variable-name-e741)` introduced in #13119 to ignore stub files (i.e. files ending in `.pyi`).
 

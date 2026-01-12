@@ -13,14 +13,14 @@ head: charlie/flat
 created_at: 2024-06-26T12:46:06Z
 updated_at: 2024-06-26T13:05:48Z
 url: https://github.com/astral-sh/uv/pull/4546
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Flatten errors in registry fetch
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 12:46_
+_@charliermarsh_
 
 ## Summary
 

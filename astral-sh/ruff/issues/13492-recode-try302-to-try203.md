@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T05:22:48Z
 updated_at: 2024-10-08T16:41:36Z
 url: https://github.com/astral-sh/ruff/issues/13492
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Recode TRY302 to TRY203
 
 ---
 
-_Issue opened by @wwuck on 2024-09-24 05:22_
+_@wwuck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

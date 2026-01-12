@@ -13,14 +13,14 @@ head: zb/pypy-test
 created_at: 2024-07-14T16:07:44Z
 updated_at: 2024-07-15T16:11:52Z
 url: https://github.com/astral-sh/uv/pull/5048
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Add integration test for PyPy
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-14 16:07_
+_@zanieb_
 
 _No description provided._
 

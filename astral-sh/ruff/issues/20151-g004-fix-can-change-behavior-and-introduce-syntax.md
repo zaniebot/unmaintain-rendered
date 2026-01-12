@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-29T12:59:09Z
 updated_at: 2025-12-01T21:51:32Z
 url: https://github.com/astral-sh/ruff/issues/20151
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # G004 fix can change behavior and introduce syntax errors
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-29 12:59_
+_@dscorbett_
 
 ### Summary
 

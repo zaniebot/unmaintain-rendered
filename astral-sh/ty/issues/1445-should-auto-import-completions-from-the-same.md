@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T12:29:30Z
 updated_at: 2025-10-29T13:13:50Z
 url: https://github.com/astral-sh/ty/issues/1445
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Should auto-import completions from the same module be omitted?
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-27 12:29_
+_@sharkdp_
 
 <img width="604" height="291" alt="Image" src="https://github.com/user-attachments/assets/26e6edf3-f979-45d0-8e4d-cba527645ba6" />
 

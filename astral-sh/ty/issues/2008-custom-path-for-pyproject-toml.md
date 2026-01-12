@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T13:34:25Z
 updated_at: 2025-12-17T14:00:12Z
 url: https://github.com/astral-sh/ty/issues/2008
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # custom path for pyproject.toml
 
 ---
 
-_Issue opened by @schnapi on 2025-12-17 13:34_
+_@schnapi_
 
 ### Question
 

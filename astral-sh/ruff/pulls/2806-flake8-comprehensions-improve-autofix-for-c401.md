@@ -12,14 +12,14 @@ head: flake8-comprehensions-autofix-c401-c402-c417
 created_at: 2023-02-12T11:10:23Z
 updated_at: 2023-02-12T16:54:16Z
 url: https://github.com/astral-sh/ruff/pull/2806
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-comprehensions`] improve autofix for C401, C402 and C417
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-12 11:10_
+_@sbrugman_
 
 Closes https://github.com/charliermarsh/ruff/issues/2770
 

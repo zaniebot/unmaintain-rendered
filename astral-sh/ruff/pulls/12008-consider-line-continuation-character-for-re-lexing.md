@@ -14,14 +14,14 @@ head: dhruv/re-lexing-newline-escape
 created_at: 2024-06-24T07:24:07Z
 updated_at: 2024-06-25T02:29:37Z
 url: https://github.com/astral-sh/ruff/pull/12008
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Consider line continuation character for re-lexing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-24 07:24_
+_@dhruvmanila_
 
 ## Summary
 

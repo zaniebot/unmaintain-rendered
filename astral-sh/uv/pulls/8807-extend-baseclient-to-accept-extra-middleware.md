@@ -14,14 +14,14 @@ head: feat/extra-middleware
 created_at: 2024-11-04T10:49:35Z
 updated_at: 2024-11-04T13:26:54Z
 url: https://github.com/astral-sh/uv/pull/8807
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Extend BaseClient to accept extra middleware
 
 ---
 
-_Pull request opened by @tdejager on 2024-11-04 10:49_
+_@tdejager_
 
 This PR is a revival of #3502, albeit in a much simpler form.
 

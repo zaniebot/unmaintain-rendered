@@ -12,14 +12,14 @@ head: konsti/lockfile-info
 created_at: 2023-12-20T22:56:49Z
 updated_at: 2023-12-20T23:05:50Z
 url: https://github.com/astral-sh/uv/pull/715
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Show resource and lockfile when waiting
 
 ---
 
-_Pull request opened by @konstin on 2023-12-20 22:56_
+_@konstin_
 
 We lock git checkout directories and the virtualenv to avoid two puffin instances running in parallel changing files at the same time and leading to a broken state. When one instance is blocking another, we need to inform the user (why is the program hanging?) and also add some information for them to debug the situation.
 

@@ -15,14 +15,14 @@ head: david/disable-multithreaded-benchmark
 created_at: 2025-07-03T12:23:44Z
 updated_at: 2025-07-03T12:35:05Z
 url: https://github.com/astral-sh/ruff/pull/19119
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Temporarily disable the multithreaded pydantic benchmark
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-03 12:23_
+_@sharkdp_
 
 The benchmark is currently very noisy (± 10%). This leads to codspeed reports on PRs, because we often exceed the trigger threshold. This is confusing to ty contributors who are not aware about the flakiness. Let's disable it for now.
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-03-25T23:43:05Z
 updated_at: 2024-03-26T05:50:00Z
 url: https://github.com/astral-sh/ruff/pull/10591
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix list markup: blank line required
 
 ---
 
-_Pull request opened by @aureliojargas on 2024-03-25 23:43_
+_@aureliojargas_
 
 Judging from the other lists in this same file, it looks like a blank line is required to separate the previous paragraph from the first list item.
 

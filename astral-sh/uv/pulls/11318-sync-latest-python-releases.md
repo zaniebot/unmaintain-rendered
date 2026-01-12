@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-02-07T15:28:17Z
 updated_at: 2025-02-07T15:42:22Z
 url: https://github.com/astral-sh/uv/pull/11318
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Sync latest Python releases
 
 ---
 
-_Pull request opened by @github-actions on 2025-02-07 15:28_
+_@github-actions_
 
 Includes https://pypy.org/posts/2025/02/pypy-v7318-release.html
 

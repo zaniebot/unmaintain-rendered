@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T09:33:48Z
 updated_at: 2022-12-08T18:39:08Z
 url: https://github.com/astral-sh/ruff/issues/847
-synced_at: 2026-01-10T12:06:14Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Parenthesized context managers raise E999
 
 ---
 
-_Issue opened by @notypecheck on 2022-11-21 09:33_
+_@notypecheck_
 
 Ruff version: 0.0.132
 Ruff configuration: Default

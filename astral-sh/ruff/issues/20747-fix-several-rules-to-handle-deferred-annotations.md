@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T15:17:45Z
 updated_at: 2025-10-23T20:37:40Z
 url: https://github.com/astral-sh/ruff/issues/20747
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fix several rules to handle deferred annotations
 
 ---
 
-_Issue opened by @ntBre on 2025-10-07 15:17_
+_@ntBre_
 
 Several rules exhibit very different behavior in the presence of deferred annotations, whether from an explicit `from __future__ import annotations` or on Python 3.14. These include:
 

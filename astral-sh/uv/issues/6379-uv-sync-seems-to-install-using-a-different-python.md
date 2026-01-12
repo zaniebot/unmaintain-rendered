@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T21:37:17Z
 updated_at: 2024-08-21T22:11:27Z
 url: https://github.com/astral-sh/uv/issues/6379
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # `uv sync` seems to install using a different Python version than in `requires-python`
 
 ---
 
-_Issue opened by @krispharper on 2024-08-21 21:37_
+_@krispharper_
 
 I'm getting a dependency resolution failure when running `uv sync` for the first time. This is my `pyproject.toml`.
 

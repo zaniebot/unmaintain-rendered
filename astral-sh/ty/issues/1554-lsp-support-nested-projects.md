@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T13:38:35Z
 updated_at: 2026-01-09T09:22:14Z
 url: https://github.com/astral-sh/ty/issues/1554
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # LSP: Support nested projects
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 13:38_
+_@MichaReiser_
 
 When opening a folder that contains nested ty projects, ty should use the correct configuration for each nested project rathern than using the outer most configuration.
 

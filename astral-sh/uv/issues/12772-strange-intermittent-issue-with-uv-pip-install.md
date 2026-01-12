@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T05:54:17Z
 updated_at: 2025-04-09T05:56:55Z
 url: https://github.com/astral-sh/uv/issues/12772
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # Strange intermittent issue with uv pip install failing on multiple versions
 
 ---
 
-_Issue opened by @kimdwkimdw on 2025-04-09 05:54_
+_@kimdwkimdw_
 
 ### Question
 

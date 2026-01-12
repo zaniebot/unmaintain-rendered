@@ -13,14 +13,14 @@ head: charlie/ind
 created_at: 2025-07-31T11:24:25Z
 updated_at: 2025-07-31T11:50:06Z
 url: https://github.com/astral-sh/uv/pull/14991
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Ensure consistent indentation when adding dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-31 11:24_
+_@charliermarsh_
 
 ## Summary
 

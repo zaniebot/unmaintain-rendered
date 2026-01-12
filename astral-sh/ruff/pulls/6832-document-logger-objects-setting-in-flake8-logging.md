@@ -13,14 +13,14 @@ head: charlie/logger
 created_at: 2023-08-24T00:08:46Z
 updated_at: 2023-08-24T00:36:00Z
 url: https://github.com/astral-sh/ruff/pull/6832
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Document `logger-objects` setting in `flake8-logging-format` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-24 00:08_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6764.
 

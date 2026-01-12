@@ -13,14 +13,14 @@ head: konsti/remove-dead-wheels
 created_at: 2024-09-03T08:52:42Z
 updated_at: 2024-09-04T13:09:41Z
 url: https://github.com/astral-sh/uv/pull/6961
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Prune unreachable wheels from lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-09-03 08:52_
+_@konstin_
 
 When a package is included under a platform-specific marker, we know that wheels that mismatch this marker can never be installed, so we drop them from the lockfile.
 

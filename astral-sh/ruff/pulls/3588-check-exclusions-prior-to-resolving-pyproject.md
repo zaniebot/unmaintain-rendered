@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2023-03-17T21:53:39Z
 updated_at: 2023-03-18T17:12:51Z
 url: https://github.com/astral-sh/ruff/pull/3588
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Check exclusions prior to resolving `pyproject.toml` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 21:53_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: recover-exc-from
 created_at: 2024-12-18T19:35:51Z
 updated_at: 2024-12-19T13:40:56Z
 url: https://github.com/astral-sh/ruff/pull/15049
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Modify parsing of raise with cause when exception is absent
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-18 19:35_
+_@dylwil3_
 
 When confronted with `raise from exc` the parser will now create a `StmtRaise` that has `None` for the exception and `exc` for the cause. 
 

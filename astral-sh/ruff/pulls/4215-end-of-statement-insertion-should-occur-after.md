@@ -12,14 +12,14 @@ head: add-import-after-newline
 created_at: 2023-05-04T01:10:08Z
 updated_at: 2023-05-04T14:23:11Z
 url: https://github.com/astral-sh/ruff/pull/4215
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # End of statement insertion should occur after newline
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-04 01:10_
+_@dhruvmanila_
 
 ### To-Do:
 

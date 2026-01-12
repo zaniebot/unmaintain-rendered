@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-18T13:33:36Z
 updated_at: 2024-10-18T14:12:14Z
 url: https://github.com/astral-sh/ruff/issues/13812
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add support for `# fmt: nowrap` and `# fmt: wrap` comments
 
 ---
 
-_Issue opened by @ngnpope on 2024-10-18 13:33_
+_@ngnpope_
 
 Would it be possible to introduce a pair of formatting suppression comments that only disable wrapping?
 

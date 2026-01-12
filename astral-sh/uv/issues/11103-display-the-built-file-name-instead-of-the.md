@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T17:21:49Z
 updated_at: 2025-02-20T08:11:17Z
 url: https://github.com/astral-sh/uv/issues/11103
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Display the built file name instead of the canonicalized name in `uv build`
 
 ---
 
-_Issue opened by @dimbleby on 2025-01-30 17:21_
+_@dimbleby_
 
 ### Summary
 

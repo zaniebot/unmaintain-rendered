@@ -13,14 +13,14 @@ head: fix/PYI021_isolation_level
 created_at: 2025-08-20T20:17:27Z
 updated_at: 2025-09-24T21:52:07Z
 url: https://github.com/astral-sh/ruff/pull/20010
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [`flake8-pyi`] Avoid syntax error from conflict with `PIE790` (`PYI021`)
 
 ---
 
-_Pull request opened by @second-ed on 2025-08-20 20:17_
+_@second-ed_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

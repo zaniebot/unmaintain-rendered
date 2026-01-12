@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T15:53:38Z
 updated_at: 2023-01-23T16:17:13Z
 url: https://github.com/clap-rs/clap/issues/4661
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [DEV] Typo in test prevents all `suggestions.rs` unit tests from running (incidentally all failing)
 
 ---
 
-_Issue opened by @corneliusroemer on 2023-01-23 15:53_
+_@corneliusroemer_
 
 ### Please complete the following tasks
 

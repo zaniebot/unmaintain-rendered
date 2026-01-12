@@ -13,14 +13,14 @@ head: jtfm/move-config-dir-functions
 created_at: 2025-03-10T10:04:02Z
 updated_at: 2025-03-10T11:05:09Z
 url: https://github.com/astral-sh/uv/pull/12090
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Move config dir functions to public functions in uv_dirs
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-10 10:04_
+_@jtfmumm_
 
 This PR moves functions for finding user- and system-level config directories to public functions in `uv_fs::config`. This will allow them to be used in future work without duplicating code.
 

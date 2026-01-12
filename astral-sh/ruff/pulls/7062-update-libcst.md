@@ -14,14 +14,14 @@ head: dhruv/update-libcst
 created_at: 2023-09-02T10:56:44Z
 updated_at: 2023-09-03T03:41:25Z
 url: https://github.com/astral-sh/ruff/pull/7062
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update LibCST
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-02 10:56_
+_@dhruvmanila_
 
 ## Summary
 

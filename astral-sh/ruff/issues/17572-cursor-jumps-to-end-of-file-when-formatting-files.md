@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T06:19:42Z
 updated_at: 2025-04-23T06:46:19Z
 url: https://github.com/astral-sh/ruff/issues/17572
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Cursor jumps to end of file when formatting files with large tuples
 
 ---
 
-_Issue opened by @rintrint on 2025-04-23 06:19_
+_@rintrint_
 
 ### Summary
 

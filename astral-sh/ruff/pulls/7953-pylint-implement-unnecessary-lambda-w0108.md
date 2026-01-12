@@ -13,14 +13,14 @@ head: plw0108_unnecessary_lambda
 created_at: 2023-10-13T19:19:48Z
 updated_at: 2023-10-20T17:34:19Z
 url: https://github.com/astral-sh/ruff/pull/7953
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] Implement unnecessary-lambda (W0108)
 
 ---
 
-_Pull request opened by @clemux on 2023-10-13 19:19_
+_@clemux_
 
 This is my first PR and I'm new at rust, so feel free to ask me to rewrite everything if needed ;)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T00:01:47Z
 updated_at: 2024-02-16T12:51:35Z
 url: https://github.com/astral-sh/uv/issues/1395
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support alternative platform detection mechanisms other than reading /bin/ls
 
 ---
 
-_Issue opened by @robin-nitrokey on 2024-02-16 00:01_
+_@robin-nitrokey_
 
 The `find_libc` function that is used to determine whether `uv` is running on `musllinux` or `manylinux` tries to read `/bin/ls`:
 

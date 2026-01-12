@@ -12,14 +12,14 @@ head: scope-unused
 created_at: 2024-11-06T04:09:15Z
 updated_at: 2025-12-10T18:01:54Z
 url: https://github.com/astral-sh/ruff/pull/14122
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`flake8-bugbear`]  Handle shadowing and scope in `unused-loop-control-variable (B007)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-06 04:09_
+_@dylwil3_
 
 This PR changes the logic employed to search for uses of the control variable within the loop body in order to account for shadowing and nested scope. This is achieved by using the semantic model to check whether there are any references to the binding of the control variable within the loop body.
 

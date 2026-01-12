@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-04-05T23:48:28Z
 updated_at: 2024-04-06T00:35:01Z
 url: https://github.com/astral-sh/uv/pull/2848
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Use `miette` when printing `pip sync` resolution failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 23:48_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2845.
 

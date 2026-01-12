@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T16:53:15Z
 updated_at: 2025-08-02T15:32:34Z
 url: https://github.com/astral-sh/uv/issues/14425
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # thiserror `#[error(transparent)]` payloads get skipped in the source chain
 
 ---
 
-_Issue opened by @oconnor663 on 2025-07-02 16:53_
+_@oconnor663_
 
 This is a hypothetical bug without an observed smoking gun. (I've only been able to [trigger it artificially](https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701), not with e.g. a real connection reset on the real network.) Here's some code that might be vulnerable to skipping an IO error, depending on how exactly that error is wrapped: https://github.com/astral-sh/uv/blob/87e9ccfb92e2761433bebddbdd68895de0e20abd/crates/uv-client/src/base_client.rs#L898-L908
 

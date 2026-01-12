@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T08:18:30Z
 updated_at: 2024-10-16T19:03:09Z
 url: https://github.com/astral-sh/uv/issues/8201
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Inaccurate error reporting when encountering 403 error
 
 ---
 
-_Issue opened by @christiansegercrantz on 2024-10-15 08:18_
+_@christiansegercrantz_
 
 I noticed when trying to create a Docker image that installs required dependencies (generated with `rye sync`) from an internal repository that requires authentication, that  `uv` inaccurately reports the 403 error as the package not being available. 
 

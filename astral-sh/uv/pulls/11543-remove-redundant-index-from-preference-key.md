@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-02-15T23:25:50Z
 updated_at: 2025-02-15T23:58:58Z
 url: https://github.com/astral-sh/uv/pull/11543
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:53Z
 ```
 
 # Remove redundant index from preference key
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-15 23:25_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/override
 created_at: 2022-11-02T02:39:12Z
 updated_at: 2022-11-02T13:36:24Z
 url: https://github.com/astral-sh/ruff/pull/543
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Set override in actions-rs/toolchain@v1
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-02 02:39_
+_@charliermarsh_
 
 _No description provided._
 

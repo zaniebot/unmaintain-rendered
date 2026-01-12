@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-17T00:24:12Z
 updated_at: 2023-03-24T17:39:40Z
 url: https://github.com/clap-rs/clap/issues/4766
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # docs.rs/clap/4.1.9 is broken, missing Command struct documentation
 
 ---
 
-_Issue opened by @AndASM on 2023-03-17 00:24_
+_@AndASM_
 
 ### Please complete the following tasks
 

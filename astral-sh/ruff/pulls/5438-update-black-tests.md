@@ -13,14 +13,14 @@ head: update-black-tests
 created_at: 2023-06-29T11:03:33Z
 updated_at: 2023-06-30T07:42:06Z
 url: https://github.com/astral-sh/ruff/pull/5438
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update Black tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-29 11:03_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

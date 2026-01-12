@@ -13,14 +13,14 @@ head: top-special-form
 created_at: 2025-08-23T01:06:00Z
 updated_at: 2025-08-24T12:54:34Z
 url: https://github.com/astral-sh/ruff/pull/20054
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Add Top[] and Bottom[] special forms, replacing top_materialization_of() function
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-08-23 01:06_
+_@JelleZijlstra_
 
 Part of astral-sh/ty#994
 

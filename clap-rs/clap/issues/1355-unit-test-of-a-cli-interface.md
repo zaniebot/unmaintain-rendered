@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-08T21:10:22Z
 updated_at: 2019-09-17T15:41:53Z
 url: https://github.com/clap-rs/clap/issues/1355
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Unit test of a CLI interface
 
 ---
 
-_Issue opened by @matthieugouel on 2018-10-08 21:10_
+_@matthieugouel_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

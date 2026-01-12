@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T03:37:33Z
 updated_at: 2024-03-18T09:14:18Z
 url: https://github.com/astral-sh/ruff/issues/10035
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Config override key flag does not work for `extend` option
 
 ---
 
-_Issue opened by @ofek on 2024-02-19 03:37_
+_@ofek_
 
 Example command:
 

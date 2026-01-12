@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T16:27:31Z
 updated_at: 2024-10-28T09:01:36Z
 url: https://github.com/astral-sh/uv/issues/6699
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Stubs on Windows exit abnormally, includes succinct repro with busybox, related to some wider issue
 
 ---
 
-_Issue opened by @doctorpangloss on 2024-08-27 16:27_
+_@doctorpangloss_
 
 related: https://github.com/rmyorston/busybox-w32/issues/451
 related: https://github.com/astral-sh/uv/issues/6464

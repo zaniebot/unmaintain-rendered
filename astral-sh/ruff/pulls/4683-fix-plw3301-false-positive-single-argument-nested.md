@@ -13,14 +13,14 @@ head: fix-plw3301-false-positive-single-argument-nested-min-max
 created_at: 2023-05-27T16:33:24Z
 updated_at: 2023-05-27T19:37:41Z
 url: https://github.com/astral-sh/ruff/pull/4683
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix PLW3301 false positive single argument nested min/max
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-27 16:33_
+_@JonathanPlasse_
 
 - Close #4682
 <!--

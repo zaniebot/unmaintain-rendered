@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-26T01:26:17Z
 updated_at: 2022-11-05T03:14:57Z
 url: https://github.com/astral-sh/ruff/issues/469
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Ruff supports `B001` (no bare exceptions), but as `E722`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-26 01:26_
+_@charliermarsh_
 
 How should we handle identical exceptions that exist under different codes? (I don't really understand why this exception exists in `flake8-bugbear`, but it does.)
 

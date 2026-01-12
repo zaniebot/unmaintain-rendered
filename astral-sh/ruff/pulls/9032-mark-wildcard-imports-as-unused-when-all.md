@@ -13,14 +13,14 @@ head: charlie/wildcard
 created_at: 2023-12-07T01:58:33Z
 updated_at: 2023-12-08T14:38:37Z
 url: https://github.com/astral-sh/ruff/pull/9032
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Mark wildcard imports as unused when all references are resolved
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-07 01:58_
+_@charliermarsh_
 
 ## Summary
 

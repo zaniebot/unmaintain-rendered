@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-05T09:43:09Z
 updated_at: 2025-11-05T21:45:16Z
 url: https://github.com/astral-sh/ty/issues/1480
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Time Machine pytest fixture hidden behind conditional
 
 ---
 
-_Issue opened by @mzealey on 2025-11-05 09:43_
+_@mzealey_
 
 ### Summary
 

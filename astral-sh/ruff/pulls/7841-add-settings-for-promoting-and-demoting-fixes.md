@@ -13,14 +13,14 @@ head: zanie/app-settings
 created_at: 2023-10-06T19:46:00Z
 updated_at: 2023-10-11T12:04:32Z
 url: https://github.com/astral-sh/ruff/pull/7841
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add settings for promoting and demoting fixes
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-06 19:46_
+_@zanieb_
 
 Adds two configuration-file only settings `extend-safe-fixes` and `extend-unsafe-fixes` which can be used to promote and demote the applicability of fixes for rules.
 

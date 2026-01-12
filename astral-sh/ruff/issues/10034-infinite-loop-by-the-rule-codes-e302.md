@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T01:38:39Z
 updated_at: 2024-03-29T20:03:51Z
 url: https://github.com/astral-sh/ruff/issues/10034
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Infinite loop] by the rule codes E302
 
 ---
 
-_Issue opened by @Fokko on 2024-02-19 01:38_
+_@Fokko_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

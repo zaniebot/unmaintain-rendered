@@ -11,14 +11,14 @@ head: isort-line-length
 created_at: 2023-06-10T17:08:05Z
 updated_at: 2023-07-21T03:57:20Z
 url: https://github.com/astral-sh/ruff/pull/5009
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add isort line-length independent config
 
 ---
 
-_Pull request opened by @silvanocerza on 2023-06-10 17:08_
+_@silvanocerza_
 
 ## Summary
 

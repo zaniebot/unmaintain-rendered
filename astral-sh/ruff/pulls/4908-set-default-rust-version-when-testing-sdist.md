@@ -12,14 +12,14 @@ head: charlie/rustup-sdist
 created_at: 2023-06-06T20:47:24Z
 updated_at: 2023-06-06T21:24:23Z
 url: https://github.com/astral-sh/ruff/pull/4908
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Set default Rust version when testing sdist
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 20:47_
+_@charliermarsh_
 
 ## Test Plan
 

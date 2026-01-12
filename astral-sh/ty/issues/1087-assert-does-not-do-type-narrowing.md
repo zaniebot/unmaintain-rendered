@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:28:49Z
 updated_at: 2025-08-22T06:46:33Z
 url: https://github.com/astral-sh/ty/issues/1087
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # assert does not do type narrowing
 
 ---
 
-_Issue opened by @bugnano on 2025-08-22 06:28_
+_@bugnano_
 
 ### Summary
 

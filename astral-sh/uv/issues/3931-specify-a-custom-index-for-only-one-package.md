@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-31T08:33:16Z
 updated_at: 2024-06-01T00:17:19Z
 url: https://github.com/astral-sh/uv/issues/3931
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Specify a custom index for only one package
 
 ---
 
-_Issue opened by @mariomeissner on 2024-05-31 08:33_
+_@mariomeissner_
 
 I am using `uv pip compile` in a project that has pytorch dependencies. I need to use the custom pytorch index `https://download.pytorch.org/whl/cu117` to install `pytorch==2.13.1+cu117`. I am using the following syntax in my `requirements.in` file:
 ```

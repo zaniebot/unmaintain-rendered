@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-01T23:01:31Z
 updated_at: 2025-08-18T18:41:09Z
 url: https://github.com/astral-sh/ruff/issues/13598
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # New rule: warn on use of `timedelta.seconds`, users typically wanted `timedelta.total_seconds()`
 
 ---
 
-_Issue opened by @Zac-HD on 2024-10-01 23:01_
+_@Zac-HD_
 
 c.f. https://github.com/python/cpython/pull/124811
 

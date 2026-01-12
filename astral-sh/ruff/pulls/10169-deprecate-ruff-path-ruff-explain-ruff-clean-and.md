@@ -14,14 +14,14 @@ head: deprecate-command-aliases
 created_at: 2024-02-29T10:52:08Z
 updated_at: 2024-02-29T13:50:02Z
 url: https://github.com/astral-sh/ruff/pull/10169
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Deprecate `ruff <path>` `ruff --explain`, `ruff --clean` and `ruff --generate-shell-completion`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-29 10:52_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T11:45:53Z
 updated_at: 2023-11-16T15:49:41Z
 url: https://github.com/astral-sh/ruff/issues/8717
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [FALSE POSITIVE] "S608 Possible SQL injection" when not applicable
 
 ---
 
-_Issue opened by @amotl on 2023-11-16 11:45_
+_@amotl_
 
 Hi there,
 

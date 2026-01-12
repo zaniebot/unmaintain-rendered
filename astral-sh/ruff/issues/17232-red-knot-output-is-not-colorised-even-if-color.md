@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-06T15:10:33Z
 updated_at: 2025-04-29T14:07:18Z
 url: https://github.com/astral-sh/ruff/issues/17232
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Output is not colorised even if `--color=always` is specified with `--output-format=concise`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-06 15:10_
+_@AlexWaygood_
 
 ### Summary
 

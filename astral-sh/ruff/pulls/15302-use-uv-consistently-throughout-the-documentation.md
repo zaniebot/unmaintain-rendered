@@ -13,14 +13,14 @@ head: charlie/u
 created_at: 2025-01-06T15:32:10Z
 updated_at: 2025-01-07T14:43:27Z
 url: https://github.com/astral-sh/ruff/pull/15302
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Use uv consistently throughout the documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-06 15:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T11:57:20Z
 updated_at: 2025-10-28T23:40:38Z
 url: https://github.com/astral-sh/uv/issues/16470
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # RuntimeError: TensorRT currently only builds wheels for Linux and Windows
 
 ---
 
-_Issue opened by @mikel-brostrom on 2025-10-27 11:57_
+_@mikel-brostrom_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T16:13:12Z
 updated_at: 2025-07-10T17:32:53Z
 url: https://github.com/astral-sh/uv/issues/14545
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # How do I specify a conflict between an extra and a dev dependency group or python version?
 
 ---
 
-_Issue opened by @andrewtruong on 2025-07-10 16:13_
+_@andrewtruong_
 
 ### Question
 

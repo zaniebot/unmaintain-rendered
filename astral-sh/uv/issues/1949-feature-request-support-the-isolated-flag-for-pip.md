@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-24T08:58:22Z
 updated_at: 2024-05-22T13:31:08Z
 url: https://github.com/astral-sh/uv/issues/1949
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # [Feature Request] Support the `--isolated` flag for pip
 
 ---
 
-_Issue opened by @TalAmuyal on 2024-02-24 08:58_
+_@TalAmuyal_
 
 First, thanks for investing in Python's ecosystem!
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T06:14:10Z
 updated_at: 2023-09-25T09:40:00Z
 url: https://github.com/astral-sh/ruff/issues/7450
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: ruff recurses into .git folder and can try to format files inside.
 
 ---
 
-_Issue opened by @m-richards on 2023-09-17 06:14_
+_@m-richards_
 
 This is a quite an obscure edge case, but is still a behaviour difference with black. I maintain an open source project, and have previously checked out a branch from a contributor which they named `th-geodataframe.py`. This creates files `.git\logs\refs\heads\th-geodataframe.py` and `.git\refs\heads\th-geoseries.py` as part of git's internal data.
 

@@ -13,14 +13,14 @@ head: sasanjac/2195-Implement-configuration-options-from-`flake8-type-checking`
 created_at: 2023-03-01T11:50:34Z
 updated_at: 2023-03-12T17:56:24Z
 url: https://github.com/astral-sh/ruff/pull/3292
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement configuration options `runtime-evaluated-decorators` and `runtime-evaluated-baseclasses` for `flake8-type-checking`
 
 ---
 
-_Pull request opened by @sasanjac on 2023-03-01 11:50_
+_@sasanjac_
 
 see #2195
 

@@ -13,14 +13,14 @@ head: renovate/npm-vite-vulnerability
 created_at: 2024-09-17T21:20:27Z
 updated_at: 2024-09-18T06:25:52Z
 url: https://github.com/astral-sh/ruff/pull/13385
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Update dependency vite to v5.4.6
 
 ---
 
-_Pull request opened by @renovate on 2024-09-17 21:20_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: charlie/index-api-multiple-indexes
 created_at: 2024-09-28T23:24:22Z
 updated_at: 2024-10-15T22:58:16Z
 url: https://github.com/astral-sh/uv/pull/7769
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Allow multiple pinned indexes in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-28 23:24_
+_@charliermarsh_
 
 ## Summary
 

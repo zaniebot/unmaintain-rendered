@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-29T08:33:52Z
 updated_at: 2025-07-29T19:02:29Z
 url: https://github.com/clap-rs/clap/issues/6079
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow an array of delimiters in `value_delimiter`
 
 ---
 
-_Issue opened by @Andrew15-5 on 2025-07-29 08:33_
+_@Andrew15-5_
 
 ### Please complete the following tasks
 

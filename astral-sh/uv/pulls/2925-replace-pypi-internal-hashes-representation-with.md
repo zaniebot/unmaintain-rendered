@@ -13,14 +13,14 @@ head: charlie/digest
 created_at: 2024-04-09T03:00:00Z
 updated_at: 2024-04-09T16:56:17Z
 url: https://github.com/astral-sh/uv/pull/2925
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Replace PyPI-internal Hashes representation with flat vector
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 03:00_
+_@charliermarsh_
 
 ## Summary
 

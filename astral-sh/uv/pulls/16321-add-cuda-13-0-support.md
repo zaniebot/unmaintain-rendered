@@ -13,14 +13,14 @@ head: charlie/cuda
 created_at: 2025-10-15T18:09:28Z
 updated_at: 2025-10-15T19:10:10Z
 url: https://github.com/astral-sh/uv/pull/16321
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Add CUDA 13.0 support
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-15 18:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: del-statement
 created_at: 2025-06-09T14:08:53Z
 updated_at: 2025-06-12T14:45:02Z
 url: https://github.com/astral-sh/ruff/pull/18593
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] support del statement and deletion of except handler names
 
 ---
 
-_Pull request opened by @mtshiba on 2025-06-09 14:08_
+_@mtshiba_
 
 ## Summary
 

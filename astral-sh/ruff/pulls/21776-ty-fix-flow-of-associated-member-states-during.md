@@ -14,14 +14,14 @@ head: david/fix-1355
 created_at: 2025-12-03T15:48:38Z
 updated_at: 2025-12-03T16:52:34Z
 url: https://github.com/astral-sh/ruff/pull/21776
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Fix flow of associated member states during star imports
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-03 15:48_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T17:53:59Z
 updated_at: 2024-09-15T22:02:33Z
 url: https://github.com/astral-sh/uv/issues/4243
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Allow toolchain requests by "key"
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:53_
+_@zanieb_
 
 e.g. `cpython-3.11.5-macos-aarch64-none` should be a valid toolchain request so users can request specific toolchain types
 

@@ -14,14 +14,14 @@ head: dhruv/refactor-unary-op
 created_at: 2024-04-22T07:01:51Z
 updated_at: 2024-04-23T05:04:52Z
 url: https://github.com/astral-sh/ruff/pull/11088
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Refactor unary expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-22 07:01_
+_@dhruvmanila_
 
 ## Summary
 

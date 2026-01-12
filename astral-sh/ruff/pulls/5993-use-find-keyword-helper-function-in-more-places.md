@@ -13,14 +13,14 @@ head: more-find-keyword
 created_at: 2023-07-23T00:07:34Z
 updated_at: 2023-07-24T22:30:38Z
 url: https://github.com/astral-sh/ruff/pull/5993
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use `find_keyword` helper function in more places
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-23 00:07_
+_@tjkuson_
 
 ## Summary
 

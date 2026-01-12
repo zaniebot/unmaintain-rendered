@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-12T19:09:21Z
 updated_at: 2021-11-14T01:04:16Z
 url: https://github.com/clap-rs/clap/issues/3019
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Remove rustdoc automatic link markup in clap_derive-generated help messages
 
 ---
 
-_Issue opened by @AntonHermann on 2021-11-12 19:09_
+_@AntonHermann_
 
 ### Please complete the following tasks
 

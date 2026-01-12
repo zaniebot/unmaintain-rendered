@@ -13,14 +13,14 @@ head: cjm/nondet
 created_at: 2025-11-26T23:09:09Z
 updated_at: 2025-11-27T06:45:40Z
 url: https://github.com/astral-sh/ruff/pull/21649
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] don't iterate over a hashset
 
 ---
 
-_Pull request opened by @carljm on 2025-11-26 23:09_
+_@carljm_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-05T19:51:37Z
 updated_at: 2025-12-16T21:33:40Z
 url: https://github.com/astral-sh/ruff/issues/19771
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP032 fix misinterprets `\N` escape sequence as interpolation
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-05 19:51_
+_@dscorbett_
 
 ### Summary
 

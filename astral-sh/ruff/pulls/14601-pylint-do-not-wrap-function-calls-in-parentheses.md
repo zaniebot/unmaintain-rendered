@@ -14,14 +14,14 @@ head: dunder-parens
 created_at: 2024-11-26T05:18:47Z
 updated_at: 2024-11-26T12:47:02Z
 url: https://github.com/astral-sh/ruff/pull/14601
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pylint`] Do not wrap function calls in parentheses in the fix for unnecessary-dunder-call (PLC2801)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-26 05:18_
+_@dylwil3_
 
 In the fix for [unnecessary-dunder-call (PLC2801)](https://docs.astral.sh/ruff/rules/unnecessary-dunder-call/#unnecessary-dunder-call-plc2801), when replacing the dunder call for a builtin by the function call, we no longer wrap the function call in parentheses.
 

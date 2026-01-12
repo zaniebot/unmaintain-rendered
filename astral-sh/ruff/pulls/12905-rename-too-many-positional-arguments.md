@@ -13,14 +13,14 @@ head: rename-too-many-positiona/-arguments
 created_at: 2024-08-15T13:26:35Z
 updated_at: 2024-08-15T16:23:43Z
 url: https://github.com/astral-sh/ruff/pull/12905
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Rename too-many-positional(-arguments)
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2024-08-15 13:26_
+_@JonathanPlasse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

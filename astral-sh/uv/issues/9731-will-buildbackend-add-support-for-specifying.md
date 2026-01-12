@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T07:26:53Z
 updated_at: 2025-01-07T20:22:42Z
 url: https://github.com/astral-sh/uv/issues/9731
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Will buildbackend add support for specifying platform_tag?
 
 ---
 
-_Issue opened by @xqm32 on 2024-12-09 07:26_
+_@xqm32_
 
 In a Python project that depends on ccfi, some dynamic libraries are included in the Wheel, but the resulting package is a generic wheel. If we could specify a platform_tag, it would allow different dynamic libraries to be used for different platforms when packaging the wheel.
 

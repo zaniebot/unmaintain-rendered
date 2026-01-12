@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-05T19:52:04Z
 updated_at: 2024-05-05T22:53:26Z
 url: https://github.com/astral-sh/uv/issues/3378
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # `uv`should not complain about a missing virtual env when called from a non activated virtual environment.
 
 ---
 
-_Issue opened by @gotcha on 2024-05-05 19:52_
+_@gotcha_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

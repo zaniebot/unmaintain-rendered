@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T20:42:52Z
 updated_at: 2025-12-16T21:35:26Z
 url: https://github.com/astral-sh/uv/issues/16712
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # SSL_CERT_FILE ignores empty value
 
 ---
 
-_Issue opened by @samypr100 on 2025-11-12 20:42_
+_@samypr100_
 
 We don't do this for SSL_CERT_FILE, do we want to align there?
 

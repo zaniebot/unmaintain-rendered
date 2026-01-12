@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T00:32:45Z
 updated_at: 2024-09-18T14:01:00Z
 url: https://github.com/astral-sh/uv/issues/7349
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Unclear `uvx --with` help text / how to include a bunch of requirements?
 
 ---
 
-_Issue opened by @dimaqq on 2024-09-13 00:32_
+_@dimaqq_
 
 Here's the help snippet:
 

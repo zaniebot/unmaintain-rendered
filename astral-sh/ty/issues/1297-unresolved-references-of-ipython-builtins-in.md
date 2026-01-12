@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-02T11:15:39Z
 updated_at: 2026-01-09T09:51:32Z
 url: https://github.com/astral-sh/ty/issues/1297
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Unresolved references of IPython builtins in notebooks
 
 ---
 
-_Issue opened by @jfaldanam on 2025-10-02 11:15_
+_@jfaldanam_
 
 ### Summary
 

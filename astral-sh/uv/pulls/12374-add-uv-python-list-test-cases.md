@@ -13,14 +13,14 @@ head: zb/list-tests
 created_at: 2025-03-21T17:21:25Z
 updated_at: 2025-03-23T02:57:10Z
 url: https://github.com/astral-sh/uv/pull/12374
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Add `uv python list` test cases
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 17:21_
+_@zanieb_
 
 Needed for 
 

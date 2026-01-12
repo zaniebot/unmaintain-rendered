@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-16T10:26:08Z
 updated_at: 2024-07-14T20:11:43Z
 url: https://github.com/astral-sh/ruff/issues/8716
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E501: Separate setting/rule for string literals
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-16 10:26_
+_@ThiefMaster_
 
 It would be nice if `E501` had  either a separate rule for string literals or if there was a `max-literal-line-length` setting to set a (higher/unlimited) length for string literals.
 

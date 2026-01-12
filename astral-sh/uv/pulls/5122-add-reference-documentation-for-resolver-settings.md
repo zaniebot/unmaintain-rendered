@@ -13,14 +13,14 @@ head: charlie/api-reference
 created_at: 2024-07-16T19:20:47Z
 updated_at: 2024-07-16T20:39:24Z
 url: https://github.com/astral-sh/uv/pull/5122
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Add reference documentation for resolver settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 19:20_
+_@charliermarsh_
 
 ## Summary
 

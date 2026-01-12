@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T21:24:42Z
 updated_at: 2023-06-03T22:13:52Z
 url: https://github.com/astral-sh/ruff/issues/4840
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `BestFitting` export ambiguous in `rust_formatter` crate
 
 ---
 
-_Issue opened by @zanieb on 2023-06-03 21:24_
+_@zanieb_
 
 A run of `cargo +nightly check` warns on this ambiguous export
 

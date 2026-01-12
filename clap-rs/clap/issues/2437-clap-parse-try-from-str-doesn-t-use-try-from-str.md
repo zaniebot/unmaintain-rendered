@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-04-09T11:02:55Z
 updated_at: 2022-01-11T18:27:35Z
 url: https://github.com/clap-rs/clap/issues/2437
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `#[clap(parse(try_from_str))]` doesn't use `try_from(&str)`
 
 ---
 
-_Issue opened by @TilCreator on 2021-04-09 11:02_
+_@TilCreator_
 
 ### Please complete the following tasks
 

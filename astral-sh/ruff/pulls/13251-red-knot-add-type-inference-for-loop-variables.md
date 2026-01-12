@@ -13,14 +13,14 @@ head: alex/comprehension-inference
 created_at: 2024-09-05T11:23:52Z
 updated_at: 2024-09-09T20:30:55Z
 url: https://github.com/astral-sh/ruff/pull/13251
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add type inference for loop variables inside comprehension scopes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-05 11:23_
+_@AlexWaygood_
 
 ## Summary
 

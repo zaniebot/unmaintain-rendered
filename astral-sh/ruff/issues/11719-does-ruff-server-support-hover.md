@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T09:40:18Z
 updated_at: 2024-06-03T13:20:17Z
 url: https://github.com/astral-sh/ruff/issues/11719
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Does ruff server support "hover"?
 
 ---
 
-_Issue opened by @KiYugadgeter on 2024-06-03 09:40_
+_@KiYugadgeter_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

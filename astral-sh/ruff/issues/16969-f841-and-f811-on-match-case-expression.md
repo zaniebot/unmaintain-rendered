@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T14:16:09Z
 updated_at: 2025-03-27T19:48:53Z
 url: https://github.com/astral-sh/ruff/issues/16969
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `F841 and F811` On match-case expression
 
 ---
 
-_Issue opened by @slothyrulez on 2025-03-25 14:16_
+_@slothyrulez_
 
 ### Summary
 

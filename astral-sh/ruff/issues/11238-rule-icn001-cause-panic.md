@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T07:07:21Z
 updated_at: 2024-05-02T17:59:40Z
 url: https://github.com/astral-sh/ruff/issues/11238
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule ICN001 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-05-02 07:07_
+_@qarmin_
 
 ruff 0.4.2 (latest changes from main branch)
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T13:35:59Z
 updated_at: 2025-01-22T08:56:22Z
 url: https://github.com/astral-sh/ruff/issues/15639
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff rule to standardise `import x.y.z as alias` and `from x.y import z as alias`
 
 ---
 
-_Issue opened by @epenet on 2025-01-21 13:35_
+_@epenet_
 
 Hi,
 

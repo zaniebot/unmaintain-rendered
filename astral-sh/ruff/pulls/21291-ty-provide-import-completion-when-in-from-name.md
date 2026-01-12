@@ -14,14 +14,14 @@ head: no-completions-in-from-import
 created_at: 2025-11-06T12:09:39Z
 updated_at: 2025-12-27T00:21:00Z
 url: https://github.com/astral-sh/ruff/pull/21291
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] provide `import` completion when in `from <name> <name>` statement
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-06 12:09_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

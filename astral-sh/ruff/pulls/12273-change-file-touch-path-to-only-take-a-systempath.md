@@ -13,14 +13,14 @@ head: files-touch-path
 created_at: 2024-07-10T12:09:14Z
 updated_at: 2024-07-10T12:24:50Z
 url: https://github.com/astral-sh/ruff/pull/12273
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Change `File::touch_path` to only take a `SystemPath`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-10 12:09_
+_@MichaReiser_
 
 ## Summary
 

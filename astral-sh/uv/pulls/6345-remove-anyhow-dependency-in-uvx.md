@@ -12,14 +12,14 @@ head: charlie/any
 created_at: 2024-08-21T15:54:55Z
 updated_at: 2024-08-21T15:56:42Z
 url: https://github.com/astral-sh/uv/pull/6345
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Remove `anyhow` dependency in `uvx`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-21 15:54_
+_@charliermarsh_
 
 _No description provided._
 

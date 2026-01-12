@@ -13,14 +13,14 @@ head: charlie/matplotlib
 created_at: 2023-12-11T15:31:24Z
 updated_at: 2023-12-11T17:13:23Z
 url: https://github.com/astral-sh/ruff/pull/9094
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow `matplotlib.use` calls to intersperse imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-11 15:31_
+_@charliermarsh_
 
 This PR allows `matplotlib.use` calls to intersperse imports without triggering `E402`. This is a pragmatic choice as it's common to require `matplotlib.use` calls prior to importing from within `matplotlib` itself.
 

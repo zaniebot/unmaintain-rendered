@@ -12,14 +12,14 @@ head: zb/locked
 created_at: 2024-01-08T18:14:03Z
 updated_at: 2024-01-08T18:18:41Z
 url: https://github.com/astral-sh/uv/pull/837
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Check locked dependencies in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-08 18:14_
+_@zanieb_
 
 _No description provided._
 

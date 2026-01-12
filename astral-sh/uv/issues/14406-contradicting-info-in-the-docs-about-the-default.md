@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T04:03:57Z
 updated_at: 2025-07-04T12:26:17Z
 url: https://github.com/astral-sh/uv/issues/14406
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # contradicting info in the docs about the default build backend
 
 ---
 
-_Issue opened by @DetachHead on 2025-07-02 04:03_
+_@DetachHead_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: gankra/clickdoc
 created_at: 2025-12-15T19:22:15Z
 updated_at: 2025-12-15T19:26:05Z
 url: https://github.com/astral-sh/ruff/pull/21990
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] proof of concept: clickable types in hover
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-15 19:22_
+_@Gankra_
 
 ## Summary
 

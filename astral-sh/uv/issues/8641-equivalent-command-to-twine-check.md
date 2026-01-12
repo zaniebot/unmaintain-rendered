@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-28T18:44:02Z
 updated_at: 2025-07-03T17:39:52Z
 url: https://github.com/astral-sh/uv/issues/8641
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Equivalent command to `twine check`
 
 ---
 
-_Issue opened by @lengau on 2024-10-28 18:44_
+_@lengau_
 
 To go along with `uv publish`, it would be great if we could check our wheel files like `twine check`.
 

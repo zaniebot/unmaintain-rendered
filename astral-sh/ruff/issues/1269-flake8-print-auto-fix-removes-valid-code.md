@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-17T08:10:31Z
 updated_at: 2022-12-19T05:10:09Z
 url: https://github.com/astral-sh/ruff/issues/1269
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # flake8-print auto fix removes valid code
 
 ---
 
-_Issue opened by @serjflint on 2022-12-17 08:10_
+_@serjflint_
 
 ```python
 with open(output_filepath, "w") as out:

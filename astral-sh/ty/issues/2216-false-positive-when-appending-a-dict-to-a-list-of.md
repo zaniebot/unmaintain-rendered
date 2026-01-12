@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-25T02:22:19Z
 updated_at: 2025-12-29T22:08:30Z
 url: https://github.com/astral-sh/ty/issues/2216
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positive when appending a dict to a list of TypedDict unions
 
 ---
 
-_Issue opened by @kkpattern on 2025-12-25 02:22_
+_@kkpattern_
 
 ### Summary
 

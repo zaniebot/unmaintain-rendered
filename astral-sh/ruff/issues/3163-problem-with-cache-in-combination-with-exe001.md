@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T05:47:40Z
 updated_at: 2023-02-23T10:39:50Z
 url: https://github.com/astral-sh/ruff/issues/3163
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # problem with cache in combination with EXE001
 
 ---
 
-_Issue opened by @xmatthias on 2023-02-23 05:47_
+_@xmatthias_
 
 ruff version `ruff 0.0.251`
 

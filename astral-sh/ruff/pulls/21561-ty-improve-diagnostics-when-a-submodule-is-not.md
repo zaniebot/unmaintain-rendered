@@ -15,14 +15,14 @@ head: alex/submodule-attribute-hint
 created_at: 2025-11-21T15:03:21Z
 updated_at: 2025-11-22T14:07:49Z
 url: https://github.com/astral-sh/ruff/pull/21561
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Improve diagnostics when a submodule is not available as an attribute on a module-literal type
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-21 15:03_
+_@AlexWaygood_
 
 ## Summary
 

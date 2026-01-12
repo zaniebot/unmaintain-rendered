@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-07T09:21:01Z
 updated_at: 2025-11-11T22:57:38Z
 url: https://github.com/astral-sh/uv/issues/16631
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # uv sync --active sometimes deletes the active virtualenv
 
 ---
 
-_Issue opened by @cdb39 on 2025-11-07 09:21_
+_@cdb39_
 
 ### Summary
 

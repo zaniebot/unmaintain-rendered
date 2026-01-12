@@ -12,14 +12,14 @@ head: cls/shell-escape-request
 created_at: 2025-12-18T17:11:31Z
 updated_at: 2025-12-19T09:54:24Z
 url: https://github.com/astral-sh/uv/pull/17179
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Shell-escape Python request in manual install hint
 
 ---
 
-_Pull request opened by @cls-oi on 2025-12-18 17:11_
+_@cls-oi_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

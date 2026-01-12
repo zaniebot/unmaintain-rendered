@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T09:15:01Z
 updated_at: 2024-08-14T13:13:57Z
 url: https://github.com/astral-sh/uv/issues/6079
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv fails to install pytorch3d, while pip succedes
 
 ---
 
-_Issue opened by @RafailFridman on 2024-08-14 09:15_
+_@RafailFridman_
 
 I'm trying to install pytorch3d on Mac, following [these instructions.](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md)
 I have created an environment and already installed torch:

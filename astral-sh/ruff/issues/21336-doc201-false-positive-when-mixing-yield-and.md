@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T10:32:58Z
 updated_at: 2025-11-10T14:45:49Z
 url: https://github.com/astral-sh/ruff/issues/21336
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DOC201: false positive when mixing yield and return statements
 
 ---
 
-_Issue opened by @loenard97 on 2025-11-08 10:32_
+_@loenard97_
 
 ### Summary
 

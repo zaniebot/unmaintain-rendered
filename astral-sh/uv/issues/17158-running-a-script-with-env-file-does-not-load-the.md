@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T05:53:19Z
 updated_at: 2025-12-21T01:08:55Z
 url: https://github.com/astral-sh/uv/issues/17158
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Running a script with --env-file does not load the env file
 
 ---
 
-_Issue opened by @ac3673 on 2025-12-17 05:53_
+_@ac3673_
 
 ### Summary
 

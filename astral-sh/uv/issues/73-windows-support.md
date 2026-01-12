@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-09T03:27:10Z
 updated_at: 2024-01-29T07:31:28Z
 url: https://github.com/astral-sh/uv/issues/73
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Windows support
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-09 03:27_
+_@charliermarsh_
 
 _No description provided._
 

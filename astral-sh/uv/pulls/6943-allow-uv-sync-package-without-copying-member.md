@@ -13,14 +13,14 @@ head: charlie/member
 created_at: 2024-09-02T20:37:00Z
 updated_at: 2024-09-02T21:01:51Z
 url: https://github.com/astral-sh/uv/pull/6943
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Allow `uv sync --package` without copying member `pyproject.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-02 20:37_
+_@charliermarsh_
 
 ## Summary
 

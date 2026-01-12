@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-05T02:30:37Z
 updated_at: 2024-09-05T02:46:26Z
 url: https://github.com/astral-sh/uv/pull/7063
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # fix inverted log message
 
 ---
 
-_Pull request opened by @alex on 2024-09-05 02:30_
+_@alex_
 
 _No description provided._
 

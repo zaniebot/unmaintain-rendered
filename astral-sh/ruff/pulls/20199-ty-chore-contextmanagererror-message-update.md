@@ -13,14 +13,14 @@ head: chore/ContextManageError_message_update
 created_at: 2025-09-01T19:28:22Z
 updated_at: 2025-09-03T17:34:15Z
 url: https://github.com/astral-sh/ruff/pull/20199
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] chore: `ContextManagerError` message update
 
 ---
 
-_Pull request opened by @Y3K on 2025-09-01 19:28_
+_@Y3K_
 
 ## Summary
 

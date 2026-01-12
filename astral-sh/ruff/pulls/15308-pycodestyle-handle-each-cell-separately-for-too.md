@@ -15,14 +15,14 @@ head: newlines-notebook
 created_at: 2025-01-06T23:21:48Z
 updated_at: 2025-01-09T16:50:40Z
 url: https://github.com/astral-sh/ruff/pull/15308
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pycodestyle`] Handle each cell separately for `too-many-newlines-at-end-of-file` (`W391`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-06 23:21_
+_@dylwil3_
 
 Jupyter notebooks are converted into source files by joining with newlines, which confuses the check [too-many-newlines-at-end-of-file (W391)](https://docs.astral.sh/ruff/rules/too-many-newlines-at-end-of-file/#too-many-newlines-at-end-of-file-w391). This PR introduces logic to apply the check cell-wise (and, in particular, correctly handles empty cells.)
 

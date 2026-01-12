@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-02T14:49:20Z
 updated_at: 2022-12-03T15:20:35Z
 url: https://github.com/astral-sh/ruff/issues/997
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 (Undefined name) triggered when using assingment operator in all
 
 ---
 
-_Issue opened by @schoennenbeck on 2022-12-02 14:49_
+_@schoennenbeck_
 
 When using `all` (or `any`) one can use the assignment (walrus) operator `:=` to get the first witness of some boolean expression breaking the `all`-call.
 

@@ -14,14 +14,14 @@ head: charlie/lock-path
 created_at: 2024-08-16T17:13:29Z
 updated_at: 2024-08-16T17:24:28Z
 url: https://github.com/astral-sh/uv/pull/6157
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Avoid using workspace `lock_path` as relative root
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-16 17:13_
+_@charliermarsh_
 
 ## Summary
 

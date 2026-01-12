@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T21:13:37Z
 updated_at: 2026-01-09T10:11:42Z
 url: https://github.com/astral-sh/ty/issues/2382
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Erroneous `invalid-argument-type` for generic contextmanager with ParamSpec
 
 ---
 
-_Issue opened by @bcmills on 2026-01-07 21:13_
+_@bcmills_
 
 ### Summary
 

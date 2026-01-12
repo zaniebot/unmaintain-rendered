@@ -13,14 +13,14 @@ head: zb/find-version
 created_at: 2025-03-21T18:05:34Z
 updated_at: 2025-04-03T13:34:47Z
 url: https://github.com/astral-sh/uv/pull/12376
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Add `--show-version` to `uv python find`
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 18:05_
+_@zanieb_
 
 @jtfmumm mentioned a desire for this. I'm not sure how we should do this. I kind of want to change this to something like...
 

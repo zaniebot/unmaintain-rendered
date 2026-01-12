@@ -13,14 +13,14 @@ head: format-PatternMatchStar
 created_at: 2023-08-17T15:30:14Z
 updated_at: 2023-08-24T02:26:17Z
 url: https://github.com/astral-sh/ruff/pull/6653
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchStar`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-17 15:30_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

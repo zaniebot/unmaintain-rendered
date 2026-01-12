@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T15:13:29Z
 updated_at: 2024-12-13T21:05:08Z
 url: https://github.com/astral-sh/uv/issues/7190
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Add a `--universal-strategy`-like setting to the resolver
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-08 15:13_
+_@charliermarsh_
 
 In the universal resolver, we prioritize solving for as few versions as possible. Sometimes, users instead want to get the _newest_ possible version for every fork (e.g., they'd prefer getting the newest versions of `foo` for Python 3.10+, even if it means they have two versions of `foo` in the lockfile, one for Python 3.9 and earlier, and one for Python 3.10 and later).
 

@@ -13,14 +13,14 @@ head: renovate/configparser-3.x-lockfile
 created_at: 2024-06-17T00:13:02Z
 updated_at: 2024-06-17T10:40:52Z
 url: https://github.com/astral-sh/uv/pull/4353
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Update Rust crate configparser to v3.1.0
 
 ---
 
-_Pull request opened by @renovate on 2024-06-17 00:13_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

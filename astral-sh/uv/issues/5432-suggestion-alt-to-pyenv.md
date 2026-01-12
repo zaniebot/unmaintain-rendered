@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T23:35:05Z
 updated_at: 2024-09-16T01:43:56Z
 url: https://github.com/astral-sh/uv/issues/5432
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Suggestion: alt to pyenv
 
 ---
 
-_Issue opened by @pdpark on 2024-07-24 23:35_
+_@pdpark_
 
 If you want to provide Python installs like pyenv, this may be an option to consider: https://github.com/allyourcodebase/cpython
 

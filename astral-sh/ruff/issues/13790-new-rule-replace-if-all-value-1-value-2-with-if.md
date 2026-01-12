@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T09:04:15Z
 updated_at: 2024-12-03T14:59:15Z
 url: https://github.com/astral-sh/ruff/issues/13790
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - replace if all([value_1, value_2]) with if value_1 and value 2
 
 ---
 
-_Issue opened by @spaceby on 2024-10-17 09:04_
+_@spaceby_
 
 In a project I'm working on, I saw this code
 ```python

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-12T19:51:02Z
 updated_at: 2020-04-22T18:43:51Z
 url: https://github.com/clap-rs/clap/issues/1662
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Ignore HYPHEN-MINUS (dash) in arg_enum!()
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-12 19:51_
+_@kbknapp_
 
 _From @behnam on November 7, 2017 22:3_
 

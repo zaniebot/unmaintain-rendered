@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-08-11T00:56:00Z
 updated_at: 2022-08-11T02:48:08Z
 url: https://github.com/clap-rs/clap/issues/4057
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Inconsistent on inferring Help/Version action
 
 ---
 
-_Issue opened by @epage on 2022-08-11 00:56_
+_@epage_
 
 As of at least #4056 in master, 
 - `arg!(--help)` will implicitly get `ArgAction::Help`

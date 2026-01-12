@@ -13,14 +13,14 @@ head: PT012-example
 created_at: 2024-03-06T15:25:31Z
 updated_at: 2024-03-06T15:53:21Z
 url: https://github.com/astral-sh/ruff/pull/10248
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Make rule PT012 example clearer
 
 ---
 
-_Pull request opened by @eerovaher on 2024-03-06 15:25_
+_@eerovaher_
 
 _No description provided._
 

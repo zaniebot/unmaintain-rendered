@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T15:18:15Z
 updated_at: 2025-07-25T14:40:33Z
 url: https://github.com/astral-sh/uv/issues/14872
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # When entering "UV sync," the following code appears
 
 ---
 
-_Issue opened by @davidlivesintemple on 2025-07-24 15:18_
+_@davidlivesintemple_
 
 ### Summary
 

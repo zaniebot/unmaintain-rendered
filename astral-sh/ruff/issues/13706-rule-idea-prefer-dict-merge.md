@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T15:42:57Z
 updated_at: 2024-10-17T16:04:40Z
 url: https://github.com/astral-sh/ruff/issues/13706
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule idea: Prefer dict merge
 
 ---
 
-_Issue opened by @jaap3 on 2024-10-10 15:42_
+_@jaap3_
 
 I just made a PR in one of our private projects replacing patterns like:
 

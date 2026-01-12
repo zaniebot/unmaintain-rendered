@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-19T21:08:58Z
 updated_at: 2023-08-19T22:16:45Z
 url: https://github.com/astral-sh/ruff/issues/6695
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PYI026 autofixes ignoring target_version, not importing from typing_extensions
 
 ---
 
-_Issue opened by @Skylion007 on 2023-08-19 21:08_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T14:56:12Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/308
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Suggest type annotations or "better" types for existing annotations
 
 ---
 
-_Issue opened by @jack-mcivor on 2025-05-10 14:56_
+_@jack-mcivor_
 
 Could ty analyze variable usage to suggest type annotations or "better" types for existing annotations?
 

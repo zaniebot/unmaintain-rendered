@@ -12,14 +12,14 @@ head: charlie/flake8-annotations
 created_at: 2022-11-06T22:03:46Z
 updated_at: 2022-11-06T22:25:50Z
 url: https://github.com/astral-sh/ruff/pull/625
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement flake8-annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-06 22:03_
+_@charliermarsh_
 
 This PR implements `flake8-annotations`. All checks are implemented, though I opted to take advantage of our (IMO) better detection of public and private methods to use single public vs. private rules, rather than private and protected rules based solely on function names.
 

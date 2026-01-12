@@ -13,14 +13,14 @@ head: charlie/workspace
 created_at: 2024-08-27T19:54:52Z
 updated_at: 2024-08-27T21:31:13Z
 url: https://github.com/astral-sh/uv/pull/6720
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Update workspace documentation to remove legacy virtual projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 19:54_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/perms
 created_at: 2024-01-28T03:07:17Z
 updated_at: 2024-01-28T03:12:02Z
 url: https://github.com/astral-sh/uv/pull/1152
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Avoid unnecessary permissions changes for copy paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-28 03:07_
+_@charliermarsh_
 
 In Rust, `fs::copy` automatically preserves permissions (see: https://doc.rust-lang.org/std/fs/fn.copy.html).
 

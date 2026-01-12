@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-11T15:29:01Z
 updated_at: 2023-11-11T23:34:03Z
 url: https://github.com/astral-sh/ruff/issues/8618
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autofix `PLW0108` unnecessary-lambda (preview)
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-11 15:29_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

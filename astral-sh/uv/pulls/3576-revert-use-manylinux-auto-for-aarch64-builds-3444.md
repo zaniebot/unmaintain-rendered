@@ -12,14 +12,14 @@ head: zb/fix-ssl-macos
 created_at: 2024-05-14T13:39:17Z
 updated_at: 2024-05-14T14:04:54Z
 url: https://github.com/astral-sh/uv/pull/3576
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Revert "Use manylinux: auto for aarch64 builds (#3444)"
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-14 13:39_
+_@zanieb_
 
 This reverts #3444 which appears to be the cause of SSL failures when building aarch64 Linux images on macOS hosts (see https://github.com/astral-sh/uv/issues/3570)
 

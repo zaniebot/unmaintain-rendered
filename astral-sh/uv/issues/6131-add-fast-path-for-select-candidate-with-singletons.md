@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T01:00:49Z
 updated_at: 2024-09-09T13:43:59Z
 url: https://github.com/astral-sh/uv/issues/6131
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Add fast-path for `select_candidate` with singletons
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-16 01:00_
+_@charliermarsh_
 
 We already know the version, and the version maps are indexed by version. Can we just skip the iterator?
 

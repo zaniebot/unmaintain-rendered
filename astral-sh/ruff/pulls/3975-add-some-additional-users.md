@@ -12,14 +12,14 @@ head: charliermarsh-patch-1
 created_at: 2023-04-14T16:19:39Z
 updated_at: 2023-04-14T16:41:33Z
 url: https://github.com/astral-sh/ruff/pull/3975
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add some additional users
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-14 16:19_
+_@charliermarsh_
 
 _No description provided._
 

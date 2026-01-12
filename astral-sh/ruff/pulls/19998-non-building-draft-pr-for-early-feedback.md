@@ -13,14 +13,14 @@ head: jack/new_type2
 created_at: 2025-08-20T04:01:52Z
 updated_at: 2025-11-10T19:56:32Z
 url: https://github.com/astral-sh/ruff/pull/19998
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # non-building draft PR for early feedback
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-20 04:01_
+_@oconnor663_
 
 This is my trial-and-error attempt to introduce a `ClassSingletonType` enum to `crates/ty_python_semantic/src/types/class.rs`, as @carljm and @AlexWaygood and I discussed. This fixes all the immediate type errors in that file, but there are still many in other files. I wanted to check in with you guys to see if I can get some early feedback about whether I'm moving in the right direction. In particular, a lot of `ClassLiteral` methods end up getting wrapped by `ClassSingletonType` and `NewTypeClass` _and_ `ClassType`, which doesn't seem ideal.
 

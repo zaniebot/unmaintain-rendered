@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T14:44:39Z
 updated_at: 2025-02-18T12:45:26Z
 url: https://github.com/astral-sh/uv/issues/11479
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Duplicate packages with multiple conflicts
 
 ---
 
-_Issue opened by @ElliottKasoar on 2025-02-13 14:44_
+_@ElliottKasoar_
 
 ### Summary
 

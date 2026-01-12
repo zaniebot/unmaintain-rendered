@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T03:04:12Z
 updated_at: 2025-03-03T06:15:56Z
 url: https://github.com/astral-sh/uv/issues/11847
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Issue with pip while using a UV made venv
 
 ---
 
-_Issue opened by @Elmekior on 2025-02-28 03:04_
+_@Elmekior_
 
 ### Summary
 

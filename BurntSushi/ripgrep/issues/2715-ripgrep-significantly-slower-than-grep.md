@@ -1,0 +1,136 @@
+```yaml
+number: 2715
+title: Ripgrep significantly slower than grep
+type: issue
+state: closed
+author: Mr-Pine
+labels: []
+assignees: []
+created_at: 2024-01-18T20:07:27Z
+updated_at: 2024-01-19T12:43:13Z
+url: https://github.com/BurntSushi/ripgrep/issues/2715
+synced_at: 2026-01-12T16:13:24Z
+```
+
+# Ripgrep significantly slower than grep
+
+---
+
+_@Mr-Pine_
+
+### Please tick this box to confirm you have reviewed the above.
+
+- [X] I have a different issue.
+
+### What version of ripgrep are you using?
+
+ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+
+### How did you install ripgrep?
+
+Pacman
+
+### What operating system are you using ripgrep on?
+
+EndeavourOS (Arch)
+
+### Describe your bug.
+
+Searching for `system` in `rockyou.txt` takes about ten times as long with ripgrep as with grep
+
+```
+hyperfine -- "rg system /usr/share/dict/rockyou.txt" "grep system /usr/share/dict/rockyou.txt"
+Benchmark 1: rg system /usr/share/dict/rockyou.txt
+  Time (mean ± σ):      24.9 ms ±  23.7 ms    [User: 10.7 ms, System: 10.0 ms]
+  Range (min … max):    16.8 ms … 130.8 ms    22 runs
+
+  Warning: The first benchmarking run for this command was significantly slower than the rest (130.8 ms). This could be caused by (filesystem) caches that were not filled until after the first run. You should consider using the '--warmup' option to fill those caches before the actual benchmark. Alternatively, use the '--prepare' option to clear the caches before each timing run.
+
+Benchmark 2: grep system /usr/share/dict/rockyou.txt
+  Time (mean ± σ):       1.8 ms ±   0.7 ms    [User: 1.3 ms, System: 1.2 ms]
+  Range (min … max):     0.5 ms …   4.7 ms    653 runs
+
+  Warning: Command took less than 5 ms to complete. Note that the results might be inaccurate because hyperfine can not calibrate the shell startup time much more precise than this limit. You can try to use the `-N`/`--shell=none` option to disable the shell completely.
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  grep system /usr/share/dict/rockyou.txt ran
+   13.91 ± 14.27 times faster than rg system /usr/share/dict/rockyou.txt
+```
+
+Additional note: When concatting rockyou 64 times after itself the same operations take 50ms with grep and over 1s with rg
+
+### What are the steps to reproduce the behavior?
+
+Run `rg system <Path to your rockyou.txt>`
+
+### What is the actual behavior?
+
+For timings, see above.
+```
+rg --debug system /usr/share/dict/rockyou.txt
+
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: small-forest
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: ""
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+```
+rest of the output in https://gist.github.com/Mr-Pine/87529294fa2175a7c69dd907008b483d (looks correct, only issue is perfomance)
+
+### What is the expected behavior?
+
+ripgrep should be faster than grep
+
+---
+
+_Comment by @blyxxyz on 2024-01-18 20:27_
+
+GNU grep can tell that its output is redirected to `/dev/null` and because of that it exits after the first match. (It still needs to use the exit code to report whether there was a match at all, but that's it.) If you send the output through `cat` then it cannot perform that optimization and ends up slightly slower than ripgrep:
+```console
+$ hyperfine 'rg system rockyou.txt | cat' 'grep system rockyou.txt | cat'
+Benchmark #1: rg system rockyou.txt | cat
+  Time (mean ± σ):      50.4 ms ±  10.8 ms    [User: 37.6 ms, System: 14.2 ms]
+  Range (min … max):    43.0 ms …  84.6 ms    34 runs
+ 
+Benchmark #2: grep system rockyou.txt | cat
+  Time (mean ± σ):      71.8 ms ±  13.3 ms    [User: 54.3 ms, System: 18.9 ms]
+  Range (min … max):    60.4 ms …  97.5 ms    36 runs
+ 
+Summary
+  'rg system rockyou.txt | cat' ran
+    1.42 ± 0.40 times faster than 'grep system rockyou.txt | cat'
+```
+
+---
+
+_Comment by @Mr-Pine on 2024-01-18 21:27_
+
+Interesting, thanks for the explanation! Seems like I never looked at the execution time when getting an output...
+
+---
+
+_Closed by @Mr-Pine on 2024-01-18 21:27_
+
+---
+
+_Comment by @BurntSushi on 2024-01-18 21:38_
+
+Yeah @blyxxyz has it right. For hyperfine specifically, you can pass `--output=pipe` instead of adding `| cat`.
+
+I have specifically avoided the "detect `/dev/null` and automatically enable `-q/--quiet`" optimization that GNU grep does. ripgrep could do it. It isn't hard to do. It just always seemed a little weird to me.
+
+For simple literal searches like this, ripgrep should pretty much always be faster. ripgrep's substring search should be very nearly strictly superior to GNU grep's. If you can find a non-pathological case where GNU grep is noticeably faster (on x86-64 or aarch64) for real, I'd love to see it.
+
+---
+
+_Locked by @ghost on 2024-01-19 12:43_
+
+---

@@ -14,14 +14,14 @@ head: micha/split-corpus-tests
 created_at: 2024-11-15T18:38:32Z
 updated_at: 2024-11-16T19:29:24Z
 url: https://github.com/astral-sh/ruff/pull/14367
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Split the corpus tests into smaller tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-15 18:38_
+_@MichaReiser_
 
 ## Summary
 

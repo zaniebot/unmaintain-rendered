@@ -14,14 +14,14 @@ head: david/isinstance-uniontype
 created_at: 2025-11-20T11:07:59Z
 updated_at: 2025-11-20T11:59:37Z
 url: https://github.com/astral-sh/ruff/pull/21537
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add tests: `types.UnionType` in `isinstance`/`issubclass`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-20 11:07_
+_@sharkdp_
 
 ## Summary
 

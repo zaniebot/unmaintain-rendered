@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T09:05:03Z
 updated_at: 2025-06-21T01:49:19Z
 url: https://github.com/astral-sh/ruff/issues/16492
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # collections-named-tuple (PYI024): Documented fix is not equivalent
 
 ---
 
-_Issue opened by @Avasam on 2025-03-04 09:05_
+_@Avasam_
 
 ### Summary
 

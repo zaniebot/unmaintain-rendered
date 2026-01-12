@@ -12,14 +12,14 @@ head: dhruv/restructure-docs
 created_at: 2024-08-30T13:02:52Z
 updated_at: 2025-09-25T10:09:33Z
 url: https://github.com/astral-sh/ruff/pull/13161
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Separate TOC from the navigation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-30 13:02_
+_@dhruvmanila_
 
 ## Summary
 

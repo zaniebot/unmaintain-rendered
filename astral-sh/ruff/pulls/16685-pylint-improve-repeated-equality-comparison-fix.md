@@ -13,14 +13,14 @@ head: micha/repeated-equality-fix
 created_at: 2025-03-12T16:35:08Z
 updated_at: 2025-03-13T08:22:33Z
 url: https://github.com/astral-sh/ruff/pull/16685
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`pylint`] Improve `repeated-equality-comparison` fix to use a `set` when all elements are hashable (`PLR1714`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 16:35_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-09T07:50:37Z
 updated_at: 2024-09-19T11:52:20Z
 url: https://github.com/astral-sh/uv/issues/7212
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # uv sync: empty directories are assumed to be linked to non-existent interpreters
 
 ---
 
-_Issue opened by @hynek on 2024-09-09 07:50_
+_@hynek_
 
 I've been experimenting a bit with `uv python` and Docker and it turns out it's systematically kinda awkward if you want non-root user and multi-stage.
 

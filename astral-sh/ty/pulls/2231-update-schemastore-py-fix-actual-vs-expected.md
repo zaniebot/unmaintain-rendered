@@ -13,14 +13,14 @@ head: revision-naming
 created_at: 2025-12-26T22:42:11Z
 updated_at: 2025-12-29T10:20:11Z
 url: https://github.com/astral-sh/ty/pull/2231
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # update_schemastore.py: Fix actual vs expected revision in log
 
 ---
 
-_Pull request opened by @paarth-a on 2025-12-26 22:42_
+_@paarth-a_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

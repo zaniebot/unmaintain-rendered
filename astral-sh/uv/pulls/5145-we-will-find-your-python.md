@@ -14,14 +14,14 @@ head: zb/no-should
 created_at: 2024-07-17T14:45:19Z
 updated_at: 2024-07-17T14:46:13Z
 url: https://github.com/astral-sh/uv/pull/5145
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # We will find your Python
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-17 14:45_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/5133#discussion_r1681179083
 

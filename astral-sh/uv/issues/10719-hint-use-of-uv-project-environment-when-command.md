@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T18:27:23Z
 updated_at: 2025-01-17T18:31:29Z
 url: https://github.com/astral-sh/uv/issues/10719
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Hint use of `UV_PROJECT_ENVIRONMENT` when command is available in `VIRTUAL_ENV`
 
 ---
 
-_Issue opened by @zanieb on 2025-01-17 18:27_
+_@zanieb_
 
 If `VIRTUAL_ENV` is set and `uv run` fails to find a command in the project environment, we could hint use of  `UV_PROJECT_ENVIRONMENT` or at least hint why the command is missing?
 

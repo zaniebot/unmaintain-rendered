@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T12:53:49Z
 updated_at: 2025-11-06T12:59:29Z
 url: https://github.com/astral-sh/uv/issues/7014
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv fails to install gym 0.21.0
 
 ---
 
-_Issue opened by @locifazi on 2024-09-04 12:53_
+_@locifazi_
 
 I'm using `uv 0.4.2` on `AlmaLinux-8.9`, and encounter following problem:
 

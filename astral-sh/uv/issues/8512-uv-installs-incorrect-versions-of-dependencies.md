@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T04:10:56Z
 updated_at: 2024-10-29T02:34:50Z
 url: https://github.com/astral-sh/uv/issues/8512
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # uv installs incorrect versions of dependencies when using Nexus
 
 ---
 
-_Issue opened by @nwp90 on 2024-10-24 04:10_
+_@nwp90_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

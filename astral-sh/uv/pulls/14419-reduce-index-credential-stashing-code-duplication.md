@@ -13,14 +13,14 @@ head: konsti/reduce-index-credential-duplication
 created_at: 2025-07-02T13:08:10Z
 updated_at: 2025-07-02T13:25:58Z
 url: https://github.com/astral-sh/uv/pull/14419
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Reduce index credential stashing code duplication
 
 ---
 
-_Pull request opened by @konstin on 2025-07-02 13:08_
+_@konstin_
 
 Reduces some duplicate code around index credentials.
 

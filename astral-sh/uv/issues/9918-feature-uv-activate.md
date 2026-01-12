@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T18:25:32Z
 updated_at: 2024-12-16T07:59:52Z
 url: https://github.com/astral-sh/uv/issues/9918
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # feature: uv activate
 
 ---
 
-_Issue opened by @hoegge on 2024-12-15 18:25_
+_@hoegge_
 
 It would be really cool, if uv had an activate feature, that would make activating an environement easier:
 

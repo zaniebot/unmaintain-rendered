@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T05:29:33Z
 updated_at: 2025-08-18T14:59:59Z
 url: https://github.com/astral-sh/ty/issues/1034
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # class inheritance and model_dump with pydantic models
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-18 05:29_
+_@CharlesPerrotMinot_
 
 ### Question
 

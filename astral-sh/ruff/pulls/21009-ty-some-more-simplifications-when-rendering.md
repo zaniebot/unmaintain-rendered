@@ -14,14 +14,14 @@ head: dcreager/constraint-display
 created_at: 2025-10-21T01:52:20Z
 updated_at: 2025-10-22T17:39:10Z
 url: https://github.com/astral-sh/ruff/pull/21009
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Some more simplifications when rendering constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-21 01:52_
+_@dcreager_
 
 This PR adds another useful simplification when rendering constraint sets: `T = int` instead of `T = int ∧ T ≠ str`. (The "smaller" constraint `T = int` implies the "larger" constraint `T ≠ str`. Constraint set clauses are intersections, and if one constraint in a clause implies another, we can throw away the "larger" constraint.)
 

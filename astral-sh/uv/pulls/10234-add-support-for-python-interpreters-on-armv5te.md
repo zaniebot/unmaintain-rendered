@@ -13,14 +13,14 @@ head: issue-10157
 created_at: 2024-12-30T07:51:03Z
 updated_at: 2025-09-26T13:14:48Z
 url: https://github.com/astral-sh/uv/pull/10234
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Add support for Python interpreters on ARMv5TE platforms
 
 ---
 
-_Pull request opened by @lscorcia on 2024-12-30 07:51_
+_@lscorcia_
 
 ## Summary
 Allows uv to recognize the ARMv5TE platform. This platform is currently supported on Debian distributions. It is an older 32 bit platform mostly used in embedded devices, currently in rust tier 2.5 so it requires cross compilation.
